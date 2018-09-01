@@ -1,5 +1,5 @@
 <p align="center">
-  <b>春松客服QQ交流群：185659917</b><br>
+  <b>春松客服QQ交流群：185659917， <a href="https://jq.qq.com/?_wv=1027&k=5I1cJLP" target="_blank">点击链接加入群聊</a></b><br>
   <img src="https://user-images.githubusercontent.com/3538629/44917177-432d9700-ad6a-11e8-9420-46b0281073e6.png" width="200">
 </p>
 
@@ -9,10 +9,6 @@
 
 春松客服是Chatopera自主研发以及变更其它开源软件的方式实现的，春松客服会不断增强客服系统的智能化，这包括利用利用自然语言处理、机器学习和语音识别等技术让客服工作更有效率、客服满意度更高、成本更低。
 
-
-## 联系方式
-
-点击链接加入群聊【春松客服开源社区】：[https://jq.qq.com/?_wv=1027&k=5I1cJLP](https://jq.qq.com/?_wv=1027&k=5I1cJLP)
 
 ## 功能
 
@@ -80,7 +76,9 @@
 
 [FreeSWITCH中国社区](http://www.freeswitch.org.cn/)
 
-## License
+## 开源许可协议
+
+Copyright (2018) <a href="https://www.chatopera.com/" target="_blank">北京华夏春松科技有限公司</a>
 
 [Apache License Version 2.0](https://github.com/chatopera/cosin/blob/master/LICENSE)
 
