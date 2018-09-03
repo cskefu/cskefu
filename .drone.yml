@@ -16,3 +16,5 @@ pipeline:
     repo: chatopera/cc-switch
     tags: develop
     secrets: [ docker_username, docker_password ]
+
+branches: develop
