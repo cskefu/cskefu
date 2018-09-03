@@ -1,3 +1,6 @@
+[![Docker Layers](https://images.microbadger.com/badges/image/chatopera/contact-center:develop.svg)](https://microbadger.com/images/chatopera/contact-center:develop "Get your own image badge on microbadger.com") [![Docker version](https://images.microbadger.com/badges/version/chatopera/contact-center:develop.svg)](https://microbadger.com/images/chatopera/contact-center:develop "Get your own version badge on microbadger.com") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg?maxAge=2592000)](https://hub.docker.com/r/chatopera/contact-center/) [![Docker Stars](https://img.shields.io/docker/stars/chatopera/contact-center.svg?maxAge=2592000)](https://hub.docker.com/r/chatopera/contact-center/) 
+
+
 <p align="center">
   <b>春松客服QQ交流群：185659917， <a href="https://jq.qq.com/?_wv=1027&k=5I1cJLP" target="_blank">点击链接加入群聊</a></b><br>
   <img src="https://user-images.githubusercontent.com/3538629/44917177-432d9700-ad6a-11e8-9420-46b0281073e6.png" width="200">
@@ -5,9 +8,9 @@
 
 # 春松客服: 全渠道智能客服
 
-春松客服帮助中小型企业快速而低成本的获得好用的智能客服系统。
+春松客服是帮助中小型企业快速而低成本的获得好用的智能客服系统。
 
-春松客服是Chatopera自主研发以及变更其它开源软件的方式实现的，春松客服会不断增强客服系统的智能化，这包括利用利用自然语言处理、机器学习和语音识别等技术让客服工作更有效率、客服满意度更高、成本更低。
+春松客服是Chatopera自主研发以及基于且增强其它开源软件的方式实现的，春松客服会不断增强客服系统的智能化，这包括利用自然语言处理、机器学习和语音识别等技术让客服工作更有效率、客服满意度更高、成本更低。
 
 
 ## 功能
@@ -60,15 +63,13 @@
 </p>
 
 
-## 开发
+## 部署和开发
 
-## 部署
-
+[参考文档](https://github.com/chatopera/cosin/wiki)
 
 ## 产品体系
 
 <img src="https://user-images.githubusercontent.com/3538629/44914271-550b3c00-ad62-11e8-89d4-f17a2186bf90.png" width="900">
-
 
 ## 鸣谢
 
