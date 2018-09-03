@@ -1,0 +1,325 @@
+<div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+        <#include "/apps/callout/include/left.html">
+    </div>
+</div>
+<div class="layui-body">
+    <div class="layui-side-scroll">
+        <div class="box-header" style="background-color: #f5f5f5;">
+            <h1 class="site-h1" style="background-color:#FFFFFF;">
+                通话记录
+            </h1>
+        </div>
+        <div class="box-header" style="background-color: #f5f5f5;">
+            <h1 class="site-h1" style="background-color:#FFFFFF;">
+                <div class="layui-form">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">部门</label>
+                            <div class="layui-input-inline">
+                                <select name="organ" lay-verify="organ" id="organ">
+                                    <option value="all">所有部门</option>
+                                    <#if departments?? && departments?size gt 0>
+                                    <#list departments as dep>
+                                            <option value="${dep.id}">${dep.name}</option>
+                                        </#list>
+                                    </#if>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">坐席</label>
+                            <div class="layui-input-inline">
+                                <select name="agent" lay-verify="agent" id="agent">
+                                    <option value="all">所有坐席</option>
+                                    <#if sipAccounts?? && sipAccounts?size gt 0>
+                                        <#list sipAccounts as sipAccount>
+                                            <option value="${sipAccount.id}">${sipAccount.uname}</option>
+                                        </#list>
+                                    </#if>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">开始时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="fromdate" id="fromdate" value="" lay-verify="date" autocomplete="off"
+                                       class="layui-input">
+                                <i class="layui-icon" style="position: absolute;right: 3px;top: 6px;font-size: 25px;">&#xe637;</i>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">结束时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="enddate" id="enddate" value="" lay-verify="date|enddate" autocomplete="off"
+                                       class="layui-input">
+                                <i class="layui-icon" style="position: absolute;right: 3px;top: 6px;font-size: 25px;">&#xe637;</i>
+                            </div>
+                        </div>
+                        <!--<div class="layui-inline">-->
+                            <!--<label class="layui-form-label">主叫号码</label>-->
+                            <!--<div class="layui-input-inline">-->
+                                <!--<input type="tel" name="tel" class="layui-input" id="tel" value="" placeholder="">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <div class="layui-inline">
+                            <label class="layui-form-label">被叫号码</label>
+                            <div class="layui-input-inline">
+                                <input type="tel" name="called" class="layui-input" id="called" value="" lay-verify="tel" placeholder="">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label"></label>
+                            <button id="search" class="layui-btn" lay-submit lay-filter="searchForm">立即查询</button>
+                        </div>
+                    </div>
+                </div>
+            </h1>
+        </div>
+        <div class="box-body ukefu-im-theme">
+            <table class="layui-table" lay-skin="row" lay-even id="recodeData">
+                <thead>
+                <tr class="design-sortable-tr">
+                    <th>部门</th>
+                    <th>坐席</th>
+                    <th>时间</th>
+                    <!--<th>主叫号码</th>-->
+                    <!--<th>主叫归属地</th>-->
+                    <th>被叫号码</th>
+                    <th>被叫归属地</th>
+                    <th>通话时长</th>
+                    <th>呼叫类型</th>
+                    <th>通话状态</th>
+                    <th>挂断原因</th>
+                    <th>录音</th>
+                </tr>
+                </thead>
+                <tbody class="news_content"></tbody>
+            </table>
+        </div>
+        <div class="row" style="padding:5px;">
+            <div class="col-lg-12" id="page" style="text-align:center;"></div>
+        </div>
+    </div>
+</div>
+<script src="/js/moment.min.js"></script>
+<script src="/js/CSKeFu_Rest_Request.v1.js"></script>
+<script>
+    $("#fromdate").val(moment().format('YYYY-MM-DD'));
+    $("#enddate").val(moment().format('YYYY-MM-DD'));
+    layui.use('laydate', function() {
+        var laydate = layui.laydate;
+
+        var date = {
+            min : '1950-01-01 00:00:00',
+            max : laydate.now(),
+            istoday : true
+        };
+
+        document.getElementById('fromdate').onclick = function() {
+            date.elem = this;
+            laydate(date);
+        }
+        document.getElementById('enddate').onclick = function() {
+            date.elem = this;
+            laydate(date);
+        }
+    });
+</script>
+<script>
+    layui.use(['form','layer','jquery','laypage'],function(){
+        var form = layui.form(),
+            layer = parent.layer === undefined ? layui.layer : parent.layer,
+            laypage = layui.laypage,
+            $ = layui.jquery;
+
+        form.verify({
+            enddate: function(value){
+                if (moment(value).diff(moment($('#fromdate').val())) < 0) {
+                    return "结束日期不早于开始日期。";
+                }
+            },
+            tel: function(value) {
+                var reg = /^1[3456789]\d{9}$/;
+                if(value && !reg.test(value)){
+                    return '请输入正确的电话号码。';
+                }
+            }
+        });
+
+        function formValues() {
+            var formData = {};
+            var formOrgan = $("#organ").val();
+            if(formOrgan && formOrgan != 'all')
+                formData.organ = formOrgan;
+
+            var formAgent = $("#agent").val()
+            if(formAgent && formAgent != 'all')
+                formData.agent = formAgent;
+
+            var formcalled = $("#called").val()
+            if(formcalled)
+                formData.called = formcalled;
+
+            var formFromDate = $("#fromdate").val();
+            if(formFromDate)
+                formData.fromdate = formFromDate;
+
+            var formEndDate = $("#enddate").val();
+            if(formEndDate)
+                formData.enddate = formEndDate;
+
+            return formData;
+        }
+
+        // 立即查询
+        $("#search").click(function () {
+            var data = formValues();
+            data.ops = 'query';
+            httpRequest({
+                data: data,
+                path: 'callout/records',
+                query: '?p=1&ps=20',
+            }).then(function (d) {
+                if(d.status && d.status === "AUTH_ERROR"){
+                    openFail(d.status);
+                    return;
+                }
+
+                if(d.rc === 0){
+                    newsList(d);
+                } else {
+                    openFail(null, d.error)
+                }
+            }, function (reason) {
+                openFail()
+            });
+        });
+
+        //
+        function newsList(data){
+            //渲染数据
+            function renderDate(data, curr){
+                var dataHtml = '';
+                if(data && data.length > 0){
+                    for(var i=0;i<data.length;i++){
+                        dataHtml += '<tr>'
+                            + '<td>' + data[i].organ + '</td>'
+                            + '<td>' + data[i].agentname + '</td>'
+                            + '<td>' + data[i].starttime + '</td>'
+                            + '<td>' + data[i].called + '</td>'
+                            + '<td>' + data[i].calledprovince + '</td>'
+                            + '<td>' + data[i].duration + '秒</td>'
+                            + '<td>' + data[i].calltype + '</td>'
+                            + '<td>' + data[i].status + '</td>'
+                            + '<td>' + data[i].status + '</td>'
+                            + '<td>'
+                                // + '<a href="javascript:" id="' + data[i].recordingfile + '" class="download"><i class="layui-icon" style="font-size: 25px;">&#xe61e;</i>下载</a>'
+                                + '<a href="javascript:" id="' + data[i].recordingfile + '" class="listen" rel = "nofollow"><i class="layui-icon" style="font-size: 25px;">&#xe6fc;</i>在线听</a>'
+                            + '</td>'
+                            +'</tr>';
+                    }
+                }else{
+                    dataHtml = '<tr><td colspan="10" style="text-align: center;">暂无数据</td></tr>';
+                }
+                return dataHtml;
+            }
+
+            //分页
+            laypage({
+                cont: "page",
+                pages: data.totalPage,
+                curr: data.number + 1,
+                groups: 5,
+                jump : function(obj, first){
+                    var body = formValues();
+                    body.ops = 'query';
+                    httpRequest({
+                        data: body,
+                        path: 'callout/records',
+                        query: '?p=' + obj.curr + '&ps=20',
+                    }).then(function (d) {
+                        if(d.status && d.status === "AUTH_ERROR"){
+                            openFail(d.status);
+                            return;
+                        }
+
+                        if(d.rc === 0){
+                            $(".news_content").html(renderDate(d.data, obj.curr));
+                            form.render();
+                        } else {
+                            openFail(null, d.error)
+                        }
+                    }, function (reason) {
+                        openFail()
+                    });
+                }
+            })
+        }
+    });
+</script>
+
+<script>
+    // $(document).on("click",".download",function(){
+    //     var fileHash = this.id;
+    //     if(!fileHash) {
+    //         return false;
+    //     }
+    //
+    //     httpRequest({
+    //         data: {
+    //             ops: 'wav',
+    //             file: fileHash,
+    //         },
+    //         path: 'callout/records'
+    //     }).then(function (value) {
+    //         if(value.rc == 0){
+    //             var url = value.data.url;
+    //             var a = document.createElement('a');
+    //             var filename = 'test.zip';
+    //             a.href = url;
+    //             a.download = filename;
+    //             a.target = '_blank';
+    //             a.rel = 'nofollow';
+    //             a.click();
+    //             window.URL.revokeObjectURL(url);
+    //         }
+    //     }, function (reason) {
+    //
+    //     })
+    // });
+    $(document).on("click",".listen",function(){
+        var fileHash = this.id;
+        if(!fileHash) {
+            return false;
+        }
+
+        httpRequest({
+            data: {
+                ops: 'wav',
+                file: fileHash,
+            },
+            path: 'callout/records'
+        }).then(function (value) {
+            if(value.rc == 0){
+                var url = value.data.url;
+                layer.open({
+                    type: 1,
+                    title: '在线试听',
+                    shadeClose: true, //点击遮罩关闭
+                    content: '' +
+                        '\<\div>' +
+                        '<audio controls> \n' +
+                        '  <source src="' + url + '" type="audio/wav">\n' +
+                        '   您的浏览器不支持 audio 元素。\n' +
+                        '</audio>' +
+                        '\<\/div>'
+                });
+            }
+        }, function (reason) {
+
+        })
+    });
+</script>
+
+

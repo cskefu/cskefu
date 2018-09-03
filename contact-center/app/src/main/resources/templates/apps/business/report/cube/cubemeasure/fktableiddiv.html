@@ -1,0 +1,11 @@
+<label class="layui-form-label">表字段：</label>
+<div class="layui-input-inline">
+	<select lay-ignore class="ukefu-select" name="columname" id="fktableid" style="width: 100%;display:block;" >
+		<option value=""></option>
+	 	<#if fktableidList??>
+	 	<#list fktableidList as fktableid>
+	 	<option value="${fktableid.fieldname!''}" <#if cubemeasure?? && cubemeasure.columname && fktableid.fieldname == cubemeasure.columname>selected="selected"</#if>>${fktableid.fieldname!''}</option>
+	 	</#list>
+	 	</#if> 
+	</select>
+</div>

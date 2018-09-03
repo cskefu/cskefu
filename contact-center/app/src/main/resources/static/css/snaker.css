@@ -1,0 +1,113 @@
+.node {
+	width: 155px;
+	text-align: left;
+	height:30px;
+	line-height:30px;
+	vertical-align: middle;
+	border: 1px solid #fff;
+	padding:0px 10px 0 10px;
+}
+.node img{
+	vertical-align: middle;
+}
+.mover {
+	border: 1px solid #ddd;
+	background-color: #ddd;
+}
+
+.selected {
+	background-color: #ddd;
+}
+
+.state {
+	
+}
+
+#pointer {
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#path {
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#task {
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#state {
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#toolbox {
+	position: absolute;
+	top: 100;
+	left: 10;
+	background-color: #fff;
+	width:180px;
+	cursor: default;
+	padding: 0px;
+}
+#toolbox_handle {
+	margin-top:1px;
+	margin-bottom:0px;
+	width:98%;
+	align:center;
+	text-align:left;
+	font-weight: 500;
+}
+#toolbox_widget{
+	border:1px solid #9AC3E1;
+	border-top:0px;
+	padding-top:10px;
+	padding-bottom:20px;
+}
+#properties {
+}
+#properties_handle {
+	margin-top:1px;
+	font-weight: 500;
+	align:center;
+    cursor: default;
+	text-align:left;
+	width:100%;
+}
+.properties_all {
+	width:100%;
+	text-align:left;
+	font-size: 12px;
+}
+.properties_widget{
+	padding:10px 10px 20px 0px;
+	border: 1px solid #9AC3E1;
+    border-top: 0px;
+	position: relative;
+}
+.properties_name {
+	color:#000;
+	font-weight: 500;
+	text-align:left;
+	height:32px;
+	line-height:32px;
+	font-size:14px;
+	padding-left:10px;
+}
+.properties_value {
+	height:32px;
+	line-height:32px;
+	font-size:14px;
+}
+.properties_value input{
+	height: 26px;
+}
+.properties_value select{
+	height: 30px;
+	width:101%;
+}
+#toolbox hr{
+	margin:0px !important;
+}

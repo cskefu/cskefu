@@ -1,0 +1,6 @@
+[
+<#if contactsList?? && contactsList.content??><#list contactsList.content as contact><#if contact_index gt 0>,</#if>{
+		"id" : "${contact.id!''}" ,
+		"text":"${contact.name!''}"
+	}</#list></#if>
+]

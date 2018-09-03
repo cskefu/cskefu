@@ -1,0 +1,205 @@
+<#include "/public/macro.html">
+<div class="uk-layui-form">
+	<form class="layui-form" action="/apps/agent/processed/save.html" method="post">
+		<input type="hidden" name="id" value="${summary.id!''}">
+		<div class="layui-collapse">
+			<#if contacts??>
+			<div class="layui-colla-item">
+				<h2 class="layui-colla-title">联系人信息</h2>
+				<div class="layui-colla-content layui-show">
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label" id="cusname">联系人名称：</label>
+							<div class="layui-input-inline" style="padding:9px 0;">
+								${contacts.name!''}
+							</div>
+						</div>
+						<div class="layui-inline uckefu-inline">
+							<label class="layui-form-label">电子邮件：</label>
+							<div class="layui-input-inline" style="padding:9px 0;">
+								${contacts.email!''}
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">性别：</label>
+							<div class="layui-input-inline">
+								<div class="layui-input-block"  style="padding:9px 0;">
+									<#if contacts.gender?? &&  contacts.gender == "1">男</#if>
+									<#if contacts.gender?? &&  contacts.gender == "0">女</#if>
+									<#if contacts.gender?? &&  contacts.gender == "-1">未知</#if>
+								</div>
+							</div>
+						</div>
+						<div class="layui-inline uckefu-inline">
+							<label class="layui-form-label">生日：</label>
+							<div class="layui-input-inline" style="padding:9px 0;">
+								${contacts.birthday!''}
+							</div>
+						</div>
+					</div>
+					
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">联系电话：</label>
+							<div class="layui-input-inline" style="padding:9px 0;">
+								${contacts.phone!''}
+							</div>
+						</div>
+						<div class="layui-inline uckefu-inline">
+							<label class="layui-form-label">手机号：</label>
+							<div class="layui-input-inline" style="padding:9px 0;">
+								${contacts.mobile!''}
+							</div>
+						</div>
+					</div>
+					<#if contacts.address?? && contacts.address != "">
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">联系人地址：</label>
+							<div class="layui-input-inline" style="width: 664px;padding:9px 0;" >
+								${contacts.address!''}
+							</div>
+						</div>
+					</div>
+					</#if>
+				</div>
+			</div>
+			</#if>
+			<div class="layui-colla-item">
+				<h2 class="layui-colla-title">服务小结</h2>
+				<div class="layui-colla-content layui-show">
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label" id="cusname">姓名：</label>
+							<div class="layui-input-inline" style="padding:9px 0;">
+								${summary.username!''}
+							</div>
+						</div>
+						<#if summary.phone??>
+						<div class="layui-inline uckefu-inline">
+							<label class="layui-form-label">电话：</label>
+							<div class="layui-input-inline" style="padding:9px 0;">
+								${summary.phone!''}
+							</div>
+						</div>
+						</#if>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">记录时间：</label>
+							<div class="layui-input-inline">
+								<div class="layui-input-block"  style="padding:9px 0;">
+									${summary.createtime?string('yyyy-MM-dd HH:mm:ss')}
+								</div>
+							</div>
+						</div>
+						<#if summary.email??>
+						<div class="layui-inline uckefu-inline">
+							<label class="layui-form-label">邮件：</label>
+							<div class="layui-input-inline">
+								<div class="layui-input-block"  style="padding:9px 0;">
+									${summary.email!''}
+								</div>
+							</div>
+						</div>
+						</#if>
+					</div>
+					<div class="layui-form-item">
+						<#if summary.resion??>
+						<div class="layui-inline uckefu-inline">
+							<label class="layui-form-label">来访原因：</label>
+							<div class="layui-input-inline" style="padding:9px 0;">
+								${summary.resion!''}
+							</div>
+						</div>
+						</#if>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">服务类型：</label>
+							<div class="layui-input-inline" style="padding:9px 0;">
+								<#if summary.servicetype??>
+								<#list summary.servicetype?split(",") as st>
+									<#if summaryTags??>
+									<#list summaryTags as tag>
+										<#if st == tag.id>
+											<#if st_index gt 0>，</#if>${tag.tag!''}
+										</#if>
+									</#list>
+									</#if>
+								</#list>
+								</#if>
+							</div>
+						</div>
+						<div class="layui-inline uckefu-inline">
+							<label class="layui-form-label">是否预约：</label>
+							<div class="layui-input-inline">
+								<div class="layui-input-block"  style="padding:9px 0;">
+									<#if summary.reservation>
+									<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
+									</#if>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">预约方式：</label>
+							<div class="layui-input-inline" style="padding:9px 0;">
+								 ${uKeFuDic[summary.reservtype!''].name!''}
+							</div>
+						</div>
+						<div class="layui-inline uckefu-inline">
+							<label class="layui-form-label">预约时间：</label>
+							<div class="layui-input-inline">
+								<div class="layui-input-block"  style="padding:9px 0;">
+									${summary.reservtime!''}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">服务小结：</label>
+							<div class="layui-input-inline" style="padding:9px 0;width:640px;">
+								 ${summary.summary!''}
+							</div>
+						</div>
+					</div>
+		            <li>
+		            	
+		            </li>
+				</div>
+			</div>
+			<div class="layui-colla-item">
+				<h2 class="layui-colla-title">备注</h2>
+				<div class="layui-colla-content layui-show">
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">处理备注：</label>
+							<div class="layui-input-inline" style="width: 664px;">
+								<textarea name="processmemo" placeholder="请输入处理备注" class="layui-textarea" style="resize:none;">${summary.processmemo!''}</textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="layui-form-button">
+			<div class="layui-button-block">
+				<button class="layui-btn" lay-submit lay-filter="formDemo">再次处理</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+<script>
+	layui.use('element', function(){
+		var element = layui.element();
+		element.init();
+	});
+</script>

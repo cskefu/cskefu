@@ -1,0 +1,28 @@
+<div class="uk-layui-form">
+    <form class="layui-form uk-form" method="post" action="/apps/callout/dialplan/update.html">
+        <input type="hidden" name="id" value="${callOutDialplanData.id!''}">
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend style="font-size: 15px; font-weight: normal">基本信息设置</legend>
+        </fieldset>
+        <div class="layui-form-item">
+            <label class="layui-form-label">最大并发数：</label>
+            <div class="layui-input-inline">
+                <input type="number" min="1" name="maxconcurrence" value="${callOutDialplanData.maxconcurrence!5}" required lay-verify="required" placeholder="请输入最大并发数"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">座席并发比：</label>
+            <div class="layui-input-inline">
+                <input type="number" step="0.1" min="0" name="concurrenceratio" value="${callOutDialplanData.concurrenceratio!'1.0'}" required lay-verify="required" placeholder="请输入座席并发比"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-button">
+            <div class="layui-button-block">
+                <button class="layui-btn" lay-submit>立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

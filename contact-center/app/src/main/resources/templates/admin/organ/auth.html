@@ -1,0 +1,60 @@
+<div class="uk-layui-form">
+	<form class="layui-form uk-form" action="/admin/organ/auth/save.html">
+		<input type="hidden" name="id" value="${organData.id!''}">
+		<input type="hidden" name="menus" id="menus" value="<#if organRoleList??><#list organRoleList as organRole><#if organRole_index gt 0>,</#if>${organRole.dicid!''}</#list></#if>">
+		<div class="layui-form-item">
+			<div class="layui-input-inline">
+				<ul id="organTree" class="ztree"></ul>
+			</div>
+		</div>
+		<div class="layui-form-button">
+			<div class="layui-button-block">
+				<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+	</form>
+</div>
+<SCRIPT type="text/javascript">
+		var setting = {
+			check: {
+				enable: true
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: {
+				onCheck: zTreeOnCheck
+			}
+		};
+		
+		//获取所有选中节点的值
+	    function zTreeOnCheck() {
+	        var treeObj = $.fn.zTree.getZTreeObj("organTree");
+	        var nodes = treeObj.getCheckedNodes(true);
+	        var msg = "";
+	        for (var i = 0; i < nodes.length; i++) {
+	        	if(msg!='' && nodes[i].id != ''){
+					msg = msg+"," ;	        		
+	        	}
+	            msg += nodes[i].id;
+	        }
+	        $("#menus").val(msg);
+	    }    
+
+
+		var zNodes =[
+		    <#if sysDic??>{ id:'${sysDic.id!''}', pId:'0', name:"菜单资源", open:true , value : ""}</#if>
+		    <#if resourceList??>
+		    <#list resourceList as dic>
+			,{ id:'${dic.id}', pId:'${dic.parentid!''}' <#if organRoleList??><#list organRoleList as organRole><#if organRole.dicid?? && organRole.dicid == dic.id>,checked:true</#if></#list></#if> , name:"${dic.name!''}" , value : "${dic.code!''}", open:true , icon : "<#if dic.level?? && (dic.level == '1' || dic.level == '2')>/images/dir.png<#else>/images/menu.png</#if>"}
+			</#list>
+			</#if>
+		];
+		
+		$(document).ready(function(){
+			$.fn.zTree.init($("#organTree"), setting, zNodes);
+		});
+	</SCRIPT>

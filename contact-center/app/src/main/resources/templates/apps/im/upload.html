@@ -1,0 +1,8 @@
+{
+	"error" : ${upload.error!'1'}
+	<#if upload?? && upload.error?? && upload.error == '0'>
+	,"url":"${upload.url!''}"
+	<#else>
+	,"message":"${upload.message!''}"	
+	</#if>
+}

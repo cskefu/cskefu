@@ -1,0 +1,144 @@
+<link rel="stylesheet" href="/js/ztree/zTreeStyle/zTreeStyle.css">
+<script src="/js/ztree/jquery.ztree.all.min.js"></script>
+<script id="message_tpl" type="text/html">
+	<div class="clearfix chat-block" <%if(data.type == 'writing'){%>id="writing"<%}%>>
+		<div class="<% if(data.calltype == '呼出'){%>chat-right<%}else{%>chat-left<%}%>">
+			<img alt="" src="<% if(data.headimgurl && data.headimgurl !=''){%><%=data.headimgurl%><%}else{%>/im/img/user.png<%} %>" class="user-img" style="width:45px;height:45px;">
+			<div class="chat-message">
+				<% if(data.userid == '${user.id!''}') {%>
+					<span class="time"><%=data.createtime%></span>
+					<span class="user"><%=data.username%></span>
+				<% }else{%>
+					<span class="user"><%=data.username%></span>
+					<span class="time"><%=data.createtime%></span>
+					
+				<%}%>
+			</div>
+			<div class="<% if(data.calltype == '呼出'){%>chatting-right<%}else{%>chatting-left<%}%>">
+				<i class="userarrow"></i>
+				<div class="chat-content">
+					<% if(data.msgtype == 'image'){ %>
+						<a href="/agent/message/image.html?id=<%:=data.id%>" data-toggle="ajax" data-width="950" data-height="600" title="图片"><img src="<%:=data.message%>" class="ukefu-media-image" id="<%:=data.id%>"></a>
+					<% }else if(data.msgtype == 'cooperation'){ %>
+						<a href="/agent/message/image.html?t=review&id=<%:=data.message%>" data-toggle="ajax" data-width="950" data-height="600"  title="图片">
+							系统发送了一个协作邀请
+						</a>
+					<% }else if(data.msgtype == 'file'){ %>
+						<div class="ukefu-message-file">
+							<div class="ukefu-file-icon">
+								<i class="kfont">&#xe61e;</i>
+							</div>
+							<div class="ukefu-file-desc">
+								<a href="<%:=data.message%>" target="_blank">
+								<div><%:=data.filename%></div>
+								<div><%:=(data.filesize/1024).toFixed(3)%>Kb</div>
+								</a>
+							</div>
+						</div>
+					<% }else if(data.msgtype == 'location'){ %>
+						<div><%:=data.message%></div>
+						<div class="ukefu-map" id="map_<%:=data.id%>"></div>
+						<script type='text/javascript'>
+						var map = new BMap.Map("map_<%:=data.id%>");  
+						var ggPoint = new BMap.Point(<%:=data.locy%>, <%:=data.locx%>);  
+						MapUtil.convert(map,ggPoint , "<%:=data.message%>" , <%:=data.scale%>) ;
+						<\/script>
+						
+					<% }else if(data.msgtype == 'voice'){ %>
+						<p class="weixinAudio" id="voice_media_<%:=data.id%>" style="<% if(data.duration > 30) {%>width:300px;<% }else{ %>width:<%:=50+data.duration* 10%>px;<%}%>">
+							<audio src="<%:=data.message%>" id="media" width="1" height="1" preload></audio>
+							<span id="audio_area" class="db audio_area"  title="<%:=data.expmsg%>">
+								<span class="audio_wrp db">
+									<span class="audio_play_area">
+										<i class="icon_audio_default"></i>
+										<i class="icon_audio_playing"></i>
+									</span>
+									<span class="audio_length tips_global"><%:=data.duration %>秒</span>
+									<span id="audio_progress" class="progress_bar" style="width: 0%;"></span>
+								</span>
+							</span>
+						</p>
+						<% if(data.expmsg != ''){ %>
+						<div class="ukefu-asr"><%:=data.expmsg%></div>
+						<%}%>
+						<script type='text/javascript'>
+							$('#voice_media_<%:=data.id%>').weixinAudio({
+								autoplay:false
+							});
+						<\/script>
+					<%}else{%>
+						<%:=data.message%>
+					<%}%>					
+				</div>
+				<%if(data.type == 'writing'){%>
+					<div class="chat-writing-message" title="正在输入...">
+						<span class="loading">
+							<span></span>
+							<span></span>
+							<span></span>
+							<span></span>
+						</span>
+					</div>						
+				<%}%>
+			</div>
+		</div>
+	</div>
+</script>
+<script id="end_tpl" type="text/html">
+	<div class="clearfix chat-block connect-end" id="agentuser-curstatus">
+		<span class="connect-message">用户“<%=data.username%>”已经离开</span>
+	</div>
+</script>
+<script id="begin_tpl" type="text/html">
+	<div class="clearfix chat-block connect-begin" id="agentuser-curstatus">
+		<span class="connect-message">用户“<%=data.username%>”开始对话</span>
+	</div>
+</script>
+<#if agentUserList?? && agentUserList?size gt 0>
+	<div class="layui-side layui-bg-black layui-left-black">
+		<div class="layui-side-scroll" id="agentusers">
+			<#include "/apps/agent/agentusers.html"/>
+		</div>
+	</div>
+    <#if curagentuser?? && curagentuser.channel == "phone">
+    <div class="layui-body ukefu-chat-agent" id="ukefu-chat-agent">
+        <#include "/apps/agent/mainagentuser_callout.html">
+    </div>
+    <#else>
+    <div class="layui-body ukefu-chat-agent" id="ukefu-chat-agent">
+        <#include "/apps/agent/mainagentuser.html">
+    </div>
+    </#if>
+<#else>
+	<div class="layui-layout layui-layout-content"  style="height: 100%;">
+		<div class="box default-box" style="height: 100%;">
+			<div class="box-header">
+				<h3 class="box-title">坐席对话</h3>
+			</div>
+			<div class="box-body ukefu-im-theme">
+				<div class="ukefu-empty">
+					<i class="layui-icon">&#xe63a;</i>
+					<div style="">还没有分配记录</div>
+				</div>	
+			</div>
+		</div>
+	</div>
+</#if>
+<#if agentUserList?? && agentUserList?size gt 0>
+<script language="javascript">
+	$(document).ready(function(){
+		$(document).bind("keydown", "Ctrl+return", function (ev) { 
+			sendMessage() ;
+			return false; 
+		})
+	});
+	function otherTopicSearch(){
+		loadURLWithTip("/agent/other/topic.html?q="+ encodeURIComponent($("#otherSearchQuery").val()), "#topiclist" , null , false , true);
+	}
+	function otherTopicEnter(){
+		if(window.event.keyCode == 13){
+			otherTopicSearch();
+		}
+	}
+</script>
+</#if>

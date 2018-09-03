@@ -1,0 +1,15 @@
+<select name="tbppy">
+  		<option value="" <#if reportFilter.tableproperty?? >selected='selected'</#if>>请选择</option>
+  		<#if fktableiddivList??>
+			<#list fktableiddivList as tbppy>
+					<option value="${tbppy.id!''}" <#if reportFilter.tableproperty?? && tbppy.id == reportFilter.tableproperty.id>selected='selected'</#if> >${tbppy.fieldname!''}（${tbppy.name!''}）</option>
+			</#list>
+		</#if>
+  	</select>
+<script>
+layui.use('form', function(){
+  var form = layui.form;
+  form.render();
+});
+</script>
+

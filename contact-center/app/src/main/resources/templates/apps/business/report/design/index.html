@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="viewport"
+			content="width=device-width, maximum-scale=1.0, initial-scale=1.0,initial-scale=1.0,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?t=1528167497497"/>
+		<title>${report.name!''}-春松客服-全渠道智能客服</title>
+		<link rel="stylesheet" href="/layui/css/layui.css">
+		<link rel="stylesheet" href="/res/css/system.html">
+		<link rel="stylesheet" href="/css/ukefu-design.css">
+
+		<script src="/js/jquery-1.10.2.min.js"></script>
+		<script src="/js/jquery-ui-1.10.2.custom.min.js"></script>
+		<script src="/js/jquery.hotkeys.min.js"></script>
+		<script src="/js/template.js"></script>
+		<script src="/js/jquery.nicescroll.min.js"></script>
+		
+
+		<script src="/js/jquery.form.js"></script>
+
+		<script src="/js/select/js/select2.min.js"></script>
+
+		<script src="/layui/layui.js"></script>
+		<script src="/js/lodash-4.17.4.min.js"></script>
+		<script src="/js/maps.js"></script>
+		<script src="/js/main.js"></script>
+		<script src="/js/g2.min.js"></script>
+		<script src="/js/data-set.min.js"></script>
+		<script src="/js/ukefu-report.js"></script>
+		<script src="/js/ukefu-report.design.js"></script>
+		<script src="/js/ukefu-report.chart.js"></script>
+		<script src="/js/UKeFu_Util.js"></script>
+		
+		
+	</head>
+
+	<body>
+		<div class="layui-layout layui-layout-admin">
+			<div class="layui-header header header-ukefu">
+				<div class="layui-main">
+					<span style="color:#ffffff;padding-left:10px;font-size:20px;line-height:47.5px;">${report.name!''}</span>
+					<span style="color:#ffffff;margin-left:20px;font-size:12px;"><#if report.createtime??>创建于：${report.createtime?string('yyyy-MM-dd HH:mm:ss')}</#if></span>
+					<button id="rmLayout" class="layui-btn layui-btn-sm layui-btn-danger layui-btn-disabled" disabled href="javascript:void(0)" data-toggle="tip" data-title="请确认是否从页面中删除组件？" data-callback="deletemodel('')"  >
+							删除
+						</button>
+				</div>
+			</div>
+			<div class="layui-side" style="width:260px;overflow:hidden;">
+				<div class="layui-side-scroll tpcom" style="width:260px;overflow:hidden;">
+					<div class="layui-row">
+					    <div class="layui-col-md12" style="background-color:#f0f2f5;padding-bottom:10px;">
+					    	<div class="" style="position: absolute;left:2px;top:10px;">
+								<i class="layui-icon" style="font-size:45px;color:#1E90FF;">&#xe620;</i>
+							</div>
+					    	<div class="" style="line-height:25px;font-size:16px;font-weight:600;margin-left:60px;margin-top:15px;">
+								报表设计器
+							</div>
+							<div class="" style="font-size:13px;margin-left:60px;margin-top:2px;">
+								拖拽需要的图表到内容区域
+							</div>
+					    </div>
+					</div>
+					<div class="layui-row">
+						<div class="layui-col-md12">
+							<div class="layui-tab">
+							  <ul class="layui-tab-title">
+							    <li class="layui-this">报表组件</li>
+							    <li>过滤器</li>
+							  </ul>
+							  <div class="layui-tab-content" style="padding:10px 0;">
+							    <div class="layui-tab-item layui-show ukefu-menu">
+									<div class="ukefu-design-group">
+										<div class="ukefu-design-type">
+								    		<i class="layui-icon" style="color:#1E90FF;font-size:20px;">&#xe632;</i>
+								    		布局组件
+								    		<i class="layui-icon" style="position: absolute;right:5px;">&#xe61a;</i>
+								    	</div>
+								    	<#if layoutList??>
+								    	<#list layoutList as layout>
+										<div class="uckefu-design-chartitem comp-item" data-type="layout" <#if layout.layoutcols gt 0>data-colspan="${layout.layoutcols}"</#if> data-title="${layout.name!''}" data-id="${layout.id!''}" data-templet="/apps/report/design/ltpl.html?template=${layout.id!''}&id=${report.id!''}">
+											<div class="ukefu-design-img">
+												<img src="${layout.iconstr!''}" />
+											</div>
+											<div>${layout.name!''}</div>
+										</div>
+										</#list>
+										</#if>
+									</div>
+									
+									<div class="ukefu-design-group">
+										<div class="ukefu-design-type">
+								    		<i class="layui-icon" style="color:#1E90FF;font-size:20px;">&#xe632;</i>
+								    		报表组件
+								    		<i class="layui-icon" style="position: absolute;right:5px;">&#xe61a;</i>
+								    	</div>
+								    	<#if reportList??>
+										<#list reportList as rtpl>
+										<div class="uckefu-design-chartitem model-item" data-type="chart" data-title="${rtpl.name!''}" data-id="${rtpl.id!''}" data-templet="/apps/report/design/rtpl.html?tplname=${rtpl.name!''}&template=${rtpl.id!''}&id=${report.id!''}">
+											<div class="ukefu-design-img">
+												<img src="${rtpl.iconstr!''}" />
+											</div>
+											<div>${rtpl.name!''}</div>
+										</div>
+										</#list>
+										</#if>
+									</div>
+								</div>
+							    <div class="layui-tab-item">
+							    	<div class="ukefu-design-group">
+										<div class="ukefu-design-type">
+								    		<i class="layui-icon" style="color:#1E90FF;font-size:20px;">&#xe632;</i>
+								    		过滤器组件
+								    		<i class="layui-icon" style="position: absolute;right:5px;">&#xe61a;</i>
+								    	</div>
+								    	<#if filterList??>
+										<#list filterList as ftpl>
+										<div class="uckefu-design-chartitem filter-item" data-type="filter" data-title="${ftpl.name!''}" data-id="${ftpl.id!''}" data-templet="/apps/report/design/ftpl.html?template=${ftpl.id!''}&id=${report.id!''}">
+											<div class="ukefu-design-img">
+												<img src="${ftpl.iconstr!''}" />
+											</div>
+											<div>${ftpl.name!''}</div>
+										</div>
+										</#list>
+										</#if>
+									</div>
+							    </div>
+							  </div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-body" style="left:260px;border-left:2px solid #f0f2f5;">
+				<div class="ukefu-filters-content layui-form">
+					<form  action="/apps/report/design/index.html?id=${report.id!''}" method="post">
+					<div  class="ui-sortable layui-row" >
+						<div class="layui-col-md11" id="ukefu-filter-list">
+							<#if reportFilters??>
+							<#list reportFilters as filter>
+							<#if filter.reportid == report.id>
+							<#assign eltemplet = filter.templet()>
+							<#include "/apps/business/report/design/filter.html"/>
+							</#if>
+							</#list>
+							</#if>
+						</div>
+						<div class="layui-col-md1 ukefu-filter-submit" <#if !(reportFilters?? && reportFilters?size gt 0)>style="display:none;"</#if>>
+							<button class="layui-btn layui-btn-normal" lay-submit  lay-filter="query">查询</button>
+						</div>
+					</div>
+				</div>
+				<div class="content design">
+					<#if reportModels??>
+					<#list reportModels?reverse as model>
+					<#if model.parentid == report.id>
+					<#assign templet = model.templet()>
+					<#include "/apps/business/report/design/layout.html"/>
+					</#if>
+					</#list>
+					</#if>
+				</div>
+			</div>
+		</div>
+		<script>
+			layui.use('element', function(){
+			  var element = layui.element;
+			});
+			layui.use('form', function(){
+				  var form = layui.form;
+				  form.on('submit(query)', function(data){
+					 let params = $(data.form).serialize();
+					 let ajaxelements = $(".ukefu-element-ajax");
+					 $.each(ajaxelements,function(){
+						 loadURL($(this).attr("data-url")+"&"+params,"#"+$(this).attr("id"));
+					 })
+					  return false;
+					});
+				  form.render();
+				});
+		</script>
+	</body>
+
+</html>

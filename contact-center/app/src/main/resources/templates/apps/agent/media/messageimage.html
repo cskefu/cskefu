@@ -1,0 +1,132 @@
+<link rel="stylesheet" type="text/css" href="/js/scrawl/css/scrawl.css">
+<script type="text/javascript" src="/js/scrawl/scrawl.js"></script>
+<script language="javascript">
+	var msgid = "${chatMessage.id!''}" , fileid = "${chatMessage.attachmentid!''}" ;
+	$(document).ready(function(){
+		<#if agentUser?? && !(t??)>
+			top.layer.confirm(
+				"访客在线，是否邀请协作对话？" , 
+				{
+  					btn: ['邀请','不邀请'] //按钮
+				}, 
+				function(index){
+					layer.close(index);
+					top.WebIM.sendTypeMessage("${chatMessage.id!''}" , "${user.id!''}" , "${agentUser.appid!''}" , "${user.sessionid!''}" , "${agentUser.orgi!''}" , "<#if agentUser??>${agentUser.userid!''}</#if>" , "${user.username!''}" , "cooperation" , "${chatMessage.attachmentid!''}");
+				}, 
+				function(index){
+					layer.close(index);
+				}
+			);
+		</#if>
+		$("#ukefu_img_ctx").load(function() {
+			var height = $('#ukefu-image-content')[0].offsetHeight;
+			var width = $('#ukefu-image-content')[0].offsetWidth;
+			console.log($('#ukefu-image-content')[0].offsetHeight);
+			new Canvas({
+		        canvasId : "canvas-borad",
+		        width : width,
+		        height : height
+		    });	
+		    var canvas = $("#canvas-borad")[0] ;
+		    if(canvas.getContext){  
+			    //获取对应的CanvasRenderingContext2D对象(画笔)
+			    var ctx = canvas.getContext("2d");
+			    
+			    //创建新的图片对象
+			    var img = new Image();
+			    //指定图片的URL
+			    img.src = "/res/image.html?id=upload/${chatMessage.attachmentid!''}_cooperation";
+			    //浏览器加载图片完毕后再绘制图片
+			    img.onload = function(){
+			        //以Canvas画布上的坐标(10,10)为起始点，绘制图像
+			        ctx.drawImage(img, 0, 0);             
+			    };
+			}
+		});
+	});
+</script>
+
+<div class='ukefu-preview-image scrawl-main' id="scrawl-main">
+	<div class='ukefu-image-content hot'>
+		<div class='ukefu-image-canvas' id='ukefu-image-content'>
+			<img id="ukefu_img_ctx" src='${chatMessage.message!''}_original'>
+		</div>
+		<div class='drawBoard'>
+			<canvas id="canvas-borad" class="brushBorad">你的浏览器不支持 canvas 绘图</canvas>
+		</div>
+	</div>
+	<div class='ukefu-image-toolbar drawToolbar'>
+		<div class="box">
+			<div class="box-title">
+				<h1 class="site-h1" style="background-color:#EEEEEE;">
+					图片协作
+				</h1>
+			</div>
+			<div class="box-body">
+				<div class="drawToolbar border_style">
+			        <div class="colorBar">
+			            <span data-color="#0099CC" style="background:#0099CC;" class="active"></span>
+			            <span data-color="#003366" style="background:#003366;"></span>
+			            <span data-color="#993333" style="background:#993333;"></span>
+			            <span data-color="#FF9900" style="background:#FF9900;"></span>
+			            <span data-color="#0000CC" style="background:#0000CC;"></span>
+			            <span data-color="#CC3333" style="background:#CC3333;"></span>
+			
+			            <span data-color="#F4D03F" style="background:#641E16;"></span>
+			            <span data-color="#4A235A" style="background:#4A235A;"></span>
+			            <span data-color="#009966" style="background:#009966;"></span>
+			            <span data-color="#ffff00" style="background:#ffff00;"></span>
+			            <span data-color="#7D6608" style="background:#7D6608;"></span>
+			            <span data-color="#FF33CC" style="background:#FF33CC;"></span>
+			
+			            <span data-color="#990066" style="background:#990066;"></span>
+			            <span data-color="#ffffff" style="background:#ffffff;"></span>
+			            <span data-color="#9bbb59" style="background:#9bbb59;"></span>
+			            <span data-color="#CCFFFF" style="background:#CCFFFF;"></span>
+			            <span data-color="#FFCCCC" style="background:#FFCCCC;"></span>
+			            <span data-color="#CC99CC" style="background:#CC99CC;"></span>
+			        </div>
+			
+			        <div class="sectionBar">
+			            <em class="brushIcon"></em>
+			            <a href="javascript:void(0)" class="brush-size size1">1</a>
+			            <a href="javascript:void(0)" class="brush-size size2">3</a>
+			            <a href="javascript:void(0)" class="brush-size size3">5</a>
+			            <a href="javascript:void(0)" class="brush-size size4">7</a>
+			        </div>
+			        <div class="sectionBar">
+			            <em class="eraserIcon"></em>
+			            <a href="javascript:void(0)" class="eraser-size size1">5</a>
+			            <a href="javascript:void(0)" class="eraser-size size2">10</a>
+			            <a href="javascript:void(0)" class="eraser-size size3">15</a>
+			            <a href="javascript:void(0)" class="eraser-size size4">20</a>
+			        </div>
+			
+			        <div class="sectionBar">
+			            <em class="blurIcon"></em>
+			            <a href="javascript:void(0)" class="blur-size size1">2</a>
+			            <a href="javascript:void(0)" class="blur-size size2">4</a>
+			            <a href="javascript:void(0)" class="blur-size size3">6</a>
+			            <a href="javascript:void(0)" class="blur-size size4">8</a>
+			        </div>
+			
+			        <div class="sectionBar">
+			            <span id="J_saveImg" class="saveImg">
+			                <em class="icon"></em>
+			                <em class="text">保存图片内容</em>
+			            </span>
+			        </div>
+			        
+			        <div class="sectionBar">
+			            <span id="J_clearBoard" class="clearSetting ">
+			                <em class="icon"></em>
+			                <em class="text">清空所有内容</em>
+			            </span>
+			        </div>
+			
+			    </div>
+							
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,160 @@
+<div class="uk-layui-form">
+    <form class="layui-form uk-form" method="post" action="/apps/callout/dialplan/save.html" enctype="multipart/form-data">
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend style="font-size: 15px; font-weight: normal">基本信息设置</legend>
+        </fieldset>
+        <div class="layui-form-item">
+            <label class="layui-form-label">任务名：<font color="red">*</font></label>
+            <div class="layui-input-inline">
+                <input type="text" name="name" required lay-verify="required" placeholder="请输入任务名"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">语音渠道：</label>
+            <div class="layui-input-inline">
+                <select name="voicechannelid" lay-filter="channel" required lay-verify="required" style="display: inline">
+                    <#if voicechannels?? && voicechannels?size gt 0>
+                    <#list voicechannels as voicechannel>
+                        <option value="${voicechannel.id}">${voicechannel.name}</option>
+                    </#list>
+                    </#if>
+                </select>
+            </div>
+        </div>
+        <!--<div class="layui-form-item">-->
+            <!--<label class="layui-form-label">启动模式：</label>-->
+            <!--<div class="layui-input-inline">-->
+                <!--<select name="model" lay-filter="model" style="display: inline">-->
+                    <!--<option value="0">自动</option>-->
+                    <!--<option value="1">手动</option>-->
+                    <!--<option value="2">定时</option>-->
+                <!--</select>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="layui-form-item">-->
+            <!--<label class="layui-form-label">任务类型：</label>-->
+            <!--<div class="layui-input-inline">-->
+                <!--<select name="type" lay-filter="type" style="display: inline">-->
+                    <!--<option value="0">自动批量外呼</option>-->
+                    <!--<option value="1">其他</option>-->
+                <!--</select>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="layui-form-item">-->
+            <!--<label class="layui-form-label">座席接听提示音：</label>-->
+            <!--<div class="layui-input-inline">-->
+                <!--<select name="medium" lay-filter="medium" style="display: inline">-->
+                    <!--<option value="0">无</option>-->
+                    <!--<option value="1">beep</option>-->
+                <!--</select>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">技能组：</label>
+            <div class="layui-input-inline">
+                <select name="organid" lay-filter="dept" style="display: inline">
+                    <#if departments?? && departments?size gt 0>
+                    <#list departments as dep>
+                        <option value="${dep.id}">${dep.name}</option>
+                    </#list>
+                    </#if>
+                </select>
+            </div>
+        </div>
+        <!--<div class="layui-form-item">-->
+            <!--<label class="layui-form-label">外呼主叫号码：</label>-->
+            <!--<div class="layui-input-inline">-->
+                <!--<select name="calloutPrimaryNumber" lay-filter="calloutPrimaryNumber" style="display: inline">-->
+                    <!--<option value="0">无</option>-->
+                    <!--<option value="1">beep</option>-->
+                <!--</select>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">最大并发数：</label>
+            <div class="layui-input-inline">
+                <input type="number" min="1" name="maxconcurrence" value="5" required lay-verify="required" placeholder="请输入最大并发数"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">座席并发比：</label>
+            <div class="layui-input-inline">
+                <input type="number" step="0.1" min="0" name="concurrenceratio" value="1.0" required lay-verify="required" placeholder="请输入座席并发比"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <!--<div class="layui-form-item">-->
+            <!--<label class="layui-form-label">检测间隔：</label>-->
+            <!--<div class="layui-input-inline">-->
+                <!--<select name="scheduleCheck" lay-filter="scheduleCheck" style="display: inline">-->
+                    <!--<option value="0">1.0</option>-->
+                    <!--<option value="1">2.0</option>-->
+                <!--</select>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">外呼录音：</label>
+            <div class="layui-input-inline">
+                <select name="isrecord" lay-filter="record" style="display: inline">
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                </select>
+            </div>
+        </div>
+        <!--<fieldset class="layui-elem-field layui-field-title">-->
+            <!--<legend style="font-size: 15px; font-weight: normal">工作时间管理</legend>-->
+        <!--</fieldset>-->
+        <!--<div class="layui-form-item">-->
+            <!--<label class="layui-form-label">工作时间段：</label>-->
+            <!--<div class="layui-input-inline">-->
+                <!--<select name="record" lay-filter="record" style="display: inline">-->
+                    <!--<option value="0">不限</option>-->
+                    <!--<option value="1">时段</option>-->
+                <!--</select>-->
+            <!--</div>-->
+        <!--</div>-->
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend style="font-size: 15px; font-weight: normal">电销号码设置</legend>
+        </fieldset>
+        <div class="layui-form-item">
+            <label class="layui-form-label">电话号码：</label>
+            <div class="layui-input-inline">
+                <div class="layui-box layui-upload-button">
+                    <input type="file" name="target" lay-title="选择电话文件" lay-type="file"
+                           class="layui-upload-file"
+                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                           lay-ext="xlsx" onchange="$('#filename').val($(this).val());">
+                    <span class="layui-upload-icon" style="margin: 0 66px;"><i class="layui-icon">&#xe61f;</i>上传文件</span>
+                </div>
+                <div style="font-size: 11px;">
+                    <span>
+                        上传后缀为.xlsx文件
+                    </span>
+                    <a href="/res/template.html?filename=phonenumber_template.xlsx"  target="_blank">
+                        <i class="layui-icon">&#xe601;</i>
+                        下载模板
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">上传的文件：<font color="red">*</font></label>
+            <div class="layui-input-inline">
+                <input id="filename" type="text" name="filename" required disabled lay-verify="required"
+                       autocomplete="off" class="layui-input">
+            </div>
+            <label class="layui-form-label"></label>
+            <div class="layui-input-inline" style="font-size: 10px; color: red;">
+                <span>已经存在的客户电话号码会被过滤</span>
+            </div>
+        </div>
+        <div class="layui-form-button">
+            <div class="layui-button-block">
+                <button class="layui-btn" lay-submit>立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

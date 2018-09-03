@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="viewport"
+	content="width=device-width, maximum-scale=1.0, initial-scale=1.0,initial-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<title><#if systemConfig?? && systemConfig.title?? && systemConfig.title != ''>${systemConfig.title}<#else>春松客服-全渠道智能客服</#if></title>
+<link rel="shortcut icon" type="image/x-icon" href="<#if systemConfig?? && systemConfig.favlogo?? && systemConfig.favlogo != ''>/res/image.html?id=${systemConfig.favlogo?url}<#else>/images/favicon.ico</#if>?t=${.now?long}"/>
+<link rel="stylesheet" href="/css/layui.css">
+<link rel="stylesheet" href="/res/css.html">
+<script src="/layui.js"></script>
+<script src="/js/jquery-1.10.2.min.js"></script>
+<script src="/js/ukefu.js"></script>
+<script language="javascript">
+	if((window.frameElement && window.frameElement.id || '') != ""){
+		top.location.href = "/apps/tenant/index.html" ;
+	} 
+	layui.use('layer', function(){
+	  var layer = layui.layer;
+	  <#if msg?? && msg == 't0'>
+			layer.confirm("当前用户在（${currentname!''}）坐席就绪或对话未结束，不能切换${systemConfig.namealias!''},点击确定进入${systemConfig.namealias!''}（${currentname!''}）修改为未就绪或结束对话", {icon: 3, title:'提示'}, function(index){
+				layer.close(index);
+				location.href = "/apps/tenant/canswitch.html?id=${currentorgi!''}" ;
+				});
+			<#elseif msg?? && msg== 'max_illegal'>
+			layer.alert('修改${systemConfig.namealias!''}失败，名称不能超过50个字', {icon:2});
+		</#if>
+		<#if msg?? && msg == 'tenantexist'>
+			layer.alert('创建或修改${systemConfig.namealias!''}失败，名称重复', {icon: 2});
+		</#if>
+		<#if msg?? && msg == 'username_exist'>
+			layer.alert('用户名存在，请重新填写', {icon: 2});
+	  	<#elseif msg?? && msg == 'email_exist'>
+			layer.alert('邮件存在，请重新填写', {icon: 2});
+		<#elseif msg?? && msg == 'mobile_exist'>
+			layer.alert('手机存在，请重新填写', {icon: 2}); 
+			<#elseif msg?? && msg == 't1'>
+			layer.alert('当前用户坐席就绪或对话未结束，不能切换为非坐席', {icon: 2});
+	  	</#if>
+	}); 
+</script>
+</head>
+
+<body>
+	<div class="layui-layout layui-layout-admin create-product-div">
+		<div class="layui-header header header-ukefu">
+			<div class="layui-main">
+				<a class="logo" href="/"><img src="<#if systemConfig?? && systemConfig.consolelogo?? && systemConfig.consolelogo != ''>/res/image.html?id=${systemConfig.consolelogo?url}<#else>images/logo.png</#if>"></a>
+				<ul class="layui-nav">
+					<!-- <li class="layui-nav-item layui-this">
+						<a href="javascript:void(0)" onclick="return false;" data-title="首页" data-href="/apps/content.html" class="iframe_btn" data-id="maincontent" data-type="tabChange">
+							<i class="kfont" style="position: relative;">&#xe717;</i>
+							首页
+						</a>
+					</li>										
+					<#if (user?? && user.roleAuthMap["B02"]??   || user.usertype == "0")>
+					<li class="layui-nav-item ">
+						<a href="javascript:void(0)" onclick="return false;"  data-title="系统管理" data-href="/admin/content.html" class="iframe_btn" data-id="admin" data-type="tabAdd">
+							<i class="layui-icon" style="position: relative;">&#xe631;</i>
+							系统
+						</a>
+					</li>
+					</#if> -->
+					
+					<li class="layui-nav-item"><a href="javascript:void(0)">
+						<i class="layui-icon" style="position: relative;">&#xe612;</i>
+						<#if user??>${user.uname!''}<#if tenant??&&tenant.tenantname??>（${tenant.tenantname!''}）</#if></#if></a>
+						<dl class="layui-nav-child">
+					      <dd><a href="/apps/profile.html?index=1" data-toggle="ajax" data-width="750" data-title="修改资料">个人资料</a></dd>
+					      <dd><a href="/logout.html">退出系统</a></dd>
+					    </dl>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="create-product">
+		    <div class="content">
+		        <div class="organization-div">
+		            <#if organization??>
+		                <#if user?? && user.usertype == "0">
+		                	<span id="company-name">${organization.name!''}</span>
+		                	<a href="/apps/organization/edit.html?id=${organization.id!''}"  data-toggle="ajax" data-width="450" data-height="350" data-title="编辑" ><i class="layui-icon" 
+											style="font-size: 24px;float:left;margin-left:5px;color:#2bd99e">&#xe642;</i>
+							</a>
+						</#if>
+					</#if>
+		        </div>
+		        <div class="product-con fix">
+						<#if tenantList??> <#list tenantList as tenant>
+						
+							<div class="product">
+								<a href="/apps/tenant/canswitch.html?id=<#if tenant?? && tenant.id??>${tenant.id!''}</#if>">
+			                        <img class="product-img" src="<#if tenant?? && tenant.tenantlogo??>/res/image.html?id=${tenant.tenantlogo?url}</#if>" onerror="javascript:this.src='/images/error.jpg';">  
+			                     <div class="ukefu-tenant-item-div2" 
+									style="font-weight: 400; position: absolute;">${tenant.tenantname!''}
+										<#if user?? && user.usertype == "0">
+											<i class="layui-icon ukefu-bt-text-title" href="/apps/tenant/delete.html?id=${tenant.id!''}"  data-toggle="tip" data-title="删除" 
+											style="font-size: 24px;float:right;">&#xe640;</i>
+											<i class="layui-icon ukefu-bt-text-title"  href="/apps/tenant/edit.html?id=<#if tenant?? && tenant.id??>${tenant.id!''}</#if>" data-toggle="ajax" data-width="550" data-height="400" data-title="${systemConfig.namealias!''}编辑"
+											style="font-size: 24px;float:right;margin-right:10px;">&#xe642;</i>
+										</#if>
+									</div>
+									</a>
+			                    </div>
+						</#list> </#if>
+						<#if user?? && user.usertype == "0">
+							<a href="/apps/tenant/add.html" data-toggle="ajax"
+									data-width="550" data-height="300"
+									data-title="${systemConfig.namealias!''}创建" class="ukefu-bt">
+									<div id="add-product" class="product add-product"><p>${systemConfig.namealias!''}创建</p></div>
+							</a>
+						</#if>
+		                
+		        </div>
+		    </div>
+		</div>
+	</div>
+	<script>
+			layui.use('element', function(){
+			  var $ = layui.jquery,element = layui.element(); //Tab的切换功能，切换事件监听等，需要依赖element模块
+			  //触发事件
+			  $('.iframe_btn').on('click', function(){
+				var type = $(this).data('type');
+				if(type == "tabAdd"){
+					active.tabAdd($(this).data('href') , $(this).data('title'), $(this).data('id'));
+				}else if(type == "tabChange"){
+					active.tabChange($(this).data('href') , $(this).data('title'), $(this).data('id'));
+				}
+			  });
+			});
+		</script>
+</body>
+</html>
+
+
+	

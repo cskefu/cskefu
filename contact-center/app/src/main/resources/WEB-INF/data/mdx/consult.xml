@@ -1,0 +1,42 @@
+<?xml version='1.0' ?>
+<Schema name='ukefu'>
+	<Cube name='咨询'>
+		<View alias="agentservice">
+			<SQL>
+			<![CDATA[
+			select * from uk_agentservice where 1 = 1 <#if skill?? && skill!=""> AND agentskill = '${skill!''}'</#if> <#if agent?? && agent!=""> AND agentno = '${agent!''}'</#if> <#if orgi?? && orgi!=""> AND orgi = '${orgi!''}'</#if> <#if begin?? && begin!=""> AND createtime >= str_to_date('${begin!''}', '%Y-%m-%d %H:%i:%s')</#if> <#if end?? && end!=""> AND createtime <= str_to_date('${end!''} 23:59:59', '%Y-%m-%d %H:%i:%s')</#if>
+			]]>
+			</SQL>
+		</View>
+		<Dimension name='agent' foreignKey="agentno">
+			<Hierarchy hasAll='true' allMemberName='合计' primaryKey="id">
+				<Table name="uk_user"></Table>
+				<Level name='坐席'  column='uname' uniqueMembers='false' type='' />
+			</Hierarchy>
+		</Dimension>        
+		<Dimension name='skill' foreignKey="agentskill">
+			<Hierarchy hasAll='true' allMemberName='合计' primaryKey="id">
+				<Table name="uk_organ"></Table>
+				<Level name='技能组'  column='name' uniqueMembers='false' type='' />
+			</Hierarchy>
+		</Dimension>        
+		<Dimension name='time'>
+			<Hierarchy hasAll='true' allMemberName='合计'>
+				<Level name='日期'  column='createtime' uniqueMembers='false'>
+					<KeyExpression>
+						<SQL dialect="generic">date_format(agentservice.createtime,'%Y-%m-%d')</SQL>
+						<SQL dialect="mysql">date_format(agentservice.createtime,'%Y-%m-%d')</SQL>
+						<SQL dialect="oracle">TO_DATE(agentservice.createtime,'YYYY-MM-DD')</SQL>
+					</KeyExpression>
+				</Level>
+			</Hierarchy>
+		</Dimension> 
+		<Measure name='咨询数量' column='id' aggregator='count' formatString=''></Measure>
+		<Measure name='平均等待时长_ms' column='waittingtime' aggregator='avg' formatString=''></Measure>
+		<Measure name='平均咨询时长_ms' column='sessiontimes' aggregator='avg' formatString=''></Measure>
+		<CalculatedMember name="平均等待时长（秒）" dimension="Measures"
+		      formula="[Measures].[平均等待时长_ms]/1000"/>
+		<CalculatedMember name="平均咨询时长（秒）" dimension="Measures"
+		      formula="[Measures].[平均咨询时长_ms]/1000"/>
+	</Cube>
+</Schema>

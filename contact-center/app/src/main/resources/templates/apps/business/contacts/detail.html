@@ -1,0 +1,119 @@
+<div class="uk-layui-form">
+	<div class="layui-collapse">
+		<div class="layui-colla-item">
+			<h2 class="layui-colla-title">基本信息</h2>
+			<div class="layui-colla-content layui-show">
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">获得时间：</label>
+						<div class="layui-input-inline">
+							<#if contacts.touchtime??>${contacts.touchtime?string('yyyy-MM-dd')}</#if>
+						</div>
+					</div>
+					<div class="layui-inline uckefu-inline">
+						<label class="layui-form-label" >类型：</label>
+						<div class="layui-input-inline">
+							${uKeFuDic[contacts.ckind!''].name!''} 
+						</div>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">共享联系人：</label>
+						<div class="layui-input-inline" style="width:auto;">
+							<#if contacts?? && contacts.shares?? && contacts.shares == 'none'>
+								不共享（仅创建人和直属上级可见）
+							<#elseif contacts?? && contacts.shares?? && contacts.shares == 'all'>
+								所有人
+							</#if>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+		<div class="layui-colla-item">
+			<h2 class="layui-colla-title">联系人信息</h2>
+			<div class="layui-colla-content layui-show">
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label" id="cusname">联系人名称：</label>
+						<div class="layui-input-inline">
+							${contacts.name!''}
+						</div>
+					</div>
+					
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">性别：</label>
+						<div class="layui-input-inline">
+							<#if contacts.gender?? && contacts.gender == '1'>男</#if>
+							<#if contacts.gender?? && contacts.gender == '0'>女</#if>
+							<#if contacts.gender?? && contacts.gender == '-1'>未知</#if>
+						</div>
+					</div>
+					<div class="layui-inline uckefu-inline">
+						<label class="layui-form-label">生日：</label>
+						<div class="layui-input-inline">
+							${contacts.birthday!''}
+						</div>
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">联系电话：</label>
+						<div class="layui-input-inline ukefu-phone-number">
+							${contacts.phone!''}
+						</div>
+					</div>
+					<div class="layui-inline uckefu-inline">
+						<label class="layui-form-label">手机号：</label>
+						<div class="layui-input-inline ukefu-phone-number">
+							${contacts.mobileno!''}
+						</div>
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">城市：</label>
+						<div class="layui-input-inline" style="width:80px;">
+							${uKeFuDic[contacts.province!''].name!''} 
+						</div>
+					</div>
+					<div class="layui-inline">
+						<div class="layui-input-inline" style="width:80px;" id="contacts_city">
+							${uKeFuDic[contacts.city!''].name!''} 
+						</div>
+					</div>
+					<div class="layui-inline uckefu-inline">
+						<label class="layui-form-label">电子邮件：</label>
+						<div class="layui-input-inline" style="margin-left:5px;">
+							${contacts.email!''}
+						</div>
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">联系人地址：</label>
+						<div class="layui-input-inline" style="width: 664px;">
+							${contacts.address!''}
+						</div>
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">联系人说明：</label>
+						<div class="layui-input-inline" style="width: 664px;">
+							${contacts.memo!''}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

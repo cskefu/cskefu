@@ -1,0 +1,151 @@
+<script language="javascript">
+	cursession = "<#if curagentuser??>${curagentuser.userid!''}</#if>" ;
+	var userid = "${curagentuser.userid!''}" , agentserviceid = "${curagentuser.agentserviceid!''}" , agentuserid = "${curagentuser.id}";
+</script>
+
+<div class="main-agentuser">
+	<div class="chat-agent-callout">
+		<h1 class="site-h1">
+			<#if curagentuser??>${curagentuser.username!''}（${curagentuser.region!''}）
+			<div style="float:right;" class="ukefu-service-btn">
+				<a href="/agent/summary.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}" data-toggle="ajax" data-width="950" data-height="450" title="记录服务小结"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe65c;</i> 服务小结</button></a>
+				<a href="/agent/calloutcontact/add.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}" data-toggle="ajax" data-width="950" data-height="550" title="选择转接对象"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe7be;</i> 转接坐席</button></a>
+				<!--<a href="/agent/transfer.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}" data-toggle="ajax" data-width="950" data-height="550" title="选择转接对象"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe7be;</i> 转接坐席</button></a>-->
+				<a href="/agent/end.html?userid=${curagentuser.id!''}" data-toggle="tip" data-title="请确认是否关闭和用户“${curagentuser.username!''}”的对话？"><button class="layui-btn layui-btn-small layui-btn-danger"><i class="kfont">&#xe621;</i> 结束对话</button></a>
+			</div>
+			<#else>
+				&nbsp;
+			</#if>
+		</h1>
+        <#if contacts?? && curagentuser??>
+            <#include "/apps/agent/calloutcontact/edit.html">
+        <#else>
+            <#include "/apps/agent/calloutcontact/add.html">
+        </#if>
+	</div>
+</div>
+<div class="ukefu-chat-prop">
+	<div class="ukefu-prop-list">
+		<div class="layui-side-scroll">
+			<div class="layui-tab" style="margin-top:0px;">
+			  <ul class="layui-tab-title">
+			    <li class="layui-this">访客</li>
+			    <li>历史</li>
+			  </ul>
+			  <div class="layui-tab-content" style="padding: 5px 0px 0px;">
+			    <div class="layui-tab-item layui-show">
+			    	<div class="box">
+						<div class="box-title">
+							<h1 class="site-h1" style="background-color:#EEEEEE;">
+								访问信息
+								<div style="float:right;">
+									<button class="layui-btn layui-btn-small layui-btn-radius layui-btn-danger" href="/agent/blacklist/add.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}&times=${serviceCount!0}&chattime=<#if onlineUser?? && onlineUser.betweentime??>${onlineUser.betweentime}<#else>0</#if>" data-toggle="ajax" data-title="拉黑访客" data-width="900">拉黑访客</button>
+								</div>
+							</h1>
+						</div>
+						<div class="box-body" style="padding:0px 10px;position: relative;">
+                            <#include "/apps/agent/channel/phone.html">
+							<#if curagentuser.name??>
+							<ul class="info-list">
+								<li>
+									姓名：
+									<span class="tgreen">
+									${curagentuser.name!''}
+								    </span>
+								</li>
+								<#if curagentuser.phone??>
+								<li>
+									电话：
+								    <span class="tgreen">
+									${curagentuser.phone!''}
+								    </span>
+								</li>
+								</#if>
+								<#if curagentuser.email??>
+								<li>
+									邮件：
+								    <span class="tgreen">
+									${curagentuser.email!''}
+								    </span>
+								</li>
+								</#if>
+								<#if curagentuser.resion??>
+								<li>
+									来访原因：
+								    <span class="tgreen">
+									${curagentuser.resion!''}
+								    </span>
+								</li>
+								</#if>
+							</ul>
+							</#if>
+							<#if curAgentService?? && curAgentService.trans?? && curAgentService.trans>
+							<ul class="info-list">
+								<li>
+									转接：
+									<span class="tgreen">
+									<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
+								    </span>
+								</li>
+								<#if curAgentService.transtime??>
+								<li>
+									转接时间：
+								    <span class="tgreen">
+									${curAgentService.transtime?string("yyyy-MM-dd HH:mm:ss")}
+								    </span>
+								</li>
+								</#if>
+								<#if curAgentService.transmemo??>
+								<li>
+									转接附言：
+								    <span class="tgreen">
+									${curAgentService.transmemo!''}
+								    </span>
+								</li>
+								</#if>
+
+							</ul>
+							</#if>
+						</div>
+					</div>
+			    </div>
+			    <div class="layui-tab-item">
+			    	<div class="box">
+						<div class="box-title">
+							<h1 class="site-h1" style="background-color:#EEEEEE;">
+								历史记录
+							</h1>
+						</div>
+						<div class="box-body" style="padding:0px 10px;">
+							<ul class="info-list ukefu-quick-reply">
+								<#if agentServiceList?? && agentServiceList?size gt 0>
+								<#list agentServiceList as agentService>
+								<li class="ukefu-agentservice-list">
+									<a href="/service/online/chatmsg.html?id=${agentService.id!''}&title=false" data-toggle="ajax" data-width="950" data-height="500" data-title="服务记录">
+										<span class="quick-reply" data-id="content_${agentService.id!''}">${agentService.username!''}</span>
+										<div class="ukefu-agentservice-his">坐席：${agentService.agentusername!''}</div>
+										<div style="color:#333;position: relative;">
+											${agentService.servicetime?string("yyyy-MM-dd HH:mm:ss")}
+											<div class="ukefu-agentservice-his">时长：${(agentService.sessiontimes/(1000*60*60))?string('00')}:${((agentService.sessiontimes%(1000*60*60))/(1000*60))?string('00')}:${((agentService.sessiontimes%(1000*60))/(1000))?string('00')}</div>
+										</div>
+									</a>
+								</li>
+								</#list>
+								<#else>
+								<li style="list-style: none;background-image: url();padding: 50px 0 50px;">
+									<div class="ukefu-empty">
+										<i class="layui-icon"></i>
+										<div style="">还没有咨询记录</div>
+									</div>
+								</li>
+								</#if>
+							</ul>
+						</div>
+					</div>
+			    </div>
+			  </div>
+			</div>
+
+		</div>
+	</div>
+</div>

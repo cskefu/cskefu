@@ -1,0 +1,42 @@
+<#macro select code name value attr style>
+	<input type="hidden" name="${name!''}.text" id="${name!''}_text"/>
+	<select id="${(name!'')?replace('.' , '_')}" name="${name!''}" ${attr} <#if style?? && style !=''>style="${style}"</#if> onChange="$('#${name!''}_text').val($(this).find('option:selected').text())">
+		<option value="">请选择...</option>
+		<#list uKeFuDic[code] as macroSysDic>
+		<option value="<#if macroSysDic.discode>${macroSysDic.code}<#else>${macroSysDic.id}</#if>" <#if value?? && macroSysDic?? && (macroSysDic.id == value || macroSysDic.code == value)>selected="selected"</#if>>${macroSysDic.name!''}</option>
+		</#list>
+	</select>     
+</#macro>
+
+<#macro select2 code name value attr style defaultname>
+	<select id="${(name!'')?replace('.' , '_')}" name="${name!''}" ${attr} <#if style?? && style !=''>style="${style}"</#if> onChange="$('#${name!''}_text').val($(this).find('option:selected').text())">
+		<option value="">${defaultname!'请选择...'}</option>
+		<#list uKeFuDic[code] as macroSysDic>
+		<option value="<#if macroSysDic.discode>${macroSysDic.code}<#else>${macroSysDic.id}</#if>" <#if value?? && macroSysDic?? && (macroSysDic.id == value || macroSysDic.code == value)>selected="selected"</#if>>${macroSysDic.name!''}</option>
+		</#list>
+	</select>     
+</#macro>
+
+<#macro subselect macroSysDicList name value attr style>
+	<input type="hidden" name="${name!''}.text" id="${name!''}_text"/>
+	<select id="${(name!'')?replace('.' , '_')}" name="${name!''}" ${attr} style="${style}" onChange="$('#${name!''}_text').val($(this).find('option:selected').text())">
+		<option value="">请选择...</option>
+		<#if macroSysDicList??>
+		<#list macroSysDicList as macroSysDic>
+		<option value="<#if macroSysDic.discode>${macroSysDic.code}<#else>${macroSysDic.id}</#if>" <#if value?? && macroSysDic?? && (macroSysDic.id == value || macroSysDic.code == value)>selected="selected"</#if>>${macroSysDic.name!''}</option>
+		</#list>
+		</#if>
+	</select>     
+</#macro>
+
+<#macro checkbox sysDicList name value style>     
+	<#list sysDicList as macroSysDic>
+		<input type="radio" name="${name}" value="${macroSysDic.id!''}" title="${macroSysDic.name!''}"<#if macroSysDic.id == value>checked="checked"</#if>>
+	</#list>   
+</#macro>
+
+<#macro checkbox sysDicList name value style>     
+	<#list sysDicList as macroSysDic>
+		<input type="checkbox" name="${name}" value="${macroSysDic.id!''}" title="${macroSysDic.name!''}"<#if macroSysDic.id == value>checked="checked"</#if>>
+	</#list>   
+</#macro>

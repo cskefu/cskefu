@@ -1,0 +1,12 @@
+<label class="layui-form-label">表字段：</label>
+<div class="layui-input-inline">
+	<input type="hidden" name="columname" id="tableid_text"/>
+	<select lay-ignore class="ukefu-select" name="tableid" id="fktableid" style="width: 100%;display:block;" onChange="$('#tableid_text').val($(this).find('option:selected').text())">
+		<option value="">请选择表字段</option>
+	 	<#if fktableidList??>
+	 	<#list fktableidList as fktableid>
+	 	<option value="${fktableid.id!''}" <#if cubeLevel?? && cubeLevel.tableproperty && fktableid.id == cubeLevel.tableproperty.id>selected="selected"</#if>>${fktableid.fieldname!''}</option>
+	 	</#list>
+	 	</#if> 
+	</select>
+</div>

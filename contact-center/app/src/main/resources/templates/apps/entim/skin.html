@@ -1,0 +1,27 @@
+<div id="ukefu-entim-skin" class="layui-layer-content">
+    <ul class="ukefu-entim-skin">
+        <li>
+            <img src="/images/skin/1.jpg" data-color="#333333"></li>
+        <li>
+            <img src="/images/skin/2.jpg" data-color="#ffffff"></li>
+        <li>
+            <img src="/images/skin/3.jpg" data-color="#333333"></li>
+        <li>
+            <img src="/images/skin/4.jpg" data-color="#ffffff"></li>
+        <li>
+            <img src="/images/skin/5.jpg" data-color="#ffffff"></li>
+        <li id="defaultSkin" data-color="#333333">
+            <cite>默认</cite>
+        </li>
+    </ul>
+</div>
+<script>
+	$('#ukefu-entim-skin img').on("click" , function(){
+		parent.$("body").css('background-image' , "url("+$(this).attr('src')+")").css('color' , $(this).data("color"))	 ;	
+		parent.$("body a").css('color' , $(this).data("color"))	;
+	});	
+	$('#defaultSkin').on("click" , function(){
+		parent.$("body").css('background-image' , '').css('color' , $(this).data("color"));
+		parent.$("body a").css('color' , $(this).data("color"))	;
+	});
+</script>

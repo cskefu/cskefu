@@ -1,0 +1,161 @@
+.cskefu-datepicker-wrap{
+    padding-left: 64px;
+    position: relative;
+}
+
+.cskefu-datepicker-wrap input{
+    padding-right: 30px;
+}
+
+.cskefu-datepicker-wrap i{
+    position:absolute;
+    /*text-indent: -15px;
+    bottom: -8px;
+    font-size: 1.3em;*/
+    right: 0px;
+    padding: 10px 12px;
+}
+
+.cskefu-tooltip-label {
+    display: inline-block;
+    height: 38px;
+    line-height: 38px;
+    padding: 0 18px;
+    background-color: #32c24d !important;
+    color: #fff;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 14px;
+    border: none;
+    border-radius: 2px;
+    opacity: .9;
+}
+
+
+.cskefu-reports-ds-table-header{
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 1px;
+    margin-left: 0px;
+    border-left: 0px;
+    border-top: 0px;
+    border-right: 0px;
+    border-bottom: 1px solid #aaa;
+    font-size: 16px;
+    border-collapse: collapse;
+}
+
+.cskefu-reports-ds-table{
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 2px;
+    margin-left: 0px;
+    border-left: 1px solid #666;
+    border-top: 1px solid #999;
+    border-right: 1px solid #666;
+    border-bottom: 1px solid #666;
+    border-collapse: collapse;
+    border-spacing: 2px;
+    font-size: 12px;
+    text-align: -webkit-center;
+}
+
+.cskefu-reports-ds-table .lcap {
+    padding: 2px;
+    padding-right: 6px;
+    border: 1px solid #666;
+    /* border-left: 1px solid #666; */
+    font-size: 12px;
+    text-align: right;
+    vertical-align: middle;
+    /* border-bottom: 1px solid #666; */
+    width: 8%;
+}
+
+.bk_RoyalBlue {
+    background-color: RoyalBlue;
+}
+
+.cskefu-reports-ds-table .white {
+    color: white;
+}
+
+.cskefu-reports-ds-table .ldat {
+    padding: 1px;
+    padding-right: 4px;
+    border-right: 1px solid #666;
+    font-size: 12px;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid #666;
+    width: 4.5%;
+}
+
+.bk_LightGrey {
+    background-color: LightGrey;
+}
+
+.bk_DarkBlue {
+    background-color: DarkBlue;
+}
+
+.bk_LightSkyBlue {
+    background-color: LightSkyBlue;
+}
+
+.bk_LimeGreen {
+    background-color: LimeGreen;
+}
+
+.bk_LightPink {
+    background-color: LightPink;
+}
+
+.bk_Salmon {
+    background-color: Salmon;
+}
+
+.bk_Orange {
+    background-color: Orange;
+}
+
+.bk_LightSlateGray {
+    background-color: LightSlateGray;
+}
+
+.bk_RosyBrown {
+    background-color: RosyBrown;
+}
+
+.bk_DeepSkyBlue {
+    background-color: DeepSkyBlue;
+}
+
+.bk_Peru {
+    background-color: Peru;
+}
+
+
+.bk_LavenderBlush {
+    background-color: LavenderBlush;
+}
+
+.red {
+    color: red;
+}
+
+.gold {
+    color: gold;
+}
+
+.bk_LightGreen {
+    background-color: LightGreen;
+}

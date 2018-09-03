@@ -1,0 +1,411 @@
+<form method="post" key="set-mine" enctype="multipart/form-data" action="/setting/agent/sessionconfig/save.html" class="layui-form">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ukefu-customer-div setting-wrapper">
+				<div class="box default-box">
+					<div class="box-header">
+						<h3 class="box-title">网络配置</h3>
+					</div>
+					<div class="box-body ukefu-im-theme">
+						<div class="row">
+							<div class="col-lg-8">
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">1、语音平台服务器IP地址 <font color="red">（必填项*）</font></div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>语音接入服务的网络地址</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">FreeSwitch服务器的网络IPv4地址，如果是其他厂商的设备，请填写软电话的接入地址</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="text" name="timeout" id="timeout" value="${pbxHost.ipaddr!''}" required="required" lay-verify="required" alue="" autocomplete="off" class="layui-input">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">2、语音平台服务器地址 <font color="red">（必填项*）</font></div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>语音接入服务的网络地址</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">FreeSwitch服务器的网络地址，如果是其他厂商的设备，请填写软电话的接入地址</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="text" name="timeout" id="timeout" value="${pbxHost.hostname!''}" required="required" lay-verify="required" alue="" autocomplete="off" class="layui-input">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">3、语音平台服务端口</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>语音接入服务的网络端口</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">FreeSwitch服务器的网络端口，如果是其他厂商的设备，根据需要填写</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="text" name="timeout" id="timeout" lay-verify="number" value="${pbxHost.port}" autocomplete="off" class="layui-input">
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">4、语音平台服务访问密码</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>语音接入服务的网络端口</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">FreeSwitch服务器的网络访问密码，如未修改，无需填写</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="text" name="timeout" id="timeout" lay-verify="number" value="" autocomplete="off" class="layui-input">
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">3、启用软电话条的WebRTC功能</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>启用此功能后，坐席软电话条将通过WebRTC处理语音功能</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">包括拨打电话和接听电话</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="checkbox" id="lastagent" name="lastagent" title="启用" <#if sessionConfig?? && sessionConfig.lastagent == true>checked="checked"</#if>>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">4、语音设备类型</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>语音设备的类型，按照厂商选择</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">不同厂商设备的配置参数和链接方式可能会不同</p>
+											</div>
+											<div class="col-lg-4">
+												<select name="maxuser">
+													<option value="default" <#if sessionConfig?? && sessionConfig.maxuser?? && sessionConfig.maxuser == 1>selected="selected"</#if>>默认设备</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">3、坐席就绪时分配最大访客数量</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>为每个人工坐席分配访客的最大数量</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">为避免坐席就绪的时候突然涌入大量的咨询客户，设置此参数</p>
+											</div>
+											<div class="col-lg-4">
+												<select name="initmaxuser">
+													<option value="1" <#if sessionConfig?? && sessionConfig.initmaxuser?? && sessionConfig.initmaxuser == 1>selected="selected"</#if>>1</option>
+													<option value="2" <#if sessionConfig?? && sessionConfig.initmaxuser?? && sessionConfig.initmaxuser == 2>selected="selected"</#if>>2</option>
+													<option value="3" <#if sessionConfig?? && sessionConfig.initmaxuser?? && sessionConfig.initmaxuser == 3>selected="selected"</#if>>3</option>
+													<option value="4" <#if sessionConfig?? && sessionConfig.initmaxuser?? && sessionConfig.initmaxuser == 4>selected="selected"</#if>>4</option>
+													<option value="5" <#if !(sessionConfig??) || !(sessionConfig.distribution??) || (sessionConfig.initmaxuser?? && sessionConfig.initmaxuser == 5) || (sessionConfig?? && sessionConfig.initmaxuser?? && sessionConfig.initmaxuser == 0)>selected="selected"</#if>>5</option>
+													<option value="10" <#if sessionConfig?? && sessionConfig.initmaxuser?? && sessionConfig.initmaxuser == 10>selected="selected"</#if>>10</option>
+													<option value="15" <#if sessionConfig?? && sessionConfig.initmaxuser?? && sessionConfig.initmaxuser == 15>selected="selected"</#if>>15</option>
+													<option value="20" <#if sessionConfig?? && sessionConfig.initmaxuser?? && sessionConfig.initmaxuser == 20>selected="selected"</#if>>20</option>
+													<option value="30" <#if sessionConfig?? && sessionConfig.initmaxuser?? && sessionConfig.initmaxuser == 30>selected="selected"</#if>>30</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">5、客户超时提醒</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>客户与坐席对话的超时提醒功能</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">开启后，用户在指定时间内没有响应时，系统会自动结束对话</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="checkbox" title="启用" name="sessiontimeout" id="sessiontimeout" lay-filter="timeout" <#if sessionConfig?? && sessionConfig.sessiontimeout == true>checked="checked"</#if>>
+											</div>
+										</div>
+									</div>
+									<div class="box-item" id="timeout_tip" style="<#if sessionConfig?? && sessionConfig.sessiontimeout == false>display:none;</#if>">	
+										<div class="row">
+											<div class="col-lg-8">
+												<p>超时时长（秒）</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="text" name="timeout" id="timeout" lay-verify="number" value="<#if sessionConfig?? && sessionConfig.timeout gt 0>${sessionConfig.timeout}<#else>120</#if>" autocomplete="off" class="layui-input" style="width:80px;display:inline;">
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-8">
+												<p>超时提示消息</p>
+											</div>
+										</div>
+										<div class="row" style="margin-top:10px;">
+											<div class="col-lg-12">
+												<textarea name="timeoutmsg" id="timeoutmsg" autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;"><#if sessionConfig?? && sessionConfig.timeoutmsg??>${sessionConfig.timeoutmsg}<#else>您好，您已经很长时间没有发送消息了，您是否还在线？</#if></textarea>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">6、客户超时提醒后再次超时</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>客户与坐席对话超时后再次超时后出策略</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">开启后，用户在指定时间内没有响应时，系统会在2分钟后自动结束对话，</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="checkbox" title="启用" id="resessiontimeout" name="resessiontimeout" lay-filter="retimeout" <#if sessionConfig?? && sessionConfig.resessiontimeout == true>checked="checked"</#if>>
+											</div>
+										</div>
+									</div>
+									<div class="box-item" id="re_timeout_tip" style="<#if sessionConfig?? && sessionConfig.resessiontimeout == false>display:none;</#if>">	
+										<div class="row">
+											<div class="col-lg-8">
+												<p>提醒后再次超时时长（秒）</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="text" name="retimeout" lay-verify="number" id="retimeout" value="<#if sessionConfig?? && sessionConfig.retimeout gt 0 >${sessionConfig.retimeout}</#if>" autocomplete="off" class="layui-input" style="width:80px;display:inline;">
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-8">
+												<p>提醒后再次超时后断开的提示消息</p>
+											</div>
+										</div>
+										<div class="row" style="margin-top:10px;">
+											<div class="col-lg-12">
+												<textarea name="retimeoutmsg" id="retimeoutmsg" autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;"><#if sessionConfig?? && sessionConfig.retimeoutmsg??>${sessionConfig.retimeoutmsg}<#else>您好，欢迎下次咨询，再见？</#if></textarea>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">7、坐席回复超时</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>坐席回复客户消息的超时自动回复功能</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">开启后，坐席在指定时间内没有回复消息时，系统会自动回复用户消息</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="checkbox" title="启用" name="agentreplaytimeout" id="agentreplaytimeout" lay-filter="agentreplaytimeout" <#if sessionConfig?? && sessionConfig.agentreplaytimeout == true>checked="checked"</#if>>
+											</div>
+										</div>
+									</div>
+									<div class="box-item" id="agentreplay" style="<#if sessionConfig?? && sessionConfig.agentreplaytimeout == false>display:none;</#if>">	
+										<div class="row">
+											<div class="col-lg-8">
+												<p>超时时长（秒）</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="text" name="agenttimeout" lay-verify="number" id="agenttimeout" value="<#if sessionConfig?? && sessionConfig.agenttimeout gt 0>${sessionConfig.agenttimeout}<#else>120</#if>" autocomplete="off" class="layui-input" style="width:80px;display:inline;">
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-8">
+												<p>超时提示消息</p>
+											</div>
+										</div>
+										<div class="row" style="margin-top:10px;">
+											<div class="col-lg-12">
+												<textarea name="agenttimeoutmsg" id="agenttimeoutmsg" autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;"><#if sessionConfig?? && sessionConfig.agenttimeoutmsg??>${sessionConfig.agenttimeoutmsg}<#else>欢迎咨询，我正在为您查询资料？</#if></textarea>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">8、启用工作时间段设置</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>非工作时间段提醒功能</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">开启后，当前时间不在工作时间段内访问将会提示</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="checkbox" title="启用" name="hourcheck" id="hourcheck" lay-filter="hourcheck" <#if sessionConfig?? && sessionConfig.hourcheck == true>checked="checked"</#if>>
+											</div>
+										</div>
+									</div>
+									<div class="box-item" id="hourcheck_tip" style="<#if sessionConfig?? && sessionConfig.hourcheck == false>display:none;</#if>">	
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-12">
+												<p>a、设置工作时间段</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">只有设置工作时间段之后，留言功能才生效</p>
+											</div>
+										</div>
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-12">
+												<div id="workhours">
+													<#if sessionConfig.workinghours??>
+													<#list sessionConfig.workinghours?split(',') as wh>
+													<small id="wh_${wh?replace('[:~]{1,}' , '')}" class="ukefu-timerange layui-btn layui-btn-normal">
+														${wh}
+														<i class="layui-icon">&#x1006;</i>
+														<input type='hidden' name='workinghours' value='${wh}'/>
+													</small>
+													</#list>
+													</#if>
+												</div>
+											</div>
+										</div>
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-12">
+												<div class="layui-inline">
+													<div class="layui-input-inline" style="width: 70px;">
+														<select id="wh_start_h">
+															<#list 0..23 as hours>
+															<option value="${hours?string('00')}" <#if hours == 8>selected="selected"</#if>>${hours?string('00')}</option>
+															</#list>
+														</select>
+													</div>
+												</div>
+												<div class="layui-inline">
+													<div class="layui-input-inline" style="width: 3px;">
+														:
+													</div>
+												</div>
+												<div class="layui-inline">
+													<div class="layui-input-inline" style="width: 70px;" >
+														<select id="wh_start_m">
+															<#list 0..59 as min>
+															<option value="${min?string('00')}" <#if min == 30>selected="selected"</#if>>${min?string('00')}</option>
+															</#list>
+														</select>
+													</div>
+												</div>
+												<div class="layui-inline">
+													<div class="layui-input-inline" style="width: 20px;">
+														~
+													</div>
+												</div>
+												<div class="layui-inline">
+													<div class="layui-input-inline" style="width: 70px;">
+														<select id="wh_end_h">
+															<#list 0..23 as hours>
+															<option value="${hours?string('00')}" <#if hours == 11>selected="selected"</#if>>${hours?string('00')}</option>
+															</#list>
+														</select>
+													</div>
+												</div>
+												<div class="layui-inline">
+													<div class="layui-input-inline" style="width: 3px;">
+														:
+													</div>
+												</div>
+												<div class="layui-inline">
+													<div class="layui-input-inline" style="width: 70px;">
+														<select id="wh_end_m">
+															<#list 0..59 as min>
+															<option value="${min?string('00')}" <#if min == 30>selected="selected"</#if>>${min?string('00')}</option>
+															</#list>
+														</select>
+													</div>
+												</div>
+												<div class="layui-inline">
+													<div class="layui-input-inline" style="width: 70px;">
+														<button class="layui-btn layui-btn-primary" type="button" id="wh_time_range"><i class="layui-icon">&#xe608;</i></button>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-12">
+												<p>b、设置非工作时间段的提示信息</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">在微信渠道下使用或直接打开对话窗口的情况下使用</p>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-12">
+												<textarea name=notinwhmsg autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;">${sessionConfig.notinwhmsg!'您好，当前非工作时间段。'}</textarea>	
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-3"></div>
+		<div class="col-lg-9">
+			<div class="layui-form-item">
+			  <div class="layui-input-block">
+				<button class="layui-btn" lay-submit="" lay-filter="formDemo">保存</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			  </div>
+			</div>
+		</div>
+	</div>
+</form>	
+<script language="javascript"> 		
+	layui.use('form', function(){
+		var form = layui.form();
+		form.render('select'); //刷新select选择框渲染
+		form.on("checkbox(timeout)" , function(data){
+			if(data.elem.checked == true){
+				$('#timeout_tip').show();		
+			}else{
+				$('#timeout_tip').hide();
+			}
+		});
+		form.on("checkbox(hourcheck)" , function(data){
+			if(data.elem.checked == true){
+				$('#hourcheck_tip').show();		
+			}else{
+				$('#hourcheck_tip').hide();
+			}
+		});
+		form.on("checkbox(retimeout)" , function(data){
+			if(data.elem.checked == true){
+				$('#re_timeout_tip').show();		
+			}else{
+				$('#re_timeout_tip').hide();
+			}
+		});
+		form.on("checkbox(agentreplaytimeout)" , function(data){
+			if(data.elem.checked == true){
+				$('#agentreplay').show();		
+			}else{
+				$('#agentreplay').hide();
+			}
+		});
+	});
+	$('#wh_time_range').on("click" , function(){
+		var timerange = $("#wh_start_h").val()+":"+$("#wh_start_m").val()+"~"+$("#wh_end_h").val()+":"+$("#wh_end_m").val() ;
+		var id = "wh_"+ $("#wh_start_h").val()+$("#wh_start_m").val()+$("#wh_end_h").val()+$("#wh_end_m").val() ;
+		if($("#"+id).length == 0){
+			$('#workhours').append("<small id='"+id+"' class='ukefu-timerange layui-btn layui-btn-normal'>"+timerange+" <i class='layui-icon'>&#x1006;</i><input type='hidden' name='workinghours' value='"+timerange+"'/></small>");
+		}
+	});
+	$(document).on("click" , ".ukefu-timerange", function(){
+		var target = $(this);
+		var index = top.layer.confirm("请确认是否移除时间段？", {icon: 3, title:'提示'}, function(text, cindex){
+			top.layer.close(index);
+			$(target).remove() ;
+		});
+		
+	});
+			
+</script>

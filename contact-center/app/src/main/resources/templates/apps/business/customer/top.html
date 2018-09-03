@@ -1,0 +1,18 @@
+<ul class="tab-title">
+	<#if user?? && (user.roleAuthMap["A03_A01_A02_B01"]?? || user.usertype == "0") >
+	<li <#if subtype == 'index'>class="layui-this"</#if>><a href="/apps/customer/index.html<#if ekind??>?ekind=${ekind}</#if>">全部客户<#if subtype == 'index'>（<#if	entCustomerList??>${entCustomerList.totalElements}<#else>0</#if>）</#if></a></li>
+	</#if>
+	<#if user?? && (user.roleAuthMap["A03_A01_A02_B02"]?? || user.usertype == "0") >
+	<li <#if subtype == 'today'>class="layui-this"</#if>><a href="/apps/customer/today.html<#if ekind??>?ekind=${ekind}</#if>">今日新增<#if subtype == 'today'>（<#if	entCustomerList??>${entCustomerList.totalElements}<#else>0</#if>）</#if></a></li>
+	</#if>
+	<#if user?? && (user.roleAuthMap["A03_A01_A02_B03"]?? || user.usertype == "0") >
+	<li <#if subtype == 'week'>class="layui-this"</#if>><a href="/apps/customer/week.html<#if ekind??>?ekind=${ekind}</#if>">本周新增<#if subtype == 'week'>（<#if	entCustomerList??>${entCustomerList.totalElements}<#else>0</#if>）</#if></a></li>
+	</#if>
+	<#if user?? && (user.roleAuthMap["A03_A01_A02_B04"]?? || user.usertype == "0") >
+	<li <#if subtype == 'enterprise'>class="layui-this"</#if>><a href="/apps/customer/enterprise.html<#if ekind??>?ekind=${ekind}</#if>">企业客户<#if subtype == 'enterprise'>（<#if	entCustomerList??>${entCustomerList.totalElements}<#else>0</#if>）</#if></a></li>
+	</#if>
+	<#if user?? && (user.roleAuthMap["A03_A01_A02_B05"]?? || user.usertype == "0") >
+	<li <#if subtype == 'personal'>class="layui-this"</#if>><a href="/apps/customer/personal.html<#if ekind??>?ekind=${ekind}</#if>">个人客户<#if subtype == 'personal'>（<#if	entCustomerList??>${entCustomerList.totalElements}<#else>0</#if>）</#if></a></li>
+	</#if>
+	<li <#if subtype == 'creater'>class="layui-this"</#if>><a href="/apps/customer/creater.html<#if ekind??>?ekind=${ekind}</#if>">我的客户<#if subtype == 'creater'>（<#if	entCustomerList??>${entCustomerList.totalElements}<#else>0</#if>）</#if></a></li>	
+</ul>

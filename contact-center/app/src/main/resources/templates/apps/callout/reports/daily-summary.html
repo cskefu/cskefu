@@ -1,0 +1,197 @@
+<div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+        <#include "/apps/callout/include/left.html">
+    </div>
+</div>
+
+<div class="layui-body" style="background-color: #f2f2f2;">
+    <div class="layui-side-scroll">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="site-h1" style="background-color:#FFFFFF;">
+                    外呼日报
+                </h1>
+            </div>
+        </div>
+        <div class="box-header" style="background-color: #f5f5f5;">
+            <h1 class="site-h1" style="background-color:#FFFFFF;">
+                <div class="layui-form">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">语音渠道标识</label>
+                            <div class="layui-input-inline">
+                                <select name="channel" lay-verify="channel" id="channel">
+                                    <#if voicechannels?? && voicechannels?size gt 0>
+                                    <#list voicechannels as voicechannel>
+                                        <option value="${voicechannel.baseURL}">${voicechannel.name}</option>
+                                    </#list>
+                                    </#if>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">开始时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="datestr" id="datestr" value="" lay-verify="date" autocomplete="off"
+                                       class="layui-input">
+                                <i class="layui-icon"
+                                   style="position: absolute;right: 3px;top: 6px;font-size: 25px;">&#xe637;</i>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">呼叫类型</label>
+                            <div class="layui-input-inline">
+                                <select name="direction" lay-verify="direction" id="direction">
+                                    <option value="out">呼出</option>
+                                    <option value="in">呼入</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label"></label>
+                            <button id="search" class="layui-btn" lay-submit lay-filter="search">立即查询</button>
+                        </div>
+                    </div>
+                </div>
+            </h1>
+        </div>
+    <div class="box-header" style="background-color: #f5f5f5;">
+        <h1 class="site-h1" style="background-color:#FFFFFF;">
+            <table width="100%" class="cskefu-reports-ds-table">
+                <tbody>
+                <tr>
+                    <td class="lcap bk_RoyalBlue white">自动外呼</td>
+                    <td id="auto_call_total" class="ldat">0</td>
+                    <td class="lcap bk_LightGrey">失败数</td>
+                    <td id="auto_call_fails" class="ldat">0</td>
+                    <td class="lcap bk_RoyalBlue white">成功数</td>
+                    <td id="auto_call_success" class="ldat">0</td>
+                    <td class="lcap bk_LightGrey">呼通率</td>
+                    <td id="auto_call_pri" class="ldat">0%</td>
+                    <td class="lcap bk_RoyalBlue white">分钟数</td>
+                    <td id="auto_call_duration" class="ldat">0</td>
+                </tr>
+
+
+                <tr>
+                    <td class="lcap bk_LightSkyBlue">手动外呼</td>  
+                    <td id="manu_call_total" class="ldat">0</td>
+                    <td class="lcap bk_WhiteSmoke">失败数</td>
+                    <td id="manu_call_fails" class="ldat">0</td>
+                    <td class="lcap bk_LightSkyBlue">成功数</td>
+                    <td id="manu_call_success" class="ldat">0</td>
+                    <td class="lcap bk_WhiteSmoke">呼通率</td>
+                    <td id="manu_call_pri" class="ldat">0%</td>
+                    <td class="lcap bk_LightSkyBlue">分钟数</td>
+                    <td id="manu_call_duration" class="ldat">0</td>
+                </tr>
+
+                <!--<tr>-->
+                    <!--<td class="lcap bk_LightSkyBlue">手机座席</td>-->
+                    <!--<td id="call_total" class="ldat">0</td>-->
+                    <!--<td class="lcap bk_WhiteSmoke">失败数</td>-->
+                    <!--<td id="call_fails" class="ldat">0</td>-->
+                    <!--<td class="lcap bk_LightSkyBlue">成功数</td>-->
+                    <!--<td id="call_success" class="ldat">0</td>-->
+                    <!--<td class="lcap bk_WhiteSmoke">呼通率</td>-->
+                    <!--<td id="call_pri" class="ldat">0.00%</td>-->
+                    <!--<td class="lcap bk_LightSkyBlue">分钟数</td>-->
+                    <!--<td id="call_pri" class="ldat">0</td>-->
+                <!--</tr>-->
+
+                <tr>
+                    <td class="lcap bk_DarkBlue white">所有外呼</td>
+                    <td id="all_call_total" class="ldat">0</td>
+                    <td class="lcap bk_DarkBlue white">失败数</td>
+                    <td id="all_call_fails" class="ldat">0</td>
+                    <td class="lcap bk_DarkBlue white">成功数</td>
+                    <td id="all_call_success" class="ldat">0</td>
+                    <td class="lcap bk_DarkBlue white">呼通率</td>
+                    <td id="all_call_pri" class="ldat">0%</td>
+                    <td class="lcap bk_DarkBlue white">分钟数</td>
+                    <td id="all_call_duration" class="ldat">0</td>
+                </tr>
+                </tbody>
+            </table>
+        </h1>
+        </div>
+    </div>
+</div>
+<script src="/js/moment.min.js"></script>
+<script src="/js/CSKeFu_Rest_Request.v1.js"></script>
+<script>
+    $("#datestr").val(moment().format('YYYY-MM-DD'));
+    layui.use('laydate', function() {
+        var laydate = layui.laydate;
+
+        var date = {
+            min : '1950-01-01 00:00:00',
+            max : laydate.now(),
+            istoday : true
+        };
+
+        document.getElementById('datestr').onclick = function() {
+            date.elem = this;
+            laydate(date);
+        }
+    });
+    $('#search').click(function () {
+        var body = {};
+        var channel = $("#channel").val();
+        if(channel){
+            body.channel = channel;
+        }
+
+        var datestr = $("#datestr").val();
+        if(datestr){
+            body.datestr = datestr;
+        }
+
+        var direction = $("#direction option:selected").text();
+        if(direction) {
+            body.direction = direction;
+        }
+
+        body.ops = 'agg';
+
+        httpRequest({
+            data: body,
+            path: 'callout/records',
+        }).then(function (data) {
+            if(data.status && data.status === "AUTH_ERROR"){
+                openFail(data.status);
+                return;
+            }
+
+            if(data.rc === 0){
+                //  自动外呼
+                var autoData = data.data.auto;
+                $("#auto_call_total").html(autoData.total);
+                $("#auto_call_fails").html(autoData.fails);
+                $("#auto_call_success").html(autoData.succ);
+                $("#auto_call_pri").html(autoData.succ_percentage);
+                $("#auto_call_duration").html(autoData.duration);
+
+                //  手动外呼
+                var manuData = data.data.manu;
+                $("#manu_call_total").html(manuData.total);
+                $("#manu_call_fails").html(manuData.fails);
+                $("#manu_call_success").html(manuData.succ);
+                $("#manu_call_pri").html(manuData.succ_percentage);
+                $("#manu_call_duration").html(manuData.duration);
+
+                //  所有外呼
+                var allData = data.data.all;
+                $("#all_call_total").html(allData.total);
+                $("#all_call_fails").html(allData.fails);
+                $("#all_call_success").html(allData.succ);
+                $("#all_call_pri").html(allData.succ_percentage);
+                $("#all_call_duration").html(allData.duration);
+            } else {
+                openFail(null, data.error)
+            }
+        }, function (reason) {
+            openFail()
+        })
+    });
+</script>

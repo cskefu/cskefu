@@ -1,0 +1,239 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="site-h1">
+			知识地图
+			<span style="float:right;">
+				<button class="layui-btn layui-btn-small green" href="/apps/kbs/add.html" data-toggle="load" data-target="#ukefu-kbs-content">
+					创建新知识
+				</button>
+				<#if kbsType??>
+				<button class="layui-btn layui-btn-small green" href="/apps/kbs/addtype.html" data-toggle="ajax" data-height="450" data-width="950" data-title="创建分类">
+					编辑分类
+				</button>
+				<button class="layui-btn layui-btn-small layui-btn-danger" href="/apps/kbs/addtype.html" data-toggle="ajax" data-height="450" data-width="950" data-title="创建分类">
+					删除分类
+				</button>
+				</#if>
+			</span>
+		</h1>
+		<form class="layui-form" action="">
+		<div class="row">
+			<div class="col-lg-8">
+				<div class="ukefu-kbs-cat" style="padding-left:10px;">
+					<div class="layui-tab">
+					  <ul class="layui-tab-title">
+					    <li class="layui-this">所有知识</li>
+					    <li>个人知识</li>
+					    <li>部门知识</li>
+					    <li>收藏的知识</li>
+					  </ul>
+					  <div class="layui-tab-content" style="padding: 0px;">
+					    <div class="layui-input-inline" style="width:100%;padding:0px 20px 0px 0px;position: relative;">
+							<input type="text" placeholder="请输入查询条件" value="" class="layui-input layui-unselect" style="border-top:0px;">
+							<i class="layui-icon ukefu-kbs-btn" style="font-size:24px;">&#xe615;</i>
+						</div>
+					  </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				
+				<div class="ukefu-kbs-cat" style="width:100%;">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="padding:0px;">知识标签：</label>
+						<div class="layui-input-block" style="padding:0px;margin-left: 100px;line-height:25px;">
+							<span class="ukefu-kmmap-item"><a href="">培训课件（55）</a></span> 
+							<span class="ukefu-kmmap-item"><a href="" >产品问答（124）</a></span> 
+							<span class="ukefu-kmmap-item"><a href="" >部门分享（43）</a></span> 
+							<span class="ukefu-kmmap-item"><a href="" >经验总结（543）</a></span> 
+						</div>
+					</div>
+				</div>
+				
+				<div class="ukefu-kbs-cat" style="width:100%;">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="padding:0px;">发布时间：</label>
+						<div class="layui-input-block" style="padding:0px;margin-left: 100px;line-height:25px;">
+							<span class="ukefu-kmmap-item"><a href="">最近一天（42）</a></span> 
+							<span class="ukefu-kmmap-item"><a href="" >最近7天内（22）</a></span> 
+							<span class="ukefu-kmmap-item"><a href="" >最近30天（23）</a></span> 
+							<span class="ukefu-kmmap-item"><a href="" >最近12个月（2433）</a></span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</form>
+	</div>
+</div>
+<div class="box">
+	<div class="box-title">
+		<h1 class="site-h1" style="background-color:#EEEEEE;">
+			<#if kbsType??>“${kbsType.name!''}” </#if>分类知识（54）
+		</h1>
+	</div>
+	<div class="box-body" style="padding:0px 10px;position: relative;">
+		<ul class="search">
+			<li>
+				<div class="fav"><i class="kfont">&#xe608;</i></div>
+				<div class="ukefu-kbs-search-title">
+					<a href="">阿斯兰的开发了开放</a>
+					<span class="uk-kbs-search-type">[产品文档]</span>
+					<span class="uk-kbs-search-type">[2017-06-15 13:22:21]</span>
+				</div>
+				<div class="ukefu-kbs-search-content">
+					国产汽车6月SUV销量排行榜,最畅销7座SUV销量6月。据悉,2017年6月中国汽车市场乘用车销量166.1万辆,同比增长0.8%,乘用车市场发展态势进一步放缓
+				</div>
+				<div class="ukefu-kbs-search-comment">
+					[最新回复] <a href="">这篇知识已经过期了吧，怎么还在这里......</a>
+				</div>
+				
+				<div class="ukefu-kbs-search-comment">
+					[知识概况] 45 浏览 ， 15收藏 ， 5评论 ， 2017-10-02 15:40:33前有效 
+					<span>
+						<i class="kfont">&#xe61e;</i>
+						<a href="">优客服v3.1.0 产品说明书.pdf 等3个附件</a>
+					</span>
+				</div>
+			</li>
+			<li>
+				<div class="fav"><i class="kfont">&#xe623;</i></div>
+				<div class="ukefu-kbs-search-title">
+					<a href="">阿斯兰的开发了开放</a>
+					<span class="uk-kbs-search-type">[产品文档]</span>
+					<span class="uk-kbs-search-type">[2017-06-15 13:22:21]</span>
+				</div>
+				<div class="ukefu-kbs-search-content">
+					国产汽车6月SUV销量排行榜,最畅销7座SUV销量6月。据悉,2017年6月中国汽车市场乘用车销量166.1万辆,同比增长0.8%,乘用车市场发展态势进一步放缓
+				</div>
+				<div class="ukefu-kbs-search-comment">
+					[最新回复] <a href="">这篇知识已经过期了吧，怎么还在这里......</a>
+				</div>
+				
+				<div class="ukefu-kbs-search-comment">
+					[知识概况] 45 浏览 ， 15收藏 ， 5评论 ， 2017-10-02 15:40:33前有效
+				</div>
+			</li>
+			<li>	
+				<div class="fav"><i class="kfont">&#xe608;</i></div>
+				<div class="ukefu-kbs-search-title">
+					<a href="">阿斯兰的开发了开放</a>
+					<span class="uk-kbs-search-type">[产品文档]</span>
+					<span class="uk-kbs-search-type">[2017-06-15 13:22:21]</span>
+				</div>
+				<div class="ukefu-kbs-search-content">
+					国产汽车6月SUV销量排行榜,最畅销7座SUV销量6月。据悉,2017年6月中国汽车市场乘用车销量166.1万辆,同比增长0.8%,乘用车市场发展态势进一步放缓
+				</div>
+				<div class="ukefu-kbs-search-comment">
+					[最新回复] <a href="">这篇知识已经过期了吧，怎么还在这里......</a>
+				</div>
+				
+				<div class="ukefu-kbs-search-comment">
+					[知识概况] 45 浏览 ， 15收藏 ， 5评论 ， 2017-10-02 15:40:33前有效 
+					<span>
+						<i class="kfont">&#xe61e;</i>
+						<a href="">优客服v3.1.0 产品说明书.pdf 等3个附件</a>
+					</span>
+				</div>
+			</li>
+			<li>
+				<div class="fav"><i class="kfont">&#xe608;</i></div>
+				<div class="ukefu-kbs-search-title">
+					<a href="">阿斯兰的开发了开放</a>
+					<span class="uk-kbs-search-type">[产品文档]</span>
+					<span class="uk-kbs-search-type">[2017-06-15 13:22:21]</span>
+				</div>
+				<div class="ukefu-kbs-search-content">
+					国产汽车6月SUV销量排行榜,最畅销7座SUV销量6月。据悉,2017年6月中国汽车市场乘用车销量166.1万辆,同比增长0.8%,乘用车市场发展态势进一步放缓
+				</div>
+				<div class="ukefu-kbs-search-comment">
+					[最新回复] <a href="">这篇知识已经过期了吧，怎么还在这里......</a>
+				</div>
+				
+				<div class="ukefu-kbs-search-comment">
+					[知识概况] 45 浏览 ， 15收藏 ， 5评论 ， 2017-10-02 15:40:33前有效
+				</div>
+			</li>
+			<li>
+				<div class="fav"><i class="kfont">&#xe623;</i></div>
+				<div class="ukefu-kbs-search-title">
+					<a href="">阿斯兰的开发了开放</a>
+					<span class="uk-kbs-search-type">[产品文档]</span>
+					<span class="uk-kbs-search-type">[2017-06-15 13:22:21]</span>
+				</div>
+				<div class="ukefu-kbs-search-content">
+					国产汽车6月SUV销量排行榜,最畅销7座SUV销量6月。据悉,2017年6月中国汽车市场乘用车销量166.1万辆,同比增长0.8%,乘用车市场发展态势进一步放缓
+				</div>
+				<div class="ukefu-kbs-search-comment">
+					[最新回复] <a href="">这篇知识已经过期了吧，怎么还在这里......</a>
+				</div>
+				
+				<div class="ukefu-kbs-search-comment">
+					[知识概况] 45 浏览 ， 15收藏 ， 5评论 ， 2017-10-02 15:40:33前有效 
+					<span>
+						<i class="kfont">&#xe61e;</i>
+						<a href="">优客服v3.1.0 产品说明书.pdf 等3个附件</a>
+					</span>
+				</div>
+			</li>
+			<li>
+				<div class="ukefu-kbs-search-title">
+					<a href="">阿斯兰的开发了开放</a>
+					<span class="uk-kbs-search-type">[产品文档]</span>
+					<span class="uk-kbs-search-type">[2017-06-15 13:22:21]</span>
+				</div>
+				<div class="ukefu-kbs-search-content">
+					国产汽车6月SUV销量排行榜,最畅销7座SUV销量6月。据悉,2017年6月中国汽车市场乘用车销量166.1万辆,同比增长0.8%,乘用车市场发展态势进一步放缓
+				</div>
+				<div class="ukefu-kbs-search-comment">
+					[最新回复] <a href="">这篇知识已经过期了吧，怎么还在这里......</a>
+				</div>
+				
+				<div class="ukefu-kbs-search-comment">
+					[知识概况] 45 浏览 ， 15收藏 ， 5评论 ， 2017-10-02 15:40:33前有效
+				</div>
+			</li>
+			<li>
+				<div class="ukefu-kbs-search-title">
+					<a href="">阿斯兰的开发了开放</a>
+					<span class="uk-kbs-search-type">[产品文档]</span>
+					<span class="uk-kbs-search-type">[2017-06-15 13:22:21]</span>
+				</div>
+				<div class="ukefu-kbs-search-content">
+					国产汽车6月SUV销量排行榜,最畅销7座SUV销量6月。据悉,2017年6月中国汽车市场乘用车销量166.1万辆,同比增长0.8%,乘用车市场发展态势进一步放缓
+				</div>
+				<div class="ukefu-kbs-search-comment">
+					[最新回复] <a href="">这篇知识已经过期了吧，怎么还在这里......</a>
+				</div>
+				
+				<div class="ukefu-kbs-search-comment">
+					[知识概况] 45 浏览 ， 15收藏 ， 5评论 ， 2017-10-02 15:40:33前有效 
+					<span>
+						<i class="kfont">&#xe61e;</i>
+						<a href="">优客服v3.1.0 产品说明书.pdf 等3个附件</a>
+					</span>
+				</div>
+			</li>
+			<li>
+				<div class="ukefu-kbs-search-title">
+					<a href="">阿斯兰的开发了开放</a>
+					<span class="uk-kbs-search-type">[产品文档]</span>
+					<span class="uk-kbs-search-type">[2017-06-15 13:22:21]</span>
+				</div>
+				<div class="ukefu-kbs-search-content">
+					国产汽车6月SUV销量排行榜,最畅销7座SUV销量6月。据悉,2017年6月中国汽车市场乘用车销量166.1万辆,同比增长0.8%,乘用车市场发展态势进一步放缓
+				</div>
+				<div class="ukefu-kbs-search-comment">
+					[最新回复] <a href="">这篇知识已经过期了吧，怎么还在这里......</a>
+				</div>
+				
+				<div class="ukefu-kbs-search-comment">
+					[知识概况] 45 浏览 ， 15收藏 ， 5评论 ， 2017-10-02 15:40:33前有效
+				</div>
+			</li>
+			
+		</ul>							
+	</div>
+</div>

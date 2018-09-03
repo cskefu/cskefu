@@ -1,0 +1,102 @@
+<style>
+    .ukefu-report{
+    	width: auto;
+    }	
+	.ukefu-report td{
+		max-width:150px;
+		min-width:50px;
+	}	
+</style>
+<div class="layui-side layui-bg-black">
+	<div class="layui-side-scroll">
+		<#include "/apps/service/include/left.html">
+	</div>
+</div>
+<div class="layui-body">
+	<div class="layui-side-scroll">
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="site-h1" style="border-top:1px solid #e6e6e6;">
+					满意度统计
+					<span style="float:right;">
+						<div class="ukefu-bt-text-content" style="position: absolute;right: 5px;top: 0px;">
+							<form class="layui-form" name="search"	action="/service/stats/coment.html" method="get" style="float: left;margin-right:5px;">
+								<div class="layui-form-item">
+									<div class="layui-inline" style="margin-right:0px;">
+										<div class="layui-input-inline" style="width: auto;margin-right:0px;">
+											<label class="layui-form-label" style="width: auto;">技能组：</label>
+											<div class="layui-input-inline" style="width: auto;margin-right:0px;">
+										    	<select name="skill" class="ukefu-input" lay-ignore>
+										    		<option value="">请选择技能组</option>
+										    		<#if skillList??>
+										    		<#list skillList as tpskill>
+														<option value="${tpskill.id}" <#if skill?? && skill == tpskill.id>selected="selected"</#if>>${tpskill.name!''}</option>
+										    		</#list>
+										    		</#if>
+												</select>
+										    </div>
+										</div>
+									</div>
+									<div class="layui-inline" style="margin-right:0px;">
+										<div class="layui-input-inline" style="width: auto;margin-right:0px;">
+											<label class="layui-form-label" style="width: auto;">坐席：${agentskill!''}</label>
+											<div class="layui-input-inline" style="width: auto;margin-right:0px;">
+										    	<select name="agent" class="ukefu-input" lay-ignore>
+										    		<option value="">请选择坐席</option>
+										    		<#if agentList??>
+										    		<#list agentList as useragent>
+														<option value="${useragent.id}" <#if agent?? && agent == useragent.id>selected="selected"</#if>>${useragent.uname!''}</option>
+										    		</#list>
+										    		</#if>
+												</select>
+										    </div>
+										</div>
+									</div>
+									<div class="layui-inline" style="margin-right:0px;">
+										<div class="layui-input-inline" style="width: auto;margin-right:0px;">
+											<label class="layui-form-label" style="width: auto;">日期范围：</label>
+											<div class="layui-input-inline" style="width: auto;margin-right:0px;">
+										      <input name="begin" class="layui-input ukefu-input" placeholder="开始日期" value="${begin!''}" onclick="layui.laydate({elem: this, istime: true, format: 'YYYY-MM-DD'})">
+										    </div>
+											<label class="layui-form-label" style="width: auto;">~</label>
+											<div class="layui-input-inline" style="width: auto;margin-right:0px;">
+										      <input name="end" class="layui-input ukefu-input" placeholder="结束日期" value="${end!''}" onclick="layui.laydate({elem: this, istime: true, format: 'YYYY-MM-DD'})">
+										    </div>
+										</div>
+									</div>
+									<div class="layui-inline" style="margin-right:0px;">
+										<div class="layui-input-inline" style="width: auto;margin-right:0px;">
+											<div class="layui-input-inline" style="width: auto;margin-right:0px;">
+										      <button class="layui-btn layui-btn-small layui-btn-primary" style="color:#ffffff;">
+												  <i class="layui-icon"></i>
+												</button>
+										    </div>
+										</div>
+									</div>
+								</div>
+							</form>
+							<div class="layui-btn-group ukefu-btn-group" style="margin-top:2px;">
+								<a href="/service/stats/coment/exp.html?t=${.now?long}<#if skill??>&skill=${skill!''}</#if><#if agent??>&agent=${agent!''}</#if><#if begin??>&begin=${begin!''}</#if><#if end??>&end=${end!''}</#if>">
+								<button class="layui-btn layui-btn-small dropdown-menu">
+									<i class="kfont">&#xe672;</i> 导出 
+								</button>
+								</a>
+							</div>
+						</div>
+					</span>
+				</h1>
+				<#include "/apps/service/stats/report.html">
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+//Demo
+layui.use('form', function(){
+  var form = layui.form();
+  form.render(); //更新全部
+});
+layui.use('laydate', function() {
+	var laydate = layui.laydate;
+});
+</script>

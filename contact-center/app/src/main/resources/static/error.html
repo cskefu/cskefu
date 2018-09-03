@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>404 Not Found</title>
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <h3>404 Not Found</h3>
+        <h1 th:text="${errorCode}">404</h1>
+        <p th:utext="${errorMessage}">Error java.lang.NullPointerException</p>
+        <a href="/" th:href="@{/}">Back to Home Page</a>
+    </body>
+</html>

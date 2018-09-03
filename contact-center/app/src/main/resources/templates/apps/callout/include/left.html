@@ -1,0 +1,88 @@
+<link rel="stylesheet" href="/css/cskefu-callout.css">
+
+<ul class="layui-nav layui-nav-tree" lay-filter="setting">
+    <li class="layui-nav-item layui-this">
+        <a class="layui-nav-default" href="/apps/callout/index.html">外呼系统</a>
+    </li>
+    <li class="layui-nav-item layui-nav-itemed">
+        <a class="layui-nav-title" href="javascript:;">资源管理<span class="layui-nav-more"></span></a>
+        <dl class="layui-nav-child">
+            <#if user?? && (user.roleAuthMap["A11_A01_A03"]?? || user.usertype == "0") >
+            <dd <#if subtype?? && subtype == 'reports-agent-monitor'>class="layui-this"</#if>>
+                <a href="/apps/callout/reports/agent-monitor.html">坐席监控</a>
+            </dd>
+            </#if>
+            <!--<#if user?? && (user.roleAuthMap["A11_A01_A01"]?? || user.usertype == "0") >-->
+            <!--<dd <#if subtype?? && subtype == 'agents'>class="layui-this"</#if>>-->
+                <!--<a href="/apps/callout/resources/agents.html">我的坐席</a>-->
+            <!--</dd>-->
+            <!--</#if>-->
+            <!--<#if user?? && (user.roleAuthMap["A11_A01_A02"]?? || user.usertype == "0") >-->
+            <!--<dd <#if subtype?? && subtype == 'switchboard'>class="layui-this"</#if>>-->
+                <!--<a href="/apps/callout/resources/switchboard.html">我的总机</a>-->
+            <!--</dd>-->
+            <!--</#if>-->
+            <!--<#if user?? && (user.roleAuthMap["A11_A01_A03"]?? || user.usertype == "0") >-->
+            <!--<dd <#if subtype?? && subtype == 'skillgroups'>class="layui-this"</#if>>-->
+                <!--<a href="/apps/callout/resources/skillgroups.html">技能组</a>-->
+            <!--</dd>-->
+            <!--</#if>-->
+        </dl>
+    </li>
+    <li class="layui-nav-item layui-nav-itemed">
+        <a class="layui-nav-title" href="javascript:;">拨号计划<span class="layui-nav-more"></span></a>
+        <dl class="layui-nav-child">
+            <#if user?? && (user.roleAuthMap["A11_A02_A01"]?? || user.usertype == "0") >
+            <dd <#if subtype?? && subtype == 'dialplan'>class="layui-this"</#if>>
+                <a href="/apps/callout/dialplan/index.html">任务列表</a>
+            </dd>
+            </#if>
+            <#if user?? && (user.roleAuthMap["A11_A02_A02"]?? || user.usertype == "0") >
+            <dd <#if subtype?? && subtype == 'dialplan-archive'>class="layui-this"</#if>>
+                <a href="/apps/callout/dialplan/archive.html">已删除任务</a>
+            </dd>
+            </#if>
+        </dl>
+    </li>
+    <li class="layui-nav-item layui-nav-itemed">
+        <a class="layui-nav-title" href="javascript:;">数据查询<span class="layui-nav-more"></span></a>
+        <dl class="layui-nav-child">
+            <#if user?? && (user.roleAuthMap["A11_A03_A01"]?? || user.usertype == "0") >
+            <dd <#if subtype?? && subtype == 'reports-agents'>class="layui-this"</#if>>
+                <a href="/apps/callout/reports/agents.html">坐席报表</a>
+            </dd>
+            </#if>
+            <#if user?? && (user.roleAuthMap["A11_A03_A02"]?? || user.usertype == "0") >
+            <dd <#if subtype?? && subtype == 'reports-ds'>class="layui-this"</#if>>
+                <a href="/apps/callout/reports/daily-summary.html">外呼日报</a>
+            </dd>
+            </#if>
+            <!--<#if user?? && (user.roleAuthMap["A11_A03_A03"]?? || user.usertype == "0") >-->
+            <!--<dd <#if subtype?? && subtype == 'reports-system'>class="layui-this"</#if>>-->
+                <!--<a href="/apps/callout/reports/system.html">系统状态</a>-->
+            <!--</dd>-->
+            <!--</#if>-->
+            <!--<#if user?? && (user.roleAuthMap["A11_A03_A04"]?? || user.usertype == "0") >-->
+            <!--<dd <#if subtype?? && subtype == 'reports-rec'>class="layui-this"</#if>>-->
+                <!--<a href="/apps/callout/reports/recording.html">录音记录</a>-->
+            <!--</dd>-->
+            <!--</#if>-->
+            <#if user?? && (user.roleAuthMap["A11_A03_A05"]?? || user.usertype == "0") >
+            <dd <#if subtype?? && subtype == 'reports-comm'>class="layui-this"</#if>>
+                <a href="/apps/callout/reports/communicate.html">通话记录</a>
+            </dd>
+            </#if>
+            <!--<#if user?? && (user.roleAuthMap["A11_A03_A06"]?? || user.usertype == "0") >-->
+            <!--<dd <#if subtype?? && subtype == 'reports-dail'>class="layui-this"</#if>>-->
+                <!--<a href="/apps/callout/reports/dialplan.html">拨号计划记录</a>-->
+            <!--</dd>-->
+            <!--</#if>-->
+            <#if user?? && (user.roleAuthMap["A11_A03_A07"]?? || user.usertype == "0") >
+            <!--<dd <#if subtype?? && subtype == 'reports-agent-monitor'>class="layui-this"</#if>>-->
+                <!--<a href="/apps/callout/reports/agent-monitor.html">坐席监控</a>-->
+            <!--</dd>-->
+            <!--</#if>-->
+        </dl>
+    </li>
+    <span class="layui-nav-bar" style="top: 382px; height: 0px; opacity: 0;"></span>
+</ul>
