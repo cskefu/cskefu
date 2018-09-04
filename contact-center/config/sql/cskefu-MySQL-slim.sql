@@ -18,6 +18,12 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
+-- Create Database
+-- ----------------------------
+CREATE DATABASE IF NOT EXISTS `contactcenter` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `contactcenter`;
+
+-- ----------------------------
 -- Table structure for cs_callout_log_dialplan
 -- ----------------------------
 DROP TABLE IF EXISTS `cs_callout_log_dialplan`;

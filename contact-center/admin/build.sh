@@ -7,7 +7,7 @@
 baseDir=$(cd `dirname "$0"`;pwd)
 appHome=$baseDir/..
 registry=registry.chatopera.com
-imagename=$registry/ada/contact-center
+imagename=chatopera/contact-center
 PACKAGE_VERSION=1.0.0
 # functions
 
