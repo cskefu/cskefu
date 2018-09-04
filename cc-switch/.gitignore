@@ -10,5 +10,5 @@ sftp-config.json
 .vscode
 .idea/
 .composer.phar
-app/config/dev.env.js
+app/config/dev.env
 ax.js
