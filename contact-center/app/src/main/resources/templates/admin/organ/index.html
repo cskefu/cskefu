@@ -3,7 +3,7 @@
 		<h1 class="site-h1" style="background-color:#FFFFFF;">
 			组织机构
 			<span style="float:right;">
-				<button class="layui-btn layui-btn-small green" href="/admin/organ/add.html<#if organData>?parent=${organData.id!''}</#if>" id="areaadd" data-toggle="ajax" data-height="400" data-width="650" data-title="创建新用户">
+				<button class="layui-btn layui-btn-small green" href="/admin/organ/add.html<#if organData>?parent=${organData.id!''}</#if>" id="areaadd" data-toggle="ajax" data-height="400" data-width="650" data-title="创建新部门">
 					创建部门
 				</button>
 			</span>
@@ -19,7 +19,7 @@
 			<#if organData??>${organData.name!''}<#else>默认机构</#if><#if userList??>（${userList?size!''}）</#if>
 			<span style="float:right;">
 				<#if organData??>
-				<button class="layui-btn layui-btn-small green" href="/admin/organ/seluser.html?organ=${organData.id!''}" data-toggle="ajax" data-width="750" data-title="创建新用户">
+				<button class="layui-btn layui-btn-small green" href="/admin/organ/seluser.html?organ=${organData.id!''}" data-toggle="ajax" data-width="750" data-title="添加用户到当前部门">
 					添加用户到当前部门
 				</button>
 				<button class="layui-btn layui-btn-primary layui-btn-small" href="/admin/organ/area.html?id=${organData.id}" data-toggle="ajax" data-width="450" data-height="400" data-title="地区设置">
