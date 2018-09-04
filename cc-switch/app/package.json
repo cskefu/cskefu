@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "debug": "^3.1.0",
+    "dotenv": "^6.0.0",
     "ioredis": "^4.0.0",
     "lodash": "^4.17.10",
     "minio": "^7.0.0",
