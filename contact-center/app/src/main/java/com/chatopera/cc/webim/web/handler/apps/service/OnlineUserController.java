@@ -121,8 +121,9 @@ public class OnlineUserController extends Handler {
 				}
 				
 				if(agentService!=null){
-					AgentServiceSummary summary = serviceSummaryRes.findByAgentserviceidAndOrgi(agentService.getId(), super.getOrgi(request)) ;
-					map.put("summary" , summary) ;
+					List<AgentServiceSummary> summaries = serviceSummaryRes.findByAgentserviceidAndOrgi(agentService.getId(), super.getOrgi(request)) ;
+					if(summaries.size() > 0)
+						map.put("summary" , summaries.get(0)) ;
 				}
 				
 				List<AgentUserContacts> agentUserContactsList = agentUserContactsRes.findByUseridAndOrgi(userid, super.getOrgi(request)) ;
@@ -172,8 +173,9 @@ public class OnlineUserController extends Handler {
 		map.put("summaryTags", tagRes.findByOrgiAndTagtype(super.getOrgi(request) , UKDataContext.ModelType.SUMMARY.toString())) ;
 		
 		if(agentService!=null){
-			AgentServiceSummary summary = serviceSummaryRes.findByAgentserviceidAndOrgi(agentService.getId(), super.getOrgi(request)) ;
-			map.put("summary" , summary) ;
+			List<AgentServiceSummary> summaries = serviceSummaryRes.findByAgentserviceidAndOrgi(agentService.getId(), super.getOrgi(request)) ;
+			if(summaries.size() > 0)
+                map.put("summary" , summaries.get(0)) ;
 		}
 		
 		map.put("agentUserMessageList", chatMessageRepository.findByAgentserviceidAndOrgi(agentService.getId() , super.getOrgi(request), new PageRequest(0, 50, Direction.DESC , "updatetime")));
