@@ -23,9 +23,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface ServiceSummaryRepository extends JpaRepository<AgentServiceSummary, String>{
 	
-	public abstract AgentServiceSummary findByAgentserviceidAndOrgi(String agentserviceid , String orgi);
+	public abstract List<AgentServiceSummary> findByAgentserviceidAndOrgi(String agentserviceid , String orgi);
 	
 	public abstract AgentServiceSummary findByIdAndOrgi(String id , String orgi) ;
 	

@@ -211,9 +211,9 @@ public class AgentController extends Handler {
 			view.addObject("curagentuser", agentUser);
 			view.addObject("inviteData",  OnlineUserUtils.cousult(agentUser.getAppid(), agentUser.getOrgi(), inviteRepository));
 			if(!StringUtils.isBlank(agentUser.getAgentserviceid())){
-				AgentServiceSummary summary = this.serviceSummaryRes.findByAgentserviceidAndOrgi(agentUser.getAgentserviceid(), super.getOrgi(request)) ;
-				if(summary!=null){
-					view.addObject("summary", summary) ;
+				List<AgentServiceSummary> summarizes = this.serviceSummaryRes.findByAgentserviceidAndOrgi(agentUser.getAgentserviceid(), super.getOrgi(request)) ;
+				if(summarizes.size() > 0){
+					view.addObject("summary", summarizes.get(0)) ;
 				}
 			}
 
@@ -344,11 +344,11 @@ public class AgentController extends Handler {
 				agentUserTask.setTokenum(0);
 				agentUserTaskRes.save(agentUserTask) ;
 			}
-			
+
 			if(!StringUtils.isBlank(agentUser.getAgentserviceid())){
-				AgentServiceSummary summary = this.serviceSummaryRes.findByAgentserviceidAndOrgi(agentUser.getAgentserviceid(), super.getOrgi(request)) ;
-				if(summary!=null){
-					view.addObject("summary", summary) ;
+				List<AgentServiceSummary> summarizes = this.serviceSummaryRes.findByAgentserviceidAndOrgi(agentUser.getAgentserviceid(), super.getOrgi(request)) ;
+				if(summarizes.size() > 0){
+					view.addObject("summary", summarizes.get(0)) ;
 				}
 			}
 			
@@ -924,9 +924,9 @@ public class AgentController extends Handler {
 		if(!StringUtils.isBlank(userid) && !StringUtils.isBlank(agentuserid)){
 			AgentUser agentUser = this.agentUserRepository.findByIdAndOrgi(agentuserid, super.getOrgi(request)) ;
 			if(agentUser!=null && !StringUtils.isBlank(agentUser.getAgentserviceid())){
-				AgentServiceSummary summary = this.serviceSummaryRes.findByAgentserviceidAndOrgi(agentUser.getAgentserviceid(), super.getOrgi(request)) ;
-				if(summary!=null){
-					map.addAttribute("summary", summary) ;
+				List<AgentServiceSummary> summaries = this.serviceSummaryRes.findByAgentserviceidAndOrgi(agentUser.getAgentserviceid(), super.getOrgi(request)) ;
+				if(summaries.size() > 0){
+					map.addAttribute("summary", summaries.get(0)) ;
 				}
 			}
 			map.addAttribute("tags", tagRes.findByOrgiAndTagtype(super.getOrgi(request) , UKDataContext.ModelType.SUMMARY.toString())) ;
