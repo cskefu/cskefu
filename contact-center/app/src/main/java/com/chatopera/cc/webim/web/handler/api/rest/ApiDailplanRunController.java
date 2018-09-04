@@ -119,7 +119,7 @@ public class ApiDailplanRunController extends Handler {
 
             // 并发数，获得该部门的在线客服数 X 坐席外呼并发比
             final long countagent = userRes.countByOrgiAndAgentAndDatastatusAndOrgan(UKDataContext.SYSTEM_ORGI, true, false, dp.getOrgan().getId());
-            final int concurrency = (int) Math.floor(countagent * dp.getConcurrenceratio());
+            final int concurrency = (int) Math.ceil(countagent * dp.getConcurrenceratio());
             logger.info("[callout executor] 并发数 {}", concurrency);
             if (concurrency >= 1) {
                 dp.setExecuted(dp.getExecuted() + 1);
