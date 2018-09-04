@@ -54,9 +54,8 @@
 
 * 外呼系统：自动外呼，手动外呼，监听和报表等
 
-<p align="center">
  <b> 《春松客服产品系列视频》 </b>
-<table>
+<table align="center">
   <tr>
     <th>序号</th>
     <th>内容</th>
@@ -93,7 +92,6 @@
     <td><a href="https://v.qq.com/x/page/r0776rdgt6z.html">链接</a></td>
   </tr>
 </table>
-</p>
 
 ## 开发文档
 
