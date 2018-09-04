@@ -5,7 +5,7 @@ services:
     restart: always
     environment:
      - MYSQL_ROOT_PASSWORD=123456
-     - MYSQL_DATABASE=contact-center
+     - MYSQL_DATABASE=contactcenter
      - MYSQL_USER=admin
      - MYSQL_PASSWORD=admin123456
     ports:
@@ -13,6 +13,7 @@ services:
     volumes:
      - $PWD/mysql/data:/var/lib/mysql
      - $PWD/mysql/config:/etc/mysql
+     - $PWD/contact-center/config/sql/cskefu-MySQL-slim.sql:/docker-entrypoint-initdb.d/0.cskefu-MySQL-slim.sql
 
   redis:
     image: redis:latest
@@ -45,7 +46,7 @@ services:
      - UK_IM_SERVER_THREADS=10
      - SPRING_DATASOURCE_TYPE=com.alibaba.druid.pool.DruidDataSource
      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.jdbc.Driver
-     - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/contact-center?useUnicode=true&characterEncoding=UTF-8
+     - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/contactcenter?useUnicode=true&characterEncoding=UTF-8
      - SPRING_DATASOURCE_USERNAME=root
      - SPRING_DATASOURCE_PASSWORD=123456
      - MANAGEMENT_SECURITY_ENABLED=false
