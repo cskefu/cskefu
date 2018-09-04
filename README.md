@@ -54,6 +54,47 @@
 
 * 外呼系统：自动外呼，手动外呼，监听和报表等
 
+<p align="center">
+ <b> 《春松客服产品系列视频》 </b>
+<table>
+  <tr>
+    <th>序号</th>
+    <th>内容</th>
+    <th>视频地址</th>
+  </tr>
+  <tr>
+    <td>No. 1</td>
+    <td>产品概述</td>
+    <td><a href="https://v.qq.com/x/page/z0776g0osqu.html">链接</a></td>
+  </tr>
+  <tr>
+    <td>No. 2</td>
+    <td>安装部署</td>
+    <td><a href="https://v.qq.com/x/page/b07760u7f8t.html">链接</a></td>
+  </tr>
+  <tr>
+    <td>No. 3</td>
+    <td>功能演示</td>
+    <td><a href="https://v.qq.com/x/page/h077670ceg2.html">链接</a></td>
+  </tr>
+  <tr>
+    <td>No. 4</td>
+    <td>账号体系</td>
+    <td><a href="https://v.qq.com/x/page/b0776jwl6w1.html">链接</a></td>
+  </tr>
+  <tr>
+    <td>No. 5</td>
+    <td>客户关系管理</td>
+    <td><a href="https://v.qq.com/x/page/d0776p8ghpr.html">链接</a></td>
+  </tr>
+  <tr>
+    <td>No. 6</td>
+    <td>即时通信</td>
+    <td><a href="https://v.qq.com/x/page/r0776rdgt6z.html">链接</a></td>
+  </tr>
+</table>
+</p>
+
 ## 开发文档
 
 <p align="center">
