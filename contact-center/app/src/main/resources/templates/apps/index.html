@@ -335,13 +335,14 @@
 									 -->
 								</#if>
 							</#if>
-							<#if user?? && (user.roleAuthMap["A13"]?? || user.usertype == "0") >
-							<dd class="ukefu-left-menu" data-tooltip="数据报表">
-								<a href="javascript:void(0)" data-title="数据报表" data-href="/apps/view/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange"> 
-								<i class="kfont"	style="position: relative;">&#xe6d6;</i>
-								</a>
-							</dd>
-							</#if>
+                            <!--暂时隐藏https://github.com/chatopera/cosin/issues/52-->
+							<!--<#if user?? && (user.roleAuthMap["A13"]?? || user.usertype == "0") >-->
+							<!--<dd class="ukefu-left-menu" data-tooltip="数据报表">-->
+								<!--<a href="javascript:void(0)" data-title="数据报表" data-href="/apps/view/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange">-->
+								<!--<i class="kfont"	style="position: relative;">&#xe6d6;</i>-->
+								<!--</a>-->
+							<!--</dd>-->
+							<!--</#if>-->
 						</dl>
 					</li>
 					<li class="layui-nav-item" style="height: 30px; text-align: center"></li>
