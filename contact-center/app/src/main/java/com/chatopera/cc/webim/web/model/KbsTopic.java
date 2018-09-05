@@ -35,7 +35,7 @@ import com.chatopera.cc.util.UKTools;
 /**
  * 
  */
-@Document(indexName = "uckefu", type = "uk_kbs_topic")
+@Document(indexName = "cskefu", type = "kbs_topic")
 @Entity
 @Table(name = "uk_kbs_topic")
 @org.hibernate.annotations.Proxy(lazy = false)

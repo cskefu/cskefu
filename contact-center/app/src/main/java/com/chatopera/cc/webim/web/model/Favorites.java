@@ -34,7 +34,7 @@ import org.springframework.data.elasticsearch.annotations.Parent;
 
 import com.chatopera.cc.util.UKTools;
 
-@Document(indexName = "uckefu", type = "uk_favorites" , createIndex = false )
+@Document(indexName = "cskefu", type = "favorites" , createIndex = false )
 @Entity
 @Table(name = "uk_favorites")
 @org.hibernate.annotations.Proxy(lazy = false)

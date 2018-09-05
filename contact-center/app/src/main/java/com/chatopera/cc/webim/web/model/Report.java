@@ -31,7 +31,7 @@ import com.chatopera.cc.util.UKTools;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-@Document(indexName = "uckefu", type = "uk_report")
+@Document(indexName = "cskefu", type = "report")
 @Entity
 @Table(name = "uk_report")
 @org.hibernate.annotations.Proxy(lazy = false)

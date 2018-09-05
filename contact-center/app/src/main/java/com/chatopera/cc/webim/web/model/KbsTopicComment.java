@@ -32,7 +32,7 @@ import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import com.chatopera.cc.util.UKTools;
-@Document(indexName = "uckefu", type = "uc_kbs_topiccomment")
+@Document(indexName = "cskefu", type = "kbs_topiccomment")
 public class KbsTopicComment implements UKAgg{
 
 	/**
