@@ -24,6 +24,16 @@ services:
     ports:
      - "6379:6379"
 
+  elasticsearch:
+    image: "elasticsearch:2.4.6"
+    volumes:
+     - $PWD/elasticsearch/data:/usr/share/elasticsearch/data
+     - $PWD/elasticsearch/config:/usr/share/elasticsearch/config
+     - $PWD/elasticsearch/plugins:/usr/share/elasticsearch/plugins
+    ports:
+     - "9200:9200"
+     - "9300:9300"
+
   contact-center:
     image: "chatopera/contact-center:develop"
     restart: always
