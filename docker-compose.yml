@@ -26,6 +26,7 @@ services:
 
   elasticsearch:
     image: "elasticsearch:2.4.6"
+    restart: always
     volumes:
      - $PWD/elasticsearch/data:/usr/share/elasticsearch/data
      - $PWD/elasticsearch/config:/usr/share/elasticsearch/config
@@ -71,3 +72,4 @@ services:
     depends_on:
      - mysql
      - redis
+     - elasticsearch
