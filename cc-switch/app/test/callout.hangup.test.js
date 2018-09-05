@@ -26,11 +26,11 @@ test.only("Redis Test # 外呼挂断", async(t) => {
     console.log("挂断时间：", now);
     let payload = {
         "uuid": "9a0cbc81-ccae-425e-8d3d-369b872a6481",
-        "to": "13294561478",
+        "to": "15801213121",
         "from": "1002",
         "type": "callout",
         "channel": "bxzq",
-        "dialplan": "40288251657fca8b01657fcb3a1104c6",
+        "dialplan": "4028825165a9b23a0165a9b4de1c04c9",
         "createtime": now.valueOf(),
         "ops": "hangup",
         "record":"chatopera/376bf70a-9449-46c8-ad3e-03ac41953946.wav"

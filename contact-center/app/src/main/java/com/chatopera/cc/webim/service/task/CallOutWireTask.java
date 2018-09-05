@@ -271,7 +271,7 @@ public class CallOutWireTask implements MessageListener {
         onlineUser.setSessionid(onlineUser.getId());
 
         // 获取该访客对应的联系人
-        List<Contacts> lxrs = contactsRes.findOneByPhoneAndOrgiAndDatastatusIsFalse(visitorPhoneNumber, UKDataContext.SYSTEM_ORGI);
+        List<Contacts> lxrs = contactsRes.findOneByDatastatusIsFalseAndPhoneAndOrgi(visitorPhoneNumber, UKDataContext.SYSTEM_ORGI);
         Contacts lxr = null;
         if (lxrs.size() >= 1) {
             lxr = lxrs.get(0);

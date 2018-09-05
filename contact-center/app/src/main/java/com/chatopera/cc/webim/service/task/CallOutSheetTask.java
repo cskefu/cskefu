@@ -208,7 +208,7 @@ public class CallOutSheetTask {
                 String phone = StringUtils.trim(lastContents);
                 if (StringUtils.isNumeric(phone)) {
                     if (StringUtils.length(phone) == 11) {
-                        if (contactsRes.countByMobilenoAndOrgi(phone, orgi) == 0) {
+                        if (contactsRes.countByDatastatusIsFalseAndPhoneAndOrgi(phone, orgi) == 0) {
                             // 不是已有联系人
                             CallOutTarget ct = new CallOutTarget();
                             MobileAddress ma = MobileNumberUtils.getAddress(phone);

@@ -23,7 +23,6 @@ import com.chatopera.cc.webim.web.model.Contacts;
 import java.util.List;
 
 public interface ContactsRepository extends  ElasticsearchRepository<Contacts, String> , ContactsEsCommonRepository {
-	public int countByPhoneAndOrgi(String phone,String orgi);
-	public int countByMobilenoAndOrgi(String mobileno, String orgi);
-	public List<Contacts> findOneByPhoneAndOrgiAndDatastatusIsFalse(String phone, String orgi);
+	public int countByDatastatusIsFalseAndPhoneAndOrgi(String phone,String orgi);
+	public List<Contacts> findOneByDatastatusIsFalseAndPhoneAndOrgi(String phone, String orgi);
 }
