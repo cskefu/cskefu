@@ -9,7 +9,7 @@ services:
      - MYSQL_USER=admin
      - MYSQL_PASSWORD=admin123456
     ports:
-     - "3306:3306"
+     - "8037:3306"
     volumes:
      - $PWD/mysql/data:/var/lib/mysql
      - $PWD/mysql/config:/etc/mysql
@@ -22,7 +22,7 @@ services:
     volumes:
      - $PWD/redis/data:/data
     ports:
-     - "6379:6379"
+     - "8041:6379"
 
   elasticsearch:
     image: "elasticsearch:2.4.6"
@@ -31,8 +31,8 @@ services:
      - $PWD/elasticsearch/config:/usr/share/elasticsearch/config
      - $PWD/elasticsearch/plugins:/usr/share/elasticsearch/plugins
     ports:
-     - "9200:9200"
-     - "9300:9300"
+     - "8039:9200"
+     - "8040:9300"
 
   contact-center:
     image: "chatopera/contact-center:develop"
