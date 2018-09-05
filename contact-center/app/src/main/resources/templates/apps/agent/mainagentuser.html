@@ -304,7 +304,7 @@
                 <#list agentServiceList as agentService>
                 <li class="ukefu-agentservice-list">
                     <a href="/service/online/chatmsg.html?id=${agentService.id!''}&title=false" data-toggle="ajax" data-width="950" data-height="500" data-title="服务记录">
-                        <span class="quick-reply" data-id="content_${agentService.id!''}">${agentService.username!''}</span>
+                        <span style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;max-width:200px;display: inline-block;" class="quick-reply" data-id="content_${agentService.id!''}">${agentService.username!''}</span>
                         <div class="ukefu-agentservice-his">坐席：${agentService.agentusername!''}</div>
                         <div style="color:#333;position: relative;">
                             ${agentService.servicetime?string("yyyy-MM-dd HH:mm:ss")}

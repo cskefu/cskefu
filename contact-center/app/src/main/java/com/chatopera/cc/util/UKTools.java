@@ -418,7 +418,10 @@ public class UKTools {
              os = "UnKnown";
          }
          //===============Browser===========================
-        if (user.contains("msie") || user.indexOf("rv:11") > -1)
+		if(user.contains("qqbrowser"))
+		{
+			browser = "QQBrowser" ;
+		}else if (user.contains("msie") || user.indexOf("rv:11") > -1)
         {
         	if(user.indexOf("rv:11") >= 0){
         		browser = "IE11" ;
