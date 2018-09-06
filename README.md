@@ -91,6 +91,16 @@
     <td>即时通信</td>
     <td><a href="https://v.qq.com/x/page/r0776rdgt6z.html">链接</a></td>
   </tr>
+  <tr>
+    <td>No. 7</td>
+    <td>呼叫中心</td>
+    <td><a href="https://v.qq.com/x/page/i07785u58jm.html">链接</a></td>
+  </tr>
+  <tr>
+    <td>No. 8</td>
+    <td>数据报表</td>
+    <td><a href="https://v.qq.com/x/page/e0778ptg6b0.html">链接</a></td>
+  </tr>
 </table>
 
 ## 开发文档
