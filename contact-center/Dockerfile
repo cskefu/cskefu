@@ -33,5 +33,5 @@ RUN mvn clean package && \
     rm -rf /app && \
     rm -rf /root/.m2
 
-EXPOSE 8000-9500
+EXPOSE 8030-8090 9200 9300
 CMD ["/opt/apache-tomcat/bin/catalina.sh", "run"]
