@@ -55,6 +55,8 @@ services:
      - UK_IM_SERVER_PORT=8036
      - UK_IM_SERVER_HOST=localhost
      - UK_IM_SERVER_THREADS=10
+     # set a separated port for SSL
+     - CS_IM_SERVER_SSL_PORT=
      - SPRING_DATASOURCE_TYPE=com.alibaba.druid.pool.DruidDataSource
      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.jdbc.Driver
      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/contactcenter?useUnicode=true&characterEncoding=UTF-8

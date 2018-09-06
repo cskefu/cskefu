@@ -46,7 +46,10 @@ public class IMServerConfiguration
   
     @Value("${uk.im.server.port}")  
     private Integer port;
-    
+
+    @Value("${cs.im.server.ssl.port}")
+    private Integer sslPort;
+
     @Value("${web.upload-path}")
     private String path;
     
@@ -57,9 +60,14 @@ public class IMServerConfiguration
     
     @Bean(name="webimport") 
     public Integer getWebIMPort() {   
-    	UKDataContext.setWebIMPort(port);
-    	return port;   
-    }  
+    	if(sslPort != null){
+			UKDataContext.setWebIMPort(sslPort);
+			return sslPort;
+		} else {
+            UKDataContext.setWebIMPort(port);
+            return port;
+        }
+    }
     
     @Bean  
     public SocketIOServer socketIOServer() throws NoSuchAlgorithmException, IOException   

@@ -100,7 +100,10 @@ public class IMController extends Handler {
   
     @Value("${uk.im.server.port}")  
     private Integer port; 
-    
+
+    @Value("${cs.im.server.ssl.port}")
+    private Integer sslPort;
+
     @Value("${web.upload-path}")
     private String path;
     
@@ -338,7 +341,13 @@ public class IMController extends Handler {
 			
     		
     		map.addAttribute("hostname", request.getServerName()) ;
-			map.addAttribute("port", port) ;
+
+    		if(sslPort != null){
+                map.addAttribute("port", sslPort) ;
+            } else {
+    		    map.addAttribute("port", port);
+            }
+
 			map.addAttribute("appid", appid) ;
 			map.addAttribute("userid", userid) ;
 			map.addAttribute("schema", request.getScheme()) ;

@@ -4,7 +4,8 @@ newuser['mp3'] = '/images/new.mp3';
 newmessage['mp3'] = '/images/message.mp3';
 ring['mp3'] = '/images/ring.mp3';
 $(document).ready(function(){
-    socket = io.connect(schema+'://'+hostname+':'+port+'/im/agent?orgi='+orgi+"&userid="+userid+"&session="+session+"&admin="+adminuser );
+    var protocol = window.location.protocol.replace(/:/g,'');
+    socket = io.connect(protocol+'://'+hostname+':'+port+'/im/agent?orgi='+orgi+"&userid="+userid+"&session="+session+"&admin="+adminuser );
     socket.on('connect',function() {
 		console.log("连接初始化成功");
 		//请求服务端记录 当前用户在线事件
