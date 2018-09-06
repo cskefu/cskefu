@@ -1595,6 +1595,27 @@ CREATE TABLE `uk_contacts` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='联系人信息表';
 
+
+-- ----------------------------
+-- Table structure for cs_contact_notes
+-- ----------------------------
+DROP TABLE IF EXISTS `cs_contact_notes`;
+CREATE TABLE `cs_contact_notes` (
+  `id` varchar(32) NOT NULL COMMENT 'ID',
+  `contactid` varchar(32) NOT NULL COMMENT '联系人ID',
+  `createtime` datetime NOT NULL COMMENT '创建时间',
+  `updatetime` datetime NOT NULL COMMENT '更新时间',
+  `category` varchar(200) DEFAULT NULL COMMENT '内容类型',
+  `content` varchar(1000) DEFAULT NULL COMMENT '内容',
+  `creater` varchar(32) DEFAULT NULL COMMENT '创建人',
+  `datastatus` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否已删除',
+  `agentuser` varchar(32) DEFAULT NULL COMMENT '在线访客记录ID',
+  `onlineuser` varchar(32) DEFAULT NULL COMMENT '在线访客信息ID',
+  `orgi` varchar(60) DEFAULT NULL COMMENT '租客标识',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='联系人笔记表';
+
+
 -- ----------------------------
 -- Table structure for uk_cube
 -- ----------------------------
