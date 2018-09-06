@@ -16,10 +16,11 @@
 
 package com.chatopera.cc.webim.web.model;
 
+import com.chatopera.cc.util.UKTools;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Document(indexName = "cskefu", type = "contact_notes")
@@ -28,7 +29,7 @@ import java.util.Date;
 @org.hibernate.annotations.Proxy(lazy = false)
 public class ContactNotes {
 
-    private String id;
+    private String id = UKTools.getUUID();
     private String contactid;
     private Date createtime;
     private Date updatetime;
@@ -40,7 +41,10 @@ public class ContactNotes {
     private String onlineuser;
     private String orgi;
 
-
+    @Id
+    @Column(length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "assigned")
     public String getId() {
         return id;
     }
