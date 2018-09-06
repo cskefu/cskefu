@@ -1,0 +1,14 @@
+{
+  "name": "timeliner",
+  "homepage": "https://github.com/technotarek/timeliner",
+  "_release": "2b17590fae",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "2b17590fae9d8fb2cc96746962ff14d825f2a122"
+  },
+  "_source": "https://github.com/technotarek/timeliner.git",
+  "_target": "*",
+  "_originalSource": "timeliner",
+  "_direct": true
+}

@@ -193,7 +193,7 @@ public class ContactsController extends Handler{
     @Menu(type = "contacts" , subtype = "contacts")
     public ModelAndView detail(ModelMap map , HttpServletRequest request , @Valid String id) {
     	map.addAttribute("contacts", contactsRes.findOne(id)) ;
-        return request(super.createRequestPageTempletResponse("/apps/business/contacts/detail"));
+        return request(super.createAppsTempletResponse("/apps/business/contacts/detail"));
     }
     
     

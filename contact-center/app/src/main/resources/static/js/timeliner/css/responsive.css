@@ -1,0 +1,71 @@
+/* Smartphones (landscape and portrait) ----------- */
+@media screen and (max-width: 768px) {
+
+    * {
+        max-width: 460px;
+    }
+
+    body {
+        font-size: large;
+    }
+
+    .container {
+       padding:10px;
+    }
+
+    div.timelineToggle {
+       float:none;
+    }
+
+    .timelineEvent div.media {
+        display:none;
+        float:none;
+    }
+
+    .timelineMinor dt {
+       font-size:1.2em;
+       white-space: normal;
+    }
+
+    .timelineMinor dd h3 {
+       font-size:1em;
+       white-space: normal;
+    }
+
+    div#timelineContainer {
+    }
+
+    .timelineMinor dd {
+        margin-left:20px;
+        padding-left:0;
+        width:100%;
+    }
+
+    .timelineEvent .media p {
+       font-size:1em;
+    }
+
+    dl.timelineMinor {
+       float:none;
+       max-width:80%;
+    }
+
+    .timelineEvent p {
+       float:none;
+       width:100%;
+    }
+
+    .timelineEvent blockquote {
+       float:none;
+       width:200px;
+       font-size:1em;
+    }
+}
+/* Smartphones (portrait) ----------- */
+@media only screen and (max-width : 320px) {
+
+    * {
+        max-width: 300px;
+    }
+
+}
