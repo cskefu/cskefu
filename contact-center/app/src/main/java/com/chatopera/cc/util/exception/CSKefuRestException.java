@@ -1,5 +1,5 @@
 /*
- * Copyright (C)  2018 Chatopera Inc, <https://www.chatopera.com>
+ * Copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.chatopera.cc.util.exception;
 
-package com.chatopera.cc.webim.service.es;
-
-import com.chatopera.cc.webim.web.model.ContactNotes;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
-
-public interface ContactNotesRepository extends ElasticsearchRepository<ContactNotes, String> {
-    public Page<ContactNotes> findByContactidAndOrgiOrderByCreatetimeDesc(String contactid, String q, Pageable page);
+public class CSKefuRestException extends Exception {
+    public CSKefuRestException(String msg){
+        super(msg);
+    }
 }
