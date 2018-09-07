@@ -142,7 +142,7 @@ public class ApiContactNotesController extends Handler {
      * @param payload
      * @return
      */
-    private JsonObject create(final JsonObject payload) {
+    private JsonObject create(final JsonObject payload) throws GsonTools.JsonObjectExtensionConflictException {
         logger.info("[contact note] create {}", payload.toString());
         JsonObject resp = new JsonObject();
         // validate parameters
@@ -178,6 +178,7 @@ public class ApiContactNotesController extends Handler {
         JsonObject data = new JsonObject();
         data.addProperty("id", cn.getId());
         data.addProperty("updatetime", Constants.DISPLAY_DATE_FORMATTER.format(dt));
+        GsonTools.extendJsonObject(data, GsonTools.ConflictStrategy.PREFER_NON_NULL, creater(cn.getCreater()));
         resp.add("data", data);
         return resp;
     }
@@ -254,6 +255,7 @@ public class ApiContactNotesController extends Handler {
         Page<ContactNotes> cns = contactNotesRes.findByContactidAndOrgiOrderByCreatetimeDesc(cid,
                 q, new PageRequest(super.getP(request), super.getPs(request)));
 
+        resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
         resp.addProperty("size", cns.getSize());
         resp.addProperty("number", cns.getNumber());
         resp.addProperty("totalPage", cns.getTotalPages());
