@@ -316,26 +316,7 @@ public class OrganController extends Handler{
     	}
     	return request(super.createRequestPageTempletResponse("redirect:/admin/organ/index.html?msg="+msg));
     }
-    
-    @RequestMapping("/auth")
-    @Menu(type = "admin" , subtype = "organ")
-    public ModelAndView auth(ModelMap map ,HttpServletRequest request , @Valid String id) {
-    	
-    	SysDic sysDic = sysDicRes.findByCode(UKDataContext.UKEFU_SYSTEM_AUTH_DIC) ;
-    	if(sysDic!=null){
-    		map.addAttribute("resourceList", sysDicRes.findByDicid(sysDic.getId())) ;
-    	}
-    	
-    	map.addAttribute("sysDic", sysDic) ;
-    	Organ organData = organRepository.findByIdAndOrgi(id, super.getOrgiByTenantshare(request)) ;
-    	map.addAttribute("organData", organData) ;
-    	map.addAttribute("roleList", roleRepository.findByOrgiAndOrgid(super.getOrgiByTenantshare(request),super.getOrgid(request))) ;
-    	
-    	map.addAttribute("organRoleList", organRoleRes.findByOrgiAndOrgan(super.getOrgiByTenantshare(request), organData)) ;
-    	
-        return request(super.createRequestPageTempletResponse("/admin/organ/auth"));
-    }
-    
+
     @RequestMapping("/auth/save")
     @Menu(type = "admin" , subtype = "role")
     public ModelAndView authsave(HttpServletRequest request ,@Valid String id ,@Valid String menus) {

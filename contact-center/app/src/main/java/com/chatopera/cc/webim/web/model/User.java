@@ -17,11 +17,7 @@
 package com.chatopera.cc.webim.web.model;
 
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -104,6 +100,7 @@ public class User implements java.io.Serializable{
 	private int fans;			//粉丝
 	private int follows;		//关注
 	private int integral;		//积分
+	private HashSet<String> myorgans = new HashSet<>();
 	private List<Role> roleList = new ArrayList<Role>();
 	private Map<String ,Object> roleAuthMap  = new HashMap<String ,Object>();
 	
@@ -517,4 +514,13 @@ public class User implements java.io.Serializable{
 	public void setOrdertype(String ordertype) {
 		this.ordertype = ordertype;
 	}
+
+    @Transient
+    public HashSet<String> getMyorgans() {
+        return myorgans;
+    }
+
+    public void setMyorgans(HashSet<String> myorgans) {
+        this.myorgans = myorgans;
+    }
 }

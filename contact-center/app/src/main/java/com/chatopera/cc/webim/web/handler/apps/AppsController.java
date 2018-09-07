@@ -217,6 +217,7 @@ public class AppsController extends Handler {
     		User sessionUser = super.getUser(request) ;
     		tempUser.setRoleList(sessionUser.getRoleList()) ;
     		tempUser.setRoleAuthMap(sessionUser.getRoleAuthMap());
+    		tempUser.setMyorgans(sessionUser.getMyorgans());
     		User u = tempUser;
     		u.setOrgi(super.getOrgi(request));
     		super.setUser(request, u);

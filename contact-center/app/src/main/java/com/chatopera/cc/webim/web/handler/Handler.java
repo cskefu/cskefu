@@ -17,6 +17,7 @@
 package com.chatopera.cc.webim.web.handler;
 
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
 import java.text.ParseException;
 
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.chatopera.cc.core.UKDataContext;
 import com.chatopera.cc.util.UKView;
+import com.chatopera.cc.util.exception.CSKefuException;
 import com.chatopera.cc.webim.service.cache.CacheHelper;
 import com.chatopera.cc.webim.service.repository.TenantRepository;
 import com.chatopera.cc.webim.web.handler.api.rest.QueryParams;
@@ -36,6 +38,8 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.QueryStringQueryBuilder.Operator;
 import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -49,6 +53,8 @@ import com.chatopera.cc.webim.web.model.SystemConfig;
 @Controller
 @SessionAttributes
 public class Handler {
+    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
+
 	@Autowired
 	private TenantRepository tenantRes;
 	
@@ -85,6 +91,32 @@ public class Handler {
 		}
 		return user ;
 	}
+
+    /**
+     * 构建ElasticSearch基于部门查询的Filter
+     * @param request
+     * @param boolQueryBuilder
+     * @return
+     * @throws CSKefuException
+     */
+	public boolean esOrganFilter(final HttpServletRequest request, final BoolQueryBuilder boolQueryBuilder) throws CSKefuException {
+        // 组合部门条件
+        User u = getUser(request);
+        if( u == null){
+            throw new CSKefuException("[esOrganFilter] 未能获取到登录用户。");
+        } else if(u.isSuperuser()){
+            // 超级管理员, 查看任何数据
+            return true;
+        } else if(u.getMyorgans().size() == 0){
+            // 用户没有被分配到部门，返回空数据
+            return false;
+        } else {
+            // 用户在部门中，通过部门过滤数据
+            String[] values = u.getMyorgans().toArray(new String[u.getMyorgans().size()]);
+            boolQueryBuilder.filter(termsQuery("organ", values));
+            return true;
+        }
+    }
 	
 	/**
 	 * 
@@ -252,8 +284,6 @@ public class Handler {
 		}
 		return user ;
 	}
-	
-	
 	
 	public void setUser(HttpServletRequest request , User user){
 		request.getSession(true).removeAttribute(UKDataContext.USER_SESSION_NAME) ;
