@@ -123,6 +123,10 @@
 								<#if contacts.user??>${contacts.user.username!''}</#if>
 							</td>
 							<td style="white-space:nowrap;width:1%;" nowrap="nowrap">
+                                <a href="/apps/contacts/detail.html?id=${contacts.id!''}">
+                                    <i class="layui-icon">&#xe60a;</i>
+                                    详情
+                                </a>
 								<#if user?? && (user.roleAuthMap["A02_A01_A02_B06"]?? || user.usertype == "0") >
 						  		<a href="/apps/contacts/edit.html?id=${contacts.id!''}" data-toggle="ajax" data-width="950" data-height="600" data-title="编辑联系人信息">
 						  			<i class="layui-icon">&#xe642;</i>

@@ -190,7 +190,7 @@ public class ContactsController extends Handler{
     }
     
     @RequestMapping("/detail")
-    @Menu(type = "contacts" , subtype = "contacts")
+    @Menu(type = "customer" , subtype = "index")
     public ModelAndView detail(ModelMap map , HttpServletRequest request , @Valid String id) {
     	map.addAttribute("contacts", contactsRes.findOne(id)) ;
         return request(super.createAppsTempletResponse("/apps/business/contacts/detail"));
