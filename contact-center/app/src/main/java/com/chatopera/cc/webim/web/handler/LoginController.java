@@ -179,18 +179,8 @@ public class LoginController extends Handler{
 	    			loginUser.getRoleList().add(userRole.getRole()) ;
 	    		}
 	    	}
-	    	if(!StringUtils.isBlank(loginUser.getOrgan())){
-	    		Organ organ = organRepository.findByIdAndOrgi(loginUser.getOrgan(), loginUser.getOrgi()) ;
-	    		if(organ!=null){
-	    			List<OrganRole> organRoleList = organRoleRes.findByOrgiAndOrgan(loginUser.getOrgi(), organ) ;
-	    			if(organRoleList.size() > 0){
-	    				for(OrganRole organRole : organRoleList){
-	    					loginUser.getRoleAuthMap().put(organRole.getDicvalue(),true);
-	    				}
-	    			}
-	    		}
-	    	}
-	    	//获取用户的授权资源
+
+	    	//获取用户的角色权限，进行授权
 	    	List<RoleAuth> roleAuthList = roleAuthRes.findAll(new Specification<RoleAuth>(){
 	    		@Override
 	    		public Predicate toPredicate(Root<RoleAuth> root, CriteriaQuery<?> query,

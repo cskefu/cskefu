@@ -253,8 +253,6 @@ public class Handler {
 		return user ;
 	}
 	
-	
-	
 	public void setUser(HttpServletRequest request , User user){
 		request.getSession(true).removeAttribute(UKDataContext.USER_SESSION_NAME) ;
 		request.getSession(true).setAttribute(UKDataContext.USER_SESSION_NAME , user) ;
