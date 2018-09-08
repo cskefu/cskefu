@@ -40,14 +40,14 @@
 						<#if user?? && (user.roleAuthMap["A02_A01_A02_B08"]?? || user.usertype == "0") >
 						<div class="layui-btn-group ukefu-btn-group">
 							<button class="layui-btn layui-btn-small" href="/apps/contacts/imp.html<#if ckind??>?ckind=${ckind}</#if>" title="导入联系人" data-toggle="ajax" data-width="950" data-height="600">
-								<i class="kfont">&#xe641;</i> 导入 
+								<i class="kfont">&#xe641;</i> 导入
 							</button>
 						</div>
 						</#if>
 						<#if user?? && (user.roleAuthMap["A02_A01_A02_B09"]?? || user.usertype == "0") >
 						<div class="layui-btn-group ukefu-btn-group">
 							<button class="layui-btn layui-btn-small dropdown-menu">
-								<i class="kfont">&#xe672;</i> 导出 
+								<i class="kfont">&#xe672;</i> 导出
 								<i class="layui-icon">&#xe625;</i>
 							</button>
 							<ul class="ukefu-dropdown-menu layui-anim layui-anim-upbit">
@@ -98,15 +98,15 @@
 								<input type="checkbox" class="ids" name="ids" value="${contacts.id!''}"/>
 							</td>
 							<td class=" first_td_head">
-								${contacts.name!''}
+                                <a href="/apps/contacts/detail.html?id=${contacts.id!''}">${contacts.name!''}</a>
 							</td>
 							<td>
 								<span class="ukefu-phone-number">
-								${contacts.mobileno!''} 
+								${contacts.mobileno!''}
 								</span>
 							</td>
 							<td>
-								${contacts.email!''} 
+								${contacts.email!''}
 							</td>
 							<td>
 								<#if contacts.gender?? && contacts.gender == '1'>男</#if>
@@ -117,12 +117,16 @@
 								${contacts.cusbirthday!''}
 							</td>
 							<td>
-								${uKeFuDic[contacts.ckind!''].name!''} 
+								${uKeFuDic[contacts.ckind!''].name!''}
 							</td>
 							<td>
 								<#if contacts.user??>${contacts.user.username!''}</#if>
 							</td>
 							<td style="white-space:nowrap;width:1%;" nowrap="nowrap">
+                                <a href="/apps/contacts/detail.html?id=${contacts.id!''}">
+                                    <i class="layui-icon">&#xe60a;</i>
+                                    详情
+                                </a>
 								<#if user?? && (user.roleAuthMap["A02_A01_A02_B06"]?? || user.usertype == "0") >
 						  		<a href="/apps/contacts/edit.html?id=${contacts.id!''}" data-toggle="ajax" data-width="950" data-height="600" data-title="编辑联系人信息">
 						  			<i class="layui-icon">&#xe642;</i>
@@ -178,15 +182,15 @@
 				top.layer.alert("请先选择需要导出的联系人信息");
 				$('#batexp').attr("href" , "javascript:void(0)");
 			}
-			
-			
+
+
 		});
-		
+
 	});
 	layui.use(['laypage', 'layer'], function(){
 		  var laypage = layui.laypage
 		  ,layer = layui.layer;
-		  
+
 		  laypage({
 				cont: 'page'
 				,pages: <#if contactsList??>${contactsList.totalPages}<#else>0</#if> //总页数
