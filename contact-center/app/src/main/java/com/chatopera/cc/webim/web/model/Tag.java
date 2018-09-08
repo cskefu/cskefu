@@ -35,7 +35,6 @@ public class Tag {
 	private Date createtime = new Date() ;
 	private int times;
 	private String creater ;
-	
 	private String tag ;
 	private String icon ;
 	private String color ;
@@ -117,5 +116,5 @@ public class Tag {
 	public void setColor(String color) {
 		this.color = color;
 	}
-	
+
 }
