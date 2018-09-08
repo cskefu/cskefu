@@ -23,6 +23,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.chatopera.cc.webim.web.model.Tag;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public abstract interface TagRepository  extends JpaRepository<Tag, String>
 {
@@ -30,8 +32,10 @@ public abstract interface TagRepository  extends JpaRepository<Tag, String>
 	public abstract Tag findByOrgiAndTag(String orgi , String tag);
 	
 	public abstract Tag findByOrgiAndId(String orgi , String id);
-	
-	public abstract Page<Tag> findByOrgiAndTagtype(String orgi , String tagtype ,Pageable paramPageable);
+
+	@Query(value = "select t from Tag t where (:tagtype is null or t.tagtype = :tagtype) " +
+            "and t.orgi = :orgi")
+	public Page<Tag> findByOrgiAndTagtype(@Param("orgi") String orgi , @Param("tagtype") String tagtype , Pageable paramPageable);
 	
 	public abstract List<Tag> findByOrgi(String orgi);
 	
