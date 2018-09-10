@@ -6,7 +6,7 @@
 
     <groupId>com.chatopera.chatbot</groupId>
     <artifactId>sdk</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <name>sdk</name>
@@ -121,6 +121,10 @@
             <id>chatopera</id>
             <url>http://192.168.2.217:8029/repository/maven-snapshots/</url>
         </snapshotRepository>
+        <repository>
+            <id>chatopera</id>
+            <url>http://192.168.2.217:8029/repository/maven-releases/</url>
+        </repository>
     </distributionManagement>
     <developers>
         <developer>

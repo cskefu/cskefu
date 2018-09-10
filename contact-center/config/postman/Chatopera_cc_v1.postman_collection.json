@@ -525,6 +525,39 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "机器人客服：创建",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "00bf99785103475c896435ef7216ebd1"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ops\": \"create\",\n  \"primaryLanguage\": \"zh_CN\",\n  \"snsid\": \"104EAc\",\n  \"name\": \"小C\",\n  \"baseUrl\": \"http://lhc-dev:8003\",\n  \"description\": \"描述\",\n  \"fallback\": \"我不理解。\",\n  \"welcome\": \"你好\",\n  \"workmode\": \"客服机器人优先\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/chatbot",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chatbot"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [

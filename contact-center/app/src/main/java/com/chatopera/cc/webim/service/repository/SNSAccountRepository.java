@@ -27,7 +27,9 @@ public abstract interface SNSAccountRepository
   extends JpaRepository<SNSAccount, String>
 {
   public abstract SNSAccount findByIdAndOrgi(String paramString, String orgi);
-  
+
+  public abstract boolean existsBySnsidAndSnstypeAndOrgi(String snsid, String snsType, String orgi);
+
   public abstract SNSAccount findBySnsid(String snsid);
   
   public abstract SNSAccount findBySnsidAndOrgi(String snsid, String orgi);
