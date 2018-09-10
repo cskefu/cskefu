@@ -111,4 +111,10 @@ public class RestAPI {
     public static JSONObject get(final String url, HashMap<String, Object> queryString) throws UnirestException {
         return get(url, queryString, null);
     }
+
+    public static JSONObject delete(final String url, HashMap<String, String> headers) throws UnirestException {
+        x(headers);
+        return  Unirest.delete(url).headers(headers).asJson().getBody().getObject();
+    }
+
 }

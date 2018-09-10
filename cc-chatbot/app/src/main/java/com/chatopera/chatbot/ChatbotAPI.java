@@ -138,12 +138,13 @@ public class ChatbotAPI {
 
     /**
      * 创建聊天机器人
-     * @param chatbotID 聊天机器人标识，由[a-zA-Z0-9-]组成，字母开头
-     * @param name 拟人化的名字
+     *
+     * @param chatbotID       聊天机器人标识，由[a-zA-Z0-9-]组成，字母开头
+     * @param name            拟人化的名字
      * @param primaryLanguage 首选语言，支持 [zh_CN|en_US]
-     * @param fallback 兜底回复
-     * @param description 描述
-     * @param welcome 欢迎语
+     * @param fallback        兜底回复
+     * @param description     描述
+     * @param welcome         欢迎语
      * @return
      */
     public JSONObject createBot(final String chatbotID,
@@ -167,6 +168,24 @@ public class ChatbotAPI {
         }
     }
 
+    /**
+     * 删除聊天机器人
+     * @param chatbotID
+     * @return
+     * @throws ChatbotAPIRuntimeException
+     */
+    public boolean deleteByChatbotID(final String chatbotID) throws ChatbotAPIRuntimeException {
+        if (StringUtils.isBlank(chatbotID))
+            throw new ChatbotAPIRuntimeException("聊天机器人ID不能为空。");
+        try {
+            JSONObject result = RestAPI.delete(this.getBaseUrl() + "/chatbot/" + chatbotID, null);
+            if(result.getInt("rc") == 0)
+                return true;
+            return false;
+        } catch (UnirestException e) {
+            throw new ChatbotAPIRuntimeException(e.toString());
+        }
+    }
 
     /**
      * 获取聊天机器人详情

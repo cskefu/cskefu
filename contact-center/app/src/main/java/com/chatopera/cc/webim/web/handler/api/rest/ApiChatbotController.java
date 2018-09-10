@@ -20,6 +20,7 @@ import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.util.exception.CallOutRecordException;
 import com.chatopera.cc.webim.service.repository.ChatbotRepository;
 import com.chatopera.cc.webim.service.repository.SNSAccountRepository;
+import com.chatopera.cc.webim.util.chatbot.ChatbotUtils;
 import com.chatopera.cc.webim.web.handler.Handler;
 import com.chatopera.cc.webim.web.handler.api.request.RestUtils;
 import com.chatopera.cc.webim.web.model.Chatbot;
@@ -46,18 +47,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 
 @RestController
 @RequestMapping("/api/chatbot")
 @Api(value = "聊天机器人", description = "请求聊天机器人服务")
 public class ApiChatbotController extends Handler {
     private final static Logger logger = LoggerFactory.getLogger(ApiChatbotController.class);
-    private final HashSet<String> VALID_LANGS = new HashSet<String>(Arrays.asList(new String[]{"zh_CN", "en_US"}));
-    private final HashSet<String> VALID_WORKMODELS = new HashSet<String>(Arrays.asList(new String[]{"客服机器人优先", "人工客服优先"}));
-    private final String SNS_TYPE_WEBIM = "webim";
 
     @Value("${license.client.id}")
     private String clientId;
@@ -86,6 +82,9 @@ public class ApiChatbotController extends Handler {
                 case "create":
                     json = create(j, curruser.getId(), curruser.getOrgan(), curruser.getOrgi());
                     break;
+                case "delete":
+                    json = delete(j, curruser.getId(), curruser.getOrgan(), curruser.getOrgi());
+                    break;
                 default:
                     json.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_2);
                     json.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的操作。");
@@ -95,24 +94,49 @@ public class ApiChatbotController extends Handler {
     }
 
     /**
-     * 使用snsid得到ChatbotID
-     *
-     * @param snsid
+     * 删除聊天机器人
+     * @param j
+     * @param uid
+     * @param organ
+     * @param orgi
      * @return
      */
-    private String resolveChatbotIDWithSnsid(String snsid) {
-        return clientId + "_" + snsid;
-    }
+    private JsonObject delete(JsonObject j, String uid, String organ, String orgi) {
+        JsonObject resp = new JsonObject();
+        if ((!j.has("id")) || StringUtils.isBlank(j.get("id").getAsString())) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入id。");
+            return resp;
+        }
+        final String id = j.get("id").getAsString();
 
+        Chatbot c = chatbotRes.findOne(id);
+        if (c == null) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，不存在该聊天机器人。");
+            return resp;
+        }
 
-    /**
-     * 使用chatbotID得到snsid
-     *
-     * @param chatbotID
-     * @return
-     */
-    private String resolveSnsidWithChatbotID(String chatbotID) {
-        return StringUtils.remove(chatbotID, clientId + "_");
+        try {
+            if (c.getApi().deleteByChatbotID(c.getChatbotID())) {
+                chatbotRes.delete(c);
+                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
+                resp.addProperty(RestUtils.RESP_KEY_DATA, "删除成功。");
+                return resp;
+            } else {
+                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
+                resp.addProperty(RestUtils.RESP_KEY_ERROR, "未成功删除该聊天机器人。");
+                return resp;
+            }
+        } catch (ChatbotAPIRuntimeException e) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "该聊天机器人服务请求异常。" + e.toString());
+            return resp;
+        } catch (MalformedURLException e) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "该聊天机器人地址错误。");
+            return resp;
+        }
     }
 
     /**
@@ -153,7 +177,7 @@ public class ApiChatbotController extends Handler {
             name = j.get("name").getAsString();
         }
 
-        if (!(j.has("primaryLanguage") && VALID_LANGS.contains(j.get("primaryLanguage").getAsString()))) {
+        if (!(j.has("primaryLanguage") && ChatbotUtils.VALID_LANGS.contains(j.get("primaryLanguage").getAsString()))) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入有效【primaryLanguage】。");
             return resp;
@@ -161,7 +185,7 @@ public class ApiChatbotController extends Handler {
             primaryLanguage = j.get("primaryLanguage").getAsString();
         }
 
-        if (!(j.has("workmode") && VALID_WORKMODELS.contains(j.get("workmode").getAsString()))) {
+        if (!(j.has("workmode") && ChatbotUtils.VALID_WORKMODELS.contains(j.get("workmode").getAsString()))) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入有效【workmode】。");
             return resp;
@@ -176,7 +200,7 @@ public class ApiChatbotController extends Handler {
         } else {
             snsid = j.get("snsid").getAsString();
             // #TODO 仅支持webim
-            if (!snsAccountRes.existsBySnsidAndSnstypeAndOrgi(snsid, SNS_TYPE_WEBIM, orgi)) {
+            if (!snsAccountRes.existsBySnsidAndSnstypeAndOrgi(snsid, ChatbotUtils.SNS_TYPE_WEBIM, orgi)) {
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
                 resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入有效【snsid】。");
                 return resp;
@@ -189,7 +213,7 @@ public class ApiChatbotController extends Handler {
             }
         }
 
-        chatbotID = resolveChatbotIDWithSnsid(snsid);
+        chatbotID = ChatbotUtils.resolveChatbotIDWithSnsid(snsid, clientId);
         if (chatbotRes.existsByChatbotIDAndOrgi(chatbotID, orgi)) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，数据库中存在该聊天机器人。");
@@ -229,15 +253,15 @@ public class ApiChatbotController extends Handler {
                 c.setDescription(description);
                 c.setFallback(fallback);
                 c.setPrimaryLanguage(primaryLanguage);
-                c.setWelcome(welcome);
                 c.setName(name);
+                c.setWelcome(result.getJSONObject("data").getString("welcome"));
 
                 // 默认不开启
                 c.setEnabled(false);
                 c.setCreater(creater);
                 c.setOrgan(organ);
                 c.setOrgi(orgi);
-                c.setChannel(SNS_TYPE_WEBIM);
+                c.setChannel(ChatbotUtils.SNS_TYPE_WEBIM);
                 c.setSnsAccountIdentifier(snsid);
                 Date dt = new Date();
                 c.setCreatetime(dt);
@@ -246,8 +270,10 @@ public class ApiChatbotController extends Handler {
 
                 chatbotRes.save(c);
 
+                JsonObject data = new JsonObject();
+                data.addProperty("id", c.getId());
+                resp.add(RestUtils.RESP_KEY_DATA, data);
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
-                resp.addProperty(RestUtils.RESP_KEY_DATA, "创建成功。");
                 return resp;
             } else {
                 // 创建失败
