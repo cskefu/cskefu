@@ -558,6 +558,39 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "机器人客服：查询",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "8b9567161da54400b994f141d119100b"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ops\": \"fetch\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/chatbot",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chatbot"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [

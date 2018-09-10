@@ -19,14 +19,18 @@ import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.util.exception.CallOutRecordException;
 import com.chatopera.cc.webim.service.repository.ChatbotRepository;
+import com.chatopera.cc.webim.service.repository.OrganRepository;
 import com.chatopera.cc.webim.service.repository.SNSAccountRepository;
+import com.chatopera.cc.webim.service.repository.UserRepository;
 import com.chatopera.cc.webim.util.chatbot.ChatbotUtils;
 import com.chatopera.cc.webim.web.handler.Handler;
 import com.chatopera.cc.webim.web.handler.api.request.RestUtils;
 import com.chatopera.cc.webim.web.model.Chatbot;
+import com.chatopera.cc.webim.web.model.Organ;
 import com.chatopera.cc.webim.web.model.User;
 import com.chatopera.chatbot.ChatbotAPI;
 import com.chatopera.chatbot.ChatbotAPIRuntimeException;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.swagger.annotations.Api;
@@ -37,6 +41,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +54,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 
 @RestController
 @RequestMapping("/api/chatbot")
@@ -63,6 +72,12 @@ public class ApiChatbotController extends Handler {
 
     @Autowired
     private SNSAccountRepository snsAccountRes;
+
+    @Autowired
+    private UserRepository userRes;
+
+    @Autowired
+    private OrganRepository organRes;
 
     @RequestMapping(method = RequestMethod.POST)
     @Menu(type = "apps", subtype = "chatbot", access = true)
@@ -85,6 +100,9 @@ public class ApiChatbotController extends Handler {
                 case "delete":
                     json = delete(j, curruser.getId(), curruser.getOrgan(), curruser.getOrgi());
                     break;
+                case "fetch":
+                    json = fetch(j, curruser.getId(), curruser.isSuperuser(), curruser.getMyorgans(), curruser.getOrgi(), super.getP(request), super.getPs(request));
+                    break;
                 default:
                     json.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_2);
                     json.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的操作。");
@@ -94,7 +112,72 @@ public class ApiChatbotController extends Handler {
     }
 
     /**
+     * 获取聊天机器人列表
+     *
+     * @param j
+     * @param id
+     * @param myorgans
+     * @param orgi
+     * @param p
+     * @param ps
+     * @return
+     */
+    private JsonObject fetch(JsonObject j, String id, boolean isSuperuser, HashSet<String> myorgans, String orgi, int p, int ps) {
+        JsonObject resp = new JsonObject();
+        if (isSuperuser) {
+            myorgans = null;
+        } else if (myorgans.size() == 0) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "当前登录用户未分配到任何部门并且不是管理员，无权访问机器人客服资源。");
+            return resp;
+        }
+
+        Page<Chatbot> records = chatbotRes.findByOrgans( myorgans != null? new ArrayList<String>(myorgans) : null, new PageRequest(p, ps, Sort.Direction.DESC, new String[]{"createtime"}));
+
+        JsonArray ja = new JsonArray();
+        for (Chatbot c : records) {
+            JsonObject o = new JsonObject();
+            o.addProperty("id", c.getId());
+            o.addProperty("name", c.getName());
+            o.addProperty("primaryLanguage", c.getPrimaryLanguage());
+            o.addProperty("description", c.getDescription());
+            o.addProperty("fallback", c.getFallback());
+            o.addProperty("welcome", c.getWelcome());
+            o.addProperty("workmode", c.getWorkmode());
+            o.addProperty("channel", c.getChannel());
+            o.addProperty("snsid", c.getSnsAccountIdentifier());
+            o.addProperty("enabled", c.isEnabled());
+
+            // 创建人
+            User user = userRes.findById(c.getCreater());
+            if (user != null) {
+                o.addProperty("creater", c.getCreater());
+                o.addProperty("creatername", user.getUname());
+            }
+
+            // 部门
+            Organ g = organRes.findOne(c.getOrgan());
+            if (g != null) {
+                o.addProperty("organ", c.getOrgan());
+                o.addProperty("organname", g.getName());
+            }
+            ja.add(o);
+        }
+
+        resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
+        resp.add("data", ja);
+        resp.addProperty("size", records.getSize()); // 每页条数
+        resp.addProperty("number", records.getNumber()); // 当前页
+        resp.addProperty("totalPage", records.getTotalPages()); // 所有页
+        resp.addProperty("totalElements", records.getTotalElements()); // 所有检索结果数量
+
+        return resp;
+
+    }
+
+    /**
      * 删除聊天机器人
+     *
      * @param j
      * @param uid
      * @param organ
