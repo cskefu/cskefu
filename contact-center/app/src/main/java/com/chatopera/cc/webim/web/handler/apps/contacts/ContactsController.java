@@ -105,8 +105,12 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/today")
     @Menu(type = "customer", subtype = "today")
-    public ModelAndView today(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ckind) {
+    public ModelAndView today(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ckind) throws CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        if(!super.esOrganFilter(request, boolQueryBuilder)){
+            return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
+        }
+
         if (!StringUtils.isBlank(q)) {
             map.put("q", q);
         }
@@ -121,9 +125,12 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/week")
     @Menu(type = "customer", subtype = "week")
-    public ModelAndView week(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ckind) {
-
+    public ModelAndView week(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ckind) throws CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        if(!super.esOrganFilter(request, boolQueryBuilder)){
+            return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
+        }
+
         if (!StringUtils.isBlank(q)) {
             map.put("q", q);
         }
@@ -138,8 +145,12 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/creater")
     @Menu(type = "customer", subtype = "creater")
-    public ModelAndView creater(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ckind) {
+    public ModelAndView creater(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ckind) throws CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        if(!super.esOrganFilter(request, boolQueryBuilder)){
+            return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
+        }
+
         boolQueryBuilder.must(termQuery("creater", super.getUser(request).getId()));
 
         if (!StringUtils.isBlank(ckind)) {
@@ -290,8 +301,11 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/expall")
     @Menu(type = "contacts", subtype = "contacts")
-    public void expall(ModelMap map, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void expall(ModelMap map, HttpServletRequest request, HttpServletResponse response) throws IOException, CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        if(!super.esOrganFilter(request, boolQueryBuilder)){
+            return;
+        }
         boolQueryBuilder.must(termQuery("datastatus", false));        //只导出 数据删除状态 为 未删除的 数据
         Iterable<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), null, null, false, boolQueryBuilder, null, new PageRequest(super.getP(request), super.getPs(request)));
 
@@ -338,8 +352,11 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/embed/index")
     @Menu(type = "customer", subtype = "embed")
-    public ModelAndView embed(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ckind) {
+    public ModelAndView embed(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ckind) throws CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        if(!super.esOrganFilter(request, boolQueryBuilder)){
+            return request(super.createAppsTempletResponse("/apps/business/contacts/embed/index"));
+        }
         if (!StringUtils.isBlank(q)) {
             map.put("q", q);
         }
