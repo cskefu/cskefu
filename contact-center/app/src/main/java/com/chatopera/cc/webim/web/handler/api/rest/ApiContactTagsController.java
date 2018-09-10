@@ -144,7 +144,6 @@ public class ApiContactTagsController extends Handler {
 
         // 创建关系
         TagRelation rel = new TagRelation();
-        rel.setId(UKTools.getUUID());
         rel.setDataid(contactid);
         rel.setUserid(contactid);
         rel.setTagid(tagId);

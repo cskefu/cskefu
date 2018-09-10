@@ -22,7 +22,7 @@ function httpRequest(opts) {
 
     payload.data = JSON.stringify(opts.data);
 
-    var index = layer.msg('查询中，请稍候',{icon: 16,time:false,shade:0.8});
+    var index = layer.msg('执行中，请稍候',{icon: 16,time:false,shade:0.8});
 
     return new Promise(function(resolve, reject) {
         $.ajax(payload)
