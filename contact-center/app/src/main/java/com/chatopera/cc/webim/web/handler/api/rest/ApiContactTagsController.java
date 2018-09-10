@@ -54,6 +54,8 @@ import java.util.List;
 @Api(value = "联系人标签", description = "管理联系人标签")
 public class ApiContactTagsController extends Handler {
     private static final Logger logger = LoggerFactory.getLogger(ApiContactTagsController.class);
+    private static final String TAGTYPE_USER = "user";
+
 
     @Autowired
     private TagRepository tagRes;
@@ -84,7 +86,7 @@ public class ApiContactTagsController extends Handler {
             }
 
             // 获取所有标签
-            List<Tag> all = tagRes.findAll();
+            List<Tag> all = tagRes.findByOrgiAndTagtype(j.get("orgi").getAsString(), TAGTYPE_USER);
             JsonArray data = new JsonArray();
 
             for (Tag t : all) {

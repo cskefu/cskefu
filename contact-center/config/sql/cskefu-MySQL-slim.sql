@@ -7941,7 +7941,7 @@ CREATE TABLE `uk_tag` (
 -- ----------------------------
 BEGIN;
 INSERT INTO `uk_tag` VALUES ('2c938088650ce8ee01650d5b9be0057d', '准客户', 'cskefu', '2018-08-06 03:50:32', 0, '4028cac3614cd2f901614cf8be1f0324', 'callout', NULL, '4');
-INSERT INTO `uk_tag` VALUES ('2c938088650ce8ee01650db8de77068f', '咨询客户标签', 'cskefu', '2018-08-06 12:38:57', 0, '4028cac3614cd2f901614cf8be1f0324', 'user', NULL, '1');
+INSERT INTO `uk_tag` VALUES ('2c938088650ce8ee01650db8de77068f', '联系人标签', 'cskefu', '2018-08-06 12:38:57', 0, '4028cac3614cd2f901614cf8be1f0324', 'user', NULL, '1');
 INSERT INTO `uk_tag` VALUES ('2c938088650ce8ee01650db911570699', '工单', 'cskefu', '2018-08-06 05:32:37', 0, '4028cac3614cd2f901614cf8be1f0324', 'workorders', NULL, '1');
 INSERT INTO `uk_tag` VALUES ('2c938088650ce8ee01650db93ff8069f', '呼叫中心服务', 'cskefu', '2018-08-06 05:32:49', 0, '4028cac3614cd2f901614cf8be1f0324', 'ccsummary', NULL, '1');
 INSERT INTO `uk_tag` VALUES ('2c938088650ce8ee01650db9781306a6', '知识库', 'cskefu', '2018-08-06 05:33:03', 0, '4028cac3614cd2f901614cf8be1f0324', 'kbs', NULL, '');
