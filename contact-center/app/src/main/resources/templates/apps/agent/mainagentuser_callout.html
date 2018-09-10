@@ -4,7 +4,7 @@
 </script>
 
 <div class="main-agentuser">
-	<div class="chat-agent-callout">
+	<div class="chat-agent-callout" style="height: 102%;">
 		<h1 class="site-h1">
 			<#if curagentuser??>${curagentuser.username!''}（${curagentuser.region!''}）
 			<div style="float:right;" class="ukefu-service-btn">
@@ -24,6 +24,236 @@
         </#if>
 	</div>
 </div>
+<#if contacts?? && curagentuser??>
+<input hidden value="${contacts.id!''}" id="contactsId"/>
+<input hidden value="${contacts.creater!''}" id="creater"/>
+<div class="ukefu-chat-prop">
+    <div class="ukefu-prop-list">
+        <div class="layui-side-scroll">
+    <div class="layui-collapse">
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">往来历史</h2>
+            <div class="layui-colla-content layui-show">
+                <div id="timeline" class="timeline-container" type="text">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+</div>
+<link rel="stylesheet" href="/js/timelineMe/jquery.timelineMe.css" type="text/css">
+<script type="text/javascript" src="/js/timelineMe/jquery.timelineMe.js"></script>
+<script src="/js/CSKeFu_Rest_Request.v1.js"></script>
+<script>
+    // save time line datas
+    var items = [];
+
+    function getNotesByContactId () {
+        // 获取数据
+        var id = $('#contactsId').val();
+        var payload = {
+            path: 'contacts/notes',
+            data: { ops: "fetch", contactid: id },
+        };
+        httpRequest(payload).then(function (data) {
+            // remove a click event and set color to gray
+            // AUTH_ERROR
+            if(data.status && data.status === "AUTH_ERROR"){
+                openFail(data.status);
+                return;
+            }
+
+            if(data.rc === 0){
+                // var items = [];
+                if(data.totalElements > 0) {
+                    for(var item of data.data){
+                        items.push({
+                            type: 'bigItem',
+                            label: item.updatetime,
+                            picto: '<div style="background-color: #3ac3e8;width: 100%;height: 100%;"></div>',
+                            shortContent: '<div style="border: solid 1px #333333; line-height: 2em;font-weight: 300;word-break:break-all"><p>事件类型：' + item.category + '</p>' + '<p>创建者:' + item.creatername + '</p>' + '<div><label>内容：</label><span>' + item.content + '</span></div></div>',
+                            forcePosition: 'right'
+                        });
+                    }
+                }
+                // time line
+                makeTimeline()
+            } else {
+            }
+        }, function (err) {
+            console.log(err)
+        });
+    }
+
+    // make time line
+    function makeTimeline() {
+        var el = $('#timeline');
+        if(el){
+            $(el).empty();
+            $('#timeline').timelineMe({});
+            $('#timeline').timelineMe('load',
+                items
+            );
+        } else  {
+            $('#timeline').timelineMe({
+                items: items,
+            });
+        }
+    }
+
+    // unselect tag
+    function unOrselectTag(id) {
+        var el = $("#tag_" + id);
+        var xid = el.attr("name");
+
+        if(xid){
+            // unselected tag
+            var payload = {
+                path: 'contacts/tags',
+                data: {
+                    ops: "remove",
+                    xid: xid,
+
+                },
+            };
+            httpRequest(payload).then(function (data) {
+                if(data.status && data.status === "AUTH_ERROR"){
+                    openFail(data.status);
+                    return;
+                }
+
+                if(data.rc === 0){
+                    console.log(data.data);
+                    el.removeClass("ukefu-label").addClass("unselectedClass").attr("name", "");
+                } else {
+                }
+            }, function (err) {
+                console.log(err)
+            });
+        } else  {
+            // select tag
+            var contactid = $('#contactsId').val();
+            var payload = {
+                path: 'contacts/tags',
+                data: {
+                    ops: "create",
+                    contactid: contactid,
+                    tagId: id,
+                },
+            };
+
+            httpRequest(payload).then(function (data) {
+                if(data.status && data.status === "AUTH_ERROR"){
+                    openFail(data.status);
+                    return;
+                }
+
+                if(data.rc === 0){
+                    console.log(data.data);
+                    el.removeClass("unselectedClass").addClass("ukefu-label").attr("name", data.data.id);
+                } else {
+                }
+            }, function (err) {
+                console.log(err)
+            });
+        }
+    }
+
+    // get tags
+    function getTags(){
+        var id = $('#contactsId').val();
+        var payload = {
+            path: 'contacts/tags',
+            data: {
+                ops: "fetch",
+                contactid: id,
+            },
+        };
+        httpRequest(payload).then(function (data) {
+            if(data.status && data.status === "AUTH_ERROR"){
+                openFail(data.status);
+                return;
+            }
+
+            if(data.rc === 0){
+                var tagsData = data.data;
+
+                for (var item of tagsData){
+                    if(item.tagged){
+                        $("#contactTags").append(
+                            '<small name="' + item.xid + '" id="tag_' + item.id + '" class="ukefu-label" style="margin: 0 6px 5px 0;cursor: pointer;" onclick="unOrselectTag(\'' + item.id + '\')">' + item.name + '</small>'
+                        );
+                    } else  {
+                        $("#contactTags").append(
+                            '<small name="" id="tag_' + item.id + '" class="unselectedClass" style="margin: 0 6px 5px 0; cursor: pointer;" onclick="unOrselectTag(\'' + item.id + '\')">' + item.name + '</small>'
+                        );
+                    }
+                }
+            } else {
+            }
+        }, function (err) {
+            console.log(err)
+        });
+    }
+
+
+    layui.use('layer', function() {
+        layer = layui.layer;
+
+        // get all notes by contact id.
+        getNotesByContactId();
+
+        // get tags
+        getTags()
+
+        // add notes
+        $('#notesAddBtn').on('click', function(){
+            var content = $('#notesContent').val() || '';
+            if(!content) return;
+
+            var id = $('#contactsId').val();
+            var category = $("#notesCategory option:selected").text();
+
+            var payload = {
+                path: 'contacts/notes',
+                data: {
+                    ops: "create",
+                    contactid: id,
+                    category: category,
+                    content: content,
+                    agentuser: '',
+                    onlineuser: ''
+                },
+            };
+            httpRequest(payload).then(function (data) {
+                if(data.status && data.status === "AUTH_ERROR"){
+                    openFail(data.status);
+                    return;
+                }
+
+                if(data.rc === 0){
+                    var item = data.data;
+                    // get all notes by contact id.
+                    items.unshift({
+                        type: 'bigItem',
+                        label: item.updatetime,
+                        picto: '<div style="background-color: #3ac3e8;width: 100%;height: 100%;"></div>',
+                        shortContent: '<div style="border: solid 1px #333333; line-height: 2em;font-weight: 300;word-break:break-all"><p>事件类型：' + category + '</p>' + '<p>创建者:' + item.creatername + '</p>' + '<div><label>内容：</label><span>' + content + '</span></div></div>',
+                        forcePosition: 'right'
+                    });
+
+                    // time line
+                    makeTimeline()
+                } else {
+                }
+            }, function (err) {
+                console.log(err)
+            });
+        });
+    });
+</script>
+<#else>
 <div class="ukefu-chat-prop">
 	<div class="ukefu-prop-list">
 		<div class="layui-side-scroll">
@@ -149,3 +379,4 @@
 		</div>
 	</div>
 </div>
+</#if>
