@@ -20,7 +20,7 @@
 						<div class="layui-inline">
 							<label class="layui-form-label" style="width:60px;line-height: 35px;">类型：</label>
 							<div class="layui-input-inline" style="width:218px;margin-right:0px;padding-top:9px;">
-								<@select "com.dic.contacts.ckind" "ckind" ckind!'' "lay-ignore required lay-verify='required' "/>
+                                <@select "com.dic.contacts.ckind" "ckind" ckind!'' "lay-ignore required lay-verify='required' "/>
 							</div>
 						</div>
 					</div>
@@ -142,7 +142,7 @@
 		</div>
 	</form>
 </div>
-
+<script src="/js/moment.min.js"></script>
 <script>
 	//Demo
 	$('#province').change(function(){
@@ -167,6 +167,8 @@
 	layui.use('element', function(){
 		var element = layui.element();
 	});
+
+    $("#getdate").val(moment().format('YYYY-MM-DD'));
 	layui.use('laydate', function() {
 		var laydate = layui.laydate;
 
