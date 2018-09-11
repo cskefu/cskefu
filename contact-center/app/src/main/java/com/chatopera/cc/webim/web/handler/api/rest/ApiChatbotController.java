@@ -148,12 +148,13 @@ public class ApiChatbotController extends Handler {
         String description = j.has("description") ? j.get("description").getAsString() : null;
         String fallback = j.has("fallback") ? j.get("fallback").getAsString() : null;
         String welcome = j.has("welcome") ? j.get("welcome").getAsString() : null;
+        String name = j.has("name") ? j.get("name").getAsString() : null;
 
         if (StringUtils.isNotBlank(description) ||
                 StringUtils.isNotBlank(fallback) ||
                 StringUtils.isNotBlank(welcome)) {
             try {
-                if (c.getApi().updateByChatbotID(c.getChatbotID(), description, fallback, welcome)) {
+                if (c.getApi().updateByChatbotID(c.getChatbotID(), name, description, fallback, welcome)) {
                     resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
                     resp.addProperty(RestUtils.RESP_KEY_DATA, "更新成功。");
                 } else {

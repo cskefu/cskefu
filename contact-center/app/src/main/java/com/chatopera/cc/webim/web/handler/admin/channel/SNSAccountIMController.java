@@ -50,7 +50,7 @@ import com.chatopera.cc.webim.web.model.Secret;
 @Controller
 @RequestMapping("/admin/im")
 public class SNSAccountIMController extends Handler{
-	
+
 	@Autowired
 	private SNSAccountRepository snsAccountRes;
 	
@@ -84,7 +84,7 @@ public class SNSAccountIMController extends Handler{
     @Menu(type = "admin" , subtype = "weixin")
     public ModelAndView save(HttpServletRequest request ,@Valid SNSAccount snsAccount) throws NoSuchAlgorithmException {
     	if(!StringUtils.isBlank(snsAccount.getBaseURL())){
-	    	snsAccount.setSnsid(Base62.encode(snsAccount.getBaseURL()));
+	    	snsAccount.setSnsid(Base62.encode(snsAccount.getBaseURL()).toLowerCase());
 	    	int count = snsAccountRes.countBySnsidAndOrgi(snsAccount.getSnsid() , super.getOrgi(request)) ;
 	    	if(count == 0){
 	    		snsAccount.setOrgi(super.getOrgi(request));

@@ -32,7 +32,7 @@ public class ChatbotUtils {
      * @return
      */
     public static String resolveChatbotIDWithSnsid(String snsid, String clientId) {
-        return clientId + "_" + snsid;
+        return (clientId + "_" + snsid).toLowerCase();
     }
 
     /**
@@ -42,6 +42,6 @@ public class ChatbotUtils {
      * @return
      */
     public static String resolveSnsidWithChatbotID(String chatbotID, String clientId) {
-        return StringUtils.remove(chatbotID, clientId + "_");
+        return StringUtils.remove(chatbotID, clientId.toLowerCase() + "_");
     }
 }

@@ -533,7 +533,7 @@
 				"header": [
 					{
 						"key": "authorization",
-						"value": "00bf99785103475c896435ef7216ebd1"
+						"value": "b641622ea4c54f1e9e45520e7fed266b"
 					},
 					{
 						"key": "Content-Type",
@@ -542,7 +542,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"ops\": \"create\",\n  \"primaryLanguage\": \"zh_CN\",\n  \"snsid\": \"104EAc\",\n  \"name\": \"小C\",\n  \"baseUrl\": \"http://lhc-dev:8003\",\n  \"description\": \"描述\",\n  \"fallback\": \"我不理解。\",\n  \"welcome\": \"你好\",\n  \"workmode\": \"客服机器人优先\"\n}"
+					"raw": "{\n  \"ops\": \"create\",\n  \"primaryLanguage\": \"zh_CN\",\n  \"snsid\": \"104eac\",\n  \"name\": \"小C\",\n  \"baseUrl\": \"http://lhc-dev:8003\",\n  \"description\": \"描述\",\n  \"fallback\": \"我不理解。\",\n  \"welcome\": \"你好\",\n  \"workmode\": \"客服机器人优先\"\n}"
 				},
 				"url": {
 					"raw": "http://{{IP}}:{{PORT}}/api/chatbot",
@@ -566,7 +566,7 @@
 				"header": [
 					{
 						"key": "authorization",
-						"value": "8b9567161da54400b994f141d119100b"
+						"value": "869c0e6dfd44421cabea7934d6fde218"
 					},
 					{
 						"key": "Content-Type",
@@ -576,6 +576,39 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n  \"ops\": \"fetch\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/chatbot",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chatbot"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "机器人客服：更新",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "b641622ea4c54f1e9e45520e7fed266b"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ops\": \"update\",\n  \"id\": \"54509c828fcd4d0e9709a975a04bf190\",\n  \"workmode\": \"\",\n  \"enabled\": false,\n  \"description\": \"描述\",\n  \"fallback\": \"我不知道。\",\n  \"welcome\": \"你好！\",\n  \"name\": \"cc\"\n}"
 				},
 				"url": {
 					"raw": "http://{{IP}}:{{PORT}}/api/chatbot",

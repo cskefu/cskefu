@@ -22,8 +22,6 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 
@@ -31,7 +29,6 @@ import java.util.HashMap;
  * RestAPI接口
  */
 public class RestAPI {
-    private static final Logger logger = LoggerFactory.getLogger(RestAPI.class);
 
     /**
      * patch headers
@@ -66,7 +63,6 @@ public class RestAPI {
      */
     public static JSONObject post(final String url, final HashMap<String, Object> body, final HashMap<String, Object> query, HashMap<String, String> headers) throws UnirestException {
         HttpRequestWithBody request = Unirest.post(url);
-        logger.info("post body {}", body.toString());
         x(headers);
         HttpResponse<JsonNode> resp = request
                 .headers(headers)

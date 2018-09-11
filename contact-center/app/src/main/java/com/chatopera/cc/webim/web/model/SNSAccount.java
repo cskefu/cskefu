@@ -33,6 +33,8 @@ import org.hibernate.annotations.GenericGenerator;
 @org.hibernate.annotations.Proxy(lazy = false)
 public class SNSAccount{
 	private String id ;
+
+    @Column(unique=true)
 	private String snsid ;		//表示 SNSAccount
 	private String name ;		
 	private String code ;		
