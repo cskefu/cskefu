@@ -58,6 +58,7 @@ public class Application {
 	static{
     	UKDataContext.model.put("contacts", true) ;
     	UKDataContext.model.put("sales", true);
+    	UKDataContext.model.put("chatbot", true);
     }
 
     /**

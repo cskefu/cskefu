@@ -18,14 +18,13 @@ package com.chatopera.cc.webim.web.handler.api.rest;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.util.exception.CallOutRecordException;
-import com.chatopera.cc.webim.service.repository.ChatbotRepository;
-import com.chatopera.cc.webim.service.repository.OrganRepository;
-import com.chatopera.cc.webim.service.repository.SNSAccountRepository;
-import com.chatopera.cc.webim.service.repository.UserRepository;
+import com.chatopera.cc.webim.service.repository.*;
+import com.chatopera.cc.webim.util.OnlineUserUtils;
 import com.chatopera.cc.webim.util.chatbot.ChatbotUtils;
 import com.chatopera.cc.webim.web.handler.Handler;
 import com.chatopera.cc.webim.web.handler.api.request.RestUtils;
 import com.chatopera.cc.webim.web.model.Chatbot;
+import com.chatopera.cc.webim.web.model.CousultInvite;
 import com.chatopera.cc.webim.web.model.Organ;
 import com.chatopera.cc.webim.web.model.User;
 import com.chatopera.chatbot.ChatbotAPI;
@@ -78,6 +77,9 @@ public class ApiChatbotController extends Handler {
 
     @Autowired
     private OrganRepository organRes;
+
+    @Autowired
+    private ConsultInviteRepository consultInviteRes;
 
     @RequestMapping(method = RequestMethod.POST)
     @Menu(type = "apps", subtype = "chatbot", access = true)
@@ -147,6 +149,12 @@ public class ApiChatbotController extends Handler {
             if (c.getApi().exists(c.getChatbotID())) {
                 c.setEnabled(isEnabled);
                 chatbotRes.save(c);
+
+                // 更新访客网站配置
+                CousultInvite invite = OnlineUserUtils.cousult(c.getSnsAccountIdentifier(), c.getOrgi(), consultInviteRes);
+                invite.setAi(isEnabled);
+                consultInviteRes.save(invite);
+
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
                 resp.addProperty(RestUtils.RESP_KEY_DATA, "完成。");
             } else {
@@ -186,18 +194,25 @@ public class ApiChatbotController extends Handler {
             return resp;
         }
 
+        // 更新访客网站配置
+        CousultInvite invite = OnlineUserUtils.cousult(c.getSnsAccountIdentifier(), c.getOrgi(), consultInviteRes);
+
         if (j.has("workmode") && ChatbotUtils.VALID_WORKMODELS.contains(j.get("workmode").getAsString())) {
             c.setWorkmode(j.get("workmode").getAsString());
-        }
-
-        if (j.has("enabled")) {
-            c.setEnabled(j.get("enabled").getAsBoolean());
+            invite.setAifirst(StringUtils.equals(ChatbotUtils.CHATBOT_FIRST, c.getWorkmode()));
         }
 
         String description = j.has("description") ? j.get("description").getAsString() : null;
         String fallback = j.has("fallback") ? j.get("fallback").getAsString() : null;
         String welcome = j.has("welcome") ? j.get("welcome").getAsString() : null;
         String name = j.has("name") ? j.get("name").getAsString() : null;
+
+
+        if (j.has("enabled")) {
+            boolean enabled = j.get("enabled").getAsBoolean();
+            c.setEnabled(enabled);
+            invite.setAi(enabled);
+        }
 
         if (StringUtils.isNotBlank(description) ||
                 StringUtils.isNotBlank(fallback) ||
@@ -228,11 +243,19 @@ public class ApiChatbotController extends Handler {
         if (StringUtils.isNotBlank(fallback))
             c.setFallback(fallback);
 
-        if (StringUtils.isNotBlank(welcome))
+        if (StringUtils.isNotBlank(welcome)) {
             c.setWelcome(welcome);
+            invite.setAimsg(welcome);
+        }
+
+        if (StringUtils.isNotBlank(name)) {
+            c.setName(name);
+            invite.setAiname(name);
+        }
 
         c.setUpdatetime(new Date());
         chatbotRes.save(c);
+        consultInviteRes.save(invite);
 
         return resp;
     }
@@ -328,6 +351,16 @@ public class ApiChatbotController extends Handler {
 
         try {
             if (c.getApi().deleteByChatbotID(c.getChatbotID())) {
+                // 更新访客网站配置
+                CousultInvite invite = OnlineUserUtils.cousult(c.getSnsAccountIdentifier(), c.getOrgi(), consultInviteRes);
+                if (invite != null) {
+                    invite.setAi(false);
+                    invite.setAiname(null);
+                    invite.setAimsg(null);
+                    invite.setAifirst(false);
+                    invite.setAiid(null);
+                    consultInviteRes.save(invite);
+                }
                 chatbotRes.delete(c);
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
                 resp.addProperty(RestUtils.RESP_KEY_DATA, "删除成功。");
@@ -464,9 +497,6 @@ public class ApiChatbotController extends Handler {
                 c.setPrimaryLanguage(primaryLanguage);
                 c.setName(name);
                 c.setWelcome(result.getJSONObject("data").getString("welcome"));
-
-                // 默认不开启
-                c.setEnabled(false);
                 c.setCreater(creater);
                 c.setOrgan(organ);
                 c.setOrgi(orgi);
@@ -477,6 +507,18 @@ public class ApiChatbotController extends Handler {
                 c.setUpdatetime(dt);
                 c.setWorkmode(workmode);
 
+                // 默认不开启
+                boolean enabled = false;
+                c.setEnabled(enabled);
+
+                // 更新访客网站配置
+                CousultInvite invite = OnlineUserUtils.cousult(c.getSnsAccountIdentifier(), c.getOrgi(), consultInviteRes);
+                invite.setAi(enabled);
+                invite.setAifirst(StringUtils.equals(ChatbotUtils.CHATBOT_FIRST, workmode));
+                invite.setAiid(c.getId());
+                invite.setAiname(c.getName());
+                invite.setAimsg(c.getWelcome());
+                consultInviteRes.save(invite);
                 chatbotRes.save(c);
 
                 JsonObject data = new JsonObject();
