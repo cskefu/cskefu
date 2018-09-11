@@ -106,12 +106,61 @@ public class ApiChatbotController extends Handler {
                 case "update":
                     json = update(j);
                     break;
+                case "enable":
+                    json = enable(j, true);
+                    break;
+                case "disable":
+                    json = enable(j, false);
+                    break;
                 default:
                     json.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_2);
                     json.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的操作。");
             }
         }
         return new ResponseEntity<String>(json.toString(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * Enable Chatbot
+     *
+     * @param j
+     * @return
+     */
+    private JsonObject enable(JsonObject j, boolean isEnabled) {
+        JsonObject resp = new JsonObject();
+        if ((!j.has("id")) || StringUtils.isBlank(j.get("id").getAsString())) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的操作，id不能为空。");
+            return resp;
+        }
+
+        final String id = j.get("id").getAsString();
+        Chatbot c = chatbotRes.findOne(id);
+
+        if (c == null) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "该聊天机器人不存在。");
+            return resp;
+        }
+
+        try {
+            if (c.getApi().exists(c.getChatbotID())) {
+                c.setEnabled(isEnabled);
+                chatbotRes.save(c);
+                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
+                resp.addProperty(RestUtils.RESP_KEY_DATA, "完成。");
+            } else {
+                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_7);
+                resp.addProperty(RestUtils.RESP_KEY_ERROR, "智能问答引擎不存在该聊天机器人，未能正确设置。");
+            }
+        } catch (ChatbotAPIRuntimeException e) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
+            resp.addProperty(RestUtils.RESP_KEY_DATA, "设置不成功，智能问答引擎服务异常。");
+        } catch (MalformedURLException e) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
+            resp.addProperty(RestUtils.RESP_KEY_DATA, "设置不成功，智能问答引擎地址不合法。");
+        }
+        return resp;
     }
 
     /**
@@ -173,13 +222,13 @@ public class ApiChatbotController extends Handler {
             }
         }
 
-        if(StringUtils.isNotBlank(description))
+        if (StringUtils.isNotBlank(description))
             c.setDescription(description);
 
-        if(StringUtils.isNotBlank(fallback))
+        if (StringUtils.isNotBlank(fallback))
             c.setFallback(fallback);
 
-        if(StringUtils.isNotBlank(welcome))
+        if (StringUtils.isNotBlank(welcome))
             c.setWelcome(welcome);
 
         c.setUpdatetime(new Date());
