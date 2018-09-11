@@ -19,7 +19,6 @@ package com.chatopera.cc.webim.web.handler.apps.internet;
 
 import com.chatopera.cc.core.UKDataContext;
 import com.chatopera.cc.util.*;
-import com.chatopera.cc.util.extra.DataExchangeInterface;
 import com.chatopera.cc.util.webim.WebIMClient;
 import com.chatopera.cc.webim.service.acd.ServiceQuene;
 import com.chatopera.cc.webim.service.cache.CacheHelper;
@@ -31,6 +30,8 @@ import com.chatopera.cc.webim.web.handler.Handler;
 import com.chatopera.cc.webim.web.model.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -57,13 +58,14 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 @Controller
 @RequestMapping("/im")
 @EnableAsync
 public class IMController extends Handler {
+    private final static Logger logger = LoggerFactory.getLogger(IMController.class);
+
 
     @Value("${uk.im.server.host}")
     private String host;
@@ -115,7 +117,7 @@ public class IMController extends Handler {
                               @Valid String aiid) {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/im/point"));
         String sessionid = request.getSession().getId();
-        if (!StringUtils.isBlank(id)) {
+        if (StringUtils.isNotBlank(id)) {
             view.addObject("hostname", request.getServerName());
 
             SystemConfig systemConfig = UKTools.getSystemConfig();
@@ -147,15 +149,15 @@ public class IMController extends Handler {
                 view.addObject("orgi", invite.getOrgi());
                 view.addObject("appid", id);
 
-                if (!StringUtils.isBlank(aiid)) {
+                if (StringUtils.isNotBlank(aiid)) {
                     view.addObject("aiid", aiid);
-                } else if (!StringUtils.isBlank(invite.getAiid())) {
+                } else if (StringUtils.isNotBlank(invite.getAiid())) {
                     view.addObject("aiid", invite.getAiid());
                 }
                 //记录用户行为日志
                 UserHistory userHistory = new UserHistory();
                 String url = request.getHeader("referer");
-                if (!StringUtils.isBlank(url)) {
+                if (StringUtils.isNotBlank(url)) {
                     if (url.length() > 255) {
                         userHistory.setUrl(url.substring(0, 255));
                     } else {
@@ -177,7 +179,7 @@ public class IMController extends Handler {
                     userHistory.setUsername(imUser.getUsername());
                     userHistory.setOrgi(orgi);
                 }
-                if (!StringUtils.isBlank(title)) {
+                if (StringUtils.isNotBlank(title)) {
                     if (title.length() > 255) {
                         userHistory.setTitle(title.substring(0, 255));
                     } else {
@@ -229,7 +231,7 @@ public class IMController extends Handler {
     @Menu(type = "im", subtype = "inlist", access = true)
     public void inlist(HttpServletRequest request, HttpServletResponse response, @PathVariable String id, @Valid String userid) throws IOException {
         response.setHeader("Content-Type", "text/html;charset=utf-8");
-        if (!StringUtils.isBlank(userid)) {
+        if (StringUtils.isNotBlank(userid)) {
             BlackEntity black = (BlackEntity) CacheHelper.getSystemCacheBean().getCacheObject(userid, UKDataContext.SYSTEM_ORGI);
             if ((black != null && (black.getEndtime() == null || black.getEndtime().after(new Date())))) {
                 response.getWriter().write("in");
@@ -257,7 +259,7 @@ public class IMController extends Handler {
         if ((black == null || (black.getEndtime() != null && black.getEndtime().before(new Date())))) {
             final SseEmitter emitter = new SseEmitter(30000L);
             if (CacheHelper.getSystemCacheBean().getCacheObject(userid, orgi) == null) {
-                if (!StringUtils.isBlank(userid)) {
+                if (StringUtils.isNotBlank(userid)) {
                     emitter.onCompletion(new Runnable() {
                         @Override
                         public void run() {
@@ -285,7 +287,7 @@ public class IMController extends Handler {
                     if (invite != null && invite.isTraceuser()) {
                         contacts = processContacts(orgi, contacts, appid, userid);
                     }
-                    if (!StringUtils.isBlank(sign)) {
+                    if (StringUtils.isNotBlank(sign)) {
                         OnlineUserUtils.online(super.getIMUser(request, sign, contacts != null ? contacts.getName() : null), orgi, sessionid, UKDataContext.OnlineUserTypeStatus.WEBIM.toString(), request, UKDataContext.ChannelTypeEnum.WEBIM.toString(), appid, contacts, invite);
                     }
 
@@ -325,10 +327,10 @@ public class IMController extends Handler {
                               @Valid String purl) throws Exception {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/im/index"));
         BlackEntity black = (BlackEntity) CacheHelper.getSystemCacheBean().getCacheObject(userid, UKDataContext.SYSTEM_ORGI);
-        if (!StringUtils.isBlank(appid) && (black == null || (black.getEndtime() != null && black.getEndtime().before(new Date())))) {
+        if (StringUtils.isNotBlank(appid) && (black == null || (black.getEndtime() != null && black.getEndtime().before(new Date())))) {
             CousultInvite invite = OnlineUserUtils.cousult(appid, orgi, inviteRepository);
             String userID = null;
-            if (!StringUtils.isBlank(userid)) {
+            if (StringUtils.isNotBlank(userid)) {
                 userID = UKTools.genIDByKey(userid);
             } else {
                 userID = UKTools.genIDByKey(sessionid);
@@ -338,8 +340,6 @@ public class IMController extends Handler {
             SessionConfig sessionConfig = ServiceQuene.initSessionConfig(orgi);
 
             map.addAttribute("sessionConfig", sessionConfig);
-
-
             map.addAttribute("hostname", request.getServerName());
 
             if (sslPort != null) {
@@ -361,16 +361,16 @@ public class IMController extends Handler {
 
             map.addAttribute("ip", UKTools.md5(request.getRemoteAddr()));
 
-            if (!StringUtils.isBlank(traceid)) {
+            if (StringUtils.isNotBlank(traceid)) {
                 map.addAttribute("traceid", traceid);
             }
-            if (!StringUtils.isBlank(exchange)) {
+            if (StringUtils.isNotBlank(exchange)) {
                 map.addAttribute("exchange", exchange);
             }
-            if (!StringUtils.isBlank(title)) {
+            if (StringUtils.isNotBlank(title)) {
                 map.addAttribute("title", title);
             }
-            if (!StringUtils.isBlank(traceid)) {
+            if (StringUtils.isNotBlank(traceid)) {
                 map.addAttribute("url", url);
             }
 
@@ -382,9 +382,9 @@ public class IMController extends Handler {
                 map.addAttribute("orgi", invite.getOrgi());
                 map.addAttribute("inviteData", invite);
 
-                if (!StringUtils.isBlank(aiid)) {
+                if (StringUtils.isNotBlank(aiid)) {
                     map.addAttribute("aiid", aiid);
-                } else if (!StringUtils.isBlank(invite.getAiid())) {
+                } else if (StringUtils.isNotBlank(invite.getAiid())) {
                     map.addAttribute("aiid", invite.getAiid());
                 }
 
@@ -394,24 +394,24 @@ public class IMController extends Handler {
                     view = request(super.createRequestPageTempletResponse("/apps/im/leavemsg"));
                 } else if (invite.isConsult_info()) {    //启用了信息收集 , 从Request获取 ， 或从 Cookies 里去
                     //验证 OnlineUser 信息
-                    if (contacts != null && !StringUtils.isBlank(contacts.getName())) {    //contacts用于传递信息，并不和 联系人表发生 关联，contacts信息传递给 Socket.IO，然后赋值给 AgentUser，最终赋值给 AgentService永久存储
+                    if (contacts != null && StringUtils.isNotBlank(contacts.getName())) {    //contacts用于传递信息，并不和 联系人表发生 关联，contacts信息传递给 Socket.IO，然后赋值给 AgentUser，最终赋值给 AgentService永久存储
                         consult = true;
                         //存入 Cookies
                         if (invite.isConsult_info_cookies()) {
                             Cookie name = new Cookie("name", UKTools.encryption(URLEncoder.encode(contacts.getName(), "UTF-8")));
                             response.addCookie(name);
                             name.setMaxAge(3600);
-                            if (!StringUtils.isBlank(contacts.getPhone())) {
+                            if (StringUtils.isNotBlank(contacts.getPhone())) {
                                 Cookie phonecookie = new Cookie("phone", UKTools.encryption(URLEncoder.encode(contacts.getPhone(), "UTF-8")));
                                 phonecookie.setMaxAge(3600);
                                 response.addCookie(phonecookie);
                             }
-                            if (!StringUtils.isBlank(contacts.getEmail())) {
+                            if (StringUtils.isNotBlank(contacts.getEmail())) {
                                 Cookie email = new Cookie("email", UKTools.encryption(URLEncoder.encode(contacts.getEmail(), "UTF-8")));
                                 email.setMaxAge(3600);
                                 response.addCookie(email);
                             }
-                            if (!StringUtils.isBlank(contacts.getMemo())) {
+                            if (StringUtils.isNotBlank(contacts.getMemo())) {
                                 Cookie memo = new Cookie("memo", UKTools.encryption(URLEncoder.encode(contacts.getName(), "UTF-8")));
                                 memo.setMaxAge(3600);
                                 response.addCookie(memo);
@@ -424,7 +424,7 @@ public class IMController extends Handler {
                             contacts = new Contacts();
                             if (cookies != null) {
                                 for (Cookie cookie : cookies) {
-                                    if (cookie != null && !StringUtils.isBlank(cookie.getName()) && !StringUtils.isBlank(cookie.getValue())) {
+                                    if (cookie != null && StringUtils.isNotBlank(cookie.getName()) && StringUtils.isNotBlank(cookie.getValue())) {
                                         if (cookie.getName().equals("name")) {
                                             contacts.setName(URLDecoder.decode(UKTools.decryption(cookie.getValue()), "UTF-8"));
                                         }
@@ -450,33 +450,33 @@ public class IMController extends Handler {
                     contacts = processContacts(invite.getOrgi(), contacts, appid, userid);
                 }
 
-                if (!StringUtils.isBlank(client)) {
+                if (StringUtils.isNotBlank(client)) {
                     map.addAttribute("client", client);
                 }
-                if (!StringUtils.isBlank(skill)) {
+                if (StringUtils.isNotBlank(skill)) {
                     map.addAttribute("skill", skill);
                 }
-                if (!StringUtils.isBlank(agent)) {
+                if (StringUtils.isNotBlank(agent)) {
                     map.addAttribute("agent", agent);
                 }
 
                 map.addAttribute("contacts", contacts);
 
-                if (!StringUtils.isBlank(type)) {
+                if (StringUtils.isNotBlank(type)) {
                     map.addAttribute("type", type);
                 }
                 IP ipdata = IPTools.getInstance().findGeography(UKTools.getIpAddr(request));
                 map.addAttribute("skillList", OnlineUserUtils.organ(invite.getOrgi(), ipdata, invite, true));
 
                 if (invite != null && consult) {
-                    if (contacts != null && !StringUtils.isBlank(contacts.getName())) {
+                    if (contacts != null && StringUtils.isNotBlank(contacts.getName())) {
                         nickname = contacts.getName();
                     }
                     map.addAttribute("username", nickname);
                     if (UKDataContext.model.get("chatbot") != null &&
                             StringUtils.isNotBlank(invite.getAiid()) &&
                             invite.isAi() &&
-                            invite.isAifirst()) {    //启用 AI ， 并且 AI优先 接待
+                            ((StringUtils.equals(ai, "true")) || (invite.isAifirst() && ai == null))) {   //启用 AI ， 并且 AI优先 接待
                         HashMap<String, String> chatbotConfig = new HashMap<String, String>();
                         chatbotConfig.put("botname", invite.getAiname());
                         chatbotConfig.put("botid", invite.getAiid());
@@ -487,11 +487,11 @@ public class IMController extends Handler {
                             map.addAttribute("chatbotConfig", chatbotConfig);
                         }
                         view = request(super.createRequestPageTempletResponse("/apps/im/chatbot/index"));
-                        if (CheckMobile.check(request.getHeader("User-Agent")) || !StringUtils.isBlank(mobile)) {
+                        if (CheckMobile.check(request.getHeader("User-Agent")) || StringUtils.isNotBlank(mobile)) {
                             view = request(super.createRequestPageTempletResponse("/apps/im/chatbot/mobile"));        //智能机器人 移动端
                         }
                     } else {
-                        if (CheckMobile.check(request.getHeader("User-Agent")) || !StringUtils.isBlank(mobile)) {
+                        if (CheckMobile.check(request.getHeader("User-Agent")) || StringUtils.isNotBlank(mobile)) {
                             view = request(super.createRequestPageTempletResponse("/apps/im/mobile"));    //WebIM移动端。再次点选技能组？
                         }
                     }
@@ -523,13 +523,16 @@ public class IMController extends Handler {
 
     private Contacts processContacts(String orgi, Contacts contacts, String appid, String userid) {
         if (contacts != null) {
-            if (contacts != null && (!StringUtils.isBlank(contacts.getName()) || !StringUtils.isBlank(contacts.getPhone()) || !StringUtils.isBlank(contacts.getEmail()))) {
+            if (contacts != null &&
+                    (StringUtils.isNotBlank(contacts.getName()) ||
+                            StringUtils.isNotBlank(contacts.getPhone()) ||
+                            StringUtils.isNotBlank(contacts.getEmail()))) {
                 StringBuffer query = new StringBuffer();
                 query.append(contacts.getName());
-                if (!StringUtils.isBlank(contacts.getPhone())) {
+                if (StringUtils.isNotBlank(contacts.getPhone())) {
                     query.append(" OR ").append(contacts.getPhone());
                 }
-                if (!StringUtils.isBlank(contacts.getEmail())) {
+                if (StringUtils.isNotBlank(contacts.getEmail())) {
                     query.append(" OR ").append(contacts.getEmail());
                 }
                 Page<Contacts> contactsList = contactsRes.findByOrgi(orgi, false, query.toString(), new PageRequest(0, 1));
@@ -542,7 +545,7 @@ public class IMController extends Handler {
             } else {
                 contacts.setId(null);
             }
-            if (contacts != null && !StringUtils.isBlank(contacts.getId())) {
+            if (contacts != null && StringUtils.isNotBlank(contacts.getId())) {
                 List<AgentUserContacts> agentUserContactsList = agentUserContactsRes.findByUseridAndOrgi(userid, orgi);
                 if (agentUserContactsList.size() == 0) {
                     AgentUserContacts agentUserContacts = new AgentUserContacts();
@@ -554,7 +557,7 @@ public class IMController extends Handler {
                     agentUserContacts.setCreatetime(new Date());
                     agentUserContactsRes.save(agentUserContacts);
                 }
-            } else if (!StringUtils.isBlank(userid)) {
+            } else if (StringUtils.isNotBlank(userid)) {
                 List<AgentUserContacts> agentUserContactsList = agentUserContactsRes.findByUseridAndOrgi(userid, orgi);
                 if (agentUserContactsList.size() > 0) {
                     AgentUserContacts agentUserContacts = agentUserContactsList.get(0);
@@ -578,10 +581,10 @@ public class IMController extends Handler {
 
         view.addObject("ip", UKTools.md5(request.getRemoteAddr()));
 
-        if (!StringUtils.isBlank(skill)) {
+        if (StringUtils.isNotBlank(skill)) {
             view.addObject("skill", skill);
         }
-        if (!StringUtils.isBlank(agent)) {
+        if (StringUtils.isNotBlank(agent)) {
             view.addObject("agent", agent);
         }
 
@@ -589,10 +592,10 @@ public class IMController extends Handler {
         view.addObject("sessionid", request.getSession().getId());
 
         view.addObject("id", id);
-        if (!StringUtils.isBlank(ai)) {
+        if (StringUtils.isNotBlank(ai)) {
             view.addObject("ai", ai);
         }
-        if (!StringUtils.isBlank(exchange)) {
+        if (StringUtils.isNotBlank(exchange)) {
             view.addObject("exchange", exchange);
         }
 
@@ -608,13 +611,13 @@ public class IMController extends Handler {
         view.addObject("purl", purl);
 
 
-        if (!StringUtils.isBlank(traceid)) {
+        if (StringUtils.isNotBlank(traceid)) {
             view.addObject("traceid", traceid);
         }
-        if (!StringUtils.isBlank(title)) {
+        if (StringUtils.isNotBlank(title)) {
             view.addObject("title", title);
         }
-        if (!StringUtils.isBlank(traceid)) {
+        if (StringUtils.isNotBlank(traceid)) {
             view.addObject("url", url);
         }
         CousultInvite invite = OnlineUserUtils.cousult(appid, orgi, inviteRepository);
@@ -623,9 +626,9 @@ public class IMController extends Handler {
             view.addObject("orgi", invite.getOrgi());
             view.addObject("appid", appid);
 
-            if (!StringUtils.isBlank(aiid)) {
+            if (StringUtils.isNotBlank(aiid)) {
                 view.addObject("aiid", aiid);
-            } else if (!StringUtils.isBlank(invite.getAiid())) {
+            } else if (StringUtils.isNotBlank(invite.getAiid())) {
                 view.addObject("aiid", invite.getAiid());
             }
         }
@@ -637,7 +640,7 @@ public class IMController extends Handler {
     @RequestMapping("/leavemsg/save")
     @Menu(type = "admin", subtype = "user")
     public ModelAndView leavemsgsave(HttpServletRequest request, @Valid String appid, @Valid LeaveMsg msg) {
-        if (!StringUtils.isBlank(appid)) {
+        if (StringUtils.isNotBlank(appid)) {
             SNSAccount snsAccount = snsAccountRepository.findBySnsid(appid);
             String orgi = snsAccount.getOrgi();
             CousultInvite invite = inviteRepository.findBySnsaccountidAndOrgi(appid, orgi);
@@ -671,10 +674,10 @@ public class IMController extends Handler {
     @RequestMapping("/satis")
     @Menu(type = "im", subtype = "satis", access = true)
     public void satis(HttpServletRequest request, HttpServletResponse response, @Valid AgentServiceSatis satis) throws Exception {
-        if (satis != null && !StringUtils.isBlank(satis.getId())) {
+        if (satis != null && StringUtils.isNotBlank(satis.getId())) {
             int count = agentServiceSatisRes.countById(satis.getId());
             if (count == 1) {
-                if (!StringUtils.isBlank(satis.getSatiscomment()) && satis.getSatiscomment().length() > 255) {
+                if (StringUtils.isNotBlank(satis.getSatiscomment()) && satis.getSatiscomment().length() > 255) {
                     satis.setSatiscomment(satis.getSatiscomment().substring(0, 255));
                 }
                 satis.setSatisfaction(true);
@@ -691,7 +694,7 @@ public class IMController extends Handler {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/im/upload"));
         UploadStatus upload = null;
         String fileName = null;
-        if (imgFile != null && imgFile.getOriginalFilename().lastIndexOf(".") > 0 && !StringUtils.isBlank(userid)) {
+        if (imgFile != null && imgFile.getOriginalFilename().lastIndexOf(".") > 0 && StringUtils.isNotBlank(userid)) {
             File uploadDir = new File(path, "upload");
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
@@ -714,7 +717,7 @@ public class IMController extends Handler {
                     image = "/res/image.html?id=" + thumbnailsFileName;
                 }
                 if (paste == null) {
-                    if (!StringUtils.isBlank(channel)) {
+                    if (StringUtils.isNotBlank(channel)) {
                         MessageUtils.uploadImage(image, fileid, (int) imgFile.getSize(), imgFile.getName(), channel, userid, username, appid, orgi);
                     } else {
                         MessageUtils.uploadImage(image, fileid, (int) imgFile.getSize(), imgFile.getName(), userid);
@@ -732,7 +735,7 @@ public class IMController extends Handler {
                     file = "/res/file.html?id=" + id;
                 }
                 File tempFile = new File(imgFile.getOriginalFilename());
-                if (!StringUtils.isBlank(channel)) {
+                if (StringUtils.isNotBlank(channel)) {
                     MessageUtils.uploadFile(file, (int) imgFile.getSize(), tempFile.getName(), channel, userid, username, appid, orgi, id);
                 } else {
                     MessageUtils.uploadFile(file, (int) imgFile.getSize(), tempFile.getName(), userid, id);
@@ -749,7 +752,7 @@ public class IMController extends Handler {
         String id = null;
         if (file.getSize() > 0) {            //文件尺寸 限制 ？在 启动 配置中 设置 的最大值，其他地方不做限制
             String fileid = UKTools.md5(file.getBytes());    //使用 文件的 MD5作为 ID，避免重复上传大文件
-            if (!StringUtils.isBlank(fileid)) {
+            if (StringUtils.isNotBlank(fileid)) {
                 AttachmentFile attachmentFile = new AttachmentFile();
                 attachmentFile.setCreater(super.getUser(request).getId());
                 attachmentFile.setOrgi(super.getOrgi(request));
@@ -767,7 +770,7 @@ public class IMController extends Handler {
                 } else {
                     attachmentFile.setTitle(uploadFile.getName());
                 }
-                if (!StringUtils.isBlank(attachmentFile.getFiletype()) && attachmentFile.getFiletype().indexOf("image") >= 0) {
+                if (StringUtils.isNotBlank(attachmentFile.getFiletype()) && attachmentFile.getFiletype().indexOf("image") >= 0) {
                     attachmentFile.setImage(true);
                 }
                 attachmentFile.setFileid(fileid);

@@ -22,7 +22,7 @@ import java.util.HashSet;
 
 public class ChatbotUtils {
     public static final HashSet<String> VALID_LANGS = new HashSet<String>(Arrays.asList(new String[]{"zh_CN", "en_US"}));
-    public static final String CHATBOT_FIRST = "客服机器人优先";
+    public static final String CHATBOT_FIRST = "机器人客服优先";
     public static final String HUMAN_FIRST = "人工客服优先";
     public static final HashSet<String> VALID_WORKMODELS = new HashSet<String>(Arrays.asList(new String[]{CHATBOT_FIRST, HUMAN_FIRST}));
 

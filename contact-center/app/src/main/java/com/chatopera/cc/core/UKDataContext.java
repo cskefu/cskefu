@@ -928,7 +928,7 @@ public class UKDataContext {
         }
     }
 
-    public enum AiType {
+    public enum ChatbotType {
         SMARTAI,
         BUSINESSAI;
 
@@ -938,7 +938,7 @@ public class UKDataContext {
     }
 
 
-    public enum AiBussType {
+    public enum ChatbotBussType {
         SALE,
         QUESURVEY;
 

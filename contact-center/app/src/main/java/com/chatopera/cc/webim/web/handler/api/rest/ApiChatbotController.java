@@ -154,6 +154,7 @@ public class ApiChatbotController extends Handler {
                 CousultInvite invite = OnlineUserUtils.cousult(c.getSnsAccountIdentifier(), c.getOrgi(), consultInviteRes);
                 invite.setAi(isEnabled);
                 consultInviteRes.save(invite);
+                OnlineUserUtils.cacheCousult(invite);
 
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
                 resp.addProperty(RestUtils.RESP_KEY_DATA, "完成。");
@@ -256,6 +257,7 @@ public class ApiChatbotController extends Handler {
         c.setUpdatetime(new Date());
         chatbotRes.save(c);
         consultInviteRes.save(invite);
+        OnlineUserUtils.cacheCousult(invite);
 
         return resp;
     }
@@ -321,7 +323,6 @@ public class ApiChatbotController extends Handler {
         resp.addProperty("totalElements", records.getTotalElements()); // 所有检索结果数量
 
         return resp;
-
     }
 
     /**
@@ -360,6 +361,7 @@ public class ApiChatbotController extends Handler {
                     invite.setAifirst(false);
                     invite.setAiid(null);
                     consultInviteRes.save(invite);
+                    OnlineUserUtils.cacheCousult(invite);
                 }
                 chatbotRes.delete(c);
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
@@ -519,6 +521,7 @@ public class ApiChatbotController extends Handler {
                 invite.setAiname(c.getName());
                 invite.setAimsg(c.getWelcome());
                 consultInviteRes.save(invite);
+                OnlineUserUtils.cacheCousult(invite);
                 chatbotRes.save(c);
 
                 JsonObject data = new JsonObject();

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "845f31e9-eedd-4168-b2d7-f56e7ff40f58",
+		"_postman_id": "fa86aeb9-fcf2-4843-ab4c-c97132a46f8f",
 		"name": "Chatopera_cc_v1",
 		"description": "Chatopera Contact Center API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -58,7 +58,10 @@
 						"value": "{{AUTH}}"
 					}
 				],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://{{IP}}:{{PORT}}/api/user",
 					"protocol": "http",
@@ -533,7 +536,7 @@
 				"header": [
 					{
 						"key": "authorization",
-						"value": "b641622ea4c54f1e9e45520e7fed266b"
+						"value": "{{AUTH}}"
 					},
 					{
 						"key": "Content-Type",
@@ -542,7 +545,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"ops\": \"create\",\n  \"primaryLanguage\": \"zh_CN\",\n  \"snsid\": \"104eac\",\n  \"name\": \"小C\",\n  \"baseUrl\": \"http://lhc-dev:8003\",\n  \"description\": \"描述\",\n  \"fallback\": \"我不理解。\",\n  \"welcome\": \"你好\",\n  \"workmode\": \"客服机器人优先\"\n}"
+					"raw": "{\n  \"ops\": \"create\",\n  \"primaryLanguage\": \"zh_CN\",\n  \"snsid\": \"104eac\",\n  \"name\": \"小C\",\n  \"baseUrl\": \"http://lhc-dev:8003\",\n  \"description\": \"描述\",\n  \"fallback\": \"我不理解。\",\n  \"welcome\": \"你好\",\n  \"workmode\": \"机器人客服优先\"\n}"
 				},
 				"url": {
 					"raw": "http://{{IP}}:{{PORT}}/api/chatbot",
@@ -566,7 +569,7 @@
 				"header": [
 					{
 						"key": "authorization",
-						"value": "869c0e6dfd44421cabea7934d6fde218"
+						"value": "{{AUTH}}"
 					},
 					{
 						"key": "Content-Type",
@@ -609,6 +612,105 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n  \"ops\": \"update\",\n  \"id\": \"54509c828fcd4d0e9709a975a04bf190\",\n  \"workmode\": \"\",\n  \"enabled\": false,\n  \"description\": \"描述\",\n  \"fallback\": \"我不知道。\",\n  \"welcome\": \"你好！\",\n  \"name\": \"cc\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/chatbot",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chatbot"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "机器人客服：删除",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "{{AUTH}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ops\": \"delete\",\n  \"id\": \"fdf372d7ffb0456f8bd7fdfc1a054beb\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/chatbot",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chatbot"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "机器人客服：启用",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "{{AUTH}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ops\": \"enable\",\n  \"id\": \"eb53580ddbe3473bb112ade4eeeb3b45\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/chatbot",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chatbot"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "机器人客服：禁用",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "{{AUTH}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ops\": \"disable\",\n  \"id\": \"eb53580ddbe3473bb112ade4eeeb3b45\"\n}"
 				},
 				"url": {
 					"raw": "http://{{IP}}:{{PORT}}/api/chatbot",
