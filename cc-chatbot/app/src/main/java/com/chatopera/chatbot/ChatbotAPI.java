@@ -169,7 +169,47 @@ public class ChatbotAPI {
     }
 
     /**
+     * 更新聊天机器人
+     *
+     * @param chatbotID
+     * @param description
+     * @param fallback
+     * @param welcome
+     * @return
+     * @throws ChatbotAPIRuntimeException
+     */
+    public boolean updateByChatbotID(final String chatbotID,
+                                     final String description,
+                                     final String fallback,
+                                     final String welcome) throws ChatbotAPIRuntimeException {
+        if (StringUtils.isBlank(chatbotID))
+            throw new ChatbotAPIRuntimeException("不合法的参数，【chatbotID】不能为空。");
+
+        HashMap<String, Object> body = new HashMap<String, Object>();
+        if (StringUtils.isNotBlank(description))
+            body.put("description", description);
+        if (StringUtils.isNotBlank(fallback))
+            body.put("fallback", fallback);
+        if (StringUtils.isNotBlank(welcome))
+            body.put("welcome", welcome);
+
+        try {
+            JSONObject result = RestAPI.put(this.baseUrl + "/chatbot/" + chatbotID, body, null);
+            if (result.getInt("rc") == 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (UnirestException e) {
+            throw new ChatbotAPIRuntimeException(e.toString());
+        }
+
+    }
+
+
+    /**
      * 删除聊天机器人
+     *
      * @param chatbotID
      * @return
      * @throws ChatbotAPIRuntimeException
@@ -179,7 +219,7 @@ public class ChatbotAPI {
             throw new ChatbotAPIRuntimeException("聊天机器人ID不能为空。");
         try {
             JSONObject result = RestAPI.delete(this.getBaseUrl() + "/chatbot/" + chatbotID, null);
-            if(result.getInt("rc") == 0)
+            if (result.getInt("rc") == 0)
                 return true;
             return false;
         } catch (UnirestException e) {
@@ -240,6 +280,29 @@ public class ChatbotAPI {
         try {
             JSONObject resp = RestAPI.post(this.getBaseUrl() + "/chatbot/" + chatbotID + "/conversation/query", body);
             return resp;
+        } catch (UnirestException e) {
+            throw new ChatbotAPIRuntimeException(e.toString());
+        }
+    }
+
+    /**
+     * 意图识别
+     * @param chatbotID
+     * @param clientId
+     * @param textMessage
+     * @return
+     * @throws UnirestException
+     */
+    public JSONObject intent(final String chatbotID, final String clientId, final String textMessage) throws ChatbotAPIRuntimeException {
+        if(StringUtils.isBlank(chatbotID) || StringUtils.isBlank(clientId) || StringUtils.isBlank(textMessage))
+            throw new ChatbotAPIRuntimeException("参数不合法，不能为空。");
+
+        HashMap<String, Object> body = new HashMap<String, Object>();
+        body.put("clientId", clientId);
+        body.put("query", textMessage);
+        try {
+            JSONObject result = RestAPI.post(this.baseUrl + "/chatbot/" + chatbotID, body);
+            return result;
         } catch (UnirestException e) {
             throw new ChatbotAPIRuntimeException(e.toString());
         }

@@ -103,12 +103,88 @@ public class ApiChatbotController extends Handler {
                 case "fetch":
                     json = fetch(j, curruser.getId(), curruser.isSuperuser(), curruser.getMyorgans(), curruser.getOrgi(), super.getP(request), super.getPs(request));
                     break;
+                case "update":
+                    json = update(j);
+                    break;
                 default:
                     json.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_2);
                     json.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的操作。");
             }
         }
         return new ResponseEntity<String>(json.toString(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * 更新聊天机器人
+     *
+     * @param j
+     * @return
+     */
+    private JsonObject update(JsonObject j) {
+        JsonObject resp = new JsonObject();
+        if (!j.has("id")) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "非法参数，id不能为空。");
+            return resp;
+        }
+        final String id = j.get("id").getAsString();
+
+        Chatbot c = chatbotRes.findOne(id);
+
+        if (c == null) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "该聊天机器人不存在。");
+            return resp;
+        }
+
+        if (j.has("workmode") && ChatbotUtils.VALID_WORKMODELS.contains(j.get("workmode").getAsString())) {
+            c.setWorkmode(j.get("workmode").getAsString());
+        }
+
+        if (j.has("enabled")) {
+            c.setEnabled(j.get("enabled").getAsBoolean());
+        }
+
+        String description = j.has("description") ? j.get("description").getAsString() : null;
+        String fallback = j.has("fallback") ? j.get("fallback").getAsString() : null;
+        String welcome = j.has("welcome") ? j.get("welcome").getAsString() : null;
+
+        if (StringUtils.isNotBlank(description) ||
+                StringUtils.isNotBlank(fallback) ||
+                StringUtils.isNotBlank(welcome)) {
+            try {
+                if (c.getApi().updateByChatbotID(c.getChatbotID(), description, fallback, welcome)) {
+                    resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
+                    resp.addProperty(RestUtils.RESP_KEY_DATA, "更新成功。");
+                } else {
+                    resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
+                    resp.addProperty(RestUtils.RESP_KEY_ERROR, "更新失败。");
+                    return resp;
+                }
+            } catch (ChatbotAPIRuntimeException e) {
+                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
+                resp.addProperty(RestUtils.RESP_KEY_ERROR, "更新智能问答引擎失败。" + e.toString());
+                return resp;
+            } catch (MalformedURLException e) {
+                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
+                resp.addProperty(RestUtils.RESP_KEY_ERROR, "更新智能问答引擎失败。" + e.toString());
+                return resp;
+            }
+        }
+
+        if(StringUtils.isNotBlank(description))
+            c.setDescription(description);
+
+        if(StringUtils.isNotBlank(fallback))
+            c.setFallback(fallback);
+
+        if(StringUtils.isNotBlank(welcome))
+            c.setWelcome(welcome);
+
+        c.setUpdatetime(new Date());
+        chatbotRes.save(c);
+
+        return resp;
     }
 
     /**
@@ -132,7 +208,7 @@ public class ApiChatbotController extends Handler {
             return resp;
         }
 
-        Page<Chatbot> records = chatbotRes.findByOrgans( myorgans != null? new ArrayList<String>(myorgans) : null, new PageRequest(p, ps, Sort.Direction.DESC, new String[]{"createtime"}));
+        Page<Chatbot> records = chatbotRes.findByOrgans(myorgans != null ? new ArrayList<String>(myorgans) : null, new PageRequest(p, ps, Sort.Direction.DESC, new String[]{"createtime"}));
 
         JsonArray ja = new JsonArray();
         for (Chatbot c : records) {
