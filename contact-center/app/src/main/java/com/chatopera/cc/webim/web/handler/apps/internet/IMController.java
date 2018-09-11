@@ -56,6 +56,8 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 @Controller
@@ -474,32 +476,19 @@ public class IMController extends Handler {
                     if (UKDataContext.model.get("chatbot") != null &&
                             StringUtils.isNotBlank(invite.getAiid()) &&
                             invite.isAi() &&
-                            (StringUtils.equals(ai, "true") || (invite.isAifirst() && ai == null))) {    //启用 AI ， 并且 AI优先 接待
-                        DataExchangeInterface dataInterface = (DataExchangeInterface) UKDataContext.getContext().getBean("aiconfig");
-                        AiConfig aiConfig = (AiConfig) dataInterface.getDataByIdAndOrgi(aiid, invite.getOrgi());
-                        if (aiConfig != null) {
-                            map.addAttribute("aiConfig", aiConfig);
+                            invite.isAifirst()) {    //启用 AI ， 并且 AI优先 接待
+                        HashMap<String, String> chatbotConfig = new HashMap<String, String>();
+                        chatbotConfig.put("botname", invite.getAiname());
+                        chatbotConfig.put("botid", invite.getAiid());
+                        chatbotConfig.put("botwelcome", invite.getAimsg());
+                        chatbotConfig.put("botfirst", Boolean.toString(invite.isAifirst()));
+                        chatbotConfig.put("isai", Boolean.toString(invite.isAi()));
+                        if (chatbotConfig != null) {
+                            map.addAttribute("chatbotConfig", chatbotConfig);
                         }
-                        view = request(super.createRequestPageTempletResponse("/apps/im/ai/index"));
+                        view = request(super.createRequestPageTempletResponse("/apps/im/chatbot/index"));
                         if (CheckMobile.check(request.getHeader("User-Agent")) || !StringUtils.isBlank(mobile)) {
-                            view = request(super.createRequestPageTempletResponse("/apps/im/ai/mobile"));        //智能机器人 移动端
-                        }
-                        if (UKDataContext.model.get("xiaoe") != null) {
-                            List<Topic> topicList = OnlineUserUtils.cacheHotTopic((DataExchangeInterface) UKDataContext.getContext().getBean("topic"), super.getUser(request), orgi, aiid);
-
-                            /**
-                             * 初步按照地区匹配分类筛选
-                             */
-                            List<KnowledgeType> topicTypeList = OnlineUserUtils.topicType(orgi, ipdata, OnlineUserUtils.cacheHotTopicType((DataExchangeInterface) UKDataContext.getContext().getBean("topictype"), super.getUser(request), orgi, aiid));
-
-                            /**
-                             * 第二步按照 有 热点主题的 分类做筛选
-                             */
-                            map.addAttribute("topicList", OnlineUserUtils.topic(orgi, topicTypeList, topicList));
-                            /**
-                             * 第三步筛选 分类，如果无热点知识，则不显示分类
-                             */
-                            map.addAttribute("topicTypeList", OnlineUserUtils.filterTopicType(topicTypeList, topicList));
+                            view = request(super.createRequestPageTempletResponse("/apps/im/chatbot/mobile"));        //智能机器人 移动端
                         }
                     } else {
                         if (CheckMobile.check(request.getHeader("User-Agent")) || !StringUtils.isBlank(mobile)) {

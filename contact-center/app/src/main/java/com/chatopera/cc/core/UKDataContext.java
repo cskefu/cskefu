@@ -705,7 +705,7 @@ public class UKDataContext {
         IM("/im/user"),
         AGENT("/im/agent"),
         ENTIM("/im/ent"),
-        AIIM("/im/ai"),
+        CHATBOT("/im/chatbot"),
         CALLCENTER("/callcenter/event"),
         CALLOUT("/callout/event");
 

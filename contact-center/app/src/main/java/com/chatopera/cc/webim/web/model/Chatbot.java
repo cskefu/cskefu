@@ -20,6 +20,7 @@ import com.chatopera.chatbot.ChatbotAPIRuntimeException;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.Date;
 

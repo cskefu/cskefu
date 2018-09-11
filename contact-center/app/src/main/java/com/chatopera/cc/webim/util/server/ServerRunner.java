@@ -19,7 +19,7 @@ package com.chatopera.cc.webim.util.server;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import com.chatopera.cc.webim.util.server.handler.AiIMEventHandler;
+import com.chatopera.cc.webim.util.server.handler.ChatbotEventHandler;
 import com.chatopera.cc.webim.util.server.handler.EntIMEventHandler;
 import com.chatopera.cc.webim.util.server.handler.IMEventHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class ServerRunner implements CommandLineRunner {
     private final SocketIONamespace imSocketNameSpace ;
     private final SocketIONamespace agentSocketIONameSpace ;
     private final SocketIONamespace entIMSocketIONameSpace ;
-    private final SocketIONamespace aiIMSocketIONameSpace ;
+    private final SocketIONamespace chatbotSocketIONameSpace ;
     private final SocketIONamespace callCenterSocketIONameSpace ;
     private final SocketIONamespace calloutSocketIONameSpace ;
     
@@ -48,7 +48,7 @@ public class ServerRunner implements CommandLineRunner {
         imSocketNameSpace = server.addNamespace(UKDataContext.NameSpaceEnum.IM.getNamespace())  ;
         agentSocketIONameSpace = server.addNamespace(UKDataContext.NameSpaceEnum.AGENT.getNamespace()) ;
         entIMSocketIONameSpace = server.addNamespace(UKDataContext.NameSpaceEnum.ENTIM.getNamespace()) ;
-        aiIMSocketIONameSpace = server.addNamespace(UKDataContext.NameSpaceEnum.AIIM.getNamespace()) ;
+        chatbotSocketIONameSpace = server.addNamespace(UKDataContext.NameSpaceEnum.CHATBOT.getNamespace()) ;
 
         if(UKDataContext.model.get("sales") != null && UKDataContext.model.get("sales") == true){
             calloutSocketIONameSpace = server.addNamespace(UKDataContext.NameSpaceEnum.CALLOUT.getNamespace());
@@ -81,10 +81,10 @@ public class ServerRunner implements CommandLineRunner {
     	return entIMSocketIONameSpace;
     }
     
-    @Bean(name="aiimNamespace")
-    public SocketIONamespace getAiIMSocketIONameSpace(SocketIOServer server){
-    	aiIMSocketIONameSpace.addListeners(new AiIMEventHandler(server));
-    	return aiIMSocketIONameSpace;
+    @Bean(name="chatbotNamespace")
+    public SocketIONamespace getChatbotSocketIONameSpace(SocketIOServer server){
+    	chatbotSocketIONameSpace.addListeners(new ChatbotEventHandler(server));
+    	return chatbotSocketIONameSpace;
     }
     
     @Bean(name="callCenterNamespace")
