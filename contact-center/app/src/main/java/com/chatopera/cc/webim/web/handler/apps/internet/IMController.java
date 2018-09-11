@@ -253,7 +253,17 @@ public class IMController extends Handler {
      */
     @RequestMapping("/online")
     @Menu(type = "im", subtype = "online", access = true)
-    public SseEmitter callable(HttpServletRequest request, HttpServletResponse response, @Valid Contacts contacts, final @Valid String orgi, final @Valid String sessionid, @Valid String appid, final @Valid String userid, @Valid String sign, final @Valid String client, final @Valid String title, final @Valid String traceid) {
+    public SseEmitter callable(HttpServletRequest request,
+                               HttpServletResponse response,
+                               @Valid Contacts contacts,
+                               final @Valid String orgi,
+                               final @Valid String sessionid,
+                               @Valid String appid,
+                               final @Valid String userid,
+                               @Valid String sign,
+                               final @Valid String client,
+                               final @Valid String title,
+                               final @Valid String traceid) {
         BlackEntity black = (BlackEntity) CacheHelper.getSystemCacheBean().getCacheObject(userid, orgi);
         SseEmitter retSseEmitter = null;
         if ((black == null || (black.getEndtime() != null && black.getEndtime().before(new Date())))) {
@@ -288,9 +298,21 @@ public class IMController extends Handler {
                         contacts = processContacts(orgi, contacts, appid, userid);
                     }
                     if (StringUtils.isNotBlank(sign)) {
-                        OnlineUserUtils.online(super.getIMUser(request, sign, contacts != null ? contacts.getName() : null), orgi, sessionid, UKDataContext.OnlineUserTypeStatus.WEBIM.toString(), request, UKDataContext.ChannelTypeEnum.WEBIM.toString(), appid, contacts, invite);
+                        try {
+                            OnlineUserUtils.online(super.getIMUser(request, sign, contacts != null ? contacts.getName() : null),
+                                    orgi,
+                                    sessionid,
+                                    UKDataContext.OnlineUserTypeStatus.WEBIM.toString(),
+                                    request,
+                                    UKDataContext.ChannelTypeEnum.WEBIM.toString(),
+                                    appid,
+                                    contacts,
+                                    invite);
+                        } catch (java.lang.ClassCastException e) {
+                            // #TODO workaround for
+                            // https://github.com/chatopera/cosin/issues/75
+                        }
                     }
-
                     OnlineUserUtils.webIMClients.putClient(userid, new WebIMClient(userid, client, emitter));
                 }
             }
