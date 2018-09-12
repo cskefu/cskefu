@@ -34,7 +34,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 
 @Entity
 @Table(name = "uk_reportfilter")
@@ -425,7 +425,7 @@ public class ReportFilter implements java.io.Serializable{
 	}
 	@Transient
 	public Template templet(){
-		return UKTools.getTemplate(this.filtertemplet) ;
+		return MainUtils.getTemplate(this.filtertemplet) ;
 	}
 	public String getFiltertemplet() {
 		return filtertemplet;

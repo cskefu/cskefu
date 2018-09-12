@@ -32,7 +32,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.Parent;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 
 @Document(indexName = "cskefu", type = "favorites" , createIndex = false )
 @Entity
@@ -44,7 +44,7 @@ public class Favorites implements java.io.Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 8667838872697390231L;
-	private String id = UKTools.getUUID();
+	private String id = MainUtils.getUUID();
 	private String name ;
 	private String code = "true";
 	private String title ;

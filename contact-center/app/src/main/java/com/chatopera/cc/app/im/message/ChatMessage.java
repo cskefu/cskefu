@@ -31,7 +31,7 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.event.UserEvent;
 import com.chatopera.cc.util.OnlineUserUtils;
 
@@ -44,7 +44,7 @@ public class ChatMessage implements java.io.Serializable ,UserEvent{
 	 */
 	private static final long serialVersionUID = 3520656734252136303L;
 	
-	private String id = UKTools.getUUID();
+	private String id = MainUtils.getUUID();
 	private String appid ;
 	private String userid ;
 	private String username ;

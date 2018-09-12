@@ -33,6 +33,7 @@ import javax.validation.Valid;
 import com.chatopera.cc.app.MainContext;
 import com.chatopera.cc.app.service.repository.PublishedReportRepository;
 import com.chatopera.cc.app.model.ReportFilter;
+import com.chatopera.cc.app.MainUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.util.task.DSData;
 import com.chatopera.cc.util.task.DSDataEvent;
 import com.chatopera.cc.util.task.ExcelImportProecess;
@@ -119,7 +119,7 @@ public class ReportController extends Handler{
 		    	report.setOrgi(super.getOrgi(request));
 				report.setCreater(super.getUser(request).getId());
 				report.setReporttype(MainContext.ReportType.REPORT.toString());
-				report.setCode(UKTools.genID());
+				report.setCode(MainUtils.genID());
 				reportRes.save(report) ;
     		}else {
     			view = request(super.createRequestPageTempletResponse("redirect:/apps/report/index.html?msg=rt_name_exist&dicid="+report.getDicid()));
@@ -252,7 +252,7 @@ public class ReportController extends Handler{
     @Menu(type = "setting" , subtype = "reportimpsave")
     public ModelAndView impsave(ModelMap map , HttpServletRequest request , @RequestParam(value = "cusfile", required = false) MultipartFile cusfile , @Valid String type) throws IOException {
     	DSDataEvent event = new DSDataEvent();
-    	String fileName = "quickreply/"+UKTools.getUUID()+cusfile.getOriginalFilename().substring(cusfile.getOriginalFilename().lastIndexOf(".")) ;
+    	String fileName = "quickreply/"+ MainUtils.getUUID()+cusfile.getOriginalFilename().substring(cusfile.getOriginalFilename().lastIndexOf(".")) ;
     	File excelFile = new File(path , fileName) ;
     	if(!excelFile.getParentFile().exists()){
     		excelFile.getParentFile().mkdirs() ;
@@ -297,7 +297,7 @@ public class ReportController extends Handler{
     		MetadataTable table = metadataRes.findByTablename("uk_report") ;
     		List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
     		for(Report topic : topicList){
-    			values.add(UKTools.transBean2Map(topic)) ;
+    			values.add(MainUtils.transBean2Map(topic)) ;
     		}
     		
     		response.setHeader("content-disposition", "attachment;filename=UCKeFu-Report-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
@@ -318,7 +318,7 @@ public class ReportController extends Handler{
     	MetadataTable table = metadataRes.findByTablename("uk_report") ;
 		List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
 		for(Report report : reportList){
-			values.add(UKTools.transBean2Map(report)) ;
+			values.add(MainUtils.transBean2Map(report)) ;
 		}
 		
 		response.setHeader("content-disposition", "attachment;filename=UCKeFu-Report-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  

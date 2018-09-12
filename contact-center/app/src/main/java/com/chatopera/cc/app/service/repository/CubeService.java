@@ -31,7 +31,7 @@ import com.chatopera.cc.app.model.ColumnProperties;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.bi.CubeReportData;
 import com.chatopera.cc.util.bi.model.FirstTitle;
 import com.chatopera.cc.util.bi.model.Level;
@@ -60,10 +60,10 @@ public class CubeService {
 		if(!mdxFileDir.exists()){
 			mdxFileDir.mkdirs() ;
 		}
-		schemaFile = new File(mdxFileDir , UKTools.getUUID()+".xml") ;
+		schemaFile = new File(mdxFileDir , MainUtils.getUUID()+".xml") ;
 		StringWriter writer = new StringWriter();
 		IOUtils.copy(CubeService.class.getClassLoader().getResourceAsStream(SCHEMA_DATA_PATH+xml), writer, "UTF-8"); 
-		FileUtils.write(schemaFile,UKTools.getTemplet(writer.toString(), requestValues) , "UTF-8");	//使用系统默认编码
+		FileUtils.write(schemaFile, MainUtils.getTemplet(writer.toString(), requestValues) , "UTF-8");	//使用系统默认编码
 	}
 	
 	public CubeService(String xml , String path , DataSourceService dataSource , Map<String,Object> requestValues,boolean isContentStr) throws IOException, TemplateException {
@@ -72,13 +72,13 @@ public class CubeService {
 		if(!mdxFileDir.exists()){
 			mdxFileDir.mkdirs() ;
 		}
-		schemaFile = new File(mdxFileDir , UKTools.getUUID()+".xml") ;
+		schemaFile = new File(mdxFileDir , MainUtils.getUUID()+".xml") ;
 		if(isContentStr) {
-			FileUtils.write(schemaFile,UKTools.getTemplet(xml, requestValues) , "UTF-8");	//使用系统默认编码
+			FileUtils.write(schemaFile, MainUtils.getTemplet(xml, requestValues) , "UTF-8");	//使用系统默认编码
 		}else {
 			StringWriter writer = new StringWriter();
 			IOUtils.copy(CubeService.class.getClassLoader().getResourceAsStream(SCHEMA_DATA_PATH+xml), writer, "UTF-8"); 
-			FileUtils.write(schemaFile,UKTools.getTemplet(writer.toString(), requestValues) , "UTF-8");	//使用系统默认编码
+			FileUtils.write(schemaFile, MainUtils.getTemplet(writer.toString(), requestValues) , "UTF-8");	//使用系统默认编码
 		}
 	}
 	

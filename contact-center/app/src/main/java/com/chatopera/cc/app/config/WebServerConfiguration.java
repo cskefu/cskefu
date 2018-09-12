@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 
+import com.chatopera.cc.app.MainUtils;
 import org.apache.catalina.connector.Connector;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.coyote.http11.Http11NioProtocol;
@@ -33,8 +34,6 @@ import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletCon
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.chatopera.cc.util.UKTools;
-  
 @Configuration  
 public class WebServerConfiguration  
 {  
@@ -59,7 +58,7 @@ public class WebServerConfiguration
         	if(!StringUtils.isBlank(sslProperties.getProperty("key-store")) && !StringUtils.isBlank(sslProperties.getProperty("key-store-password"))){
 		        Ssl ssl = new Ssl();
 		        ssl.setKeyStore(new File(path , "ssl/"+sslProperties.getProperty("key-store")).getAbsolutePath());
-		        ssl.setKeyStorePassword(UKTools.decryption(sslProperties.getProperty("key-store-password")));
+		        ssl.setKeyStorePassword(MainUtils.decryption(sslProperties.getProperty("key-store-password")));
 		        tomcatFactory.setSsl(ssl);
         	}
         }

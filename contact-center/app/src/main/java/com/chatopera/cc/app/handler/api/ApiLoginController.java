@@ -16,6 +16,7 @@
  */
 package com.chatopera.cc.app.handler.api;
 
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.app.service.cache.CacheHelper;
 import com.chatopera.cc.app.service.repository.UserRoleRepository;
@@ -42,7 +43,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.service.repository.UserRepository;
 import com.chatopera.cc.app.handler.Handler;
 
@@ -61,7 +61,7 @@ public class ApiLoginController extends Handler{
     @Menu(type = "apps" , subtype = "token" , access = true)
     @ApiOperation("登录服务，传入登录账号和密码")
     public ResponseEntity login(HttpServletRequest request , HttpServletResponse response , @Valid String username, @Valid String password) {
-    	User loginUser = userRepository.findByUsernameAndPassword(username , UKTools.md5(password)) ;
+    	User loginUser = userRepository.findByUsernameAndPassword(username , MainUtils.md5(password)) ;
     	ResponseEntity entity = null ;
         if(loginUser!=null && !StringUtils.isBlank(loginUser.getId())){
         	loginUser.setLogin(true);
@@ -75,7 +75,7 @@ public class ApiLoginController extends Handler{
         	if(!StringUtils.isBlank(loginUser.getId())){
         		userRepository.save(loginUser) ;
         	}
-        	String auth = UKTools.getUUID();
+        	String auth = MainUtils.getUUID();
         	CacheHelper.getApiUserCacheBean().put(auth, loginUser, MainContext.SYSTEM_ORGI);
         	entity = new ResponseEntity<>(auth, HttpStatus.OK) ;
         	response.addCookie(new Cookie("authorization",auth));

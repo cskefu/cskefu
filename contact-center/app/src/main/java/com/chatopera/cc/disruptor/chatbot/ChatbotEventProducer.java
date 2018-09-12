@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
+ * Copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.chatopera.cc.disruptor;
+package com.chatopera.cc.disruptor.chatbot;
 
+import com.chatopera.cc.disruptor.user.UserDataEvent;
 import com.lmax.disruptor.RingBuffer;
-import com.chatopera.cc.event.UserEvent;
-import com.chatopera.cc.event.UserDataEvent;
 
-public class UserDataEventProducer {
+@SuppressWarnings("rawtypes")
+public class ChatbotEventProducer {
 	private final RingBuffer<UserDataEvent> ringBuffer;
 
-    public UserDataEventProducer(RingBuffer<UserDataEvent> ringBuffer)
+    public ChatbotEventProducer(RingBuffer<UserDataEvent> ringBuffer)
     {
         this.ringBuffer = ringBuffer;
     }
 
-    public void onData(UserEvent userEvent)
-    {
-        long id = ringBuffer.next();  // Grab the next sequence
-        try{
-        	UserDataEvent event = ringBuffer.get(id);
-        	event.setEvent(userEvent);
-        }finally{
-            ringBuffer.publish(id);
-        }
+    public void onData(ChatbotEvent event){
+    	 long id = ringBuffer.next();  // Grab the next sequence
+         try{
+         	UserDataEvent multiEventData = ringBuffer.get(id);
+         	multiEventData.setEvent(event);
+         }finally{
+             ringBuffer.publish(id);
+         }
     }
 }

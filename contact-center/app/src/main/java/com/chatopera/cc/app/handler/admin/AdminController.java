@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.app.im.client.NettyClients;
 import com.chatopera.cc.app.service.cache.CacheHelper;
@@ -40,7 +41,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.service.acd.ServiceQuene;
 import com.chatopera.cc.app.service.repository.UserRepository;
 import com.chatopera.cc.app.handler.Handler;
@@ -78,27 +78,27 @@ public class AdminController extends Handler{
     	map.put("systemCaches", CacheHelper.getSystemCacheBean().getSize()) ;
     	
 		map.put("agentReport", ServiceQuene.getAgentReport(super.getOrgi(request))) ;
-		map.put("webIMReport", UKTools.getWebIMReport(userEventRes.findByOrgiAndCreatetimeRange(super.getOrgi(request), UKTools.getStartTime() , UKTools.getEndTime()))) ;
+		map.put("webIMReport", MainUtils.getWebIMReport(userEventRes.findByOrgiAndCreatetimeRange(super.getOrgi(request), MainUtils.getStartTime() , MainUtils.getEndTime()))) ;
 		
 		map.put("agents",getAgent(request).size()) ;
 
-		map.put("webIMInvite", UKTools.getWebIMInviteStatus(onlineUserRes.findByOrgiAndStatus(super.getOrgi(request), MainContext.OnlineUserOperatorStatus.ONLINE.toString()))) ;
+		map.put("webIMInvite", MainUtils.getWebIMInviteStatus(onlineUserRes.findByOrgiAndStatus(super.getOrgi(request), MainContext.OnlineUserOperatorStatus.ONLINE.toString()))) ;
 		
-		map.put("inviteResult", UKTools.getWebIMInviteResult(onlineUserRes.findByOrgiAndAgentnoAndCreatetimeRange(super.getOrgi(request), super.getUser(request).getId() , UKTools.getStartTime() , UKTools.getEndTime()))) ;
+		map.put("inviteResult", MainUtils.getWebIMInviteResult(onlineUserRes.findByOrgiAndAgentnoAndCreatetimeRange(super.getOrgi(request), super.getUser(request).getId() , MainUtils.getStartTime() , MainUtils.getEndTime()))) ;
 		
-		map.put("agentUserCount", onlineUserRes.countByAgentForAgentUser(super.getOrgi(request), MainContext.AgentUserStatusEnum.INSERVICE.toString(),super.getUser(request).getId() , UKTools.getStartTime() , UKTools.getEndTime())) ;
+		map.put("agentUserCount", onlineUserRes.countByAgentForAgentUser(super.getOrgi(request), MainContext.AgentUserStatusEnum.INSERVICE.toString(),super.getUser(request).getId() , MainUtils.getStartTime() , MainUtils.getEndTime())) ;
 		
-		map.put("agentServicesCount", onlineUserRes.countByAgentForAgentUser(super.getOrgi(request), MainContext.AgentUserStatusEnum.END.toString(),super.getUser(request).getId() , UKTools.getStartTime() , UKTools.getEndTime())) ;
+		map.put("agentServicesCount", onlineUserRes.countByAgentForAgentUser(super.getOrgi(request), MainContext.AgentUserStatusEnum.END.toString(),super.getUser(request).getId() , MainUtils.getStartTime() , MainUtils.getEndTime())) ;
 		
-		map.put("agentServicesAvg", onlineUserRes.countByAgentForAvagTime(super.getOrgi(request), MainContext.AgentUserStatusEnum.END.toString(),super.getUser(request).getId() , UKTools.getStartTime() , UKTools.getEndTime())) ;
+		map.put("agentServicesAvg", onlineUserRes.countByAgentForAvagTime(super.getOrgi(request), MainContext.AgentUserStatusEnum.END.toString(),super.getUser(request).getId() , MainUtils.getStartTime() , MainUtils.getEndTime())) ;
 		
-		map.put("webInviteReport", UKTools.getWebIMInviteAgg(onlineUserRes.findByOrgiAndCreatetimeRange(super.getOrgi(request) , MainContext.ChannelTypeEnum.WEBIM.toString(),UKTools.getLast30Day(), UKTools.getEndTime()))) ;
+		map.put("webInviteReport", MainUtils.getWebIMInviteAgg(onlineUserRes.findByOrgiAndCreatetimeRange(super.getOrgi(request) , MainContext.ChannelTypeEnum.WEBIM.toString(), MainUtils.getLast30Day(), MainUtils.getEndTime()))) ;
 		
-		map.put("agentConsultReport", UKTools.getWebIMDataAgg(onlineUserRes.findByOrgiAndCreatetimeRangeForAgent(super.getOrgi(request), UKTools.getLast30Day(), UKTools.getEndTime()))) ;
+		map.put("agentConsultReport", MainUtils.getWebIMDataAgg(onlineUserRes.findByOrgiAndCreatetimeRangeForAgent(super.getOrgi(request), MainUtils.getLast30Day(), MainUtils.getEndTime()))) ;
 		
-		map.put("clentConsultReport", UKTools.getWebIMDataAgg(onlineUserRes.findByOrgiAndCreatetimeRangeForClient(super.getOrgi(request), UKTools.getLast30Day(), UKTools.getEndTime() , MainContext.ChannelTypeEnum.WEBIM.toString()))) ;
+		map.put("clentConsultReport", MainUtils.getWebIMDataAgg(onlineUserRes.findByOrgiAndCreatetimeRangeForClient(super.getOrgi(request), MainUtils.getLast30Day(), MainUtils.getEndTime() , MainContext.ChannelTypeEnum.WEBIM.toString()))) ;
 		
-		map.put("browserConsultReport", UKTools.getWebIMDataAgg(onlineUserRes.findByOrgiAndCreatetimeRangeForBrowser(super.getOrgi(request), UKTools.getLast30Day(), UKTools.getEndTime(), MainContext.ChannelTypeEnum.WEBIM.toString()))) ;
+		map.put("browserConsultReport", MainUtils.getWebIMDataAgg(onlineUserRes.findByOrgiAndCreatetimeRangeForBrowser(super.getOrgi(request), MainUtils.getLast30Day(), MainUtils.getEndTime(), MainContext.ChannelTypeEnum.WEBIM.toString()))) ;
 	}
     private List<User> getAgent(HttpServletRequest request){
 		//获取当前产品or租户坐席数
@@ -142,7 +142,7 @@ public class AdminController extends Handler{
     	map.addAttribute("title", title) ;
     	map.addAttribute("url", url) ;
     	if(!StringUtils.isBlank(iconstr) && !StringUtils.isBlank(icontext)){
-    		map.addAttribute("iconstr", iconstr.replaceAll(icontext, "&#x"+UKTools.string2HexString(icontext)+";")) ;
+    		map.addAttribute("iconstr", iconstr.replaceAll(icontext, "&#x"+ MainUtils.string2HexString(icontext)+";")) ;
     	}
     	return request(super.createRequestPageTempletResponse("/admin/system/auth/event"));
     }

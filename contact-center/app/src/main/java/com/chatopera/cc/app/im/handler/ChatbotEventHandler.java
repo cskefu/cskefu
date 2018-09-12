@@ -18,7 +18,7 @@ package com.chatopera.cc.app.im.handler;
 import com.chatopera.cc.app.MainContext;
 import com.chatopera.cc.util.IP;
 import com.chatopera.cc.util.IPTools;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.app.im.client.NettyClients;
 import com.chatopera.cc.app.model.*;
 import com.chatopera.cc.app.service.acd.ServiceQuene;
@@ -88,12 +88,12 @@ public class ChatbotEventHandler {
                 outMessage.setMessageType(MainContext.MessageTypeEnum.MESSAGE.toString());
                 outMessage.setCalltype(MainContext.CallTypeEnum.IN.toString());
                 outMessage.setNickName(invite.getAiname());
-                outMessage.setCreatetime(UKTools.dateFormate.format(now));
+                outMessage.setCreatetime(MainUtils.dateFormate.format(now));
 
                 client.sendEvent(MainContext.MessageTypeEnum.STATUS.toString(), outMessage);
 
                 InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress();
-                String ip = UKTools.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString());
+                String ip = MainUtils.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString());
                 OnlineUser onlineUser = getOnlineUserRes().findOne(user);
 
                 if (onlineUser == null) {
@@ -102,7 +102,7 @@ public class ChatbotEventHandler {
                     if (StringUtils.isNotBlank(nickname)) {
                         onlineUser.setUsername(nickname);
                     } else {
-                        onlineUser.setUsername(MainContext.GUEST_USER + "_" + UKTools.genIDByKey(user));
+                        onlineUser.setUsername(MainContext.GUEST_USER + "_" + MainUtils.genIDByKey(user));
                     }
 
                     onlineUser.setSessionid(session);
@@ -161,7 +161,7 @@ public class ChatbotEventHandler {
         String user = client.getHandshakeData().getSingleUrlParam("userid");
         String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
         if (StringUtils.isNotBlank(user)) {
-            NettyClients.getInstance().removeChatbotEventClient(user, UKTools.getContextID(client.getSessionId().toString()));
+            NettyClients.getInstance().removeChatbotEventClient(user, MainUtils.getContextID(client.getSessionId().toString()));
             AgentUser agentUser = (AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(user, orgi);
             OnlineUser onlineUser = (OnlineUser) CacheHelper.getOnlineUserCacheBean().getCacheObject(user, orgi);
             if (agentUser != null) {
@@ -209,11 +209,11 @@ public class ChatbotEventHandler {
         } else if (!StringUtils.isBlank(data.getMessage()) && data.getMessage().length() > 300) {
             data.setMessage(data.getMessage().substring(0, 300));
         }
-        data.setSessionid(UKTools.getContextID(client.getSessionId().toString()));
+        data.setSessionid(MainUtils.getContextID(client.getSessionId().toString()));
         /**
          * 处理表情
          */
-        data.setMessage(UKTools.processEmoti(data.getMessage()));
+        data.setMessage(MainUtils.processEmoti(data.getMessage()));
         data.setTousername(invite.getAiname());
 
         data.setAiid(aiid);

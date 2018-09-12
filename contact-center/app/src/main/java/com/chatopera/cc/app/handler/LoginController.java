@@ -17,8 +17,8 @@
 package com.chatopera.cc.app.handler;
 
 import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.model.*;
 import com.chatopera.cc.app.service.cache.CacheHelper;
 import com.chatopera.cc.app.service.repository.OrganRepository;
@@ -102,7 +102,7 @@ public class LoginController extends Handler {
                 for (Cookie cookie : cookies) {
                     if (cookie != null && !StringUtils.isBlank(cookie.getName()) && !StringUtils.isBlank(cookie.getValue())) {
                         if (cookie.getName().equals(MainContext.UKEFU_SYSTEM_COOKIES_FLAG)) {
-                            String flagid = UKTools.decryption(cookie.getValue());
+                            String flagid = MainUtils.decryption(cookie.getValue());
                             if (!StringUtils.isBlank(flagid)) {
                                 User user = userRepository.findById(flagid);
                                 if (user != null) {
@@ -117,7 +117,7 @@ public class LoginController extends Handler {
         if (!StringUtils.isBlank(msg)) {
             view.addObject("msg", msg);
         }
-        SystemConfig systemConfig = UKTools.getSystemConfig();
+        SystemConfig systemConfig = MainUtils.getSystemConfig();
         if (systemConfig != null && systemConfig.isEnableregorgi()) {
             view.addObject("show", true);
         }
@@ -133,15 +133,15 @@ public class LoginController extends Handler {
         ModelAndView view = request(super.createRequestPageTempletResponse("redirect:/"));
         if (request.getSession(true).getAttribute(MainContext.USER_SESSION_NAME) == null) {
             if (user != null && user.getUsername() != null) {
-                final User loginUser = userRepository.findByUsernameAndPasswordAndDatastatus(user.getUsername(), UKTools.md5(user.getPassword()), false);
+                final User loginUser = userRepository.findByUsernameAndPasswordAndDatastatus(user.getUsername(), MainUtils.md5(user.getPassword()), false);
                 if (loginUser != null && !StringUtils.isBlank(loginUser.getId())) {
                     view = this.processLogin(request, response, view, loginUser, referer);
                     if (!StringUtils.isBlank(sla) && sla.equals("1")) {
-                        Cookie flagid = new Cookie(MainContext.UKEFU_SYSTEM_COOKIES_FLAG, UKTools.encryption(loginUser.getId()));
+                        Cookie flagid = new Cookie(MainContext.UKEFU_SYSTEM_COOKIES_FLAG, MainUtils.encryption(loginUser.getId()));
                         flagid.setMaxAge(7 * 24 * 60 * 60);
                         response.addCookie(flagid);
                         // add authorization code for rest api
-                        String auth = UKTools.getUUID();
+                        String auth = MainUtils.getUUID();
                         CacheHelper.getApiUserCacheBean().put(auth, loginUser, MainContext.SYSTEM_ORGI);
                         response.addCookie((new Cookie("authorization", auth)));
                     }
@@ -154,7 +154,7 @@ public class LoginController extends Handler {
                 }
             }
         }
-        SystemConfig systemConfig = UKTools.getSystemConfig();
+        SystemConfig systemConfig = MainUtils.getSystemConfig();
         if (systemConfig != null && systemConfig.isEnableregorgi()) {
             view.addObject("show", true);
         }
@@ -173,7 +173,7 @@ public class LoginController extends Handler {
                 view = request(super.createRequestPageTempletResponse("redirect:/"));
             }
             //登录成功 判断是否进入多租户页面
-            SystemConfig systemConfig = UKTools.getSystemConfig();
+            SystemConfig systemConfig = MainUtils.getSystemConfig();
             if (systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantconsole() && !loginUser.isSuperuser()) {
                 view = request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index"));
             }
@@ -265,7 +265,7 @@ public class LoginController extends Handler {
             user.setUname(user.getUsername());
             user.setUsertype("0");
             if (!StringUtils.isBlank(user.getPassword())) {
-                user.setPassword(UKTools.md5(user.getPassword()));
+                user.setPassword(MainUtils.md5(user.getPassword()));
             }
             user.setOrgi(super.getOrgiByTenantshare(request));
     		/*if(!StringUtils.isBlank(super.getUser(request).getOrgid())) {

@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.app.service.repository.UserRepository;
 import com.chatopera.cc.util.RestResultType;
 
@@ -83,7 +83,7 @@ public class ApiUserController extends Handler {
     public ResponseEntity<RestResult> put(HttpServletRequest request , @Valid User user) {
     	if(user != null && !StringUtils.isBlank(user.getUsername())){
     		if(!StringUtils.isBlank(user.getPassword())){
-	    		user.setPassword(UKTools.md5(user.getPassword()));
+	    		user.setPassword(MainUtils.md5(user.getPassword()));
 	    		userRepository.save(user) ;
     		}else if(!StringUtils.isBlank(user.getId())){
     			User old = userRepository.findByIdAndOrgi(user.getId(), super.getOrgi(request)) ;

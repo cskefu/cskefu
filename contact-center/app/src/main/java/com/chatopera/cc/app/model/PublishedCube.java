@@ -29,7 +29,7 @@ import javax.persistence.Transient;
 import org.apache.commons.codec.binary.Base64;
 import org.hibernate.annotations.GenericGenerator;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 @Entity
 @Table(name = "uk_publishedcube")
 @org.hibernate.annotations.Proxy(lazy = false)
@@ -201,7 +201,7 @@ public class PublishedCube implements java.io.Serializable{
 	public Cube getCube() {
 		Base64 base64 = new Base64();
 		try {
-			return cube!=null ? cube : (cube = (this.cubecontent==null?null:(Cube)UKTools.toObject(base64.decode(this.cubecontent))));
+			return cube!=null ? cube : (cube = (this.cubecontent==null?null:(Cube) MainUtils.toObject(base64.decode(this.cubecontent))));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

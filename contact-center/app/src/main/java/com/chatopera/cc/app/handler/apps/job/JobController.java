@@ -23,6 +23,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.app.model.JobDetail;
 import com.chatopera.cc.app.model.JobTask;
@@ -33,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.service.repository.JobDetailRepository;
 import com.chatopera.cc.app.handler.Handler;
 
@@ -77,12 +77,12 @@ public class JobController extends Handler {
 				ObjectMapper mapper = new ObjectMapper();  
 				detail.setTaskinfo(mapper.writeValueAsString(taskinfo));
 				
-				detail.setCronexp(UKTools.convertCrond(taskinfo));
+				detail.setCronexp(MainUtils.convertCrond(taskinfo));
 				/**
 				 * 设定触发时间
 				 */
 				detail.setNextfiretime(new Date());
-				detail.setNextfiretime(UKTools.updateTaskNextFireTime(detail));
+				detail.setNextfiretime(MainUtils.updateTaskNextFireTime(detail));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

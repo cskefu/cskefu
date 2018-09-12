@@ -30,6 +30,7 @@ import javax.validation.Valid;
 
 import com.chatopera.cc.app.MainContext;
 import com.chatopera.cc.util.IP;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.app.im.client.NettyClients;
 import com.chatopera.cc.app.service.acd.ServiceQuene;
@@ -47,7 +48,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.service.repository.AgentServiceRepository;
 import com.chatopera.cc.app.service.repository.AgentStatusRepository;
 import com.chatopera.cc.app.service.repository.AgentUserRepository;
@@ -116,10 +116,10 @@ public class ChatServiceController extends Handler {
 				if(!StringUtils.isBlank(servicetimetype)) {
 					try {
 						if(!StringUtils.isBlank(begin) && begin.matches("[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}")){
-							list.add(cb.greaterThanOrEqualTo(root.get(servicetimetype).as(Date.class), UKTools.dateFormate.parse(begin))) ;
+							list.add(cb.greaterThanOrEqualTo(root.get(servicetimetype).as(Date.class), MainUtils.dateFormate.parse(begin))) ;
 						}
 						if(!StringUtils.isBlank(end) && end.matches("[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}")){
-							list.add(cb.lessThanOrEqualTo(root.get(servicetimetype).as(Date.class), UKTools.dateFormate.parse(end))) ;
+							list.add(cb.lessThanOrEqualTo(root.get(servicetimetype).as(Date.class), MainUtils.dateFormate.parse(end))) ;
 						}
 					} catch (ParseException e) {
 						e.printStackTrace();

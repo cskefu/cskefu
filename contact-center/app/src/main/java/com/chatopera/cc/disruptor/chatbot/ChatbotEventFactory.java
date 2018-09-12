@@ -15,7 +15,7 @@
  */
 package com.chatopera.cc.disruptor.chatbot;
 
-import com.chatopera.cc.event.UserDataEvent;
+import com.chatopera.cc.disruptor.user.UserDataEvent;
 import com.lmax.disruptor.EventFactory;
 
 public class ChatbotEventFactory implements EventFactory<UserDataEvent>{

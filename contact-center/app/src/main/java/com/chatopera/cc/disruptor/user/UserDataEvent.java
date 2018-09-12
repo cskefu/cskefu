@@ -14,15 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.chatopera.cc.disruptor;
+package com.chatopera.cc.disruptor.user;
 
-import com.chatopera.cc.event.UserDataEvent;
-import com.lmax.disruptor.EventFactory;
 
-public class UserDataEventFactory implements EventFactory<UserDataEvent>{
+import com.chatopera.cc.event.UserEvent;
 
-	@Override
-	public UserDataEvent newInstance() {
-		return new UserDataEvent();
+public class UserDataEvent{
+	private long id ;
+
+	private UserEvent event ;
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public UserEvent getEvent() {
+		return event;
+	}
+
+	public void setEvent(UserEvent event) {
+		this.event = event;
 	}
 }

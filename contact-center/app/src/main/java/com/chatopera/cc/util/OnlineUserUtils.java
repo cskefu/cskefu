@@ -17,6 +17,7 @@
 package com.chatopera.cc.util;
 
 import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.extra.DataExchangeInterface;
 import com.chatopera.cc.app.model.*;
 import com.chatopera.cc.app.service.acd.ServiceQuene;
@@ -137,7 +138,7 @@ public class OnlineUserUtils {
         String origOrig = orgi;
         boolean isShare = false;
         if (isJudgeShare) {
-            SystemConfig systemConfig = UKTools.getSystemConfig();
+            SystemConfig systemConfig = MainUtils.getSystemConfig();
             if (systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantshare()) {
                 orgi = MainContext.SYSTEM_ORGI;
                 isShare = true;
@@ -195,7 +196,7 @@ public class OnlineUserUtils {
         String origOrig = orgi;
         boolean isShare = false;
         if (isJudgeShare) {
-            SystemConfig systemConfig = UKTools.getSystemConfig();
+            SystemConfig systemConfig = MainUtils.getSystemConfig();
             if (systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantshare()) {
                 orgi = MainContext.SYSTEM_ORGI;
                 isShare = true;
@@ -363,7 +364,7 @@ public class OnlineUserUtils {
         String origOrig = orgi;
         boolean isShare = false;
         if (isJudgeShare) {
-            SystemConfig systemConfig = UKTools.getSystemConfig();
+            SystemConfig systemConfig = MainUtils.getSystemConfig();
             if (systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantshare()) {
                 orgi = MainContext.SYSTEM_ORGI;
                 isShare = true;
@@ -400,7 +401,7 @@ public class OnlineUserUtils {
 
     public static void clean(String orgi) {
         //共享 查出机构下所有产品
-        SystemConfig systemConfig = UKTools.getSystemConfig();
+        SystemConfig systemConfig = MainUtils.getSystemConfig();
         if (systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantshare()) {
             TenantRepository tenantRes = MainContext.getContext().getBean(TenantRepository.class);
             Tenant tenant = tenantRes.findById(orgi);
@@ -433,7 +434,7 @@ public class OnlineUserUtils {
             CacheHelper.getOnlineUserCacheBean().put(onlineUser.getUserid(), onlineUser, orgi);
         }
         if (invite.isTraceuser()) {
-            UKTools.published(onlineUser);
+            MainUtils.published(onlineUser);
         }
     }
 
@@ -501,7 +502,7 @@ public class OnlineUserUtils {
                     }
                 }
 
-                String ip = UKTools.getIpAddr(request);
+                String ip = MainUtils.getIpAddr(request);
 
                 onlineUser.setLogintime(new Date());
                 onlineUser.setIp(ip);
@@ -523,7 +524,7 @@ public class OnlineUserUtils {
                 onlineUser
                         .setStatus(MainContext.OnlineUserOperatorStatus.ONLINE
                                 .toString());
-                BrowserClient client = UKTools.parseClient(request);
+                BrowserClient client = MainUtils.parseClient(request);
                 onlineUser.setOpersystem(client.getOs());
                 onlineUser.setBrowser(client.getBrowser());
                 onlineUser.setUseragent(client.getUseragent());
@@ -565,7 +566,7 @@ public class OnlineUserUtils {
                 trace.setUpdatetime(new Date());
                 trace.setUsername(onlineUser.getUsername());
 
-                UKTools.published(trace);
+                MainUtils.published(trace);
             }
             cacheOnlineUser(onlineUser, orgi, invite);
         }
@@ -619,7 +620,7 @@ public class OnlineUserUtils {
                             his = new OnlineUserHis();
                         }
 
-                        UKTools.copyProperties(onlineUser, his);
+                        MainUtils.copyProperties(onlineUser, his);
                         his.setDataid(onlineUser.getId());
                         onlineHisUserRes.save(his);
                     }
@@ -650,7 +651,7 @@ public class OnlineUserUtils {
                         his = new OnlineUserHis();
                     }
 
-                    UKTools.copyProperties(onlineUser, his);
+                    MainUtils.copyProperties(onlineUser, his);
                     his.setDataid(onlineUser.getId());
                     onlineHisUserRes.save(his);
                 }
@@ -762,7 +763,7 @@ public class OnlineUserUtils {
         data.setUserid(user);
         data.setSession(session);
         data.setType(MainContext.MessageTypeEnum.NEW.toString());
-        data.setId(UKTools.genID());
+        data.setId(MainUtils.genID());
 
         AgentUserService service = MainContext.getContext().getBean(
                 AgentUserService.class);
@@ -850,7 +851,7 @@ public class OnlineUserUtils {
         SessionConfig sessionConfig = ServiceQuene.initSessionConfig(data.getOrgi());
         AgentReport report = ServiceQuene.getAgentReport(data.getOrgi());
 
-        if (sessionConfig.isHourcheck() && !UKTools.isInWorkingHours(sessionConfig.getWorkinghours())) {
+        if (sessionConfig.isHourcheck() && !MainUtils.isInWorkingHours(sessionConfig.getWorkinghours())) {
             data.setMessage(sessionConfig.getNotinwhmsg());
         } else {
             if (report.getAgents() == 0) {
@@ -1148,22 +1149,22 @@ public class OnlineUserUtils {
         String param = "";
         SessionConfig sessionConfig = ServiceQuene.initSessionConfig(orgi);
         if (!StringUtils.isBlank(sessionConfig.getOqrsearchurl())) {
-            Template templet = UKTools.getTemplate(sessionConfig.getOqrsearchinput());
+            Template templet = MainUtils.getTemplate(sessionConfig.getOqrsearchinput());
             Map<String, Object> values = new HashMap<String, Object>();
             values.put("q", q);
             values.put("user", user);
-            param = UKTools.getTemplet(templet.getTemplettext(), values);
+            param = MainUtils.getTemplet(templet.getTemplettext(), values);
         }
         String result = HttpClientUtil.doPost(sessionConfig.getOqrsearchurl(), param), text = null;
         if (!StringUtils.isBlank(result) && !StringUtils.isBlank(sessionConfig.getOqrsearchoutput()) && !result.equals("error")) {
-            Template templet = UKTools.getTemplate(sessionConfig.getOqrsearchoutput());
+            Template templet = MainUtils.getTemplate(sessionConfig.getOqrsearchoutput());
             @SuppressWarnings("unchecked")
             Map<String, Object> jsonData = objectMapper.readValue(result, Map.class);
             Map<String, Object> values = new HashMap<String, Object>();
             values.put("q", q);
             values.put("user", user);
             values.put("data", jsonData);
-            text = UKTools.getTemplet(templet.getTemplettext(), values);
+            text = MainUtils.getTemplet(templet.getTemplettext(), values);
         }
         if (!StringUtils.isBlank(text)) {
             JavaType javaType = getCollectionType(ArrayList.class, OtherMessageItem.class);
@@ -1176,23 +1177,23 @@ public class OnlineUserUtils {
         OtherMessageItem otherMessageItem = null;
         String param = "";
         if (!StringUtils.isBlank(aiCofig.getOqrdetailinput())) {
-            Template templet = UKTools.getTemplate(aiCofig.getOqrdetailinput());
+            Template templet = MainUtils.getTemplate(aiCofig.getOqrdetailinput());
             Map<String, Object> values = new HashMap<String, Object>();
             values.put("id", id);
             values.put("user", user);
-            param = UKTools.getTemplet(templet.getTemplettext(), values);
+            param = MainUtils.getTemplet(templet.getTemplettext(), values);
         }
         if (!StringUtils.isBlank(aiCofig.getOqrdetailurl())) {
             String result = HttpClientUtil.doPost(aiCofig.getOqrdetailurl(), param), text = null;
             if (!StringUtils.isBlank(aiCofig.getOqrdetailoutput()) && !result.equals("error")) {
-                Template templet = UKTools.getTemplate(aiCofig.getOqrdetailoutput());
+                Template templet = MainUtils.getTemplate(aiCofig.getOqrdetailoutput());
                 @SuppressWarnings("unchecked")
                 Map<String, Object> jsonData = objectMapper.readValue(result, Map.class);
                 Map<String, Object> values = new HashMap<String, Object>();
                 values.put("id", id);
                 values.put("user", user);
                 values.put("data", jsonData);
-                text = UKTools.getTemplet(templet.getTemplettext(), values);
+                text = MainUtils.getTemplet(templet.getTemplettext(), values);
             }
             if (!StringUtils.isBlank(text)) {
                 otherMessageItem = objectMapper.readValue(text, OtherMessageItem.class);
@@ -1206,23 +1207,23 @@ public class OnlineUserUtils {
         String param = "";
         SessionConfig sessionConfig = ServiceQuene.initSessionConfig(orgi);
         if (!StringUtils.isBlank(sessionConfig.getOqrdetailinput())) {
-            Template templet = UKTools.getTemplate(sessionConfig.getOqrdetailinput());
+            Template templet = MainUtils.getTemplate(sessionConfig.getOqrdetailinput());
             Map<String, Object> values = new HashMap<String, Object>();
             values.put("id", id);
             values.put("user", user);
-            param = UKTools.getTemplet(templet.getTemplettext(), values);
+            param = MainUtils.getTemplet(templet.getTemplettext(), values);
         }
         if (!StringUtils.isBlank(sessionConfig.getOqrdetailurl())) {
             String result = HttpClientUtil.doPost(sessionConfig.getOqrdetailurl(), param), text = null;
             if (!StringUtils.isBlank(sessionConfig.getOqrdetailoutput()) && !result.equals("error")) {
-                Template templet = UKTools.getTemplate(sessionConfig.getOqrdetailoutput());
+                Template templet = MainUtils.getTemplate(sessionConfig.getOqrdetailoutput());
                 @SuppressWarnings("unchecked")
                 Map<String, Object> jsonData = objectMapper.readValue(result, Map.class);
                 Map<String, Object> values = new HashMap<String, Object>();
                 values.put("id", id);
                 values.put("user", user);
                 values.put("data", jsonData);
-                text = UKTools.getTemplet(templet.getTemplettext(), values);
+                text = MainUtils.getTemplet(templet.getTemplettext(), values);
             }
             if (!StringUtils.isBlank(text)) {
                 otherMessageItem = objectMapper.readValue(text, OtherMessageItem.class);

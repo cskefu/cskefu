@@ -39,7 +39,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.app.service.repository.AgentServiceRepository;
 import com.chatopera.cc.app.service.repository.AgentUserContactsRepository;
 import com.chatopera.cc.app.service.repository.ChatMessageRepository;
@@ -97,7 +97,7 @@ public class OnlineUserController extends Handler {
     @Menu(type = "service" , subtype = "online" , admin= true)
     public ModelAndView index(ModelMap map , HttpServletRequest request , String userid , String agentservice , @Valid String channel) {
 		if(!StringUtils.isBlank(userid)){
-			map.put("inviteResult", UKTools.getWebIMInviteResult(onlineUserRes.findByOrgiAndUserid(super.getOrgi(request), userid))) ;
+			map.put("inviteResult", MainUtils.getWebIMInviteResult(onlineUserRes.findByOrgiAndUserid(super.getOrgi(request), userid))) ;
 			map.put("tagRelationList", tagRelationRes.findByUserid(userid)) ;
 			map.put("onlineUserHistList", onlineUserHisRes.findByUseridAndOrgi(userid, super.getOrgi(request))) ;
 			map.put("agentServicesAvg", onlineUserRes.countByUserForAvagTime(super.getOrgi(request), MainContext.AgentUserStatusEnum.END.toString(),userid)) ;

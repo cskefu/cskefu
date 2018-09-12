@@ -31,7 +31,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.app.service.acd.ServiceQuene;
 import com.chatopera.cc.app.model.SystemConfig;
 import com.chatopera.cc.app.model.UKeFuDic;
@@ -62,7 +62,7 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
             ModelAndView view) throws Exception {
     	User user = (User) arg0.getSession().getAttribute(MainContext.USER_SESSION_NAME) ;
     	String infoace = (String) arg0.getSession().getAttribute(MainContext.UKEFU_SYSTEM_INFOACQ) ;		//进入信息采集模式
-    	SystemConfig systemConfig = UKTools.getSystemConfig();
+    	SystemConfig systemConfig = MainUtils.getSystemConfig();
     	if( view!=null){
 	    	if(user!=null){
 				view.addObject("user", user) ;
@@ -93,7 +93,7 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
 	    		view.addObject("infoace", infoace) ;		//进入信息采集模式
 	    	}
 	    	view.addObject("webimport", MainContext.getWebIMPort()) ;
-	    	view.addObject("sessionid", UKTools.getContextID(arg0.getSession().getId())) ;
+	    	view.addObject("sessionid", MainUtils.getContextID(arg0.getSession().getId())) ;
 	    	
 	    	view.addObject("models", MainContext.model) ;
 	    	
@@ -107,7 +107,7 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
 			if(imUser == null && view!=null){
 				imUser = new User();
 				imUser.setUsername(MainContext.GUEST_USER) ;
-				imUser.setId(UKTools.getContextID(arg0.getSession(true).getId())) ;
+				imUser.setId(MainUtils.getContextID(arg0.getSession(true).getId())) ;
 				imUser.setSessionid(imUser.getId()) ;
 				view.addObject("imuser", imUser) ;
 			}

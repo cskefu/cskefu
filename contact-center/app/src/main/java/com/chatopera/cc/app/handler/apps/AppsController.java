@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.app.service.acd.ServiceQuene;
 import com.chatopera.cc.app.service.cache.CacheHelper;
@@ -40,7 +41,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.service.repository.InviteRecordRepository;
 import com.chatopera.cc.app.service.repository.OnlineUserRepository;
 import com.chatopera.cc.app.service.repository.OrgiSkillRelRepository;
@@ -107,19 +107,19 @@ public class AppsController extends Handler {
 	
 	private void aggValues(ModelMap map , HttpServletRequest request){
 		map.put("agentReport", ServiceQuene.getAgentReport(super.getOrgi(request))) ;
-		map.put("webIMReport", UKTools.getWebIMReport(userEventRes.findByOrgiAndCreatetimeRange(super.getOrgi(request), UKTools.getStartTime() , UKTools.getEndTime()))) ;
+		map.put("webIMReport", MainUtils.getWebIMReport(userEventRes.findByOrgiAndCreatetimeRange(super.getOrgi(request), MainUtils.getStartTime() , MainUtils.getEndTime()))) ;
 		
 		map.put("agents",getUsers(request).size()) ;
 
-		map.put("webIMInvite", UKTools.getWebIMInviteStatus(onlineUserRes.findByOrgiAndStatus(super.getOrgi(request), MainContext.OnlineUserOperatorStatus.ONLINE.toString()))) ;
+		map.put("webIMInvite", MainUtils.getWebIMInviteStatus(onlineUserRes.findByOrgiAndStatus(super.getOrgi(request), MainContext.OnlineUserOperatorStatus.ONLINE.toString()))) ;
 		
-		map.put("inviteResult", UKTools.getWebIMInviteResult(onlineUserRes.findByOrgiAndAgentnoAndCreatetimeRange(super.getOrgi(request), super.getUser(request).getId() , UKTools.getStartTime() , UKTools.getEndTime()))) ;
+		map.put("inviteResult", MainUtils.getWebIMInviteResult(onlineUserRes.findByOrgiAndAgentnoAndCreatetimeRange(super.getOrgi(request), super.getUser(request).getId() , MainUtils.getStartTime() , MainUtils.getEndTime()))) ;
 		
-		map.put("agentUserCount", onlineUserRes.countByAgentForAgentUser(super.getOrgi(request), MainContext.AgentUserStatusEnum.INSERVICE.toString(),super.getUser(request).getId() , UKTools.getStartTime() , UKTools.getEndTime())) ;
+		map.put("agentUserCount", onlineUserRes.countByAgentForAgentUser(super.getOrgi(request), MainContext.AgentUserStatusEnum.INSERVICE.toString(),super.getUser(request).getId() , MainUtils.getStartTime() , MainUtils.getEndTime())) ;
 		
-		map.put("agentServicesCount", onlineUserRes.countByAgentForAgentUser(super.getOrgi(request), MainContext.AgentUserStatusEnum.END.toString(),super.getUser(request).getId() , UKTools.getStartTime() , UKTools.getEndTime())) ;
+		map.put("agentServicesCount", onlineUserRes.countByAgentForAgentUser(super.getOrgi(request), MainContext.AgentUserStatusEnum.END.toString(),super.getUser(request).getId() , MainUtils.getStartTime() , MainUtils.getEndTime())) ;
 		
-		map.put("agentServicesAvg", onlineUserRes.countByAgentForAvagTime(super.getOrgi(request), MainContext.AgentUserStatusEnum.END.toString(),super.getUser(request).getId() , UKTools.getStartTime() , UKTools.getEndTime())) ;
+		map.put("agentServicesAvg", onlineUserRes.countByAgentForAvagTime(super.getOrgi(request), MainContext.AgentUserStatusEnum.END.toString(),super.getUser(request).getId() , MainUtils.getStartTime() , MainUtils.getEndTime())) ;
 		
 	}
 	@RequestMapping({"/apps/onlineuser"})
@@ -207,7 +207,7 @@ public class AppsController extends Handler {
     		tempUser.setAgent(user.isAgent());
     		tempUser.setOrgi(super.getOrgiByTenantshare(request));
     		if(!StringUtils.isBlank(user.getPassword())){
-    			tempUser.setPassword(UKTools.md5(user.getPassword()));
+    			tempUser.setPassword(MainUtils.md5(user.getPassword()));
     		}
     		if(tempUser.getCreatetime() == null){
     			tempUser.setCreatetime(new Date());

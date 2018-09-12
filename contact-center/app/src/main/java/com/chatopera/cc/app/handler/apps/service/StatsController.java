@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.bi.UKExcelUtil;
 import com.chatopera.cc.util.bi.model.Level;
 import com.chatopera.cc.app.service.repository.CubeService;
@@ -59,7 +59,7 @@ public class StatsController extends Handler{
 	@RequestMapping("/stats/coment")
     @Menu(type = "service" , subtype = "statcoment" , admin= true)
     public ModelAndView statcoment(ModelMap map , HttpServletRequest request , @Valid String agent , @Valid String skill , @Valid String begin ,@Valid String end) throws Exception {
-		Map<String,Object> mapR =UKTools.getRequestParam(request);
+		Map<String,Object> mapR = MainUtils.getRequestParam(request);
 		mapR.put("orgi",super.getOrgi(request));
 		ReportData reportData = new CubeService("coment.xml", path, dataSource ,mapR ).execute("SELECT [comment].[满意度].members on columns , NonEmptyCrossJoin([time].[日期].members , NonEmptyCrossJoin([skill].[技能组].members,[agent].[坐席].members)) on rows  FROM [满意度]") ;
 		
@@ -101,7 +101,7 @@ public class StatsController extends Handler{
 	@RequestMapping("/stats/coment/exp")
     @Menu(type = "service" , subtype = "statcoment" , admin= true)
     public void statcomentexp(ModelMap map , HttpServletRequest request , HttpServletResponse response , @Valid String agent , @Valid String skill , @Valid String begin ,@Valid String end) throws Exception {
-		Map<String,Object> mapR =UKTools.getRequestParam(request);
+		Map<String,Object> mapR = MainUtils.getRequestParam(request);
 		mapR.put("orgi",super.getOrgi(request));
 		ReportData reportData = new CubeService("coment.xml", path, dataSource , mapR).execute("SELECT [comment].[满意度].members on columns , NonEmptyCrossJoin([time].[日期].members , NonEmptyCrossJoin([skill].[技能组].members,[agent].[坐席].members)) on rows  FROM [满意度]") ;
 		
@@ -123,7 +123,7 @@ public class StatsController extends Handler{
 	@RequestMapping("/stats/agent")
     @Menu(type = "service" , subtype = "statagent" , admin= true)
     public ModelAndView statagent(ModelMap map , HttpServletRequest request , @Valid String agent , @Valid String skill , @Valid String begin ,@Valid String end) throws Exception {
-		Map<String,Object> mapR =UKTools.getRequestParam(request);
+		Map<String,Object> mapR = MainUtils.getRequestParam(request);
 		mapR.put("orgi",super.getOrgi(request));
 		ReportData reportData = new CubeService("consult.xml", path, dataSource , mapR).execute("SELECT {[Measures].[咨询数量],[Measures].[平均等待时长（秒）],[Measures].[平均咨询时长（秒）]} on columns , NonEmptyCrossJoin([time].[日期].members , NonEmptyCrossJoin([skill].[技能组].members,[agent].[坐席].members)) on rows  FROM [咨询]") ;
 		map.addAttribute("reportData", reportData);
@@ -155,7 +155,7 @@ public class StatsController extends Handler{
 	@RequestMapping("/stats/agent/exp")
     @Menu(type = "service" , subtype = "statagent" , admin= true)
     public void statagentexp(ModelMap map , HttpServletRequest request , HttpServletResponse response ,@Valid String agent , @Valid String skill , @Valid String begin ,@Valid String end) throws Exception {
-		Map<String,Object> mapR =UKTools.getRequestParam(request);
+		Map<String,Object> mapR = MainUtils.getRequestParam(request);
 		mapR.put("orgi",super.getOrgi(request));
 		ReportData reportData = new CubeService("consult.xml", path, dataSource , mapR).execute("SELECT {[Measures].[咨询数量],[Measures].[平均等待时长（秒）],[Measures].[平均咨询时长（秒）]} on columns , NonEmptyCrossJoin([time].[日期].members , NonEmptyCrossJoin([skill].[技能组].members,[agent].[坐席].members)) on rows  FROM [咨询]") ;
 		response.setHeader("content-disposition", "attachment;filename=UCKeFu-Report-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");

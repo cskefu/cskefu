@@ -19,6 +19,7 @@ package com.chatopera.cc.app.im.handler;
 import java.util.List;
 
 import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.MainUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,7 +29,6 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.im.client.NettyClients;
 import com.chatopera.cc.app.service.repository.ChatMessageRepository;
 import com.chatopera.cc.app.service.repository.IMGroupUserRepository;
@@ -137,7 +137,7 @@ public class EntIMEventHandler
 		
     	data.setUserid(user);
 //		data.setUsername(name);
-		data.setId(UKTools.getUUID());
+		data.setId(MainUtils.getUUID());
 		data.setUsession(user);	
 		data.setCalltype(MainContext.CallTypeEnum.OUT.toString());
 		

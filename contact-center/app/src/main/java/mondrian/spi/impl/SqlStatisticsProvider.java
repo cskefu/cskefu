@@ -15,7 +15,7 @@ import java.util.Arrays;
 
 import javax.sql.DataSource;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 
 import mondrian.rolap.RolapUtil;
 import mondrian.rolap.SqlStatement;
@@ -118,7 +118,7 @@ public class SqlStatisticsProvider implements StatisticsProvider {
         if (sql == null) {
             return -1;
         }
-        String sqlId = UKTools.md5(sql);
+        String sqlId = MainUtils.md5(sql);
     	SqlStatement stmt =
     			RolapUtil.executeQuery(
     					dataSource,

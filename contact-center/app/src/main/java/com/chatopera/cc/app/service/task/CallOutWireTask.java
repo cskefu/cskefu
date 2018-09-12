@@ -17,7 +17,7 @@ package com.chatopera.cc.app.service.task;
 
 import com.chatopera.cc.app.MainContext;
 import com.chatopera.cc.util.Constants;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.app.im.client.NettyClients;
 import com.chatopera.cc.event.CallOutWireEvent;
 import com.chatopera.cc.exception.CSKefuException;
@@ -122,8 +122,8 @@ public class CallOutWireTask implements MessageListener {
                                     final Date createtime,
                                     final String callid,
                                     final Contacts lxr) {
-        final String statusEventId = UKTools.getUUID();
-        final String serviceId = UKTools.getUUID();
+        final String statusEventId = MainUtils.getUUID();
+        final String serviceId = MainUtils.getUUID();
 
         // 通话记录
         StatusEvent statusEvent = new StatusEvent();
@@ -180,7 +180,7 @@ public class CallOutWireTask implements MessageListener {
         AgentService as = new AgentService();
         as.setOrgi(orgi);
         as.setId(serviceId);
-        UKTools.copyProperties(agentUser, as);
+        MainUtils.copyProperties(agentUser, as);
         as.setAgentuserid(agentUser.getId());
         as.setAgentserviceid(serviceId);
         as.setQualitystatus(MainContext.QualityStatus.NO.toString()); // 不做质检
@@ -195,7 +195,7 @@ public class CallOutWireTask implements MessageListener {
         if(lxr != null){
             // 创建联系人，坐席服务关联
             AgentUserContacts auc = new AgentUserContacts();
-            auc.setId(UKTools.getUUID());
+            auc.setId(MainUtils.getUUID());
             auc.setContactsid(lxr.getId());
             auc.setAppid(channel);
             auc.setCreatetime(now);
@@ -240,10 +240,10 @@ public class CallOutWireTask implements MessageListener {
         OnlineUser onlineUser = onlineUserRes.findByPhoneAndOrgi(visitorPhoneNumber, MainContext.SYSTEM_ORGI);
         if (onlineUser == null) {
             onlineUser = new OnlineUser();
-            onlineUser.setId(UKTools.getUUID());
+            onlineUser.setId(MainUtils.getUUID());
             onlineUser.setUserid(onlineUser.getId());
             onlineUser.setUsertype(MainContext.OnlineUserTypeStatus.TELECOM.toString());
-            onlineUser.setUsername(MainContext.GUEST_USER + "_" + UKTools.genIDByKey(onlineUser.getId()));
+            onlineUser.setUsername(MainContext.GUEST_USER + "_" + MainUtils.genIDByKey(onlineUser.getId()));
             onlineUser.setOrgi(MainContext.SYSTEM_ORGI);
             onlineUser.setMobile("0");  // 不是 移动客户端
             onlineUser.setPhone(visitorPhoneNumber);
@@ -496,7 +496,7 @@ public class CallOutWireTask implements MessageListener {
      */
     public void callOutFail(final CallOutWireEvent event) throws CallOutRuntimeException {
         StatusEvent se = new StatusEvent();
-        se.setId(UKTools.getUUID());
+        se.setId(MainUtils.getUUID());
         se.setStatus(event.getStatus());
         se.setDuration(0);
         se.setDirection(event.getDirection());

@@ -27,7 +27,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 
 @Entity
 @Table(name = "uk_act_callnames")
@@ -39,7 +39,7 @@ public class UKefuCallOutNames implements java.io.Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String id  = UKTools.getUUID();
+	private String id  = MainUtils.getUUID();
 	private String orgi ;		//租户ID
 	private String organ ;		//创建部门
 	private String creater ;	//创建人

@@ -17,7 +17,7 @@ package com.chatopera.cc.app.handler.admin.channel;
 
 import com.chatopera.cc.app.MainContext;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.exception.CSKefuException;
 import com.chatopera.cc.app.service.repository.ConsultInviteRepository;
 import com.chatopera.cc.app.service.repository.SNSAccountRepository;
@@ -107,7 +107,7 @@ public class CalloutChannelController extends Handler {
     @Menu(type = "callout" , subtype = "delete")
     public ModelAndView delete(ModelMap map , HttpServletRequest request , @Valid String id  , @Valid String confirm) {
         boolean execute = false ;
-        if(execute = UKTools.secConfirm(secRes, super.getOrgi(request), confirm)){
+        if(execute = MainUtils.secConfirm(secRes, super.getOrgi(request), confirm)){
             SNSAccount snsAccount = snsAccountRes.findByIdAndOrgi(id , super.getOrgi(request)) ;
             if(snsAccountRes!=null){
                 snsAccountRes.delete(snsAccount);

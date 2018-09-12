@@ -28,7 +28,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 
 @Document(indexName = "cskefu", type = "entcustomer")
 @Entity
@@ -41,7 +41,7 @@ public class EntCustomer extends ESBean implements java.io.Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String id  = UKTools.getUUID();
+	private String id  = MainUtils.getUUID();
 	
 	private String name;			
 	private String etype;			

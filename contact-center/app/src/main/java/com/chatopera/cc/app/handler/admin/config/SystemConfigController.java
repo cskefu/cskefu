@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.app.service.cache.CacheHelper;
 import com.chatopera.cc.app.service.repository.SecretRepository;
@@ -50,7 +51,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.corundumstudio.socketio.SocketIOServer;
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.SystemConfig;
 import com.chatopera.cc.app.model.UKeFuDic;
@@ -135,7 +135,7 @@ public class SystemConfigController extends Handler{
     @Menu(type = "admin" , subtype = "stopimserver" , access = false , admin = true)
     public ModelAndView stopimserver(ModelMap map , HttpServletRequest request , @Valid String confirm) throws SQLException {
     	boolean execute = false ;
-    	if(execute = UKTools.secConfirm(secRes, super.getOrgi(request), confirm)){
+    	if(execute = MainUtils.secConfirm(secRes, super.getOrgi(request), confirm)){
 	    	server.stop();
 	    	MainContext.setIMServerStatus(false);
     	}
@@ -167,7 +167,7 @@ public class SystemConfigController extends Handler{
     @Menu(type = "admin" , subtype = "stop" , access = false , admin = true)
     public ModelAndView stop(ModelMap map , HttpServletRequest request , @Valid String confirm) throws SQLException {
     	boolean execute = false ;
-    	if(execute = UKTools.secConfirm(secRes, super.getOrgi(request), confirm)){
+    	if(execute = MainUtils.secConfirm(secRes, super.getOrgi(request), confirm)){
 	    	server.stop();
 	    	MainContext.setIMServerStatus(false);
 	    	System.exit(0);
@@ -192,7 +192,7 @@ public class SystemConfigController extends Handler{
     		config.setCreatetime(new Date());
     		systemConfig = config ;
     	}else{
-    		UKTools.copyProperties(config,systemConfig);
+    		MainUtils.copyProperties(config,systemConfig);
     	}
     	if(config.isEnablessl()){
 	    	if(keyfile!=null && keyfile.getBytes()!=null && keyfile.getBytes().length > 0 && keyfile.getOriginalFilename()!=null && keyfile.getOriginalFilename().length() > 0){
@@ -204,7 +204,7 @@ public class SystemConfigController extends Handler{
 		    	}
 		    	Properties prop = new Properties();     
 		    	FileOutputStream oFile = new FileOutputStream(sslFilePath);//true表示追加打开
-		    	prop.setProperty("key-store-password", UKTools.encryption(systemConfig.getJkspassword())) ;
+		    	prop.setProperty("key-store-password", MainUtils.encryption(systemConfig.getJkspassword())) ;
 		    	prop.setProperty("key-store",systemConfig.getJksfile()) ;
 		    	prop.store(oFile , "SSL Properties File");
 		    	oFile.close();
@@ -217,17 +217,17 @@ public class SystemConfigController extends Handler{
     	}
     	
     	if(loginlogo!=null && !StringUtils.isBlank(loginlogo.getOriginalFilename()) && loginlogo.getOriginalFilename().lastIndexOf(".") > 0) {
-    		String logoFileName = "logo/"+UKTools.md5(loginlogo.getOriginalFilename())+loginlogo.getOriginalFilename().substring(loginlogo.getOriginalFilename().lastIndexOf(".")) ;
+    		String logoFileName = "logo/"+ MainUtils.md5(loginlogo.getOriginalFilename())+loginlogo.getOriginalFilename().substring(loginlogo.getOriginalFilename().lastIndexOf(".")) ;
     		FileUtils.writeByteArrayToFile(new File(path ,logoFileName), loginlogo.getBytes());
     		systemConfig.setLoginlogo(logoFileName);
     	}
     	if(consolelogo!=null && !StringUtils.isBlank(consolelogo.getOriginalFilename()) && consolelogo.getOriginalFilename().lastIndexOf(".") > 0) {
-    		String consoleLogoFileName = "logo/"+UKTools.md5(consolelogo.getOriginalFilename())+consolelogo.getOriginalFilename().substring(consolelogo.getOriginalFilename().lastIndexOf(".")) ;
+    		String consoleLogoFileName = "logo/"+ MainUtils.md5(consolelogo.getOriginalFilename())+consolelogo.getOriginalFilename().substring(consolelogo.getOriginalFilename().lastIndexOf(".")) ;
     		FileUtils.writeByteArrayToFile(new File(path ,consoleLogoFileName), consolelogo.getBytes());
     		systemConfig.setConsolelogo(consoleLogoFileName);
     	}
     	if(favlogo!=null && !StringUtils.isBlank(favlogo.getOriginalFilename()) && consolelogo.getOriginalFilename().lastIndexOf(".") > 0) {
-    		String favLogoFileName = "logo/"+UKTools.md5(favlogo.getOriginalFilename())+favlogo.getOriginalFilename().substring(favlogo.getOriginalFilename().lastIndexOf(".")) ;
+    		String favLogoFileName = "logo/"+ MainUtils.md5(favlogo.getOriginalFilename())+favlogo.getOriginalFilename().substring(favlogo.getOriginalFilename().lastIndexOf(".")) ;
     		FileUtils.writeByteArrayToFile(new File(path ,favLogoFileName), favlogo.getBytes());
     		systemConfig.setFavlogo(favLogoFileName);
     	}
@@ -239,8 +239,8 @@ public class SystemConfigController extends Handler{
 		    	if(secretConfig!=null && secretConfig.size() > 0){
 		    		Secret tempSecret = secretConfig.get(0) ;
 		    		String oldpass = request.getParameter("oldpass") ;
-		    		if(!StringUtils.isBlank(oldpass) && UKTools.md5(oldpass).equals(tempSecret.getPassword())){
-		    			tempSecret.setPassword(UKTools.md5(secret.getPassword()));
+		    		if(!StringUtils.isBlank(oldpass) && MainUtils.md5(oldpass).equals(tempSecret.getPassword())){
+		    			tempSecret.setPassword(MainUtils.md5(secret.getPassword()));
 		    			msg = "1" ;
 		    			tempSecret.setEnable(true);
 		    			secRes.save(tempSecret) ;
@@ -251,7 +251,7 @@ public class SystemConfigController extends Handler{
 		    		secret.setOrgi(super.getOrgi(request));
 		    		secret.setCreater(super.getUser(request).getId());
 		    		secret.setCreatetime(new Date());
-		    		secret.setPassword(UKTools.md5(secret.getPassword()));
+		    		secret.setPassword(MainUtils.md5(secret.getPassword()));
 		    		secret.setEnable(true);
 		    		msg = "1" ;
 		    		secRes.save(secret) ;

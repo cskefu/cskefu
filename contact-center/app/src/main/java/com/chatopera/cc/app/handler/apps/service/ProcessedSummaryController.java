@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.MainUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,7 +46,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.util.task.export.ExcelExporterProcess;
 import com.chatopera.cc.app.service.es.ContactsRepository;
 import com.chatopera.cc.app.service.repository.AgentServiceRepository;
@@ -108,10 +108,10 @@ public class ProcessedSummaryController extends Handler{
 				}
 				try {
 					if(!StringUtils.isBlank(begin) && begin.matches("[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}")){
-						list.add(cb.greaterThanOrEqualTo(root.get("createtime").as(Date.class), UKTools.dateFormate.parse(begin))) ;
+						list.add(cb.greaterThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.dateFormate.parse(begin))) ;
 					}
 					if(!StringUtils.isBlank(end) && end.matches("[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}")){
-						list.add(cb.lessThanOrEqualTo(root.get("createtime").as(Date.class), UKTools.dateFormate.parse(end))) ;
+						list.add(cb.lessThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.dateFormate.parse(end))) ;
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -172,7 +172,7 @@ public class ProcessedSummaryController extends Handler{
 	    		MetadataTable table = metadataRes.findByTablename("uk_servicesummary") ;
 	    		List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
 	    		for(AgentServiceSummary event : statusEventList){
-	    			values.add(UKTools.transBean2Map(event)) ;
+	    			values.add(MainUtils.transBean2Map(event)) ;
 	    		}
 	    		
 	    		response.setHeader("content-disposition", "attachment;filename=UCKeFu-Summary-History-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
@@ -192,7 +192,7 @@ public class ProcessedSummaryController extends Handler{
 	    	MetadataTable table = metadataRes.findByTablename("uk_servicesummary") ;
 			List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
 			for(AgentServiceSummary statusEvent : statusEventList){
-				values.add(UKTools.transBean2Map(statusEvent)) ;
+				values.add(MainUtils.transBean2Map(statusEvent)) ;
 			}
 			
 			response.setHeader("content-disposition", "attachment;filename=UCKeFu-Summary-History-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
@@ -221,10 +221,10 @@ public class ProcessedSummaryController extends Handler{
 					}
 					try {
 						if(!StringUtils.isBlank(begin) && begin.matches("[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}")){
-							list.add(cb.greaterThanOrEqualTo(root.get("createtime").as(Date.class), UKTools.dateFormate.parse(begin))) ;
+							list.add(cb.greaterThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.dateFormate.parse(begin))) ;
 						}
 						if(!StringUtils.isBlank(end) && end.matches("[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}")){
-							list.add(cb.lessThanOrEqualTo(root.get("createtime").as(Date.class), UKTools.dateFormate.parse(end))) ;
+							list.add(cb.lessThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.dateFormate.parse(end))) ;
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -235,7 +235,7 @@ public class ProcessedSummaryController extends Handler{
 	    	
 	    	List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
 	    	for(AgentServiceSummary summary : page){
-	    		values.add(UKTools.transBean2Map(summary)) ;
+	    		values.add(MainUtils.transBean2Map(summary)) ;
 	    	}
 
 	    	response.setHeader("content-disposition", "attachment;filename=UCKeFu-Summary-History-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  

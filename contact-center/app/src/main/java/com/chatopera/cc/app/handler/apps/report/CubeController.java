@@ -22,6 +22,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
@@ -32,7 +33,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.service.repository.CubeLevelRepository;
 import com.chatopera.cc.app.service.repository.CubeMeasureRepository;
 import com.chatopera.cc.app.service.repository.CubeMetadataRepository;
@@ -427,10 +427,10 @@ public class CubeController extends Handler{
     	User user = super.getUser(request);
     	Cube cube =this.getCube(cubeid);
     	PublishedCube publishCube  = new PublishedCube();
-    	UKTools.copyProperties(cube, publishCube, "");
+    	MainUtils.copyProperties(cube, publishCube, "");
     	publishCube.setId(null);
     	Base64 base64 = new Base64();
-    	publishCube.setCubecontent(base64.encodeToString(UKTools.toBytes(cube))) ;
+    	publishCube.setCubecontent(base64.encodeToString(MainUtils.toBytes(cube))) ;
     	publishCube.setDataid(cubeid);
     	publishCube.setUserid(user.getId());
     	publishCube.setUsername(user.getUsername());

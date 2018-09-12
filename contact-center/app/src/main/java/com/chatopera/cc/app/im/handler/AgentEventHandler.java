@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.app.im.client.NettyClients;
 import com.chatopera.cc.app.service.acd.ServiceQuene;
 import com.chatopera.cc.app.service.cache.CacheHelper;
@@ -79,13 +79,13 @@ public class AgentEventHandler
 				}
 			}
 	    	InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress()  ;
-			String ip = UKTools.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString()) ;
+			String ip = MainUtils.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString()) ;
 			
 	    	
 	    	WorkSessionRepository workSessionRepository = MainContext.getContext().getBean(WorkSessionRepository.class) ;
-	    	int count = workSessionRepository.countByAgentAndDatestrAndOrgi(user, UKTools.simpleDateFormat.format(new Date()), orgi) ;
+	    	int count = workSessionRepository.countByAgentAndDatestrAndOrgi(user, MainUtils.simpleDateFormat.format(new Date()), orgi) ;
 	    	
-	    	workSessionRepository.save(UKTools.createWorkSession(user, UKTools.getContextID(client.getSessionId().toString()), session, orgi, ip, address.getHostName() , admin , count == 0)) ;
+	    	workSessionRepository.save(MainUtils.createWorkSession(user, MainUtils.getContextID(client.getSessionId().toString()), session, orgi, ip, address.getHostName() , admin , count == 0)) ;
 	    	
 			NettyClients.getInstance().putAgentEventClient(user, client);
 		}
@@ -100,10 +100,10 @@ public class AgentEventHandler
 		String admin = client.getHandshakeData().getSingleUrlParam("admin") ;
 		if(!StringUtils.isBlank(user)){
 			ServiceQuene.deleteAgentStatus(user, orgi, !StringUtils.isBlank(admin) && admin.equals("true"));
-			NettyClients.getInstance().removeAgentEventClient(user , UKTools.getContextID(client.getSessionId().toString()));
+			NettyClients.getInstance().removeAgentEventClient(user , MainUtils.getContextID(client.getSessionId().toString()));
 			
 			WorkSessionRepository workSessionRepository = MainContext.getContext().getBean(WorkSessionRepository.class) ;
-			List<WorkSession> workSessionList = workSessionRepository.findByOrgiAndClientid(orgi, UKTools.getContextID(client.getSessionId().toString())) ;
+			List<WorkSession> workSessionList = workSessionRepository.findByOrgiAndClientid(orgi, MainUtils.getContextID(client.getSessionId().toString())) ;
 			if(workSessionList.size() > 0) {
 				WorkSession workSession = workSessionList.get(0) ;
 				workSession.setEndtime(new Date());
@@ -165,7 +165,7 @@ public class AgentEventHandler
     	}
     	
     	if(agentUser!=null && user!=null && user.equals(agentUser.getAgentno())){
-    		data.setId(UKTools.getUUID());
+    		data.setId(MainUtils.getUUID());
     		data.setContextid(agentUser.getContextid());
     		
     		data.setAgentserviceid(agentUser.getAgentserviceid());

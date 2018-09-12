@@ -14,18 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.chatopera.cc.util;
+package com.chatopera.cc.app;
 
-public class UKView {
+public class Viewport {
 	private String page ;
 	private String templet;
 	
-	public UKView(String templet , String page){
+	public Viewport(String templet , String page){
 		this.templet = templet ;
 		this.page = page ; 
 	}
 	
-	public UKView(String page){
+	public Viewport(String page){
 		this.page = page ; 
 	}
 	

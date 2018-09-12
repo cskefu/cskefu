@@ -25,10 +25,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.chatopera.cc.event.UserEvent;
+import com.chatopera.cc.app.MainUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Proxy;
-
-import com.chatopera.cc.util.UKTools;
 
 @Entity
 @Table(name="uk_userevent")
@@ -38,7 +37,7 @@ public class UserHistory implements UserEvent {
 	 * 
 	 */
 	private static final long serialVersionUID = -9167939944520945485L;
-	private String id = UKTools.getUUID();
+	private String id = MainUtils.getUUID();
 	private String username;
 	private String creater;
 	private Date createtime = new Date();
@@ -66,7 +65,7 @@ public class UserHistory implements UserEvent {
 	private String sessionid ;
 	private String param ;
 	private int times ;		
-	private String createdate = UKTools.simpleDateFormat.format(new Date());
+	private String createdate = MainUtils.simpleDateFormat.format(new Date());
 	private String model = "app";
 	@Id
 	@Column(length=32)

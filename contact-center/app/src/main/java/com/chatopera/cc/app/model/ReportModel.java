@@ -29,11 +29,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.bi.ReportData;
 import org.apache.commons.codec.binary.Base64;
 import org.hibernate.annotations.GenericGenerator;
-
-import com.chatopera.cc.util.UKTools;
 
 
 @Entity
@@ -44,7 +43,7 @@ public class ReportModel implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String id = UKTools.getUUID();
+	private String id = MainUtils.getUUID();
 	private String posx ;
 	private String posy ;
 	private String poswidth;
@@ -688,7 +687,7 @@ public class ReportModel implements java.io.Serializable {
 		this.colindex = colindex;
 	}
 	public Template templet() {
-		return UKTools.getTemplate(this.templetid) ;
+		return MainUtils.getTemplate(this.templetid) ;
 	}
 	@Transient
 	public List<ColumnProperties> getProperties() {
@@ -738,7 +737,7 @@ public class ReportModel implements java.io.Serializable {
 	public ChartProperties getChartProperties() {
 		Base64 base64 = new Base64();
 		try {
-			return chartProperties!=null ? chartProperties : (chartProperties = (this.chartcontent==null?null:(ChartProperties)UKTools.toObject(base64.decode(this.chartcontent))));
+			return chartProperties!=null ? chartProperties : (chartProperties = (this.chartcontent==null?null:(ChartProperties) MainUtils.toObject(base64.decode(this.chartcontent))));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -746,7 +745,7 @@ public class ReportModel implements java.io.Serializable {
 	}
 	@Transient
 	public String getChartPropertiesJson() {
-		return UKTools.toJson(getChartProperties());
+		return MainUtils.toJson(getChartProperties());
 	}
 	public String getChartcontent() {
 		return chartcontent;

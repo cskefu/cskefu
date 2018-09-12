@@ -29,8 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.PinYinTools;
+import com.chatopera.cc.util.*;
 import com.chatopera.cc.app.im.client.NettyClients;
 import com.chatopera.cc.exception.CSKefuException;
 import com.chatopera.cc.util.extra.DataExchangeInterface;
@@ -42,8 +41,6 @@ import com.chatopera.cc.app.service.cache.CacheHelper;
 import com.chatopera.cc.app.service.es.ContactsRepository;
 import com.chatopera.cc.app.service.es.QuickReplyRepository;
 import com.chatopera.cc.app.service.repository.*;
-import com.chatopera.cc.util.OnlineUserUtils;
-import com.chatopera.cc.util.PropertiesEventUtils;
 import com.chatopera.cc.app.im.router.OutMessageRouter;
 import com.chatopera.cc.app.im.message.ChatMessage;
 import org.apache.commons.io.FileUtils;
@@ -65,7 +62,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.app.handler.Handler;
 
 import freemarker.template.TemplateException;
@@ -690,14 +687,14 @@ public class AgentController extends Handler {
     		if(!uploadDir.exists()){
     			uploadDir.mkdirs() ;
     		}
-    		String fileid = UKTools.md5(imgFile.getBytes()) , fileURL = null , targetFile = null;
+    		String fileid = MainUtils.md5(imgFile.getBytes()) , fileURL = null , targetFile = null;
     		ChatMessage data = new ChatMessage() ;
     		if(imgFile.getContentType()!=null && imgFile.getContentType().indexOf("image") >= 0){
 	    		fileName = "upload/"+fileid+"_original"  ;
 	    		File imageFile = new File(path , fileName) ;
 	    		FileCopyUtils.copy(imgFile.getBytes(), imageFile);
 	    		targetFile  = "upload/"+fileid ; 
-	    		UKTools.processImage(new File(path , targetFile), imageFile) ;
+	    		MainUtils.processImage(new File(path , targetFile), imageFile) ;
 	    		
 	    		
 	    		fileURL =  "/res/image.html?id="+targetFile ;
@@ -747,7 +744,7 @@ public class AgentController extends Handler {
 	    		}
 	    		//同时发送消息给 坐席
 	    		data.setMessage(fileURL);
-	    		data.setId(UKTools.getUUID());
+	    		data.setId(MainUtils.getUUID());
 	    		data.setContextid(agentUser.getContextid());
 	    		
 	    		data.setAgentserviceid(agentUser.getAgentserviceid());
@@ -808,7 +805,7 @@ public class AgentController extends Handler {
 	    		chatMessage.setCooperation(true);
 	    		chatMessageRepository.save(chatMessage) ;
 	    		
-	    		UKTools.scaleImage(imageFile, tempFile , 0.1F) ;
+	    		MainUtils.scaleImage(imageFile, tempFile , 0.1F) ;
 	    		
 	    		
 	    		
@@ -845,7 +842,7 @@ public class AgentController extends Handler {
 	private String processAttachmentFile(MultipartFile file , HttpServletRequest request) throws IOException{
     	String id = null ;
     	if(file.getSize() > 0){			//文件尺寸 限制 ？在 启动 配置中 设置 的最大值，其他地方不做限制
-			String fileid = UKTools.md5(file.getBytes()) ;	//使用 文件的 MD5作为 ID，避免重复上传大文件
+			String fileid = MainUtils.md5(file.getBytes()) ;	//使用 文件的 MD5作为 ID，避免重复上传大文件
 			if(!StringUtils.isBlank(fileid)){
     			AttachmentFile attachmentFile = new AttachmentFile() ;
     			attachmentFile.setCreater(super.getUser(request).getId());
@@ -1244,7 +1241,7 @@ public class AgentController extends Handler {
         if(au == null)
             throw new CSKefuException("不存在该服务记录");
 
-        contacts.setId(UKTools.getUUID());
+        contacts.setId(MainUtils.getUUID());
         contacts.setCreater(super.getUser(request).getId());
         contacts.setOrgi(super.getOrgi(request));
         contacts.setOrgan(super.getUser(request).getOrgan());
@@ -1255,7 +1252,7 @@ public class AgentController extends Handler {
         contactsRes.save(contacts) ;
 
 	    AgentUserContacts auc = new AgentUserContacts();
-        auc.setId(UKTools.getUUID());
+        auc.setId(MainUtils.getUUID());
         auc.setUsername(au.getUsername());
         auc.setOrgi(MainContext.SYSTEM_ORGI);
         auc.setUserid(au.getUserid());
@@ -1275,7 +1272,7 @@ public class AgentController extends Handler {
         if(data!=null){
             List<PropertiesEvent> events = PropertiesEventUtils.processPropertiesModify(request, contacts , data , "id" , "orgi" , "creater" ,"createtime" , "updatetime") ;	//记录 数据变更 历史
             if(events.size()>0){
-                String modifyid = UKTools.getUUID() ;
+                String modifyid = MainUtils.getUUID() ;
                 Date modifytime = new Date();
                 for(PropertiesEvent event : events){
                     event.setDataid(contacts.getId());

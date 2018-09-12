@@ -15,7 +15,7 @@
  */
 package com.chatopera.cc.app.im.client;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.google.common.collect.ArrayListMultimap;
 
@@ -42,7 +42,7 @@ public class NettyChatbotClient implements NettyClient{
 	public void removeClient(String key , String id){
 		List<SocketIOClient> keyClients = this.getClients(key) ;
 		for(SocketIOClient client : keyClients){
-			if(UKTools.getContextID(client.getSessionId().toString()).equals(id)){
+			if(MainUtils.getContextID(client.getSessionId().toString()).equals(id)){
 				keyClients.remove(client) ;
 				break ;
 			}

@@ -14,21 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.chatopera.cc.util.task;
+package com.chatopera.cc.disruptor.user;
 
-import com.lmax.disruptor.EventHandler;
-import com.chatopera.cc.app.MainUtils;
+import com.lmax.disruptor.RingBuffer;
+import com.chatopera.cc.event.UserEvent;
 
-public class DSDataEventHandler implements EventHandler<DSDataEvent>
-{
-	public void onEvent(DSDataEvent event, long sequence, boolean endOfBatch)
+public class UserDataEventProducer {
+	private final RingBuffer<UserDataEvent> ringBuffer;
+
+    public UserDataEventProducer(RingBuffer<UserDataEvent> ringBuffer)
     {
-		if(event.getDSData().getReport().getId() == null){
-			event.getDSData().getReport().setId(MainUtils.genID());
-			event.getDSData().getReport().setTabledirid(event.getDSData().getTask().getTabledirid());
-		}
-    	if(event.getDSData().getFile().getName().toLowerCase().endsWith(".xls") || event.getDSData().getFile().getName().toLowerCase().endsWith(".xlsx")){
-    		new ExcelImportProecess(event).process(); 
-    	}
+        this.ringBuffer = ringBuffer;
+    }
+
+    public void onData(UserEvent userEvent)
+    {
+        long id = ringBuffer.next();  // Grab the next sequence
+        try{
+        	UserDataEvent event = ringBuffer.get(id);
+        	event.setEvent(userEvent);
+        }finally{
+            ringBuffer.publish(id);
+        }
     }
 }

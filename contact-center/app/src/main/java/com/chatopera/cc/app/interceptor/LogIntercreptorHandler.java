@@ -22,6 +22,7 @@ import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.app.model.User;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +31,6 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.RequestLog;
 
@@ -85,7 +85,7 @@ public class LogIntercreptorHandler implements org.springframework.web.servlet.H
 			while(names.hasMoreElements()){
 				String paraName=(String)names.nextElement();
 				if(paraName.indexOf("password") >= 0) {
-					str.append(paraName).append("=").append(UKTools.encryption(request.getParameter(paraName))).append(",");
+					str.append(paraName).append("=").append(MainUtils.encryption(request.getParameter(paraName))).append(",");
 				}else {
 					str.append(paraName).append("=").append(request.getParameter(paraName)).append(",");
 				}
@@ -99,7 +99,7 @@ public class LogIntercreptorHandler implements org.springframework.web.servlet.H
 			}
 			
 			log.setParameters(str.toString());
-			UKTools.published(log);
+			MainUtils.published(log);
 	    }
 	}
 

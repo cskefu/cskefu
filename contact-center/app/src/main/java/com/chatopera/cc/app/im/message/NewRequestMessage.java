@@ -16,14 +16,14 @@
  */
 package com.chatopera.cc.app.im.message;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 
 public class NewRequestMessage extends Message{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3520656734252136303L;
-	private String id = UKTools.getUUID();
+	private String id = MainUtils.getUUID();
 	private String type ;
 	private boolean noagent ;
 

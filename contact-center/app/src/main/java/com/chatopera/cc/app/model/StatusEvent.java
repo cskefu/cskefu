@@ -31,7 +31,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Proxy;
 
 import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 
 @Entity
 @Table(name = "uk_callcenter_event")
@@ -160,7 +160,7 @@ public class StatusEvent implements Serializable, Comparable<StatusEvent>{
 	private String satisfaction 	;		//满意度评价
 	private Date satisfdate ;				//满意度调查提交时间
 	
-	private String datestr = UKTools.simpleDateFormat.format(new Date());
+	private String datestr = MainUtils.simpleDateFormat.format(new Date());
 	private String hourstr = new SimpleDateFormat("HH").format(new Date());
 	
 

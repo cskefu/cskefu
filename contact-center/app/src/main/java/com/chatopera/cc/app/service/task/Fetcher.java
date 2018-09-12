@@ -24,9 +24,9 @@ import com.chatopera.cc.app.MainContext;
 import com.chatopera.cc.app.service.cache.CacheHelper;
 import com.chatopera.cc.app.service.resource.Resource;
 import com.chatopera.cc.app.model.JobDetail;
+import com.chatopera.cc.app.MainUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.service.repository.ReporterRepository;
 import com.chatopera.cc.app.service.resource.OutputTextFormat;
 
@@ -118,7 +118,7 @@ public class Fetcher implements Runnable {
 			}
 			this.job.getReport().setOrgi(this.job.getOrgi());
 	    	this.job.getReport().setDataid(this.job.getId());
-	    	this.job.getReport().setTitle(this.job.getName() + "_" + UKTools.dateFormate.format(new Date()));
+	    	this.job.getReport().setTitle(this.job.getName() + "_" + MainUtils.dateFormate.format(new Date()));
 	    	
 	    	this.job.getReport().setUserid(this.job.getCreater());
 			this.job.getReport().setUsername(this.job.getUsername());

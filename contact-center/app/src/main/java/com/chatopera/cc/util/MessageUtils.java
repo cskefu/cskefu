@@ -46,7 +46,6 @@ public class MessageUtils {
 	
 	/**
 	 * 
-	 * @param image
 	 * @param userid
 	 */
 	public static ChatMessage uploadFile(String url , int size , String name , String userid , String attachid){
@@ -75,17 +74,9 @@ public class MessageUtils {
 			data.setAppid(agentUser.getAppid());
 			data.setOrgi(agentUser.getOrgi());
 			createMessage(data, msgtype, userid);
-		}else {
-			AiUser aiUser = (AiUser) CacheHelper.getOnlineUserCacheBean().getCacheObject(userid, MainContext.SYSTEM_ORGI) ;
-			data.setUserid(userid);
-			data.setAppid(aiUser.getAppid());
-			data.setAiid(aiUser.getAiid());
-			data.setUsername(aiUser.getUsername());
-			data.setOrgi(aiUser.getOrgi());
-			createAiMessage(data , data.getAppid() , aiUser.getChannel() , MainContext.CallTypeEnum.IN.toString() , MainContext.AiItemType.USERINPUT.toString() , MainContext.MediaTypeEnum.IMAGE.toString(), data.getUserid());
-			sendMessage(data, msgtype);
-			UKTools.chatbot(data);
 		}
+		// TODO #75 create Chatbot Message
+        // https://github.com/chatopera/cosin/issues/75
 		return data ;
 	}
 	/**

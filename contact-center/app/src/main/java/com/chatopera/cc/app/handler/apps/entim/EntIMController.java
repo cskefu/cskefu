@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.app.im.client.NettyClients;
 import com.chatopera.cc.app.service.repository.IMGroupRepository;
@@ -38,7 +39,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.service.repository.ChatMessageRepository;
 import com.chatopera.cc.app.service.repository.RecentUserRepository;
 import com.chatopera.cc.app.service.repository.UserRepository;
@@ -103,7 +103,7 @@ public class EntIMController extends Handler {
     public ModelAndView chat(HttpServletRequest request , HttpServletResponse response , @Valid String userid) {
     	ModelAndView view = request(super.createEntIMTempletResponse("/apps/entim/chat")) ; 
     	view.addObject("entimuser", userRes.findByIdAndOrgi(userid, super.getOrgi(request))) ;
-    	view.addObject("contextid", UKTools.genNewID(super.getUser(request).getId(), userid)) ;
+    	view.addObject("contextid", MainUtils.genNewID(super.getUser(request).getId(), userid)) ;
     	view.addObject("online", NettyClients.getInstance().getEntIMClientsNum(userid) > 0) ;
     	view.addObject("chatMessageList", chatMessageRes.findByContextidAndUseridAndOrgi(userid , super.getUser(request).getId(), super.getOrgi(request), new PageRequest(0, 20, Sort.Direction.DESC, "createtime"))) ;
     	

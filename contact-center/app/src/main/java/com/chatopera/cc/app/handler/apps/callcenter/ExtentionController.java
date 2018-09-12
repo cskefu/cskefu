@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.app.service.repository.AclRepository;
 import com.chatopera.cc.app.service.repository.ExtentionRepository;
 import com.chatopera.cc.app.service.repository.RouterRulesRepository;
@@ -77,7 +77,7 @@ public class ExtentionController extends Handler{
 		ModelAndView view = request(super.createRequestPageTempletResponse("/apps/business/callcenter/extention/index")) ;
 		List<PbxHost> pbxHostList = pbxHostRes.findByHostnameOrIpaddr(hostname, hostname) ;
 		PbxHost pbxHost = null ;
-		SystemConfig systemConfig = UKTools.getSystemConfig() ;
+		SystemConfig systemConfig = MainUtils.getSystemConfig() ;
 		if(pbxHostList!=null && pbxHostList.size() > 0){
 			pbxHost = pbxHostList.get(0) ;
 			map.addAttribute("pbxHost" , pbxHost);
@@ -86,7 +86,7 @@ public class ExtentionController extends Handler{
 		}
 		if(systemConfig!=null && systemConfig.isCallcenter()){
 			if(!StringUtils.isBlank(systemConfig.getCc_extention())){
-				Template template = UKTools.getTemplate(systemConfig.getCc_extention()) ;
+				Template template = MainUtils.getTemplate(systemConfig.getCc_extention()) ;
 				if(template!=null){
 					map.addAttribute("template" , template);
 					view = request(super.createRequestPageTempletResponse("/apps/business/callcenter/template")) ;
@@ -102,7 +102,7 @@ public class ExtentionController extends Handler{
 		
 		List<PbxHost> pbxHostList = pbxHostRes.findByHostnameOrIpaddr(hostname, hostname) ;
 		PbxHost pbxHost = null ;
-		SystemConfig systemConfig = UKTools.getSystemConfig() ;
+		SystemConfig systemConfig = MainUtils.getSystemConfig() ;
 		if(pbxHostList!=null && pbxHostList.size() > 0){
 			pbxHost = pbxHostList.get(0) ;
 			map.addAttribute("pbxHost" , pbxHost);
@@ -118,21 +118,21 @@ public class ExtentionController extends Handler{
 			view = request(super.createRequestPageTempletResponse("/apps/business/callcenter/configure/callcenter"));
 			if(systemConfig!=null && systemConfig.isCallcenter()){
 				if(!StringUtils.isBlank(systemConfig.getCc_quene())){
-					template = UKTools.getTemplate(systemConfig.getCc_quene()) ;
+					template = MainUtils.getTemplate(systemConfig.getCc_quene()) ;
 				}
 			}
 		}else if(key_value!=null && key_value.equals("acl.conf")){
 			view = request(super.createRequestPageTempletResponse("/apps/business/callcenter/configure/acl"));
 			if(systemConfig!=null && systemConfig.isCallcenter()){
 				if(!StringUtils.isBlank(systemConfig.getCc_acl())){
-					template = UKTools.getTemplate(systemConfig.getCc_acl()) ;
+					template = MainUtils.getTemplate(systemConfig.getCc_acl()) ;
 				}
 			}
 		}else if(key_value!=null && key_value.equals("ivr.conf")){
 			view = request(super.createRequestPageTempletResponse("/apps/business/callcenter/configure/ivr"));
 			if(systemConfig!=null && systemConfig.isCallcenter()){
 				if(!StringUtils.isBlank(systemConfig.getCc_ivr())){
-					template = UKTools.getTemplate(systemConfig.getCc_ivr()) ;
+					template = MainUtils.getTemplate(systemConfig.getCc_ivr()) ;
 				}
 			}
 		}
@@ -149,7 +149,7 @@ public class ExtentionController extends Handler{
 		ModelAndView view = request(super.createRequestPageTempletResponse("/apps/business/callcenter/dialplan/index"));
 		List<PbxHost> pbxHostList = pbxHostRes.findByHostnameOrIpaddr(hostname, hostname) ;
 		PbxHost pbxHost = null ;
-		SystemConfig systemConfig = UKTools.getSystemConfig() ;
+		SystemConfig systemConfig = MainUtils.getSystemConfig() ;
 		Template template = null ;
 		if(pbxHostList!=null && pbxHostList.size() > 0){
 			pbxHost = pbxHostList.get(0) ;
@@ -158,7 +158,7 @@ public class ExtentionController extends Handler{
 		}
 		if(systemConfig!=null && systemConfig.isCallcenter()){
 			if(!StringUtils.isBlank(systemConfig.getCc_siptrunk())){
-				template = UKTools.getTemplate(systemConfig.getCc_router()) ;
+				template = MainUtils.getTemplate(systemConfig.getCc_router()) ;
 			}
 			if(template!=null){
 				map.addAttribute("template" , template);

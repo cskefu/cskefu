@@ -25,9 +25,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.chatopera.cc.app.MainUtils;
 import org.hibernate.annotations.GenericGenerator;
-
-import com.chatopera.cc.util.UKTools;
 
 @Entity
 @Table(name = "uk_act_formfilter_item")
@@ -39,7 +38,7 @@ public class FormFilterItem  implements java.io.Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String id  = UKTools.getUUID();
+	private String id  = MainUtils.getUUID();
 	
 	private String formfilterid;
 	

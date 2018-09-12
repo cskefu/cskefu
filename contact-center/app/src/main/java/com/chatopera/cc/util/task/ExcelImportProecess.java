@@ -33,6 +33,7 @@ import com.chatopera.cc.app.MainContext;
 import com.chatopera.cc.app.model.JobDetail;
 import com.chatopera.cc.app.model.SysDic;
 import com.chatopera.cc.app.model.TableProperties;
+import com.chatopera.cc.app.MainUtils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
@@ -47,7 +48,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.util.extra.DataExchangeInterface;
 import com.chatopera.cc.app.service.repository.JobDetailRepository;
 import com.chatopera.cc.app.service.repository.ReporterRepository;
@@ -176,9 +176,9 @@ public class ExcelImportProecess extends DataProcess{
 					values.put("orgi", event.getOrgi()) ;
 					if(values.get("id") == null){
 						if(pkStr.length() > 0) {
-							values.put("id", UKTools.md5(pkStr.append(event.getDSData().getTask().getTablename()).toString())) ;
+							values.put("id", MainUtils.md5(pkStr.append(event.getDSData().getTask().getTablename()).toString())) ;
 						}else {
-							values.put("id", UKTools.md5(allStr.append(event.getDSData().getTask().getTablename()).toString())) ;
+							values.put("id", MainUtils.md5(allStr.append(event.getDSData().getTask().getTablename()).toString())) ;
 						}
 					}
 					if(event.getValues()!=null && event.getValues().size() > 0){
@@ -199,15 +199,15 @@ public class ExcelImportProecess extends DataProcess{
 								}else {
 									if(valuestr.matches("[\\d]{4,4}-[\\d]{2,2}-{1,1}")) {
 										if("date".equals(tp.getDefaultfieldvalue())) {
-											values.put(tp.getFieldname(),UKTools.simpleDateFormat.parse(valuestr));
+											values.put(tp.getFieldname(), MainUtils.simpleDateFormat.parse(valuestr));
 										}else {
-											values.put(tp.getFieldname(),UKTools.simpleDateFormat.format(UKTools.simpleDateFormat.parse(valuestr)));
+											values.put(tp.getFieldname(), MainUtils.simpleDateFormat.format(MainUtils.simpleDateFormat.parse(valuestr)));
 										}
 									}else if(valuestr.matches("[\\d]{4,4}-[\\d]{2,2}-[\\d]{2,2} [\\d]{2,2}:[\\d]{2,2}:[\\d]{2,2}")) {
 										if("date".equals(tp.getDefaultfieldvalue())) {
-											values.put(tp.getFieldname(),UKTools.dateFormate.parse(valuestr));
+											values.put(tp.getFieldname(), MainUtils.dateFormate.parse(valuestr));
 										}else {
-											values.put(tp.getFieldname(),UKTools.simpleDateFormat.format(UKTools.dateFormate.parse(valuestr)));
+											values.put(tp.getFieldname(), MainUtils.simpleDateFormat.format(MainUtils.dateFormate.parse(valuestr)));
 										}
 										
 									}
@@ -226,7 +226,7 @@ public class ExcelImportProecess extends DataProcess{
 					event.getDSData().getReport().setTotal(pages.intValue());
 					values.put("creater", event.getValues().get("creater")) ;
 					if(data!=null && skipDataVal == false) {
-						UKTools.populate(data, values);
+						MainUtils.populate(data, values);
 						pages.incrementAndGet() ;
 						event.getDSData().getProcess().process(data);
 					}else if(data == null){

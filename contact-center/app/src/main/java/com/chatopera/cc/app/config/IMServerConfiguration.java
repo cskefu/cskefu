@@ -35,7 +35,7 @@ import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.HandshakeData;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.exception.UCKeFuExceptionListener;
   
 @org.springframework.context.annotation.Configuration  
@@ -88,7 +88,7 @@ public class IMServerConfiguration
         	sslProperties.load(in);
         	in.close();
         	if(!StringUtils.isBlank(sslProperties.getProperty("key-store")) && !StringUtils.isBlank(sslProperties.getProperty("key-store-password"))){
-        		config.setKeyStorePassword(UKTools.decryption(sslProperties.getProperty("key-store-password")));
+        		config.setKeyStorePassword(MainUtils.decryption(sslProperties.getProperty("key-store-password")));
         	    InputStream stream = new FileInputStream(new File(path , "ssl/"+sslProperties.getProperty("key-store")));
         	    config.setKeyStore(stream);
         	}

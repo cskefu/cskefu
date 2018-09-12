@@ -22,7 +22,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 
 import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.app.model.Log;
 
 public class UKeFuAppender extends ch.qos.logback.core.ConsoleAppender<ILoggingEvent> {
@@ -44,7 +44,7 @@ public class UKeFuAppender extends ch.qos.logback.core.ConsoleAppender<ILoggingE
 			
 			log.setMethod(event.getThreadName());
 			log.setLogtype(event.getLevel().toString().equals(Level.ERROR.toString()) ? "1" : "0") ;
-			log.setLogtime(String.valueOf(UKTools.dateFormate.format(new Date()))) ;
+			log.setLogtime(String.valueOf(MainUtils.dateFormate.format(new Date()))) ;
 			/**
 			 * 临时缓存
 			 */

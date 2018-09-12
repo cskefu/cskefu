@@ -26,13 +26,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.chatopera.cc.app.MainUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import com.chatopera.cc.util.UKTools;
 @Document(indexName = "cskefu", type = "orderscomment")
 @Entity
 @Table(name = "uk_orderscomment")
@@ -43,7 +43,7 @@ public class OrdersComment implements UKAgg{
 	 * 
 	 */
 	private static final long serialVersionUID = -4911955236794918875L;
-	private String id = UKTools.getUUID();
+	private String id = MainUtils.getUUID();
 	private String username;
 	private String creater ;
 	

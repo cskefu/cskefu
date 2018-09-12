@@ -24,13 +24,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.bi.ReportData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.model.ColumnProperties;
 import com.chatopera.cc.app.model.Cube;
 import com.chatopera.cc.app.model.CubeLevel;
@@ -435,7 +435,7 @@ public class ReportCubeService{
 	public static String getDefaultValue(ReportFilter filter , HttpServletRequest request){
 		String value = filter.getDefaultvalue();
 		if(value!=null && value.matches("[ ]{0,}[TtMmYy]{1,}[ ]{0,}[+-]{0,1}([\\d]{0,})")){//处理动态参数的问题 ， Y表示 年 ， 如 Y+1 ， M表示 月 ， 如：M+1 ， T表示 日 ， 如 T+1 ， 例如，Y-1 = 2013 ， M-1 = 8
-			value = UKTools.processParam(filter.getFormatstr() , value);
+			value = MainUtils.processParam(filter.getFormatstr() , value);
 		}
 		value = StringUtils.isBlank(filter.getRequestvalue()) ? value : filter.getRequestvalue();
 		return value;
@@ -449,7 +449,7 @@ public class ReportCubeService{
 	public static String getStartValue(ReportFilter filter , HttpServletRequest request){
 		String startValue = filter.getStartvalue();
 		if(startValue!=null && startValue.matches("[ ]{0,}[TtMmYy]{1,}[ ]{0,}[+-]{0,1}([\\d]{0,})")){//处理动态参数的问题 ， Y表示 年 ， 如 Y+1 ， M表示 月 ， 如：M+1 ， T表示 日 ， 如 T+1 ， 例如，Y-1 = 2013 ， M-1 = 8
-			startValue = UKTools.processParam(filter.getFormatstr() , startValue);
+			startValue = MainUtils.processParam(filter.getFormatstr() , startValue);
 		}
 		return StringUtils.isBlank(filter.getRequeststartvalue()) ? startValue :filter.getRequeststartvalue() ;
 	}
@@ -462,7 +462,7 @@ public class ReportCubeService{
 	public static String getEndValue(ReportFilter filter , HttpServletRequest request){
 		String endValue = filter.getEndvalue();
 		if(endValue!=null && endValue.matches("[ ]{0,}[TtMmYy]{1,}[ ]{0,}[+-]{0,1}([\\d]{0,})")){//处理动态参数的问题 ， Y表示 年 ， 如 Y+1 ， M表示 月 ， 如：M+1 ， T表示 日 ， 如 T+1 ， 例如，Y-1 = 2013 ， M-1 = 8
-			endValue =UKTools.processParam(filter.getFormatstr() , endValue);
+			endValue = MainUtils.processParam(filter.getFormatstr() , endValue);
 		}
 		return StringUtils.isBlank(filter.getRequestendvalue())? endValue : filter.getRequestendvalue();
 	}

@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.chatopera.cc.event;
+package com.chatopera.cc.disruptor.multiupdate;
 
 import com.chatopera.cc.app.service.hibernate.BaseService;
+import com.chatopera.cc.event.UserEvent;
 
-public class MultiUpdateEvent<S> implements UserEvent{
+public class MultiUpdateEvent<S> implements UserEvent {
 	
 	/**
 	 * 

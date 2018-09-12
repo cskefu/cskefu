@@ -35,7 +35,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.chatopera.cc.app.MainContext;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.app.service.cache.CacheHelper;
 import com.chatopera.cc.app.service.repository.SysDicRepository;
 import com.chatopera.cc.app.service.repository.TemplateRepository;
@@ -67,7 +67,7 @@ public class TemplateController extends Handler{
     public void expall(ModelMap map , HttpServletRequest request , HttpServletResponse response) throws Exception {
     	List<Template> templateList = templateRes.findByOrgi(super.getOrgi(request)) ;
 		response.setHeader("content-disposition", "attachment;filename=UCKeFu-Template-Export-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".data");  
-		response.getOutputStream().write(UKTools.toBytes(templateList));
+		response.getOutputStream().write(MainUtils.toBytes(templateList));
         return ;
     }
     
@@ -82,7 +82,7 @@ public class TemplateController extends Handler{
     @Menu(type = "admin" , subtype = "template" , access = false , admin = true)
     public ModelAndView impsave(ModelMap map , HttpServletRequest request , @RequestParam(value = "dataFile", required = false) MultipartFile dataFile) throws Exception {
     	if(dataFile!=null && dataFile.getSize() > 0){
-    		List<Template> templateList = (List<Template>) UKTools.toObject(dataFile.getBytes()) ;
+    		List<Template> templateList = (List<Template>) MainUtils.toObject(dataFile.getBytes()) ;
     		if(templateList!=null && templateList.size() >0){
     			templateRes.deleteInBatch(templateList);
     			for(Template template : templateList){

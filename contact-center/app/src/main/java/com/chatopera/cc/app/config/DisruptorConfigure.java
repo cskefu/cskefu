@@ -29,9 +29,9 @@ import org.springframework.stereotype.Component;
 import com.lmax.disruptor.SleepingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
-import com.chatopera.cc.event.UserDataEvent;
-import com.chatopera.cc.disruptor.UserDataEventFactory;
-import com.chatopera.cc.disruptor.UserEventHandler;
+import com.chatopera.cc.disruptor.user.UserDataEvent;
+import com.chatopera.cc.disruptor.user.UserDataEventFactory;
+import com.chatopera.cc.disruptor.user.UserEventHandler;
 
 @Component
 public class DisruptorConfigure {

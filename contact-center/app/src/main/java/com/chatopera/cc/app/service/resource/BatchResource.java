@@ -24,10 +24,10 @@ import java.util.HashMap;
 import com.chatopera.cc.app.MainContext;
 import com.chatopera.cc.app.service.impl.BatchDataProcess;
 import com.chatopera.cc.app.model.JobDetail;
+import com.chatopera.cc.app.MainUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.util.task.DSData;
 import com.chatopera.cc.util.task.DSDataEvent;
 import com.chatopera.cc.util.task.ExcelImportProecess;
@@ -64,13 +64,13 @@ public class BatchResource extends Resource{
 		if(metadataTable!=null && !StringUtils.isBlank(this.jobDetail.getBatchtype()) && this.jobDetail.getBatchtype().equals("plan")) {
 			if(!StringUtils.isBlank(this.jobDetail.getImptype())) {
 				if(this.jobDetail.getImptype().equals("local")) {
-					tempFile = new File(UKTools.getTemplet(this.jobDetail.getImpurl(), new HashMap<String,Object>()));
+					tempFile = new File(MainUtils.getTemplet(this.jobDetail.getImpurl(), new HashMap<String,Object>()));
 				}else if(this.jobDetail.getImptype().equals("remote")){
-					FileUtils.copyURLToFile(new URL(UKTools.getTemplet(this.jobDetail.getImpurl(), new HashMap<String,Object>())), tempFile = File.createTempFile("UKeFu-CallOut-Temp", ".xls"));
+					FileUtils.copyURLToFile(new URL(MainUtils.getTemplet(this.jobDetail.getImpurl(), new HashMap<String,Object>())), tempFile = File.createTempFile("UKeFu-CallOut-Temp", ".xls"));
 				}
 			}
 			if(tempFile.exists()) {
-				String fileName = "callout/batch/"+UKTools.getUUID() + tempFile.getName().substring(tempFile.getName().lastIndexOf(".")) ;
+				String fileName = "callout/batch/"+ MainUtils.getUUID() + tempFile.getName().substring(tempFile.getName().lastIndexOf(".")) ;
 		    	File excelFile = new File(path , fileName) ;
 		    	if(!excelFile.getParentFile().exists()){
 		    		excelFile.getParentFile().mkdirs() ;
@@ -91,7 +91,7 @@ public class BatchResource extends Resource{
 		    	
 		    	event.getDSData().getReport().setOrgi(this.jobDetail.getOrgi());
 		    	event.getDSData().getReport().setDataid(this.jobDetail.getId());
-		    	event.getDSData().getReport().setTitle(this.jobDetail.getName() + "_" + UKTools.dateFormate.format(new Date()));
+		    	event.getDSData().getReport().setTitle(this.jobDetail.getName() + "_" + MainUtils.dateFormate.format(new Date()));
 			}else {
 				event.getDSData().getReport().setError(true);
 				if(tempFile!=null) {

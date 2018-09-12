@@ -16,8 +16,8 @@
 package com.chatopera.cc.disruptor.chatbot;
 
 import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.event.MultiUpdateEvent;
-import com.chatopera.cc.event.UserDataEvent;
+import com.chatopera.cc.disruptor.multiupdate.MultiUpdateEvent;
+import com.chatopera.cc.disruptor.user.UserDataEvent;
 import com.chatopera.cc.util.task.ESData;
 import com.lmax.disruptor.EventHandler;
 

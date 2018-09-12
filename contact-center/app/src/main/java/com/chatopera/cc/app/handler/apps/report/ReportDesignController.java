@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.bi.ReportData;
 import org.apache.commons.codec.binary.Base64;
@@ -38,7 +39,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.service.repository.ColumnPropertiesRepository;
 import com.chatopera.cc.app.service.repository.MetadataRepository;
 import com.chatopera.cc.app.service.repository.PublishedCubeRepository;
@@ -182,7 +182,7 @@ public class ReportDesignController extends Handler {
 			ChartProperties chartProperties = new ChartProperties();
 			chartProperties.setChartype(tp.getCharttype());
 			Base64 base64 = new Base64();
-			model.setChartcontent(base64.encodeToString(UKTools.toBytes(chartProperties))) ;
+			model.setChartcontent(base64.encodeToString(MainUtils.toBytes(chartProperties))) ;
 			model.setTempletid(template);
 			model.setMid(mid);
 
@@ -272,7 +272,7 @@ public class ReportDesignController extends Handler {
 		map.addAttribute("eltemplet",t);
 		if (!StringUtils.isBlank(parentid)) {
 			ReportFilter filter = new ReportFilter();
-			filter.setCode(UKTools.genID());
+			filter.setCode(MainUtils.genID());
 			filter.setReportid(id);
 			filter.setOrgi(super.getOrgi(request));
 			filter.setCreatetime(new Date());
@@ -478,7 +478,7 @@ public class ReportDesignController extends Handler {
 		String modelId = "";
 		if (f != null) {
 			if(StringUtils.isBlank(f.getCode())) {
-				f.setCode(UKTools.genID());
+				f.setCode(MainUtils.genID());
 			}
 			f.setOrgi(super.getOrgi(request));
 			f.setCreatetime(new Date());
@@ -545,7 +545,7 @@ public class ReportDesignController extends Handler {
 					}else{
 						col.setCur(dtype);
 					}
-					col.setId(UKTools.genID());
+					col.setId(MainUtils.genID());
 					CubeLevel cubeLevel = null;
 					for (Dimension dim : cube.getCube().getDimension()) {
 						for (CubeLevel level : dim.getCubeLevel()) {
@@ -586,7 +586,7 @@ public class ReportDesignController extends Handler {
 				if (!inlist) {
 					ColumnProperties col = new ColumnProperties();
 					col.setCur("measure"); // 数据结构字段
-					col.setId(UKTools.genID());
+					col.setId(MainUtils.genID());
 					CubeMeasure cubeMeasure = null;
 					for (CubeMeasure measure : cube.getCube().getMeasure()) {
 						if (measure.getId().equals(m)) {
@@ -619,7 +619,7 @@ public class ReportDesignController extends Handler {
 				}
 				if (!inlist) {
 					ReportFilter filter = new ReportFilter();
-					filter.setId(UKTools.genID());
+					filter.setId(MainUtils.genID());
 					CubeLevel cubeLevel = null;
 					if (cube != null && cube.getCube() != null && cube.getCube().getDimension().size() > 0) {
 						for (Dimension dim : cube.getCube().getDimension()) {
@@ -678,7 +678,7 @@ public class ReportDesignController extends Handler {
 		if (!StringUtils.isBlank(id)) {
 			ReportModel model = this.getModel(id, super.getOrgi(request),publishedid);
 			if(model!=null) {
-				map.addAttribute("eltemplet", UKTools.getTemplate(model.getTempletid()));
+				map.addAttribute("eltemplet", MainUtils.getTemplate(model.getTempletid()));
 			}
 			map.addAttribute("element", model);
 			map.addAttribute("reportModel", model);
@@ -1109,7 +1109,7 @@ public class ReportDesignController extends Handler {
 			ChartProperties oldChartppy = model.getChartProperties();
 			oldChartppy.setChartype(tp.getCharttype());
 			Base64 base64 = new Base64();
-			model.setChartcontent(base64.encodeToString(UKTools.toBytes(oldChartppy))) ;
+			model.setChartcontent(base64.encodeToString(MainUtils.toBytes(oldChartppy))) ;
 			reportModelRes.save(model);
 		}
 		return request(super.createRequestPageTempletResponse(
@@ -1131,7 +1131,7 @@ public class ReportDesignController extends Handler {
 			oldChartppy.setDataview(chartProperties.isDataview());
 			oldChartppy.setFormat(StringUtils.isBlank(chartProperties.getFormat())?"val":chartProperties.getFormat());
 			Base64 base64 = new Base64();
-			model.setChartcontent(base64.encodeToString(UKTools.toBytes(oldChartppy))) ;
+			model.setChartcontent(base64.encodeToString(MainUtils.toBytes(oldChartppy))) ;
 			reportModelRes.save(model);
 		}
 		map.addAttribute("eltemplet", templateRes.findByIdAndOrgi(model.getTempletid(), super.getOrgi(request)));
@@ -1272,10 +1272,10 @@ public class ReportDesignController extends Handler {
     		List<ReportFilter> reportFilters = reportCubeService.fillReportFilterData(reportFilterRepository.findByReportidAndFiltertypeAndOrgi(reportid, "report", super.getOrgi(request)),request);
     		report.setReportFilters(reportFilters);
     		PublishedReport publishedReport  = new PublishedReport();
-    		UKTools.copyProperties(report, publishedReport, "");
+    		MainUtils.copyProperties(report, publishedReport, "");
     		publishedReport.setId(null);
         	Base64 base64 = new Base64();
-        	publishedReport.setReportcontent(base64.encodeToString(UKTools.toBytes(report))) ;
+        	publishedReport.setReportcontent(base64.encodeToString(MainUtils.toBytes(report))) ;
         	publishedReport.setDataid(reportid);
         	publishedReport.setCreatetime(new Date());
         	publishedReport.setCreater(user.getId());

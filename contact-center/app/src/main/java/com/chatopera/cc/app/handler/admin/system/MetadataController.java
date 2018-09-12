@@ -51,7 +51,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.UKeFuList;
 import com.chatopera.cc.app.service.repository.MetadataRepository;
 import com.chatopera.cc.app.handler.Handler;
@@ -222,7 +222,7 @@ public class MetadataController extends Handler{
 	    				  				//当前记录没有被添加过，进行正常添加
 	    				  				metaDataTable.setTablename(table);
 	    				  				metaDataTable.setOrgi(user.getOrgi());
-	    				  				metaDataTable.setId(UKTools.md5(metaDataTable.getTablename()));
+	    				  				metaDataTable.setId(MainUtils.md5(metaDataTable.getTablename()));
 	    				  				metaDataTable.setTabledirid("0");
 	    				  				metaDataTable.setCreater(user.getId());
 	    				  				metaDataTable.setCreatername(user.getUsername());

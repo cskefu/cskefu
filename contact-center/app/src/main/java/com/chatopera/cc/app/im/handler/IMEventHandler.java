@@ -24,6 +24,7 @@ import java.util.List;
 import com.chatopera.cc.app.MainContext;
 import com.chatopera.cc.app.service.cache.CacheHelper;
 import com.chatopera.cc.app.im.message.ChatMessage;
+import com.chatopera.cc.app.MainUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,7 +34,6 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.im.client.NettyClients;
 import com.chatopera.cc.app.service.acd.ServiceQuene;
 import com.chatopera.cc.app.service.impl.AgentUserService;
@@ -81,7 +81,7 @@ public class IMEventHandler
 				 * 用户进入到对话连接 ， 排队用户请求 , 如果返回失败，表示当前坐席全忙，用户进入排队状态，当前提示信息 显示 当前排队的队列位置，不可进行对话，用户发送的消息作为留言处理
 				 */
 				InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress()  ;
-				String ip = UKTools.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString()) ;
+				String ip = MainUtils.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString()) ;
 				NewRequestMessage newRequestMessage = OnlineUserUtils.newRequestMessage(user, orgi , session , appid , ip , client.getHandshakeData().getSingleUrlParam("osname") , client.getHandshakeData().getSingleUrlParam("browser") , MainContext.ChannelTypeEnum.WEBIM.toString() , skill , agent , nickname , title , url , traceid , MainContext.ChatInitiatorType.USER.toString()) ;
 //				/**
 //				 * 加入到 缓存列表
@@ -94,7 +94,7 @@ public class IMEventHandler
 			    	outMessage.setMessageType(MainContext.MessageTypeEnum.MESSAGE.toString());
 			    	outMessage.setCalltype(MainContext.CallTypeEnum.IN.toString());
 			    	outMessage.setNickName(newRequestMessage.getUsername());
-					outMessage.setCreatetime(UKTools.dateFormate.format(new Date()));
+					outMessage.setCreatetime(MainUtils.dateFormate.format(new Date()));
 					outMessage.setAgentserviceid(newRequestMessage.getAgentserviceid());
 					
 					outMessage.setNoagent(newRequestMessage.isNoagent());
@@ -125,7 +125,7 @@ public class IMEventHandler
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			NettyClients.getInstance().removeIMEventClient(user ,UKTools.getContextID(client.getSessionId().toString()));
+			NettyClients.getInstance().removeIMEventClient(user , MainUtils.getContextID(client.getSessionId().toString()));
 		}
     }  
       
@@ -190,7 +190,7 @@ public class IMEventHandler
     	/**
 		 * 处理表情
 		 */
-    	data.setMessage(UKTools.processEmoti(data.getMessage()));
+    	data.setMessage(MainUtils.processEmoti(data.getMessage()));
 		
     	MessageUtils.createMessage(data , MainContext.MediaTypeEnum.TEXT.toString(), data.getUserid());
     } 

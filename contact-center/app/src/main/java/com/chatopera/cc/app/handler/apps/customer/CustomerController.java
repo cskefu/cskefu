@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.PinYinTools;
 import com.chatopera.cc.exception.CSKefuException;
@@ -58,7 +59,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.util.task.DSDataEvent;
 import com.chatopera.cc.app.service.repository.MetadataRepository;
 import com.chatopera.cc.app.service.repository.ReporterRepository;
@@ -128,7 +128,7 @@ public class CustomerController extends Handler{
     		boolQueryBuilder.must(termQuery("ekind" , ekind)) ;
         	map.put("ekind", ekind) ;
         }
-    	map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(),super.getOrgi(request), UKTools.getStartTime() , null , false, boolQueryBuilder ,q , new PageRequest(super.getP(request) , super.getPs(request)))) ;
+    	map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(),super.getOrgi(request), MainUtils.getStartTime() , null , false, boolQueryBuilder ,q , new PageRequest(super.getP(request) , super.getPs(request)))) ;
     	
     	return request(super.createAppsTempletResponse("/apps/business/customer/index"));
     }
@@ -148,7 +148,7 @@ public class CustomerController extends Handler{
     		boolQueryBuilder.must(termQuery("ekind" , ekind)) ;
         	map.put("ekind", ekind) ;
         }
-    	map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(),super.getOrgi(request), UKTools.getWeekStartTime() , null , false, boolQueryBuilder ,q , new PageRequest(super.getP(request) , super.getPs(request)))) ;
+    	map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(),super.getOrgi(request), MainUtils.getWeekStartTime() , null , false, boolQueryBuilder ,q , new PageRequest(super.getP(request) , super.getPs(request)))) ;
     	
     	return request(super.createAppsTempletResponse("/apps/business/customer/index"));
     }
@@ -272,7 +272,7 @@ public class CustomerController extends Handler{
     	
     	List<PropertiesEvent> events = PropertiesEventUtils.processPropertiesModify(request, customerGroupForm.getEntcustomer() , customer , "id" , "orgi" , "creater" ,"createtime" , "updatetime") ;	//记录 数据变更 历史
     	if(events.size()>0){
-    		String modifyid = UKTools.getUUID() ;
+    		String modifyid = MainUtils.getUUID() ;
     		Date modifytime = new Date();
     		for(PropertiesEvent event : events){
     			event.setDataid(customerGroupForm.getEntcustomer().getId());
@@ -305,7 +305,7 @@ public class CustomerController extends Handler{
     @Menu(type = "customer" , subtype = "customer")
     public ModelAndView impsave(ModelMap map , HttpServletRequest request , @RequestParam(value = "cusfile", required = false) MultipartFile cusfile,@Valid String ekind) throws IOException {
     	DSDataEvent event = new DSDataEvent();
-    	String fileName = "customer/"+UKTools.getUUID()+cusfile.getOriginalFilename().substring(cusfile.getOriginalFilename().lastIndexOf(".")) ;
+    	String fileName = "customer/"+ MainUtils.getUUID()+cusfile.getOriginalFilename().substring(cusfile.getOriginalFilename().lastIndexOf(".")) ;
     	File excelFile = new File(path , fileName) ;
     	if(!excelFile.getParentFile().exists()){
     		excelFile.getParentFile().mkdirs() ;
@@ -336,7 +336,7 @@ public class CustomerController extends Handler{
     		MetadataTable table = metadataRes.findByTablename("uk_entcustomer") ;
     		List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
     		for(EntCustomer customer : entCustomerList){
-    			values.add(UKTools.transBean2Map(customer)) ;
+    			values.add(MainUtils.transBean2Map(customer)) ;
     		}
     		
     		response.setHeader("content-disposition", "attachment;filename=UCKeFu-EntCustomer-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
@@ -363,7 +363,7 @@ public class CustomerController extends Handler{
     	MetadataTable table = metadataRes.findByTablename("uk_entcustomer") ;
 		List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
 		for(EntCustomer customer : entCustomerList){
-			values.add(UKTools.transBean2Map(customer)) ;
+			values.add(MainUtils.transBean2Map(customer)) ;
 		}
 		
 		response.setHeader("content-disposition", "attachment;filename=UCKeFu-EntCustomer-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
@@ -394,7 +394,7 @@ public class CustomerController extends Handler{
     	MetadataTable table = metadataRes.findByTablename("uk_entcustomer") ;
     	List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
     	for(EntCustomer customer : entCustomerList){
-    		values.add(UKTools.transBean2Map(customer)) ;
+    		values.add(MainUtils.transBean2Map(customer)) ;
     	}
 
     	response.setHeader("content-disposition", "attachment;filename=UCKeFu-EntCustomer-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  

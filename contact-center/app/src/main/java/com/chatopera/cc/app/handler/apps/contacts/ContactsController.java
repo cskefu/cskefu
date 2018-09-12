@@ -19,7 +19,7 @@ package com.chatopera.cc.app.handler.apps.contacts;
 
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.PinYinTools;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.exception.CSKefuException;
 import com.chatopera.cc.util.task.DSData;
 import com.chatopera.cc.util.task.DSDataEvent;
@@ -120,7 +120,7 @@ public class ContactsController extends Handler {
             boolQueryBuilder.must(termQuery("ckind", ckind));
             map.put("ckind", ckind);
         }
-        map.addAttribute("contactsList", contactsRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), UKTools.getStartTime(), null, false, boolQueryBuilder, q, new PageRequest(super.getP(request), super.getPs(request))));
+        map.addAttribute("contactsList", contactsRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), MainUtils.getStartTime(), null, false, boolQueryBuilder, q, new PageRequest(super.getP(request), super.getPs(request))));
 
         return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
     }
@@ -140,7 +140,7 @@ public class ContactsController extends Handler {
             boolQueryBuilder.must(termQuery("ckind", ckind));
             map.put("ckind", ckind);
         }
-        map.addAttribute("contactsList", contactsRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), UKTools.getWeekStartTime(), null, false, boolQueryBuilder, q, new PageRequest(super.getP(request), super.getPs(request))));
+        map.addAttribute("contactsList", contactsRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), MainUtils.getWeekStartTime(), null, false, boolQueryBuilder, q, new PageRequest(super.getP(request), super.getPs(request))));
 
         return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
     }
@@ -221,7 +221,7 @@ public class ContactsController extends Handler {
         if (data != null) {
             List<PropertiesEvent> events = PropertiesEventUtils.processPropertiesModify(request, contacts, data, "id", "orgi", "creater", "createtime", "updatetime");    //记录 数据变更 历史
             if (events.size() > 0) {
-                String modifyid = UKTools.getUUID();
+                String modifyid = MainUtils.getUUID();
                 Date modifytime = new Date();
                 for (PropertiesEvent event : events) {
                     event.setDataid(contacts.getId());
@@ -258,7 +258,7 @@ public class ContactsController extends Handler {
     @Menu(type = "contacts", subtype = "contacts")
     public ModelAndView impsave(ModelMap map, HttpServletRequest request, @RequestParam(value = "cusfile", required = false) MultipartFile cusfile, @Valid String ckind) throws IOException {
         DSDataEvent event = new DSDataEvent();
-        String fileName = "contacts/" + UKTools.getUUID() + cusfile.getOriginalFilename().substring(cusfile.getOriginalFilename().lastIndexOf("."));
+        String fileName = "contacts/" + MainUtils.getUUID() + cusfile.getOriginalFilename().substring(cusfile.getOriginalFilename().lastIndexOf("."));
         File excelFile = new File(path, fileName);
         if (!excelFile.getParentFile().exists()) {
             excelFile.getParentFile().mkdirs();
@@ -289,7 +289,7 @@ public class ContactsController extends Handler {
             MetadataTable table = metadataRes.findByTablename("uk_contacts");
             List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
             for (Contacts contacts : contactsList) {
-                values.add(UKTools.transBean2Map(contacts));
+                values.add(MainUtils.transBean2Map(contacts));
             }
 
             response.setHeader("content-disposition", "attachment;filename=UCKeFu-Contacts-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
@@ -314,7 +314,7 @@ public class ContactsController extends Handler {
         MetadataTable table = metadataRes.findByTablename("uk_contacts");
         List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
         for (Contacts contacts : contactsList) {
-            values.add(UKTools.transBean2Map(contacts));
+            values.add(MainUtils.transBean2Map(contacts));
         }
 
         response.setHeader("content-disposition", "attachment;filename=UCKeFu-Contacts-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
@@ -340,7 +340,7 @@ public class ContactsController extends Handler {
         MetadataTable table = metadataRes.findByTablename("uk_contacts");
         List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
         for (Contacts contacts : contactsList) {
-            values.add(UKTools.transBean2Map(contacts));
+            values.add(MainUtils.transBean2Map(contacts));
         }
 
         response.setHeader("content-disposition", "attachment;filename=UCKeFu-Contacts-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
@@ -405,7 +405,7 @@ public class ContactsController extends Handler {
         if (data != null) {
             List<PropertiesEvent> events = PropertiesEventUtils.processPropertiesModify(request, contacts, data, "id", "orgi", "creater", "createtime", "updatetime");    //记录 数据变更 历史
             if (events.size() > 0) {
-                String modifyid = UKTools.getUUID();
+                String modifyid = MainUtils.getUUID();
                 Date modifytime = new Date();
                 for (PropertiesEvent event : events) {
                     event.setDataid(contacts.getId());

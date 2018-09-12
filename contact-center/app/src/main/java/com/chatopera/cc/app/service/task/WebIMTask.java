@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.chatopera.cc.app.MainContext;
 import com.chatopera.cc.app.im.client.NettyClients;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.extra.DataExchangeInterface;
 import com.chatopera.cc.util.freeswitch.model.CallCenterAgent;
 import com.chatopera.cc.app.service.acd.ServiceQuene;
@@ -42,7 +43,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.service.repository.ChatMessageRepository;
 import com.chatopera.cc.app.service.repository.ConsultInviteRepository;
 import com.chatopera.cc.app.model.AgentStatus;
@@ -78,7 +78,7 @@ public class WebIMTask {
         if (sessionConfigList != null && sessionConfigList.size() > 0 && MainContext.getContext() != null) {
             for (SessionConfig sessionConfig : sessionConfigList) {
                 if (sessionConfig.isSessiontimeout()) {        //设置了启用 超时提醒
-                    List<AgentUserTask> agentUserTask = agentUserTaskRes.findByLastmessageLessThanAndStatusAndOrgi(UKTools.getLastTime(sessionConfig.getTimeout()), MainContext.AgentUserStatusEnum.INSERVICE.toString(), sessionConfig.getOrgi());
+                    List<AgentUserTask> agentUserTask = agentUserTaskRes.findByLastmessageLessThanAndStatusAndOrgi(MainUtils.getLastTime(sessionConfig.getTimeout()), MainContext.AgentUserStatusEnum.INSERVICE.toString(), sessionConfig.getOrgi());
                     for (AgentUserTask task : agentUserTask) {        // 超时未回复
                         AgentUser agentUser = (AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(task.getUserid(), MainContext.SYSTEM_ORGI);
                         if (agentUser != null && agentUser.getAgentno() != null) {
@@ -91,7 +91,7 @@ public class WebIMTask {
                                 //发送提示消息
                                 processMessage(sessionConfig, sessionConfig.getTimeoutmsg(), agentStatus.getUsername(), agentUser, agentStatus, task);
                                 agentUserTaskRes.save(task);
-                            } else if (sessionConfig.isResessiontimeout() && agentStatus != null && task.getWarningtime() != null && UKTools.getLastTime(sessionConfig.getRetimeout()).after(task.getWarningtime())) {    //再次超时未回复
+                            } else if (sessionConfig.isResessiontimeout() && agentStatus != null && task.getWarningtime() != null && MainUtils.getLastTime(sessionConfig.getRetimeout()).after(task.getWarningtime())) {    //再次超时未回复
                                 /**
                                  * 设置了再次超时 断开
                                  */
@@ -105,12 +105,12 @@ public class WebIMTask {
                         }
                     }
                 } else if (sessionConfig.isResessiontimeout()) {    //未启用超时提醒，只设置了超时断开
-                    List<AgentUserTask> agentUserTask = agentUserTaskRes.findByLastmessageLessThanAndStatusAndOrgi(UKTools.getLastTime(sessionConfig.getRetimeout()), MainContext.AgentUserStatusEnum.INSERVICE.toString(), sessionConfig.getOrgi());
+                    List<AgentUserTask> agentUserTask = agentUserTaskRes.findByLastmessageLessThanAndStatusAndOrgi(MainUtils.getLastTime(sessionConfig.getRetimeout()), MainContext.AgentUserStatusEnum.INSERVICE.toString(), sessionConfig.getOrgi());
                     for (AgentUserTask task : agentUserTask) {        // 超时未回复
                         AgentUser agentUser = (AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(task.getUserid(), MainContext.SYSTEM_ORGI);
                         if (agentUser != null) {
                             AgentStatus agentStatus = (AgentStatus) CacheHelper.getAgentStatusCacheBean().getCacheObject(agentUser.getAgentno(), task.getOrgi());
-                            if (agentStatus != null && task.getWarningtime() != null && UKTools.getLastTime(sessionConfig.getRetimeout()).after(task.getWarningtime())) {    //再次超时未回复
+                            if (agentStatus != null && task.getWarningtime() != null && MainUtils.getLastTime(sessionConfig.getRetimeout()).after(task.getWarningtime())) {    //再次超时未回复
                                 /**
                                  * 设置了再次超时 断开
                                  */
@@ -125,7 +125,7 @@ public class WebIMTask {
                     }
                 }
                 if (sessionConfig.isQuene()) {    //启用排队超时功能，超时断开
-                    List<AgentUserTask> agentUserTask = agentUserTaskRes.findByLogindateLessThanAndStatusAndOrgi(UKTools.getLastTime(sessionConfig.getQuenetimeout()), MainContext.AgentUserStatusEnum.INQUENE.toString(), sessionConfig.getOrgi());
+                    List<AgentUserTask> agentUserTask = agentUserTaskRes.findByLogindateLessThanAndStatusAndOrgi(MainUtils.getLastTime(sessionConfig.getQuenetimeout()), MainContext.AgentUserStatusEnum.INQUENE.toString(), sessionConfig.getOrgi());
                     for (AgentUserTask task : agentUserTask) {        // 超时未回复
                         AgentUser agentUser = (AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(task.getUserid(), MainContext.SYSTEM_ORGI);
                         if (agentUser != null) {
@@ -152,7 +152,7 @@ public class WebIMTask {
             for (SessionConfig sessionConfig : sessionConfigList) {
                 sessionConfig = ServiceQuene.initSessionConfig(sessionConfig.getOrgi());
                 if (sessionConfig != null && MainContext.getContext() != null && sessionConfig.isAgentreplaytimeout()) {
-                    List<AgentUserTask> agentUserTask = agentUserTaskRes.findByLastgetmessageLessThanAndStatusAndOrgi(UKTools.getLastTime(sessionConfig.getAgenttimeout()), MainContext.AgentUserStatusEnum.INSERVICE.toString(), sessionConfig.getOrgi());
+                    List<AgentUserTask> agentUserTask = agentUserTaskRes.findByLastgetmessageLessThanAndStatusAndOrgi(MainUtils.getLastTime(sessionConfig.getAgenttimeout()), MainContext.AgentUserStatusEnum.INSERVICE.toString(), sessionConfig.getOrgi());
                     for (AgentUserTask task : agentUserTask) {        // 超时未回复
                         AgentUser agentUser = (AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(task.getUserid(), MainContext.SYSTEM_ORGI);
                         if (agentUser != null) {
@@ -174,7 +174,7 @@ public class WebIMTask {
 
     @Scheduled(fixedDelay = 600000) // 每分钟执行一次
     public void onlineuser() {
-        Page<OnlineUser> pages = onlineUserRes.findByStatusAndCreatetimeLessThan(MainContext.OnlineUserOperatorStatus.ONLINE.toString(), UKTools.getLastTime(60), new PageRequest(0, 100));
+        Page<OnlineUser> pages = onlineUserRes.findByStatusAndCreatetimeLessThan(MainContext.OnlineUserOperatorStatus.ONLINE.toString(), MainUtils.getLastTime(60), new PageRequest(0, 100));
         if (pages.getContent().size() > 0) {
             for (OnlineUser onlineUser : pages.getContent()) {
                 try {
@@ -273,7 +273,7 @@ public class WebIMTask {
                 data.setUsername(agentUser.getUsername());
                 data.setMessage(message);
 
-                data.setId(UKTools.getUUID());
+                data.setId(MainUtils.getUUID());
                 data.setContextid(agentUser.getContextid());
 
                 data.setAgentserviceid(agentUser.getAgentserviceid());

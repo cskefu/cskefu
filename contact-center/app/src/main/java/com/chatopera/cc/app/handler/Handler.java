@@ -25,7 +25,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.util.UKView;
+import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.Viewport;
 import com.chatopera.cc.exception.CSKefuException;
 import com.chatopera.cc.app.service.cache.CacheHelper;
 import com.chatopera.cc.app.service.repository.TenantRepository;
@@ -46,7 +47,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.model.SystemConfig;
 
 
@@ -81,8 +81,8 @@ public class Handler {
 			}
 			if(user==null){
 				user = new User();
-				user.setId(UKTools.getContextID(request.getSession().getId())) ;
-				user.setUsername(MainContext.GUEST_USER+"_"+UKTools.genIDByKey(user.getId())) ;
+				user.setId(MainUtils.getContextID(request.getSession().getId())) ;
+				user.setUsername(MainContext.GUEST_USER+"_"+ MainUtils.genIDByKey(user.getId())) ;
 				user.setOrgi(MainContext.SYSTEM_ORGI);
 				user.setSessionid(user.getId()) ;
 			}
@@ -179,7 +179,7 @@ public class Handler {
 			if(!StringUtils.isBlank(request.getParameter("callbegin"))) {
 				try {
 					
-					rangeQuery = QueryBuilders.rangeQuery("calltime").from(UKTools.dateFormate.parse(request.getParameter("callbegin")).getTime()) ;
+					rangeQuery = QueryBuilders.rangeQuery("calltime").from(MainUtils.dateFormate.parse(request.getParameter("callbegin")).getTime()) ;
 				} catch (ParseException e) {
 					
 					e.printStackTrace();
@@ -190,9 +190,9 @@ public class Handler {
 				try {
 					
 					if(rangeQuery == null) {
-						rangeQuery = QueryBuilders.rangeQuery("calltime").to(UKTools.dateFormate.parse(request.getParameter("callend")).getTime()) ;
+						rangeQuery = QueryBuilders.rangeQuery("calltime").to(MainUtils.dateFormate.parse(request.getParameter("callend")).getTime()) ;
 					}else {
-						rangeQuery.to(UKTools.dateFormate.parse(request.getParameter("callend")).getTime()) ;
+						rangeQuery.to(MainUtils.dateFormate.parse(request.getParameter("callend")).getTime()) ;
 					}
 				} catch (ParseException e) {
 					
@@ -209,7 +209,7 @@ public class Handler {
 			if(!StringUtils.isBlank(request.getParameter("apbegin"))) {
 				try {
 					
-					rangeQuery = QueryBuilders.rangeQuery("aptime").from(UKTools.dateFormate.parse(request.getParameter("apbegin")).getTime()) ;
+					rangeQuery = QueryBuilders.rangeQuery("aptime").from(MainUtils.dateFormate.parse(request.getParameter("apbegin")).getTime()) ;
 				} catch (ParseException e) {
 					
 					e.printStackTrace();
@@ -220,9 +220,9 @@ public class Handler {
 				try {
 					
 					if(rangeQuery == null) {
-						rangeQuery = QueryBuilders.rangeQuery("aptime").to(UKTools.dateFormate.parse(request.getParameter("apend")).getTime()) ;
+						rangeQuery = QueryBuilders.rangeQuery("aptime").to(MainUtils.dateFormate.parse(request.getParameter("apend")).getTime()) ;
 					}else {
-						rangeQuery.to(UKTools.dateFormate.parse(request.getParameter("apend")).getTime()) ;
+						rangeQuery.to(MainUtils.dateFormate.parse(request.getParameter("apend")).getTime()) ;
 					}
 				} catch (ParseException e) {
 					
@@ -271,16 +271,16 @@ public class Handler {
 			if(!StringUtils.isBlank(userid)){
 				user.setId(userid) ;
 			}else{
-				user.setId(UKTools.getContextID(request.getSession().getId())) ;
+				user.setId(MainUtils.getContextID(request.getSession().getId())) ;
 			}
 			if(!StringUtils.isBlank(nickname)){
 				user.setUsername(nickname);
 			}else{
-				user.setUsername(MainContext.GUEST_USER+"_"+UKTools.genIDByKey(user.getId())) ;
+				user.setUsername(MainContext.GUEST_USER+"_"+ MainUtils.genIDByKey(user.getId())) ;
 			}
 			user.setSessionid(user.getId()) ;
 		}else{
-			user.setSessionid(UKTools.getContextID(request.getSession().getId())) ;
+			user.setSessionid(MainUtils.getContextID(request.getSession().getId())) ;
 		}
 		return user ;
 	}
@@ -296,16 +296,16 @@ public class Handler {
 	 * @param page
 	 * @return
 	 */
-	public UKView createAdminTempletResponse(String page) {
-		return new UKView("/admin/include/tpl" , page);
+	public Viewport createAdminTempletResponse(String page) {
+		return new Viewport("/admin/include/tpl" , page);
 	}
 	/**
 	 * 创建系统监控的 模板页面
 	 * @param page
 	 * @return
 	 */
-	public UKView createAppsTempletResponse(String page) {
-		return new UKView("/apps/include/tpl" , page);
+	public Viewport createAppsTempletResponse(String page) {
+		return new Viewport("/apps/include/tpl" , page);
 	}
 	
 	/**
@@ -313,12 +313,12 @@ public class Handler {
 	 * @param page
 	 * @return
 	 */
-	public UKView createEntIMTempletResponse(String page) {
-		return new UKView("/apps/entim/include/tpl" , page);
+	public Viewport createEntIMTempletResponse(String page) {
+		return new Viewport("/apps/entim/include/tpl" , page);
 	}
 	
-	public UKView createRequestPageTempletResponse(String page) {
-		return new UKView(page);
+	public Viewport createRequestPageTempletResponse(String page) {
+		return new Viewport(page);
 	}
 	
 	/**
@@ -326,7 +326,7 @@ public class Handler {
 	 * @param data
 	 * @return
 	 */
-	public ModelAndView request(UKView data) {
+	public ModelAndView request(Viewport data) {
     	return new ModelAndView(data.getTemplet()!=null ? data.getTemplet(): data.getPage() , "data", data) ;
     }
 
@@ -402,7 +402,7 @@ public class Handler {
 	 * @return
 	 */
 	public String getOrgiByTenantshare(HttpServletRequest request){	
-		SystemConfig systemConfig = UKTools.getSystemConfig();
+		SystemConfig systemConfig = MainUtils.getSystemConfig();
 		if(systemConfig!=null&&systemConfig.isEnabletneant()&&systemConfig.isTenantshare()) {
 			User user = this.getUser(request) ;
 			return user.getOrgid();
@@ -415,7 +415,7 @@ public class Handler {
 	 * @return
 	 */
 	public boolean isTenantshare(){	
-		SystemConfig systemConfig = UKTools.getSystemConfig();
+		SystemConfig systemConfig = MainUtils.getSystemConfig();
 		if(systemConfig!=null&&systemConfig.isEnabletneant()&&systemConfig.isTenantshare()) {
 			return true;
     	}
@@ -427,7 +427,7 @@ public class Handler {
 	 * @return
 	 */
 	public boolean isEnabletneant(){	
-		SystemConfig systemConfig = UKTools.getSystemConfig();
+		SystemConfig systemConfig = MainUtils.getSystemConfig();
 		if(systemConfig!=null&&systemConfig.isEnabletneant()) {
 			return true;
     	}
@@ -438,7 +438,7 @@ public class Handler {
 	 * @return
 	 */
 	public boolean isTenantconsole(){	
-		SystemConfig systemConfig = UKTools.getSystemConfig();
+		SystemConfig systemConfig = MainUtils.getSystemConfig();
 		if(systemConfig!=null&&systemConfig.isEnabletneant()&&systemConfig.isTenantconsole()) {
 			return true;
     	}

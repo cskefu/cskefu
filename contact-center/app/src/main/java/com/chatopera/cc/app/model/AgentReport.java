@@ -25,9 +25,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.chatopera.cc.app.MainUtils;
 import org.hibernate.annotations.GenericGenerator;
-
-import com.chatopera.cc.util.UKTools;
 
 @Entity
 @Table(name = "uk_webim_monitor")
@@ -51,7 +50,7 @@ public class AgentReport implements java.io.Serializable{
 	private String workresult ;
 	private String dataid ;
 	
-	private String datestr = UKTools.simpleDateFormat.format(new Date());
+	private String datestr = MainUtils.simpleDateFormat.format(new Date());
 	private String hourstr = new SimpleDateFormat("HH").format(new Date());
 	private String datehourstr = new SimpleDateFormat("yyyy-MM-dd HH").format(new Date());
 	public String getOrgi() {

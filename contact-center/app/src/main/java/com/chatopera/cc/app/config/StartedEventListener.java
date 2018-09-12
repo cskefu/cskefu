@@ -28,13 +28,13 @@ import com.chatopera.cc.app.service.repository.SystemConfigRepository;
 import com.chatopera.cc.app.service.repository.TablePropertiesRepository;
 import com.chatopera.cc.app.model.Generation;
 import com.chatopera.cc.app.model.SysDic;
+import com.chatopera.cc.app.MainUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.service.repository.BlackListRepository;
 import com.chatopera.cc.app.model.BlackEntity;
 import com.chatopera.cc.app.model.SystemConfig;
@@ -91,9 +91,9 @@ public class StartedEventListener implements ApplicationListener<ContextRefreshe
     		CacheHelper.getSystemCacheBean().setAtomicLong(MainContext.ModelType.WORKORDERS.toString(), generation.getStartinx());
     	}
     	
-    	UKTools.initSystemArea();
+    	MainUtils.initSystemArea();
     	
-    	UKTools.initSystemSecField(event.getApplicationContext().getBean(TablePropertiesRepository.class));
-    	//UKTools.initAdv();//初始化广告位
+    	MainUtils.initSystemSecField(event.getApplicationContext().getBean(TablePropertiesRepository.class));
+    	//MainUtils.initAdv();//初始化广告位
     }
 }

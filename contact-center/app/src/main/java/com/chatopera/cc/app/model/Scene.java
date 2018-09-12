@@ -27,7 +27,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 
 
 /**
@@ -46,7 +46,7 @@ public class Scene implements java.io.Serializable{
 	 * 
 	 */
 	
-	private String id  = UKTools.getUUID();
+	private String id  = MainUtils.getUUID();
 	
 	private String sessionid ;
 	

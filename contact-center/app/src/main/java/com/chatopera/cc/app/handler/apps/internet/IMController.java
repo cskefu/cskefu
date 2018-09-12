@@ -18,6 +18,7 @@
 package com.chatopera.cc.app.handler.apps.internet;
 
 import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.*;
 import com.chatopera.cc.util.WebIMClient;
 import com.chatopera.cc.app.model.*;
@@ -120,7 +121,7 @@ public class IMController extends Handler {
         if (StringUtils.isNotBlank(id)) {
             view.addObject("hostname", request.getServerName());
 
-            SystemConfig systemConfig = UKTools.getSystemConfig();
+            SystemConfig systemConfig = MainUtils.getSystemConfig();
             if (systemConfig != null && systemConfig.isEnablessl()) {
                 view.addObject("schema", "https");
                 if (request.getServerPort() == 80) {
@@ -135,10 +136,10 @@ public class IMController extends Handler {
             view.addObject("appid", id);
 
 
-            view.addObject("client", UKTools.getUUID());
+            view.addObject("client", MainUtils.getUUID());
             view.addObject("sessionid", sessionid);
 
-            view.addObject("ip", UKTools.md5(request.getRemoteAddr()));
+            view.addObject("ip", MainUtils.md5(request.getRemoteAddr()));
 
             view.addObject("mobile", CheckMobile.check(request.getHeader("User-Agent")));
 
@@ -165,7 +166,7 @@ public class IMController extends Handler {
                     }
                     userHistory.setReferer(userHistory.getUrl());
                 }
-                userHistory.setParam(UKTools.getParameter(request));
+                userHistory.setParam(MainUtils.getParameter(request));
                 if (userHistory != null) {
                     userHistory.setMaintype("im");
                     userHistory.setSubtype("point");
@@ -190,7 +191,7 @@ public class IMController extends Handler {
                 userHistory.setAppid(id);
                 userHistory.setSessionid(sessionid);
 
-                String ip = UKTools.getIpAddr(request);
+                String ip = MainUtils.getIpAddr(request);
                 userHistory.setHostname(ip);
                 userHistory.setIp(ip);
                 IP ipdata = IPTools.getInstance().findGeography(ip);
@@ -199,7 +200,7 @@ public class IMController extends Handler {
                 userHistory.setCity(ipdata.getCity());
                 userHistory.setIsp(ipdata.getIsp());
 
-                BrowserClient client = UKTools.parseClient(request);
+                BrowserClient client = MainUtils.parseClient(request);
                 userHistory.setOstype(client.getOs());
                 userHistory.setBrowser(client.getBrowser());
                 userHistory.setMobile(CheckMobile.check(request.getHeader("User-Agent")) ? "1" : "0");
@@ -216,11 +217,11 @@ public class IMController extends Handler {
                 }
                 view.addObject("traceid", userHistory.getId());
                 if (invite.isRecordhis()) {
-                    UKTools.published(userHistory);
+                    MainUtils.published(userHistory);
                 }
 
-                view.addObject("pointAd", UKTools.getPointAdv(MainContext.AdPosEnum.POINT.toString(), orgi));
-                view.addObject("inviteAd", UKTools.getPointAdv(MainContext.AdPosEnum.INVITE.toString(), orgi));
+                view.addObject("pointAd", MainUtils.getPointAdv(MainContext.AdPosEnum.POINT.toString(), orgi));
+                view.addObject("inviteAd", MainUtils.getPointAdv(MainContext.AdPosEnum.INVITE.toString(), orgi));
             }
         }
 
@@ -349,9 +350,9 @@ public class IMController extends Handler {
             CousultInvite invite = OnlineUserUtils.cousult(appid, orgi, inviteRepository);
             String userID = null;
             if (StringUtils.isNotBlank(userid)) {
-                userID = UKTools.genIDByKey(userid);
+                userID = MainUtils.genIDByKey(userid);
             } else {
-                userID = UKTools.genIDByKey(sessionid);
+                userID = MainUtils.genIDByKey(sessionid);
             }
             String nickname = "Guest_" + userID;
             boolean consult = true;                //是否已收集用户信息
@@ -377,7 +378,7 @@ public class IMController extends Handler {
             view.addObject("pid", pid);
             view.addObject("purl", purl);
 
-            map.addAttribute("ip", UKTools.md5(request.getRemoteAddr()));
+            map.addAttribute("ip", MainUtils.md5(request.getRemoteAddr()));
 
             if (StringUtils.isNotBlank(traceid)) {
                 map.addAttribute("traceid", traceid);
@@ -408,7 +409,7 @@ public class IMController extends Handler {
 
                 AgentReport report = ServiceQuene.getAgentReport(invite.getOrgi());
 
-                if (report.getAgents() == 0 || (sessionConfig.isHourcheck() && !UKTools.isInWorkingHours(sessionConfig.getWorkinghours()) && invite.isLeavemessage())) {
+                if (report.getAgents() == 0 || (sessionConfig.isHourcheck() && !MainUtils.isInWorkingHours(sessionConfig.getWorkinghours()) && invite.isLeavemessage())) {
                     view = request(super.createRequestPageTempletResponse("/apps/im/leavemsg"));
                 } else if (invite.isConsult_info()) {    //启用了信息收集 , 从Request获取 ， 或从 Cookies 里去
                     //验证 OnlineUser 信息
@@ -416,21 +417,21 @@ public class IMController extends Handler {
                         consult = true;
                         //存入 Cookies
                         if (invite.isConsult_info_cookies()) {
-                            Cookie name = new Cookie("name", UKTools.encryption(URLEncoder.encode(contacts.getName(), "UTF-8")));
+                            Cookie name = new Cookie("name", MainUtils.encryption(URLEncoder.encode(contacts.getName(), "UTF-8")));
                             response.addCookie(name);
                             name.setMaxAge(3600);
                             if (StringUtils.isNotBlank(contacts.getPhone())) {
-                                Cookie phonecookie = new Cookie("phone", UKTools.encryption(URLEncoder.encode(contacts.getPhone(), "UTF-8")));
+                                Cookie phonecookie = new Cookie("phone", MainUtils.encryption(URLEncoder.encode(contacts.getPhone(), "UTF-8")));
                                 phonecookie.setMaxAge(3600);
                                 response.addCookie(phonecookie);
                             }
                             if (StringUtils.isNotBlank(contacts.getEmail())) {
-                                Cookie email = new Cookie("email", UKTools.encryption(URLEncoder.encode(contacts.getEmail(), "UTF-8")));
+                                Cookie email = new Cookie("email", MainUtils.encryption(URLEncoder.encode(contacts.getEmail(), "UTF-8")));
                                 email.setMaxAge(3600);
                                 response.addCookie(email);
                             }
                             if (StringUtils.isNotBlank(contacts.getMemo())) {
-                                Cookie memo = new Cookie("memo", UKTools.encryption(URLEncoder.encode(contacts.getName(), "UTF-8")));
+                                Cookie memo = new Cookie("memo", MainUtils.encryption(URLEncoder.encode(contacts.getName(), "UTF-8")));
                                 memo.setMaxAge(3600);
                                 response.addCookie(memo);
                             }
@@ -444,16 +445,16 @@ public class IMController extends Handler {
                                 for (Cookie cookie : cookies) {
                                     if (cookie != null && StringUtils.isNotBlank(cookie.getName()) && StringUtils.isNotBlank(cookie.getValue())) {
                                         if (cookie.getName().equals("name")) {
-                                            contacts.setName(URLDecoder.decode(UKTools.decryption(cookie.getValue()), "UTF-8"));
+                                            contacts.setName(URLDecoder.decode(MainUtils.decryption(cookie.getValue()), "UTF-8"));
                                         }
                                         if (cookie.getName().equals("phone")) {
-                                            contacts.setPhone(URLDecoder.decode(UKTools.decryption(cookie.getValue()), "UTF-8"));
+                                            contacts.setPhone(URLDecoder.decode(MainUtils.decryption(cookie.getValue()), "UTF-8"));
                                         }
                                         if (cookie.getName().equals("email")) {
-                                            contacts.setEmail(URLDecoder.decode(UKTools.decryption(cookie.getValue()), "UTF-8"));
+                                            contacts.setEmail(URLDecoder.decode(MainUtils.decryption(cookie.getValue()), "UTF-8"));
                                         }
                                         if (cookie.getName().equals("memo")) {
-                                            contacts.setMemo(URLDecoder.decode(UKTools.decryption(cookie.getValue()), "UTF-8"));
+                                            contacts.setMemo(URLDecoder.decode(MainUtils.decryption(cookie.getValue()), "UTF-8"));
                                         }
                                     }
                                 }
@@ -483,7 +484,7 @@ public class IMController extends Handler {
                 if (StringUtils.isNotBlank(type)) {
                     map.addAttribute("type", type);
                 }
-                IP ipdata = IPTools.getInstance().findGeography(UKTools.getIpAddr(request));
+                IP ipdata = IPTools.getInstance().findGeography(MainUtils.getIpAddr(request));
                 map.addAttribute("skillList", OnlineUserUtils.organ(invite.getOrgi(), ipdata, invite, true));
 
                 if (invite != null && consult) {
@@ -517,8 +518,8 @@ public class IMController extends Handler {
                 }
                 view.addObject("commentList", UKeFuDic.getInstance().getDic(MainContext.UKEFU_SYSTEM_COMMENT_DIC));
                 view.addObject("commentItemList", UKeFuDic.getInstance().getDic(MainContext.UKEFU_SYSTEM_COMMENT_ITEM_DIC));
-                view.addObject("welcomeAd", UKTools.getPointAdv(MainContext.AdPosEnum.WELCOME.toString(), orgi));
-                view.addObject("imageAd", UKTools.getPointAdv(MainContext.AdPosEnum.IMAGE.toString(), orgi));
+                view.addObject("welcomeAd", MainUtils.getPointAdv(MainContext.AdPosEnum.WELCOME.toString(), orgi));
+                view.addObject("imageAd", MainUtils.getPointAdv(MainContext.AdPosEnum.IMAGE.toString(), orgi));
                 //    	OnlineUserUtils.sendWebIMClients(userid , "accept");
 
                 if (invite.isTraceuser()) {
@@ -597,7 +598,7 @@ public class IMController extends Handler {
         view.addObject("appid", appid);
 
 
-        view.addObject("ip", UKTools.md5(request.getRemoteAddr()));
+        view.addObject("ip", MainUtils.md5(request.getRemoteAddr()));
 
         if (StringUtils.isNotBlank(skill)) {
             view.addObject("skill", skill);
@@ -606,7 +607,7 @@ public class IMController extends Handler {
             view.addObject("agent", agent);
         }
 
-        view.addObject("client", UKTools.getUUID());
+        view.addObject("client", MainUtils.getUUID());
         view.addObject("sessionid", request.getSession().getId());
 
         view.addObject("id", id);
@@ -717,13 +718,13 @@ public class IMController extends Handler {
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
-            String fileid = UKTools.md5(imgFile.getBytes());
+            String fileid = MainUtils.md5(imgFile.getBytes());
             if (imgFile.getContentType() != null && imgFile.getContentType().indexOf("image") >= 0) {
                 fileName = "upload/" + fileid + "_original";
                 File imageFile = new File(path, fileName);
                 FileCopyUtils.copy(imgFile.getBytes(), imageFile);
                 String thumbnailsFileName = "upload/" + fileid;
-                UKTools.processImage(new File(path, thumbnailsFileName), imageFile);
+                MainUtils.processImage(new File(path, thumbnailsFileName), imageFile);
 
 
                 upload = new UploadStatus("0", "/res/image.html?id=" + thumbnailsFileName);
@@ -769,7 +770,7 @@ public class IMController extends Handler {
     private String processAttachmentFile(MultipartFile file, HttpServletRequest request) throws IOException {
         String id = null;
         if (file.getSize() > 0) {            //文件尺寸 限制 ？在 启动 配置中 设置 的最大值，其他地方不做限制
-            String fileid = UKTools.md5(file.getBytes());    //使用 文件的 MD5作为 ID，避免重复上传大文件
+            String fileid = MainUtils.md5(file.getBytes());    //使用 文件的 MD5作为 ID，避免重复上传大文件
             if (StringUtils.isNotBlank(fileid)) {
                 AttachmentFile attachmentFile = new AttachmentFile();
                 attachmentFile.setCreater(super.getUser(request).getId());

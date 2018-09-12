@@ -16,7 +16,7 @@
 
 package com.chatopera.cc.app.im.handler;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.app.im.client.NettyClients;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -54,7 +54,7 @@ public class CalloutEventHandler
         if(!StringUtils.isBlank(user) && !StringUtils.isBlank(user)){
             client.set("agentno", user);
             InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress()  ;
-            String ip = UKTools.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString()) ;
+            String ip = MainUtils.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString()) ;
 
             NettyClients.getInstance().putCalloutEventClient(user, client);
         }
@@ -69,7 +69,7 @@ public class CalloutEventHandler
         String session = client.getHandshakeData().getSingleUrlParam("session") ;
         String admin = client.getHandshakeData().getSingleUrlParam("admin") ;
 		logger.info("onDisconnect userid {}, orgi {}", user, orgi);
-        NettyClients.getInstance().removeCalloutEventClient(user, UKTools.getContextID(client.getSessionId().toString()));
+        NettyClients.getInstance().removeCalloutEventClient(user, MainUtils.getContextID(client.getSessionId().toString()));
 
     }
 }

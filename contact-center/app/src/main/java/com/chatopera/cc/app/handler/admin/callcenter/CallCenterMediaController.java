@@ -34,7 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.app.service.repository.MediaRepository;
 import com.chatopera.cc.app.service.repository.PbxHostRepository;
 import com.chatopera.cc.app.handler.Handler;
@@ -79,7 +79,7 @@ public class CallCenterMediaController extends Handler{
 		if(!StringUtils.isBlank(media.getName())){
 			int count = mediaRes.countByNameAndOrgi(media.getName(), super.getOrgi(request)) ;
 			if(count == 0){
-				String fileName = "media/"+UKTools.getUUID()+mediafile.getOriginalFilename().substring(mediafile.getOriginalFilename().lastIndexOf(".")) ;
+				String fileName = "media/"+ MainUtils.getUUID()+mediafile.getOriginalFilename().substring(mediafile.getOriginalFilename().lastIndexOf(".")) ;
 				
 				media.setOrgi(super.getOrgi(request));
 				media.setCreater(super.getUser(request).getId());
@@ -125,7 +125,7 @@ public class CallCenterMediaController extends Handler{
 		    			wavFile.deleteOnExit();
 		    		}
 					
-					String fileName = "media/"+UKTools.getUUID()+mediafile.getOriginalFilename().substring(mediafile.getOriginalFilename().lastIndexOf(".")) ;
+					String fileName = "media/"+ MainUtils.getUUID()+mediafile.getOriginalFilename().substring(mediafile.getOriginalFilename().lastIndexOf(".")) ;
 					oldMedia.setFilename(fileName);
 					
 					if(mediafile!=null && mediafile.getOriginalFilename().lastIndexOf(".") > 0){

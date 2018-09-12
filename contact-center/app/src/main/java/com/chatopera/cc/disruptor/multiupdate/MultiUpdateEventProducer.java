@@ -16,9 +16,8 @@
  */
 package com.chatopera.cc.disruptor.multiupdate;
 
-import com.chatopera.cc.event.MultiUpdateEvent;
 import com.lmax.disruptor.RingBuffer;
-import com.chatopera.cc.event.UserDataEvent;
+import com.chatopera.cc.disruptor.user.UserDataEvent;
 
 @SuppressWarnings("rawtypes")
 public class MultiUpdateEventProducer {

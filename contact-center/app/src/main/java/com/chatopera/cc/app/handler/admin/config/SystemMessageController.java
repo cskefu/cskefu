@@ -37,7 +37,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 
 @Controller
 @RequestMapping("/admin")
@@ -65,7 +65,7 @@ public class SystemMessageController extends Handler {
     	email.setOrgi(super.getOrgi(request));
     	email.setMsgtype(MainContext.SystemMessageType.EMAIL.toString());
     	if(!StringUtils.isBlank(email.getSmtppassword())) {
-			email.setSmtppassword(UKTools.encryption(email.getSmtppassword()));
+			email.setSmtppassword(MainUtils.encryption(email.getSmtppassword()));
 		}
     	systemMessageRepository.save(email) ;
     	return request(super.createRequestPageTempletResponse("redirect:/admin/email/index.html"));
@@ -87,7 +87,7 @@ public class SystemMessageController extends Handler {
     		email.setOrgi(temp.getOrgi());
     		email.setMsgtype(MainContext.SystemMessageType.EMAIL.toString());
     		if(!StringUtils.isBlank(email.getSmtppassword())) {
-    			email.setSmtppassword(UKTools.encryption(email.getSmtppassword()));
+    			email.setSmtppassword(MainUtils.encryption(email.getSmtppassword()));
     		}else {
     			email.setSmtppassword(temp.getSmtppassword());
     		}
@@ -128,7 +128,7 @@ public class SystemMessageController extends Handler {
     	sms.setOrgi(super.getOrgi(request));
     	sms.setMsgtype(MainContext.SystemMessageType.SMS.toString());
     	if(!StringUtils.isBlank(sms.getSmtppassword())) {
-    		sms.setSmtppassword(UKTools.encryption(sms.getSmtppassword()));
+    		sms.setSmtppassword(MainUtils.encryption(sms.getSmtppassword()));
 		}
     	systemMessageRepository.save(sms) ;
     	return request(super.createRequestPageTempletResponse("redirect:/admin/sms/index.html"));
@@ -151,7 +151,7 @@ public class SystemMessageController extends Handler {
     		sms.setOrgi(temp.getOrgi());
     		sms.setMsgtype(MainContext.SystemMessageType.SMS.toString());
     		if(!StringUtils.isBlank(sms.getSmtppassword())) {
-    			sms.setSmtppassword(UKTools.encryption(sms.getSmtppassword()));
+    			sms.setSmtppassword(MainUtils.encryption(sms.getSmtppassword()));
     		}else {
     			sms.setSmtppassword(temp.getSmtppassword());
     		}

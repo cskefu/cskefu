@@ -39,7 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.app.service.repository.AttachmentRepository;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.AttachmentFile;
@@ -65,17 +65,17 @@ public class MediaController extends Handler{
 	    	if(id.endsWith("_original") && !file.exists()){
 	    		File orgFile = new File(path , id.substring(0 , id.indexOf("_original"))) ;
 	    		if(orgFile.exists()){
-	    			UKTools.processImage(file = new File(path , id), orgFile) ;
+	    			MainUtils.processImage(file = new File(path , id), orgFile) ;
 	    		}
 	    	}else if(!StringUtils.isBlank(id) && file.exists() && !id.endsWith("_original")){
 	    		File originalFile = new File( path , id+"_original") ;
 	    		if(!originalFile.exists()){
-	    			UKTools.processImage(new File( path , id+"_original"), file) ;
+	    			MainUtils.processImage(new File( path , id+"_original"), file) ;
 	    		}
 	    	}else if(!StringUtils.isBlank(id) && !file.exists() && !id.endsWith("_original")){
 	    		File destFile = new File(path , id+"_original") ;
 	    		if(destFile.exists()){
-	    			UKTools.processImage(new File(path + id), destFile) ;
+	    			MainUtils.processImage(new File(path + id), destFile) ;
 	    		}
 	    		file = new File(path , id) ;
 	    	}
@@ -122,7 +122,7 @@ public class MediaController extends Handler{
     		if(!uploadDir.exists()){
     			uploadDir.mkdirs() ;
     		}
-    		fileName = "upload/"+UKTools.md5(imgFile.getBytes())+imgFile.getOriginalFilename().substring(imgFile.getOriginalFilename().lastIndexOf(".")).toLowerCase() ;
+    		fileName = "upload/"+ MainUtils.md5(imgFile.getBytes())+imgFile.getOriginalFilename().substring(imgFile.getOriginalFilename().lastIndexOf(".")).toLowerCase() ;
     		FileCopyUtils.copy(imgFile.getBytes(), new File(path , fileName));
     		
     		String fileURL =  request.getScheme()+"://"+request.getServerName()+"/res/image.html?id="+fileName ;

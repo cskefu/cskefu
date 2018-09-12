@@ -23,6 +23,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.chatopera.cc.app.MainUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -31,7 +32,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.chatopera.cc.app.MainContext;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.service.repository.AreaTypeRepository;
 import com.chatopera.cc.app.service.repository.SysDicRepository;
 import com.chatopera.cc.app.handler.Handler;
@@ -84,7 +84,7 @@ public class AreaController extends Handler{
     		area.setCreatetime(new Date());
     		area.setCreater(super.getUser(request).getId());
     		areaRepository.save(area) ;
-    		UKTools.initSystemArea();
+    		MainUtils.initSystemArea();
     	}
     	return request(super.createRequestPageTempletResponse("redirect:/admin/area/index.html"));
     }
@@ -112,7 +112,7 @@ public class AreaController extends Handler{
     		area.setOrgi(super.getOrgi(request));
     		area.setCreater(areaType.getCreater());
     		areaRepository.save(area) ;
-    		UKTools.initSystemArea();
+    		MainUtils.initSystemArea();
     	}
     	return request(super.createRequestPageTempletResponse("redirect:/admin/area/index.html"));
     }
@@ -123,7 +123,7 @@ public class AreaController extends Handler{
     	AreaType areaType = areaRepository.findByIdAndOrgi(area.getId(), super.getOrgi(request)) ;
     	if(areaType!=null){
     		areaRepository.delete(areaType);
-    		UKTools.initSystemArea();
+    		MainUtils.initSystemArea();
     	}
     	return request(super.createRequestPageTempletResponse("redirect:/admin/area/index.html"));
     }

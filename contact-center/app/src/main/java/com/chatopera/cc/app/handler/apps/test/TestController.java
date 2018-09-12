@@ -19,6 +19,7 @@ package com.chatopera.cc.app.handler.apps.test;
 import javax.servlet.http.HttpServletRequest;
 
 import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.OnlineUserUtils;
 import com.chatopera.cc.app.handler.Handler;
@@ -26,8 +27,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.chatopera.cc.util.UKTools;
 
 @Controller
 public class TestController extends Handler {
@@ -37,7 +36,7 @@ public class TestController extends Handler {
 	@Menu(type="apps", subtype="test" , access=false , admin = true)
 	public ModelAndView content(ModelMap map , HttpServletRequest request){
 		for(int i=0 ; i<500; i++){
-			String user = UKTools.getUUID();
+			String user = MainUtils.getUUID();
 			try {
 				OnlineUserUtils.newRequestMessage(user, "ukewo", "user", "system", "localhost" , "win10", "test" , MainContext.ChannelTypeEnum.WEBIM.toString() , null , null , "admin" , "标题" , "http://www.ukewo.cn" , "12434" , MainContext.ChatInitiatorType.USER.toString()) ;
 			} catch (Exception e) {

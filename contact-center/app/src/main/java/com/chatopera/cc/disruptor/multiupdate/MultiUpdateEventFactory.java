@@ -17,7 +17,7 @@
 package com.chatopera.cc.disruptor.multiupdate;
 
 import com.lmax.disruptor.EventFactory;
-import com.chatopera.cc.event.UserDataEvent;
+import com.chatopera.cc.disruptor.user.UserDataEvent;
 
 public class MultiUpdateEventFactory implements EventFactory<UserDataEvent>{
 

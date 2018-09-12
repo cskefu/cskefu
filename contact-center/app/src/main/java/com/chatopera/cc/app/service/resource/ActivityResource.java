@@ -22,10 +22,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.chatopera.cc.app.MainContext;
 import com.chatopera.cc.app.model.JobDetail;
+import com.chatopera.cc.app.MainUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageImpl;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.es.SearchTools;
 import com.chatopera.cc.es.UKDataBean;
 import com.chatopera.cc.app.service.impl.BatchDataProcess;
@@ -131,7 +131,7 @@ public class ActivityResource extends Resource{
 				}
 			}else {
 				task = new UKefuCallOutTask() ;
-				task.setName(this.jobDetail.getName() + "_" + UKTools.dateFormate.format(new Date()));
+				task.setName(this.jobDetail.getName() + "_" + MainUtils.dateFormate.format(new Date()));
 				task.setBatid(formFilter.getBatid());
 				
 				task.setOrgi(this.jobDetail.getOrgi());
@@ -161,8 +161,8 @@ public class ActivityResource extends Resource{
 				
 				formFilter.setExecnum(formFilter.getExecnum() + 1);
 				
-				UKTools.copyProperties(task, filter);
-				filter.setName(this.formFilter.getName()  + "_" + UKTools.dateFormate.format(new Date()));
+				MainUtils.copyProperties(task, filter);
+				filter.setName(this.formFilter.getName()  + "_" + MainUtils.dateFormate.format(new Date()));
 				filter.setExecnum(formFilter.getExecnum());
 				this.callOutFilterRes.save(filter) ;
 			}

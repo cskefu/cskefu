@@ -31,7 +31,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 @Document(indexName = "cskefu", type = "kbs_topiccomment")
 public class KbsTopicComment implements UKAgg{
 
@@ -39,7 +39,7 @@ public class KbsTopicComment implements UKAgg{
 	 * 
 	 */
 	private static final long serialVersionUID = -4911955236794918875L;
-	private String id = UKTools.getUUID();
+	private String id = MainUtils.getUUID();
 	private String username;
 	private String creater ;
 	

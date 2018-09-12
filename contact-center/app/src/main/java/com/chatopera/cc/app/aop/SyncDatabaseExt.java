@@ -19,8 +19,9 @@ package com.chatopera.cc.app.aop;
 import java.util.List;
 
 import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.UKeFuList;
-import com.chatopera.cc.event.MultiUpdateEvent;
+import com.chatopera.cc.disruptor.multiupdate.MultiUpdateEvent;
 import com.chatopera.cc.app.service.hibernate.BaseService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -29,7 +30,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.model.ESBean;
 
 @Aspect
@@ -62,10 +62,10 @@ public class SyncDatabaseExt {
 	    		}else if(data instanceof List){
 	    			List<Object> dataList = (List<Object>)data ;
 	    			for(Object dbData : dataList){
-	    				UKTools.multiupdate(new MultiUpdateEvent<Object>(dbData , dbDataRes, MainContext.MultiUpdateType.SAVE.toString()));
+	    				MainUtils.multiupdate(new MultiUpdateEvent<Object>(dbData , dbDataRes, MainContext.MultiUpdateType.SAVE.toString()));
 	    			}
 	    		}else{
-	    			UKTools.multiupdate(new MultiUpdateEvent<Object>(data, dbDataRes, MainContext.MultiUpdateType.SAVE.toString()));
+	    			MainUtils.multiupdate(new MultiUpdateEvent<Object>(data, dbDataRes, MainContext.MultiUpdateType.SAVE.toString()));
 	    		}
     		}
     	}
@@ -81,13 +81,13 @@ public class SyncDatabaseExt {
     		if(data instanceof List){
     			List<Object> dataList = (List<Object>)data ;
     			for(Object dbData : dataList){
-    				UKTools.multiupdate(new MultiUpdateEvent<Object>(dbData , dbDataRes, MainContext.MultiUpdateType.DELETE.toString()));
+    				MainUtils.multiupdate(new MultiUpdateEvent<Object>(dbData , dbDataRes, MainContext.MultiUpdateType.DELETE.toString()));
     			}
     		}else{
     			if(data instanceof ESBean){
-    				UKTools.multiupdate(new MultiUpdateEvent<Object>(data, dbDataRes, MainContext.MultiUpdateType.DELETE.toString()));
+    				MainUtils.multiupdate(new MultiUpdateEvent<Object>(data, dbDataRes, MainContext.MultiUpdateType.DELETE.toString()));
     			}else{
-    				UKTools.multiupdate(new MultiUpdateEvent<Object>(data, dbDataRes, MainContext.MultiUpdateType.DELETE.toString()));
+    				MainUtils.multiupdate(new MultiUpdateEvent<Object>(data, dbDataRes, MainContext.MultiUpdateType.DELETE.toString()));
     			}
     		}
     	}

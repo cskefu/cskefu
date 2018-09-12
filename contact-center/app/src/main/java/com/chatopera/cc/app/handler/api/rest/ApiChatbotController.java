@@ -16,7 +16,7 @@
 package com.chatopera.cc.app.handler.api.rest;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.exception.CallOutRecordException;
 import com.chatopera.cc.app.model.*;
 import com.chatopera.cc.app.service.repository.*;
@@ -526,7 +526,7 @@ public class ApiChatbotController extends Handler {
             if (result.getInt("rc") == 0) {
                 // 创建成功
                 Chatbot c = new Chatbot();
-                c.setId(UKTools.getUUID());
+                c.setId(MainUtils.getUUID());
                 c.setBaseUrl(capi.getBaseUrl());
                 c.setChatbotID(chatbotID);
                 c.setDescription(description);

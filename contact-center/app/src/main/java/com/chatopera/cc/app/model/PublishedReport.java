@@ -30,7 +30,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 @Document(indexName = "cskefu", type = "publishedreport")
 @Entity
 @Table(name = "uk_publishedreport")
@@ -146,7 +146,7 @@ public class PublishedReport implements java.io.Serializable{
 	public Report getReport() {
 		Base64 base64 = new Base64();
 		try {
-			return report!=null ? report : (report = (this.reportcontent==null?null:(Report)UKTools.toObject(base64.decode(this.reportcontent))));
+			return report!=null ? report : (report = (this.reportcontent==null?null:(Report) MainUtils.toObject(base64.decode(this.reportcontent))));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

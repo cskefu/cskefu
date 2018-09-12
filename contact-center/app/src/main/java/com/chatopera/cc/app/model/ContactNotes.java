@@ -16,7 +16,7 @@
 
 package com.chatopera.cc.app.model;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.elasticsearch.annotations.Document;
 
@@ -29,7 +29,7 @@ import java.util.Date;
 @org.hibernate.annotations.Proxy(lazy = false)
 public class ContactNotes {
 
-    private String id = UKTools.getUUID();
+    private String id = MainUtils.getUUID();
     private String contactid;
     private Date createtime;
     private Date updatetime;

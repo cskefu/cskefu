@@ -24,9 +24,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.chatopera.cc.app.MainUtils;
 import org.hibernate.annotations.GenericGenerator;
-
-import com.chatopera.cc.util.UKTools;
 
 @Entity
 @Table(name = "uk_ai")
@@ -34,7 +33,7 @@ import com.chatopera.cc.util.UKTools;
 public class ServiceAi implements java.io.Serializable{
 	private static final long serialVersionUID = 1115593425069549681L;
 	
-	private String id = UKTools.getUUID() ;
+	private String id = MainUtils.getUUID() ;
 	private String name ;
 	private String code ;
 	

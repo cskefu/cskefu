@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.chatopera.cc.util;
+package com.chatopera.cc.app;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -49,11 +49,11 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.util.*;
 import com.chatopera.cc.util.asr.AsrResult;
-import com.chatopera.cc.event.ChatbotEvent;
-import com.chatopera.cc.event.MultiUpdateEvent;
-import com.chatopera.cc.event.UserDataEvent;
+import com.chatopera.cc.disruptor.chatbot.ChatbotEvent;
+import com.chatopera.cc.disruptor.multiupdate.MultiUpdateEvent;
+import com.chatopera.cc.disruptor.user.UserDataEvent;
 import com.chatopera.cc.event.UserEvent;
 import com.chatopera.cc.util.mail.MailSender;
 import com.chatopera.cc.app.service.cache.CacheHelper;
@@ -118,7 +118,7 @@ import io.netty.handler.codec.http.HttpHeaders;
 import net.coobird.thumbnailator.Thumbnails;
 
 
-public class UKTools {
+public class MainUtils {
 	private static MD5 md5 = new MD5();
 	
 	public static SimpleDateFormat dateFormate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;
@@ -275,10 +275,10 @@ public class UKTools {
 	}
 	
 	@SuppressWarnings({ "unchecked"})
-	public static void chatbot(UserEvent event){
-		Disruptor<ChatbotEvent> disruptor = (Disruptor<ChatbotEvent>) MainContext.getContext().getBean("chatbot") ;
+	public static void chatbot(ChatbotEvent event){
+		Disruptor<UserDataEvent> disruptor = (Disruptor<UserDataEvent>) MainContext.getContext().getBean("chatbot") ;
 		long seq = disruptor.getRingBuffer().next();
-		disruptor.getRingBuffer().get(seq).setEvent(event); ;
+		disruptor.getRingBuffer().get(seq).setEvent(event);
 		disruptor.getRingBuffer().publish(seq);
 	}
 
@@ -881,7 +881,7 @@ public class UKTools {
     	if(!StringUtils.isBlank(confirm)){
         	if(secretConfig!=null && secretConfig.size() > 0){
         		Secret secret = secretConfig.get( 0) ;
-        		if(UKTools.md5(confirm).equals(secret.getPassword())){
+        		if(MainUtils.md5(confirm).equals(secret.getPassword())){
         			execute = true ;
         		}
         	}
@@ -897,7 +897,7 @@ public class UKTools {
     		//保存附件
     		for(MultipartFile file : files){
     			if(file.getSize() > 0){			//文件尺寸 限制 ？在 启动 配置中 设置 的最大值，其他地方不做限制
-    				String fileid = UKTools.md5(file.getBytes()) ;	//使用 文件的 MD5作为 ID，避免重复上传大文件
+    				String fileid = MainUtils.md5(file.getBytes()) ;	//使用 文件的 MD5作为 ID，避免重复上传大文件
     				if(!StringUtils.isBlank(fileid)){
 		    			AttachmentFile attachmentFile = new AttachmentFile() ;
 		    			attachmentFile.setCreater(user.getId());
@@ -1040,8 +1040,7 @@ public class UKTools {
 	/** 
      * 16进制字符串转换为字符串 
      *  
-     * @param s 
-     * @return 
+     * @return
      */  
 	public static String string2HexString(String strPart) {  
         StringBuffer hexString = new StringBuffer();  
@@ -1055,8 +1054,7 @@ public class UKTools {
 	
 	/**
      * 
-     * @param templetid
-     * @throws IOException 
+     * @throws IOException
      * @throws TemplateException 
      */
     @SuppressWarnings("deprecation")
@@ -1086,7 +1084,7 @@ public class UKTools {
 	 * @throws Exception
 	 */
 	public static void sendMail(String email , String cc , String subject , String content ,List<String> filenames) throws Exception{
-		SystemConfig config = UKTools.getSystemConfig() ;
+		SystemConfig config = MainUtils.getSystemConfig() ;
 		if(config!=null && config.isEnablemail() && config.getEmailid()!=null) {
 			SystemMessage systemMessage = MainContext.getContext().getBean(SystemMessageRepository.class).findByIdAndOrgi(config.getEmailid(),config.getOrgi()) ;
 			MailSender sender = new MailSender(systemMessage.getSmtpserver(),systemMessage.getMailfrom(),systemMessage.getSmtpuser(), decryption(systemMessage.getSmtppassword()),systemMessage.getSeclev(),systemMessage.getSslport());
@@ -1099,7 +1097,7 @@ public class UKTools {
 	public static String encode(Object obj) {
 		Base64 base64 = new Base64();
     	try {
-			return base64.encodeToString(UKTools.toBytes(obj)) ;
+			return base64.encodeToString(MainUtils.toBytes(obj)) ;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1109,7 +1107,7 @@ public class UKTools {
 	public static <T> T decode(String str,Class<T> clazz) {
 		Base64 base64 = new Base64();
     	try {
-			return (T)UKTools.toObject(base64.decode(str)) ;
+			return (T) MainUtils.toObject(base64.decode(str)) ;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1167,7 +1165,6 @@ public class UKTools {
 	/***
 	 * 计算T+1
 	 * @param text
-	 * @param format
 	 * @return
 	 */
 	public static Object getDaysParam(String text){
@@ -1183,7 +1180,6 @@ public class UKTools {
 	}
 	/**
 	 * 
-	 * @param defaultParam
 	 * @param value
 	 * @return
 	 * @throws ParseException 
@@ -1197,7 +1193,6 @@ public class UKTools {
 	}
 	/**
 	 * 
-	 * @param defaultParam
 	 * @param value
 	 * @return
 	 * @throws ParseException 
@@ -1284,26 +1279,28 @@ public class UKTools {
     	}
     	return asrResult;
     }
+
     /**
-	 * 发送短信
-	 * @param email
-	 * @param cc
-	 * @param subject
-	 * @param content
-	 * @throws Exception
-	 */
+     * 发送短信
+     * @param phone
+     * @param id
+     * @param tpId
+     * @param tplValuesMap
+     * @return
+     * @throws Exception
+     */
 	public static boolean sendSms(String phone,String id ,String tpId, Map<String,Object> tplValuesMap) throws Exception{
-		SystemConfig config = UKTools.getSystemConfig() ;
+		SystemConfig config = MainUtils.getSystemConfig() ;
 		if(config!=null) {
 			SystemMessage systemMessage = MainContext.getContext().getBean(SystemMessageRepository.class).findByIdAndOrgi(id,config.getOrgi()) ;
 			if(systemMessage==null) {
 				return false;
 			}
-			Template tp = UKTools.getTemplate(tpId) ;
+			Template tp = MainUtils.getTemplate(tpId) ;
 			if(tp==null) {
 				return false;
 			}
-			String params = UKTools.getTemplet(tp.getTemplettext(),tplValuesMap) ;
+			String params = MainUtils.getTemplet(tp.getTemplettext(),tplValuesMap) ;
 			
 			SysDic sysDic= UKeFuDic.getInstance().getDicItem(systemMessage.getSmstype());
 			//阿里大于
@@ -1385,7 +1382,7 @@ public class UKTools {
 		workSession.setSessionid(session);
 		workSession.setOrgi(orgi);
 		
-		workSession.setDatestr(UKTools.simpleDateFormat.format(new Date()));
+		workSession.setDatestr(MainUtils.simpleDateFormat.format(new Date()));
 		
 		return workSession ;
 	} 

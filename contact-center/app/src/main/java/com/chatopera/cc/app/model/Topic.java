@@ -27,10 +27,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.chatopera.cc.app.MainUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.elasticsearch.annotations.Document;
-
-import com.chatopera.cc.util.UKTools;
 
 
 /**
@@ -50,7 +49,7 @@ public class Topic implements java.io.Serializable{
 	 * 
 	 */
 	
-	private String id  = UKTools.getUUID();
+	private String id  = MainUtils.getUUID();
 	
 	private String sessionid ;
 	

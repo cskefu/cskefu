@@ -27,7 +27,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.elasticsearch.annotations.Document;
 
@@ -40,7 +40,7 @@ public class Report extends ESBean implements java.io.Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -5781401948807231526L;
-	private String id  = UKTools.getUUID();
+	private String id  = MainUtils.getUUID();
 	private String name ;	
 	private String reporttype ; //0 代表动态报表  1 代表自助查询报表
 	private String viewtype;

@@ -23,6 +23,7 @@ import java.security.NoSuchAlgorithmException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.app.service.repository.OrganizationRepository;
 import com.chatopera.cc.app.handler.Handler;
@@ -35,7 +36,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.service.repository.UserRepository;
 import com.chatopera.cc.app.model.SystemConfig;
 
@@ -76,7 +76,7 @@ public class OrganizationController extends Handler {
     	}
     	ModelAndView view = request(super.createRequestPageTempletResponse("redirect:/"));
     	//登录成功 判断是否进入多租户页面
-    	SystemConfig systemConfig = UKTools.getSystemConfig();
+    	SystemConfig systemConfig = MainUtils.getSystemConfig();
     	if(systemConfig!=null&&systemConfig.isEnabletneant()&&systemConfig.isTenantconsole()) {
     		view = request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index"));
     	}

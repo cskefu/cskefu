@@ -29,7 +29,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Proxy;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 
 @Entity
 @Table(name = "uk_agentuser")
@@ -69,7 +69,7 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
 	private String status;
 	private String appid;
 	private String sessiontype;
-	private String contextid = UKTools.getUUID();
+	private String contextid = MainUtils.getUUID();
 	private String agentserviceid;
 	private String orgi;
 	private long ordertime = System.currentTimeMillis();

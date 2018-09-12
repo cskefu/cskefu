@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.app.service.acd.ServiceQuene;
 import com.chatopera.cc.app.service.cache.CacheHelper;
@@ -48,7 +49,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.app.service.repository.BlackListRepository;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.BlackEntity;
@@ -115,7 +115,7 @@ public class IMAgentController extends Handler{
     		tempSessionConfig = sessionConfig;
     		tempSessionConfig.setCreater(super.getUser(request).getId());
     	}else{
-    		UKTools.copyProperties(sessionConfig, tempSessionConfig);
+    		MainUtils.copyProperties(sessionConfig, tempSessionConfig);
     	}
     	tempSessionConfig.setOrgi(super.getOrgi(request));
     	sessionConfigRes.save(tempSessionConfig) ;
@@ -282,13 +282,13 @@ public class IMAgentController extends Handler{
     		if(!adDir.exists()){
     			adDir.mkdirs() ;
     		}
-    		String fileName = "adv/"+UKTools.getUUID()+imgfile.getOriginalFilename().substring(imgfile.getOriginalFilename().lastIndexOf(".")) ;
+    		String fileName = "adv/"+ MainUtils.getUUID()+imgfile.getOriginalFilename().substring(imgfile.getOriginalFilename().lastIndexOf(".")) ;
     		FileCopyUtils.copy(imgfile.getBytes(), new File(path , fileName));
     		adv.setImgurl("/res/image.html?id="+java.net.URLEncoder.encode(fileName , "UTF-8"));
 		}
 		adTypeRes.save(adv) ;
 		
-		UKTools.initAdv(super.getOrgi(request));
+		MainUtils.initAdv(super.getOrgi(request));
 		
         return request(super.createRequestPageTempletResponse("redirect:/setting/adv.html?adpos="+adv.getAdpos()));
     }
@@ -317,14 +317,14 @@ public class IMAgentController extends Handler{
         		if(!adDir.exists()){
         			adDir.mkdirs() ;
         		}
-        		String fileName = "adv/"+UKTools.getUUID()+imgfile.getOriginalFilename().substring(imgfile.getOriginalFilename().lastIndexOf(".")) ;
+        		String fileName = "adv/"+ MainUtils.getUUID()+imgfile.getOriginalFilename().substring(imgfile.getOriginalFilename().lastIndexOf(".")) ;
         		FileCopyUtils.copy(imgfile.getBytes(), new File(path , fileName));
         		ad.setImgurl("/res/image.html?id="+java.net.URLEncoder.encode(fileName , "UTF-8"));
     		}else{
     			ad.setImgurl(tempad.getImgurl());
     		}
     		adTypeRes.save(ad) ;
-    		UKTools.initAdv(super.getOrgi(request));
+    		MainUtils.initAdv(super.getOrgi(request));
     	}
     	return request(super.createRequestPageTempletResponse("redirect:/setting/adv.html?adpos="+adpos));
     }
@@ -333,7 +333,7 @@ public class IMAgentController extends Handler{
     @Menu(type = "setting" , subtype = "adv" , admin= false)
     public ModelAndView advdelete(ModelMap map , HttpServletRequest request , @Valid String id , @Valid String adpos) {
     	adTypeRes.delete(id);
-    	UKTools.initAdv(super.getOrgi(request));
+    	MainUtils.initAdv(super.getOrgi(request));
     	return request(super.createRequestPageTempletResponse("redirect:/setting/adv.html?adpos="+adpos));
     }
 }

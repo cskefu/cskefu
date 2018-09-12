@@ -27,7 +27,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 
 @Document(indexName = "cskefu", type = "quickreply")
 @Entity
@@ -35,7 +35,7 @@ import com.chatopera.cc.util.UKTools;
 @org.hibernate.annotations.Proxy(lazy = false)
 public class QuickReply {
 	
-	private String id  = UKTools.getUUID();
+	private String id  = MainUtils.getUUID();
 	
 	private String title ;		//标题
 	private String content ;	//内容

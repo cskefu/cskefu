@@ -17,16 +17,16 @@
 package com.chatopera.cc.app.service.acd;
 
 import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.util.UKTools;
-import com.chatopera.cc.util.WebIMReport;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.app.im.client.NettyClients;
+import com.chatopera.cc.app.im.router.OutMessageRouter;
 import com.chatopera.cc.app.model.*;
 import com.chatopera.cc.app.service.cache.CacheHelper;
 import com.chatopera.cc.app.service.quene.AgentStatusBusyOrgiFilter;
 import com.chatopera.cc.app.service.quene.AgentStatusOrgiFilter;
 import com.chatopera.cc.app.service.quene.AgentUserOrgiFilter;
 import com.chatopera.cc.app.service.repository.*;
-import com.chatopera.cc.app.im.router.OutMessageRouter;
+import com.chatopera.cc.util.WebIMReport;
 import com.corundumstudio.socketio.SocketIONamespace;
 import com.hazelcast.core.IMap;
 import com.hazelcast.mapreduce.aggregation.Aggregations;
@@ -205,7 +205,7 @@ public class ServiceQuene {
                     outMessage.setMessageType(MainContext.MediaTypeEnum.TEXT.toString());
                     outMessage.setCalltype(MainContext.CallTypeEnum.IN.toString());
                     outMessage.setNickName(agentStatus.getUsername());
-                    outMessage.setCreatetime(UKTools.dateFormate.format(new Date()));
+                    outMessage.setCreatetime(MainUtils.dateFormate.format(new Date()));
 
                     if (!StringUtils.isBlank(agentUser.getUserid())) {
                         OutMessageRouter router = null;
@@ -324,7 +324,7 @@ public class ServiceQuene {
                     } else {
                         outMessage.setNickName(agentUser.getUsername());
                     }
-                    outMessage.setCreatetime(UKTools.dateFormate.format(new Date()));
+                    outMessage.setCreatetime(MainUtils.dateFormate.format(new Date()));
                     outMessage.setAgentserviceid(agentUser.getAgentserviceid());
 
                     router.handler(agentUser.getUserid(), MainContext.MessageTypeEnum.STATUS.toString(), agentUser.getAppid(), outMessage);
@@ -407,13 +407,13 @@ public class ServiceQuene {
                 workMonitor.setBusy(true);
             }
             if (status.equals(MainContext.AgentStatusEnum.READY.toString())) {
-                int count = workMonitorRes.countByAgentAndDatestrAndStatusAndOrgi(agent, UKTools.simpleDateFormat.format(new Date()), MainContext.AgentStatusEnum.READY.toString(), orgi);
+                int count = workMonitorRes.countByAgentAndDatestrAndStatusAndOrgi(agent, MainUtils.simpleDateFormat.format(new Date()), MainContext.AgentStatusEnum.READY.toString(), orgi);
                 if (count == 0) {
                     workMonitor.setFirsttime(true);
                 }
             }
             if (current.equals(MainContext.AgentStatusEnum.NOTREADY.toString())) {
-                List<WorkMonitor> workMonitorList = workMonitorRes.findByOrgiAndAgentAndDatestrAndFirsttime(orgi, agent, UKTools.simpleDateFormat.format(new Date()), true);
+                List<WorkMonitor> workMonitorList = workMonitorRes.findByOrgiAndAgentAndDatestrAndFirsttime(orgi, agent, MainUtils.simpleDateFormat.format(new Date()), true);
                 if (workMonitorList.size() > 0) {
                     WorkMonitor firstWorkMonitor = workMonitorList.get(0);
                     if (firstWorkMonitor.getFirsttimes() == 0) {
@@ -423,7 +423,7 @@ public class ServiceQuene {
                 }
             }
             workMonitor.setCreatetime(new Date());
-            workMonitor.setDatestr(UKTools.simpleDateFormat.format(new Date()));
+            workMonitor.setDatestr(MainUtils.simpleDateFormat.format(new Date()));
 
             workMonitor.setName(agent);
             workMonitor.setOrgi(orgi);
@@ -584,7 +584,7 @@ public class ServiceQuene {
         }
         agentService.setOrgi(orgi);
 
-        UKTools.copyProperties(agentUser, agentService); //复制属性
+        MainUtils.copyProperties(agentUser, agentService); //复制属性
 
         agentService.setChannel(agentUser.getChannel());
 
@@ -604,7 +604,7 @@ public class ServiceQuene {
             agentService.setSkill(agentUser.getSkill());
 
             if (sessionConfig.isLastagent()) {    //启用了历史坐席优先 ， 查找 历史服务坐席
-                List<WebIMReport> webIMaggList = UKTools.getWebIMDataAgg(onlineUserRes.findByOrgiForDistinctAgent(orgi, agentUser.getUserid()));
+                List<WebIMReport> webIMaggList = MainUtils.getWebIMDataAgg(onlineUserRes.findByOrgiForDistinctAgent(orgi, agentUser.getUserid()));
                 if (webIMaggList.size() > 0) {
                     for (WebIMReport report : webIMaggList) {
                         if (report.getData().equals(agentStatus.getAgentno())) {

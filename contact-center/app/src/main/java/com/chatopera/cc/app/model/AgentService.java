@@ -31,7 +31,7 @@ import com.chatopera.cc.app.MainContext;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Proxy;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 
 @Entity
 @Table(name = "uk_agentservice")
@@ -44,7 +44,7 @@ public class AgentService implements Serializable {
 	private long times;
 	private Date servicetime;
 	private String orgi;
-	private String id = UKTools.getUUID();
+	private String id = MainUtils.getUUID();
 	private String username;
 	private String userid;
 	private String channel;

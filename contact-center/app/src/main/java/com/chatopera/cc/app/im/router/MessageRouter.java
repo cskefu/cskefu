@@ -17,7 +17,7 @@
 package com.chatopera.cc.app.im.router;
 
 import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.app.im.client.NettyClients;
 import com.chatopera.cc.app.service.acd.ServiceQuene;
 import com.chatopera.cc.app.model.AgentService;
@@ -33,7 +33,7 @@ public class MessageRouter extends Router{
 			outMessage.setOrgi(inMessage.getOrgi());
 			outMessage.setFromUser(inMessage.getToUser());
 			outMessage.setToUser(inMessage.getFromUser());
-			outMessage.setId(UKTools.genID());
+			outMessage.setId(MainUtils.genID());
 			outMessage.setMessageType(inMessage.getMessageType());
 			outMessage.setUser(inMessage.getUser());
 			outMessage.setAgentUser(inMessage.getAgentUser());

@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.app.service.acd.ServiceQuene;
 import com.chatopera.cc.app.service.repository.UserRepository;
 import com.chatopera.cc.util.OnlineUserUtils;
@@ -103,7 +103,7 @@ public class UsersController extends Handler{
     			user.setUsertype(null);
     		}
     		if(!StringUtils.isBlank(user.getPassword())){
-    			user.setPassword(UKTools.md5(user.getPassword()));
+    			user.setPassword(MainUtils.md5(user.getPassword()));
     		}
     		
     		user.setOrgi(super.getOrgiByTenantshare(request));
@@ -184,7 +184,7 @@ public class UsersController extends Handler{
     		
     		tempUser.setCallcenter(user.isCallcenter());
     		if(!StringUtils.isBlank(user.getPassword())){
-    			tempUser.setPassword(UKTools.md5(user.getPassword()));
+    			tempUser.setPassword(MainUtils.md5(user.getPassword()));
     		}
     		
     		if(request.getParameter("admin")!=null){

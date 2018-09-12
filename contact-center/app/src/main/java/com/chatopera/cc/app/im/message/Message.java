@@ -16,8 +16,7 @@
  */
 package com.chatopera.cc.app.im.message;
 
-import com.chatopera.cc.util.UKTools;
-
+import com.chatopera.cc.app.MainUtils;
 
 
 public abstract class Message implements java.io.Serializable{
@@ -26,7 +25,7 @@ public abstract class Message implements java.io.Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1872188129813937898L;
-	private String id = UKTools.getUUID();
+	private String id = MainUtils.getUUID();
 	private String appid ;
 	private String userid ;
 	private String username ;

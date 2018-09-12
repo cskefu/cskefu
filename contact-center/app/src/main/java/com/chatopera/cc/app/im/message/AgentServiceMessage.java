@@ -16,7 +16,7 @@
  */
 package com.chatopera.cc.app.im.message;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 
 public class AgentServiceMessage extends Message{
 	/**
@@ -25,7 +25,7 @@ public class AgentServiceMessage extends Message{
 	private static final long serialVersionUID = 3520656734252136303L;
 	
 	private String type ;
-	private String id = UKTools.getUUID();
+	private String id = MainUtils.getUUID();
 
 	public String getType() {
 		return type;

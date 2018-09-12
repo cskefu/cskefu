@@ -19,7 +19,7 @@ package com.chatopera.cc.app.im.client;
 import java.util.List;
 
 import com.corundumstudio.socketio.SocketIOClient;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +58,7 @@ public class NettyClients {
 	public void closeIMEventClient(String id , String sessionid, String orgi){
 		List<SocketIOClient> userClients = imClients.getClients(id) ;
 		for(SocketIOClient userClient : userClients){
-			if(UKTools.getContextID(userClient.getSessionId().toString()).equals(sessionid)){
+			if(MainUtils.getContextID(userClient.getSessionId().toString()).equals(sessionid)){
 				userClient.disconnect();
 			}
 		}

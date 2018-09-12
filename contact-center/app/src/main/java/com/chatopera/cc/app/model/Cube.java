@@ -29,7 +29,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 @Entity
 @Table(name = "uk_cube")
 @org.hibernate.annotations.Proxy(lazy = false)
@@ -223,6 +223,6 @@ public class Cube implements java.io.Serializable{
 	}
 	@Transient
 	public String getTable(){
-		return "c_d_"+UKTools.md5(this.getId());
+		return "c_d_"+ MainUtils.md5(this.getId());
 	}
 }

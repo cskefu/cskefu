@@ -46,7 +46,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 
 @Controller
 @RequestMapping({"/apps/kbs"})
@@ -150,7 +150,7 @@ public class KbsController extends Handler {
     		//保存附件
     		for(MultipartFile file : files){
     			if(file.getSize() > 0){			//文件尺寸 限制 ？在 启动 配置中 设置 的最大值，其他地方不做限制
-    				String fileid = UKTools.md5(file.getBytes()) ;	//使用 文件的 MD5作为 ID，避免重复上传大文件
+    				String fileid = MainUtils.md5(file.getBytes()) ;	//使用 文件的 MD5作为 ID，避免重复上传大文件
     				if(!StringUtils.isBlank(fileid)){
 		    			AttachmentFile attachmentFile = new AttachmentFile() ;
 		    			attachmentFile.setCreater(super.getUser(request).getId());

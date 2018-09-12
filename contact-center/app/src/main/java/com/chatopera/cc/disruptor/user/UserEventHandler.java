@@ -14,12 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.chatopera.cc.disruptor;
+package com.chatopera.cc.disruptor.user;
 
 import java.util.List;
 
 import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.event.UserDataEvent;
 import com.chatopera.cc.util.mail.Mail;
 import com.chatopera.cc.app.service.repository.OnlineUserRepository;
 import com.chatopera.cc.app.service.repository.UserEventRepository;
@@ -29,7 +28,7 @@ import com.chatopera.cc.app.model.UserTraceHistory;
 import org.apache.commons.lang3.StringUtils;
 
 import com.lmax.disruptor.EventHandler;
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.app.service.repository.RequestLogRepository;
 import com.chatopera.cc.app.model.RequestLog;
 import com.chatopera.cc.app.model.UserHistory;
@@ -59,7 +58,7 @@ public class UserEventHandler implements EventHandler<UserDataEvent>{
 		}if(arg0.getEvent() instanceof Mail){
 			Mail mail = (Mail)arg0.getEvent() ;
 			if(null!=mail&&!StringUtils.isBlank(mail.getEmail())) {
-				UKTools.sendMail(mail.getEmail(), mail.getCc(), mail.getSubject(), mail.getContent(), mail.getFilenames());
+				MainUtils.sendMail(mail.getEmail(), mail.getCc(), mail.getSubject(), mail.getContent(), mail.getFilenames());
 			}
 		}
 	}

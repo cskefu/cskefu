@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.extra.DataExchangeInterface;
 import com.chatopera.cc.util.task.DSData;
@@ -55,7 +56,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.util.task.DSDataEvent;
 import com.chatopera.cc.util.task.process.TopicProcess;
 import com.chatopera.cc.app.service.es.TopicRepository;
@@ -259,7 +259,7 @@ public class TopicController extends Handler{
     	if(knowledgeType == null){
     		type.setOrgi(super.getOrgi(request));
     		type.setCreatetime(new Date());
-    		type.setId(UKTools.getUUID());
+    		type.setId(MainUtils.getUUID());
     		type.setTypeid(type.getId());
     		type.setUpdatetime(new Date());
     		if(StringUtils.isBlank(type.getParentid())){
@@ -369,7 +369,7 @@ public class TopicController extends Handler{
     @Menu(type = "xiaoe" , subtype = "knowledge")
     public ModelAndView impsave(ModelMap map , HttpServletRequest request , @RequestParam(value = "cusfile", required = false) MultipartFile cusfile , @Valid String type, @Valid String aiid) throws IOException {
     	DSDataEvent event = new DSDataEvent();
-    	String fileName = "xiaoe/"+UKTools.getUUID()+cusfile.getOriginalFilename().substring(cusfile.getOriginalFilename().lastIndexOf(".")) ;
+    	String fileName = "xiaoe/"+ MainUtils.getUUID()+cusfile.getOriginalFilename().substring(cusfile.getOriginalFilename().lastIndexOf(".")) ;
     	File excelFile = new File(path , fileName) ;
     	if(!excelFile.getParentFile().exists()){
     		excelFile.getParentFile().mkdirs() ;
@@ -416,7 +416,7 @@ public class TopicController extends Handler{
     		MetadataTable table = metadataRes.findByTablename("uk_xiaoe_topic") ;
     		List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
     		for(Topic topic : topicList){
-    			values.add(UKTools.transBean2Map(topic)) ;
+    			values.add(MainUtils.transBean2Map(topic)) ;
     		}
     		
     		response.setHeader("content-disposition", "attachment;filename=UCKeFu-Contacts-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
@@ -437,7 +437,7 @@ public class TopicController extends Handler{
     	MetadataTable table = metadataRes.findByTablename("uk_xiaoe_topic") ;
 		List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
 		for(Topic topic : topicList){
-			values.add(UKTools.transBean2Map(topic)) ;
+			values.add(MainUtils.transBean2Map(topic)) ;
 		}
 		
 		response.setHeader("content-disposition", "attachment;filename=UCKeFu-XiaoE-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
@@ -458,7 +458,7 @@ public class TopicController extends Handler{
     	MetadataTable table = metadataRes.findByTablename("uk_xiaoe_topic") ;
 		List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
 		for(Topic topic : topicList){
-			values.add(UKTools.transBean2Map(topic)) ;
+			values.add(MainUtils.transBean2Map(topic)) ;
 		}
 		
 		response.setHeader("content-disposition", "attachment;filename=UCKeFu-XiaoE-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  

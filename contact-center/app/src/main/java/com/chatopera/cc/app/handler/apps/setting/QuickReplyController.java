@@ -30,8 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.MainUtils;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.util.task.DSData;
 import com.chatopera.cc.util.task.DSDataEvent;
 import com.chatopera.cc.util.task.ExcelImportProecess;
@@ -239,7 +239,7 @@ public class QuickReplyController extends Handler {
     @Menu(type = "setting" , subtype = "quickreplyimpsave")
     public ModelAndView impsave(ModelMap map , HttpServletRequest request , @RequestParam(value = "cusfile", required = false) MultipartFile cusfile , @Valid String type) throws IOException {
     	DSDataEvent event = new DSDataEvent();
-    	String fileName = "quickreply/"+ UKTools.getUUID()+cusfile.getOriginalFilename().substring(cusfile.getOriginalFilename().lastIndexOf(".")) ;
+    	String fileName = "quickreply/"+ MainUtils.getUUID()+cusfile.getOriginalFilename().substring(cusfile.getOriginalFilename().lastIndexOf(".")) ;
     	File excelFile = new File(path , fileName) ;
     	if(!excelFile.getParentFile().exists()){
     		excelFile.getParentFile().mkdirs() ;
@@ -284,7 +284,7 @@ public class QuickReplyController extends Handler {
     		MetadataTable table = metadataRes.findByTablename("uk_quickreply") ;
     		List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
     		for(QuickReply topic : topicList){
-    			values.add(UKTools.transBean2Map(topic)) ;
+    			values.add(MainUtils.transBean2Map(topic)) ;
     		}
     		
     		response.setHeader("content-disposition", "attachment;filename=UCKeFu-QuickReply-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
@@ -305,7 +305,7 @@ public class QuickReplyController extends Handler {
     	MetadataTable table = metadataRes.findByTablename("uk_quickreply") ;
 		List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
 		for(QuickReply topic : topicList){
-			values.add(UKTools.transBean2Map(topic)) ;
+			values.add(MainUtils.transBean2Map(topic)) ;
 		}
 		
 		response.setHeader("content-disposition", "attachment;filename=UCKeFu-QuickReply-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
@@ -326,7 +326,7 @@ public class QuickReplyController extends Handler {
     	MetadataTable table = metadataRes.findByTablename("uk_quickreply") ;
 		List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
 		for(QuickReply topic : topicList){
-			values.add(UKTools.transBean2Map(topic)) ;
+			values.add(MainUtils.transBean2Map(topic)) ;
 		}
 		
 		response.setHeader("content-disposition", "attachment;filename=UCKeFu-QuickReply-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  

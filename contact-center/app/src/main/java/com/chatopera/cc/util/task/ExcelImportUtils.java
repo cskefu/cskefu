@@ -28,6 +28,7 @@ import java.util.Date;
 import com.chatopera.cc.app.MainContext;
 import com.chatopera.cc.app.model.MetadataTable;
 import com.chatopera.cc.app.model.TableProperties;
+import com.chatopera.cc.app.MainUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -38,8 +39,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import com.chatopera.cc.util.UKTools;
 
 public class ExcelImportUtils{
 	private DecimalFormat format = new DecimalFormat("###");
@@ -56,7 +55,7 @@ public class ExcelImportUtils{
     	try {
     		metaDataTable.setTablename(event.getTablename());
     		metaDataTable.setOrgi(this.event.getOrgi());
-    		metaDataTable.setId(UKTools.md5(event.getTablename()));
+    		metaDataTable.setId(MainUtils.md5(event.getTablename()));
     		metaDataTable.setTabledirid("0");
     		metaDataTable.setCreater(event.getDSData().getUser().getId());
     		metaDataTable.setCreatername(event.getDSData().getUser().getUsername());
@@ -98,7 +97,7 @@ public class ExcelImportUtils{
 							if(titleValue.equalsIgnoreCase("id")) {
 								findId = true ;
 							}
-							TableProperties tp  = initProperties("f"+UKTools.genIDByKey(titleValue+"String") , titleValue, "String", event.getOrgi() , event.getTablename() , false) ;
+							TableProperties tp  = initProperties("f"+ MainUtils.genIDByKey(titleValue+"String") , titleValue, "String", event.getOrgi() , event.getTablename() , false) ;
 							tp.setViewtype("list,add,edit,detail");
 							metaDataTable.getTableproperty().add(tp) ;
 						}
