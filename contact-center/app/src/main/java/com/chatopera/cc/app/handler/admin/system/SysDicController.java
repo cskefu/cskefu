@@ -22,8 +22,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.service.cache.CacheHelper;
-import com.chatopera.cc.app.service.repository.SysDicRepository;
+import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.persistence.repository.SysDicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;

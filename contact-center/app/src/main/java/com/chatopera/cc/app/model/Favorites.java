@@ -32,7 +32,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.Parent;
 
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 
 @Document(indexName = "cskefu", type = "favorites" , createIndex = false )
 @Entity

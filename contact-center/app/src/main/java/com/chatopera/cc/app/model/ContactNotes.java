@@ -16,7 +16,7 @@
 
 package com.chatopera.cc.app.model;
 
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.elasticsearch.annotations.Document;
 

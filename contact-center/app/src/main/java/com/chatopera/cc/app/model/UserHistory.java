@@ -24,8 +24,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.chatopera.cc.event.UserEvent;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.exchange.UserEvent;
+import com.chatopera.cc.app.basic.MainUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Proxy;
 

@@ -21,8 +21,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.service.repository.CubeMetadataRepository;
-import com.chatopera.cc.app.service.repository.DimensionRepository;
+import com.chatopera.cc.app.persistence.repository.CubeMetadataRepository;
+import com.chatopera.cc.app.persistence.repository.DimensionRepository;
 import com.chatopera.cc.app.model.Dimension;
 import com.chatopera.cc.app.model.TableProperties;
 import org.apache.commons.lang.StringUtils;
@@ -33,8 +33,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.repository.CubeLevelRepository;
-import com.chatopera.cc.app.service.repository.TablePropertiesRepository;
+import com.chatopera.cc.app.persistence.repository.CubeLevelRepository;
+import com.chatopera.cc.app.persistence.repository.TablePropertiesRepository;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.CubeLevel;
 import com.chatopera.cc.app.model.CubeMetadata;

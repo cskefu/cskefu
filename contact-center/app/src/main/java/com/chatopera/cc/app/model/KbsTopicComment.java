@@ -31,7 +31,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 @Document(indexName = "cskefu", type = "kbs_topiccomment")
 public class KbsTopicComment implements UKAgg{
 

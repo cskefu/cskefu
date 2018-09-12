@@ -19,7 +19,7 @@ package com.chatopera.cc.app.im.client;
 import java.util.List;
 
 import com.corundumstudio.socketio.SocketIOClient;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

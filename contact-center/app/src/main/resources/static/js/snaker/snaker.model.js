@@ -44,7 +44,7 @@
 		task : {
 			showType: 'text',
 			type : 'task',
-			name : {text:'<<task>>'},
+			name : {text:'<<schedule>>'},
 			text : {text:'task'},
 			img : {src : 'images/48/task_empty.png',width :48, height:48},
 			props : {

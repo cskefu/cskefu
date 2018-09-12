@@ -263,7 +263,7 @@ var SpaceTools = {
 			}
 		});*/
 		/***
-		$(document).on("dblclick" , '.handle', function(event){ 
+		$(document).on("dblclick" , '.handle', function(exchange){ 
 			$(this).parent().click();								//将当前对象的父级对象触发为选中状态
 			if($(this).parent().parent().hasClass("design")){
 				var type = $(this).attr("data-type");
@@ -281,7 +281,7 @@ var SpaceTools = {
 			}
 		});
 		
-		$(document).on("dblclick" , '.ukefu-title', function(event){ 
+		$(document).on("dblclick" , '.ukefu-title', function(exchange){ 
 			$(this).parent().click();								//将当前对象的父级对象触发为选中状态
 			if($(this).parent().parent().parent().parent().hasClass("design")){
 				var type = $(this).attr("data-type");

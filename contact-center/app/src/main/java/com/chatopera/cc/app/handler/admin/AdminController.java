@@ -23,14 +23,15 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.app.im.client.NettyClients;
-import com.chatopera.cc.app.service.cache.CacheHelper;
-import com.chatopera.cc.app.service.repository.OnlineUserRepository;
-import com.chatopera.cc.app.service.repository.SysDicRepository;
-import com.chatopera.cc.app.service.repository.UserEventRepository;
+import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.persistence.repository.OnlineUserRepository;
+import com.chatopera.cc.app.persistence.repository.SysDicRepository;
+import com.chatopera.cc.app.persistence.repository.UserEventRepository;
 import com.chatopera.cc.util.OnlineUserUtils;
 import com.chatopera.cc.app.model.SysDic;
 import com.chatopera.cc.app.model.User;
@@ -41,8 +42,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.app.service.acd.ServiceQuene;
-import com.chatopera.cc.app.service.repository.UserRepository;
+import com.chatopera.cc.app.persistence.repository.UserRepository;
 import com.chatopera.cc.app.handler.Handler;
 
 @Controller
@@ -64,7 +64,7 @@ public class AdminController extends Handler{
     public ModelAndView index(ModelMap map ,HttpServletRequest request) {
     	ModelAndView view = request(super.createRequestPageTempletResponse("redirect:/"));
         User user = super.getUser(request) ;
-        view.addObject("agentStatusReport",ServiceQuene.getAgentReport(user.getOrgi())) ;
+        view.addObject("agentStatusReport", AutomaticServiceDist.getAgentReport(user.getOrgi())) ;
 		view.addObject("agentStatus", CacheHelper.getAgentStatusCacheBean().getCacheObject(user.getId(), user.getOrgi())) ;
         
 		return view;
@@ -77,7 +77,7 @@ public class AdminController extends Handler{
     	map.put("chatClients", NettyClients.getInstance().size()) ;
     	map.put("systemCaches", CacheHelper.getSystemCacheBean().getSize()) ;
     	
-		map.put("agentReport", ServiceQuene.getAgentReport(super.getOrgi(request))) ;
+		map.put("agentReport", AutomaticServiceDist.getAgentReport(super.getOrgi(request))) ;
 		map.put("webIMReport", MainUtils.getWebIMReport(userEventRes.findByOrgiAndCreatetimeRange(super.getOrgi(request), MainUtils.getStartTime() , MainUtils.getEndTime()))) ;
 		
 		map.put("agents",getAgent(request).size()) ;
@@ -144,7 +144,7 @@ public class AdminController extends Handler{
     	if(!StringUtils.isBlank(iconstr) && !StringUtils.isBlank(icontext)){
     		map.addAttribute("iconstr", iconstr.replaceAll(icontext, "&#x"+ MainUtils.string2HexString(icontext)+";")) ;
     	}
-    	return request(super.createRequestPageTempletResponse("/admin/system/auth/event"));
+    	return request(super.createRequestPageTempletResponse("/admin/system/auth/exchange"));
     }
     
     @RequestMapping("/admin/auth/save")

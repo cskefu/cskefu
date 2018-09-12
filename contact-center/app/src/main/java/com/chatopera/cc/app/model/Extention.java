@@ -26,7 +26,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity

@@ -29,7 +29,7 @@ import javax.persistence.Transient;
 import org.apache.commons.codec.binary.Base64;
 import org.hibernate.annotations.GenericGenerator;
 
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 @Entity
 @Table(name = "uk_publishedcube")
 @org.hibernate.annotations.Proxy(lazy = false)

@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.repository.AgentUserRepository;
+import com.chatopera.cc.app.persistence.repository.AgentUserRepository;
 import com.chatopera.cc.util.RestResultType;
 import com.chatopera.cc.app.handler.Handler;
 

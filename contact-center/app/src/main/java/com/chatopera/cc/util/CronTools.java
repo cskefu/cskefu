@@ -19,7 +19,7 @@ package com.chatopera.cc.util;
 import java.text.ParseException;
 import java.util.Date;
 
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 import org.quartz.CronExpression;
 
 

@@ -17,8 +17,8 @@
 package com.chatopera.cc.app.handler.api.rest;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.es.QuickReplyRepository;
-import com.chatopera.cc.app.service.repository.QuickTypeRepository;
+import com.chatopera.cc.app.persistence.es.QuickReplyRepository;
+import com.chatopera.cc.app.persistence.repository.QuickTypeRepository;
 import com.chatopera.cc.util.RestResult;
 import com.chatopera.cc.util.RestResultType;
 import com.chatopera.cc.app.handler.Handler;

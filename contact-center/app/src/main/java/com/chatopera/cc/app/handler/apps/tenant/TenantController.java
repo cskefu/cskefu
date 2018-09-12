@@ -30,10 +30,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.acd.ServiceQuene;
-import com.chatopera.cc.app.service.cache.CacheHelper;
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
+import com.chatopera.cc.app.cache.CacheHelper;
 import com.chatopera.cc.util.OnlineUserUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +46,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.app.service.repository.AgentUserRepository;
-import com.chatopera.cc.app.service.repository.OrganRepository;
-import com.chatopera.cc.app.service.repository.OrganizationRepository;
-import com.chatopera.cc.app.service.repository.OrgiSkillRelRepository;
-import com.chatopera.cc.app.service.repository.TenantRepository;
+import com.chatopera.cc.app.persistence.repository.AgentUserRepository;
+import com.chatopera.cc.app.persistence.repository.OrganRepository;
+import com.chatopera.cc.app.persistence.repository.OrganizationRepository;
+import com.chatopera.cc.app.persistence.repository.OrgiSkillRelRepository;
+import com.chatopera.cc.app.persistence.repository.TenantRepository;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.AgentStatus;
 import com.chatopera.cc.app.model.AgentUser;
@@ -237,7 +237,7 @@ public class TenantController extends Handler{
     public ModelAndView canswitch(HttpServletRequest request ,@Valid Tenant tenant) throws UnsupportedEncodingException {
     	ModelAndView view = request(super.createRequestPageTempletResponse("redirect:/"));
     	AgentStatus agentStatus = (AgentStatus) CacheHelper.getAgentStatusCacheBean().getCacheObject((super.getUser(request)).getId(), super.getOrgi(request));
-    	if(agentStatus==null && ServiceQuene.getAgentUsers(super.getUser(request).getId(), super.getOrgi(request))==0) {
+    	if(agentStatus==null && AutomaticServiceDist.getAgentUsers(super.getUser(request).getId(), super.getOrgi(request))==0) {
     		Tenant temp = tenantRes.findById(tenant.getId()) ;
         	if(temp!=null) {
         		super.getUser(request).setOrgi(temp.getId());
@@ -278,7 +278,7 @@ public class TenantController extends Handler{
     public ModelAndView switchTenant(HttpServletRequest request ,@Valid Tenant tenant) {
     	ModelAndView view = request(super.createRequestPageTempletResponse("redirect:/"));
     	AgentStatus agentStatus = (AgentStatus)CacheHelper.getAgentStatusCacheBean().getCacheObject((super.getUser(request)).getId(), super.getOrgi(request));
-    	if(agentStatus==null && ServiceQuene.getAgentUsers(super.getUser(request).getId(), super.getOrgi(request))==0) {
+    	if(agentStatus==null && AutomaticServiceDist.getAgentUsers(super.getUser(request).getId(), super.getOrgi(request))==0) {
     		Tenant temp = tenantRes.findById(tenant.getId()) ;
         	if(temp!=null) {
         		super.getUser(request).setOrgi(temp.getId());

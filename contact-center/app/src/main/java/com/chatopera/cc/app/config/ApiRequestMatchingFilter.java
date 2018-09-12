@@ -27,12 +27,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.chatopera.cc.app.service.cache.CacheHelper;
+import com.chatopera.cc.app.cache.CacheHelper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 
 public class ApiRequestMatchingFilter implements Filter {
     private RequestMatcher[] ignoredRequests;

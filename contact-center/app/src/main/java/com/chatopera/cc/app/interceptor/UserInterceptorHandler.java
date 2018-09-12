@@ -19,9 +19,10 @@ package com.chatopera.cc.app.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
+import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.cache.CacheHelper;
+import com.chatopera.cc.app.cache.CacheHelper;
 import com.chatopera.cc.app.model.User;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
@@ -31,8 +32,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.chatopera.cc.app.MainUtils;
-import com.chatopera.cc.app.service.acd.ServiceQuene;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.app.model.SystemConfig;
 import com.chatopera.cc.app.model.UKeFuDic;
 
@@ -98,7 +98,7 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
 	    	view.addObject("models", MainContext.model) ;
 	    	
 	    	if(user!=null){
-	    		view.addObject("agentStatusReport",ServiceQuene.getAgentReport(user.getOrgi())) ;
+	    		view.addObject("agentStatusReport", AutomaticServiceDist.getAgentReport(user.getOrgi())) ;
 	    	}
 			/**
 			 * WebIM共享用户

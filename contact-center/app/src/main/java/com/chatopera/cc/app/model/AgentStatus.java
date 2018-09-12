@@ -25,11 +25,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
-import com.chatopera.cc.app.service.acd.ServiceQuene;
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
 
 @Entity
 @Table(name = "uk_agentstatus")
@@ -146,7 +146,7 @@ public class AgentStatus implements java.io.Serializable ,  Comparable<AgentStat
 	}
 	@Transient
 	public int getMaxusers() {
-		SessionConfig sessionConfig = ServiceQuene.initSessionConfig(this.orgi) ;
+		SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(this.orgi) ;
 		return sessionConfig!=null ? sessionConfig.getMaxuser() : MainContext.AGENT_STATUS_MAX_USER ;
 	}
 	public void setMaxusers(int maxusers) {
@@ -154,7 +154,7 @@ public class AgentStatus implements java.io.Serializable ,  Comparable<AgentStat
 	}
 	@Transient
 	public int getInitmaxusers() {
-		SessionConfig sessionConfig = ServiceQuene.initSessionConfig(this.orgi) ;
+		SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(this.orgi) ;
 		return sessionConfig!=null ? sessionConfig.getInitmaxuser() : getMaxusers();
 	}
 	public void setInitmaxusers(int initmaxusers) {
@@ -187,7 +187,7 @@ public class AgentStatus implements java.io.Serializable ,  Comparable<AgentStat
 	@Override
 	public int compareTo(AgentStatus o) {
 		int retValue = 0 ;
-		SessionConfig sessionConfig = ServiceQuene.initSessionConfig(this.orgi) ;
+		SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(this.orgi) ;
 		if(sessionConfig!=null && !StringUtils.isBlank(sessionConfig.getDistribution()) && sessionConfig.getDistribution().equals("0")) {
 			if(this.getUpdatetime()!=null && o.getUpdatetime()!=null) {
 				retValue = (int) (this.getUpdatetime().getTime() - o.getUpdatetime().getTime());

@@ -25,7 +25,7 @@ import java.util.Properties;
 
 import javax.annotation.PreDestroy;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +35,7 @@ import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.HandshakeData;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.exception.UCKeFuExceptionListener;
   
 @org.springframework.context.annotation.Configuration  

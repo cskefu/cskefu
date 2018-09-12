@@ -20,11 +20,11 @@ import java.net.InetSocketAddress;
 import java.util.Date;
 import java.util.List;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.app.im.client.NettyClients;
-import com.chatopera.cc.app.service.acd.ServiceQuene;
-import com.chatopera.cc.app.service.cache.CacheHelper;
+import com.chatopera.cc.app.cache.CacheHelper;
 import com.chatopera.cc.app.im.router.OutMessageRouter;
 import com.chatopera.cc.app.im.message.AgentServiceMessage;
 import com.chatopera.cc.app.im.message.AgentStatusMessage;
@@ -38,11 +38,11 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
-import com.chatopera.cc.app.service.repository.AgentStatusRepository;
-import com.chatopera.cc.app.service.repository.AgentUserRepository;
-import com.chatopera.cc.app.service.repository.AgentUserTaskRepository;
-import com.chatopera.cc.app.service.repository.ChatMessageRepository;
-import com.chatopera.cc.app.service.repository.WorkSessionRepository;
+import com.chatopera.cc.app.persistence.repository.AgentStatusRepository;
+import com.chatopera.cc.app.persistence.repository.AgentUserRepository;
+import com.chatopera.cc.app.persistence.repository.AgentUserTaskRepository;
+import com.chatopera.cc.app.persistence.repository.ChatMessageRepository;
+import com.chatopera.cc.app.persistence.repository.WorkSessionRepository;
 import com.chatopera.cc.app.model.AgentStatus;
 import com.chatopera.cc.app.model.AgentUser;
 import com.chatopera.cc.app.model.AgentUserTask;
@@ -99,7 +99,7 @@ public class AgentEventHandler
 		String orgi = client.getHandshakeData().getSingleUrlParam("orgi") ;
 		String admin = client.getHandshakeData().getSingleUrlParam("admin") ;
 		if(!StringUtils.isBlank(user)){
-			ServiceQuene.deleteAgentStatus(user, orgi, !StringUtils.isBlank(admin) && admin.equals("true"));
+			AutomaticServiceDist.deleteAgentStatus(user, orgi, !StringUtils.isBlank(admin) && admin.equals("true"));
 			NettyClients.getInstance().removeAgentEventClient(user , MainUtils.getContextID(client.getSessionId().toString()));
 			
 			WorkSessionRepository workSessionRepository = MainContext.getContext().getBean(WorkSessionRepository.class) ;
@@ -158,7 +158,7 @@ public class AgentEventHandler
     	if(agentUser == null){
     		agentUser = MainContext.getContext().getBean(AgentUserRepository.class).findByIdAndOrgi(data.getTouser() , data.getOrgi()) ;
     		try {
-				ServiceQuene.serviceFinish(agentUser, data.getOrgi());
+				AutomaticServiceDist.serviceFinish(agentUser, data.getOrgi());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

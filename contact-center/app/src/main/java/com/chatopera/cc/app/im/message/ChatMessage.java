@@ -31,8 +31,8 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
-import com.chatopera.cc.app.MainUtils;
-import com.chatopera.cc.event.UserEvent;
+import com.chatopera.cc.app.basic.MainUtils;
+import com.chatopera.cc.exchange.UserEvent;
 import com.chatopera.cc.util.OnlineUserUtils;
 
 @Entity

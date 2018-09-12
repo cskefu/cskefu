@@ -23,7 +23,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.app.model.JobDetail;
 import com.chatopera.cc.app.model.JobTask;
@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.chatopera.cc.app.service.repository.JobDetailRepository;
+import com.chatopera.cc.app.persistence.repository.JobDetailRepository;
 import com.chatopera.cc.app.handler.Handler;
 
 

@@ -24,9 +24,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.service.cache.CacheHelper;
-import com.chatopera.cc.app.service.repository.UserRoleRepository;
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.persistence.repository.UserRoleRepository;
 import com.chatopera.cc.app.model.AgentStatus;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +39,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.MainUtils;
-import com.chatopera.cc.app.service.acd.ServiceQuene;
-import com.chatopera.cc.app.service.repository.UserRepository;
+import com.chatopera.cc.app.basic.MainUtils;
+import com.chatopera.cc.app.persistence.repository.UserRepository;
 import com.chatopera.cc.util.OnlineUserUtils;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.User;
@@ -168,7 +168,7 @@ public class UsersController extends Handler{
     		//切换成非坐席 判断是否坐席 以及 是否有对话
     		if(!user.isAgent()) {
     			AgentStatus agentStatus = (AgentStatus) CacheHelper.getAgentStatusCacheBean().getCacheObject((super.getUser(request)).getId(), super.getOrgi(request));
-    	    	if(!(agentStatus==null && ServiceQuene.getAgentUsers(super.getUser(request).getId(), super.getOrgi(request))==0)) {
+    	    	if(!(agentStatus==null && AutomaticServiceDist.getAgentUsers(super.getUser(request).getId(), super.getOrgi(request))==0)) {
     	    		return request(super.createRequestPageTempletResponse("redirect:/admin/user/index.html?msg=t1")); 
     	    	}
     		}

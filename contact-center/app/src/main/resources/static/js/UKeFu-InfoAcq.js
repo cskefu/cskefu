@@ -18,7 +18,7 @@ $(document).ready(function(){
 			href = $(this).attr("href");
 		}
 		$.ajax({
-			url:"/admin/auth/event.html?title="+encodeURIComponent(title)+"&url="+encodeURIComponent(href)+"&iconstr="+iconstr+"&icontext="+encodeURIComponent(icontext),
+			url:"/admin/auth/exchange.html?title="+encodeURIComponent(title)+"&url="+encodeURIComponent(href)+"&iconstr="+iconstr+"&icontext="+encodeURIComponent(icontext),
 			cache:false,
 			success: function(data){
 				top.layer.open({

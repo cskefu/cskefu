@@ -16,9 +16,9 @@
  */
 package com.chatopera.cc.app.handler.api.rest;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.repository.TagRepository;
+import com.chatopera.cc.app.persistence.repository.TagRepository;
 import com.chatopera.cc.util.RestResult;
 import com.chatopera.cc.app.handler.Handler;
 import io.swagger.annotations.Api;

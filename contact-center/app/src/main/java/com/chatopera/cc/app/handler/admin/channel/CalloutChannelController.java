@@ -15,13 +15,13 @@
  */
 package com.chatopera.cc.app.handler.admin.channel;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.exception.CSKefuException;
-import com.chatopera.cc.app.service.repository.ConsultInviteRepository;
-import com.chatopera.cc.app.service.repository.SNSAccountRepository;
-import com.chatopera.cc.app.service.repository.SecretRepository;
+import com.chatopera.cc.app.persistence.repository.ConsultInviteRepository;
+import com.chatopera.cc.app.persistence.repository.SNSAccountRepository;
+import com.chatopera.cc.app.persistence.repository.SecretRepository;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.CousultInvite;
 import com.chatopera.cc.app.model.SNSAccount;

@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.cache.CacheHelper;
+import com.chatopera.cc.app.cache.CacheHelper;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.CousultInvite;
 import com.chatopera.cc.app.model.Organ;
@@ -42,12 +42,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.app.service.repository.ConsultInviteRepository;
-import com.chatopera.cc.app.service.repository.OrganRepository;
-import com.chatopera.cc.app.service.repository.OrgiSkillRelRepository;
-import com.chatopera.cc.app.service.repository.SNSAccountRepository;
-import com.chatopera.cc.app.service.repository.ServiceAiRepository;
-import com.chatopera.cc.app.service.repository.UserRepository;
+import com.chatopera.cc.app.persistence.repository.ConsultInviteRepository;
+import com.chatopera.cc.app.persistence.repository.OrganRepository;
+import com.chatopera.cc.app.persistence.repository.OrgiSkillRelRepository;
+import com.chatopera.cc.app.persistence.repository.SNSAccountRepository;
+import com.chatopera.cc.app.persistence.repository.ServiceAiRepository;
+import com.chatopera.cc.app.persistence.repository.UserRepository;
 
 @Controller
 @RequestMapping("/admin/webim")

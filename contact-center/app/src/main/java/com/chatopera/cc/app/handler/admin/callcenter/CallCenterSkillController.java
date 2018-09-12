@@ -23,10 +23,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.repository.CallCenterSkillRepository;
-import com.chatopera.cc.app.service.repository.ExtentionRepository;
-import com.chatopera.cc.app.service.repository.PbxHostRepository;
-import com.chatopera.cc.app.service.repository.SkillExtentionRepository;
+import com.chatopera.cc.app.persistence.repository.CallCenterSkillRepository;
+import com.chatopera.cc.app.persistence.repository.ExtentionRepository;
+import com.chatopera.cc.app.persistence.repository.PbxHostRepository;
+import com.chatopera.cc.app.persistence.repository.SkillExtentionRepository;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.CallCenterSkill;
 import com.chatopera.cc.app.model.Extention;

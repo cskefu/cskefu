@@ -16,15 +16,15 @@
  */
 package com.chatopera.cc.app.handler;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.app.model.*;
-import com.chatopera.cc.app.service.cache.CacheHelper;
-import com.chatopera.cc.app.service.repository.OrganRepository;
-import com.chatopera.cc.app.service.repository.RoleAuthRepository;
-import com.chatopera.cc.app.service.repository.UserRepository;
-import com.chatopera.cc.app.service.repository.UserRoleRepository;
+import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.persistence.repository.OrganRepository;
+import com.chatopera.cc.app.persistence.repository.RoleAuthRepository;
+import com.chatopera.cc.app.persistence.repository.UserRepository;
+import com.chatopera.cc.app.persistence.repository.UserRoleRepository;
 import com.chatopera.cc.util.OnlineUserUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;

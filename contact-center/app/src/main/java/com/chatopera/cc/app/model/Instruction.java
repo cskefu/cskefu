@@ -58,7 +58,7 @@ public class Instruction  implements java.io.Serializable{
 	private String interfaceurl ;	//接口访问地址
 	private String interfaceparam ;	//接口参数描述
 	private String adapter 	;		//接口适配器
-	private String messagetype ;	//适用于消息类型 ： event ： image ： pos
+	private String messagetype ;	//适用于消息类型 ： exchange ： image ： pos
 	private String eventype ;
 	
 	
@@ -220,8 +220,8 @@ public class Instruction  implements java.io.Serializable{
 			strb.append(".").append("text").append(".").append(this.getKeyword()) ;
 		}else if(this.matcherule.equals("message")){
 			strb.append(".").append(this.getMessagetype()).append(".").append(this.getMessagetype()) ;
-		}else if(this.matcherule.equals("event")){
-			strb.append(".").append("event").append(".").append(this.getEventype()) ;
+		}else if(this.matcherule.equals("exchange")){
+			strb.append(".").append("exchange").append(".").append(this.getEventype()) ;
 			if(!this.eventype.equals("subscribe")){
 				strb.append(".").append(this.getKeyword()) ;
 			}

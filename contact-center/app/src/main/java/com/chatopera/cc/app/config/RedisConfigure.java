@@ -16,7 +16,7 @@
 package com.chatopera.cc.app.config;
 
 import com.chatopera.cc.util.Constants;
-import com.chatopera.cc.app.service.task.CallOutWireTask;
+import com.chatopera.cc.app.schedule.CallOutWireTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

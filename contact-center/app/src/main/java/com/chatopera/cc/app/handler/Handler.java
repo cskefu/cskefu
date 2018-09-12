@@ -24,12 +24,12 @@ import java.text.ParseException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.MainUtils;
-import com.chatopera.cc.app.Viewport;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.basic.MainUtils;
+import com.chatopera.cc.app.basic.Viewport;
 import com.chatopera.cc.exception.CSKefuException;
-import com.chatopera.cc.app.service.cache.CacheHelper;
-import com.chatopera.cc.app.service.repository.TenantRepository;
+import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.persistence.repository.TenantRepository;
 import com.chatopera.cc.app.handler.api.rest.QueryParams;
 import com.chatopera.cc.app.model.Tenant;
 import com.chatopera.cc.app.model.User;

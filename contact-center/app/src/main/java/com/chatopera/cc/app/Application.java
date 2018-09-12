@@ -16,6 +16,7 @@
  */
 package com.chatopera.cc.app;
 
+import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.util.mobile.MobileNumberUtils;
 import com.chatopera.cc.app.config.StartedEventListener;
 import org.slf4j.Logger;
@@ -37,8 +38,8 @@ import javax.servlet.MultipartConfigElement;
 import java.io.IOException;
 
 @SpringBootApplication
-@EnableJpaRepositories("com.chatopera.cc.app.service.repository")
-@EnableElasticsearchRepositories("com.chatopera.cc.app.service.es")
+@EnableJpaRepositories("com.chatopera.cc.app.persistence.repository")
+@EnableElasticsearchRepositories("com.chatopera.cc.app.persistence.es")
 @EnableAsync
 public class Application {
     private static final Logger logger = LoggerFactory.getLogger(Application.class);

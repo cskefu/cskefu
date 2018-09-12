@@ -16,14 +16,14 @@
  */
 package com.chatopera.cc.util;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.MainUtils;
-import com.chatopera.cc.util.extra.DataExchangeInterface;
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.basic.MainUtils;
+import com.chatopera.cc.exchange.DataExchangeInterface;
 import com.chatopera.cc.app.model.*;
-import com.chatopera.cc.app.service.acd.ServiceQuene;
-import com.chatopera.cc.app.service.cache.CacheHelper;
-import com.chatopera.cc.app.service.impl.AgentUserService;
-import com.chatopera.cc.app.service.repository.*;
+import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.persistence.impl.AgentUserService;
+import com.chatopera.cc.app.persistence.repository.*;
 import com.chatopera.cc.app.im.router.RouterHelper;
 import com.chatopera.cc.app.im.message.NewRequestMessage;
 import com.chatopera.cc.app.im.message.OtherMessageItem;
@@ -848,8 +848,8 @@ public class OnlineUserUtils {
 
         MessageDataBean outMessageDataBean = null;
 
-        SessionConfig sessionConfig = ServiceQuene.initSessionConfig(data.getOrgi());
-        AgentReport report = ServiceQuene.getAgentReport(data.getOrgi());
+        SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(data.getOrgi());
+        AgentReport report = AutomaticServiceDist.getAgentReport(data.getOrgi());
 
         if (sessionConfig.isHourcheck() && !MainUtils.isInWorkingHours(sessionConfig.getWorkinghours())) {
             data.setMessage(sessionConfig.getNotinwhmsg());
@@ -1147,7 +1147,7 @@ public class OnlineUserUtils {
     public static List<OtherMessageItem> search(String q, String orgi, User user) throws IOException, TemplateException {
         List<OtherMessageItem> otherMessageItemList = null;
         String param = "";
-        SessionConfig sessionConfig = ServiceQuene.initSessionConfig(orgi);
+        SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(orgi);
         if (!StringUtils.isBlank(sessionConfig.getOqrsearchurl())) {
             Template templet = MainUtils.getTemplate(sessionConfig.getOqrsearchinput());
             Map<String, Object> values = new HashMap<String, Object>();
@@ -1205,7 +1205,7 @@ public class OnlineUserUtils {
     public static OtherMessageItem detail(String id, String orgi, User user) throws IOException, TemplateException {
         OtherMessageItem otherMessageItem = null;
         String param = "";
-        SessionConfig sessionConfig = ServiceQuene.initSessionConfig(orgi);
+        SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(orgi);
         if (!StringUtils.isBlank(sessionConfig.getOqrdetailinput())) {
             Template templet = MainUtils.getTemplate(sessionConfig.getOqrdetailinput());
             Map<String, Object> values = new HashMap<String, Object>();

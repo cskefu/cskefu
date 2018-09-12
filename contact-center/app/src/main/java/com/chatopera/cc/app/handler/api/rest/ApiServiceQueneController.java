@@ -22,11 +22,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
+import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.cache.CacheHelper;
-import com.chatopera.cc.app.service.repository.AgentStatusRepository;
-import com.chatopera.cc.app.service.repository.OrganRepository;
+import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.persistence.repository.AgentStatusRepository;
+import com.chatopera.cc.app.persistence.repository.OrganRepository;
 import com.chatopera.cc.util.RestResult;
 import com.chatopera.cc.app.model.AgentStatus;
 import com.chatopera.cc.app.model.User;
@@ -38,8 +39,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.chatopera.cc.app.service.acd.ServiceQuene;
-import com.chatopera.cc.app.service.repository.AgentUserRepository;
+import com.chatopera.cc.app.persistence.repository.AgentUserRepository;
 import com.chatopera.cc.util.RestResultType;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.Organ;
@@ -71,7 +71,7 @@ public class ApiServiceQueneController extends Handler{
 	@Menu(type = "apps" , subtype = "user" , access = true)
 	@ApiOperation("获取队列统计信息，包含当前队列服务中的访客数，排队人数，坐席数")
     public ResponseEntity<RestResult> list(HttpServletRequest request) {
-        return new ResponseEntity<>(new RestResult(RestResultType.OK , ServiceQuene.getAgentReport(super.getOrgi(request))), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResult(RestResultType.OK , AutomaticServiceDist.getAgentReport(super.getOrgi(request))), HttpStatus.OK);
     }
 	
 	/**
@@ -104,7 +104,7 @@ public class ApiServiceQueneController extends Handler{
 		    		}
 		    	}
 		    	
-		    	SessionConfig sessionConfig = ServiceQuene.initSessionConfig(super.getOrgi(request)) ;
+		    	SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(super.getOrgi(request)) ;
 		    	
 		    	agentStatus.setUsers(agentUserRepository.countByAgentnoAndStatusAndOrgi(user.getId(), MainContext.AgentUserStatusEnum.INSERVICE.toString(), super.getOrgi(request)));
 		    	
@@ -119,18 +119,18 @@ public class ApiServiceQueneController extends Handler{
 		    	/**
 		    	 * 更新当前用户状态
 		    	 */
-		    	agentStatus.setUsers(ServiceQuene.getAgentUsers(agentStatus.getAgentno(), super.getOrgi(request)));
+		    	agentStatus.setUsers(AutomaticServiceDist.getAgentUsers(agentStatus.getAgentno(), super.getOrgi(request)));
 		    	agentStatus.setStatus(MainContext.AgentStatusEnum.READY.toString());
 		    	CacheHelper.getAgentStatusCacheBean().put(agentStatus.getAgentno(), agentStatus, super.getOrgi(request));
-		    	ServiceQuene.recordAgentStatus(agentStatus.getAgentno(),agentStatus.getUsername(),agentStatus.getAgentno(), agentStatus.getSkill(),"0".equals(super.getUser(request).getUsertype()), agentStatus.getAgentno(), MainContext.AgentStatusEnum.OFFLINE.toString(), MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString() , agentStatus.getOrgi() , null);
+		    	AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(),agentStatus.getUsername(),agentStatus.getAgentno(), agentStatus.getSkill(),"0".equals(super.getUser(request).getUsertype()), agentStatus.getAgentno(), MainContext.AgentStatusEnum.OFFLINE.toString(), MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString() , agentStatus.getOrgi() , null);
 		    	
-		    	ServiceQuene.allotAgent(agentStatus.getAgentno(), super.getOrgi(request));
+		    	AutomaticServiceDist.allotAgent(agentStatus.getAgentno(), super.getOrgi(request));
 	    	}
 		}else if(!StringUtils.isBlank(status)) {
 			if(status.equals(MainContext.AgentStatusEnum.NOTREADY.toString())) {
 				List<AgentStatus> agentStatusList = agentStatusRepository.findByAgentnoAndOrgi(user.getId() , super.getOrgi(request));
 				for(AgentStatus temp : agentStatusList){
-					ServiceQuene.recordAgentStatus(temp.getAgentno(),temp.getUsername(),temp.getAgentno(), temp.getSkill(),"0".equals(super.getUser(request).getUsertype()), temp.getAgentno(), temp.isBusy() ? MainContext.AgentStatusEnum.BUSY.toString(): MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentStatusEnum.NOTREADY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString() , temp.getOrgi() , temp.getUpdatetime());
+					AutomaticServiceDist.recordAgentStatus(temp.getAgentno(),temp.getUsername(),temp.getAgentno(), temp.getSkill(),"0".equals(super.getUser(request).getUsertype()), temp.getAgentno(), temp.isBusy() ? MainContext.AgentStatusEnum.BUSY.toString(): MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentStatusEnum.NOTREADY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString() , temp.getOrgi() , temp.getUpdatetime());
 					agentStatusRepository.delete(temp);
 				}
 		    	CacheHelper.getAgentStatusCacheBean().delete(super.getUser(request).getId(),super.getOrgi(request));
@@ -139,7 +139,7 @@ public class ApiServiceQueneController extends Handler{
 		    	if(agentStatusList.size() > 0){
 		    		agentStatus = agentStatusList.get(0) ;
 					agentStatus.setBusy(true);
-					ServiceQuene.recordAgentStatus(agentStatus.getAgentno(),agentStatus.getUsername(), agentStatus.getAgentno(),agentStatus.getSkill(), "0".equals(super.getUser(request).getUsertype()),agentStatus.getAgentno(), MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentStatusEnum.BUSY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString() , agentStatus.getOrgi() , agentStatus.getUpdatetime());
+					AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(),agentStatus.getUsername(), agentStatus.getAgentno(),agentStatus.getSkill(), "0".equals(super.getUser(request).getUsertype()),agentStatus.getAgentno(), MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentStatusEnum.BUSY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString() , agentStatus.getOrgi() , agentStatus.getUpdatetime());
 					agentStatus.setUpdatetime(new Date());
 					
 					agentStatusRepository.save(agentStatus);
@@ -150,15 +150,15 @@ public class ApiServiceQueneController extends Handler{
 		    	if(agentStatusList.size() > 0){
 		    		agentStatus = agentStatusList.get(0) ;
 					agentStatus.setBusy(false);
-					ServiceQuene.recordAgentStatus(agentStatus.getAgentno(),agentStatus.getUsername(), agentStatus.getAgentno(),agentStatus.getSkill(), "0".equals(super.getUser(request).getUsertype()),agentStatus.getAgentno(), MainContext.AgentStatusEnum.BUSY.toString(), MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString() , agentStatus.getOrgi() , agentStatus.getUpdatetime());
+					AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(),agentStatus.getUsername(), agentStatus.getAgentno(),agentStatus.getSkill(), "0".equals(super.getUser(request).getUsertype()),agentStatus.getAgentno(), MainContext.AgentStatusEnum.BUSY.toString(), MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString() , agentStatus.getOrgi() , agentStatus.getUpdatetime());
 					
 					agentStatus.setUpdatetime(new Date());
 					agentStatusRepository.save(agentStatus);
 					CacheHelper.getAgentStatusCacheBean().put(agentStatus.getAgentno(), agentStatus,super.getOrgi(request));
 				}
-				ServiceQuene.allotAgent(agentStatus.getAgentno(), super.getOrgi(request));
+				AutomaticServiceDist.allotAgent(agentStatus.getAgentno(), super.getOrgi(request));
 			}
-			ServiceQuene.publishMessage(super.getOrgi(request) , "agent" , "api" , super.getUser(request).getId());
+			AutomaticServiceDist.publishMessage(super.getOrgi(request) , "agent" , "api" , super.getUser(request).getId());
 		}
         return new ResponseEntity<>(new RestResult(RestResultType.OK , agentStatus), HttpStatus.OK);
     }

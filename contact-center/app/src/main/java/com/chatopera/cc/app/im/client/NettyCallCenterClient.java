@@ -18,7 +18,7 @@ package com.chatopera.cc.app.im.client;
 
 import java.util.List;
 
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.google.common.collect.ArrayListMultimap;
 

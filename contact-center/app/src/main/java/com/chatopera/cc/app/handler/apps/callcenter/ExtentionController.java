@@ -24,8 +24,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.repository.CallCenterSkillRepository;
-import com.chatopera.cc.app.service.repository.PbxHostRepository;
+import com.chatopera.cc.app.persistence.repository.CallCenterSkillRepository;
+import com.chatopera.cc.app.persistence.repository.PbxHostRepository;
 import com.chatopera.cc.app.model.Extention;
 import com.chatopera.cc.app.model.PbxHost;
 import com.chatopera.cc.app.model.Template;
@@ -36,13 +36,13 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.MainUtils;
-import com.chatopera.cc.app.service.repository.AclRepository;
-import com.chatopera.cc.app.service.repository.ExtentionRepository;
-import com.chatopera.cc.app.service.repository.RouterRulesRepository;
-import com.chatopera.cc.app.service.repository.SipTrunkRepository;
-import com.chatopera.cc.app.service.repository.SkillExtentionRepository;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.basic.MainUtils;
+import com.chatopera.cc.app.persistence.repository.AclRepository;
+import com.chatopera.cc.app.persistence.repository.ExtentionRepository;
+import com.chatopera.cc.app.persistence.repository.RouterRulesRepository;
+import com.chatopera.cc.app.persistence.repository.SipTrunkRepository;
+import com.chatopera.cc.app.persistence.repository.SkillExtentionRepository;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.SystemConfig;
 

@@ -17,7 +17,7 @@
 package com.chatopera.cc.app.handler.api.rest;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.repository.OrganRepository;
+import com.chatopera.cc.app.persistence.repository.OrganRepository;
 import com.chatopera.cc.util.RestResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

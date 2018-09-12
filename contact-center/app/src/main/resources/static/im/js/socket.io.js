@@ -164,7 +164,7 @@ function Manager(uri, opts){
 }
 
 /**
- * Propagate given event to sockets and emit on `this`
+ * Propagate given exchange to sockets and emit on `this`
  *
  * @api private
  */
@@ -558,7 +558,7 @@ Manager.prototype.disconnect = function(){
   this.reconnecting = false;
   if ('opening' == this.readyState) {
     // `onclose` will not fire because
-    // an open event never happened
+    // an open exchange never happened
     this.cleanup();
   }
   this.backoff.reset();
@@ -786,7 +786,7 @@ Socket.prototype.connect = function(){
 };
 
 /**
- * Sends a `message` event.
+ * Sends a `message` exchange.
  *
  * @return {Socket} self
  * @api public
@@ -801,9 +801,9 @@ Socket.prototype.send = function(){
 
 /**
  * Override `emit`.
- * If the event is in `events`, it's emitted normally.
+ * If the exchange is in `events`, it's emitted normally.
  *
- * @param {String} event name
+ * @param {String} exchange name
  * @return {Socket} self
  * @api public
  */
@@ -822,7 +822,7 @@ Socket.prototype.emit = function(ev){
   packet.options = {};
   packet.options.compress = !this.flags || false !== this.flags.compress;
 
-  // event ack callback
+  // exchange ack callback
   if ('function' == typeof args[args.length - 1]) {
     debug('emitting packet with ack id %d', this.ids);
     this.acks[this.ids] = args.pop();
@@ -924,7 +924,7 @@ Socket.prototype.onpacket = function(packet){
 };
 
 /**
- * Called upon a server event.
+ * Called upon a server exchange.
  *
  * @param {Object} packet
  * @api private
@@ -932,10 +932,10 @@ Socket.prototype.onpacket = function(packet){
 
 Socket.prototype.onevent = function(packet){
   var args = packet.data || [];
-  debug('emitting event %j', args);
+  debug('emitting exchange %j', args);
 
   if (null != packet.id) {
-    debug('attaching ack callback to event');
+    debug('attaching ack callback to exchange');
     args.push(this.ack(packet.id));
   }
 
@@ -947,7 +947,7 @@ Socket.prototype.onevent = function(packet){
 };
 
 /**
- * Produces an ack callback to emit with an event.
+ * Produces an ack callback to emit with an exchange.
  *
  * @api private
  */
@@ -1547,7 +1547,7 @@ function mixin(obj) {
 }
 
 /**
- * Listen on the given `event` with `fn`.
+ * Listen on the given `exchange` with `fn`.
  *
  * @param {String} event
  * @param {Function} fn
@@ -1564,7 +1564,7 @@ Emitter.prototype.addEventListener = function(event, fn){
 };
 
 /**
- * Adds an `event` listener that will be invoked a single
+ * Adds an `exchange` listener that will be invoked a single
  * time then automatically removed.
  *
  * @param {String} event
@@ -1585,7 +1585,7 @@ Emitter.prototype.once = function(event, fn){
 };
 
 /**
- * Remove the given callback for `event` or all
+ * Remove the given callback for `exchange` or all
  * registered callbacks.
  *
  * @param {String} event
@@ -1606,7 +1606,7 @@ Emitter.prototype.removeEventListener = function(event, fn){
     return this;
   }
 
-  // specific event
+  // specific exchange
   var callbacks = this._callbacks['$' + event];
   if (!callbacks) return this;
 
@@ -1629,7 +1629,7 @@ Emitter.prototype.removeEventListener = function(event, fn){
 };
 
 /**
- * Emit `event` with the given args.
+ * Emit `exchange` with the given args.
  *
  * @param {String} event
  * @param {Mixed} ...
@@ -1652,7 +1652,7 @@ Emitter.prototype.emit = function(event){
 };
 
 /**
- * Return array of callbacks for `event`.
+ * Return array of callbacks for `exchange`.
  *
  * @param {String} event
  * @return {Array}
@@ -1665,7 +1665,7 @@ Emitter.prototype.listeners = function(event){
 };
 
 /**
- * Check if this emitter has `event` handlers.
+ * Check if this emitter has `exchange` handlers.
  *
  * @param {String} event
  * @return {Boolean}
@@ -2590,7 +2590,7 @@ Socket.prototype.ping = function () {
 };
 
 /**
- * Called on `drain` event
+ * Called on `drain` exchange
  *
  * @api private
  */
@@ -2759,7 +2759,7 @@ Socket.prototype.onClose = function (reason, desc) {
     clearTimeout(this.pingIntervalTimer);
     clearTimeout(this.pingTimeoutTimer);
 
-    // stop event from firing again for transport
+    // stop exchange from firing again for transport
     this.transport.removeAllListeners('close');
 
     // ensure transport won't stay open
@@ -2774,11 +2774,11 @@ Socket.prototype.onClose = function (reason, desc) {
     // clear session id
     this.id = null;
 
-    // emit close event
+    // emit close exchange
     this.emit('close', reason, desc);
 
     // clean buffers after, so users can still
-    // grab the buffers on `close` event
+    // grab the buffers on `close` exchange
     self.writeBuffer = [];
     self.prevBufferLen = 0;
   }
@@ -3498,7 +3498,7 @@ Request.prototype.create = function(){
         if (200 == xhr.status || 1223 == xhr.status) {
           self.onLoad();
         } else {
-          // make sure the `error` event handler that's user-set
+          // make sure the `error` exchange handler that's user-set
           // does not throw in the same tick and gets caught here
           setTimeout(function(){
             self.onError(xhr.status);
@@ -3511,7 +3511,7 @@ Request.prototype.create = function(){
     xhr.send(this.data);
   } catch (e) {
     // Need to defer since .create() is called directly fhrom the constructor
-    // and thus the 'error' event can only be only bound *after* this exception
+    // and thus the 'error' exchange can only be only bound *after* this exception
     // occurs.  Therefore, also, we cannot throw here at all.
     setTimeout(function() {
       self.onError(e);
@@ -3824,7 +3824,7 @@ Polling.prototype.onData = function(data){
   // decode payload
   parser.decodePayload(data, this.socket.binaryType, callback);
 
-  // if an event did not trigger closing
+  // if an exchange did not trigger closing
   if ('closed' != this.readyState) {
     // if we got data we're not polling
     this.polling = false;
@@ -4040,7 +4040,7 @@ WS.prototype.doOpen = function(){
 };
 
 /**
- * Adds event listeners to the socket
+ * Adds exchange listeners to the socket
  *
  * @api private
  */
@@ -4122,7 +4122,7 @@ WS.prototype.write = function(packets){
             self.ws.send(data, opts);
           }
         } catch (e){
-          debug('websocket closed before onclose event');
+          debug('websocket closed before onclose exchange');
         }
 
         --total || done();
@@ -4286,7 +4286,7 @@ function mixin(obj) {
 }
 
 /**
- * Listen on the given `event` with `fn`.
+ * Listen on the given `exchange` with `fn`.
  *
  * @param {String} event
  * @param {Function} fn
@@ -4303,7 +4303,7 @@ Emitter.prototype.addEventListener = function(event, fn){
 };
 
 /**
- * Adds an `event` listener that will be invoked a single
+ * Adds an `exchange` listener that will be invoked a single
  * time then automatically removed.
  *
  * @param {String} event
@@ -4327,7 +4327,7 @@ Emitter.prototype.once = function(event, fn){
 };
 
 /**
- * Remove the given callback for `event` or all
+ * Remove the given callback for `exchange` or all
  * registered callbacks.
  *
  * @param {String} event
@@ -4348,7 +4348,7 @@ Emitter.prototype.removeEventListener = function(event, fn){
     return this;
   }
 
-  // specific event
+  // specific exchange
   var callbacks = this._callbacks[event];
   if (!callbacks) return this;
 
@@ -4371,7 +4371,7 @@ Emitter.prototype.removeEventListener = function(event, fn){
 };
 
 /**
- * Emit `event` with the given args.
+ * Emit `exchange` with the given args.
  *
  * @param {String} event
  * @param {Mixed} ...
@@ -4394,7 +4394,7 @@ Emitter.prototype.emit = function(event){
 };
 
 /**
- * Return array of callbacks for `event`.
+ * Return array of callbacks for `exchange`.
  *
  * @param {String} event
  * @return {Array}
@@ -4407,7 +4407,7 @@ Emitter.prototype.listeners = function(event){
 };
 
 /**
- * Check if this emitter has `event` handlers.
+ * Check if this emitter has `exchange` handlers.
  *
  * @param {String} event
  * @return {Boolean}
@@ -6361,7 +6361,7 @@ var isBuf = _dereq_('./is-buffer');
  * Anything with blobs or files should be fed through removeBlobs before coming
  * here.
  *
- * @param {Object} packet - socket.io event packet
+ * @param {Object} packet - socket.io exchange packet
  * @return {Object} with deconstructed packet and list of buffers
  * @api public
  */
@@ -6402,7 +6402,7 @@ exports.deconstructPacket = function(packet){
 /**
  * Reconstructs a binary packet from its placeholder packet and buffers
  *
- * @param {Object} packet - event packet with placeholders
+ * @param {Object} packet - exchange packet with placeholders
  * @param {Array} buffers - binary buffers to put in placeholder positions
  * @return {Object} reconstructed packet
  * @api public
@@ -6544,7 +6544,7 @@ exports.CONNECT = 0;
 exports.DISCONNECT = 1;
 
 /**
- * Packet type `event`.
+ * Packet type `exchange`.
  *
  * @api public
  */
@@ -6568,7 +6568,7 @@ exports.ACK = 3;
 exports.ERROR = 4;
 
 /**
- * Packet type 'binary event'
+ * Packet type 'binary exchange'
  *
  * @api public
  */
@@ -6840,7 +6840,7 @@ Decoder.prototype.destroy = function() {
 };
 
 /**
- * A manager of a binary event's 'buffer sequence'. Should
+ * A manager of a binary exchange's 'buffer sequence'. Should
  * be constructed whenever a packet of type BINARY_EVENT is
  * decoded.
  *

@@ -24,15 +24,15 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.acd.ServiceQuene;
-import com.chatopera.cc.app.service.cache.CacheHelper;
-import com.chatopera.cc.app.service.repository.AdTypeRepository;
-import com.chatopera.cc.app.service.repository.SessionConfigRepository;
-import com.chatopera.cc.app.service.repository.TagRepository;
-import com.chatopera.cc.app.service.repository.TemplateRepository;
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
+import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.persistence.repository.AdTypeRepository;
+import com.chatopera.cc.app.persistence.repository.SessionConfigRepository;
+import com.chatopera.cc.app.persistence.repository.TagRepository;
+import com.chatopera.cc.app.persistence.repository.TemplateRepository;
 import com.chatopera.cc.app.model.AdType;
 import com.chatopera.cc.app.model.SysDic;
 import com.chatopera.cc.app.model.Tag;
@@ -49,7 +49,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.app.service.repository.BlackListRepository;
+import com.chatopera.cc.app.persistence.repository.BlackListRepository;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.BlackEntity;
 import com.chatopera.cc.app.model.SessionConfig;
@@ -124,7 +124,7 @@ public class IMAgentController extends Handler{
     	
     	CacheHelper.getSystemCacheBean().delete(MainContext.SYSTEM_CACHE_SESSION_CONFIG_LIST , MainContext.SYSTEM_ORGI) ;
     	
-    	ServiceQuene.initSessionConfigList() ;
+    	AutomaticServiceDist.initSessionConfigList() ;
     	map.put("sessionConfig", tempSessionConfig) ;
     	
     	

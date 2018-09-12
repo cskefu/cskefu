@@ -73,7 +73,7 @@ public class JobDetail implements Serializable{
 	private String tasktype ; //table 模型任务 、report报表计划任务
 	private boolean plantask;    // true后台任务，false交互式任务
 	private String source ;   //File source eg:e:\document
-	private String userid;		//task user
+	private String userid;		//schedule user
 	private String email;
 	private String nickname;
 	private String crawltaskid ;//用来标记是手动点击的还是到了执行时间执行的，手动：operation，自动：auto或null

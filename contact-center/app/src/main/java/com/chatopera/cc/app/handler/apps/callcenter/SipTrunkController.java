@@ -24,10 +24,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.es.SearchTools;
-import com.chatopera.cc.es.UKDataBean;
-import com.chatopera.cc.app.service.cache.CacheHelper;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.util.es.SearchTools;
+import com.chatopera.cc.util.es.UKDataBean;
+import com.chatopera.cc.app.cache.CacheHelper;
 import com.chatopera.cc.util.CallCenterUtils;
 import com.chatopera.cc.app.model.User;
 import org.apache.commons.lang3.StringUtils;
@@ -40,10 +40,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.freeswitch.model.CallCenterAgent;
-import com.chatopera.cc.app.service.impl.CallOutQuene;
-import com.chatopera.cc.app.service.repository.ExtentionRepository;
-import com.chatopera.cc.app.service.repository.SipTrunkRepository;
-import com.chatopera.cc.app.service.repository.UserRepository;
+import com.chatopera.cc.app.persistence.impl.CallOutQuene;
+import com.chatopera.cc.app.persistence.repository.ExtentionRepository;
+import com.chatopera.cc.app.persistence.repository.SipTrunkRepository;
+import com.chatopera.cc.app.persistence.repository.UserRepository;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.SipTrunk;
 

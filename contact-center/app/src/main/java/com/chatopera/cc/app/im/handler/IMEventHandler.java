@@ -21,10 +21,10 @@ import java.net.InetSocketAddress;
 import java.util.Date;
 import java.util.List;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.service.cache.CacheHelper;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.cache.CacheHelper;
 import com.chatopera.cc.app.im.message.ChatMessage;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -35,11 +35,11 @@ import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import com.chatopera.cc.app.im.client.NettyClients;
-import com.chatopera.cc.app.service.acd.ServiceQuene;
-import com.chatopera.cc.app.service.impl.AgentUserService;
-import com.chatopera.cc.app.service.repository.AgentServiceRepository;
-import com.chatopera.cc.app.service.repository.ConsultInviteRepository;
-import com.chatopera.cc.util.MessageUtils;
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
+import com.chatopera.cc.app.persistence.impl.AgentUserService;
+import com.chatopera.cc.app.persistence.repository.AgentServiceRepository;
+import com.chatopera.cc.app.persistence.repository.ConsultInviteRepository;
+import com.chatopera.cc.app.im.util.HumanUtils;
 import com.chatopera.cc.util.OnlineUserUtils;
 import com.chatopera.cc.app.im.message.AgentStatusMessage;
 import com.chatopera.cc.app.im.message.NewRequestMessage;
@@ -121,7 +121,7 @@ public class IMEventHandler
 				/**
 				 * 用户主动断开服务
 				 */
-				ServiceQuene.serviceFinish((AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(user, MainContext.SYSTEM_ORGI), orgi);
+				AutomaticServiceDist.serviceFinish((AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(user, MainContext.SYSTEM_ORGI), orgi);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -191,7 +191,6 @@ public class IMEventHandler
 		 * 处理表情
 		 */
     	data.setMessage(MainUtils.processEmoti(data.getMessage()));
-		
-    	MessageUtils.createMessage(data , MainContext.MediaTypeEnum.TEXT.toString(), data.getUserid());
+    	HumanUtils.createTextMessage(data, data.getUserid());
     } 
 }  

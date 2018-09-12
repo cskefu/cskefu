@@ -31,7 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import com.hazelcast.com.eclipsesource.json.JsonObject;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.cache.CacheHelper;
+import com.chatopera.cc.app.cache.CacheHelper;
 import com.chatopera.cc.app.handler.Handler;
 
 @Controller

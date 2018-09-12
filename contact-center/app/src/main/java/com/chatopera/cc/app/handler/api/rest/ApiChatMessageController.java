@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.chatopera.cc.app.service.repository.ChatMessageRepository;
+import com.chatopera.cc.app.persistence.repository.ChatMessageRepository;
 import com.chatopera.cc.util.RestResultType;
 import com.chatopera.cc.app.handler.Handler;
 

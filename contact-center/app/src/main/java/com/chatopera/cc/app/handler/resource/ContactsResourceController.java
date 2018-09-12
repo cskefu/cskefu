@@ -27,7 +27,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.app.service.es.ContactsRepository;
+import com.chatopera.cc.app.persistence.es.ContactsRepository;
 import com.chatopera.cc.app.handler.Handler;
 
 @Controller

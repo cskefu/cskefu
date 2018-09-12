@@ -22,9 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.repository.CubeMeasureRepository;
-import com.chatopera.cc.app.service.repository.CubeMetadataRepository;
-import com.chatopera.cc.app.service.repository.TablePropertiesRepository;
+import com.chatopera.cc.app.persistence.repository.CubeMeasureRepository;
+import com.chatopera.cc.app.persistence.repository.CubeMetadataRepository;
+import com.chatopera.cc.app.persistence.repository.TablePropertiesRepository;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

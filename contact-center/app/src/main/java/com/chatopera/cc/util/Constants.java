@@ -15,7 +15,7 @@
  */
 package com.chatopera.cc.util;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;

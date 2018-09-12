@@ -23,7 +23,7 @@
 			}
 			//Close all other tooltips
 			this.tooltip.css('display', 'block');
-			//Set event to prevent tooltip from closig when mouse is over the tooltip
+			//Set exchange to prevent tooltip from closig when mouse is over the tooltip
 			if(dt.mouseOverMode){
 				this.tooltip.mouseover( function(){
 					clearTimeout(dt.hideEvent);

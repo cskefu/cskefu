@@ -65,7 +65,7 @@ public class MetadataTable implements java.io.Serializable{
 	private boolean timeline ;
 	private String eventname ;
 	
-	private int tbversion ;	 //table task version
+	private int tbversion ;	 //table schedule version
 	
 	// private SecureConfigure secureconfigure;
 	private Date lastupdate;

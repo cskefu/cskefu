@@ -20,8 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.cache.CacheHelper;
-import com.chatopera.cc.app.service.repository.PbxHostRepository;
+import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.persistence.repository.PbxHostRepository;
 import com.chatopera.cc.app.model.SipTrunk;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.app.service.repository.SipTrunkRepository;
+import com.chatopera.cc.app.persistence.repository.SipTrunkRepository;
 import com.chatopera.cc.app.handler.Handler;
 
 @Controller

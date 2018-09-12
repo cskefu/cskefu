@@ -17,7 +17,7 @@
 
 package com.chatopera.cc.app.model;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 
 
 public class MessageInContent implements MessageDataBean{

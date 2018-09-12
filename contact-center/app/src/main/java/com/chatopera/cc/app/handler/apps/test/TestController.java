@@ -18,8 +18,8 @@ package com.chatopera.cc.app.handler.apps.test;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.OnlineUserUtils;
 import com.chatopera.cc.app.handler.Handler;

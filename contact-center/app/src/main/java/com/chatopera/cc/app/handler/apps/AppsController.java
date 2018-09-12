@@ -23,12 +23,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.acd.ServiceQuene;
-import com.chatopera.cc.app.service.cache.CacheHelper;
-import com.chatopera.cc.app.service.es.ContactsRepository;
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
+import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.persistence.es.ContactsRepository;
 import com.chatopera.cc.util.OnlineUserUtils;
 import com.chatopera.cc.app.handler.Handler;
 import org.apache.commons.lang.StringUtils;
@@ -41,11 +41,11 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.app.service.repository.InviteRecordRepository;
-import com.chatopera.cc.app.service.repository.OnlineUserRepository;
-import com.chatopera.cc.app.service.repository.OrgiSkillRelRepository;
-import com.chatopera.cc.app.service.repository.UserEventRepository;
-import com.chatopera.cc.app.service.repository.UserRepository;
+import com.chatopera.cc.app.persistence.repository.InviteRecordRepository;
+import com.chatopera.cc.app.persistence.repository.OnlineUserRepository;
+import com.chatopera.cc.app.persistence.repository.OrgiSkillRelRepository;
+import com.chatopera.cc.app.persistence.repository.UserEventRepository;
+import com.chatopera.cc.app.persistence.repository.UserRepository;
 import com.chatopera.cc.app.model.AgentStatus;
 import com.chatopera.cc.app.model.Contacts;
 import com.chatopera.cc.app.model.InviteRecord;
@@ -106,7 +106,7 @@ public class AppsController extends Handler {
 	}
 	
 	private void aggValues(ModelMap map , HttpServletRequest request){
-		map.put("agentReport", ServiceQuene.getAgentReport(super.getOrgi(request))) ;
+		map.put("agentReport", AutomaticServiceDist.getAgentReport(super.getOrgi(request))) ;
 		map.put("webIMReport", MainUtils.getWebIMReport(userEventRes.findByOrgiAndCreatetimeRange(super.getOrgi(request), MainUtils.getStartTime() , MainUtils.getEndTime()))) ;
 		
 		map.put("agents",getUsers(request).size()) ;
@@ -197,7 +197,7 @@ public class AppsController extends Handler {
     		//切换成非坐席 判断是否坐席 以及 是否有对话
     		if(!user.isAgent()) {
     			AgentStatus agentStatus = (AgentStatus) CacheHelper.getAgentStatusCacheBean().getCacheObject((super.getUser(request)).getId(), super.getOrgi(request));
-    	    	if(!(agentStatus==null && ServiceQuene.getAgentUsers(super.getUser(request).getId(), super.getOrgi(request))==0)) {
+    	    	if(!(agentStatus==null && AutomaticServiceDist.getAgentUsers(super.getUser(request).getId(), super.getOrgi(request))==0)) {
     	    		if(StringUtils.isBlank(index)) {
         				return request(super.createRequestPageTempletResponse("redirect:/apps/content.html?msg=t1"));
         			}

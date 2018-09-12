@@ -52,7 +52,7 @@
                 });
                 // setAttrs({
                 //     id: 'delete_' + id,
-                //     event: event,
+                //     exchange: exchange,
                 //     css: css,
                 //     attrs: attrs,
                 // });
@@ -144,7 +144,7 @@
                     };
 
                     httpRequest(payload).then(function (data) {
-                        // remove a click event and set color to gray
+                        // remove a click exchange and set color to gray
                         // AUTH_ERROR
                         if(data.status && data.status === "AUTH_ERROR"){
                             openFail(data.status);
@@ -200,7 +200,7 @@
                     };
 
                     httpRequest(payload).then(function (data) {
-                        // remove a click event and set color to gray
+                        // remove a click exchange and set color to gray
                         // AUTH_ERROR
                         if(data.status && data.status === "AUTH_ERROR"){
                             openFail(data.status);
@@ -273,7 +273,7 @@
                     };
 
                     httpRequest(payload).then(function (data) {
-                        // remove a click event and set color to gray
+                        // remove a click exchange and set color to gray
                         if(data.status && data.status === "AUTH_ERROR"){
                             openFail(data.status);
                             return;

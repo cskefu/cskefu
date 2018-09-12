@@ -26,7 +26,7 @@ import org.lionsoul.ip2region.DbConfig;
 import org.lionsoul.ip2region.DbMakerConfigException;
 import org.lionsoul.ip2region.DbSearcher;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 
 public class IPTools {
 	private String IP_DATA_PATH = "WEB-INF/data/ip/ip.db";

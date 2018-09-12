@@ -353,7 +353,7 @@ public final class Thumbnails
 
 	/**
 	 * The builder interface for Thumbnailator to set up the thumbnail
-	 * generation task.
+	 * generation schedule.
 	 * <p>
 	 * Thumbnailator is intended to be used by calling one of the
 	 * {@code Thumbnails.of(...)} methods, then chaining methods such as
@@ -2233,7 +2233,7 @@ watermark(Positions.CENTER, image, opacity);
 			checkReadiness();
 			/*
 			 * TODO To get the precise error information, there would have to
-			 * be an event notification mechanism.
+			 * be an exchange notification mechanism.
 			 */
 			return new BufferedImageIterable();
 		}

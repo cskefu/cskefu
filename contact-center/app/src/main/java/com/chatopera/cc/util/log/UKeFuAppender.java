@@ -21,8 +21,8 @@ import java.util.Date;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.app.model.Log;
 
 public class UKeFuAppender extends ch.qos.logback.core.ConsoleAppender<ILoggingEvent> {

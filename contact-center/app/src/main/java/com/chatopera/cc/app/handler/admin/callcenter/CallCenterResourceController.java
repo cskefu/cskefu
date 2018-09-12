@@ -21,11 +21,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.extra.CallCenterInterface;
-import com.chatopera.cc.app.service.repository.PbxHostRepository;
-import com.chatopera.cc.app.service.repository.ServiceAiRepository;
+import com.chatopera.cc.exchange.CallCenterInterface;
+import com.chatopera.cc.app.persistence.repository.PbxHostRepository;
+import com.chatopera.cc.app.persistence.repository.ServiceAiRepository;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.PbxHost;
 import org.apache.commons.lang.StringUtils;
@@ -35,7 +35,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.app.service.repository.ExtentionRepository;
+import com.chatopera.cc.app.persistence.repository.ExtentionRepository;
 
 @Controller
 @RequestMapping("/admin/callcenter")

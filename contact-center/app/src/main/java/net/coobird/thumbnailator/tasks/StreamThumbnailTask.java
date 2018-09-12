@@ -10,7 +10,7 @@ import net.coobird.thumbnailator.tasks.io.InputStreamImageSource;
 import net.coobird.thumbnailator.tasks.io.OutputStreamImageSink;
 
 /**
- * A thumbnail generation task which streams data from an {@link InputStream}
+ * A thumbnail generation schedule which streams data from an {@link InputStream}
  * to an {@link OutputStream}.
  * <p>
  * This class does not close the {@link InputStream} and {@link OutputStream}
@@ -25,7 +25,7 @@ import net.coobird.thumbnailator.tasks.io.OutputStreamImageSink;
 public class StreamThumbnailTask extends ThumbnailTask<InputStream, OutputStream>
 {
 	/**
-	 * The {@link SourceSinkThumbnailTask} used to perform the task.
+	 * The {@link SourceSinkThumbnailTask} used to perform the schedule.
 	 */
 	private final SourceSinkThumbnailTask<InputStream, OutputStream> task;
 	

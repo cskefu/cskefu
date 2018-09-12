@@ -19,20 +19,20 @@ package com.chatopera.cc.app.handler.apps.contacts;
 
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.PinYinTools;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.exception.CSKefuException;
-import com.chatopera.cc.util.task.DSData;
-import com.chatopera.cc.util.task.DSDataEvent;
-import com.chatopera.cc.util.task.ExcelImportProecess;
-import com.chatopera.cc.util.task.export.ExcelExporterProcess;
-import com.chatopera.cc.util.task.process.ContactsProcess;
+import com.chatopera.cc.concurrent.dsdata.DSData;
+import com.chatopera.cc.concurrent.dsdata.DSDataEvent;
+import com.chatopera.cc.concurrent.dsdata.ExcelImportProecess;
+import com.chatopera.cc.concurrent.dsdata.export.ExcelExporterProcess;
+import com.chatopera.cc.concurrent.dsdata.process.ContactsProcess;
 import com.chatopera.cc.app.model.Contacts;
 import com.chatopera.cc.app.model.MetadataTable;
 import com.chatopera.cc.app.model.PropertiesEvent;
-import com.chatopera.cc.app.service.es.ContactsRepository;
-import com.chatopera.cc.app.service.repository.MetadataRepository;
-import com.chatopera.cc.app.service.repository.PropertiesEventRepository;
-import com.chatopera.cc.app.service.repository.ReporterRepository;
+import com.chatopera.cc.app.persistence.es.ContactsRepository;
+import com.chatopera.cc.app.persistence.repository.MetadataRepository;
+import com.chatopera.cc.app.persistence.repository.PropertiesEventRepository;
+import com.chatopera.cc.app.persistence.repository.ReporterRepository;
 import com.chatopera.cc.util.PropertiesEventUtils;
 import com.chatopera.cc.app.handler.Handler;
 import org.apache.commons.io.FileUtils;
@@ -271,7 +271,7 @@ public class ContactsController extends Handler {
             event.getDSData().setProcess(new ContactsProcess(contactsRes));
             event.setOrgi(super.getOrgi(request));
 	    	/*if(!StringUtils.isBlank(ckind)){
-	    		event.getValues().put("ckind", ckind) ;
+	    		exchange.getValues().put("ckind", ckind) ;
 	    	}*/
             event.getValues().put("creater", super.getUser(request).getId());
             reporterRes.save(event.getDSData().getReport());

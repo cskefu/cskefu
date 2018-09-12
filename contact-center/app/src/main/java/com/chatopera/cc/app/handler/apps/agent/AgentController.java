@@ -28,19 +28,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.util.*;
 import com.chatopera.cc.app.im.client.NettyClients;
 import com.chatopera.cc.exception.CSKefuException;
-import com.chatopera.cc.util.extra.DataExchangeInterface;
+import com.chatopera.cc.exchange.DataExchangeInterface;
 import com.chatopera.cc.util.mobile.MobileAddress;
 import com.chatopera.cc.util.mobile.MobileNumberUtils;
 import com.chatopera.cc.app.model.*;
-import com.chatopera.cc.app.service.acd.ServiceQuene;
-import com.chatopera.cc.app.service.cache.CacheHelper;
-import com.chatopera.cc.app.service.es.ContactsRepository;
-import com.chatopera.cc.app.service.es.QuickReplyRepository;
-import com.chatopera.cc.app.service.repository.*;
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
+import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.persistence.es.ContactsRepository;
+import com.chatopera.cc.app.persistence.es.QuickReplyRepository;
+import com.chatopera.cc.app.persistence.repository.*;
 import com.chatopera.cc.app.im.router.OutMessageRouter;
 import com.chatopera.cc.app.im.message.ChatMessage;
 import org.apache.commons.io.FileUtils;
@@ -62,7 +62,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.app.handler.Handler;
 
 import freemarker.template.TemplateException;
@@ -195,7 +195,7 @@ public class AgentController extends Handler {
 		List<AgentUser> agentUserList = agentUserRepository.findByAgentnoAndOrgi(user.getId() , super.getOrgi(request) , defaultSort);
 		view.addObject("agentUserList", agentUserList) ;
 		
-		SessionConfig sessionConfig = ServiceQuene.initSessionConfig(super.getOrgi(request)) ;
+		SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(super.getOrgi(request)) ;
 		
 		view.addObject("sessionConfig", sessionConfig) ;
 		if(sessionConfig.isOtherquickplay()) {
@@ -403,7 +403,7 @@ public class AgentController extends Handler {
 			view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid())) ;
 		}
 		
-		SessionConfig sessionConfig = ServiceQuene.initSessionConfig(super.getOrgi(request)) ;
+		SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(super.getOrgi(request)) ;
 		
 		view.addObject("sessionConfig", sessionConfig) ;
 		if(sessionConfig.isOtherquickplay()) {
@@ -424,7 +424,7 @@ public class AgentController extends Handler {
 	@RequestMapping("/other/topic")
 	@Menu(type = "apps", subtype = "othertopic")
 	public ModelAndView othertopic(ModelMap map ,HttpServletRequest request , String q) throws IOException, TemplateException {
-		SessionConfig sessionConfig = ServiceQuene.initSessionConfig(super.getOrgi(request)) ;
+		SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(super.getOrgi(request)) ;
 		
 		map.put("sessionConfig", sessionConfig) ;
 		if(sessionConfig.isOtherquickplay()) {
@@ -437,7 +437,7 @@ public class AgentController extends Handler {
 	@RequestMapping("/other/topic/detail")
 	@Menu(type = "apps", subtype = "othertopicdetail")
 	public ModelAndView othertopicdetail(ModelMap map ,HttpServletRequest request , String id) throws IOException, TemplateException {
-		SessionConfig sessionConfig = ServiceQuene.initSessionConfig(super.getOrgi(request)) ;
+		SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(super.getOrgi(request)) ;
 		
 		map.put("sessionConfig", sessionConfig) ;
 		if(sessionConfig.isOtherquickplay()) {
@@ -486,7 +486,7 @@ public class AgentController extends Handler {
 	    		}
 	    	}
 	    	agentStatus.setUpdatetime(new Date());
-	    	SessionConfig sessionConfig = ServiceQuene.initSessionConfig(super.getOrgi(request)) ;
+	    	SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(super.getOrgi(request)) ;
 	    	
 	    	agentStatus.setUsers(agentUserRepository.countByAgentnoAndStatusAndOrgi(user.getId(), MainContext.AgentUserStatusEnum.INSERVICE.toString(), super.getOrgi(request)));
 	    	
@@ -498,13 +498,13 @@ public class AgentController extends Handler {
 	    	/**
 	    	 * 更新当前用户状态
 	    	 */
-	    	agentStatus.setUsers(ServiceQuene.getAgentUsers(agentStatus.getAgentno(), super.getOrgi(request)));
+	    	agentStatus.setUsers(AutomaticServiceDist.getAgentUsers(agentStatus.getAgentno(), super.getOrgi(request)));
 	    	agentStatus.setStatus(MainContext.AgentStatusEnum.READY.toString());
 	    	CacheHelper.getAgentStatusCacheBean().put(agentStatus.getAgentno(), agentStatus, super.getOrgi(request));
 	    	
-	    	ServiceQuene.allotAgent(agentStatus.getAgentno(), super.getOrgi(request));
+	    	AutomaticServiceDist.allotAgent(agentStatus.getAgentno(), super.getOrgi(request));
 	    	
-	    	ServiceQuene.recordAgentStatus(agentStatus.getAgentno(),agentStatus.getUsername(), agentStatus.getAgentno(), agentStatus.getSkill(), "0".equals(super.getUser(request).getUsertype()) ,agentStatus.getAgentno(), MainContext.AgentStatusEnum.OFFLINE.toString(), MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString() , agentStatus.getOrgi() , null);
+	    	AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(),agentStatus.getUsername(), agentStatus.getAgentno(), agentStatus.getSkill(), "0".equals(super.getUser(request).getUsertype()) ,agentStatus.getAgentno(), MainContext.AgentStatusEnum.OFFLINE.toString(), MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString() , agentStatus.getOrgi() , null);
     	}
     	
     	return request(super.createRequestPageTempletResponse("/public/success")) ; 
@@ -515,7 +515,7 @@ public class AgentController extends Handler {
     public ModelAndView notready(HttpServletRequest request){ 
 		User user = super.getUser(request) ;
 		if(user!=null) {
-			ServiceQuene.deleteAgentStatus(user.getId(), user.getOrgi(), "0".equals(user.getUsertype()));
+			AutomaticServiceDist.deleteAgentStatus(user.getId(), user.getOrgi(), "0".equals(user.getUsertype()));
 		}
     	return request(super.createRequestPageTempletResponse("/public/success")) ; 
     }
@@ -529,12 +529,12 @@ public class AgentController extends Handler {
     	if(agentStatusList.size() > 0){
     		agentStatus = agentStatusList.get(0) ;
 			agentStatus.setBusy(true);
-			ServiceQuene.recordAgentStatus(agentStatus.getAgentno(),agentStatus.getUsername(), agentStatus.getAgentno(), agentStatus.getSkill(), "0".equals(super.getUser(request).getUsertype()),agentStatus.getAgentno(), MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentStatusEnum.BUSY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString() , agentStatus.getOrgi() , agentStatus.getUpdatetime());
+			AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(),agentStatus.getUsername(), agentStatus.getAgentno(), agentStatus.getSkill(), "0".equals(super.getUser(request).getUsertype()),agentStatus.getAgentno(), MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentStatusEnum.BUSY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString() , agentStatus.getOrgi() , agentStatus.getUpdatetime());
 			agentStatus.setUpdatetime(new Date());
 			agentStatusRepository.save(agentStatus);
 			CacheHelper.getAgentStatusCacheBean().put(agentStatus.getAgentno(), agentStatus, super.getOrgi(request));
 		}
-    	ServiceQuene.publishMessage(super.getOrgi(request) , "agent" , "busy" , user.getId());
+    	AutomaticServiceDist.publishMessage(super.getOrgi(request) , "agent" , "busy" , user.getId());
     	
     	return request(super.createRequestPageTempletResponse("/public/success")) ; 
     }
@@ -548,12 +548,12 @@ public class AgentController extends Handler {
     	if(agentStatusList.size() > 0){
     		agentStatus = agentStatusList.get(0) ;
 			agentStatus.setBusy(false);
-			ServiceQuene.recordAgentStatus(agentStatus.getAgentno(),agentStatus.getUsername(), agentStatus.getAgentno(), agentStatus.getSkill(),"0".equals(super.getUser(request).getUsertype()), agentStatus.getAgentno(), MainContext.AgentStatusEnum.BUSY.toString(), MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString() , agentStatus.getOrgi() , agentStatus.getUpdatetime());
+			AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(),agentStatus.getUsername(), agentStatus.getAgentno(), agentStatus.getSkill(),"0".equals(super.getUser(request).getUsertype()), agentStatus.getAgentno(), MainContext.AgentStatusEnum.BUSY.toString(), MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString() , agentStatus.getOrgi() , agentStatus.getUpdatetime());
 			
 			agentStatus.setUpdatetime(new Date());
 			agentStatusRepository.save(agentStatus);
 			CacheHelper.getAgentStatusCacheBean().put(agentStatus.getAgentno(), agentStatus,super.getOrgi(request));
-			ServiceQuene.allotAgent(agentStatus.getAgentno(), super.getOrgi(request));
+			AutomaticServiceDist.allotAgent(agentStatus.getAgentno(), super.getOrgi(request));
 		}
     	return request(super.createRequestPageTempletResponse("/public/success")) ; 
     }
@@ -565,7 +565,7 @@ public class AgentController extends Handler {
 		List<AgentService> agentServiceList = new ArrayList<AgentService>();
 		for(AgentUser agentUser : agentUserList){
 			if(agentUser!=null && super.getUser(request).getId().equals(agentUser.getAgentno())){
-				ServiceQuene.deleteAgentUser(agentUser, super.getOrgi(request));
+				AutomaticServiceDist.deleteAgentUser(agentUser, super.getOrgi(request));
 				AgentService agentService = agentServiceRepository.findByIdAndOrgi(agentUser.getAgentserviceid(), super.getOrgi(request)) ;
 				if(agentService!=null){
 					agentService.setStatus(MainContext.AgentUserStatusEnum.END.toString());
@@ -585,7 +585,7 @@ public class AgentController extends Handler {
 			throws Exception {
 		AgentUser agentUser = agentUserRepository.findByIdAndOrgi(userid, super.getOrgi(request));
 		if(agentUser!=null && super.getUser(request).getId().equals(agentUser.getAgentno())){
-			ServiceQuene.deleteAgentUser(agentUser, super.getOrgi(request));
+			AutomaticServiceDist.deleteAgentUser(agentUser, super.getOrgi(request));
 			if(!StringUtils.isBlank(agentUser.getAgentserviceid())){
 				AgentService agentService = agentServiceRepository.findByIdAndOrgi(agentUser.getAgentserviceid(), super.getOrgi(request)) ;
 				agentService.setStatus(MainContext.AgentUserStatusEnum.END.toString());
@@ -974,7 +974,7 @@ public class AgentController extends Handler {
 					currentOrgan = skillList.get(0).getId();
 				}
 			}
-			List<AgentStatus> agentStatusList = ServiceQuene.getAgentStatus(null , super.getOrgi(request));
+			List<AgentStatus> agentStatusList = AutomaticServiceDist.getAgentStatus(null , super.getOrgi(request));
 			List<String> usersids = new ArrayList<String>();
 			if(!agentStatusList.isEmpty()) {
 				for(AgentStatus agentStatus:agentStatusList) {
@@ -1007,7 +1007,7 @@ public class AgentController extends Handler {
     public ModelAndView transferagent(ModelMap map , HttpServletRequest request , @Valid String organ){ 
 		if(!StringUtils.isBlank(organ)){
 			List<String> usersids = new ArrayList<String>();
-			List<AgentStatus> agentStatusList = ServiceQuene.getAgentStatus(organ , super.getOrgi(request));
+			List<AgentStatus> agentStatusList = AutomaticServiceDist.getAgentStatus(organ , super.getOrgi(request));
 			if(!agentStatusList.isEmpty()) {
 				for(AgentStatus agentStatus:agentStatusList) {
 					if(agentStatus!=null && !agentStatus.getAgentno().equals(super.getUser(request).getId())){
@@ -1042,12 +1042,12 @@ public class AgentController extends Handler {
 					AgentStatus agentStatus = (AgentStatus) CacheHelper.getAgentStatusCacheBean().getCacheObject(super.getUser(request).getId(), super.getOrgi(request)) ;
 					
 					if(agentStatus!=null){
-						ServiceQuene.updateAgentStatus(agentStatus, agentUser, super.getOrgi(request), false);
+						AutomaticServiceDist.updateAgentStatus(agentStatus, agentUser, super.getOrgi(request), false);
 					}
 					
 					AgentStatus transAgentStatus = (AgentStatus) CacheHelper.getAgentStatusCacheBean().getCacheObject(agentno, super.getOrgi(request)) ;
 					if(transAgentStatus!=null){
-						ServiceQuene.updateAgentStatus(transAgentStatus, agentUser, super.getOrgi(request), true);
+						AutomaticServiceDist.updateAgentStatus(transAgentStatus, agentUser, super.getOrgi(request), true);
 						agentService.setAgentno(agentno);
 						agentService.setAgentusername(transAgentStatus.getUsername());
 					}

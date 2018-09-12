@@ -18,8 +18,8 @@ package com.chatopera.cc.app.im.handler;
 
 import java.util.List;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.basic.MainUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,9 +30,9 @@ import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import com.chatopera.cc.app.im.client.NettyClients;
-import com.chatopera.cc.app.service.repository.ChatMessageRepository;
-import com.chatopera.cc.app.service.repository.IMGroupUserRepository;
-import com.chatopera.cc.app.service.repository.RecentUserRepository;
+import com.chatopera.cc.app.persistence.repository.ChatMessageRepository;
+import com.chatopera.cc.app.persistence.repository.IMGroupUserRepository;
+import com.chatopera.cc.app.persistence.repository.RecentUserRepository;
 import com.chatopera.cc.app.im.message.ChatMessage;
 import com.chatopera.cc.app.model.IMGroupUser;
 import com.chatopera.cc.app.model.MessageOutContent;

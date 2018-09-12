@@ -32,18 +32,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.PinYinTools;
 import com.chatopera.cc.exception.CSKefuException;
-import com.chatopera.cc.util.task.DSData;
-import com.chatopera.cc.util.task.ExcelImportProecess;
-import com.chatopera.cc.util.task.export.ExcelExporterProcess;
-import com.chatopera.cc.util.task.process.EntCustomerProcess;
-import com.chatopera.cc.app.service.es.ContactsRepository;
-import com.chatopera.cc.app.service.es.EntCustomerRepository;
-import com.chatopera.cc.app.service.repository.PropertiesEventRepository;
+import com.chatopera.cc.concurrent.dsdata.DSData;
+import com.chatopera.cc.concurrent.dsdata.ExcelImportProecess;
+import com.chatopera.cc.concurrent.dsdata.export.ExcelExporterProcess;
+import com.chatopera.cc.concurrent.dsdata.process.EntCustomerProcess;
+import com.chatopera.cc.app.persistence.es.ContactsRepository;
+import com.chatopera.cc.app.persistence.es.EntCustomerRepository;
+import com.chatopera.cc.app.persistence.repository.PropertiesEventRepository;
 import com.chatopera.cc.util.PropertiesEventUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -59,9 +59,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.task.DSDataEvent;
-import com.chatopera.cc.app.service.repository.MetadataRepository;
-import com.chatopera.cc.app.service.repository.ReporterRepository;
+import com.chatopera.cc.concurrent.dsdata.DSDataEvent;
+import com.chatopera.cc.app.persistence.repository.MetadataRepository;
+import com.chatopera.cc.app.persistence.repository.ReporterRepository;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.CustomerGroupForm;
 import com.chatopera.cc.app.model.EntCustomer;
@@ -318,7 +318,7 @@ public class CustomerController extends Handler{
 	    	event.getDSData().setProcess(new EntCustomerProcess(entCustomerRes));
 	    	event.setOrgi(super.getOrgi(request));
 	    	/*if(!StringUtils.isBlank(ekind)){
-	    		event.getValues().put("ekind", ekind) ;
+	    		exchange.getValues().put("ekind", ekind) ;
 	    	}*/
 	    	event.getValues().put("creater", super.getUser(request).getId()) ;
 	    	reporterRes.save(event.getDSData().getReport()) ;

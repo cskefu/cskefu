@@ -16,7 +16,7 @@
  */
 package com.chatopera.cc.app.config;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.app.model.Favorites;
 import com.chatopera.cc.app.model.WorkOrders;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -15,19 +15,19 @@
  */
 package com.chatopera.cc.app.im.handler;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.im.util.ChatbotUtils;
 import com.chatopera.cc.util.IP;
 import com.chatopera.cc.util.IPTools;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.app.im.client.NettyClients;
 import com.chatopera.cc.app.model.*;
-import com.chatopera.cc.app.service.acd.ServiceQuene;
-import com.chatopera.cc.app.service.cache.CacheHelper;
-import com.chatopera.cc.app.service.repository.AgentUserRepository;
-import com.chatopera.cc.app.service.repository.ConsultInviteRepository;
-import com.chatopera.cc.app.service.repository.OnlineUserRepository;
+import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.persistence.repository.AgentUserRepository;
+import com.chatopera.cc.app.persistence.repository.ConsultInviteRepository;
+import com.chatopera.cc.app.persistence.repository.OnlineUserRepository;
 import com.chatopera.cc.app.im.router.OutMessageRouter;
-import com.chatopera.cc.util.MessageUtils;
 import com.chatopera.cc.util.OnlineUserUtils;
 import com.chatopera.cc.app.im.message.AgentStatusMessage;
 import com.chatopera.cc.app.im.message.ChatMessage;
@@ -142,7 +142,7 @@ public class ChatbotEventHandler {
                 agentUser.setCity(onlineUser.getCity());
                 agentUser.setProvince(onlineUser.getProvince());
                 agentUser.setCountry(onlineUser.getCountry());
-                AgentService agentService = ServiceQuene.processChatbotService(agentUser, orgi);
+                AgentService agentService = AutomaticServiceDist.processChatbotService(agentUser, orgi);
                 agentUser.setAgentserviceid(agentService.getId());
 
                 getAgentUserRes().save(agentUser);
@@ -165,7 +165,7 @@ public class ChatbotEventHandler {
             AgentUser agentUser = (AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(user, orgi);
             OnlineUser onlineUser = (OnlineUser) CacheHelper.getOnlineUserCacheBean().getCacheObject(user, orgi);
             if (agentUser != null) {
-                ServiceQuene.processChatbotService(agentUser, orgi);
+                AutomaticServiceDist.processChatbotService(agentUser, orgi);
                 CacheHelper.getAgentUserCacheBean().delete(user, MainContext.SYSTEM_ORGI);
                 CacheHelper.getOnlineUserCacheBean().delete(user, orgi);
                 agentUser.setStatus(MainContext.OnlineUserOperatorStatus.OFFLINE.toString());
@@ -227,7 +227,7 @@ public class ChatbotEventHandler {
              */
             data.setContextid(agentUser.getAgentserviceid());
         }
-        MessageOutContent outMessage = MessageUtils.createAiMessage(data, data.getAppid(), data.getChannel(), MainContext.CallTypeEnum.IN.toString(), MainContext.AiItemType.USERINPUT.toString(), MainContext.MediaTypeEnum.TEXT.toString(), data.getUserid());
+        MessageOutContent outMessage = ChatbotUtils.createTextMessage(data, data.getAppid(), data.getChannel(), MainContext.CallTypeEnum.IN.toString(), MainContext.ChatbotItemType.USERINPUT.toString(), data.getUserid());
         if (StringUtils.isNotBlank(data.getUserid()) && MainContext.MessageTypeEnum.MESSAGE.toString().equals(data.getType())) {
             if (!StringUtils.isBlank(data.getTouser())) {
                 OutMessageRouter router = null;

@@ -20,22 +20,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.service.cache.CacheHelper;
-import com.chatopera.cc.app.service.repository.GenerationRepository;
-import com.chatopera.cc.app.service.repository.SysDicRepository;
-import com.chatopera.cc.app.service.repository.SystemConfigRepository;
-import com.chatopera.cc.app.service.repository.TablePropertiesRepository;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.persistence.repository.GenerationRepository;
+import com.chatopera.cc.app.persistence.repository.SysDicRepository;
+import com.chatopera.cc.app.persistence.repository.SystemConfigRepository;
+import com.chatopera.cc.app.persistence.repository.TablePropertiesRepository;
 import com.chatopera.cc.app.model.Generation;
 import com.chatopera.cc.app.model.SysDic;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import com.chatopera.cc.app.service.repository.BlackListRepository;
+import com.chatopera.cc.app.persistence.repository.BlackListRepository;
 import com.chatopera.cc.app.model.BlackEntity;
 import com.chatopera.cc.app.model.SystemConfig;
 

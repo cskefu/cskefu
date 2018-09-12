@@ -25,9 +25,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.util.bi.ReportData;
-import com.chatopera.cc.app.service.repository.DataSourceService;
+import com.chatopera.cc.app.persistence.repository.DataSourceService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,10 +37,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.util.bi.UKExcelUtil;
 import com.chatopera.cc.util.bi.model.Level;
-import com.chatopera.cc.app.service.repository.CubeService;
+import com.chatopera.cc.app.persistence.repository.CubeService;
 import com.chatopera.cc.util.OnlineUserUtils;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.SysDic;

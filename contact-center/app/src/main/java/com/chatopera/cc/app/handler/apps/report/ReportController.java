@@ -30,10 +30,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.service.repository.PublishedReportRepository;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.persistence.repository.PublishedReportRepository;
 import com.chatopera.cc.app.model.ReportFilter;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,14 +47,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.task.DSData;
-import com.chatopera.cc.util.task.DSDataEvent;
-import com.chatopera.cc.util.task.ExcelImportProecess;
-import com.chatopera.cc.util.task.export.ExcelExporterProcess;
-import com.chatopera.cc.app.service.repository.DataDicRepository;
-import com.chatopera.cc.app.service.repository.MetadataRepository;
-import com.chatopera.cc.app.service.repository.ReportCubeService;
-import com.chatopera.cc.app.service.repository.ReportRepository;
+import com.chatopera.cc.concurrent.dsdata.DSData;
+import com.chatopera.cc.concurrent.dsdata.DSDataEvent;
+import com.chatopera.cc.concurrent.dsdata.ExcelImportProecess;
+import com.chatopera.cc.concurrent.dsdata.export.ExcelExporterProcess;
+import com.chatopera.cc.app.persistence.repository.DataDicRepository;
+import com.chatopera.cc.app.persistence.repository.MetadataRepository;
+import com.chatopera.cc.app.persistence.repository.ReportCubeService;
+import com.chatopera.cc.app.persistence.repository.ReportRepository;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.DataDic;
 import com.chatopera.cc.app.model.MetadataTable;
@@ -270,8 +270,8 @@ public class ReportController extends Handler{
 	    	}
 	    	event.getValues().put("type", MainContext.QuickTypeEnum.PUB.toString()) ;
 	    	event.getValues().put("creater", super.getUser(request).getId()) ;
-//	    	event.getDSData().setProcess(new QuickReplyProcess(reportRes));
-//	    	reporterRes.save(event.getDSData().getReport()) ;
+//	    	exchange.getDSData().setProcess(new QuickReplyProcess(reportRes));
+//	    	reporterRes.save(exchange.getDSData().getReport()) ;
 	    	new ExcelImportProecess(event).process() ;		//启动导入任务
     	}
     	

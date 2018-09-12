@@ -27,9 +27,9 @@ import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.repository.UserRepository;
+import com.chatopera.cc.app.persistence.repository.UserRepository;
 import com.chatopera.cc.util.CallCenterUtils;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.User;

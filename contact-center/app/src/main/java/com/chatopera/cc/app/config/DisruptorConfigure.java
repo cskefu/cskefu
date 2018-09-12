@@ -19,19 +19,19 @@ package com.chatopera.cc.app.config;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import com.chatopera.cc.disruptor.chatbot.ChatbotDisruptorExceptionHandler;
-import com.chatopera.cc.disruptor.chatbot.ChatbotEventFactory;
-import com.chatopera.cc.disruptor.multiupdate.MultiUpdateEventFactory;
-import com.chatopera.cc.disruptor.multiupdate.MultiUpdateEventHandler;
+import com.chatopera.cc.concurrent.chatbot.ChatbotDisruptorExceptionHandler;
+import com.chatopera.cc.concurrent.chatbot.ChatbotEventFactory;
+import com.chatopera.cc.concurrent.multiupdate.MultiUpdateEventFactory;
+import com.chatopera.cc.concurrent.multiupdate.MultiUpdateEventHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import com.lmax.disruptor.SleepingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
-import com.chatopera.cc.disruptor.user.UserDataEvent;
-import com.chatopera.cc.disruptor.user.UserDataEventFactory;
-import com.chatopera.cc.disruptor.user.UserEventHandler;
+import com.chatopera.cc.concurrent.user.UserDataEvent;
+import com.chatopera.cc.concurrent.user.UserDataEventFactory;
+import com.chatopera.cc.concurrent.user.UserEventHandler;
 
 @Component
 public class DisruptorConfigure {

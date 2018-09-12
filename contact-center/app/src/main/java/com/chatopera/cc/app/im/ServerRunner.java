@@ -16,7 +16,7 @@
  */
 package com.chatopera.cc.app.im;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.app.im.handler.AgentEventHandler;
 import com.chatopera.cc.app.im.handler.EntIMEventHandler;
 import com.chatopera.cc.app.im.handler.IMEventHandler;

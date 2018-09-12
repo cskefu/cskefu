@@ -16,10 +16,10 @@
  */
 package com.chatopera.cc.app.im.router;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.app.im.client.NettyClients;
-import com.chatopera.cc.app.service.acd.ServiceQuene;
 import com.chatopera.cc.app.model.AgentService;
 import com.chatopera.cc.app.model.MessageDataBean;
 import com.chatopera.cc.app.model.MessageOutContent;
@@ -42,9 +42,9 @@ public class MessageRouter extends Router{
 			 */
 			if(outMessage.getAgentUser()!=null && outMessage.getAgentUser().getStatus()!=null){
 				if(outMessage.getAgentUser().getStatus().equals(MainContext.AgentUserStatusEnum.INQUENE.toString())){
-					int queneIndex = ServiceQuene.getQueneIndex(inMessage.getAgentUser().getAgent() , inMessage.getOrgi(), inMessage.getAgentUser().getSkill()) ;
+					int queneIndex = AutomaticServiceDist.getQueneIndex(inMessage.getAgentUser().getAgent() , inMessage.getOrgi(), inMessage.getAgentUser().getSkill()) ;
 					if(MainContext.AgentUserStatusEnum.INQUENE.toString().equals(outMessage.getAgentUser().getStatus())){
-						outMessage.setMessage(ServiceQuene.getQueneMessage(queneIndex , outMessage.getAgentUser().getChannel(),inMessage.getOrgi()));
+						outMessage.setMessage(AutomaticServiceDist.getQueneMessage(queneIndex , outMessage.getAgentUser().getChannel(),inMessage.getOrgi()));
 					}
 				}else if(outMessage.getAgentUser().getStatus().equals(MainContext.AgentUserStatusEnum.INSERVICE.toString())){
 					
@@ -54,15 +54,15 @@ public class MessageRouter extends Router{
 				 * 找到空闲坐席，如果未找到坐席， 则将该用户放入到 排队队列 
 				 * 
 				 */
-				AgentService agentService = ServiceQuene.allotAgent(inMessage.getAgentUser(), inMessage.getOrgi()) ;
+				AgentService agentService = AutomaticServiceDist.allotAgent(inMessage.getAgentUser(), inMessage.getOrgi()) ;
 				if(agentService!=null && MainContext.AgentUserStatusEnum.INSERVICE.toString().equals(agentService.getStatus())){
-					outMessage.setMessage(ServiceQuene.getSuccessMessage(agentService , inMessage.getAgentUser().getChannel(),inMessage.getOrgi()));
+					outMessage.setMessage(AutomaticServiceDist.getSuccessMessage(agentService , inMessage.getAgentUser().getChannel(),inMessage.getOrgi()));
 					NettyClients.getInstance().sendAgentEventMessage(agentService.getAgentno(), MainContext.MessageTypeEnum.NEW.toString(), inMessage.getAgentUser());
 				}else{
 					if(agentService.getQueneindex() > 0){	//当前有坐席
-						outMessage.setMessage(ServiceQuene.getQueneMessage(agentService.getQueneindex(), inMessage.getAgentUser().getChannel(), inMessage.getOrgi()));
+						outMessage.setMessage(AutomaticServiceDist.getQueneMessage(agentService.getQueneindex(), inMessage.getAgentUser().getChannel(), inMessage.getOrgi()));
 					}else{
-						outMessage.setMessage(ServiceQuene.getNoAgentMessage(agentService.getQueneindex(), inMessage.getAgentUser().getChannel(), inMessage.getOrgi()));
+						outMessage.setMessage(AutomaticServiceDist.getNoAgentMessage(agentService.getQueneindex(), inMessage.getAgentUser().getChannel(), inMessage.getOrgi()));
 					}
 				}
 			}

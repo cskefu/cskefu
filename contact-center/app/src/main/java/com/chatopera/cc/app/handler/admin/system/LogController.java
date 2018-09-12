@@ -19,7 +19,7 @@ package com.chatopera.cc.app.handler.admin.system;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.repository.LogRepository;
+import com.chatopera.cc.app.persistence.repository.LogRepository;
 import com.chatopera.cc.app.handler.Handler;
 
 @Controller

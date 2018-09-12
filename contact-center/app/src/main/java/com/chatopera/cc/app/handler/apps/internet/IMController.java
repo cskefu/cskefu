@@ -17,18 +17,16 @@
 
 package com.chatopera.cc.app.handler.apps.internet;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.MainUtils;
-import com.chatopera.cc.util.*;
-import com.chatopera.cc.util.WebIMClient;
-import com.chatopera.cc.app.model.*;
-import com.chatopera.cc.app.service.acd.ServiceQuene;
-import com.chatopera.cc.app.service.cache.CacheHelper;
-import com.chatopera.cc.app.service.es.ContactsRepository;
-import com.chatopera.cc.app.service.repository.*;
-import com.chatopera.cc.util.MessageUtils;
-import com.chatopera.cc.util.OnlineUserUtils;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.app.handler.Handler;
+import com.chatopera.cc.app.im.util.RichMediaUtils;
+import com.chatopera.cc.app.model.*;
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
+import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.persistence.es.ContactsRepository;
+import com.chatopera.cc.app.persistence.repository.*;
+import com.chatopera.cc.util.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -356,7 +354,7 @@ public class IMController extends Handler {
             }
             String nickname = "Guest_" + userID;
             boolean consult = true;                //是否已收集用户信息
-            SessionConfig sessionConfig = ServiceQuene.initSessionConfig(orgi);
+            SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(orgi);
 
             map.addAttribute("sessionConfig", sessionConfig);
             map.addAttribute("hostname", request.getServerName());
@@ -407,7 +405,7 @@ public class IMController extends Handler {
                     map.addAttribute("aiid", invite.getAiid());
                 }
 
-                AgentReport report = ServiceQuene.getAgentReport(invite.getOrgi());
+                AgentReport report = AutomaticServiceDist.getAgentReport(invite.getOrgi());
 
                 if (report.getAgents() == 0 || (sessionConfig.isHourcheck() && !MainUtils.isInWorkingHours(sessionConfig.getWorkinghours()) && invite.isLeavemessage())) {
                     view = request(super.createRequestPageTempletResponse("/apps/im/leavemsg"));
@@ -726,9 +724,7 @@ public class IMController extends Handler {
                 String thumbnailsFileName = "upload/" + fileid;
                 MainUtils.processImage(new File(path, thumbnailsFileName), imageFile);
 
-
                 upload = new UploadStatus("0", "/res/image.html?id=" + thumbnailsFileName);
-
                 String image = "/res/image.html?id=" + thumbnailsFileName;
                 if (request.getServerPort() == 80) {
                     image = "/res/image.html?id=" + thumbnailsFileName;
@@ -737,15 +733,13 @@ public class IMController extends Handler {
                 }
                 if (paste == null) {
                     if (StringUtils.isNotBlank(channel)) {
-                        MessageUtils.uploadImage(image, fileid, (int) imgFile.getSize(), imgFile.getName(), channel, userid, username, appid, orgi);
+                        RichMediaUtils.uploadImageWithChannel(image, fileid, (int) imgFile.getSize(), imgFile.getName(), channel, userid, username, appid, orgi);
                     } else {
-                        MessageUtils.uploadImage(image, fileid, (int) imgFile.getSize(), imgFile.getName(), userid);
+                        RichMediaUtils.uploadImage(image, fileid, (int) imgFile.getSize(), imgFile.getName(), userid);
                     }
                 }
             } else {
-
                 String id = processAttachmentFile(imgFile, request);
-
                 upload = new UploadStatus("0", "/res/file.html?id=" + id);
                 String file = "/res/file.html?id=" + id;
                 if (request.getServerPort() == 80) {
@@ -755,9 +749,9 @@ public class IMController extends Handler {
                 }
                 File tempFile = new File(imgFile.getOriginalFilename());
                 if (StringUtils.isNotBlank(channel)) {
-                    MessageUtils.uploadFile(file, (int) imgFile.getSize(), tempFile.getName(), channel, userid, username, appid, orgi, id);
+                    RichMediaUtils.uploadFileWithChannel(file, (int) imgFile.getSize(), tempFile.getName(), channel, userid, username, appid, orgi, id);
                 } else {
-                    MessageUtils.uploadFile(file, (int) imgFile.getSize(), tempFile.getName(), userid, id);
+                    RichMediaUtils.uploadFile(file, (int) imgFile.getSize(), tempFile.getName(), userid, id);
                 }
             }
         } else {

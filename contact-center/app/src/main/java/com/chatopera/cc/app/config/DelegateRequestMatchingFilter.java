@@ -27,7 +27,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.app.model.User;
 import org.apache.catalina.connector.ClientAbortException;
 import org.springframework.security.web.util.matcher.RequestMatcher;

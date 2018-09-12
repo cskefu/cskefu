@@ -16,7 +16,7 @@
  */
 package com.chatopera.cc.app.im.message;
 
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 
 public class AgentStatusMessage extends Message{
 	/**

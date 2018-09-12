@@ -21,12 +21,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.app.im.client.NettyClients;
-import com.chatopera.cc.app.service.repository.IMGroupRepository;
-import com.chatopera.cc.app.service.repository.IMGroupUserRepository;
-import com.chatopera.cc.app.service.repository.OrganRepository;
+import com.chatopera.cc.app.persistence.repository.IMGroupRepository;
+import com.chatopera.cc.app.persistence.repository.IMGroupUserRepository;
+import com.chatopera.cc.app.persistence.repository.OrganRepository;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.IMGroupUser;
 import com.chatopera.cc.app.model.RecentUser;
@@ -39,9 +39,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.app.service.repository.ChatMessageRepository;
-import com.chatopera.cc.app.service.repository.RecentUserRepository;
-import com.chatopera.cc.app.service.repository.UserRepository;
+import com.chatopera.cc.app.persistence.repository.ChatMessageRepository;
+import com.chatopera.cc.app.persistence.repository.RecentUserRepository;
+import com.chatopera.cc.app.persistence.repository.UserRepository;
 import com.chatopera.cc.app.model.IMGroup;
 
 @Controller

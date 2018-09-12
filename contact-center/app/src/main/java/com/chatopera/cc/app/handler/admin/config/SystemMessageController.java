@@ -23,9 +23,9 @@ import java.security.NoSuchAlgorithmException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.repository.SystemMessageRepository;
+import com.chatopera.cc.app.persistence.repository.SystemMessageRepository;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.SystemMessage;
 import com.chatopera.cc.app.model.UKeFuDic;
@@ -37,7 +37,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 
 @Controller
 @RequestMapping("/admin")

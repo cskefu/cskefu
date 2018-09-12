@@ -16,12 +16,12 @@
 package com.chatopera.cc.app.handler.api.rest;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.exception.CallOutRecordException;
 import com.chatopera.cc.app.model.*;
-import com.chatopera.cc.app.service.repository.*;
+import com.chatopera.cc.app.persistence.repository.*;
 import com.chatopera.cc.util.OnlineUserUtils;
-import com.chatopera.cc.util.ChatbotUtils;
+import com.chatopera.cc.app.im.util.ChatbotUtils;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.handler.api.request.RestUtils;
 import com.chatopera.chatbot.ChatbotAPI;

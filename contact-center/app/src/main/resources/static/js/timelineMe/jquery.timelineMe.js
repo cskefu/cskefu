@@ -45,7 +45,7 @@
          * listeners, etc
          *
          * When bind listerners remember to name tag it with your plugin's name.
-         * Elements can have more than one listener attached to the same event
+         * Elements can have more than one listener attached to the same exchange
          * so you need to tag it to unbind the appropriate listener on destroy:
          *
          * @example
@@ -135,7 +135,7 @@
          * The 'destroy' method is were you free the resources used by your plugin:
          * references, unregister listeners, etc.
          *
-         * Remember to unbind for your event:
+         * Remember to unbind for your exchange:
          *
          * @example
          * this.$someSubElement.off('.' + pluginName);
@@ -733,7 +733,7 @@
         return ret;
     }
 
-    // Method that can return an element's height through an event (event will be fired only when the element will have a positive height)
+    // Method that can return an element's height through an exchange (exchange will be fired only when the element will have a positive height)
     var eventElementHeight = function(element, args) {
         if(!args)
             args = {};

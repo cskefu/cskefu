@@ -22,11 +22,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.repository.RoleAuthRepository;
-import com.chatopera.cc.app.service.repository.SysDicRepository;
-import com.chatopera.cc.app.service.repository.UserRoleRepository;
+import com.chatopera.cc.app.persistence.repository.RoleAuthRepository;
+import com.chatopera.cc.app.persistence.repository.SysDicRepository;
+import com.chatopera.cc.app.persistence.repository.UserRoleRepository;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -35,8 +35,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.app.service.repository.RoleRepository;
-import com.chatopera.cc.app.service.repository.UserRepository;
+import com.chatopera.cc.app.persistence.repository.RoleRepository;
+import com.chatopera.cc.app.persistence.repository.UserRepository;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.Role;
 import com.chatopera.cc.app.model.RoleAuth;

@@ -23,11 +23,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.service.acd.ServiceQuene;
-import com.chatopera.cc.app.service.cache.CacheHelper;
-import com.chatopera.cc.app.service.repository.SessionConfigRepository;
-import com.chatopera.cc.app.service.repository.TagRepository;
+import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.persistence.repository.SessionConfigRepository;
+import com.chatopera.cc.app.persistence.repository.TagRepository;
 import com.chatopera.cc.app.model.Quality;
 import com.chatopera.cc.app.model.QualityRequest;
 import com.chatopera.cc.app.model.Tag;
@@ -37,8 +37,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.service.repository.QualityRepository;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.persistence.repository.QualityRepository;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.SessionConfig;
 
@@ -60,7 +60,7 @@ public class AgentQualityController extends Handler{
 	@RequestMapping(value = "/index")
     @Menu(type = "agent" , subtype = "quality" , access = false)
     public ModelAndView index(ModelMap map , HttpServletRequest request ) {
-		map.addAttribute("sessionConfig", ServiceQuene.initSessionConfig(super.getOrgi(request))) ;
+		map.addAttribute("sessionConfig", AutomaticServiceDist.initSessionConfig(super.getOrgi(request))) ;
 		map.addAttribute("qualityList", qualityRes.findByQualitytypeAndOrgi(MainContext.QualityType.CHAT.toString(), super.getOrgi(request))) ;
 		map.addAttribute("tagList", tagRes.findByOrgiAndTagtype(super.getOrgi(request), MainContext.TagTypeEnum.QUALITY.toString())) ;
     	return request(super.createAppsTempletResponse("/apps/quality/index"));
@@ -90,7 +90,7 @@ public class AgentQualityController extends Handler{
 			if(tempList.size() > 0) {
 				qualityRes.save(tempList) ;
 			}
-			SessionConfig config = ServiceQuene.initSessionConfig(super.getOrgi(request)) ;
+			SessionConfig config = AutomaticServiceDist.initSessionConfig(super.getOrgi(request)) ;
 			if(config!=null) {
 				if("points".equals(request.getParameter("qualityscore"))) {
 					config.setQualityscore("points");

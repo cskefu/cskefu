@@ -39,8 +39,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.MainUtils;
-import com.chatopera.cc.app.service.repository.AttachmentRepository;
+import com.chatopera.cc.app.basic.MainUtils;
+import com.chatopera.cc.app.persistence.repository.AttachmentRepository;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.model.AttachmentFile;
 import com.chatopera.cc.app.model.UploadStatus;

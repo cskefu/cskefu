@@ -33,8 +33,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.chatopera.cc.app.MainUtils;
-import com.chatopera.cc.app.service.repository.UserRepository;
+import com.chatopera.cc.app.basic.MainUtils;
+import com.chatopera.cc.app.persistence.repository.UserRepository;
 import com.chatopera.cc.util.RestResultType;
 
 import io.swagger.annotations.Api;

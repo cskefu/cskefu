@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.service.cache.CacheHelper;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.cache.CacheHelper;
 
 public class UKeFuDic<K,V> extends HashMap<K,V>{
 	

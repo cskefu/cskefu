@@ -18,15 +18,14 @@ package com.chatopera.cc.app.handler;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.chatopera.cc.app.MainContext;
-import com.chatopera.cc.app.service.cache.CacheHelper;
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.cache.CacheHelper;
 import com.chatopera.cc.app.model.User;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.chatopera.cc.app.service.acd.ServiceQuene;
 
 @Controller
 public class ApplicationController extends Handler{
@@ -35,7 +34,7 @@ public class ApplicationController extends Handler{
     public ModelAndView admin(HttpServletRequest request) {
 		ModelAndView view = request(super.createRequestPageTempletResponse("/apps/index"));
 		User user = super.getUser(request) ;
-        view.addObject("agentStatusReport",ServiceQuene.getAgentReport(user.getOrgi())) ;
+        view.addObject("agentStatusReport", AutomaticServiceDist.getAgentReport(user.getOrgi())) ;
         view.addObject("tenant",super.getTenant(request));
         view.addObject("istenantshare",super.isEnabletneant());
         if(super.isEnabletneant()) {

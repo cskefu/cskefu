@@ -16,7 +16,7 @@
  */
 package com.chatopera.cc.app.handler.api.rest;
 
-import com.chatopera.cc.app.service.repository.OnlineUserRepository;
+import com.chatopera.cc.app.persistence.repository.OnlineUserRepository;
 import com.chatopera.cc.util.RestResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.RestResultType;
 import com.chatopera.cc.app.handler.Handler;

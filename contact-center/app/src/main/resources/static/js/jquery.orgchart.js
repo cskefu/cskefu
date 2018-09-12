@@ -675,13 +675,13 @@
       }
     });
 
-    // define click event handler
+    // define click exchange handler
     $nodeDiv.on('click', function(event) {
       $(this).closest('.orgchart').find('.focused').removeClass('focused');
       $(this).addClass('focused');
     });
 
-    // define click event handler for the top edge
+    // define click exchange handler for the top edge
     $nodeDiv.on('click', '.topEdge', function(event) {
       event.stopPropagation();
       var $that = $(this);
@@ -722,7 +722,7 @@
       }
     });
 
-    // bind click event handler for the bottom edge
+    // bind click exchange handler for the bottom edge
     $nodeDiv.on('click', '.bottomEdge', function(event) {
       event.stopPropagation();
       var $that = $(this);
@@ -758,7 +758,7 @@
       }
     });
 
-    // event handler for toggle buttons in Hybrid(horizontal + vertical) OrgChart
+    // exchange handler for toggle buttons in Hybrid(horizontal + vertical) OrgChart
     $nodeDiv.on('click', '.toggleBtn', function(event) {
       var $this = $(this);
       var $descWrapper = $this.parent().next();
@@ -782,7 +782,7 @@
       }
     });
 
-    // bind click event handler for the left and right edges
+    // bind click exchange handler for the left and right edges
     $nodeDiv.on('click', '.leftEdge, .rightEdge', function(event) {
       event.stopPropagation();
       var $that = $(this);

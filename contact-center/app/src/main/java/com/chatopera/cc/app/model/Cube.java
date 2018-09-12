@@ -29,7 +29,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.chatopera.cc.app.MainUtils;
+import com.chatopera.cc.app.basic.MainUtils;
 @Entity
 @Table(name = "uk_cube")
 @org.hibernate.annotations.Proxy(lazy = false)
