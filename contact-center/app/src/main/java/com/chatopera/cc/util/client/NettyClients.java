@@ -34,6 +34,7 @@ public class NettyClients {
 	private NettyIMClient entIMClients = new NettyIMClient();
 	private NettyCallCenterClient callCenterClients = new NettyCallCenterClient();
 	private NettyCalloutClient calloutClients = new NettyCalloutClient();
+	private NettyChatbotClient chatbotClients = new NettyChatbotClient();
 	
 	public int size(){
 		return imClients.size();
@@ -114,10 +115,29 @@ public class NettyClients {
 		}
 	}
 
+
+    /**
+     * Chatbot Event Server Methods.
+     */
+    public void putChatbotEventClient(String id, SocketIOClient client){
+        chatbotClients.putClient(id, client);
+    }
+
+    public void removeChatbotEventClient(String id, String sessionId) {
+        chatbotClients.removeClient(id, sessionId);
+    }
+
+    public void sendChatbotEventMessage(String id, String event, Object data){
+        List<SocketIOClient> _clients = chatbotClients.getClients(id);
+        logger.info("sendChatbotEventMessage get clients size {}", _clients.size());
+        for(SocketIOClient c: _clients){
+            c.sendEvent(event, data);
+        }
+    }
+
     /**
      * Callout Event Server Methods.
      */
-
 	public void putCalloutEventClient(String id, SocketIOClient client){
 	    calloutClients.putClient(id, client);
     }
