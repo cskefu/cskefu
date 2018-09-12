@@ -3411,6 +3411,8 @@ CREATE TABLE `uk_snsaccount` (
   `SESSIONKEY` varchar(255) DEFAULT NULL COMMENT '会话Key',
   `MOREPARAM` varchar(255) DEFAULT NULL COMMENT '更多参数',
   `ORGI` varchar(255) DEFAULT NULL COMMENT '租户ID',
+  `ORGAN` varchar(32) DEFAULT NULL COMMENT '组织机构ID',
+  `CREATER` varchar(32) DEFAULT NULL COMMENT '创建人ID',
   `DEFAULTACCOUNT` smallint(6) DEFAULT NULL COMMENT '默认账号',
   `lastatupdate` varchar(96) DEFAULT NULL COMMENT '最后更新时间',
   `lastprimsgupdate` varchar(96) DEFAULT NULL,

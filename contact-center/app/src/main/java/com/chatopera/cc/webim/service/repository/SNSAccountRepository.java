@@ -22,6 +22,8 @@ import com.chatopera.cc.webim.web.model.SNSAccount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public abstract interface SNSAccountRepository
   extends JpaRepository<SNSAccount, String>
@@ -43,4 +45,10 @@ public abstract interface SNSAccountRepository
   public abstract List<SNSAccount> findBySnstype(String snsType);
   
   public abstract Page<SNSAccount> findBySnstypeAndOrgi(String paramString ,String orgi, Pageable page);
+
+  @Query(value = "select s from SNSAccount s where " +
+          "(:orgi is null or s.orgi = :orgi) and " +
+          "(:snsType is null or s.snstype = :snsType) and " +
+          "(:myorgans is null or s.organ IN :myorgans)")
+  public List<SNSAccount> findBySnstypeAndOrgiAndOrgans(@Param("snsType") String snsType, @Param("orgi") String orgi, @Param("myorgans") List<String> organs);
 }

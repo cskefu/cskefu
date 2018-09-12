@@ -76,6 +76,8 @@ public class SNSAccount{
 	private boolean defaultaccount ;
 	private String moreparam ;				//改变用处，用于记录 爬虫的 爬取位置(微博)/如果是微信记录Secret
 	private String orgi ;
+	private String organ;
+	private String creater;
 	private String lastatupdate ;
 	private String lastprimsgupdate ;
 	
@@ -331,4 +333,20 @@ public class SNSAccount{
 	public void setBaseURL(String baseURL) {
 		this.baseURL = baseURL;
 	}
+
+    public String getOrgan() {
+        return organ;
+    }
+
+    public void setOrgan(String organ) {
+        this.organ = organ;
+    }
+
+    public String getCreater() {
+        return creater;
+    }
+
+    public void setCreater(String creater) {
+        this.creater = creater;
+    }
 }

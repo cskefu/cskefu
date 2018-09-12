@@ -23,10 +23,7 @@ import com.chatopera.cc.webim.util.OnlineUserUtils;
 import com.chatopera.cc.webim.util.chatbot.ChatbotUtils;
 import com.chatopera.cc.webim.web.handler.Handler;
 import com.chatopera.cc.webim.web.handler.api.request.RestUtils;
-import com.chatopera.cc.webim.web.model.Chatbot;
-import com.chatopera.cc.webim.web.model.CousultInvite;
-import com.chatopera.cc.webim.web.model.Organ;
-import com.chatopera.cc.webim.web.model.User;
+import com.chatopera.cc.webim.web.model.*;
 import com.chatopera.chatbot.ChatbotAPI;
 import com.chatopera.chatbot.ChatbotAPIRuntimeException;
 import com.google.gson.JsonArray;
@@ -56,6 +53,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/chatbot")
@@ -114,12 +112,49 @@ public class ApiChatbotController extends Handler {
                 case "disable":
                     json = enable(j, false);
                     break;
+                case "vacant":
+                    json = vacant(j, curruser.getOrgi(), curruser.isSuperuser(), curruser.getMyorgans());
+                    break;
                 default:
                     json.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_2);
                     json.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的操作。");
             }
         }
         return new ResponseEntity<String>(json.toString(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * 获取空缺聊天机器人的网站渠道列表
+     *
+     * @param j
+     * @param orgi
+     * @param myorgans
+     * @return
+     */
+    private JsonObject vacant(final JsonObject j, String orgi, boolean isSuperuser, final HashSet<String> myorgans) {
+        JsonObject resp = new JsonObject();
+        if ((!isSuperuser) && (myorgans == null || myorgans.size() == 0)) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "您还未属于任何【部门】，不具有访问该资源的权限。");
+            return resp;
+        }
+
+        List<SNSAccount> records = snsAccountRes.findBySnstypeAndOrgiAndOrgans(ChatbotUtils.SNS_TYPE_WEBIM, orgi, myorgans != null ? new ArrayList<String>(myorgans) : null);
+        JsonArray ja = new JsonArray();
+
+        for (SNSAccount r : records) {
+            if (!chatbotRes.existsBySnsAccountIdentifierAndOrgi(r.getSnsid(), orgi)) {
+                JsonObject o = new JsonObject();
+                o.addProperty("id", r.getId());
+                o.addProperty("snsid", r.getSnsid());
+                o.addProperty("snsType", r.getSnstype());
+                ja.add(o);
+            }
+        }
+
+        resp.add("data", ja);
+        resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
+        return resp;
     }
 
     /**
