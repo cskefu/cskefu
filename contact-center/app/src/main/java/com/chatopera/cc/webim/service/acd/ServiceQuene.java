@@ -523,47 +523,44 @@ public class ServiceQuene {
     /**
      * 为访客 分配坐席， ACD策略，此处 AgentStatus 是建议 的 坐席，  如果启用了  历史服务坐席 优先策略， 则会默认检查历史坐席是否空闲，如果空闲，则分配，如果不空闲，则 分配当前建议的坐席
      *
-     * @param agentStatus
      * @param agentUser
      * @param orgi
      * @return
      * @throws Exception
      */
-    public static AgentService processAiService(AiUser aiUser, String orgi) throws Exception {
+    public static AgentService processChatbotService(final AgentUser agentUser, final String orgi) {
         AgentService agentService = new AgentService();    //放入缓存的对象
         AgentServiceRepository agentServiceRes = UKDataContext.getContext().getBean(AgentServiceRepository.class);
-        if (!StringUtils.isBlank(aiUser.getAgentserviceid())) {
-            agentService = agentServiceRes.findByIdAndOrgi(aiUser.getAgentserviceid(), orgi);
-            agentService.setEndtime(new Date());
+        Date now = new Date();
+        if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
+            agentService = agentServiceRes.findByIdAndOrgi(agentUser.getAgentserviceid(), orgi);
+            agentService.setEndtime(now);
             if (agentService.getServicetime() != null) {
                 agentService.setSessiontimes(System.currentTimeMillis() - agentService.getServicetime().getTime());
             }
             agentService.setStatus(UKDataContext.AgentUserStatusEnum.END.toString());
         } else {
-            agentService.setServicetime(new Date());
-            agentService.setLogindate(new Date());
+            agentService.setServicetime(now);
+            agentService.setLogindate(now);
             agentService.setOrgi(orgi);
-            agentService.setOwner(aiUser.getContextid());
-            agentService.setSessionid(aiUser.getSessionid());
-            if (aiUser.getIpdata() != null) {
-                agentService.setRegion(aiUser.getIpdata().getRegion());
-            }
+            agentService.setOwner(agentUser.getContextid());
+            agentService.setSessionid(agentUser.getSessionid());
+            agentService.setRegion(agentUser.getRegion());
+            agentService.setUsername(agentUser.getUsername());
+            agentService.setChannel(agentUser.getChannel());
 
-            agentService.setUsername(aiUser.getUsername());
-            agentService.setChannel(aiUser.getChannel());
-
-            if (!StringUtils.isBlank(aiUser.getContextid())) {
-                agentService.setContextid(aiUser.getContextid());
+            if (StringUtils.isNotBlank(agentUser.getContextid())) {
+                agentService.setContextid(agentUser.getContextid());
             } else {
-                agentService.setContextid(aiUser.getSessionid());
+                agentService.setContextid(agentUser.getSessionid());
             }
 
-            agentService.setUserid(aiUser.getUserid());
-            agentService.setAiid(aiUser.getAiid());
+            agentService.setUserid(agentUser.getUserid());
+            agentService.setAiid(agentUser.getAgentno());
             agentService.setAiservice(true);
             agentService.setStatus(UKDataContext.AgentUserStatusEnum.INSERVICE.toString());
 
-            agentService.setAppid(aiUser.getAppid());
+            agentService.setAppid(agentUser.getAppid());
             agentService.setLeavemsg(false);
         }
 

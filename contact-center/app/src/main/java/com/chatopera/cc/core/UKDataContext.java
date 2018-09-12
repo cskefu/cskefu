@@ -335,6 +335,28 @@ public class UKDataContext {
         }
     }
 
+    // 服务处理类型
+    public enum OptTypeEnum {
+        CHATBOT("机器人客服", 1),
+        HUMAN("人工客服", 2);
+
+        private final String name;
+        private final int index;
+
+        private OptTypeEnum(String name, int index) {
+            this.name = name;
+            this.index = index;
+        }
+
+        public String toLetters() {
+            return super.toString().toLowerCase();
+        }
+
+        public String toString() {
+            return this.name;
+        }
+    }
+
     // 外呼计划状态
     public enum CallOutDialplanStatusEnum {
         RUNNING("执行中", 1),

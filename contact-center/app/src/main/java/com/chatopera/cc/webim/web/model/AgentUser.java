@@ -79,7 +79,8 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
 	private Date waittingtimestart = new Date();
 	private Date lastgetmessage = new Date();
 	private String lastmsg;
-	
+	private String opttype;
+
 	private String skill ;	//请求的技能组
 	private String agent ;	//请求的坐席
 	
@@ -563,6 +564,14 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
 
 	public void setSkillname(String skillname) {
 		this.skillname = skillname;
+	}
+
+	public String getOpttype() {
+		return opttype;
+	}
+
+	public void setOpttype(String opttype) {
+		this.opttype = opttype;
 	}
 
 	@Override

@@ -650,6 +650,7 @@ CREATE TABLE `uk_agentuser` (
   `datadept` varchar(255) DEFAULT NULL COMMENT '创建人部门',
   `intime` int(32) DEFAULT NULL COMMENT '接入时间',
   `batid` varchar(32) DEFAULT NULL COMMENT '批次ID',
+  `opttype` varchar(32) DEFAULT NULL COMMENT '服务处理类型',
   `ipaddr` varchar(50) DEFAULT NULL COMMENT 'IP地址',
   `osname` varchar(100) DEFAULT NULL COMMENT '操作系统名称',
   `browser` varchar(100) DEFAULT NULL COMMENT '浏览器',

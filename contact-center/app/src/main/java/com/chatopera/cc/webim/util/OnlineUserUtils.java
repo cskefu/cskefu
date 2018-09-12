@@ -599,39 +599,33 @@ public class OnlineUserUtils {
      */
     public static void offline(String user, String orgi) throws Exception {
         if (UKDataContext.getContext() != null) {
-            try {
-                OnlineUser onlineUser = (OnlineUser) CacheHelper.getOnlineUserCacheBean().getCacheObject(user, orgi);
-                if (onlineUser != null) {
-                    CousultInvite invite = OnlineUserUtils.cousult(onlineUser.getAppid(), onlineUser.getOrgi(), UKDataContext.getContext().getBean(ConsultInviteRepository.class));
-                    if (invite.isTraceuser()) {
-                        onlineUser.setStatus(UKDataContext.OnlineUserOperatorStatus.OFFLINE.toString());
-                        onlineUser.setInvitestatus(UKDataContext.OnlineUserInviteStatus.DEFAULT.toString());
-                        onlineUser.setBetweentime((int) (new Date().getTime() - onlineUser.getLogintime().getTime()));
-                        onlineUser.setUpdatetime(new Date());
-                        OnlineUserRepository service = UKDataContext.getContext().getBean(
-                                OnlineUserRepository.class);
-                        service.save(onlineUser);
+            OnlineUser onlineUser = (OnlineUser) CacheHelper.getOnlineUserCacheBean().getCacheObject(user, orgi);
+            if (onlineUser != null) {
+                CousultInvite invite = OnlineUserUtils.cousult(onlineUser.getAppid(), onlineUser.getOrgi(), UKDataContext.getContext().getBean(ConsultInviteRepository.class));
+                if (invite.isTraceuser()) {
+                    onlineUser.setStatus(UKDataContext.OnlineUserOperatorStatus.OFFLINE.toString());
+                    onlineUser.setInvitestatus(UKDataContext.OnlineUserInviteStatus.DEFAULT.toString());
+                    onlineUser.setBetweentime((int) (new Date().getTime() - onlineUser.getLogintime().getTime()));
+                    onlineUser.setUpdatetime(new Date());
+                    OnlineUserRepository service = UKDataContext.getContext().getBean(
+                            OnlineUserRepository.class);
+                    service.save(onlineUser);
 
-                        OnlineUserHisRepository onlineHisUserRes = UKDataContext.getContext().getBean(OnlineUserHisRepository.class);
-                        {
-                            List<OnlineUserHis> hisList = onlineHisUserRes.findBySessionidAndOrgi(onlineUser.getSessionid(), orgi);
-                            OnlineUserHis his = null;
-                            if (hisList.size() > 0) {
-                                his = hisList.get(0);
-                            } else {
-                                his = new OnlineUserHis();
-                            }
-
-                            UKTools.copyProperties(onlineUser, his);
-                            his.setDataid(onlineUser.getId());
-                            onlineHisUserRes.save(his);
+                    OnlineUserHisRepository onlineHisUserRes = UKDataContext.getContext().getBean(OnlineUserHisRepository.class);
+                    {
+                        List<OnlineUserHis> hisList = onlineHisUserRes.findBySessionidAndOrgi(onlineUser.getSessionid(), orgi);
+                        OnlineUserHis his = null;
+                        if (hisList.size() > 0) {
+                            his = hisList.get(0);
+                        } else {
+                            his = new OnlineUserHis();
                         }
+
+                        UKTools.copyProperties(onlineUser, his);
+                        his.setDataid(onlineUser.getId());
+                        onlineHisUserRes.save(his);
                     }
                 }
-            } catch (ClassCastException e) {
-                // #TODO workaround for
-                // https://github.com/chatopera/cosin/issues/75
-                // AiUser is not saved, just remove from cache.
             }
             CacheHelper.getOnlineUserCacheBean().delete(user, orgi);
         }

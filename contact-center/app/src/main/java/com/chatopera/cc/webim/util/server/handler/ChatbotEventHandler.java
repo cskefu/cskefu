@@ -16,12 +16,15 @@
 package com.chatopera.cc.webim.util.server.handler;
 
 import com.chatopera.cc.core.UKDataContext;
+import com.chatopera.cc.util.IP;
 import com.chatopera.cc.util.IPTools;
 import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.util.client.NettyClients;
 import com.chatopera.cc.webim.service.acd.ServiceQuene;
 import com.chatopera.cc.webim.service.cache.CacheHelper;
+import com.chatopera.cc.webim.service.repository.AgentUserRepository;
 import com.chatopera.cc.webim.service.repository.ConsultInviteRepository;
+import com.chatopera.cc.webim.service.repository.OnlineUserRepository;
 import com.chatopera.cc.webim.util.MessageUtils;
 import com.chatopera.cc.webim.util.OnlineUserUtils;
 import com.chatopera.cc.webim.util.router.OutMessageRouter;
@@ -48,6 +51,9 @@ public class ChatbotEventHandler {
 
     protected SocketIOServer server;
 
+    private AgentUserRepository agentUserRes;
+    private OnlineUserRepository onlineUserRes;
+
     @Autowired
     public ChatbotEventHandler(SocketIOServer server) {
         this.server = server;
@@ -57,22 +63,23 @@ public class ChatbotEventHandler {
     public void onConnect(SocketIOClient client) {
         try {
             String user = client.getHandshakeData().getSingleUrlParam("userid");
+            String nickname = client.getHandshakeData().getSingleUrlParam("nickname");
             String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
-//			String session = client.getHandshakeData().getSingleUrlParam("session") ;
+            String session = client.getHandshakeData().getSingleUrlParam("session");
             String appid = client.getHandshakeData().getSingleUrlParam("appid");
             String aiid = client.getHandshakeData().getSingleUrlParam("aiid");
 //			String agent = client.getHandshakeData().getSingleUrlParam("agent") ;
 //			String skill = client.getHandshakeData().getSingleUrlParam("skill") ;
-            logger.info("[chatbot socket.io] onConnect user {}, orgi {}, appid {}, aiid {}", user, orgi, appid, aiid);
+            Date now = new Date();
 
             if (StringUtils.isNotBlank(user)) {
 //				/**
 //				 * 加入到 缓存列表
 //				 */
-                NettyClients.getInstance().putIMEventClient(user, client);
+                NettyClients.getInstance().putChatbotEventClient(user, client);
                 MessageOutContent outMessage = new MessageOutContent();
                 CousultInvite invite = OnlineUserUtils.cousult(appid, orgi, UKDataContext.getContext().getBean(ConsultInviteRepository.class));
-                if (invite != null && !StringUtils.isBlank(invite.getAisuccesstip())) {
+                if (invite != null && StringUtils.isNotBlank(invite.getAisuccesstip())) {
                     outMessage.setMessage(invite.getAisuccesstip());
                 } else {
                     outMessage.setMessage("欢迎使用华夏春松机器人客服！");
@@ -80,43 +87,91 @@ public class ChatbotEventHandler {
 
                 outMessage.setMessageType(UKDataContext.MessageTypeEnum.MESSAGE.toString());
                 outMessage.setCalltype(UKDataContext.CallTypeEnum.IN.toString());
-                outMessage.setNickName("AI");
-                outMessage.setCreatetime(UKTools.dateFormate.format(new Date()));
+                outMessage.setNickName(invite.getAiname());
+                outMessage.setCreatetime(UKTools.dateFormate.format(now));
 
                 client.sendEvent(UKDataContext.MessageTypeEnum.STATUS.toString(), outMessage);
 
                 InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress();
                 String ip = UKTools.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString());
-                AiUser aiUser = new AiUser(user, user, System.currentTimeMillis(), orgi, IPTools.getInstance().findGeography(ip));
-                aiUser.setSessionid(UKTools.getContextID(client.getSessionId().toString()));
-                aiUser.setAppid(appid);
-                aiUser.setAiid(aiid);
-                aiUser.setUsername(UKDataContext.GUEST_USER + "_" + UKTools.genIDByKey(aiUser.getId()));
-                aiUser.setChannel(UKDataContext.ChannelTypeEnum.WEBIM.toString());
+                OnlineUser onlineUser = getOnlineUserRes().findOne(user);
 
-                AgentService agentService = ServiceQuene.processAiService(aiUser, orgi);
-                aiUser.setAgentserviceid(agentService.getId());
+                if (onlineUser == null) {
+                    onlineUser = new OnlineUser();
+                    onlineUser.setAppid(appid);
+                    if (StringUtils.isNotBlank(nickname)) {
+                        onlineUser.setUsername(nickname);
+                    } else {
+                        onlineUser.setUsername(UKDataContext.GUEST_USER + "_" + UKTools.genIDByKey(user));
+                    }
 
-                CacheHelper.getOnlineUserCacheBean().put(user, aiUser, UKDataContext.SYSTEM_ORGI);
+                    onlineUser.setSessionid(session);
+                    onlineUser.setOptype(UKDataContext.OptTypeEnum.CHATBOT.toString());
+                    onlineUser.setUserid(user);
+                    onlineUser.setId(user);
+                    onlineUser.setOrgi(orgi);
+                    onlineUser.setChannel(UKDataContext.ChannelTypeEnum.WEBIM.toString());
+                    onlineUser.setIp(ip);
+                    onlineUser.setUpdatetime(now);
+                    onlineUser.setLogintime(now);
+                    onlineUser.setCreatetime(now);
+                    IP ipdata = IPTools.getInstance().findGeography(ip);
+                    onlineUser.setCity(ipdata.getCity());
+                    onlineUser.setCountry(ipdata.getCountry());
+                    onlineUser.setProvince(ipdata.getProvince());
+                    onlineUser.setIsp(ipdata.getIsp());
+                    onlineUser.setRegion(ipdata.getRegion());
+                    onlineUser.setStatus(UKDataContext.OnlineUserOperatorStatus.ONLINE.toString());
+                }
 
+                // 在线客服访客咨询记录
+                AgentUser agentUser = new AgentUser(onlineUser.getId(),
+                        UKDataContext.ChannelTypeEnum.WEBIM.toString(), // callout
+                        onlineUser.getId(),
+                        onlineUser.getUsername(),
+                        UKDataContext.SYSTEM_ORGI,
+                        appid);
+
+                agentUser.setServicetime(now);
+                agentUser.setCreatetime(now);
+                agentUser.setUpdatetime(now);
+                agentUser.setSessionid(session);
+                // 聊天机器人处理的请求
+                agentUser.setOpttype(UKDataContext.OptTypeEnum.CHATBOT.toString());
+                agentUser.setAgentno(aiid); // 聊天机器人ID
+                agentUser.setCity(onlineUser.getCity());
+                agentUser.setProvince(onlineUser.getProvince());
+                agentUser.setCountry(onlineUser.getCountry());
+                AgentService agentService = ServiceQuene.processChatbotService(agentUser, orgi);
+                agentUser.setAgentserviceid(agentService.getId());
+
+                getAgentUserRes().save(agentUser);
+                getOnlineUserRes().save(onlineUser);
+                CacheHelper.getAgentUserCacheBean().put(user, agentUser, orgi);
+                CacheHelper.getOnlineUserCacheBean().put(user, onlineUser, orgi);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
     //添加@OnDisconnect事件，客户端断开连接时调用，刷新客户端信息  
     @OnDisconnect
     public void onDisconnect(SocketIOClient client) throws Exception {
         String user = client.getHandshakeData().getSingleUrlParam("userid");
         String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
-        if (!StringUtils.isBlank(user)) {
-            NettyClients.getInstance().removeIMEventClient(user, UKTools.getContextID(client.getSessionId().toString()));
-            AiUser aiUser = (AiUser) CacheHelper.getOnlineUserCacheBean().getCacheObject(user, orgi);
-            if (aiUser != null) {
-                ServiceQuene.processAiService(aiUser, orgi);
-                CacheHelper.getOnlineUserCacheBean().delete(user, UKDataContext.SYSTEM_ORGI);
+        if (StringUtils.isNotBlank(user)) {
+            NettyClients.getInstance().removeChatbotEventClient(user, UKTools.getContextID(client.getSessionId().toString()));
+            AgentUser agentUser = (AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(user, orgi);
+            OnlineUser onlineUser = (OnlineUser) CacheHelper.getOnlineUserCacheBean().getCacheObject(user, orgi);
+            if (agentUser != null) {
+                ServiceQuene.processChatbotService(agentUser, orgi);
+                CacheHelper.getAgentUserCacheBean().delete(user, UKDataContext.SYSTEM_ORGI);
+                CacheHelper.getOnlineUserCacheBean().delete(user, orgi);
+                agentUser.setStatus(UKDataContext.OnlineUserOperatorStatus.OFFLINE.toString());
+                onlineUser.setStatus(UKDataContext.OnlineUserOperatorStatus.OFFLINE.toString());
+                getAgentUserRes().save(agentUser);
+                getOnlineUserRes().save(onlineUser);
             }
         }
         client.disconnect();
@@ -159,22 +214,21 @@ public class ChatbotEventHandler {
          * 处理表情
          */
         data.setMessage(UKTools.processEmoti(data.getMessage()));
-        data.setTousername(UKDataContext.ChannelTypeEnum.AI.toString());
+        data.setTousername(invite.getAiname());
 
         data.setAiid(aiid);
 
-        Object cacheData = (AiUser) CacheHelper.getOnlineUserCacheBean().getCacheObject(user, orgi);
-        if (cacheData != null && cacheData instanceof AiUser) {
-            AiUser aiUser = (AiUser) cacheData;
-            data.setAgentserviceid(aiUser.getAgentserviceid());
-            data.setChannel(aiUser.getChannel());
+        AgentUser agentUser = (AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(user, orgi);
+        if (agentUser != null) {
+            data.setAgentserviceid(agentUser.getAgentserviceid());
+            data.setChannel(agentUser.getChannel());
             /**
              * 一定要设置 ContextID
              */
-            data.setContextid(aiUser.getAgentserviceid());
+            data.setContextid(agentUser.getAgentserviceid());
         }
         MessageOutContent outMessage = MessageUtils.createAiMessage(data, data.getAppid(), data.getChannel(), UKDataContext.CallTypeEnum.IN.toString(), UKDataContext.AiItemType.USERINPUT.toString(), UKDataContext.MediaTypeEnum.TEXT.toString(), data.getUserid());
-        if (!StringUtils.isBlank(data.getUserid()) && UKDataContext.MessageTypeEnum.MESSAGE.toString().equals(data.getType())) {
+        if (StringUtils.isNotBlank(data.getUserid()) && UKDataContext.MessageTypeEnum.MESSAGE.toString().equals(data.getType())) {
             if (!StringUtils.isBlank(data.getTouser())) {
                 OutMessageRouter router = null;
                 router = (OutMessageRouter) UKDataContext.getContext().getBean(data.getChannel());
@@ -182,11 +236,33 @@ public class ChatbotEventHandler {
                     router.handler(data.getTouser(), UKDataContext.MessageTypeEnum.MESSAGE.toString(), data.getAppid(), outMessage);
                 }
             }
-            if (cacheData != null && cacheData instanceof AiUser) {
-                AiUser aiUser = (AiUser) cacheData;
-                aiUser.setTime(System.currentTimeMillis());
-                CacheHelper.getOnlineUserCacheBean().put(user, aiUser, UKDataContext.SYSTEM_ORGI);
+            if (agentUser != null) {
+                Date now = new Date();
+                agentUser.setUpdatetime(now);
+                agentUser.setLastmessage(now);
+                agentUser.setLastmsg(data.getMessage());
+                CacheHelper.getAgentUserCacheBean().put(user, agentUser, UKDataContext.SYSTEM_ORGI);
             }
         }
     }
-}  
+
+    /**
+     * Lazy load
+     * @return
+     */
+    public AgentUserRepository getAgentUserRes() {
+        if (agentUserRes == null)
+            agentUserRes = UKDataContext.getContext().getBean(AgentUserRepository.class);
+        return agentUserRes;
+    }
+
+    /**
+     * Lazy load
+     * @return
+     */
+    public OnlineUserRepository getOnlineUserRes() {
+        if (onlineUserRes == null)
+            onlineUserRes = UKDataContext.getContext().getBean(OnlineUserRepository.class);
+        return onlineUserRes;
+    }
+}

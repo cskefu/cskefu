@@ -258,7 +258,7 @@ public class CallOutWireTask implements MessageListener {
             onlineUser.setCreater(onlineUser.getId());
             onlineUser.setCreatetime(createtime);
             onlineUser.setUpdatetime(createtime);
-            onlineUser.setOptype(Constants.OPT_TYPE);
+            onlineUser.setOptype(UKDataContext.OptTypeEnum.HUMAN.toString());
             onlineUser.setAppid(channel);
         } else {
             onlineUser.setOlduser("1"); // 不是 老访客

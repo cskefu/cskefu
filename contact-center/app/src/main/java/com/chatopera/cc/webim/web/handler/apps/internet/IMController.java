@@ -298,20 +298,16 @@ public class IMController extends Handler {
                         contacts = processContacts(orgi, contacts, appid, userid);
                     }
                     if (StringUtils.isNotBlank(sign)) {
-                        try {
-                            OnlineUserUtils.online(super.getIMUser(request, sign, contacts != null ? contacts.getName() : null),
-                                    orgi,
-                                    sessionid,
-                                    UKDataContext.OnlineUserTypeStatus.WEBIM.toString(),
-                                    request,
-                                    UKDataContext.ChannelTypeEnum.WEBIM.toString(),
-                                    appid,
-                                    contacts,
-                                    invite);
-                        } catch (java.lang.ClassCastException e) {
-                            // #TODO workaround for
-                            // https://github.com/chatopera/cosin/issues/75
-                        }
+                        OnlineUserUtils.online(super.getIMUser(request, sign, contacts != null ? contacts.getName() : null),
+                                orgi,
+                                sessionid,
+                                UKDataContext.OnlineUserTypeStatus.WEBIM.toString(),
+                                request,
+                                UKDataContext.ChannelTypeEnum.WEBIM.toString(),
+                                appid,
+                                contacts,
+                                invite);
+
                     }
                     OnlineUserUtils.webIMClients.putClient(userid, new WebIMClient(userid, client, emitter));
                 }

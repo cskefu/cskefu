@@ -25,7 +25,6 @@ import java.util.Set;
 
 public class Constants {
 
-    public final static String OPT_TYPE = "webim";
     public final static String MINIO_BUCKET = "chatopera";
 
     /**
