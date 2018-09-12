@@ -17,6 +17,8 @@ public abstract interface ChatbotRepository extends JpaRepository<Chatbot, Strin
 
     public abstract List<Chatbot> findByIdAndOrgi(String id, String orgi);
 
+    public abstract Chatbot findBySnsAccountIdentifierAndOrgi(String snsid, String orgi);
+
     @Query(value = "select c from Chatbot c where " +
             "(:myorgans is null or c.organ IN :myorgans)")
     public Page<Chatbot> findByOrgans(@Param("myorgans") List<String> myorgans, Pageable pageRequest);

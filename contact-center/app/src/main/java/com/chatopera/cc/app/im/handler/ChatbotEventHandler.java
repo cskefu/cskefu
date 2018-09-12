@@ -17,21 +17,23 @@ package com.chatopera.cc.app.im.handler;
 
 import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
 import com.chatopera.cc.app.basic.MainContext;
-import com.chatopera.cc.app.im.util.ChatbotUtils;
-import com.chatopera.cc.util.IP;
-import com.chatopera.cc.util.IPTools;
 import com.chatopera.cc.app.basic.MainUtils;
-import com.chatopera.cc.app.im.client.NettyClients;
-import com.chatopera.cc.app.model.*;
 import com.chatopera.cc.app.cache.CacheHelper;
-import com.chatopera.cc.app.persistence.repository.AgentUserRepository;
-import com.chatopera.cc.app.persistence.repository.ConsultInviteRepository;
-import com.chatopera.cc.app.persistence.repository.OnlineUserRepository;
-import com.chatopera.cc.app.im.router.OutMessageRouter;
-import com.chatopera.cc.util.OnlineUserUtils;
+import com.chatopera.cc.app.im.client.NettyClients;
 import com.chatopera.cc.app.im.message.AgentStatusMessage;
 import com.chatopera.cc.app.im.message.ChatMessage;
 import com.chatopera.cc.app.im.message.NewRequestMessage;
+import com.chatopera.cc.app.im.util.ChatbotUtils;
+import com.chatopera.cc.app.model.*;
+import com.chatopera.cc.app.persistence.repository.AgentUserRepository;
+import com.chatopera.cc.app.persistence.repository.ChatbotRepository;
+import com.chatopera.cc.app.persistence.repository.ConsultInviteRepository;
+import com.chatopera.cc.app.persistence.repository.OnlineUserRepository;
+import com.chatopera.cc.concurrent.chatbot.ChatbotEvent;
+import com.chatopera.cc.util.Constants;
+import com.chatopera.cc.util.IP;
+import com.chatopera.cc.util.IPTools;
+import com.chatopera.cc.util.OnlineUserUtils;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -53,6 +55,7 @@ public class ChatbotEventHandler {
 
     private AgentUserRepository agentUserRes;
     private OnlineUserRepository onlineUserRes;
+    private ChatbotRepository chatbotRes;
 
     @Autowired
     public ChatbotEventHandler(SocketIOServer server) {
@@ -73,9 +76,9 @@ public class ChatbotEventHandler {
             Date now = new Date();
 
             if (StringUtils.isNotBlank(user)) {
-//				/**
-//				 * 加入到 缓存列表
-//				 */
+                /**
+                 * 加入到 缓存列表
+                 */
                 NettyClients.getInstance().putChatbotEventClient(user, client);
                 MessageOutContent outMessage = new MessageOutContent();
                 CousultInvite invite = OnlineUserUtils.cousult(appid, orgi, MainContext.getContext().getBean(ConsultInviteRepository.class));
@@ -195,62 +198,71 @@ public class ChatbotEventHandler {
         String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
         String aiid = client.getHandshakeData().getSingleUrlParam("aiid");
         String user = client.getHandshakeData().getSingleUrlParam("userid");
-        if (data.getType() == null) {
-            data.setType("message");
+        logger.info("[chatbot] onEvent message: orgi {}, aiid {}, userid {}, dataType {}", orgi, aiid, user, data.getType());
+        // ignore event if dataType is not message.
+        if (!StringUtils.equals(data.getType(), Constants.IM_MESSAGE_TYPE_MESSAGE)) {
+            return;
         }
+
+        AgentUser agentUser = (AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(user, orgi);
+
+        // ignore event if no agentUser found.
+        if (agentUser == null)
+            return;
+
         /**
          * 以下代码主要用于检查 访客端的字数限制
          */
         CousultInvite invite = OnlineUserUtils.cousult(data.getAppid(), data.getOrgi(), MainContext.getContext().getBean(ConsultInviteRepository.class));
-        if (invite != null && invite.getMaxwordsnum() > 0) {
-            if (!StringUtils.isBlank(data.getMessage()) && data.getMessage().length() > invite.getMaxwordsnum()) {
+        // ignore event if no invite found.
+        if (invite == null)
+            return;
+
+        // ignore if Chatbot is turnoff.
+        if (!invite.isAi())
+            return;
+
+        Date now = new Date();
+        if (invite.getMaxwordsnum() > 0) {
+            if (StringUtils.isNotBlank(data.getMessage()) && data.getMessage().length() > invite.getMaxwordsnum()) {
                 data.setMessage(data.getMessage().substring(0, invite.getMaxwordsnum()));
             }
-        } else if (!StringUtils.isBlank(data.getMessage()) && data.getMessage().length() > 300) {
+        } else if (StringUtils.isNotBlank(data.getMessage()) && data.getMessage().length() > 300) {
             data.setMessage(data.getMessage().substring(0, 300));
         }
+
         data.setSessionid(MainUtils.getContextID(client.getSessionId().toString()));
-        /**
-         * 处理表情
-         */
-        data.setMessage(MainUtils.processEmoti(data.getMessage()));
+        data.setMessage(MainUtils.processEmoti(data.getMessage())); // 处理表情
         data.setTousername(invite.getAiname());
-
         data.setAiid(aiid);
+        data.setAgentserviceid(agentUser.getAgentserviceid());
+        data.setChannel(agentUser.getChannel());
+        data.setContextid(agentUser.getAgentserviceid()); // 一定要设置 ContextID
+        data.setCalltype(MainContext.CallTypeEnum.IN.toString());
 
-        AgentUser agentUser = (AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(user, orgi);
-        if (agentUser != null) {
-            data.setAgentserviceid(agentUser.getAgentserviceid());
-            data.setChannel(agentUser.getChannel());
-            /**
-             * 一定要设置 ContextID
-             */
-            data.setContextid(agentUser.getAgentserviceid());
-        }
-        MessageOutContent outMessage = ChatbotUtils.createTextMessage(data, data.getAppid(), data.getChannel(), MainContext.CallTypeEnum.IN.toString(), MainContext.ChatbotItemType.USERINPUT.toString(), data.getUserid());
-        if (StringUtils.isNotBlank(data.getUserid()) && MainContext.MessageTypeEnum.MESSAGE.toString().equals(data.getType())) {
-            if (!StringUtils.isBlank(data.getTouser())) {
-                OutMessageRouter router = null;
-                router = (OutMessageRouter) MainContext.getContext().getBean(data.getChannel());
-                if (router != null) {
-                    router.handler(data.getTouser(), MainContext.MessageTypeEnum.MESSAGE.toString(), data.getAppid(), outMessage);
-                }
-            }
-            if (agentUser != null) {
-                Date now = new Date();
-                agentUser.setUpdatetime(now);
-                agentUser.setLastmessage(now);
-                agentUser.setLastmsg(data.getMessage());
-                CacheHelper.getAgentUserCacheBean().put(user, agentUser, MainContext.SYSTEM_ORGI);
-            }
-        }
+        ChatbotUtils.createTextMessage(data,
+                MainContext.CallTypeEnum.IN.toString(),
+                MainContext.ChatbotItemType.USERINPUT.toString());
+
+        // 更新访客咨询记录
+        agentUser.setUpdatetime(now);
+        agentUser.setLastmessage(now);
+        agentUser.setLastmsg(data.getMessage());
+        CacheHelper.getAgentUserCacheBean().put(user, agentUser, orgi);
+        getAgentUserRes().save(agentUser);
+
+        // 发送消息给Bot
+        MainUtils.chatbot(new ChatbotEvent<ChatMessage>(data,
+                getChatbotRes(),
+                Constants.CHATBOT_EVENT_TYPE_CHAT));
     }
 
     /**
      * Lazy load
+     *
      * @return
      */
-    public AgentUserRepository getAgentUserRes() {
+    private AgentUserRepository getAgentUserRes() {
         if (agentUserRes == null)
             agentUserRes = MainContext.getContext().getBean(AgentUserRepository.class);
         return agentUserRes;
@@ -258,11 +270,19 @@ public class ChatbotEventHandler {
 
     /**
      * Lazy load
+     *
      * @return
      */
-    public OnlineUserRepository getOnlineUserRes() {
+    private OnlineUserRepository getOnlineUserRes() {
         if (onlineUserRes == null)
             onlineUserRes = MainContext.getContext().getBean(OnlineUserRepository.class);
         return onlineUserRes;
     }
+
+    private ChatbotRepository getChatbotRes() {
+        if (chatbotRes == null)
+            chatbotRes = MainContext.getContext().getBean(ChatbotRepository.class);
+        return chatbotRes;
+    }
+
 }

@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 
 import com.chatopera.cc.concurrent.chatbot.ChatbotDisruptorExceptionHandler;
 import com.chatopera.cc.concurrent.chatbot.ChatbotEventFactory;
+import com.chatopera.cc.concurrent.chatbot.ChatbotEventHandler;
 import com.chatopera.cc.concurrent.multiupdate.MultiUpdateEventFactory;
 import com.chatopera.cc.concurrent.multiupdate.MultiUpdateEventHandler;
 import org.springframework.context.annotation.Bean;
@@ -65,7 +66,7 @@ public class DisruptorConfigure {
 		Executor executor = Executors.newCachedThreadPool();
 		ChatbotEventFactory factory = new ChatbotEventFactory();
 		Disruptor<UserDataEvent> disruptor = new Disruptor<UserDataEvent>(factory, 1024, executor, ProducerType.SINGLE , new SleepingWaitStrategy());
-		disruptor.handleEventsWith(new MultiUpdateEventHandler());
+		disruptor.handleEventsWith(new ChatbotEventHandler());
 		disruptor.setDefaultExceptionHandler(new ChatbotDisruptorExceptionHandler());
 		disruptor.start();
 		return disruptor;

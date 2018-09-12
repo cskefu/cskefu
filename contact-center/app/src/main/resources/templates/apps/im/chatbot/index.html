@@ -62,16 +62,17 @@
                     if(this.count("text") == 0){
                         strValue= "" ;
                     }
-                    if(words != this.count("text")){
-                        socket.emit('message', {
-                            appid : "${appid!''}",
-                            userid:"${userid!''}",
-                            type:"writing",
-                            session:"${sessionid!''}",
-                            orgi:"${orgi!''}",
-                            message : strValue
-                        });
-                    }
+                    // ignore writting in Chatbot Service
+                    // if(words != this.count("text")){
+                    //     socket.emit('message', {
+                    //         appid : "${appid!''}",
+                    //         userid:"${userid!''}",
+                    //         type:"writing",
+                    //         session:"${sessionid!''}",
+                    //         orgi:"${orgi!''}",
+                    //         message : strValue
+                    //     });
+                    // }
                     words = this.count("text") ;
                     document.getElementById('surplus').innerHTML = count+"/"+limitNum+" , " + pattern; //输入显示
                     ////////
@@ -488,6 +489,7 @@
         }
     })
     socket.on('message', function(data) {
+        console.log("[chatbot io] message ", data);
         var chat=document.getElementsByClassName('chatting-left').innerText;
         chat = data.message;
         if(data.messageType == "image"){
@@ -496,9 +498,9 @@
             chat = "<div class='ukefu-message-file'><div class='ukefu-file-icon'><img src='/im/img/file.png'></div><div class='ukefu-file-desc'><a href='"+data.message+"' target='_blank'><div>"+data.filename+"</div><div>"+(data.filesize/1024).toFixed(3)+"Kb</div></a></div></div>" ;
         }
         if(data.calltype == "呼入"){
-            output('<div class="chat-right"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label class="time">'+data.createtime+'</label><label  class="user">'+data.nickName+'</label> </div><div class="chatting-right"><i class="arrow arrow${inviteData.consult_dialog_color!''}"></i><div class="chat-content theme${inviteData.consult_dialog_color!''}">'+chat+'</div></div>' , "chat-block");
+            output('<div class="chat-right"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label class="time">'+data.createtime+'</label> </div><div class="chatting-right"><i class="arrow arrow${inviteData.consult_dialog_color!''}"></i><div class="chat-content theme${inviteData.consult_dialog_color!''}">'+chat+'</div></div>' , "chat-block");
         }else if(data.calltype == "呼出"){
-            output('<div class="chat-left"> <img class="user-img" src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" alt=""><div class="chat-message"><label  class="user">'+data.nickName+'</label><label class="time">'+data.createtime+'</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content">'+chat+'</div></div>' , "chat-block");
+            output('<div class="chat-left"> <img class="user-img" src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" alt=""><div class="chat-message"><label  class="user">'+data.username+'</label><label class="time">'+data.createtime+'</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content">'+chat+'</div></div>' , "chat-block");
             R3Ajax.audioplayer('audioplane', newmessage, false); // 播放
         }
     });

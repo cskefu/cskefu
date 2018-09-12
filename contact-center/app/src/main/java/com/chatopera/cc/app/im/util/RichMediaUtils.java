@@ -147,7 +147,7 @@ public class RichMediaUtils {
         if (StringUtils.isNotBlank(userid)) {
             AgentUser agentUser = (AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(userid, MainContext.SYSTEM_ORGI);
             if ((agentUser != null) && StringUtils.equals(agentUser.getOpttype(), MainContext.OptTypeEnum.CHATBOT.toString())) {
-                ChatbotUtils.createMessage(data, appid, channel, MainContext.CallTypeEnum.IN.toString(), MainContext.ChatbotItemType.USERINPUT.toString(), msgtype, data.getUserid());
+                ChatbotUtils.createMessage(data, appid, channel, MainContext.CallTypeEnum.IN.toString(), MainContext.ChatbotItemType.USERINPUT.toString(), msgtype, data.getUserid(), orgi);
             } else {
                 HumanUtils.createMessage(data, msgtype, userid);
             }

@@ -16,17 +16,18 @@
 package com.chatopera.cc.concurrent.chatbot;
 
 import com.chatopera.cc.app.persistence.hibernate.BaseService;
+import com.chatopera.cc.app.persistence.repository.ChatbotRepository;
 import com.chatopera.cc.exchange.UserEvent;
 
 public class ChatbotEvent<S> implements UserEvent {
 
     private S data;
-    private BaseService<?> crudRes;
+    private ChatbotRepository chatbotRes;
     private String eventype;
 
-    public ChatbotEvent(S data, BaseService<?> crudRes, String eventype) {
+    public ChatbotEvent(S data, ChatbotRepository chatbotRes, String eventype) {
         this.data = data;
-        this.crudRes = crudRes;
+        this.chatbotRes = chatbotRes;
         this.eventype = eventype;
     }
 
@@ -38,12 +39,12 @@ public class ChatbotEvent<S> implements UserEvent {
         this.data = data;
     }
 
-    public BaseService<?> getCrudRes() {
-        return crudRes;
+    public ChatbotRepository getChatbotRes() {
+        return chatbotRes;
     }
 
-    public void setCrudRes(BaseService<?> crudRes) {
-        this.crudRes = crudRes;
+    public void setChatbotRes(ChatbotRepository chatbotRes) {
+        this.chatbotRes = chatbotRes;
     }
 
     public String getEventype() {

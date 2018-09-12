@@ -27,6 +27,9 @@ public class Constants {
 
     public final static String MINIO_BUCKET = "chatopera";
 
+    public final static String IM_MESSAGE_TYPE_MESSAGE = "message";
+    public final static String CHATBOT_EVENT_TYPE_CHAT = "chat";
+
     /**
      * Formatter
      */
