@@ -15,7 +15,7 @@
  */
 package com.chatopera.cc.util.aggregation;
 
-import com.chatopera.cc.util.exception.CallOutRecordException;
+import com.chatopera.cc.exception.CallOutRecordException;
 import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

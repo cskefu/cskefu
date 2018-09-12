@@ -29,9 +29,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.chatopera.cc.webim.web.model.JobDetail;
-import com.chatopera.cc.webim.web.model.SysDic;
-import com.chatopera.cc.webim.web.model.TableProperties;
+import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.model.JobDetail;
+import com.chatopera.cc.app.model.SysDic;
+import com.chatopera.cc.app.model.TableProperties;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
@@ -46,13 +47,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.chatopera.cc.core.UKDataContext;
 import com.chatopera.cc.util.UKTools;
 import com.chatopera.cc.util.extra.DataExchangeInterface;
-import com.chatopera.cc.webim.service.repository.JobDetailRepository;
-import com.chatopera.cc.webim.service.repository.ReporterRepository;
-import com.chatopera.cc.webim.web.model.MetadataTable;
-import com.chatopera.cc.webim.web.model.UKeFuDic;
+import com.chatopera.cc.app.service.repository.JobDetailRepository;
+import com.chatopera.cc.app.service.repository.ReporterRepository;
+import com.chatopera.cc.app.model.MetadataTable;
+import com.chatopera.cc.app.model.UKeFuDic;
 
 public class ExcelImportProecess extends DataProcess{
 	private DecimalFormat format = new DecimalFormat("###");
@@ -112,7 +112,7 @@ public class ExcelImportProecess extends DataProcess{
             MetadataTable table = event.getDSData().getTask() ;
             for(TableProperties tp : table.getTableproperty()){
             	if(tp.isReffk() && !StringUtils.isBlank(tp.getReftbid())){
-            		DataExchangeInterface exchange = (DataExchangeInterface) UKDataContext.getContext().getBean(tp.getReftbid()) ;
+            		DataExchangeInterface exchange = (DataExchangeInterface) MainContext.getContext().getBean(tp.getReftbid()) ;
             		refValues.put(tp.getFieldname(), exchange.getListDataByIdAndOrgi(null, null, event.getOrgi())) ;
             	}
             }
@@ -215,7 +215,7 @@ public class ExcelImportProecess extends DataProcess{
 							}
 						}
 		            	if(tp.isReffk() && !StringUtils.isBlank(tp.getReftbid()) && refValues.get(tp.getFieldname()) == null){
-		            		DataExchangeInterface exchange = (DataExchangeInterface) UKDataContext.getContext().getBean(tp.getReftbid()) ;
+		            		DataExchangeInterface exchange = (DataExchangeInterface) MainContext.getContext().getBean(tp.getReftbid()) ;
 		            		exchange.process(data, event.getOrgi());
 		            	}
 		            }
@@ -240,15 +240,15 @@ public class ExcelImportProecess extends DataProcess{
 						}else {
 							values.put("validresult", "valid") ;
 						}
-						values.put("status", UKDataContext.NamesDisStatusType.NOT.toString()) ;
+						values.put("status", MainContext.NamesDisStatusType.NOT.toString()) ;
 						values.put("batid", event.getBatid()) ;
 						
 						values.put("createtime", System.currentTimeMillis()) ;
-						values.put("callstatus", UKDataContext.NameStatusTypeEnum.NOTCALL.toString()) ;
+						values.put("callstatus", MainContext.NameStatusTypeEnum.NOTCALL.toString()) ;
 						values.put("execid", event.getDSData().getReport().getId()) ;
 						
 						if(i%500 == 0) {
-							UKDataContext.getContext().getBean(ReporterRepository.class).save(event.getDSData().getReport()) ;
+							MainContext.getContext().getBean(ReporterRepository.class).save(event.getDSData().getReport()) ;
 						}
 						
 						if(values.get("cusid")==null) {
@@ -274,7 +274,7 @@ public class ExcelImportProecess extends DataProcess{
             event.setTimes(System.currentTimeMillis() - start);
             event.getDSData().getReport().setEndtime(new Date());
             event.getDSData().getReport().setAmount(String.valueOf((float)event.getTimes()/1000f));
-            event.getDSData().getReport().setStatus(UKDataContext.TaskStatusType.END.getType());
+            event.getDSData().getReport().setStatus(MainContext.TaskStatusType.END.getType());
             event.getDSData().getReport().setTotal(pages.intValue());
             event.getDSData().getReport().setPages(pages.intValue());
             event.getDSData().getReport().setErrors(errors.intValue());
@@ -294,9 +294,9 @@ public class ExcelImportProecess extends DataProcess{
 			/**
 			 * 更新数据
 			 */
-			UKDataContext.getContext().getBean(ReporterRepository.class).save(event.getDSData().getReport()) ;
+			MainContext.getContext().getBean(ReporterRepository.class).save(event.getDSData().getReport()) ;
 			if(event.getDSData().getClazz() == null && !StringUtils.isBlank(event.getBatid())) {
-				JobDetailRepository batchRes = UKDataContext.getContext().getBean(JobDetailRepository.class) ;
+				JobDetailRepository batchRes = MainContext.getContext().getBean(JobDetailRepository.class) ;
 				JobDetail batch = this.event.getDSData().getJobDetail();
 				if(batch == null) {
 					batch = batchRes.findByIdAndOrgi(event.getBatid(), event.getOrgi()) ;

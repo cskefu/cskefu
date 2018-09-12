@@ -20,7 +20,7 @@ package com.chatopera.cc.util.bi.model;
 import java.util.List;
 
 import com.chatopera.cc.util.UKTools;
-import com.chatopera.cc.webim.web.model.ColumnProperties;
+import com.chatopera.cc.app.model.ColumnProperties;
 
 public class ValueData implements java.io.Serializable,Cloneable{
 	/**

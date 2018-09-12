@@ -19,11 +19,11 @@ package com.chatopera.cc.util.task.process;
 import java.util.Date;
 import java.util.List;
 
-import com.chatopera.cc.core.UKDataContext;
-import com.chatopera.cc.webim.service.es.TopicRepository;
-import com.chatopera.cc.webim.service.repository.TopicItemRepository;
-import com.chatopera.cc.webim.web.model.Topic;
-import com.chatopera.cc.webim.web.model.TopicItem;
+import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.service.es.TopicRepository;
+import com.chatopera.cc.app.service.repository.TopicItemRepository;
+import com.chatopera.cc.app.model.Topic;
+import com.chatopera.cc.app.model.TopicItem;
 
 public class TopicProcess implements JPAProcess{
 	
@@ -49,7 +49,7 @@ public class TopicProcess implements JPAProcess{
 	public void process(Object data , String orgi) {
 		Topic topic = (Topic) data ;
 		if(topic.getSilimar()!=null && topic.getSilimar().size() > 0) {
-			TopicItemRepository topicItemRes = UKDataContext.getContext().getBean(TopicItemRepository.class) ;
+			TopicItemRepository topicItemRes = MainContext.getContext().getBean(TopicItemRepository.class) ;
 			List<TopicItem> topicItemList = topicItemRes.findByTopicid(topic.getId()) ;
 			if(topicItemList!=null && topicItemList.size() > 0) {
 				topicItemRes.delete(topicItemList);

@@ -16,8 +16,8 @@
  */
 package com.chatopera.cc.util.task.process;
 
-import com.chatopera.cc.webim.service.es.EntCustomerRepository;
-import com.chatopera.cc.webim.web.model.EntCustomer;
+import com.chatopera.cc.app.service.es.EntCustomerRepository;
+import com.chatopera.cc.app.model.EntCustomer;
 
 public class EntCustomerProcess implements JPAProcess{
 	

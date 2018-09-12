@@ -49,14 +49,14 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.chatopera.cc.core.UKDataContext;
+import com.chatopera.cc.app.MainContext;
 import com.chatopera.cc.util.asr.AsrResult;
-import com.chatopera.cc.util.event.AiEvent;
-import com.chatopera.cc.util.event.MultiUpdateEvent;
-import com.chatopera.cc.util.event.UserDataEvent;
-import com.chatopera.cc.util.event.UserEvent;
+import com.chatopera.cc.event.ChatbotEvent;
+import com.chatopera.cc.event.MultiUpdateEvent;
+import com.chatopera.cc.event.UserDataEvent;
+import com.chatopera.cc.event.UserEvent;
 import com.chatopera.cc.util.mail.MailSender;
-import com.chatopera.cc.webim.service.cache.CacheHelper;
+import com.chatopera.cc.app.service.cache.CacheHelper;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.beanutils.ConvertUtils;
@@ -89,28 +89,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.googlecode.aviator.AviatorEvaluator;
 import com.lmax.disruptor.dsl.Disruptor;
-import com.chatopera.cc.webim.service.repository.AdTypeRepository;
-import com.chatopera.cc.webim.service.repository.AreaTypeRepository;
-import com.chatopera.cc.webim.service.repository.AttachmentRepository;
-import com.chatopera.cc.webim.service.repository.SecretRepository;
-import com.chatopera.cc.webim.service.repository.SystemConfigRepository;
-import com.chatopera.cc.webim.service.repository.SystemMessageRepository;
-import com.chatopera.cc.webim.service.repository.TablePropertiesRepository;
-import com.chatopera.cc.webim.service.repository.TemplateRepository;
-import com.chatopera.cc.webim.web.model.AdType;
-import com.chatopera.cc.webim.web.model.AttachmentFile;
-import com.chatopera.cc.webim.web.model.JobDetail;
-import com.chatopera.cc.webim.web.model.JobTask;
-import com.chatopera.cc.webim.web.model.Secret;
-import com.chatopera.cc.webim.web.model.SysDic;
-import com.chatopera.cc.webim.web.model.SystemConfig;
-import com.chatopera.cc.webim.web.model.SystemMessage;
-import com.chatopera.cc.webim.web.model.TableProperties;
-import com.chatopera.cc.webim.web.model.Template;
-import com.chatopera.cc.webim.web.model.UKeFuDic;
-import com.chatopera.cc.webim.web.model.User;
-import com.chatopera.cc.webim.web.model.WorkOrders;
-import com.chatopera.cc.webim.web.model.WorkSession;
+import com.chatopera.cc.app.service.repository.AdTypeRepository;
+import com.chatopera.cc.app.service.repository.AreaTypeRepository;
+import com.chatopera.cc.app.service.repository.AttachmentRepository;
+import com.chatopera.cc.app.service.repository.SecretRepository;
+import com.chatopera.cc.app.service.repository.SystemConfigRepository;
+import com.chatopera.cc.app.service.repository.SystemMessageRepository;
+import com.chatopera.cc.app.service.repository.TablePropertiesRepository;
+import com.chatopera.cc.app.service.repository.TemplateRepository;
+import com.chatopera.cc.app.model.AdType;
+import com.chatopera.cc.app.model.AttachmentFile;
+import com.chatopera.cc.app.model.JobDetail;
+import com.chatopera.cc.app.model.JobTask;
+import com.chatopera.cc.app.model.Secret;
+import com.chatopera.cc.app.model.SysDic;
+import com.chatopera.cc.app.model.SystemConfig;
+import com.chatopera.cc.app.model.SystemMessage;
+import com.chatopera.cc.app.model.TableProperties;
+import com.chatopera.cc.app.model.Template;
+import com.chatopera.cc.app.model.UKeFuDic;
+import com.chatopera.cc.app.model.User;
+import com.chatopera.cc.app.model.WorkOrders;
+import com.chatopera.cc.app.model.WorkSession;
 
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
@@ -246,7 +246,7 @@ public class UKTools {
 	
 	public static void published(UserEvent event){
 		@SuppressWarnings("unchecked")
-		Disruptor<UserDataEvent> disruptor = (Disruptor<UserDataEvent>) UKDataContext.getContext().getBean("disruptor") ;
+		Disruptor<UserDataEvent> disruptor = (Disruptor<UserDataEvent>) MainContext.getContext().getBean("disruptor") ;
 		long seq = disruptor.getRingBuffer().next();
 		disruptor.getRingBuffer().get(seq).setEvent(event); ;
 		disruptor.getRingBuffer().publish(seq);
@@ -268,19 +268,20 @@ public class UKTools {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void multiupdate(MultiUpdateEvent event){
-		Disruptor<UserDataEvent> disruptor = (Disruptor<UserDataEvent>) UKDataContext.getContext().getBean("multiupdate") ;
+		Disruptor<UserDataEvent> disruptor = (Disruptor<UserDataEvent>) MainContext.getContext().getBean("multiupdate") ;
 		long seq = disruptor.getRingBuffer().next();
 		disruptor.getRingBuffer().get(seq).setEvent(event); 
 		disruptor.getRingBuffer().publish(seq);
 	}
 	
 	@SuppressWarnings({ "unchecked"})
-	public static void ai(UserEvent event){
-		Disruptor<AiEvent> disruptor = (Disruptor<AiEvent>) UKDataContext.getContext().getBean("ai") ;
+	public static void chatbot(UserEvent event){
+		Disruptor<ChatbotEvent> disruptor = (Disruptor<ChatbotEvent>) MainContext.getContext().getBean("chatbot") ;
 		long seq = disruptor.getRingBuffer().next();
 		disruptor.getRingBuffer().get(seq).setEvent(event); ;
 		disruptor.getRingBuffer().publish(seq);
 	}
+
 	/**
 	 * 
 	 * @param request
@@ -509,11 +510,11 @@ public class UKTools {
 				Object[] value = (Object[]) values.get(i) ;
 				if(value.length>=2){
 					String invitestatus = (String) value[0] ;
-					if(UKDataContext.OnlineUserInviteStatus.DEFAULT.toString().equals(invitestatus) || invitestatus == null){
+					if(MainContext.OnlineUserInviteStatus.DEFAULT.toString().equals(invitestatus) || invitestatus == null){
 						report.setUsers((long) value[1]);
-					}else if(UKDataContext.OnlineUserInviteStatus.INVITE.toString().equals(invitestatus)){
+					}else if(MainContext.OnlineUserInviteStatus.INVITE.toString().equals(invitestatus)){
 						report.setInviteusers((long) value[1]);
-					}else if(UKDataContext.OnlineUserInviteStatus.REFUSE.toString().equals(invitestatus)){
+					}else if(MainContext.OnlineUserInviteStatus.REFUSE.toString().equals(invitestatus)){
 						report.setRefuseusers((long) value[1]);
 					}
 				}
@@ -582,11 +583,11 @@ public class UKTools {
 				Object[] value = (Object[]) values.get(i) ;
 				if(value.length>=2){
 					String invitestatus = (String) value[0] ;
-					if(UKDataContext.OnlineUserInviteStatus.DEFAULT.toString().equals(invitestatus) || invitestatus == null){
+					if(MainContext.OnlineUserInviteStatus.DEFAULT.toString().equals(invitestatus) || invitestatus == null){
 						report.setUsers((long) value[1]);
-					}else if(UKDataContext.OnlineUserInviteStatus.ACCEPT.toString().equals(invitestatus)){
+					}else if(MainContext.OnlineUserInviteStatus.ACCEPT.toString().equals(invitestatus)){
 						report.setInviteusers((long) value[1]);
-					}else if(UKDataContext.OnlineUserInviteStatus.REFUSE.toString().equals(invitestatus)){
+					}else if(MainContext.OnlineUserInviteStatus.REFUSE.toString().equals(invitestatus)){
 						report.setRefuseusers((long) value[1]);
 					}
 				}
@@ -607,9 +608,9 @@ public class UKTools {
 				Object[] value = (Object[]) values.get(i) ;
 				if(value.length>=2){
 					String event = (String) value[0] ;
-					if(UKDataContext.WeiXinEventTypeEnum.SUB.toString().equals(event)){
+					if(MainContext.WeiXinEventTypeEnum.SUB.toString().equals(event)){
 						report.setSubs((long) value[1]);
-					}else if(UKDataContext.WeiXinEventTypeEnum.UNSUB.toString().equals(event)){
+					}else if(MainContext.WeiXinEventTypeEnum.UNSUB.toString().equals(event)){
 						report.setUnsubs((long) value[1]);
 					}
 				}
@@ -718,7 +719,7 @@ public class UKTools {
      */
     public static String encryption(String str) throws NoSuchAlgorithmException{
     	BasicTextEncryptor  textEncryptor = new BasicTextEncryptor ();
-    	textEncryptor.setPassword(UKDataContext.getSystemSecrityPassword());
+    	textEncryptor.setPassword(MainContext.getSystemSecrityPassword());
     	return textEncryptor.encrypt(str);
     }
     
@@ -730,7 +731,7 @@ public class UKTools {
      */
     public static String decryption(String str) throws NoSuchAlgorithmException{
     	BasicTextEncryptor  textEncryptor = new BasicTextEncryptor ();
-    	textEncryptor.setPassword(UKDataContext.getSystemSecrityPassword());
+    	textEncryptor.setPassword(MainContext.getSystemSecrityPassword());
     	return textEncryptor.decrypt(str);
     }
     
@@ -826,7 +827,7 @@ public class UKTools {
 
 	public static String processEmoti(String message) {
 		Pattern pattern = Pattern.compile("\\[([\\d]*?)\\]");
-		SystemConfig systemConfig = (SystemConfig) CacheHelper.getSystemCacheBean().getCacheObject("systemConfig", UKDataContext.SYSTEM_ORGI) ;
+		SystemConfig systemConfig = (SystemConfig) CacheHelper.getSystemCacheBean().getCacheObject("systemConfig", MainContext.SYSTEM_ORGI) ;
 	    Matcher matcher = pattern.matcher(message);
 	    StringBuffer strb = new StringBuffer();
 	    while(matcher.find()) {
@@ -904,7 +905,7 @@ public class UKTools {
 		    			attachmentFile.setOrgan(user.getOrgan());
 		    			attachmentFile.setDataid(dataid);
 		    			attachmentFile.setModelid(modelid);
-		    			attachmentFile.setModel(UKDataContext.ModelType.WORKORDERS.toString());
+		    			attachmentFile.setModel(MainContext.ModelType.WORKORDERS.toString());
 		    			attachmentFile.setFilelength((int) file.getSize());
 		    			if(file.getContentType()!=null && file.getContentType().length() > 255){
 		    				attachmentFile.setFiletype(file.getContentType().substring(0 , 255));
@@ -933,10 +934,10 @@ public class UKTools {
 	 * @return
 	 */
 	public static SystemConfig getSystemConfig(){
-		SystemConfig systemConfig = (SystemConfig) CacheHelper.getSystemCacheBean().getCacheObject("systemConfig", UKDataContext.SYSTEM_ORGI) ;
+		SystemConfig systemConfig = (SystemConfig) CacheHelper.getSystemCacheBean().getCacheObject("systemConfig", MainContext.SYSTEM_ORGI) ;
 		if(systemConfig == null){
-			SystemConfigRepository systemConfigRes = UKDataContext.getContext().getBean(SystemConfigRepository.class) ;
-			systemConfig = systemConfigRes.findByOrgi(UKDataContext.SYSTEM_ORGI) ;
+			SystemConfigRepository systemConfigRes = MainContext.getContext().getBean(SystemConfigRepository.class) ;
+			systemConfig = systemConfigRes.findByOrgi(MainContext.SYSTEM_ORGI) ;
 		}
 		return systemConfig;
 	}
@@ -947,7 +948,7 @@ public class UKTools {
 	public static void initSystemSecField(TablePropertiesRepository tpRes) {
 		if(tpRes!= null) {
 			List<TableProperties> tpList = tpRes.findBySecfield(true) ;
-			CacheHelper.getSystemCacheBean().put(UKDataContext.UKEFU_SYSTEM_SECFIELD, tpList, UKDataContext.SYSTEM_ORGI) ;
+			CacheHelper.getSystemCacheBean().put(MainContext.UKEFU_SYSTEM_SECFIELD, tpList, MainContext.SYSTEM_ORGI) ;
 		}
 	}
 	/**
@@ -955,9 +956,9 @@ public class UKTools {
 	 * @return
 	 */
 	public static void initSystemArea(){
-		CacheHelper.getSystemCacheBean().delete(UKDataContext.UKEFU_SYSTEM_AREA, UKDataContext.SYSTEM_ORGI) ;
-		AreaTypeRepository areaTypeRes = UKDataContext.getContext().getBean(AreaTypeRepository.class) ;
-    	CacheHelper.getSystemCacheBean().put(UKDataContext.UKEFU_SYSTEM_AREA, areaTypeRes.findAll(), UKDataContext.SYSTEM_ORGI);
+		CacheHelper.getSystemCacheBean().delete(MainContext.UKEFU_SYSTEM_AREA, MainContext.SYSTEM_ORGI) ;
+		AreaTypeRepository areaTypeRes = MainContext.getContext().getBean(AreaTypeRepository.class) ;
+    	CacheHelper.getSystemCacheBean().put(MainContext.UKEFU_SYSTEM_AREA, areaTypeRes.findAll(), MainContext.SYSTEM_ORGI);
 	}
 	
 	/**
@@ -965,17 +966,17 @@ public class UKTools {
 	 * @return
 	 */
 	public static void initAdv(String orgi){
-		CacheHelper.getSystemCacheBean().delete(UKDataContext.UKEFU_SYSTEM_ADV+"_"+orgi, orgi) ;
-		AdTypeRepository adRes = UKDataContext.getContext().getBean(AdTypeRepository.class) ;
-    	CacheHelper.getSystemCacheBean().put(UKDataContext.UKEFU_SYSTEM_ADV+"_"+orgi, adRes.findByOrgi(orgi),orgi);
+		CacheHelper.getSystemCacheBean().delete(MainContext.UKEFU_SYSTEM_ADV+"_"+orgi, orgi) ;
+		AdTypeRepository adRes = MainContext.getContext().getBean(AdTypeRepository.class) ;
+    	CacheHelper.getSystemCacheBean().put(MainContext.UKEFU_SYSTEM_ADV+"_"+orgi, adRes.findByOrgi(orgi),orgi);
 	}
 	
 	public static Template getTemplate(String id){
 		Template templet = null ;
-		if((templet = (Template) CacheHelper.getSystemCacheBean().getCacheObject(id,  UKDataContext.SYSTEM_ORGI)) == null) {
-			TemplateRepository templateRes = UKDataContext.getContext().getBean(TemplateRepository.class) ;
-			templet = templateRes.findByIdAndOrgi(id, UKDataContext.SYSTEM_ORGI);
-			CacheHelper.getSystemCacheBean().put(id, templet, UKDataContext.SYSTEM_ORGI);
+		if((templet = (Template) CacheHelper.getSystemCacheBean().getCacheObject(id,  MainContext.SYSTEM_ORGI)) == null) {
+			TemplateRepository templateRes = MainContext.getContext().getBean(TemplateRepository.class) ;
+			templet = templateRes.findByIdAndOrgi(id, MainContext.SYSTEM_ORGI);
+			CacheHelper.getSystemCacheBean().put(id, templet, MainContext.SYSTEM_ORGI);
 		}
 		return templet;
 	}
@@ -987,13 +988,13 @@ public class UKTools {
 	@SuppressWarnings("unchecked")
 	public static AdType getPointAdv(String adpos,String orgi){
 		List<AdType> adTypeList = new ArrayList<AdType>();
-		List <AdType> cacheAdTypeList = (List<AdType>) CacheHelper.getSystemCacheBean().getCacheObject(UKDataContext.UKEFU_SYSTEM_ADV+"_"+orgi,orgi);
+		List <AdType> cacheAdTypeList = (List<AdType>) CacheHelper.getSystemCacheBean().getCacheObject(MainContext.UKEFU_SYSTEM_ADV+"_"+orgi,orgi);
 		if(cacheAdTypeList == null) {
-			AdTypeRepository adRes = UKDataContext.getContext().getBean(AdTypeRepository.class) ;
+			AdTypeRepository adRes = MainContext.getContext().getBean(AdTypeRepository.class) ;
 			cacheAdTypeList = adRes.findByOrgi(orgi);
-	    	CacheHelper.getSystemCacheBean().put(UKDataContext.UKEFU_SYSTEM_ADV+"_"+orgi,cacheAdTypeList,orgi);
+	    	CacheHelper.getSystemCacheBean().put(MainContext.UKEFU_SYSTEM_ADV+"_"+orgi,cacheAdTypeList,orgi);
 		}
-		List<SysDic> sysDicList = UKeFuDic.getInstance().getDic(UKDataContext.UKEFU_SYSTEM_ADPOS_DIC) ;
+		List<SysDic> sysDicList = UKeFuDic.getInstance().getDic(MainContext.UKEFU_SYSTEM_ADPOS_DIC) ;
 		SysDic sysDic = null ;
 		if(sysDicList!=null){
 			for(SysDic dic : sysDicList){
@@ -1087,7 +1088,7 @@ public class UKTools {
 	public static void sendMail(String email , String cc , String subject , String content ,List<String> filenames) throws Exception{
 		SystemConfig config = UKTools.getSystemConfig() ;
 		if(config!=null && config.isEnablemail() && config.getEmailid()!=null) {
-			SystemMessage systemMessage = UKDataContext.getContext().getBean(SystemMessageRepository.class).findByIdAndOrgi(config.getEmailid(),config.getOrgi()) ;
+			SystemMessage systemMessage = MainContext.getContext().getBean(SystemMessageRepository.class).findByIdAndOrgi(config.getEmailid(),config.getOrgi()) ;
 			MailSender sender = new MailSender(systemMessage.getSmtpserver(),systemMessage.getMailfrom(),systemMessage.getSmtpuser(), decryption(systemMessage.getSmtppassword()),systemMessage.getSeclev(),systemMessage.getSslport());
 			if(email!=null){
 				sender.send(email,cc, subject, content,filenames);
@@ -1294,7 +1295,7 @@ public class UKTools {
 	public static boolean sendSms(String phone,String id ,String tpId, Map<String,Object> tplValuesMap) throws Exception{
 		SystemConfig config = UKTools.getSystemConfig() ;
 		if(config!=null) {
-			SystemMessage systemMessage = UKDataContext.getContext().getBean(SystemMessageRepository.class).findByIdAndOrgi(id,config.getOrgi()) ;
+			SystemMessage systemMessage = MainContext.getContext().getBean(SystemMessageRepository.class).findByIdAndOrgi(id,config.getOrgi()) ;
 			if(systemMessage==null) {
 				return false;
 			}

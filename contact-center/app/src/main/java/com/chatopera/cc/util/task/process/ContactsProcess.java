@@ -16,8 +16,8 @@
  */
 package com.chatopera.cc.util.task.process;
 
-import com.chatopera.cc.webim.service.es.ContactsRepository;
-import com.chatopera.cc.webim.web.model.Contacts;
+import com.chatopera.cc.app.service.es.ContactsRepository;
+import com.chatopera.cc.app.model.Contacts;
 
 public class ContactsProcess implements JPAProcess{
 	

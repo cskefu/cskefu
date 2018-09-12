@@ -26,7 +26,7 @@ import org.lionsoul.ip2region.DbConfig;
 import org.lionsoul.ip2region.DbMakerConfigException;
 import org.lionsoul.ip2region.DbSearcher;
 
-import com.chatopera.cc.core.UKDataContext;
+import com.chatopera.cc.app.MainContext;
 
 public class IPTools {
 	private String IP_DATA_PATH = "WEB-INF/data/ip/ip.db";
@@ -39,7 +39,7 @@ public class IPTools {
 
 	public IPTools() {
 		try {
-			File dbFile = new File(UKDataContext.getContext().getEnvironment().getProperty("web.upload-path"), "ipdata/ipdata.db") ;
+			File dbFile = new File(MainContext.getContext().getEnvironment().getProperty("web.upload-path"), "ipdata/ipdata.db") ;
 			if(!dbFile.exists()){
 				FileUtils.copyInputStreamToFile(IPTools.class.getClassLoader().getResourceAsStream(IP_DATA_PATH),dbFile);
 			}

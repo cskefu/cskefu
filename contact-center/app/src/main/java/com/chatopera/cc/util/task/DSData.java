@@ -18,11 +18,11 @@ package com.chatopera.cc.util.task;
 
 import java.io.File;
 
-import com.chatopera.cc.webim.web.model.JobDetail;
-import com.chatopera.cc.webim.web.model.User;
+import com.chatopera.cc.app.model.JobDetail;
+import com.chatopera.cc.app.model.User;
 import com.chatopera.cc.util.task.process.JPAProcess;
-import com.chatopera.cc.webim.web.model.MetadataTable;
-import com.chatopera.cc.webim.web.model.Reporter;
+import com.chatopera.cc.app.model.MetadataTable;
+import com.chatopera.cc.app.model.Reporter;
 
 public class DSData {
 	/**

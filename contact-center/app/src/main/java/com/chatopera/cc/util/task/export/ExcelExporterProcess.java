@@ -22,8 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.chatopera.cc.webim.web.model.SysDic;
-import com.chatopera.cc.webim.web.model.TableProperties;
+import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.model.SysDic;
+import com.chatopera.cc.app.model.TableProperties;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -36,10 +37,9 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
-import com.chatopera.cc.core.UKDataContext;
 import com.chatopera.cc.util.extra.DataExchangeInterface;
-import com.chatopera.cc.webim.web.model.MetadataTable;
-import com.chatopera.cc.webim.web.model.UKeFuDic;
+import com.chatopera.cc.app.model.MetadataTable;
+import com.chatopera.cc.app.model.UKeFuDic;
 
 @SuppressWarnings("deprecation")
 public class ExcelExporterProcess {
@@ -177,7 +177,7 @@ public class ExcelExporterProcess {
 							String key = (String) value.get(tp.getFieldname()) ;
 							String orgi = (String) value.get("orgi") ;
 							if(!StringUtils.isBlank(key) && !StringUtils.isBlank(orgi)) {
-			            		DataExchangeInterface exchange = (DataExchangeInterface) UKDataContext.getContext().getBean(tp.getReftbid()) ;
+			            		DataExchangeInterface exchange = (DataExchangeInterface) MainContext.getContext().getBean(tp.getReftbid()) ;
 			            		Object refvalue = exchange.getDataByIdAndOrgi(key, orgi) ;
 			            		if(refvalue!=null) {
 			            			cell2.setCellValue(new HSSFRichTextString(refvalue.toString()));

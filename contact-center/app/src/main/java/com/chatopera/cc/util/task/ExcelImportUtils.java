@@ -25,9 +25,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.chatopera.cc.core.UKDataContext;
-import com.chatopera.cc.webim.web.model.MetadataTable;
-import com.chatopera.cc.webim.web.model.TableProperties;
+import com.chatopera.cc.app.MainContext;
+import com.chatopera.cc.app.model.MetadataTable;
+import com.chatopera.cc.app.model.TableProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -118,10 +118,10 @@ public class ExcelImportUtils{
 			metaDataTable.getTableproperty().add(initProperties("assuser", "分配执行人", "String", event.getOrgi() , event.getTablename() , true)) ;
 			
 			
-			metaDataTable.getTableproperty().add(initProperties(UKDataContext.UKEFU_SYSTEM_DIS_AI, "分配AI", "String", event.getOrgi() , event.getTablename() , true)) ;
-			metaDataTable.getTableproperty().add(initProperties(UKDataContext.UKEFU_SYSTEM_DIS_AGENT, "分配用户", "String", event.getOrgi() , event.getTablename() , true)) ;
-			metaDataTable.getTableproperty().add(initProperties(UKDataContext.UKEFU_SYSTEM_DIS_ORGAN, "分配部门", "String", event.getOrgi() , event.getTablename() , true)) ;
-			metaDataTable.getTableproperty().add(initProperties(UKDataContext.UKEFU_SYSTEM_DIS_TIME, "分配时间", "Datetime", event.getOrgi() , event.getTablename() , true)) ;
+			metaDataTable.getTableproperty().add(initProperties(MainContext.UKEFU_SYSTEM_DIS_AI, "分配AI", "String", event.getOrgi() , event.getTablename() , true)) ;
+			metaDataTable.getTableproperty().add(initProperties(MainContext.UKEFU_SYSTEM_DIS_AGENT, "分配用户", "String", event.getOrgi() , event.getTablename() , true)) ;
+			metaDataTable.getTableproperty().add(initProperties(MainContext.UKEFU_SYSTEM_DIS_ORGAN, "分配部门", "String", event.getOrgi() , event.getTablename() , true)) ;
+			metaDataTable.getTableproperty().add(initProperties(MainContext.UKEFU_SYSTEM_DIS_TIME, "分配时间", "Datetime", event.getOrgi() , event.getTablename() , true)) ;
 			
 			metaDataTable.getTableproperty().add(initProperties("status", "状态", "String", event.getOrgi() , event.getTablename() , true)) ;
 			
@@ -163,7 +163,7 @@ public class ExcelImportUtils{
             /**
 			 * 映射 Mapping , 已修正，增加了一个手动映射的步骤，上传数据结构以后，允许手动映射
 			 */
-			//ESTools.mapping(metaDataTable, UKDataContext.SYSTEM_INDEX);
+			//ESTools.mapping(metaDataTable, MainContext.SYSTEM_INDEX);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally{

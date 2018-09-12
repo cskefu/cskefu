@@ -18,7 +18,7 @@ package com.chatopera.cc.util.mail;
 
 import java.util.List;
 
-import com.chatopera.cc.util.event.UserEvent;
+import com.chatopera.cc.event.UserEvent;
 
 public class Mail implements UserEvent{
 	public Mail(String email, String subject, String content) {

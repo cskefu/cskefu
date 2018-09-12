@@ -16,8 +16,8 @@
  */
 package com.chatopera.cc.util.task.process;
 
-import com.chatopera.cc.webim.service.es.QuickReplyRepository;
-import com.chatopera.cc.webim.web.model.QuickReply;
+import com.chatopera.cc.app.service.es.QuickReplyRepository;
+import com.chatopera.cc.app.model.QuickReply;
 
 public class QuickReplyProcess implements JPAProcess{
 	

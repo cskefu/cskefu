@@ -16,7 +16,7 @@
  */
 package com.chatopera.cc.util.extra;
 
-import com.chatopera.cc.webim.web.model.PbxHost;
+import com.chatopera.cc.app.model.PbxHost;
 
 public interface CallCenterInterface {
 	public void init(PbxHost pbxHost) throws Exception ;

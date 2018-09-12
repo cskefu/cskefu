@@ -18,7 +18,7 @@ package com.chatopera.cc.util.task.export;
 
 import java.util.List;
 
-import com.chatopera.cc.webim.web.model.TableProperties;
+import com.chatopera.cc.app.model.TableProperties;
 
 public class ExportData {
 	private TableProperties tp ;

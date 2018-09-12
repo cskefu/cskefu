@@ -6,7 +6,7 @@
     <property name="LOG_HOME" value="${logPath}" />
     <property name="LOG_LEVEL" value="${logLevel}" />
     <!-- 控制台输出 -->
-    <appender name="STDOUT" class="com.chatopera.cc.webim.util.log.UKeFuAppender">
+    <appender name="STDOUT" class="com.chatopera.cc.util.log.UKeFuAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>

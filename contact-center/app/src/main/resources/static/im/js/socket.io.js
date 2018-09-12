@@ -3187,7 +3187,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
     var id = this.iframeId = 'eio_iframe_' + this.index;
     var iframe;
 
-    form.className = 'socketio';
+    form.className = 'im';
     form.style.position = 'absolute';
     form.style.top = '-1000px';
     form.style.left = '-1000px';
