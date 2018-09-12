@@ -281,7 +281,7 @@ public class ApiChatbotController extends Handler {
 
         if (StringUtils.isNotBlank(welcome)) {
             c.setWelcome(welcome);
-            invite.setAimsg(welcome);
+            invite.setAisuccesstip(welcome);
         }
 
         if (StringUtils.isNotBlank(name)) {
@@ -392,7 +392,7 @@ public class ApiChatbotController extends Handler {
                 if (invite != null) {
                     invite.setAi(false);
                     invite.setAiname(null);
-                    invite.setAimsg(null);
+                    invite.setAisuccesstip(null);
                     invite.setAifirst(false);
                     invite.setAiid(null);
                     consultInviteRes.save(invite);
@@ -554,7 +554,7 @@ public class ApiChatbotController extends Handler {
                 invite.setAifirst(StringUtils.equals(ChatbotUtils.CHATBOT_FIRST, workmode));
                 invite.setAiid(c.getId());
                 invite.setAiname(c.getName());
-                invite.setAimsg(c.getWelcome());
+                invite.setAisuccesstip(c.getWelcome());
                 consultInviteRes.save(invite);
                 OnlineUserUtils.cacheCousult(invite);
                 chatbotRes.save(c);

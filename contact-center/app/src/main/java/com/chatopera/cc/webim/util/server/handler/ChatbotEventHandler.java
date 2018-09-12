@@ -28,10 +28,7 @@ import com.chatopera.cc.webim.util.router.OutMessageRouter;
 import com.chatopera.cc.webim.util.server.message.AgentStatusMessage;
 import com.chatopera.cc.webim.util.server.message.ChatMessage;
 import com.chatopera.cc.webim.util.server.message.NewRequestMessage;
-import com.chatopera.cc.webim.web.model.AgentService;
-import com.chatopera.cc.webim.web.model.AiUser;
-import com.chatopera.cc.webim.web.model.CousultInvite;
-import com.chatopera.cc.webim.web.model.MessageOutContent;
+import com.chatopera.cc.webim.web.model.*;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -39,12 +36,16 @@ import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.InetSocketAddress;
 import java.util.Date;
 
 public class ChatbotEventHandler {
+    private static final Logger logger = LoggerFactory.getLogger(ChatbotEventHandler.class);
+
     protected SocketIOServer server;
 
     @Autowired
@@ -62,6 +63,7 @@ public class ChatbotEventHandler {
             String aiid = client.getHandshakeData().getSingleUrlParam("aiid");
 //			String agent = client.getHandshakeData().getSingleUrlParam("agent") ;
 //			String skill = client.getHandshakeData().getSingleUrlParam("skill") ;
+            logger.info("[chatbot socket.io] onConnect user {}, orgi {}, appid {}, aiid {}", user, orgi, appid, aiid);
 
             if (StringUtils.isNotBlank(user)) {
 //				/**
