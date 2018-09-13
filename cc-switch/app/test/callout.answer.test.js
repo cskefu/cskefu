@@ -30,11 +30,11 @@ test.only("Redis Test # 外呼接通", async(t) => {
 
     let payload = {
         "uuid": "9a0cbc81-ccae-425e-8d3d-369b872a6481",
-        "to": "15801213121",
-        "from": "1002",
+        "to": "13213213213",
+        "from": "1003",
         "type": "callout",
         "channel": "bxzq",
-        "dialplan": "4028825165a9b23a0165a9b4de1c04c9",
+        "dialplan": "4028827365b2acec0165b307afe405de",
         "createtime": now.valueOf(),
         "ops": "answer"
     }
