@@ -68,10 +68,9 @@ public class ChatbotUtils {
      * @param data
      * @param direction
      * @param chatype
-     * @param msgtype
      * @return
      */
-    private static MessageOutContent createMessage(ChatMessage data, String direction, String chatype, String msgtype) {
+    private static MessageOutContent createMessage(ChatMessage data, String direction, String chatype) {
         AgentUser agentUser = (AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(data.getUserid(), data.getOrgi());
         if (agentUser == null)
             return null;
@@ -79,7 +78,7 @@ public class ChatbotUtils {
         // 设置发送消息体
         MessageOutContent outMessage = new MessageOutContent();
         outMessage.setMessage(data.getMessage());
-        outMessage.setMessageType(msgtype);
+        outMessage.setMessageType(data.getMsgtype());
         outMessage.setCalltype(direction);
         outMessage.setAgentUser(null);
         outMessage.setSnsAccount(null);
@@ -87,7 +86,7 @@ public class ChatbotUtils {
             outMessage.setSuggest(data.getSuggest());
         }
 
-        outMessage.setContextid(data.getUserid());
+        outMessage.setContextid(data.getContextid());
         outMessage.setFromUser(data.getUserid());
         outMessage.setToUser(data.getTouser());
         outMessage.setChannelMessage(data);
@@ -140,7 +139,7 @@ public class ChatbotUtils {
         data.setUsession(data.getUserid());                //agentUser作为 session id
         data.setCalltype(direction);
         data.setUpdatetime(System.currentTimeMillis());
-        return createMessage(data, direction, chatype, msgtype);
+        return createMessage(data, direction, chatype);
     }
 
     /**
@@ -152,7 +151,8 @@ public class ChatbotUtils {
      * @return
      */
     public static MessageOutContent createTextMessage(ChatMessage data, String direction, String chatype) {
-        return createMessage(data, direction, chatype, MainContext.MediaTypeEnum.TEXT.toString());
+        data.setMsgtype(MainContext.MediaTypeEnum.TEXT.toString());
+        return createMessage(data, direction, chatype);
     }
 
     private static ChatbotRepository getChatbotRes() {
@@ -167,4 +167,12 @@ public class ChatbotUtils {
         return chatMessageRes;
     }
 
+    /**
+     * 保存到数据库，发送到ChatMessage
+     * @param resp
+     */
+    public static void saveAndPublish(ChatMessage resp) {
+        getChatMessageRes().save(resp);
+        NettyClients.getInstance().sendChatbotEventMessage(resp.getUserid(), MainContext.MessageTypeEnum.MESSAGE.toString(), resp);
+    }
 }

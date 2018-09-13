@@ -139,6 +139,7 @@ public class ChatbotEventHandler {
                 agentUser.setCreatetime(now);
                 agentUser.setUpdatetime(now);
                 agentUser.setSessionid(session);
+
                 // 聊天机器人处理的请求
                 agentUser.setOpttype(MainContext.OptTypeEnum.CHATBOT.toString());
                 agentUser.setAgentno(aiid); // 聊天机器人ID
@@ -147,6 +148,11 @@ public class ChatbotEventHandler {
                 agentUser.setCountry(onlineUser.getCountry());
                 AgentService agentService = AutomaticServiceDist.processChatbotService(agentUser, orgi);
                 agentUser.setAgentserviceid(agentService.getId());
+
+                // 标记为机器人坐席
+                agentUser.setChatbotops(true);
+                agentUser.setChatbotlogicerror(0);
+                agentUser.setChatbotround(0);
 
                 getAgentUserRes().save(agentUser);
                 getOnlineUserRes().save(onlineUser);
@@ -198,6 +204,7 @@ public class ChatbotEventHandler {
         String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
         String aiid = client.getHandshakeData().getSingleUrlParam("aiid");
         String user = client.getHandshakeData().getSingleUrlParam("userid");
+        String sessionid = MainUtils.getContextID(client.getSessionId().toString());
         logger.info("[chatbot] onEvent message: orgi {}, aiid {}, userid {}, dataType {}", orgi, aiid, user, data.getType());
         // ignore event if dataType is not message.
         if (!StringUtils.equals(data.getType(), Constants.IM_MESSAGE_TYPE_MESSAGE)) {
@@ -231,9 +238,12 @@ public class ChatbotEventHandler {
             data.setMessage(data.getMessage().substring(0, 300));
         }
 
-        data.setSessionid(MainUtils.getContextID(client.getSessionId().toString()));
+        data.setUsession(user); // 绑定唯一用户
+        data.setSessionid(sessionid);
         data.setMessage(MainUtils.processEmoti(data.getMessage())); // 处理表情
+        data.setTouser(aiid);
         data.setTousername(invite.getAiname());
+        data.setUsername(agentUser.getUsername());
         data.setAiid(aiid);
         data.setAgentserviceid(agentUser.getAgentserviceid());
         data.setChannel(agentUser.getChannel());
@@ -253,7 +263,6 @@ public class ChatbotEventHandler {
 
         // 发送消息给Bot
         MainUtils.chatbot(new ChatbotEvent<ChatMessage>(data,
-                getChatbotRes(),
                 Constants.CHATBOT_EVENT_TYPE_CHAT));
     }
 

@@ -22,12 +22,10 @@ import com.chatopera.cc.exchange.UserEvent;
 public class ChatbotEvent<S> implements UserEvent {
 
     private S data;
-    private ChatbotRepository chatbotRes;
     private String eventype;
 
-    public ChatbotEvent(S data, ChatbotRepository chatbotRes, String eventype) {
+    public ChatbotEvent(S data, String eventype) {
         this.data = data;
-        this.chatbotRes = chatbotRes;
         this.eventype = eventype;
     }
 
@@ -37,14 +35,6 @@ public class ChatbotEvent<S> implements UserEvent {
 
     public void setData(S data) {
         this.data = data;
-    }
-
-    public ChatbotRepository getChatbotRes() {
-        return chatbotRes;
-    }
-
-    public void setChatbotRes(ChatbotRepository chatbotRes) {
-        this.chatbotRes = chatbotRes;
     }
 
     public String getEventype() {

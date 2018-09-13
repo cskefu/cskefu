@@ -691,6 +691,9 @@ CREATE TABLE `uk_agentuser` (
   `agentusername` varchar(32) DEFAULT NULL COMMENT '坐席姓名',
   `alarm` int(10) DEFAULT '0' COMMENT '是否触发预警',
   `initiator` varchar(32) DEFAULT NULL COMMENT '会话发起方',
+  `chatbotops` tinyint(1) DEFAULT '0' COMMENT '是否是机器人客服',
+  `chatbotlogicerror` int(11) DEFAULT '0' COMMENT '机器人客服不符合逻辑返回累计',
+  `chatbotround` int(11) DEFAULT '0' COMMENT '机器人客服对话轮次',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `agentuser_userid` (`userid`) USING BTREE,
   KEY `agentuser_orgi` (`orgi`) USING BTREE

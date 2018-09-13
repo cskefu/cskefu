@@ -90,7 +90,10 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
 	private String email ;
 	private String phone ;
 	private String resion ;
-	
+	private boolean chatbotops;    // 是否是机器人客服
+	private int chatbotlogicerror; // 机器人客服逻辑错误回复累计
+	private int chatbotround;      // 机器人客服对话轮次(一问一答是一轮)
+
 	@Transient
 	private boolean tip = false;
 	@Transient
@@ -574,7 +577,31 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
 		this.opttype = opttype;
 	}
 
-	@Override
+    public boolean isChatbotops() {
+        return chatbotops;
+    }
+
+    public void setChatbotops(boolean chatbotops) {
+        this.chatbotops = chatbotops;
+    }
+
+    public int getChatbotlogicerror() {
+        return chatbotlogicerror;
+    }
+
+    public void setChatbotlogicerror(int chatbotlogicerror) {
+        this.chatbotlogicerror = chatbotlogicerror;
+    }
+
+    public int getChatbotround() {
+        return chatbotround;
+    }
+
+    public void setChatbotround(int chatbotround) {
+        this.chatbotround = chatbotround;
+    }
+
+    @Override
 	public int compareTo(AgentUser o) {
 		int ret = 0 ;
 		if(this.getLogindate() == null){
