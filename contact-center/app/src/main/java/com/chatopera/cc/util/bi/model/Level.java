@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.chatopera.cc.util.UKTools;
+import com.chatopera.cc.app.basic.MainUtils;
 
 public class Level implements java.io.Serializable{
 	/**
@@ -317,7 +317,7 @@ public class Level implements java.io.Serializable{
 	 * @return
 	 */
 	public String getDataid(){
-		return UKTools.md5(this.name!=null ? this.name : "") ;
+		return MainUtils.md5(this.name!=null ? this.name : "") ;
 	}
 	public String getFormatName() {
 		return formatName!=null ? formatName : this.name;

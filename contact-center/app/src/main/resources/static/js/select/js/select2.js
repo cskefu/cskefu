@@ -615,12 +615,12 @@ S2.define('select2/utils',[
       params = [];
     }
 
-    // If there are no arguments to the event, use a temporary object
+    // If there are no arguments to the exchange, use a temporary object
     if (params.length === 0) {
       params.push({});
     }
 
-    // Set the `_type` of the first object to the event
+    // Set the `_type` of the first object to the exchange
     params[0]._type = event;
 
     if (event in this.listeners) {
@@ -1604,7 +1604,7 @@ S2.define('select2/selection/multiple',[
       'click',
       '.select2-selection__choice__remove',
       function (evt) {
-        // Ignore the event if it is disabled
+        // Ignore the exchange if it is disabled
         if (self.options.get('disabled')) {
           return;
         }
@@ -1757,14 +1757,14 @@ S2.define('select2/selection/allowClear',[
   };
 
   AllowClear.prototype._handleClear = function (_, evt) {
-    // Ignore the event if it is disabled
+    // Ignore the exchange if it is disabled
     if (this.options.get('disabled')) {
       return;
     }
 
     var $clear = this.$selection.find('.select2-selection__clear');
 
-    // Ignore the event if nothing has been selected
+    // Ignore the exchange if nothing has been selected
     if ($clear.length === 0) {
       return;
     }
@@ -1778,11 +1778,11 @@ S2.define('select2/selection/allowClear',[
         data: data[d]
       };
 
-      // Trigger the `unselect` event, so people can prevent it from being
+      // Trigger the `unselect` exchange, so people can prevent it from being
       // cleared.
       this.trigger('unselect', unselectData);
 
-      // If the event was prevented, don't clear it out.
+      // If the exchange was prevented, don't clear it out.
       if (unselectData.prevented) {
         return;
       }
@@ -1924,14 +1924,14 @@ S2.define('select2/selection/search',[
     var msie = document.documentMode;
     var disableInputEvents = msie && msie <= 11;
 
-    // Workaround for browsers which do not support the `input` event
+    // Workaround for browsers which do not support the `input` exchange
     // This will prevent double-triggering of events for browsers which support
     // both the `keyup` and `input` events.
     this.$selection.on(
       'input.searchcheck',
       '.select2-search--inline',
       function (evt) {
-        // IE will trigger the `input` event when a placeholder is used on a
+        // IE will trigger the `input` exchange when a placeholder is used on a
         // search box. To get around this issue, we are forced to ignore all
         // `input` events in IE and keep using `keyup`.
         if (disableInputEvents) {
@@ -1939,7 +1939,7 @@ S2.define('select2/selection/search',[
           return;
         }
 
-        // Unbind the duplicated `keyup` event
+        // Unbind the duplicated `keyup` exchange
         self.$selection.off('keyup.search');
       }
     );
@@ -1948,7 +1948,7 @@ S2.define('select2/selection/search',[
       'keyup.search input.search',
       '.select2-search--inline',
       function (evt) {
-        // IE will trigger the `input` event when a placeholder is used on a
+        // IE will trigger the `input` exchange when a placeholder is used on a
         // search box. To get around this issue, we are forced to ignore all
         // `input` events in IE and keep using `keyup`.
         if (disableInputEvents && evt.type === 'input') {
@@ -2074,7 +2074,7 @@ S2.define('select2/selection/eventRelay',[
       // The parameters should always be an object
       params = params || {};
 
-      // Generate the jQuery event for the Select2 event
+      // Generate the jQuery exchange for the Select2 exchange
       var evt = $.Event('select2:' + name, {
         params: params
       });
@@ -3912,11 +3912,11 @@ S2.define('select2/dropdown/search',[
       self._keyUpPrevented = evt.isDefaultPrevented();
     });
 
-    // Workaround for browsers which do not support the `input` event
+    // Workaround for browsers which do not support the `input` exchange
     // This will prevent double-triggering of events for browsers which support
     // both the `keyup` and `input` events.
     this.$search.on('input', function (evt) {
-      // Unbind the duplicated `keyup` event
+      // Unbind the duplicated `keyup` exchange
       $(this).off('keyup');
     });
 
@@ -4393,8 +4393,8 @@ S2.define('select2/dropdown/selectOnClose',[
     if (params && params.originalSelect2Event != null) {
       var event = params.originalSelect2Event;
 
-      // Don't select an item if the close event was triggered from a select or
-      // unselect event
+      // Don't select an item if the close exchange was triggered from a select or
+      // unselect exchange
       if (event._type === 'select' || event._type === 'unselect') {
         return;
       }
@@ -5087,10 +5087,10 @@ S2.define('select2/core',[
     // Bind the container to all of the adapters
     this._bindAdapters();
 
-    // Register any DOM event handlers
+    // Register any DOM exchange handlers
     this._registerDomEvents();
 
-    // Register any internal event handlers
+    // Register any internal exchange handlers
     this._registerDataEvents();
     this._registerSelectionEvents();
     this._registerDropdownEvents();

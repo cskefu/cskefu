@@ -19,8 +19,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 
@@ -29,7 +27,6 @@ import java.net.MalformedURLException;
  */
 public class ChatbotAPITest
         extends TestCase {
-    private static final Logger logger = LoggerFactory.getLogger(ChatbotAPITest.class);
     private ChatbotAPI cb;
 
     /**
@@ -62,7 +59,7 @@ public class ChatbotAPITest
     public void testGetChatbot() {
         try {
             JSONObject resp = this.cb.getChatbot("co_bot_1");
-            logger.info("[testGetChatbot] {}", resp.toString());
+            System.out.println("[testGetChatbot] " + resp.toString());
         } catch (ChatbotAPIRuntimeException e) {
             e.printStackTrace();
         }
@@ -71,7 +68,7 @@ public class ChatbotAPITest
     public void testGetChatbots() {
         try {
             JSONObject resp = this.cb.getChatbots("name chatbotID", null, 0, 10);
-            logger.info("[testGetChatbots] resp {}", resp.toString());
+            System.out.println("[testGetChatbots] resp " + resp.toString());
         } catch (ChatbotAPIRuntimeException e) {
             e.printStackTrace();
         }
@@ -80,7 +77,7 @@ public class ChatbotAPITest
     public void testConversation() {
         try {
             JSONObject resp = this.cb.conversation("co_bot_1", "sdktest", "华夏春松在哪里", false);
-            logger.info("[testConversation] resp {}", resp.toString());
+            System.out.println("[testConversation] resp " + resp.toString());
         } catch (ChatbotAPIRuntimeException e) {
             e.printStackTrace();
         }
@@ -89,7 +86,7 @@ public class ChatbotAPITest
     public void testFaq() {
         try {
             JSONObject resp = this.cb.faq("co_bot_1", "sdktest", "华夏春松在哪里", false);
-            logger.info("[testFaq] resp {}", resp.toString());
+            System.out.print("[testFaq] resp " + resp.toString());
         } catch (ChatbotAPIRuntimeException e) {
             e.printStackTrace();
         }
@@ -98,7 +95,7 @@ public class ChatbotAPITest
     public void testParseUrl() {
         try {
             ChatbotAPI c = new ChatbotAPI("https://local:8000/");
-            logger.info("chatbot baseUrl {}", c.getBaseUrl());
+            System.out.println("chatbot baseUrl " + c.getBaseUrl());
             assertEquals("https://local:8000/api/v1", c.getBaseUrl());
         } catch (ChatbotAPIRuntimeException e) {
             e.printStackTrace();
@@ -124,7 +121,6 @@ public class ChatbotAPITest
                     "我不了解。",
                     "小云机器人",
                     "你好，我是小云。");
-            logger.info("[testCreateBot] {}", j);
         } catch (ChatbotAPIRuntimeException e) {
             e.printStackTrace();
         }

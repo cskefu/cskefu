@@ -20,11 +20,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.chatopera.cc.webim.web.model.JobDetail;
-import com.chatopera.cc.webim.web.model.User;
-import com.chatopera.cc.webim.web.model.UKefuCallOutTask;
-import com.chatopera.cc.webim.web.model.MetadataTable;
-import com.chatopera.cc.webim.web.model.Organ;
+import com.chatopera.cc.app.model.JobDetail;
+import com.chatopera.cc.app.model.User;
+import com.chatopera.cc.app.model.UKefuCallOutTask;
+import com.chatopera.cc.app.model.MetadataTable;
+import com.chatopera.cc.app.model.Organ;
 
 public class UKDataBean implements java.io.Serializable{
 

@@ -18,15 +18,12 @@ package com.chatopera.chatbot;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
 public class ChatbotAPI {
-    private static final Logger logger = LoggerFactory.getLogger(ChatbotAPI.class);
     private String schema;
     private String hostname;
     private int port;
@@ -179,6 +176,7 @@ public class ChatbotAPI {
      * @throws ChatbotAPIRuntimeException
      */
     public boolean updateByChatbotID(final String chatbotID,
+                                     final String name,
                                      final String description,
                                      final String fallback,
                                      final String welcome) throws ChatbotAPIRuntimeException {
@@ -192,6 +190,8 @@ public class ChatbotAPI {
             body.put("fallback", fallback);
         if (StringUtils.isNotBlank(welcome))
             body.put("welcome", welcome);
+        if (StringUtils.isNotBlank(name))
+            body.put("name", name);
 
         try {
             JSONObject result = RestAPI.put(this.baseUrl + "/chatbot/" + chatbotID, body, null);
@@ -274,8 +274,6 @@ public class ChatbotAPI {
         body.put("fromUserId", fromUserId);
         body.put("textMessage", textMessage);
         body.put("isDebug", debug);
-
-        logger.info("conversation body {}", body);
 
         try {
             JSONObject resp = RestAPI.post(this.getBaseUrl() + "/chatbot/" + chatbotID + "/conversation/query", body);

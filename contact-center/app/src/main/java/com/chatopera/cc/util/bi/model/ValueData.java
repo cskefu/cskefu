@@ -19,8 +19,8 @@ package com.chatopera.cc.util.bi.model;
 
 import java.util.List;
 
-import com.chatopera.cc.util.UKTools;
-import com.chatopera.cc.webim.web.model.ColumnProperties;
+import com.chatopera.cc.app.basic.MainUtils;
+import com.chatopera.cc.app.model.ColumnProperties;
 
 public class ValueData implements java.io.Serializable,Cloneable{
 	/**
@@ -217,7 +217,7 @@ public class ValueData implements java.io.Serializable,Cloneable{
 	 * @return
 	 */
 	public String getDataid(){
-		return UKTools.md5(this.name!=null ? this.name : "") ;
+		return MainUtils.md5(this.name!=null ? this.name : "") ;
 	}
 	public String getValueStyle() {
 		return valueStyle;

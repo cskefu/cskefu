@@ -28,5 +28,5 @@ function collapseAll() {
 }
 function currentNode() {
 	collapseAll();
-	document.getElementById("${task.taskName}_DIV").style.display = "block";
+	document.getElementById("${schedule.taskName}_DIV").style.display = "block";
 }

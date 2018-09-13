@@ -793,7 +793,7 @@ SWFUpload.prototype.startUpload = function (fileID) {
 
 // Public: cancelUpload cancels any queued file.  The fileID parameter may be the file ID or index.
 // If you do not specify a fileID the current uploading file or first file in the queue is cancelled.
-// If you do not want the uploadError event to trigger you can specify false for the triggerErrorEvent parameter.
+// If you do not want the uploadError exchange to trigger you can specify false for the triggerErrorEvent parameter.
 SWFUpload.prototype.cancelUpload = function (fileID, triggerErrorEvent) {
 	if (triggerErrorEvent !== false) {
 		triggerErrorEvent = true;
@@ -1004,7 +1004,7 @@ SWFUpload.prototype.setButtonCursor = function (cursor) {
 
 	All these functions a Private.
 
-	Because the ExternalInterface library is buggy the event calls
+	Because the ExternalInterface library is buggy the exchange calls
 	are added to a queue and the queue then executed by a setTimeout.
 	This ensures that events are executed in a determinate order and that
 	the ExternalInterface bugs are avoided.
@@ -1021,12 +1021,12 @@ SWFUpload.prototype.queueEvent = function (handlerName, argumentArray) {
 
 	var self = this;
 	if (typeof this.settings[handlerName] === "function") {
-		// Queue the event
+		// Queue the exchange
 		this.eventQueue.push(function () {
 			this.settings[handlerName].apply(this, argumentArray);
 		});
 
-		// Execute the next queued event
+		// Execute the next queued exchange
 		setTimeout(function () {
 			self.executeNextEvent();
 		}, 0);
@@ -1036,7 +1036,7 @@ SWFUpload.prototype.queueEvent = function (handlerName, argumentArray) {
 	}
 };
 
-// Private: Causes the next event in the queue to be executed.  Since events are queued using a setTimeout
+// Private: Causes the next exchange in the queue to be executed.  Since events are queued using a setTimeout
 // we must queue them in order to garentee that they are executed in order.
 SWFUpload.prototype.executeNextEvent = function () {
 	// Warning: Don't call this.debug inside here or you'll create an infinite loop
@@ -1082,8 +1082,8 @@ SWFUpload.prototype.testExternalInterface = function () {
 	}
 };
 
-// Private: This event is called by Flash when it has finished loading. Don't modify this.
-// Use the swfupload_loaded_handler event setting to execute custom code when SWFUpload has loaded.
+// Private: This exchange is called by Flash when it has finished loading. Don't modify this.
+// Use the swfupload_loaded_handler exchange setting to execute custom code when SWFUpload has loaded.
 SWFUpload.prototype.flashReady = function () {
 	// Check that the movie element is loaded correctly with its ExternalInterface methods defined
 	var movieElement = this.getMovieElement();
@@ -1206,7 +1206,7 @@ SWFUpload.prototype.uploadComplete = function (file) {
 };
 
 /* Called by SWFUpload JavaScript and Flash functions when debug is enabled. By default it writes messages to the
-   internal debug console.  You can override this event and have messages written where you want. */
+   internal debug console.  You can override this exchange and have messages written where you want. */
 SWFUpload.prototype.debug = function (message) {
 	this.queueEvent("debug_handler", message);
 };
@@ -1291,8 +1291,8 @@ SWFUpload.Console.writeLine = function (message) {
 		*All queued files are uploaded when startUpload() is called.
 		*If false is returned from uploadComplete then the queue upload is stopped.
 		 If false is not returned (strict comparison) then the queue upload is continued.
-		*Adds a QueueComplete event that is fired when all the queued files have finished uploading.
-		 Set the event handler with the queue_complete_handler setting.
+		*Adds a QueueComplete exchange that is fired when all the queued files have finished uploading.
+		 Set the exchange handler with the queue_complete_handler setting.
 
 	*/
 

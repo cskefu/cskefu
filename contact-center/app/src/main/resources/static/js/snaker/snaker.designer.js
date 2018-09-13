@@ -157,7 +157,7 @@
         	if(!matched) return;
             $.ajax({
                 type:'GET',
-                url:"/apps/bpm/task/tip",
+                url:"/apps/bpm/schedule/tip",
                 data:"orderid=" + designer.config.orderId + "&taskname=" + name,//_o.props['name'].value,
                 async: false,
                 error: function(){

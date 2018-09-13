@@ -15,7 +15,7 @@
  */
 package com.chatopera.cc.util;
 
-import com.chatopera.cc.core.UKDataContext;
+import com.chatopera.cc.app.basic.MainContext;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -25,8 +25,10 @@ import java.util.Set;
 
 public class Constants {
 
-    public final static String OPT_TYPE = "webim";
     public final static String MINIO_BUCKET = "chatopera";
+
+    public final static String IM_MESSAGE_TYPE_MESSAGE = "message";
+    public final static String CHATBOT_EVENT_TYPE_CHAT = "chat";
 
     /**
      * Formatter
@@ -49,13 +51,13 @@ public class Constants {
     public final static String FS_LEG_HANGUP = "hangup";
     public final static String FS_LEG_INCALL_ZH = "通话";
     public final static String FS_CALL_TYPE_CALLOUT = "callout";
-    public final static Set<String> CALL_DIRECTION_TYPES = new HashSet<>(Arrays.asList(UKDataContext.CallTypeEnum.OUT.toString(), UKDataContext.CallTypeEnum.IN.toString()));
-    public final static Set<String> CALL_SERVICE_STAUTS = new HashSet<>(Arrays.asList(UKDataContext.CallServiceStatus.INQUENE.toString(),
-            UKDataContext.CallServiceStatus.RING.toString(),
-            UKDataContext.CallServiceStatus.INCALL.toString(),
-            UKDataContext.CallServiceStatus.BRIDGE.toString(),
-            UKDataContext.CallServiceStatus.HOLD.toString(),
-            UKDataContext.CallServiceStatus.HANGUP.toString(),
-            UKDataContext.CallServiceStatus.OFFLINE.toString()));
+    public final static Set<String> CALL_DIRECTION_TYPES = new HashSet<>(Arrays.asList(MainContext.CallTypeEnum.OUT.toString(), MainContext.CallTypeEnum.IN.toString()));
+    public final static Set<String> CALL_SERVICE_STAUTS = new HashSet<>(Arrays.asList(MainContext.CallServiceStatus.INQUENE.toString(),
+            MainContext.CallServiceStatus.RING.toString(),
+            MainContext.CallServiceStatus.INCALL.toString(),
+            MainContext.CallServiceStatus.BRIDGE.toString(),
+            MainContext.CallServiceStatus.HOLD.toString(),
+            MainContext.CallServiceStatus.HANGUP.toString(),
+            MainContext.CallServiceStatus.OFFLINE.toString()));
 
 }

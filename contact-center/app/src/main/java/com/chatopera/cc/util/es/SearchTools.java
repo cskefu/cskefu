@@ -21,6 +21,7 @@ import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 import java.util.List;
 
+import com.chatopera.cc.app.basic.MainContext;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -30,11 +31,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import com.chatopera.cc.core.UKDataContext;
-import com.chatopera.cc.webim.service.impl.ESDataExchangeImpl;
-import com.chatopera.cc.webim.web.model.FormFilter;
-import com.chatopera.cc.webim.web.model.FormFilterItem;
-import com.chatopera.cc.webim.web.model.MetadataTable;
+import com.chatopera.cc.app.persistence.impl.ESDataExchangeImpl;
+import com.chatopera.cc.app.model.FormFilter;
+import com.chatopera.cc.app.model.FormFilterItem;
+import com.chatopera.cc.app.model.MetadataTable;
 
 public class SearchTools {
 	
@@ -100,7 +100,7 @@ public class SearchTools {
 	public static PageImpl<UKDataBean> dissearch(String orgi , FormFilter formFilter , List<FormFilterItem> itemList , MetadataTable metadataTable , int p, int ps){
 		BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
 		queryBuilder.must(termQuery("orgi", orgi)) ;
-		queryBuilder.must(termQuery("status", UKDataContext.NamesDisStatusType.NOT.toString())) ;
+		queryBuilder.must(termQuery("status", MainContext.NamesDisStatusType.NOT.toString())) ;
 		queryBuilder.must(termQuery("validresult", "valid")) ;
 		
 		BoolQueryBuilder orBuilder = new BoolQueryBuilder();
@@ -160,7 +160,7 @@ public class SearchTools {
 	public static PageImpl<UKDataBean> recoversearch(String orgi , String cmd ,String id, MetadataTable metadataTable , int p, int ps){
 		BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
 		queryBuilder.must(termQuery("orgi", orgi)) ;
-		queryBuilder.mustNot(termQuery("status", UKDataContext.NamesDisStatusType.NOT.toString())) ;
+		queryBuilder.mustNot(termQuery("status", MainContext.NamesDisStatusType.NOT.toString())) ;
 		queryBuilder.must(termQuery("validresult", "valid")) ;
 		
 		switch(cmd) {
@@ -168,10 +168,10 @@ public class SearchTools {
 			case "batid" : queryBuilder.must(termQuery("batid", id)) ; break ;
 			case "taskid" : queryBuilder.must(termQuery("taskid", id)) ; break ;
 			case "filterid" : queryBuilder.must(termQuery("filterid", id)) ; break ;
-			case "agent" : queryBuilder.must(termQuery(UKDataContext.UKEFU_SYSTEM_DIS_AGENT, id)) ; break ;
-			case "skill" : queryBuilder.must(termQuery(UKDataContext.UKEFU_SYSTEM_DIS_ORGAN, id)) ; break ;
-			case "taskskill" : queryBuilder.must(termQuery("taskid", id)).must(termQuery("status", UKDataContext.NamesDisStatusType.DISAGENT.toString())) ; break ;
-			case "filterskill" : queryBuilder.must(termQuery("filterid", id)).must(termQuery("status", UKDataContext.NamesDisStatusType.DISAGENT.toString())) ; break ;
+			case "agent" : queryBuilder.must(termQuery(MainContext.UKEFU_SYSTEM_DIS_AGENT, id)) ; break ;
+			case "skill" : queryBuilder.must(termQuery(MainContext.UKEFU_SYSTEM_DIS_ORGAN, id)) ; break ;
+			case "taskskill" : queryBuilder.must(termQuery("taskid", id)).must(termQuery("status", MainContext.NamesDisStatusType.DISAGENT.toString())) ; break ;
+			case "filterskill" : queryBuilder.must(termQuery("filterid", id)).must(termQuery("status", MainContext.NamesDisStatusType.DISAGENT.toString())) ; break ;
 			default : queryBuilder.must(termQuery("actid", "NOT_EXIST_KEY")) ;  //必须传入一个进来;
 		}
 		
@@ -189,11 +189,11 @@ public class SearchTools {
 		BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
 		queryBuilder.must(termQuery("orgi", orgi)) ;
 		if(excludeCalled){
-			queryBuilder.must(termQuery("callstatus", UKDataContext.NameStatusTypeEnum.NOTCALL.toString())) ;
+			queryBuilder.must(termQuery("callstatus", MainContext.NameStatusTypeEnum.NOTCALL.toString())) ;
 		}
 		queryBuilder.must(termQuery("validresult", "valid")) ;
-		queryBuilder.must(termQuery(UKDataContext.UKEFU_SYSTEM_DIS_AGENT, agent)) ;
-		queryBuilder.must(termQuery("status", UKDataContext.NamesDisStatusType.DISAGENT.toString())) ;
+		queryBuilder.must(termQuery(MainContext.UKEFU_SYSTEM_DIS_AGENT, agent)) ;
+		queryBuilder.must(termQuery("status", MainContext.NamesDisStatusType.DISAGENT.toString())) ;
 		
 		return search(queryBuilder, p, ps);
 	}
@@ -210,7 +210,7 @@ public class SearchTools {
 		BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
 		queryBuilder.must(termQuery("orgi", orgi)) ;
 		queryBuilder.must(termQuery("validresult", "valid")) ;
-		queryBuilder.must(termQuery(UKDataContext.UKEFU_SYSTEM_DIS_AGENT, agent)) ;
+		queryBuilder.must(termQuery(MainContext.UKEFU_SYSTEM_DIS_AGENT, agent)) ;
 		queryBuilder.must(termQuery("apstatus", true)) ;		//预约状态
 		
 		queryBuilder.must(rangeQuery("aptime").to(System.currentTimeMillis())) ;		//预约状态
@@ -229,10 +229,10 @@ public class SearchTools {
 	public static PageImpl<UKDataBean> aisearch(String orgi , int p, int ps){
 		BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
 		queryBuilder.must(termQuery("orgi", orgi)) ;
-		queryBuilder.must(termQuery("callstatus", UKDataContext.NameStatusTypeEnum.NOTCALL.toString())) ;
+		queryBuilder.must(termQuery("callstatus", MainContext.NameStatusTypeEnum.NOTCALL.toString())) ;
 		
 		queryBuilder.must(termQuery("validresult", "valid")) ;
-		queryBuilder.must(termQuery("status", UKDataContext.NamesDisStatusType.DISAI.toString())) ;
+		queryBuilder.must(termQuery("status", MainContext.NamesDisStatusType.DISAI.toString())) ;
 		
 		return search(queryBuilder, p, ps);
 	}
@@ -251,7 +251,7 @@ public class SearchTools {
 		BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
 		queryBuilder.must(termQuery("orgi", orgi)) ;
 		queryBuilder.must(termQuery("validresult", "valid")) ;
-		queryBuilder.must(termQuery("status", UKDataContext.NamesDisStatusType.DISAGENT.toString())) ;
+		queryBuilder.must(termQuery("status", MainContext.NamesDisStatusType.DISAGENT.toString())) ;
 		StringBuffer strb = new StringBuffer();
 		if(!StringUtils.isBlank(phonenum)) {
 			strb.append(phonenum) ;
@@ -259,7 +259,7 @@ public class SearchTools {
 				strb.append(" ").append(phonenum.substring(1)) ;
 			}
 		}else {
-			strb.append(UKDataContext.UKEFU_SYSTEM_NO_DAT) ;
+			strb.append(MainContext.UKEFU_SYSTEM_NO_DAT) ;
 		}
 		queryBuilder.must(new QueryStringQueryBuilder(strb.toString()).defaultOperator(Operator.OR) );
 		return search(queryBuilder,0, 1);
@@ -286,8 +286,8 @@ public class SearchTools {
 	 * @return
 	 */
 	private static PageImpl<UKDataBean> search(BoolQueryBuilder queryBuilder , MetadataTable metadataTable , boolean loadRef , int p, int ps){
-		ESDataExchangeImpl esDataExchange = UKDataContext.getContext().getBean(ESDataExchangeImpl.class);
-		return esDataExchange.findPageResult(queryBuilder, UKDataContext.SYSTEM_INDEX, metadataTable, new PageRequest(p, ps , Sort.Direction.ASC, "createtime") , loadRef) ;
+		ESDataExchangeImpl esDataExchange = MainContext.getContext().getBean(ESDataExchangeImpl.class);
+		return esDataExchange.findPageResult(queryBuilder, MainContext.SYSTEM_INDEX, metadataTable, new PageRequest(p, ps , Sort.Direction.ASC, "createtime") , loadRef) ;
 	}
 	
 	/**
@@ -300,7 +300,7 @@ public class SearchTools {
 	 * @return
 	 */
 	public static PageImpl<UKDataBean> aggregation(BoolQueryBuilder queryBuilder , String aggField, boolean loadRef , int p, int ps){
-		ESDataExchangeImpl esDataExchange = UKDataContext.getContext().getBean(ESDataExchangeImpl.class);
+		ESDataExchangeImpl esDataExchange = MainContext.getContext().getBean(ESDataExchangeImpl.class);
 		return esDataExchange.findAllPageAggResult(queryBuilder , aggField ,  new PageRequest(p, ps , Sort.Direction.ASC, "createtime") , loadRef , null) ;
 	}
 	
@@ -314,7 +314,7 @@ public class SearchTools {
 	 * @return
 	 */
 	public static UKDataBean get(UKDataBean dataBean){
-		ESDataExchangeImpl esDataExchange = UKDataContext.getContext().getBean(ESDataExchangeImpl.class);
+		ESDataExchangeImpl esDataExchange = MainContext.getContext().getBean(ESDataExchangeImpl.class);
 		return esDataExchange.getIObjectByPK(dataBean, dataBean.getId());
 	}
 	
@@ -328,7 +328,7 @@ public class SearchTools {
 	 * @return
 	 */
 	public static UKDataBean get(String type, String id){
-		ESDataExchangeImpl esDataExchange = UKDataContext.getContext().getBean(ESDataExchangeImpl.class);
+		ESDataExchangeImpl esDataExchange = MainContext.getContext().getBean(ESDataExchangeImpl.class);
 		return esDataExchange.getIObjectByPK(type, id);
 	}
 	
@@ -342,7 +342,7 @@ public class SearchTools {
 	 * @return
 	 */
 	public static void save(UKDataBean dataBean){
-		ESDataExchangeImpl esDataExchange = UKDataContext.getContext().getBean(ESDataExchangeImpl.class);
+		ESDataExchangeImpl esDataExchange = MainContext.getContext().getBean(ESDataExchangeImpl.class);
 		try {
 			esDataExchange.saveIObject(dataBean);
 		} catch (Exception e) {

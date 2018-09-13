@@ -2,7 +2,7 @@ var socketCallout;
 
 $(document).ready(function () {
     var protocol = window.location.protocol.replace(/:/g,'');
-    socketCallout = io.connect(protocol + '://' + hostname + ':' + port + '/callout/event?orgi=' + orgi + "&userid=" + userid + "&session=" + session + "&admin=" + adminuser);
+    socketCallout = io.connect(protocol + '://' + hostname + ':' + port + '/callout/exchange?orgi=' + orgi + "&userid=" + userid + "&session=" + session + "&admin=" + adminuser);
     socketCallout.on('connect', function () {
         console.log("Callout 连接初始化成功");
         //请求服务端记录 当前用户在线事件

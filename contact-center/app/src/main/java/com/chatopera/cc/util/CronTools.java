@@ -19,6 +19,7 @@ package com.chatopera.cc.util;
 import java.text.ParseException;
 import java.util.Date;
 
+import com.chatopera.cc.app.basic.MainUtils;
 import org.quartz.CronExpression;
 
 
@@ -48,6 +49,6 @@ public class CronTools {
 	}
 	public static void main(String[] args) throws Exception{
 		
-		System.out.println(UKTools.dateFormate.format(CronTools.getFinalFireTime("0 0/40 0/1 * * ?",new Date())));
+		System.out.println(MainUtils.dateFormate.format(CronTools.getFinalFireTime("0 0/40 0/1 * * ?",new Date())));
 	}
 }

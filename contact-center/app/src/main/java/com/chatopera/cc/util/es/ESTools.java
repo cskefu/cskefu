@@ -21,19 +21,19 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 import java.io.IOException;
 
-import com.chatopera.cc.webim.web.model.TableProperties;
+import com.chatopera.cc.app.model.TableProperties;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chatopera.cc.core.UKDataContext;
-import com.chatopera.cc.webim.web.model.MetadataTable;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.model.MetadataTable;
 
 public class ESTools {
 	private static final Logger log = LoggerFactory.getLogger(ESTools	.class); 
 	public static boolean checkMapping(String tb,String orgi){
-		return UKDataContext.getTemplet().typeExists(orgi, tb) ;
+		return MainContext.getTemplet().typeExists(orgi, tb) ;
 	}
 	
 	public static void mapping(MetadataTable tb , String orgi) throws ElasticsearchException, IOException{
@@ -76,7 +76,7 @@ public class ESTools {
 			builder.endObject() ;
 		}
 		builder.endObject().endObject().endObject();
-        UKDataContext.getTemplet().putMapping(UKDataContext.SYSTEM_INDEX, tb.getTablename(), builder);
+        MainContext.getTemplet().putMapping(MainContext.SYSTEM_INDEX, tb.getTablename(), builder);
 
 	}
 }

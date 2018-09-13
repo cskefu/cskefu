@@ -279,7 +279,7 @@ var Proxy = {
                     case 'weixin':
                         $('#tip_icon_wenxin_' + data.userid).removeClass('ukefu-channel-icon-end').addClass("ukefu-channel-icon");
                         break;
-                    case 'webim':
+                    case 'app':
                         $('#tip_icon_webim_' + data.userid).removeClass('ukefu-channel-icon-end').addClass("ukefu-channel-icon");
                         break;
                     case 'phone':
@@ -327,7 +327,7 @@ var Proxy = {
                     case 'weixin':
                         $('#tip_icon_wenxin_' + data.userid).removeClass("ukefu-channel-icon").addClass('ukefu-channel-icon-end');
                         break;
-                    case 'webim':
+                    case 'app':
                         $('#tip_icon_webim_' + data.userid).removeClass("ukefu-channel-icon").addClass('ukefu-channel-icon-end');
                         break;
                     case 'phone':
