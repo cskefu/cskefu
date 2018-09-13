@@ -151,8 +151,6 @@ public class ChatbotEventHandler {
 
                 // 标记为机器人坐席
                 agentUser.setChatbotops(true);
-                agentUser.setChatbotlogicerror(0);
-                agentUser.setChatbotround(0);
 
                 getAgentUserRes().save(agentUser);
                 getOnlineUserRes().save(onlineUser);

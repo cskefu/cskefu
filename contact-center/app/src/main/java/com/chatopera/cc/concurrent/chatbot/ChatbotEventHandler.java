@@ -50,7 +50,7 @@ public class ChatbotEventHandler implements EventHandler<UserDataEvent> {
     private void updateAgentUserWithRespData(final String userid, final String orgi, final JSONObject data) {
         AgentUser agentUser = (AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(userid, orgi);
         agentUser.setChatbotround(agentUser.getChatbotround() + 1);
-        if (data.getBoolean("logic_is_unexpected")) {
+        if (data.has("logic_is_unexpected") && data.getBoolean("logic_is_unexpected")) {
             agentUser.setChatbotlogicerror(agentUser.getChatbotlogicerror() + 1);
         }
         getAgentUserRes().save(agentUser);
