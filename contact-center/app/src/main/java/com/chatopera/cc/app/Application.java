@@ -98,7 +98,7 @@ public class Application {
 	public static void main(String[] args) {
         Application.init();
 		SpringApplication app = new SpringApplication(Application.class) ;
-		app.setBannerMode(Banner.Mode.OFF);
+		app.setBannerMode(Banner.Mode.CONSOLE);
         app.setAddCommandLineProperties(false);
 		app.addListeners(new StartedEventListener());
 		MainContext.setApplicationContext(app.run(args));
