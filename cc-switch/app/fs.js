@@ -93,7 +93,7 @@ const callOut = phone =>
   new Promise((resolve, reject) => {
     debug('拨打电话: %s', phone);
 
-    conn.bgapi(`originate sofia/gateway/goipx/${phone} &park`, ({ body }) => {
+    conn.bgapi(`originate sofia/gateway/goipx/0${phone} &park`, ({ body }) => {
       let match = body.match(/([a-f\d]{8}(-[a-f\d]{4}){3}-[a-f\d]{12}?)/i);
       if (match) {
         resolve(match[1]);
