@@ -255,7 +255,9 @@ class FreeSwitch extends EventEmitter {
           variable_sip_to_user: sip_to_user,
           variable_call_uuid,
         } = event;
-        let match = variable_bridge_channel.match(/sofia\/internal\/(\d+)@/);
+        let match =
+          variable_bridge_channel &&
+          variable_bridge_channel.match(/sofia\/internal\/(\d+)@/);
         if (match) {
           let sip_from_user = match[1];
           let call = new CallOut(

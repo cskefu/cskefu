@@ -12,8 +12,8 @@ const MINIO_END_POINT = 'localhost';
 const MINIO_ACCESS_KEY = 'key';
 const MINIO_SECRET_KEY = 'secret';
 
-const REDIS_HOST = '192.168.2.217';
-const REDIS_PORT = 9763;
+const REDIS_HOST = 'localhost';
+const REDIS_PORT = 6379;
 
 const config = {
   PBX_CHANNEL_ID,
