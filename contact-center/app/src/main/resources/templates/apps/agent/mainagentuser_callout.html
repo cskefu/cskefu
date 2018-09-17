@@ -36,19 +36,35 @@
             <div class="layui-colla-content layui-show">
                 <div id="timeline" class="timeline-container" type="text">
                 </div>
+                <!--<div id="timeline" class="timeline-container" type="text" style="height: 617px; overflow-y: auto;">-->
+                <!--</div>-->
             </div>
         </div>
     </div>
 </div>
     </div>
 </div>
-<link rel="stylesheet" href="/js/timelineMe/jquery.timelineMe.css" type="text/css">
-<script type="text/javascript" src="/js/timelineMe/jquery.timelineMe.js"></script>
+<style>
+    .card {
+        /* Add shadows to create the "card" effect */
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        margin-top: 5px;
+    }
+
+    /* On mouse-over, add a deeper shadow */
+    .card:hover {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+
+    /* Add some padding inside the card container */
+    .container {
+        width: 100%;
+        /*padding: 2px 16px;*/
+    }
+</style>
 <script src="/js/CSKeFu_Rest_Request.v1.js"></script>
 <script>
-    // save time line datas
-    var items = [];
-
     function getNotesByContactId () {
         // 获取数据
         var id = $('#contactsId').val();
@@ -65,41 +81,23 @@
             }
 
             if(data.rc === 0){
-                // var items = [];
                 if(data.totalElements > 0) {
                     for(var item of data.data){
-                        items.push({
-                            type: 'bigItem',
-                            label: item.updatetime,
-                            picto: '<div style="background-color: #3ac3e8;width: 100%;height: 100%;"></div>',
-                            shortContent: '<div style="border: solid 1px #333333; line-height: 2em;font-weight: 300;word-break:break-all"><p>事件类型：' + item.category + '</p>' + '<p>创建者:' + item.creatername + '</p>' + '<div><label>内容：</label><span>' + item.content + '</span></div></div>',
-                            forcePosition: 'right'
-                        });
+                        $("#timeline").append('<div class="card">' +
+                            '<div class="container">' +
+                            '<h4>时间：' + item.updatetime + '</h4>' +
+                            '<h5>笔记者：' + item.creatername + '</h5>' +
+                            '<h5>事件类型：' + item.category + '</h5>' +
+                            '<div>笔记：' + item.content + '</div>' +
+                            '</div>' +
+                            '</div>');
                     }
                 }
-                // time line
-                makeTimeline()
             } else {
             }
         }, function (err) {
             console.log(err)
         });
-    }
-
-    // make time line
-    function makeTimeline() {
-        var el = $('#timeline');
-        if(el){
-            $(el).empty();
-            $('#timeline').timelineMe({});
-            $('#timeline').timelineMe('load',
-                items
-            );
-        } else  {
-            $('#timeline').timelineMe({
-                items: items,
-            });
-        }
     }
 
     // unselect tag
@@ -235,16 +233,14 @@
                 if(data.rc === 0){
                     var item = data.data;
                     // get all notes by contact id.
-                    items.unshift({
-                        type: 'bigItem',
-                        label: item.updatetime,
-                        picto: '<div style="background-color: #3ac3e8;width: 100%;height: 100%;"></div>',
-                        shortContent: '<div style="border: solid 1px #333333; line-height: 2em;font-weight: 300;word-break:break-all"><p>事件类型：' + category + '</p>' + '<p>创建者:' + item.creatername + '</p>' + '<div><label>内容：</label><span>' + content + '</span></div></div>',
-                        forcePosition: 'right'
-                    });
-
-                    // time line
-                    makeTimeline()
+                    $("#timeline").prepend('<div class="card">' +
+                        '<div class="container">' +
+                        '<h4><b>时间：' + item.updatetime + '</b></h4>' +
+                        '<h5>笔记者：' + item.creatername + '</h5>' +
+                        '<h5>事件类型：' + category + '</h5>' +
+                        '<div>笔记：' + content + '</div>' +
+                        '</div>' +
+                        '</div>');
                 } else {
                 }
             }, function (err) {
