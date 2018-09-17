@@ -110,8 +110,8 @@
 							</td>
 							<td>
 								<#if contacts.gender?? && contacts.gender == '1'>男</#if>
-								<#if contacts.gender?? && contacts.gender == '2'>女</#if>
-								<#if contacts.gender?? && contacts.gender == '0'>未知</#if>
+								<#if contacts.gender?? && contacts.gender == '0'>女</#if>
+								<#if contacts.gender?? && contacts.gender == '-1'>未知</#if>
 							</td>
 							<td>
 								${contacts.cusbirthday!''}
