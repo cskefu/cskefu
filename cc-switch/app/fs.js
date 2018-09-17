@@ -93,7 +93,7 @@ const callOut = phone =>
   new Promise((resolve, reject) => {
     debug('拨打电话: %s', phone);
 
-    conn.bgapi(`originate sofia/gateway/goipx/${phone} &park`, ({ body }) => {
+    conn.bgapi(`originate sofia/gateway/goipx/0${phone} &park`, ({ body }) => {
       let match = body.match(/([a-f\d]{8}(-[a-f\d]{4}){3}-[a-f\d]{12}?)/i);
       if (match) {
         resolve(match[1]);
@@ -255,7 +255,9 @@ class FreeSwitch extends EventEmitter {
           variable_sip_to_user: sip_to_user,
           variable_call_uuid,
         } = event;
-        let match = variable_bridge_channel.match(/sofia\/internal\/(\d+)@/);
+        let match =
+          variable_bridge_channel &&
+          variable_bridge_channel.match(/sofia\/internal\/(\d+)@/);
         if (match) {
           let sip_from_user = match[1];
           let call = new CallOut(
