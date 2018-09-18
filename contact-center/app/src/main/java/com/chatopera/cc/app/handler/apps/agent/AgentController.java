@@ -1241,10 +1241,11 @@ public class AgentController extends Handler {
         if(au == null)
             throw new CSKefuException("不存在该服务记录");
 
+        User curruser = super.getUser(request);
         contacts.setId(MainUtils.getUUID());
-        contacts.setCreater(super.getUser(request).getId());
-        contacts.setOrgi(super.getOrgi(request));
-        contacts.setOrgan(super.getUser(request).getOrgan());
+        contacts.setCreater(curruser.getId());
+        contacts.setOrgi(curruser.getOrgi());
+        contacts.setOrgan(curruser.getOrgan());
         contacts.setPinyin(PinYinTools.getInstance().getFirstPinYin(contacts.getName()));
         if(StringUtils.isBlank(contacts.getCusbirthday())) {
             contacts.setCusbirthday(null);
@@ -1260,7 +1261,7 @@ public class AgentController extends Handler {
         auc.setChannel(au.getChannel());
         auc.setCreatetime(new Date());
         auc.setAppid(au.getAppid());
-        auc.setCreater(super.getUser(request).getId());
+        auc.setCreater(curruser.getId());
         agentUserContactsRepository.save(auc);
         return request(super.createRequestPageTempletResponse("redirect:/agent/index.html"));
     }
@@ -1284,10 +1285,12 @@ public class AgentController extends Handler {
                 }
             }
 
+            User curruser = super.getUser(request);
+
             contacts.setCreater(data.getCreater());
             contacts.setCreatetime(data.getCreatetime());
-            contacts.setOrgi(super.getOrgi(request));
-            contacts.setOrgan(super.getUser(request).getOrgan());
+            contacts.setOrgi(curruser.getOrgi());
+            contacts.setOrgan(curruser.getOrgan());
             contacts.setPinyin(PinYinTools.getInstance().getFirstPinYin(contacts.getName()));
             if(StringUtils.isBlank(contacts.getCusbirthday())) {
                 contacts.setCusbirthday(null);

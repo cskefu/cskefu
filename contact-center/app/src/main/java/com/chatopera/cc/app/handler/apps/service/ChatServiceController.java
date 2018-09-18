@@ -300,7 +300,7 @@ public class ChatServiceController extends Handler {
 			}
 		}
 		map.put("agentUserList", agentUserList) ;
-        return request(super.createAppsTempletResponse("/apps/service/filter/index"));
+        return request(super.createAppsTempletResponse("/apps/service/quene/index"));
     }
 	
 	@RequestMapping("/quene/clean")
@@ -314,7 +314,7 @@ public class ChatServiceController extends Handler {
 			CacheHelper.getAgentUserCacheBean().put(agentUser.getUserid(), agentUser, super.getOrgi(request));
 			AutomaticServiceDist.allotAgent(agentUser, super.getOrgi(request)) ;
 		}
-        return request(super.createRequestPageTempletResponse("redirect:/service/filter/index.html"));
+        return request(super.createRequestPageTempletResponse("redirect:/service/quene/index.html"));
     }
 	
 	@RequestMapping("/quene/invite")
@@ -324,7 +324,7 @@ public class ChatServiceController extends Handler {
 		if(agentUser!=null && agentUser.getStatus().equals(MainContext.AgentUserStatusEnum.INQUENE.toString())){
 			AutomaticServiceDist.allotAgentForInvite(super.getUser(request).getId() , agentUser, super.getOrgi(request)) ;
 		}
-        return request(super.createRequestPageTempletResponse("redirect:/service/filter/index.html"));
+        return request(super.createRequestPageTempletResponse("redirect:/service/quene/index.html"));
     }
 	
 	@RequestMapping("/agent/index")
