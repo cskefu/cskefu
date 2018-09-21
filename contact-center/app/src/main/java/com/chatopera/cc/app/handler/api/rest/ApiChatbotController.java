@@ -474,14 +474,14 @@ public class ApiChatbotController extends Handler {
 
         if ((!j.has("snsid")) || StringUtils.isBlank(j.get("snsid").getAsString())) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入有效【snsid】。");
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【snsid】。");
             return resp;
         } else {
             snsid = j.get("snsid").getAsString();
             // #TODO 仅支持webim
             if (!snsAccountRes.existsBySnsidAndSnstypeAndOrgi(snsid, ChatbotUtils.SNS_TYPE_WEBIM, orgi)) {
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-                resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入有效【snsid】。");
+                resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，不存在【snsid】对应的网站渠道。");
                 return resp;
             }
 

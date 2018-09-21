@@ -38,7 +38,7 @@ public class ChatbotUtils {
     public static final String HUMAN_FIRST = "人工客服优先";
     public static final HashSet<String> VALID_WORKMODELS = new HashSet<String>(Arrays.asList(new String[]{CHATBOT_FIRST, HUMAN_FIRST}));
 
-    public static final String SNS_TYPE_WEBIM = "app";
+    public static final String SNS_TYPE_WEBIM = "webim";
 
     private static ChatbotRepository chatbotRes;
 
