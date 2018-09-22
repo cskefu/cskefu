@@ -334,6 +334,15 @@ public class ApiChatbotController extends Handler {
             o.addProperty("snsid", c.getSnsAccountIdentifier());
             o.addProperty("enabled", c.isEnabled());
 
+            // SNSAccount
+            SNSAccount snsAccount = snsAccountRes.findBySnsidAndOrgi(c.getSnsAccountIdentifier(), orgi);
+            if(snsAccount == null){
+                chatbotRes.delete(c); // 删除不存在snsAccount的机器人
+                continue; // 忽略不存在snsAccount的机器人
+            }
+
+            o.addProperty("snsurl", snsAccount.getBaseURL());
+
             // 创建人
             User user = userRes.findById(c.getCreater());
             if (user != null) {
