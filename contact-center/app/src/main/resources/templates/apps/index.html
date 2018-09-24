@@ -317,6 +317,15 @@
 								</dd>
 								</#if>
 							</#if>
+							<#if models?? && models["sales"]?? && models["sales"] == true>
+								<#if user?? &&( user.roleAuthMap["A11"]?? || user.usertype == "0") >
+								<dd class="ukefu-left-menu" data-tooltip="机器人">
+									<a href="javascript:void(0)" data-title="机器人"" data-href="/apps/chatbot/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange"> 
+									<i class="kfont"	style="position: relative;">&#xe63a;</i>
+									</a>
+								</dd>
+								</#if>
+							</#if>
 							<#if models?? && models["callcenter"]?? && models["callcenter"] == true>
 								<#if user?? && (user.roleAuthMap["A10"]?? || user.usertype == "0") >
 									<dd class="ukefu-left-menu" data-tooltip="语音渠道">
