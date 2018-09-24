@@ -119,7 +119,7 @@
     layui.use(['form'], function () {
         var form = layui.form();
         form.on('submit(save)', function (data) {
-            let field = data.field;
+            var field = data.field;
 
             var submitFinish = function (err, bot) {
                 if (err) {
