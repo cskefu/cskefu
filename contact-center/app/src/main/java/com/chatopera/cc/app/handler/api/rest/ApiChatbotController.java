@@ -148,6 +148,7 @@ public class ApiChatbotController extends Handler {
                 o.addProperty("id", r.getId());
                 o.addProperty("snsid", r.getSnsid());
                 o.addProperty("snsType", r.getSnstype());
+                o.addProperty("snsurl", r.getBaseURL());
                 ja.add(o);
             }
         }
