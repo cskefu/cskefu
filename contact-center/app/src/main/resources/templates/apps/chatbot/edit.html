@@ -99,6 +99,19 @@
         $.ajax(payload)
             .done(function (data) {
                 console.log('Rest api 返回的值：', data);
+                if (data.status && data.status === "AUTH_ERROR") {
+                    layer.confirm('会话过期，请重新登录！', {
+                        btn: ['是', '否'],
+                        icon: 2,
+                        title: '提示'
+                    }, function (index, layero) {
+                        layer.close(index)
+                        top.location.href = '/logout.html'
+                    }, function (index) {
+                        // 取消方法
+                    });
+                    return;
+                }
                 if (data.rc == 0) {
                     cb(null, data.data);
                 } else {
