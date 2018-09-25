@@ -67,7 +67,15 @@
     function query(p, ps) {
         request('chatbot?p=' + (p || 1) + '&ps=' + (ps || 10), { ops: 'fetch' }).then(function (rows) {
             var tds = $.map(rows, function (r) {
-                var edit = $('<a href="edit.html?id=' + r.id + '" data-width="550" data-height="300"><i class="layui-icon"></i>编辑</a>');
+                var edit = $('<a href="#" data-width="550" data-height="300"><i class="layui-icon"></i>编辑</a>');
+                edit.click(function () {
+                    layer.open({
+                        title: '编辑机器人',
+                        type: 2,
+                        area: ['800px', '450px'],
+                        content: 'edit.html?id=' + r.id
+                    })
+                });
 
                 var remove = $('<a style="margin-left:10px;"><i class="layui-icon" style="color:red;">ဆ</i>删除</a>').click(function () {
                     var lindex = layer.confirm('请确认是否删除？', {
@@ -75,7 +83,7 @@
                     }, function () {
                         console.log('ok', r.id)
                         window.remove(r.id);
-                        window.init();
+
                         layer.close(lindex);
                     }, function () {
                         console.log('cancel', r.id)
@@ -105,7 +113,9 @@
     }
 
     function remove(id) {
-        return request('chatbot', { ops: 'delete', id: id })
+        return request('chatbot', { ops: 'delete', id: id }).then(function () {
+            window.init();
+        })
     }
 
     function change(id, isEnabled) {
@@ -113,7 +123,12 @@
     }
 
     function showCreate() {
-        location.href = '/apps/chatbot/edit.html';
+        layer.open({
+            title: '新建机器人',
+            type: 2,
+            area: ['800px', '450px'],
+            content: 'edit.html'
+        })
     }
 
     function init() {

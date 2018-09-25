@@ -11,11 +11,6 @@
 </style>
 <div class="row">
     <div class="col-lg-12">
-        <h1>机器人列表</h1>
-    </div>
-</div>
-<div class="row">
-    <div class="col-lg-12">
         <div id="create">
             <form class="layui-form uk-form" style="width: 700px;margin: auto;">
                 <input id="id" type="hidden" name="id" value="${id}">
@@ -129,7 +124,9 @@
                         title: '提示'
                         , content: '保存成功'
                     });
-                    location.href = '/apps/chatbot/index.html';
+                    parent.init();
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);
                 }
             }
 
