@@ -38,7 +38,7 @@ public class TestController extends Handler {
 		for(int i=0 ; i<500; i++){
 			String user = MainUtils.getUUID();
 			try {
-				OnlineUserUtils.newRequestMessage(user, "ukewo", "user", "system", "localhost" , "win10", "test" , MainContext.ChannelTypeEnum.WEBIM.toString() , null , null , "admin" , "标题" , "http://www.ukewo.cn" , "12434" , MainContext.ChatInitiatorType.USER.toString()) ;
+				OnlineUserUtils.newRequestMessage(user, "ukewo", "user", "system", "localhost" , "win10", "test" , MainContext.ChannelTypeEnum.WEBIM.toString() , null , null , "admin" , "标题" , "https://www.chatopera.com" , "12434" , MainContext.ChatInitiatorType.USER.toString()) ;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
