@@ -29,7 +29,7 @@ COPY app /app
 WORKDIR /app
 RUN mvn clean package && \
     rm -rf /opt/apache-tomcat/webapps/ROOT && \
-    cp target/contact-center-3.9.0.war /opt/apache-tomcat/webapps/ROOT.war && \
+    cp target/contact-center-*.war.original /opt/apache-tomcat/webapps/ROOT.war && \
     rm -rf /app && \
     rm -rf /root/.m2
 
