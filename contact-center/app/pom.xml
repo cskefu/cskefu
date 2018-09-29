@@ -159,9 +159,9 @@
         </dependency>
         <dependency>
             <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast</artifactId>
-            <version>3.8</version>
-            <!--$NO-MVN-MAN-VER$-->
+            <artifactId>hazelcast-all</artifactId>
+            <version>3.10.5</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
