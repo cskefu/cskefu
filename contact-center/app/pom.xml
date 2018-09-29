@@ -346,6 +346,14 @@
                     <attachClasses>true</attachClasses>
                     <warSourceExcludes>**/WEB-INF</warSourceExcludes>
                     <packagingExcludes>**/WEB-INF,**/resources</packagingExcludes>
+                    <webResources>
+                        <resource>
+                            <directory>../config/sql/</directory>
+                            <includes>
+                                <include>cskefu-MySQL-slim.sql</include>
+                            </includes>
+                        </resource>
+                    </webResources>
                 </configuration>
                 <version>2.1.1</version>
             </plugin>
