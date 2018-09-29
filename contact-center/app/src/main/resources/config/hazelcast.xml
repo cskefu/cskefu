@@ -24,7 +24,7 @@
            xmlns="http://www.hazelcast.com/schema/config"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <group>
-        <name>CSKeFu_U0C</name>
+        <name>CSKeFu_IMDG</name>
         <password>CSKeFu-1234567890</password>
     </group>
     <network>
