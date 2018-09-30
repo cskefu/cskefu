@@ -57,14 +57,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         RequestMatcher beans = new AntPathRequestMatcher("/beans/**");
         RequestMatcher dump = new AntPathRequestMatcher("/dump/**");
         RequestMatcher env = new AntPathRequestMatcher("/env/**");
-        RequestMatcher health = new AntPathRequestMatcher("/health/**");
         RequestMatcher info = new AntPathRequestMatcher("/info/**");
         RequestMatcher mappings = new AntPathRequestMatcher("/mappings/**");
-        RequestMatcher metrics = new AntPathRequestMatcher("/metrics/**");
         RequestMatcher trace = new AntPathRequestMatcher("/trace/**");
         RequestMatcher druid = new AntPathRequestMatcher("/druid/**");
-        
-        return new DelegateRequestMatchingFilter(autconfig , configprops , beans , dump , env , health , info , mappings , metrics , trace, druid);
+
+        /**
+         * Bypass actuator api
+         */
+//        RequestMatcher health = new AntPathRequestMatcher("/health/**");
+//        RequestMatcher metrics = new AntPathRequestMatcher("/metrics/**");
+//        return new DelegateRequestMatchingFilter(autconfig , configprops , beans , dump , env , health , info , mappings , metrics , trace, druid);
+        return new DelegateRequestMatchingFilter(autconfig , configprops , beans , dump , env , mappings , trace, druid);
     }
     
     @Bean
