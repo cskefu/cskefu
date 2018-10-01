@@ -26,6 +26,7 @@ RUN /bin/bash -c "mkdir -p /{data,logs}"
 # build WAR
 COPY _m2/settings.xml /root/.m2/settings.xml
 COPY app /app
+COPY config /config
 WORKDIR /app
 RUN mvn clean package && \
     rm -rf /opt/apache-tomcat/webapps/ROOT && \
