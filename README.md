@@ -34,6 +34,8 @@
 
 ## 产品演示
 
+* 坐席工作台
+
 [http://cc.chatopera.com/](http://cc.chatopera.com/)
 
 
@@ -41,6 +43,10 @@
 | --- | --- |
 | admin | admin1234 | 
 
+
+* 网页端访客程序
+
+[http://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
 
 ## 功能
 
