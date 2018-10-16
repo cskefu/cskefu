@@ -88,7 +88,7 @@ public class WebIMController extends Handler {
         	
         	map.addAttribute("snsAccount", snsAccountRes.findBySnsidAndOrgi(snsid, super.getOrgi(request))) ;
     	}
-        return request(super.createAdminTempletResponse("/admin/app/index"));
+        return request(super.createAdminTempletResponse("/admin/webim/index"));
     }
     
     @RequestMapping("/save")
