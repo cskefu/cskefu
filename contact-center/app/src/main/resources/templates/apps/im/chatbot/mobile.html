@@ -174,12 +174,14 @@
 
     <div class="ukefu-func-tab">
         <ul>
-            <#if models?? && models["chatbot"]?? && models["chatbot"] == true && inviteData.ai?? && inviteData.ai == true && aiid??>
-            <li><a href="/im/index.html?appid=${appid!''}&orgi=${orgi!''}<#if aiid??>&aiid=${aiid}</#if>&ai=true<#if client??>&client=${client!''}</#if><#if type??>&type=text</#if><#if skill??>&skill=${skill!''}</#if><#if agent??>&agent=${agent!''}</#if>&userid=${userid!''}&sessionid=${sessionid!''}&t=${.now?long}">智能客服</a></li>
-            <li class="cur"><a href="javascript:void(0)">人工坐席</a></li>
+            <#if models?? && models["chatbot"]?? && models["chatbot"] == true && inviteData.ai && aiid??>
+                <#if !exchange?? || exchange == "true">
+                <li><a href="/im/index.html?appid=${appid!''}&orgi=${orgi!''}&ai=false<#if aiid??>&aiid=${aiid}</#if><#if client??>&client=${client!''}</#if><#if type??>&type=text</#if><#if skill??>&skill=${skill!''}</#if><#if agent??>&agent=${agent!''}</#if><#if traceid??>&traceid=${traceid}</#if>&userid=${userid!''}&sessionid=${sessionid!''}&t=${.now?long}">人工坐席</a></li>
+                </#if>
+                <li class="cur"><a href="javascript:void(0)">智能客服</a></li>
             <#else>
-            <li class="cur"><a href="javascript:void(0)">人工坐席</a></li>
-        </#if>
+                <li class="cur"><a href="javascript:void(0)">智能客服</a></li>
+            </#if>
         </ul>
     </div>
 </div>
@@ -308,9 +310,9 @@
             drawCanvasImage(data.attachmentid) ;
         }
         if(data.calltype == "呼入"){
-            output('<div class="chat-right"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label class="time">'+data.createtime+'</label><label  class="user">'+data.nickName+'</label> </div><div class="chatting-right"><i class="arrow arrow${inviteData.consult_dialog_color!''}"></i><div class="chat-content theme${inviteData.consult_dialog_color!''}">'+chat+'</div></div>' , "chat-block");
+            output('<div class="chat-right"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label class="time">'+data.createtime+'</label><label  class="user">'+data.username+'</label> </div><div class="chatting-right"><i class="arrow arrow${inviteData.consult_dialog_color!''}"></i><div class="chat-content theme${inviteData.consult_dialog_color!''}">'+chat+'</div></div>' , "chat-block");
         }else if(data.calltype == "呼出"){
-            output('<div class="chat-left"> <img class="user-img" src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" alt=""><div class="chat-message"><label  class="user">'+data.nickName+'</label><label class="time">'+data.createtime+'</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content">'+chat+'</div></div>' , "chat-block");
+            output('<div class="chat-left"> <img class="user-img" src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" alt=""><div class="chat-message"><label  class="user">'+data.username+'</label><label class="time">'+data.createtime+'</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content">'+chat+'</div></div>' , "chat-block");
         }
     });
 

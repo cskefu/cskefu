@@ -908,6 +908,8 @@ public class OnlineUserUtils {
         if (!StringUtils.isBlank(ip)) {
             ipdata = IPTools.getInstance().findGeography(ip);
         }
+
+        logger.info("set new Request message nickname {}", nickname);
         if (StringUtils.isBlank(nickname)) {
             nickname = "Guest_" + userid;
         }

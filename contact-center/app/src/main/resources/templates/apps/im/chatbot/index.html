@@ -269,9 +269,9 @@
                     <#if !exchange?? || exchange == "true">
                     <li><a href="/im/index.html?appid=${appid!''}&orgi=${orgi!''}&ai=false<#if client??>&client=${client!''}</#if><#if type??>&type=text</#if><#if skill??>&skill=${skill!''}</#if><#if agent??>&agent=${agent!''}</#if><#if title??>&title=${title?url}</#if><#if url??>&url=${url?url}</#if><#if traceid??>&traceid=${traceid}</#if>&userid=${userid!''}&sessionid=${sessionid!''}&t=${.now?long}">人工坐席</a></li>
                     </#if>
-                    <li class="cur"><a href="javascript:void(0)">智能坐席</a></li>
+                    <li class="cur"><a href="javascript:void(0)">智能客服</a></li>
                 <#else>
-                    <li class="cur"><a href="javascript:void(0)">智能坐席</a></li>
+                    <li class="cur"><a href="javascript:void(0)">智能客服</a></li>
                 </#if>
             </ul>
         </div>
@@ -312,7 +312,7 @@
             <div class="chat-left">
                 <img class="user-img" src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" alt="">
                 <div class="chat-message">
-                    <label class="user"><#if chatMessage?? && chatMessage.chatype?? && chatMessage.chatype == 'aireply'>${inviteData.ainame!'小E'}<#else>${chatMessage.username!''}</#if></label>
+                    <label class="user"><#if chatMessage?? && chatMessage.chatype?? && chatMessage.chatype == 'aireply'>${inviteData.ainame!'小松'}<#else>${chatMessage.username!''}</#if></label>
                     <label class="time">${chatMessage.createtime!''}</label>
                 </div>
                 <div class="chatting-left">
@@ -498,7 +498,7 @@
             chat = "<div class='ukefu-message-file'><div class='ukefu-file-icon'><img src='/im/img/file.png'></div><div class='ukefu-file-desc'><a href='"+data.message+"' target='_blank'><div>"+data.filename+"</div><div>"+(data.filesize/1024).toFixed(3)+"Kb</div></a></div></div>" ;
         }
         if(data.calltype == "呼入"){
-            output('<div class="chat-right"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label class="time">'+data.createtime+'</label> </div><div class="chatting-right"><i class="arrow arrow${inviteData.consult_dialog_color!''}"></i><div class="chat-content theme${inviteData.consult_dialog_color!''}">'+chat+'</div></div>' , "chat-block");
+            output('<div class="chat-right"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label class="time">'+data.createtime+'</label><label class="user">' + data.username +  '</label></div><div class="chatting-right"><i class="arrow arrow${inviteData.consult_dialog_color!''}"></i><div class="chat-content theme${inviteData.consult_dialog_color!''}">'+chat+'</div></div>' , "chat-block");
         }else if(data.calltype == "呼出"){
             output('<div class="chat-left"> <img class="user-img" src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" alt=""><div class="chat-message"><label  class="user">'+data.username+'</label><label class="time">'+data.createtime+'</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content">'+chat+'</div></div>' , "chat-block");
             R3Ajax.audioplayer('audioplane', newmessage, false); // 播放

@@ -344,6 +344,7 @@ public class IMController extends Handler {
                               @Valid String purl) throws Exception {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/im/index"));
         BlackEntity black = (BlackEntity) CacheHelper.getSystemCacheBean().getCacheObject(userid, MainContext.SYSTEM_ORGI);
+        logger.info("index userId {}", userid);
         if (StringUtils.isNotBlank(appid) && (black == null || (black.getEndtime() != null && black.getEndtime().before(new Date())))) {
             CousultInvite invite = OnlineUserUtils.cousult(appid, orgi, inviteRepository);
             String userID = null;
@@ -353,6 +354,7 @@ public class IMController extends Handler {
                 userID = MainUtils.genIDByKey(sessionid);
             }
             String nickname = "Guest_" + userID;
+            logger.info("nick name {}", nickname);
             boolean consult = true;                //是否已收集用户信息
             SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(orgi);
 

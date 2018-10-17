@@ -311,7 +311,7 @@
 								<div class="chat-left"> 
 									<img class="user-img" src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" alt="">
 									<div class="chat-message">
-										<label class="user"><#if chatMessage?? && chatMessage.chatype?? && chatMessage.chatype == 'aireply'>${inviteData.ainame!'小E'}<#else>${chatMessage.username!''}</#if></label> 
+										<label class="user"><#if chatMessage?? && chatMessage.chatype?? && chatMessage.chatype == 'aireply'>${inviteData.ainame!'小松'}<#else>${chatMessage.username!''}</#if></label>
 										<label class="time">${chatMessage.createtime!''}</label>										
 									</div>
 									<div class="chatting-left">

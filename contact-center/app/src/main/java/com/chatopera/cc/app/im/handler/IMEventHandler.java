@@ -68,7 +68,7 @@ public class IMEventHandler {
 
             String nickname = client.getHandshakeData().getSingleUrlParam("nickname");
 
-            if (!StringUtils.isBlank(user)) {
+            if (StringUtils.isNotBlank(user)) {
                 /**
                  * 用户进入到对话连接 ， 排队用户请求 , 如果返回失败，表示当前坐席全忙，用户进入排队状态，当前提示信息 显示 当前排队的队列位置，不可进行对话，用户发送的消息作为留言处理
                  */
@@ -80,7 +80,7 @@ public class IMEventHandler {
 //				 */
                 NettyClients.getInstance().putIMEventClient(user, client);
 //				
-                if (newRequestMessage != null && !StringUtils.isBlank(newRequestMessage.getMessage())) {
+                if (newRequestMessage != null && StringUtils.isNotBlank(newRequestMessage.getMessage())) {
                     MessageOutContent outMessage = new MessageOutContent();
                     outMessage.setMessage(newRequestMessage.getMessage());
                     outMessage.setMessageType(MainContext.MessageTypeEnum.MESSAGE.toString());

@@ -174,7 +174,7 @@
 		
 		<div class="ukefu-func-tab">
 		   		<ul>
-		   			<#if models?? && models["xiaoe"]?? && models["xiaoe"] == true && inviteData.ai?? && inviteData.ai == true && aiid??>
+		   			<#if models?? && models["chatbot"]?? && models["chatbot"] == true && inviteData.ai?? && inviteData.ai == true && aiid??>
 		   				<li><a href="/im/index.html?appid=${appid!''}&orgi=${orgi!''}<#if aiid??>&aiid=${aiid}</#if>&ai=true<#if client??>&client=${client!''}</#if><#if type??>&type=text</#if><#if skill??>&skill=${skill!''}</#if><#if agent??>&agent=${agent!''}</#if>&userid=${userid!''}&sessionid=${sessionid!''}&t=${.now?long}">智能客服</a></li>
 		   				<li class="cur"><a href="javascript:void(0)">人工坐席</a></li>
 		   			<#else>
@@ -223,8 +223,8 @@
 					src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>"
 					alt="">
 				<div class="chat-message">
-					<label class="user">${chatMessage.username!''}</label> <label
-						class="time">${chatMessage.createtime!''}</label>
+					<label class="user"><#if chatMessage?? && chatMessage.chatype?? && chatMessage.chatype == 'aireply'>${inviteData.ainame!'小松'}<#else>${chatMessage.username!''}</#if></label>
+					<label class="time">${chatMessage.createtime!''}</label>
 				</div>
 				<div class="chatting-left">
 					<i class="arrow"></i>
@@ -281,7 +281,7 @@
 	// 参数连接
 	var hostname = location.hostname ;
     var protocol = window.location.protocol.replace(/:/g,'');
-    var socket = io.connect(protocol + '://'+hostname+':${port}/im/user?userid=${userid!''}<#if aiid??>&aiid=${aiid}</#if>&orgi=${orgi!''}&session=${sessionid!''}&appid=${appid!''}&osname=${(osname!'')?url}&browser=${(browser!'')?url}<#if skill??>&skill=${skill}</#if><#if agent??>&agent=${agent}</#if>');
+    var socket = io.connect(protocol + '://'+hostname+':${port}/im/user?userid=${userid!''}<#if aiid??>&aiid=${aiid}</#if>&orgi=${orgi!''}&session=${sessionid!''}&appid=${appid!''}&osname=${(osname!'')?url}&browser=${(browser!'')?url}<#if skill??>&skill=${skill}</#if><#if username??>&nickname=${username}</#if><#if agent??>&agent=${agent}</#if>');
     socket.on('connect',function(){
         //service.sendRequestMessage(); 
 		//output('<span id="callOutConnect-message">'+ new Date().format("yyyy-MM-dd hh:mm:ss") + ' 开始沟通' +'</span>' , 'message callOutConnect-message');
