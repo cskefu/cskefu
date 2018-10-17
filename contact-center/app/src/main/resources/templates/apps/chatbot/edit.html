@@ -52,6 +52,13 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
+                    <label class="layui-form-label">问候语</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="welcome" required lay-verify="required" placeholder="请输入问候语" autocomplete="off"
+                               class="layui-input" value="${bot.welcome}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
                     <label class="layui-form-label">兜底回复</label>
                     <div class="layui-input-inline">
                         <input type="text" name="fallback" required lay-verify="required" autocomplete="off" value="${bot.fallback}"
