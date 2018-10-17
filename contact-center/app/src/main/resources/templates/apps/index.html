@@ -317,7 +317,7 @@
 								</dd>
 								</#if>
 							</#if>
-							<#if models?? && models["sales"]?? && models["sales"] == true>
+							<#if models?? && models["chatbot"]?? && models["chatbot"] == true>
 								<#if user?? &&( user.roleAuthMap["A09"]?? || user.usertype == "0") >
 								<dd class="ukefu-left-menu" data-tooltip="智能机器人">
 									<a href="javascript:void(0)" data-title="智能机器人" data-href="/apps/chatbot/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange">
