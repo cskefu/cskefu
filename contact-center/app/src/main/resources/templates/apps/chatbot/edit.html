@@ -116,7 +116,7 @@
                 if (data.rc == 0) {
                     cb(null, data.data);
                 } else {
-                    cb(data.error);
+                    cb(data.data);
                 }
             })
             .fail(function (jqXHR, textStatus) {
@@ -129,10 +129,17 @@
         var form = layui.form();
         form.on('submit(save)', function (data) {
             var field = data.field;
-
             var submitFinish = function (err, bot) {
                 if (err) {
-                    console.error(err);
+                    layer.confirm(err.data||err.error, {
+                        btn: ['关闭'],
+                        icon: 2,
+                        title: '提示'
+                    }, function (popup, layero) {
+                        layer.close(popup)
+                    }, function (popup) {
+                        // 取消方法
+                    });
                 } else {
                     layer.open({
                         title: '提示'
