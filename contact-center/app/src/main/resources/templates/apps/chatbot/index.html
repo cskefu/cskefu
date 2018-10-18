@@ -134,6 +134,16 @@
             })
 
             $('#bots').html(tds);
+        }, function(err){
+            layer.confirm(err.data||err.error, {
+                btn: ['关闭'],
+                icon: 2,
+                title: '提示'
+            }, function (popup, layero) {
+                layer.close(popup)
+            }, function (popup) {
+                // 取消方法
+            });
         })
     }
 
