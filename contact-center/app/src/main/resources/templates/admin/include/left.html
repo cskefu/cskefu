@@ -24,9 +24,11 @@
 			<dd <#if subtype?? && (maintype == 'webim' || subtype == 'im')>class="layui-this"</#if>>
 				<a href="/admin/im/index.html">网站列表</a>
 			</dd>
+		    <#if models?? && models["callout"]?? && models["callout"] == true>
 			<dd <#if subtype?? && (maintype == 'callout' || subtype == 'channel')>class="layui-this"</#if>>
 				<a href="/admin/callout/index.html">语音渠道</a>
 			</dd>
+            </#if>
 		</dl>
 	</li>
 	

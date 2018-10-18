@@ -7834,7 +7834,7 @@ CREATE TABLE `uk_systemconfig` (
 -- Records of uk_systemconfig
 -- ----------------------------
 BEGIN;
-INSERT INTO `uk_systemconfig` VALUES ('2c93809364e0a6d00164ef6722270582', NULL, '春松客服-全渠道智能客服', NULL, 'cskefu', NULL, NULL, NULL, NULL, 'www.chatopera.com', NULL, NULL, '4028cac3614cd2f901614cf8be1f0324', '2018-07-31 08:14:30', NULL, NULL, NULL, NULL, NULL, '01', 'info', 0, NULL, NULL, '', 0, 0, '', '', '', '', '', '', NULL, 0, 0, 0, 0, '', '', NULL, NULL, '', '', NULL, 0, 0, NULL, NULL, NULL, 0, '', NULL, 0, 0, '租户', 0, 0, NULL, NULL, NULL);
+INSERT INTO `uk_systemconfig` VALUES ('2c93809364e0a6d00164ef6722270582', NULL, '春松客服-全渠道智能客服', NULL, 'cskefu', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '4028cac3614cd2f901614cf8be1f0324', '2018-07-31 08:14:30', NULL, NULL, NULL, NULL, NULL, '01', 'info', 0, NULL, NULL, '', 0, 0, '', '', '', '', '', '', NULL, 0, 0, 0, 0, '', '', NULL, NULL, '', '', NULL, 0, 0, NULL, NULL, NULL, 0, '', NULL, 0, 0, '租户', 0, 0, NULL, NULL, NULL);
 COMMIT;
 
 -- ----------------------------
