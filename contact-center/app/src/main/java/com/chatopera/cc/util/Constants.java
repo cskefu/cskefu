@@ -30,6 +30,14 @@ public class Constants {
     public final static String IM_MESSAGE_TYPE_MESSAGE = "message";
     public final static String CHATBOT_EVENT_TYPE_CHAT = "chat";
 
+
+    /**
+     * Modules
+     */
+    public final static String CSKEFU_MODULE_CALLOUT = "sales";
+    public final static String CSKEFU_MODULE_CHATBOT = "chatbot";
+    public final static String CSKEFU_MODULE_CONTACTS = "contacts";
+
     /**
      * Formatter
      */

@@ -17,6 +17,7 @@
 
 package com.chatopera.cc.app.basic;
 
+import com.chatopera.cc.util.Constants;
 import com.chatopera.cc.util.DateConverter;
 import com.chatopera.cc.app.basic.resource.ActivityResource;
 import com.chatopera.cc.app.basic.resource.BatchResource;
@@ -409,7 +410,7 @@ public class MainContext {
             return this.name;
         }
 
-        public int getIndex(){
+        public int getIndex() {
             return this.index;
         }
     }
@@ -986,4 +987,13 @@ public class MainContext {
     public static Class<?> getResource(String resource) {
         return uKeFuResourceMap.get(resource);
     }
+
+    /**
+     * 是否开启外呼模块
+     * @return
+     */
+    public static boolean isEnableCalloutModule() {
+        return model.containsKey(Constants.CSKEFU_MODULE_CALLOUT) && (model.get(Constants.CSKEFU_MODULE_CALLOUT).equals(true));
+    }
+
 }

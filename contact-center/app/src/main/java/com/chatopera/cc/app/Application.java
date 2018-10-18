@@ -18,6 +18,7 @@ package com.chatopera.cc.app;
 
 import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.app.config.StartedEventListener;
+import com.chatopera.cc.util.Constants;
 import com.chatopera.cc.util.SystemEnvHelper;
 import com.chatopera.cc.util.mobile.MobileNumberUtils;
 import org.apache.commons.lang.StringUtils;
@@ -67,15 +68,15 @@ public class Application {
     static {
         // 外呼模块
         if (isCalloutModule) {
-            MainContext.model.put("sales", true);
+            MainContext.model.put(Constants.CSKEFU_MODULE_CALLOUT, true);
         }
         // CRM模块
         if (isContactsModule) {
-            MainContext.model.put("contacts", true);
+            MainContext.model.put(Constants.CSKEFU_MODULE_CONTACTS, true);
         }
         // 聊天机器人模块
         if (isChatbotModule) {
-            MainContext.model.put("chatbot", true);
+            MainContext.model.put(Constants.CSKEFU_MODULE_CHATBOT, true);
         }
     }
 
