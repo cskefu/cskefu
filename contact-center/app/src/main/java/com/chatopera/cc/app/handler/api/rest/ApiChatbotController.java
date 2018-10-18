@@ -582,7 +582,7 @@ public class ApiChatbotController extends Handler {
             }
         } catch (ChatbotAPIRuntimeException e) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "智能问答引擎服务异常。" + e.toString());
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "智能问答引擎服务异常，该机器人【chatbotID】已经存在或服务不能访问到，请联系 [info@chatopera.com] 获得支持。");
             return resp;
         } catch (MalformedURLException e) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);

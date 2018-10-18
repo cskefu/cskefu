@@ -80,20 +80,34 @@ public class ChatbotEventHandler {
                  * 加入到 缓存列表
                  */
                 NettyClients.getInstance().putChatbotEventClient(user, client);
-                MessageOutContent outMessage = new MessageOutContent();
                 CousultInvite invite = OnlineUserUtils.cousult(appid, orgi, MainContext.getContext().getBean(ConsultInviteRepository.class));
+
+                // send out tip
+                MessageOutContent tip = new MessageOutContent();
+                tip.setMessage("您正在使用机器人客服！");
+                tip.setMessageType(MainContext.MessageTypeEnum.MESSAGE.toString());
+                tip.setCalltype(MainContext.CallTypeEnum.IN.toString());
+                tip.setNickName(invite.getAiname());
+                tip.setCreatetime(MainUtils.dateFormate.format(now));
+
+                client.sendEvent(MainContext.MessageTypeEnum.STATUS.toString(), tip);
+
+                // send out welcome message
                 if (invite != null && StringUtils.isNotBlank(invite.getAisuccesstip())) {
-                    outMessage.setMessage(invite.getAisuccesstip());
-                } else {
-                    outMessage.setMessage("欢迎使用华夏春松机器人客服！");
+                    ChatMessage welcome = new ChatMessage();
+                    welcome.setCalltype(MainContext.CallTypeEnum.OUT.toString());
+                    welcome.setAppid(appid);
+                    welcome.setOrgi(orgi);
+                    welcome.setAiid(aiid);
+                    welcome.setMessage(invite.getAisuccesstip());
+                    welcome.setTouser(user);
+                    welcome.setTousername(nickname);
+                    welcome.setMsgtype(MainContext.MessageTypeEnum.MESSAGE.toString());
+                    welcome.setUserid(user);
+                    welcome.setUsername(invite.getAiname());
+                    welcome.setUpdatetime(System.currentTimeMillis());
+                    client.sendEvent(MainContext.MessageTypeEnum.MESSAGE.toString(), welcome);
                 }
-
-                outMessage.setMessageType(MainContext.MessageTypeEnum.MESSAGE.toString());
-                outMessage.setCalltype(MainContext.CallTypeEnum.IN.toString());
-                outMessage.setNickName(invite.getAiname());
-                outMessage.setCreatetime(MainUtils.dateFormate.format(now));
-
-                client.sendEvent(MainContext.MessageTypeEnum.STATUS.toString(), outMessage);
 
                 InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress();
                 String ip = MainUtils.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString());

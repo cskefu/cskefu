@@ -123,7 +123,7 @@
                 if (data.rc == 0) {
                     cb(null, data.data);
                 } else {
-                    cb(data.data);
+                    cb(data);
                 }
             })
             .fail(function (jqXHR, textStatus) {
