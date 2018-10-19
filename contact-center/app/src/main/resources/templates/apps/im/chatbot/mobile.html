@@ -238,12 +238,12 @@
 </div>
 
 <div class="mobile-chat-bottom" id="bottom">
-    <form id="imgForm" action="/im/image/upload.html?userid=${userid!''}&appid=${appid!''}&username=${username!''}&orgi=${orgi!''}" data-toggle="ajax-form"" enctype="multipart/form-data">
-    <a href="javascript:;" class="imgFile" onclick="closeFaceDialog(0)">
-        <img src="/im/img/img.png" class="chat-type" style="width:32px;height:32px;">
-        <input type="file" name="imgFile" id="imgFile" accept="image/*" onChange="$('#imgForm').submit();$(this).val('');">
-    </a>
-    </form>
+    <!--<form id="imgForm" action="/im/image/upload.html?userid=${userid!''}&appid=${appid!''}&username=${username!''}&orgi=${orgi!''}" data-toggle="ajax-form"" enctype="multipart/form-data">-->
+    <!--<a href="javascript:;" class="imgFile" onclick="closeFaceDialog(0)">-->
+        <!--<img src="/im/img/img.png" class="chat-type" style="width:32px;height:32px;">-->
+        <!--<input type="file" name="imgFile" id="imgFile" accept="image/*" onChange="$('#imgForm').submit();$(this).val('');">-->
+    <!--</a>-->
+    <!--</form>-->
     <textarea id="message" name="content" maxlength="<#if inviteData.maxwordsnum gt 0>${inviteData.maxwordsnum}<#else>300</#if>"></textarea>
     <div class="btn-push clearfix" class="tools">
         <img id="facedialog" onclick="return openFaceDialog()" src="/im/img/face.png" style="width:32px;height:32px;"></a>
