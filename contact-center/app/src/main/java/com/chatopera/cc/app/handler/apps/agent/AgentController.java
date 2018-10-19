@@ -325,7 +325,10 @@ public class AgentController extends Handler {
 	
 	@RequestMapping("/agentuser")
 	@Menu(type = "apps", subtype = "agent")
-	public ModelAndView agentuser(ModelMap map , HttpServletRequest request , String id, String channel) throws IOException, TemplateException {
+	public ModelAndView agentuser(ModelMap map,
+                                  HttpServletRequest request,
+                                  String id,
+                                  String channel) throws IOException, TemplateException {
 	    String mainagentuser = "/apps/agent/mainagentuser";
 	    if(channel.equals("phone")) {
             mainagentuser = "/apps/agent/mainagentuser_callout";
@@ -917,7 +920,12 @@ public class AgentController extends Handler {
 	
 	@RequestMapping(value="/summary")  
 	@Menu(type = "apps", subtype = "summary")
-    public ModelAndView summary(ModelMap map , HttpServletRequest request , @Valid String userid , @Valid String agentserviceid, @Valid String agentuserid){ 
+    public ModelAndView summary(ModelMap map ,
+                                HttpServletRequest request ,
+                                @Valid String userid ,
+                                @Valid String agentserviceid,
+                                @Valid String agentuserid,
+                                @Valid String channel){
 		if(!StringUtils.isBlank(userid) && !StringUtils.isBlank(agentuserid)){
 			AgentUser agentUser = this.agentUserRepository.findByIdAndOrgi(agentuserid, super.getOrgi(request)) ;
 			if(agentUser!=null && !StringUtils.isBlank(agentUser.getAgentserviceid())){
@@ -926,10 +934,12 @@ public class AgentController extends Handler {
 					map.addAttribute("summary", summaries.get(0)) ;
 				}
 			}
+
 			map.addAttribute("tags", tagRes.findByOrgiAndTagtype(super.getOrgi(request) , MainContext.ModelType.SUMMARY.toString())) ;
 			map.addAttribute("userid", userid) ;
 			map.addAttribute("agentserviceid", agentserviceid) ;
 			map.addAttribute("agentuserid", agentuserid) ;
+			map.addAttribute("channel", channel);
 			
 		}
 		
@@ -938,8 +948,15 @@ public class AgentController extends Handler {
 	
 	@RequestMapping(value="/summary/save")  
 	@Menu(type = "apps", subtype = "summarysave")
-    public ModelAndView summarysave(ModelMap map , HttpServletRequest request , @Valid AgentServiceSummary summary , @Valid String contactsid , @Valid String userid , @Valid String agentserviceid, @Valid String agentuserid){ 
-		if(!StringUtils.isBlank(userid) && !StringUtils.isBlank(agentuserid)){
+    public ModelAndView summarysave(ModelMap map ,
+                                    HttpServletRequest request ,
+                                    @Valid AgentServiceSummary summary ,
+                                    @Valid String contactsid ,
+                                    @Valid String userid ,
+                                    @Valid String agentserviceid,
+                                    @Valid String agentuserid,
+                                    @Valid String channel){
+	    if(!StringUtils.isBlank(userid) && !StringUtils.isBlank(agentuserid)){
 			summary.setOrgi(super.getOrgi(request));
 			summary.setCreater(super.getUser(request).getId());
 			
@@ -951,6 +968,7 @@ public class AgentController extends Handler {
 			summary.setUsername(service.getUsername());
 			summary.setAgentusername(service.getAgentusername());
 			summary.setChannel(service.getChannel());
+			summary.setContactsid(contactsid);
 			summary.setLogindate(service.getLogindate());
 			summary.setContactsid(service.getContactsid());
 			summary.setEmail(service.getEmail());
@@ -958,7 +976,7 @@ public class AgentController extends Handler {
 			serviceSummaryRes.save(summary) ;
 		}
 		
-    	return request(super.createRequestPageTempletResponse("redirect:/agent/agentuser.html?id="+agentuserid)) ; 
+    	return request(super.createRequestPageTempletResponse("redirect:/agent/agentuser.html?id="+agentuserid + "&channel=" + channel)) ;
     }
 	
 	@RequestMapping(value="/transfer")  
