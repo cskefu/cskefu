@@ -91,20 +91,22 @@ public class CallOutPlanTask {
 
     @Scheduled(fixedDelayString = "${cskefu.callout.watch.interval}") // 每分钟执行一次
     public void watch() {
-        logger.debug("[callout executor] check dialplan job running status ...");
-        // load all jobs
-        List<CallOutDialplan> dps = callOutDialplanRes.findByStatusAndIsarchive(MainContext.CallOutDialplanStatusEnum.RUNNING.toString(), false);
-        for (CallOutDialplan dp : dps) {
-            Long size = redisListOps.size(String.format(Constants.FS_DIALPLAN_TARGET, dp.getVoicechannel().getBaseURL(), dp.getId()));
-            if (size > 0) {
-                logger.info("[callout executor] job [{}] is not done yet, remaining [{}]", dp.getName(), size);
-            } else {
-                dp.setStatus(MainContext.CallOutDialplanStatusEnum.STOPPED.toString());
-                dp.setUpdatetime(new Date());
-                callOutDialplanRes.save(dp);
+        if(MainContext.isEnableCalloutModule()){
+            logger.debug("[callout executor] check dialplan job running status ...");
+            // load all jobs
+            List<CallOutDialplan> dps = callOutDialplanRes.findByStatusAndIsarchive(MainContext.CallOutDialplanStatusEnum.RUNNING.toString(), false);
+            for (CallOutDialplan dp : dps) {
+                Long size = redisListOps.size(String.format(Constants.FS_DIALPLAN_TARGET, dp.getVoicechannel().getBaseURL(), dp.getId()));
+                if (size > 0) {
+                    logger.info("[callout executor] job [{}] is not done yet, remaining [{}]", dp.getName(), size);
+                } else {
+                    dp.setStatus(MainContext.CallOutDialplanStatusEnum.STOPPED.toString());
+                    dp.setUpdatetime(new Date());
+                    callOutDialplanRes.save(dp);
 
-                // 删除状态成员
-                delHashKey(String.format(Constants.FS_DIALPLAN_STATUS, dp.getVoicechannel().getBaseURL()), dp.getId());
+                    // 删除状态成员
+                    delHashKey(String.format(Constants.FS_DIALPLAN_STATUS, dp.getVoicechannel().getBaseURL()), dp.getId());
+                }
             }
         }
     }
