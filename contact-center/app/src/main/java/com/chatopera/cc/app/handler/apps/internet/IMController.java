@@ -788,7 +788,7 @@ public class IMController extends Handler {
                 }
                 attachmentFile.setFileid(fileid);
                 attachementRes.save(attachmentFile);
-                FileUtils.writeByteArrayToFile(new File(path, "app/app/" + fileid), file.getBytes());
+                FileUtils.writeByteArrayToFile(new File(path, "upload/" + fileid), file.getBytes());
                 id = attachmentFile.getId();
             }
         }

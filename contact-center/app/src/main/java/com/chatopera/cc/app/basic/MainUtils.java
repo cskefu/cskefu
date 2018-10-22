@@ -877,7 +877,7 @@ public class MainUtils {
                         }
                         attachmentFile.setFileid(fileid);
                         attachementRes.save(attachmentFile);
-                        FileUtils.writeByteArrayToFile(new File(path, "app/workorders/" + fileid), file.getBytes());
+                        FileUtils.writeByteArrayToFile(new File(path, "upload/" + fileid), file.getBytes());
                     }
                 }
             }

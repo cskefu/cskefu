@@ -24,6 +24,7 @@ import com.chatopera.cc.app.im.message.AgentStatusMessage;
 import com.chatopera.cc.app.im.message.ChatMessage;
 import com.chatopera.cc.app.im.message.NewRequestMessage;
 import com.chatopera.cc.app.im.util.ChatbotUtils;
+import com.chatopera.cc.app.im.util.IMServiceUtils;
 import com.chatopera.cc.app.model.*;
 import com.chatopera.cc.app.persistence.repository.AgentUserRepository;
 import com.chatopera.cc.app.persistence.repository.ChatbotRepository;
@@ -81,6 +82,11 @@ public class ChatbotEventHandler {
                  */
                 NettyClients.getInstance().putChatbotEventClient(user, client);
                 CousultInvite invite = OnlineUserUtils.cousult(appid, orgi, MainContext.getContext().getBean(ConsultInviteRepository.class));
+
+                /**
+                 * 更新坐席服务类型
+                 */
+                IMServiceUtils.shiftOpsType(user, orgi, MainContext.OptTypeEnum.CHATBOT);
 
                 // send out tip
                 MessageOutContent tip = new MessageOutContent();

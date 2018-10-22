@@ -25,6 +25,7 @@ import com.chatopera.cc.app.im.message.AgentStatusMessage;
 import com.chatopera.cc.app.im.message.ChatMessage;
 import com.chatopera.cc.app.im.message.NewRequestMessage;
 import com.chatopera.cc.app.im.util.HumanUtils;
+import com.chatopera.cc.app.im.util.IMServiceUtils;
 import com.chatopera.cc.app.model.*;
 import com.chatopera.cc.app.persistence.impl.AgentUserService;
 import com.chatopera.cc.app.persistence.repository.AgentServiceRepository;
@@ -37,6 +38,8 @@ import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.UnsupportedEncodingException;
@@ -45,6 +48,7 @@ import java.util.Date;
 import java.util.List;
 
 public class IMEventHandler {
+    private final static Logger logger = LoggerFactory.getLogger(IMEventHandler.class);
     protected SocketIOServer server;
 
     @Autowired
@@ -75,11 +79,16 @@ public class IMEventHandler {
                 InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress();
                 String ip = MainUtils.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString());
                 NewRequestMessage newRequestMessage = OnlineUserUtils.newRequestMessage(user, orgi, session, appid, ip, client.getHandshakeData().getSingleUrlParam("osname"), client.getHandshakeData().getSingleUrlParam("browser"), MainContext.ChannelTypeEnum.WEBIM.toString(), skill, agent, nickname, title, url, traceid, MainContext.ChatInitiatorType.USER.toString());
-//				/**
-//				 * 加入到 缓存列表
-//				 */
+				/**
+				 * 加入到 缓存列表
+				 */
                 NettyClients.getInstance().putIMEventClient(user, client);
-//				
+
+                /**
+                 * 更新坐席服务类型
+                 */
+                IMServiceUtils.shiftOpsType(user, orgi, MainContext.OptTypeEnum.HUMAN);
+
                 if (newRequestMessage != null && StringUtils.isNotBlank(newRequestMessage.getMessage())) {
                     MessageOutContent outMessage = new MessageOutContent();
                     outMessage.setMessage(newRequestMessage.getMessage());
@@ -137,6 +146,7 @@ public class IMEventHandler {
             agentUser.setEmail(contacts.getEmail());
             agentUser.setResion(contacts.getMemo());
             agentUser.setChatbotops(false); // 非机器人客服
+            agentUser.setOpttype(MainContext.OptTypeEnum.HUMAN.toString());
             service.save(agentUser);
             CacheHelper.getAgentUserCacheBean().put(agentUser.getUserid(), agentUser, MainContext.SYSTEM_ORGI);
         }
