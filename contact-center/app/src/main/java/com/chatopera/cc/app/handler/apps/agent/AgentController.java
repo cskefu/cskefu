@@ -741,7 +741,7 @@ public class AgentController extends Handler {
                     }
                     outMessage.setCalltype(MainContext.CallTypeEnum.OUT.toString());
                     outMessage.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-                    outMessage.setNickName(super.getUser(request).getUsername());
+                    outMessage.setNickName(super.getUser(request).getUname());
 
                     router.handler(agentUser.getUserid(), MainContext.MessageTypeEnum.MESSAGE.toString(), agentUser.getAppid(), outMessage);
                 }
@@ -765,10 +765,10 @@ public class AgentController extends Handler {
                 data.setOrgi(super.getUser(request).getOrgi());
 
                 data.setCreater(super.getUser(request).getId());
-                data.setUsername(super.getUser(request).getUsername());
+                data.setUsername(super.getUser(request).getUname());
 
                 chatMessageRepository.save(data);
-                // TODO #111 通知文件上传消息
+                // 通知文件上传消息
                 NettyClients.getInstance().publishAgentEventMessage(agentUser.getAgentno(), MainContext.MessageTypeEnum.MESSAGE.toString(), data);
             }
 
@@ -827,7 +827,7 @@ public class AgentController extends Handler {
                         outMessage.setMessageType(MainContext.MediaTypeEnum.ACTION.toString());
                         outMessage.setCalltype(MainContext.CallTypeEnum.INVITE.toString());
                         outMessage.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-                        outMessage.setNickName(super.getUser(request).getUsername());
+                        outMessage.setNickName(super.getUser(request).getUname());
 
                         router.handler(agentUser.getUserid(), MainContext.MessageTypeEnum.MESSAGE.toString(), agentUser.getAppid(), outMessage);
                     }
@@ -1068,7 +1068,7 @@ public class AgentController extends Handler {
                         agentService.setAgentno(agentno);
                         agentService.setAgentusername(transAgentStatus.getUsername());
                     }
-                    // TODO #111 通知转接消息
+                    // 通知转接消息
                     NettyClients.getInstance().publishAgentEventMessage(agentno, MainContext.MessageTypeEnum.NEW.toString(), agentUser);
                 }
             } else {
