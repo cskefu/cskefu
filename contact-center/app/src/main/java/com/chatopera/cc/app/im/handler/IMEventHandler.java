@@ -160,7 +160,6 @@ public class IMEventHandler {
             agentUser.setName(contacts.getName());
             agentUser.setPhone(contacts.getPhone());
             agentUser.setEmail(contacts.getEmail());
-            agentUser.setResion(contacts.getMemo());
             agentUser.setChatbotops(false); // 非机器人客服
             agentUser.setOpttype(MainContext.OptTypeEnum.HUMAN.toString());
             service.save(agentUser);
@@ -172,9 +171,8 @@ public class IMEventHandler {
         if (agentServiceList.size() > 0) {
             AgentService agentService = agentServiceList.get(0);
             agentService.setName(contacts.getName());
-            agentService.setPhone(contacts.getName());
-            agentService.setEmail(contacts.getName());
-            agentService.setRegion(contacts.getMemo());
+            agentService.setPhone(contacts.getPhone());
+            agentService.setEmail(contacts.getEmail());
             agentServiceRes.save(agentService);
         }
     }
