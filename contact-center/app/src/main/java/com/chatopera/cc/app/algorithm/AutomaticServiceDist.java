@@ -16,15 +16,15 @@
  */
 package com.chatopera.cc.app.algorithm;
 
-import com.chatopera.cc.app.basic.MainContext;
-import com.chatopera.cc.app.basic.MainUtils;
-import com.chatopera.cc.app.im.client.NettyClients;
-import com.chatopera.cc.app.im.router.OutMessageRouter;
-import com.chatopera.cc.app.model.*;
-import com.chatopera.cc.app.cache.CacheHelper;
 import com.chatopera.cc.aggregation.filter.AgentStatusBusyOrgiFilter;
 import com.chatopera.cc.aggregation.filter.AgentStatusOrgiFilter;
 import com.chatopera.cc.aggregation.filter.AgentUserOrgiFilter;
+import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.basic.MainUtils;
+import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.im.client.NettyClients;
+import com.chatopera.cc.app.im.router.OutMessageRouter;
+import com.chatopera.cc.app.model.*;
 import com.chatopera.cc.app.persistence.repository.*;
 import com.chatopera.cc.util.WebIMReport;
 import com.corundumstudio.socketio.SocketIONamespace;
@@ -141,9 +141,9 @@ public class AutomaticServiceDist {
         int queneUsers = 0;
 
         PagingPredicate<String, AgentUser> pagingPredicate = null;
-        if (!StringUtils.isBlank(skill)) {
+        if (StringUtils.isNotBlank(skill)) {
             pagingPredicate = new PagingPredicate<String, AgentUser>(new SqlPredicate("status = 'inquene' AND skill = '" + skill + "'  AND orgi = '" + orgi + "'"), 100);
-        } else if (!StringUtils.isBlank(agent)) {
+        } else if (StringUtils.isNotBlank(agent)) {
             pagingPredicate = new PagingPredicate<String, AgentUser>(new SqlPredicate("status = 'inquene' AND agent = '" + agent + "' AND orgi = '" + orgi + "'"), 100);
         } else {
             pagingPredicate = new PagingPredicate<String, AgentUser>(new SqlPredicate("status = 'inquene' AND orgi = '" + orgi + "'"), 100);
@@ -168,7 +168,7 @@ public class AutomaticServiceDist {
     public static List<AgentStatus> getAgentStatus(String skill, String orgi) {
         PagingPredicate<String, AgentStatus> pagingPredicate = new PagingPredicate<String, AgentStatus>(new SqlPredicate("orgi = '" + orgi + "'"), 100);
 
-        if (!StringUtils.isBlank(skill)) {
+        if (StringUtils.isNotBlank(skill)) {
             pagingPredicate = new PagingPredicate<String, AgentStatus>(new SqlPredicate("skill = '" + skill + "' AND orgi = '" + orgi + "'"), 100);
         }
         List<AgentStatus> agentList = new ArrayList<AgentStatus>();
@@ -186,7 +186,7 @@ public class AutomaticServiceDist {
         AgentStatus agentStatus = (AgentStatus) CacheHelper.getAgentStatusCacheBean().getCacheObject(agentno, orgi);
         List<AgentUser> agentStatusList = new ArrayList<AgentUser>();
         PagingPredicate<String, AgentUser> pagingPredicate = null;
-        if (agentStatus != null && !StringUtils.isBlank(agentStatus.getSkill())) {
+        if (agentStatus != null && StringUtils.isNotBlank(agentStatus.getSkill())) {
             pagingPredicate = new PagingPredicate<String, AgentUser>(new SqlPredicate("status = 'inquene' AND ((agent = null AND skill = null) OR (skill = '" + agentStatus.getSkill() + "' AND agent = null) OR agent = '" + agentno + "') AND orgi = '" + orgi + "'"), 10);
         } else {
             pagingPredicate = new PagingPredicate<String, AgentUser>(new SqlPredicate("status = 'inquene' AND ((agent = null AND skill = null) OR agent = '" + agentno + "') AND orgi = '" + orgi + "'"), 10);
@@ -207,7 +207,7 @@ public class AutomaticServiceDist {
                     outMessage.setNickName(agentStatus.getUsername());
                     outMessage.setCreatetime(MainUtils.dateFormate.format(new Date()));
 
-                    if (!StringUtils.isBlank(agentUser.getUserid())) {
+                    if (StringUtils.isNotBlank(agentUser.getUserid())) {
                         OutMessageRouter router = null;
                         router = (OutMessageRouter) MainContext.getContext().getBean(agentUser.getChannel());
                         if (router != null) {
@@ -269,7 +269,7 @@ public class AutomaticServiceDist {
             final boolean isPhone = MainContext.ChannelTypeEnum.PHONE.toString().equals(agentUser.getChannel());
             AgentServiceRepository agentServiceRes = MainContext.getContext().getBean(AgentServiceRepository.class);
             AgentService service = null;
-            if (!StringUtils.isBlank(agentUser.getAgentserviceid())) {
+            if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
                 service = agentServiceRes.findByIdAndOrgi(agentUser.getAgentserviceid(), agentUser.getOrgi());
             }
             if (service == null) {//当做留言处理
@@ -392,7 +392,7 @@ public class AutomaticServiceDist {
     public static void recordAgentStatus(String agent, String username, String extno, String skill, boolean admin, String userid, String status, String current, String worktype, String orgi, Date lasttime) {
         WorkMonitorRepository workMonitorRes = MainContext.getContext().getBean(WorkMonitorRepository.class);
         WorkMonitor workMonitor = new WorkMonitor();
-        if (!StringUtils.isBlank(agent) && !StringUtils.isBlank(status)) {
+        if (StringUtils.isNotBlank(agent) && StringUtils.isNotBlank(status)) {
             workMonitor.setAgent(agent);
             workMonitor.setAgentno(agent);
             workMonitor.setStatus(status);
@@ -450,9 +450,9 @@ public class AutomaticServiceDist {
         /**
          * 处理ACD 的 技能组请求和 坐席请求
          */
-        if (!StringUtils.isBlank(agentUser.getAgent())) {
+        if (StringUtils.isNotBlank(agentUser.getAgent())) {
             pagingPredicate = new PagingPredicate<String, AgentStatus>(new SqlPredicate(" busy = false AND agentno = '" + agentUser.getAgent() + "' AND orgi = '" + orgi + "'"), 1);
-        } else if (!StringUtils.isBlank(agentUser.getSkill())) {
+        } else if (StringUtils.isNotBlank(agentUser.getSkill())) {
             pagingPredicate = new PagingPredicate<String, AgentStatus>(new SqlPredicate(" busy = false AND skill = '" + agentUser.getSkill() + "' AND orgi = '" + orgi + "'"), 1);
         } else {
             pagingPredicate = new PagingPredicate<String, AgentStatus>(new SqlPredicate(" busy = false AND orgi = '" + orgi + "'"), 1);
@@ -579,7 +579,7 @@ public class AutomaticServiceDist {
      */
     private static AgentService processAgentService(AgentStatus agentStatus, AgentUser agentUser, String orgi, boolean finished) throws Exception {
         AgentService agentService = new AgentService();    //放入缓存的对象
-        if (!StringUtils.isBlank(agentUser.getAgentserviceid())) {
+        if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
             agentService.setId(agentUser.getAgentserviceid());
         }
         agentService.setOrgi(orgi);
@@ -668,20 +668,20 @@ public class AutomaticServiceDist {
 
             AgentServiceRepository agentServiceRes = MainContext.getContext().getBean(AgentServiceRepository.class);
 
-            if (!StringUtils.isBlank(agentUser.getName())) {
+            if (StringUtils.isNotBlank(agentUser.getName())) {
                 agentService.setName(agentUser.getName());
             }
-            if (!StringUtils.isBlank(agentUser.getPhone())) {
+            if (StringUtils.isNotBlank(agentUser.getPhone())) {
                 agentService.setPhone(agentUser.getPhone());
             }
-            if (!StringUtils.isBlank(agentUser.getEmail())) {
+            if (StringUtils.isNotBlank(agentUser.getEmail())) {
                 agentService.setEmail(agentUser.getEmail());
             }
-            if (!StringUtils.isBlank(agentUser.getResion())) {
+            if (StringUtils.isNotBlank(agentUser.getResion())) {
                 agentService.setResion(agentUser.getResion());
             }
 
-            if (!StringUtils.isBlank(agentUser.getSkill())) {
+            if (StringUtils.isNotBlank(agentUser.getSkill())) {
                 agentService.setAgentskill(agentUser.getSkill());
             } else if (agentStatus != null) {
                 agentService.setAgentskill(agentStatus.getSkill());
@@ -743,7 +743,7 @@ public class AutomaticServiceDist {
                     agentUser.getStatus())) {
                 serviceFinish(agentUser, orgi);
             }
-            if (!StringUtils.isBlank(agentUser.getId())) {
+            if (StringUtils.isNotBlank(agentUser.getId())) {
                 AgentUserRepository agentUserRes = MainContext.getContext().getBean(AgentUserRepository.class);
                 agentUser = agentUserRes.findByIdAndOrgi(agentUser.getId(), orgi);
                 if (agentUser != null) {
@@ -766,7 +766,7 @@ public class AutomaticServiceDist {
         }
         SessionConfig sessionConfig = initSessionConfig(orgi);
         String successMsg = "坐席分配成功，" + queneTip + "为您服务。";
-        if (!StringUtils.isBlank(sessionConfig.getSuccessmsg())) {
+        if (StringUtils.isNotBlank(sessionConfig.getSuccessmsg())) {
             successMsg = sessionConfig.getSuccessmsg().replaceAll("\\{agent\\}", queneTip);
         }
         return successMsg;
@@ -779,7 +779,7 @@ public class AutomaticServiceDist {
     public static String getServiceFinishMessage(String channel, String orgi) {
         SessionConfig sessionConfig = initSessionConfig(orgi);
         String queneTip = "坐席已断开和您的对话";
-        if (!StringUtils.isBlank(sessionConfig.getFinessmsg())) {
+        if (StringUtils.isNotBlank(sessionConfig.getFinessmsg())) {
             queneTip = sessionConfig.getFinessmsg();
         }
         return queneTip;
@@ -795,7 +795,7 @@ public class AutomaticServiceDist {
         }
         SessionConfig sessionConfig = initSessionConfig(orgi);
         String noAgentTipMsg = "坐席全忙，已进入等待队列，您也可以在其他时间再来咨询。";
-        if (!StringUtils.isBlank(sessionConfig.getNoagentmsg())) {
+        if (StringUtils.isNotBlank(sessionConfig.getNoagentmsg())) {
             noAgentTipMsg = sessionConfig.getNoagentmsg().replaceAll("\\{num\\}", queneTip);
         }
         return noAgentTipMsg;
@@ -809,7 +809,7 @@ public class AutomaticServiceDist {
         }
         SessionConfig sessionConfig = initSessionConfig(orgi);
         String agentBusyTipMsg = "正在排队，请稍候,在您之前，还有  " + queneTip + " 位等待用户。";
-        if (!StringUtils.isBlank(sessionConfig.getAgentbusymsg())) {
+        if (StringUtils.isNotBlank(sessionConfig.getAgentbusymsg())) {
             agentBusyTipMsg = sessionConfig.getAgentbusymsg().replaceAll("\\{num\\}", queneTip);
         }
         return agentBusyTipMsg;
