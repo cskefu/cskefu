@@ -35,9 +35,9 @@ public class IMServiceUtils {
                     logger.warn("shiftOpsType unknown type.");
                     break;
             }
+            service.save(agentUser);
+            CacheHelper.getAgentUserCacheBean().put(agentUser.getUserid(), agentUser, orgi);
         }
-        service.save(agentUser);
-        CacheHelper.getAgentUserCacheBean().put(agentUser.getUserid(), agentUser, orgi);
     }
 
     /**
