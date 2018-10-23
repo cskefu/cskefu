@@ -73,21 +73,37 @@ public class IMEventHandler {
             String nickname = client.getHandshakeData().getSingleUrlParam("nickname");
 
             if (StringUtils.isNotBlank(user)) {
-                /**
-                 * 用户进入到对话连接 ， 排队用户请求 , 如果返回失败，表示当前坐席全忙，用户进入排队状态，当前提示信息 显示 当前排队的队列位置，不可进行对话，用户发送的消息作为留言处理
-                 */
                 InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress();
                 String ip = MainUtils.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString());
-                NewRequestMessage newRequestMessage = OnlineUserUtils.newRequestMessage(user, orgi, session, appid, ip, client.getHandshakeData().getSingleUrlParam("osname"), client.getHandshakeData().getSingleUrlParam("browser"), MainContext.ChannelTypeEnum.WEBIM.toString(), skill, agent, nickname, title, url, traceid, MainContext.ChatInitiatorType.USER.toString());
-				/**
-				 * 加入到 缓存列表
-				 */
+
+                /**
+                 * 加入到 缓存列表
+                 */
                 NettyClients.getInstance().putIMEventClient(user, client);
 
                 /**
                  * 更新坐席服务类型
                  */
                 IMServiceUtils.shiftOpsType(user, orgi, MainContext.OptTypeEnum.HUMAN);
+
+                /**
+                 * 用户进入到对话连接 ， 排队用户请求 , 如果返回失败，表示当前坐席全忙，用户进入排队状态，当前提示信息 显示 当前排队的队列位置，不可进行对话，用户发送的消息作为留言处理
+                 */
+                NewRequestMessage newRequestMessage = OnlineUserUtils.newRequestMessage(user,
+                        orgi,
+                        session,
+                        appid,
+                        ip,
+                        client.getHandshakeData().getSingleUrlParam("osname"),
+                        client.getHandshakeData().getSingleUrlParam("browser"),
+                        MainContext.ChannelTypeEnum.WEBIM.toString(),
+                        skill,
+                        agent,
+                        nickname,
+                        title,
+                        url,
+                        traceid,
+                        MainContext.ChatInitiatorType.USER.toString());
 
                 if (newRequestMessage != null && StringUtils.isNotBlank(newRequestMessage.getMessage())) {
                     MessageOutContent outMessage = new MessageOutContent();
