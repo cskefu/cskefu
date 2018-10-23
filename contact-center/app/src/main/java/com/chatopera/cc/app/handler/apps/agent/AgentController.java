@@ -768,8 +768,8 @@ public class AgentController extends Handler {
                 data.setUsername(super.getUser(request).getUsername());
 
                 chatMessageRepository.save(data);
-
-                NettyClients.getInstance().sendAgentEventMessage(agentUser.getAgentno(), MainContext.MessageTypeEnum.MESSAGE.toString(), data);
+                // TODO #111 通知文件上传消息
+                NettyClients.getInstance().publishAgentEventMessage(agentUser.getAgentno(), MainContext.MessageTypeEnum.MESSAGE.toString(), data);
             }
 
         } else {
@@ -1068,7 +1068,8 @@ public class AgentController extends Handler {
                         agentService.setAgentno(agentno);
                         agentService.setAgentusername(transAgentStatus.getUsername());
                     }
-                    NettyClients.getInstance().sendAgentEventMessage(agentno, MainContext.MessageTypeEnum.NEW.toString(), agentUser);
+                    // TODO #111 通知转接消息
+                    NettyClients.getInstance().publishAgentEventMessage(agentno, MainContext.MessageTypeEnum.NEW.toString(), agentUser);
                 }
             } else {
                 agentUser = agentUserRepository.findByIdAndOrgi(agentuserid, super.getOrgi(request));

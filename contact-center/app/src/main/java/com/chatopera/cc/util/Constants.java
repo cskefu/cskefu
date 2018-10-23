@@ -16,6 +16,7 @@
 package com.chatopera.cc.util;
 
 import com.chatopera.cc.app.basic.MainContext;
+import org.apache.commons.lang.StringUtils;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -45,6 +46,17 @@ public class Constants {
     public final static SimpleDateFormat QUERY_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
     public final static SimpleDateFormat DISPLAY_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public final static DecimalFormat DURATION_MINS_FORMATTER = new DecimalFormat("0.00");
+
+
+    /**
+     * Instant Messaging Events
+     */
+    public final static String INSTANT_MESSTRING_WEBIM_AGENT_PATTERN = "im:webim:agent:%s:events";
+    public final static String INSTANT_MESSAGING_WEBIM_AGENT_CHANNEL = String.format(INSTANT_MESSTRING_WEBIM_AGENT_PATTERN, "*");
+    public final static String INSTANT_MESSTRING_WEBIM_ONLINE_USER_PATTERN = "im:webim:onlineuser:%s:events";
+    public final static String INSTANT_MESSAGING_WEBIM_ONLINE_USER_CHANNEL = String.format(INSTANT_MESSTRING_WEBIM_ONLINE_USER_PATTERN, "*");
+
+
 
     /**
      * FreeSwitch Communication

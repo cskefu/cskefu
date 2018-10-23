@@ -214,8 +214,8 @@ public class AutomaticServiceDist {
                             router.handler(agentUser.getUserid(), MainContext.MessageTypeEnum.MESSAGE.toString(), agentUser.getAppid(), outMessage);
                         }
                     }
-
-                    NettyClients.getInstance().sendAgentEventMessage(agentService.getAgentno(), MainContext.MessageTypeEnum.NEW.toString(), agentUser);
+                    // TODO #111 为坐席分配访客
+                    NettyClients.getInstance().publishAgentEventMessage(agentService.getAgentno(), MainContext.MessageTypeEnum.NEW.toString(), agentUser);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -311,7 +311,8 @@ public class AutomaticServiceDist {
                 NettyClients.getInstance().sendCalloutEventMessage(agentUser.getAgentno(), MainContext.MessageTypeEnum.END.toString(), agentUser);
             } else {
                 if (agentStatus != null) // WebIM 查看用户状态
-                    NettyClients.getInstance().sendAgentEventMessage(agentUser.getAgentno(), MainContext.MessageTypeEnum.END.toString(), agentUser);
+                    // TODO #111 结束会话
+                    NettyClients.getInstance().publishAgentEventMessage(agentUser.getAgentno(), MainContext.MessageTypeEnum.END.toString(), agentUser);
                 OutMessageRouter router = null;
                 router = (OutMessageRouter) MainContext.getContext().getBean(agentUser.getChannel());
                 if (router != null) {
@@ -500,7 +501,8 @@ public class AutomaticServiceDist {
         if (agentStatus != null) {
             agentService = processAgentService(agentStatus, agentUser, orgi);
             publishMessage(orgi, "invite", "success", agentno);
-            NettyClients.getInstance().sendAgentEventMessage(agentService.getAgentno(), MainContext.MessageTypeEnum.NEW.toString(), agentUser);
+            // TODO #111 为坐席分配邀请的访客
+            NettyClients.getInstance().publishAgentEventMessage(agentService.getAgentno(), MainContext.MessageTypeEnum.NEW.toString(), agentUser);
         } else {
             agentService = allotAgent(agentUser, orgi);
         }

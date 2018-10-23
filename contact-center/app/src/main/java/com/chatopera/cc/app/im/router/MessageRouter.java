@@ -58,7 +58,7 @@ public class MessageRouter extends Router {
                 if (agentService != null && MainContext.AgentUserStatusEnum.INSERVICE.toString().equals(agentService.getStatus())) {
                     outMessage.setMessage(AutomaticServiceDist.getSuccessMessage(agentService, inMessage.getAgentUser().getChannel(), inMessage.getOrgi()));
                     // TODO #111 publish to redis
-                    NettyClients.getInstance().sendAgentEventMessage(agentService.getAgentno(), MainContext.MessageTypeEnum.NEW.toString(), inMessage.getAgentUser());
+                    NettyClients.getInstance().publishAgentEventMessage(agentService.getAgentno(), MainContext.MessageTypeEnum.NEW.toString(), inMessage.getAgentUser());
                 } else {
                     if (agentService.getQueneindex() > 0) {    //当前有坐席
                         outMessage.setMessage(AutomaticServiceDist.getQueneMessage(agentService.getQueneindex(), inMessage.getAgentUser().getChannel(), inMessage.getOrgi()));
