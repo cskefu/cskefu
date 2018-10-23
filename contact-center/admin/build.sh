@@ -13,8 +13,7 @@ PACKAGE_VERSION=1.0.0
 
 # main 
 [ -z "${BASH_SOURCE[0]}" -o "${BASH_SOURCE[0]}" = "$0" ] || return
-cd $appHome
-
 set -x
-docker build --force-rm=true --tag $imagename:$PACKAGE_VERSION .
+cd $appHome
+docker build --build-arg VCS_REF=`git rev-parse --short HEAD` --force-rm=true --tag $imagename:$PACKAGE_VERSION .
 docker tag $imagename:$PACKAGE_VERSION $imagename:develop

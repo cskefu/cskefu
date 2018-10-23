@@ -1,6 +1,11 @@
 FROM chatopera/java:1.0.0
 MAINTAINER Hai Liang Wang <hain@chatopera.com>
 
+ARG VCS_REF
+
+LABEL org.label-schema.vcs-ref=$VCS_REF \
+          org.label-schema.vcs-url="https://github.com/chatopera/cosin"
+
 # Set timezone
 RUN apt-get update && \
    apt-get install --no-install-recommends -y tzdata && \ 
