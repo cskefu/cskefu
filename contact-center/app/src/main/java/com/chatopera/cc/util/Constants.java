@@ -56,7 +56,11 @@ public class Constants {
     public final static String INSTANT_MESSTRING_WEBIM_ONLINE_USER_PATTERN = "im:webim:onlineuser:%s:events";
     public final static String INSTANT_MESSAGING_WEBIM_ONLINE_USER_CHANNEL = String.format(INSTANT_MESSTRING_WEBIM_ONLINE_USER_PATTERN, "*");
 
-
+    /**
+     * Attachment File Type
+     */
+    public final static String ATTACHMENT_TYPE_IMAGE = "image";
+    public final static String ATTACHMENT_TYPE_FILE = "file";
 
     /**
      * FreeSwitch Communication

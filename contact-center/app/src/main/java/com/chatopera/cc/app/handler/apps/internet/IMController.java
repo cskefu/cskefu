@@ -17,13 +17,13 @@
 
 package com.chatopera.cc.app.handler.apps.internet;
 
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
 import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.app.basic.MainUtils;
+import com.chatopera.cc.app.cache.CacheHelper;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.im.util.RichMediaUtils;
 import com.chatopera.cc.app.model.*;
-import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
-import com.chatopera.cc.app.cache.CacheHelper;
 import com.chatopera.cc.app.persistence.es.ContactsRepository;
 import com.chatopera.cc.app.persistence.repository.*;
 import com.chatopera.cc.util.*;
@@ -711,47 +711,61 @@ public class IMController extends Handler {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/im/upload"));
         UploadStatus upload = null;
         String fileName = null;
-        if (imgFile != null && imgFile.getOriginalFilename().lastIndexOf(".") > 0 && StringUtils.isNotBlank(userid)) {
+        if (imgFile != null
+                && imgFile.getOriginalFilename().lastIndexOf(".") > 0
+                && StringUtils.isNotBlank(userid)) {
             File uploadDir = new File(path, "upload");
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
             String fileid = MainUtils.md5(imgFile.getBytes());
-            if (imgFile.getContentType() != null && imgFile.getContentType().indexOf("image") >= 0) {
-                fileName = "upload/" + fileid + "_original";
-                File imageFile = new File(path, fileName);
-                FileCopyUtils.copy(imgFile.getBytes(), imageFile);
-                String thumbnailsFileName = "upload/" + fileid;
-                MainUtils.processImage(new File(path, thumbnailsFileName), imageFile);
+            if (imgFile.getContentType() != null
+                    && imgFile.getContentType().indexOf(Constants.ATTACHMENT_TYPE_IMAGE) >= 0) {
+                // 检查文件格式
+                String invalid = AttachementFormatValidator.getInstance().validate(Constants.ATTACHMENT_TYPE_IMAGE, imgFile.getOriginalFilename());
+                if (invalid == null) {
+                    fileName = "upload/" + fileid + "_original";
+                    File imageFile = new File(path, fileName);
+                    FileCopyUtils.copy(imgFile.getBytes(), imageFile);
+                    String thumbnailsFileName = "upload/" + fileid;
+                    MainUtils.processImage(new File(path, thumbnailsFileName), imageFile);
 
-                upload = new UploadStatus("0", "/res/image.html?id=" + thumbnailsFileName);
-                String image = "/res/image.html?id=" + thumbnailsFileName;
-                if (request.getServerPort() == 80) {
-                    image = "/res/image.html?id=" + thumbnailsFileName;
-                } else {
-                    image = "/res/image.html?id=" + thumbnailsFileName;
-                }
-                if (paste == null) {
-                    if (StringUtils.isNotBlank(channel)) {
-                        RichMediaUtils.uploadImageWithChannel(image, fileid, (int) imgFile.getSize(), imgFile.getName(), channel, userid, username, appid, orgi);
+                    upload = new UploadStatus("0", "/res/image.html?id=" + thumbnailsFileName);
+                    String image = "/res/image.html?id=" + thumbnailsFileName;
+                    if (request.getServerPort() == 80) {
+                        image = "/res/image.html?id=" + thumbnailsFileName;
                     } else {
-                        RichMediaUtils.uploadImage(image, fileid, (int) imgFile.getSize(), imgFile.getName(), userid);
+                        image = "/res/image.html?id=" + thumbnailsFileName;
                     }
+                    if (paste == null) {
+                        if (StringUtils.isNotBlank(channel)) {
+                            RichMediaUtils.uploadImageWithChannel(image, fileid, (int) imgFile.getSize(), imgFile.getName(), channel, userid, username, appid, orgi);
+                        } else {
+                            RichMediaUtils.uploadImage(image, fileid, (int) imgFile.getSize(), imgFile.getName(), userid);
+                        }
+                    }
+                } else {
+                    upload = new UploadStatus(invalid);
                 }
             } else {
-                String id = processAttachmentFile(imgFile, request);
-                upload = new UploadStatus("0", "/res/file.html?id=" + id);
-                String file = "/res/file.html?id=" + id;
-                if (request.getServerPort() == 80) {
-                    file = "/res/file.html?id=" + id;
+                String invalid = AttachementFormatValidator.getInstance().validate(Constants.ATTACHMENT_TYPE_FILE, imgFile.getOriginalFilename());
+                if (invalid == null) {
+                    String id = processAttachmentFile(imgFile, request);
+                    upload = new UploadStatus("0", "/res/file.html?id=" + id);
+                    String file = "/res/file.html?id=" + id;
+                    if (request.getServerPort() == 80) {
+                        file = "/res/file.html?id=" + id;
+                    } else {
+                        file = "/res/file.html?id=" + id;
+                    }
+                    File tempFile = new File(imgFile.getOriginalFilename());
+                    if (StringUtils.isNotBlank(channel)) {
+                        RichMediaUtils.uploadFileWithChannel(file, (int) imgFile.getSize(), tempFile.getName(), channel, userid, username, appid, orgi, id);
+                    } else {
+                        RichMediaUtils.uploadFile(file, (int) imgFile.getSize(), tempFile.getName(), userid, id);
+                    }
                 } else {
-                    file = "/res/file.html?id=" + id;
-                }
-                File tempFile = new File(imgFile.getOriginalFilename());
-                if (StringUtils.isNotBlank(channel)) {
-                    RichMediaUtils.uploadFileWithChannel(file, (int) imgFile.getSize(), tempFile.getName(), channel, userid, username, appid, orgi, id);
-                } else {
-                    RichMediaUtils.uploadFile(file, (int) imgFile.getSize(), tempFile.getName(), userid, id);
+                    upload = new UploadStatus(invalid);
                 }
             }
         } else {
