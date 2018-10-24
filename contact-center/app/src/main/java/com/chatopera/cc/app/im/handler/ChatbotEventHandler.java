@@ -66,6 +66,7 @@ public class ChatbotEventHandler {
     @OnConnect
     public void onConnect(SocketIOClient client) {
         try {
+
             String user = client.getHandshakeData().getSingleUrlParam("userid");
             String nickname = client.getHandshakeData().getSingleUrlParam("nickname");
             String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
@@ -74,6 +75,7 @@ public class ChatbotEventHandler {
             String aiid = client.getHandshakeData().getSingleUrlParam("aiid");
 //			String agent = client.getHandshakeData().getSingleUrlParam("agent") ;
 //			String skill = client.getHandshakeData().getSingleUrlParam("skill") ;
+            logger.info("onConnect userid {}, nickname {}", user, nickname);
             Date now = new Date();
 
             if (StringUtils.isNotBlank(user)) {

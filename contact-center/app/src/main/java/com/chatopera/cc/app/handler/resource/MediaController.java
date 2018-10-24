@@ -74,7 +74,6 @@ public class MediaController extends Handler {
                       @Valid String id,
                       @RequestParam(value = "original", required = false) boolean original,
                       @RequestParam(value = "cooperation", required = false) boolean cooperation) throws IOException, SQLException {
-        logger.info("index id {}, original {}, cooperation {}", id, original, cooperation);
         StreamingFile sf = streamingFileRepository.findOne(id);
         if (sf != null) {
             response.setHeader("Content-Type", sf.getMime());

@@ -453,9 +453,9 @@
     // 参数连接
     var hostname = location.hostname ;
     var protocol = window.location.protocol.replace(/:/g,'');
-    var socket = io.connect(protocol + '://'+hostname+':${port}/im/chatbot?userid=${userid!''}&orgi=${orgi!''}&session=${sessionid!''}&appid=${appid!''}&osname=${(osname!'')?url}&browser=${(browser!'')?url}<#if skill??>&skill=${skill}</#if><#if username??>&nickname=${username}</#if><#if agent??>&agent=${agent}</#if><#if title??>&title=${title?url}</#if><#if traceid??>&url=${url?url}</#if><#if traceid??>&traceid=${traceid}</#if><#if aiid??>&aiid=${aiid}</#if>');
+    var socket = io(protocol + '://'+hostname+':${port}/im/chatbot?userid=${userid!''}&orgi=${orgi!''}&session=${sessionid!''}&appid=${appid!''}&osname=${(osname!'')?url}&browser=${(browser!'')?url}<#if skill??>&skill=${skill}</#if><#if username??>&nickname=${username}</#if><#if agent??>&agent=${agent}</#if><#if title??>&title=${title?url}</#if><#if traceid??>&url=${url?url}</#if><#if traceid??>&traceid=${traceid}</#if><#if aiid??>&aiid=${aiid}</#if>', {transports: ['websocket', 'polling']});
     socket.on('connect',function(){
-    <#if contacts?? && contacts.name??>
+        <#if contacts?? && contacts.name??>
         socket.emit('new', {
             name : "${contacts.name!''}",
             phone:"${contacts.phone!''}",
@@ -489,7 +489,6 @@
         }
     })
     socket.on('message', function(data) {
-        console.log("[chatbot io] message ", data);
         var chat=document.getElementsByClassName('chatting-left').innerText;
         chat = data.message;
         if(data.messageType == "image"){

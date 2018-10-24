@@ -87,7 +87,7 @@ public class IMServerConfiguration
         	FileInputStream in = new FileInputStream(sslFile);
         	sslProperties.load(in);
         	in.close();
-        	if(!StringUtils.isBlank(sslProperties.getProperty("key-store")) && !StringUtils.isBlank(sslProperties.getProperty("key-store-password"))){
+        	if(StringUtils.isNotBlank(sslProperties.getProperty("key-store")) && StringUtils.isNotBlank(sslProperties.getProperty("key-store-password"))){
         		config.setKeyStorePassword(MainUtils.decryption(sslProperties.getProperty("key-store-password")));
         	    InputStream stream = new FileInputStream(new File(path , "ssl/"+sslProperties.getProperty("key-store")));
         	    config.setKeyStore(stream);
@@ -96,7 +96,7 @@ public class IMServerConfiguration
 		
 		
 //	    config.setSSLProtocol("https");
-		int workThreads = !StringUtils.isBlank(threads) && threads.matches("[\\d]{1,6}") ? Integer.parseInt(threads) : 100 ;
+		int workThreads = StringUtils.isNotBlank(threads) && threads.matches("[\\d]{1,6}") ? Integer.parseInt(threads) : 100 ;
 		config.setWorkerThreads(workThreads);
 //		config.setStoreFactory(new HazelcastStoreFactory());
 		config.setAuthorizationListener(new AuthorizationListener() {
