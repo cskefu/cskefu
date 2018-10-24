@@ -27,7 +27,7 @@ public class StreamingFileUtils {
 
     private StreamingFileUtils() {
         extMap.put(Constants.ATTACHMENT_TYPE_IMAGE, "gif,jpg,jpeg,png,bmp");
-        extMap.put(Constants.ATTACHMENT_TYPE_FILE, "doc,docx,xls,xlsx,ppt,htm,html,txt,zip,rar,gz,bz2,c66");
+        extMap.put(Constants.ATTACHMENT_TYPE_FILE, "pdf,doc,docx,xls,xlsx,ppt,htm,html,txt,zip,rar,gz,bz2,c66");
         extMap.put("flash", "swf,flv");
         extMap.put("media", "swf,flv,mp3,wav,wma,wmv,mid,avi,mpg,asf,rm,rmvb");
     }

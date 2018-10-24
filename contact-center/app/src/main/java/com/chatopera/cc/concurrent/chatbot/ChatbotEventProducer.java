@@ -17,9 +17,12 @@ package com.chatopera.cc.concurrent.chatbot;
 
 import com.chatopera.cc.concurrent.user.UserDataEvent;
 import com.lmax.disruptor.RingBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("rawtypes")
 public class ChatbotEventProducer {
+    private final static Logger logger = LoggerFactory.getLogger(ChatbotEventProducer.class);
 	private final RingBuffer<UserDataEvent> ringBuffer;
 
     public ChatbotEventProducer(RingBuffer<UserDataEvent> ringBuffer)
