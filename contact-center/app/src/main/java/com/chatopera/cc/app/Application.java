@@ -36,6 +36,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.servlet.MultipartConfigElement;
 import java.io.IOException;
@@ -44,6 +45,7 @@ import java.io.IOException;
 @EnableJpaRepositories("com.chatopera.cc.app.persistence.repository")
 @EnableElasticsearchRepositories("com.chatopera.cc.app.persistence.es")
 @EnableAsync
+@EnableTransactionManagement
 public class Application {
 
     @Value("${web.upload-path}")

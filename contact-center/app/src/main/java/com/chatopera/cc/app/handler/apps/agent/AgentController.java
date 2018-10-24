@@ -25,15 +25,13 @@ import com.chatopera.cc.app.im.client.NettyClients;
 import com.chatopera.cc.app.im.message.ChatMessage;
 import com.chatopera.cc.app.im.router.OutMessageRouter;
 import com.chatopera.cc.app.model.*;
+import com.chatopera.cc.app.persistence.blob.JpaBlobHelper;
 import com.chatopera.cc.app.persistence.es.ContactsRepository;
 import com.chatopera.cc.app.persistence.es.QuickReplyRepository;
 import com.chatopera.cc.app.persistence.repository.*;
 import com.chatopera.cc.exception.CSKefuException;
 import com.chatopera.cc.exchange.DataExchangeInterface;
-import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.OnlineUserUtils;
-import com.chatopera.cc.util.PinYinTools;
-import com.chatopera.cc.util.PropertiesEventUtils;
+import com.chatopera.cc.util.*;
 import com.chatopera.cc.util.mobile.MobileAddress;
 import com.chatopera.cc.util.mobile.MobileNumberUtils;
 import freemarker.template.TemplateException;
@@ -149,6 +147,12 @@ public class AgentController extends Handler {
     @Autowired
     private ConsultInviteRepository inviteRepository;
 
+    @Autowired
+    private StreamingFileRepository streamingFileRepository;
+
+    @Autowired
+    private JpaBlobHelper jpaBlobHelper;
+
     @Value("${web.upload-path}")
     private String path;
 
@@ -169,7 +173,7 @@ public class AgentController extends Handler {
                 }
             }
         }
-        if (!StringUtils.isBlank(sort)) {
+        if (StringUtils.isNotBlank(sort)) {
             List<Order> list = new ArrayList<Order>();
             if (sort.equals("lastmessage")) {
                 list.add(new Order(Direction.DESC, "status"));
@@ -208,7 +212,7 @@ public class AgentController extends Handler {
             agentUser = (AgentUser) agentUserList.get(0);
             view.addObject("curagentuser", agentUser);
             view.addObject("inviteData", OnlineUserUtils.cousult(agentUser.getAppid(), agentUser.getOrgi(), inviteRepository));
-            if (!StringUtils.isBlank(agentUser.getAgentserviceid())) {
+            if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
                 List<AgentServiceSummary> summarizes = this.serviceSummaryRes.findByAgentserviceidAndOrgi(agentUser.getAgentserviceid(), super.getOrgi(request));
                 if (summarizes.size() > 0) {
                     view.addObject("summary", summarizes.get(0));
@@ -217,7 +221,7 @@ public class AgentController extends Handler {
 
             view.addObject("agentUserMessageList", this.chatMessageRepository.findByUsessionAndOrgi(agentUser.getUserid(), super.getOrgi(request), new PageRequest(0, 20, Direction.DESC, "updatetime")));
             AgentService agentService = null;
-            if (!StringUtils.isBlank(agentUser.getAgentserviceid())) {
+            if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
                 agentService = this.agentServiceRepository.findOne(agentUser.getAgentserviceid());
                 view.addObject("curAgentService", agentService);
 
@@ -247,10 +251,10 @@ public class AgentController extends Handler {
                     view.addObject("onlineUser", onlineUser);
                 }
             } else if (MainContext.ChannelTypeEnum.PHONE.toString().equals(agentUser.getChannel())) {
-                if (agentService != null && !StringUtils.isBlank(agentService.getOwner())) {
+                if (agentService != null && StringUtils.isNotBlank(agentService.getOwner())) {
                     StatusEvent statusEvent = this.statusEventRes.findById(agentService.getOwner());
                     if (statusEvent != null) {
-                        if (!StringUtils.isBlank(statusEvent.getHostid())) {
+                        if (StringUtils.isNotBlank(statusEvent.getHostid())) {
                             PbxHost pbxHost = pbxHostRes.findById(statusEvent.getHostid());
                             view.addObject("pbxHost", pbxHost);
                         }
@@ -302,19 +306,19 @@ public class AgentController extends Handler {
                 )
         );
 
-        if (!StringUtils.isBlank(agentService.getAppid())) {
+        if (StringUtils.isNotBlank(agentService.getAppid())) {
             map.addAttribute("snsAccount", snsAccountRes.findBySnsidAndOrgi(agentService.getAppid(), super.getOrgi(request)));
         }
         List<AgentUserContacts> relaList = agentUserContactsRes.findByUseridAndOrgi(agentService.getUserid(), agentService.getOrgi());
         if (relaList.size() > 0) {
             AgentUserContacts agentUserContacts = relaList.get(0);
-            if (MainContext.model.get("contacts") != null && !StringUtils.isBlank(agentUserContacts.getContactsid())) {
+            if (MainContext.model.get("contacts") != null && StringUtils.isNotBlank(agentUserContacts.getContactsid())) {
                 DataExchangeInterface dataExchange = (DataExchangeInterface) MainContext.getContext().getBean("contacts");
                 if (dataExchange != null) {
                     map.addAttribute("contacts", dataExchange.getDataByIdAndOrgi(agentUserContacts.getContactsid(), super.getOrgi(request)));
                 }
             }
-            if (MainContext.model.get("workorders") != null && !StringUtils.isBlank(agentUserContacts.getContactsid())) {
+            if (MainContext.model.get("workorders") != null && StringUtils.isNotBlank(agentUserContacts.getContactsid())) {
                 DataExchangeInterface dataExchange = (DataExchangeInterface) MainContext.getContext().getBean("workorders");
                 if (dataExchange != null) {
                     map.addAttribute("workOrdersList", dataExchange.getListDataByIdAndOrgi(agentUserContacts.getContactsid(), super.getUser(request).getId(), super.getOrgi(request)));
@@ -346,7 +350,7 @@ public class AgentController extends Handler {
                 agentUserTaskRes.save(agentUserTask);
             }
 
-            if (!StringUtils.isBlank(agentUser.getAgentserviceid())) {
+            if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
                 List<AgentServiceSummary> summarizes = this.serviceSummaryRes.findByAgentserviceidAndOrgi(agentUser.getAgentserviceid(), super.getOrgi(request));
                 if (summarizes.size() > 0) {
                     view.addObject("summary", summarizes.get(0));
@@ -355,7 +359,7 @@ public class AgentController extends Handler {
 
             view.addObject("agentUserMessageList", this.chatMessageRepository.findByUsessionAndOrgi(agentUser.getUserid(), super.getOrgi(request), new PageRequest(0, 20, Direction.DESC, "updatetime")));
             AgentService agentService = null;
-            if (!StringUtils.isBlank(agentUser.getAgentserviceid())) {
+            if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
                 agentService = this.agentServiceRepository.findOne(agentUser.getAgentserviceid());
                 view.addObject("curAgentService", agentService);
                 if (agentService != null) {
@@ -385,10 +389,10 @@ public class AgentController extends Handler {
                     view.addObject("onlineUser", onlineUser);
                 }
             } else if (MainContext.ChannelTypeEnum.PHONE.toString().equals(agentUser.getChannel())) {
-                if (agentService != null && !StringUtils.isBlank(agentService.getOwner())) {
+                if (agentService != null && StringUtils.isNotBlank(agentService.getOwner())) {
                     StatusEvent statusEvent = this.statusEventRes.findById(agentService.getOwner());
                     if (statusEvent != null) {
-                        if (!StringUtils.isBlank(statusEvent.getHostid())) {
+                        if (StringUtils.isNotBlank(statusEvent.getHostid())) {
                             PbxHost pbxHost = pbxHostRes.findById(statusEvent.getHostid());
                             view.addObject("pbxHost", pbxHost);
                         }
@@ -455,7 +459,7 @@ public class AgentController extends Handler {
     @RequestMapping("/workorders/list")
     @Menu(type = "apps", subtype = "workorderslist")
     public ModelAndView workorderslist(HttpServletRequest request, String contactsid, ModelMap map) {
-        if (MainContext.model.get("workorders") != null && !StringUtils.isBlank(contactsid)) {
+        if (MainContext.model.get("workorders") != null && StringUtils.isNotBlank(contactsid)) {
             DataExchangeInterface dataExchange = (DataExchangeInterface) MainContext.getContext().getBean("workorders");
             if (dataExchange != null) {
                 map.addAttribute("workOrdersList", dataExchange.getListDataByIdAndOrgi(contactsid, super.getUser(request).getId(), super.getOrgi(request)));
@@ -481,7 +485,7 @@ public class AgentController extends Handler {
             agentStatus.setAgentno(user.getId());
             agentStatus.setLogindate(new Date());
 
-            if (!StringUtils.isBlank(user.getOrgan())) {
+            if (StringUtils.isNotBlank(user.getOrgan())) {
                 Organ organ = organRes.findByIdAndOrgi(user.getOrgan(), super.getOrgiByTenantshare(request));
                 if (organ != null && organ.isSkill()) {
                     agentStatus.setSkill(organ.getId());
@@ -589,7 +593,7 @@ public class AgentController extends Handler {
         AgentUser agentUser = agentUserRepository.findByIdAndOrgi(userid, super.getOrgi(request));
         if (agentUser != null && super.getUser(request).getId().equals(agentUser.getAgentno())) {
             AutomaticServiceDist.deleteAgentUser(agentUser, super.getOrgi(request));
-            if (!StringUtils.isBlank(agentUser.getAgentserviceid())) {
+            if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
                 AgentService agentService = agentServiceRepository.findByIdAndOrgi(agentUser.getAgentserviceid(), super.getOrgi(request));
                 agentService.setStatus(MainContext.AgentUserStatusEnum.END.toString());
                 agentServiceRepository.save(agentService);
@@ -655,7 +659,7 @@ public class AgentController extends Handler {
                 blackListRes.save(tempBlackEntiry);
                 blackEntity = tempBlackEntiry;
             }
-            if (!StringUtils.isBlank(userid)) {
+            if (StringUtils.isNotBlank(userid)) {
                 CacheHelper.getSystemCacheBean().put(userid, blackEntity, super.getOrgi(request));
             }
         }
@@ -681,58 +685,58 @@ public class AgentController extends Handler {
 
     @RequestMapping("/image/upload")
     @Menu(type = "im", subtype = "image", access = false)
-    public ModelAndView upload(ModelMap map, HttpServletRequest request, @RequestParam(value = "imgFile", required = false) MultipartFile imgFile, @Valid String id, @Valid String paste) throws IOException {
+    public ModelAndView upload(ModelMap map,
+                               HttpServletRequest request,
+                               @RequestParam(value = "imgFile", required = false) MultipartFile multipart,
+                               @Valid String id,
+                               @Valid String paste) throws IOException {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/agent/upload"));
-        UploadStatus upload = null;
-        String fileName = null;
-        if (imgFile != null && imgFile.getOriginalFilename().lastIndexOf(".") > 0) {
+        UploadStatus notify = null;
+        if (multipart != null && multipart.getOriginalFilename().lastIndexOf(".") > 0) {
             File uploadDir = new File(path, "upload");
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
-            String fileid = MainUtils.md5(imgFile.getBytes()), fileURL = null, targetFile = null;
+            String fileid = MainUtils.getUUID();
+            String fileURL = null;
             ChatMessage data = new ChatMessage();
-            if (imgFile.getContentType() != null && imgFile.getContentType().indexOf("image") >= 0) {
-                fileName = "upload/" + fileid + "_original";
-                File imageFile = new File(path, fileName);
-                FileCopyUtils.copy(imgFile.getBytes(), imageFile);
-                targetFile = "upload/" + fileid;
-                MainUtils.processImage(new File(path, targetFile), imageFile);
+            StreamingFile sf = new StreamingFile();
 
-
-                fileURL = "/res/image.html?id=" + targetFile;
-                if (request.getServerPort() == 80) {
-                    fileURL = "/res/image.html?id=" + targetFile;
-                } else {
-                    fileURL = "/res/image.html?id=" + targetFile;
-                }
-                upload = new UploadStatus("0", fileURL); //图片直接发送给 客户，不用返回
-                data.setAttachmentid(fileid);
+            if (multipart.getContentType() != null && multipart.getContentType().indexOf(Constants.ATTACHMENT_TYPE_IMAGE) >= 0) {
+                // process thumbnail
+                File original = new File(path, "upload/" + fileid + "_original");
+                File thumbnail = new File(path, "upload/" + fileid);
+                FileCopyUtils.copy(multipart.getBytes(), original);
+                MainUtils.processImage(thumbnail, original);
+                sf.setThumbnail(jpaBlobHelper.createBlobWithFile(thumbnail));
+                fileURL = "/res/image.html?id=" + fileid;
             } else {
-                String attachid = processAttachmentFile(imgFile, request);
-
-                upload = new UploadStatus("0", "/res/file.html?id=" + attachid);
+                String attachid = processAttachmentFile(multipart, fileid, request);
                 fileURL = "/res/file.html?id=" + attachid;
-                if (request.getServerPort() == 80) {
-                    fileURL = "/res/file.html?id=" + attachid;
-                } else {
-                    fileURL = "/res/file.html?id=" + attachid;
-                }
             }
-            data.setFilename(imgFile.getOriginalFilename());
-            data.setFilesize((int) imgFile.getSize());
 
-            OutMessageRouter router = null;
+            sf.setId(fileid);
+            sf.setData(jpaBlobHelper.createBlob(multipart.getInputStream(), multipart.getSize()));
+            sf.setName(multipart.getOriginalFilename());
+            sf.setMime(multipart.getContentType());
+            streamingFileRepository.save(sf);
+
+            data.setFilename(multipart.getOriginalFilename());
+            data.setFilesize((int) multipart.getSize());
+            data.setAttachmentid(fileid);
+
+            notify = new UploadStatus("0", fileURL);
+
             AgentUser agentUser = agentUserRepository.findByIdAndOrgi(id, super.getOrgi(request));
 
-            if (agentUser != null && paste == null) {
-                router = (OutMessageRouter) MainContext.getContext().getBean(agentUser.getChannel());
+            if (agentUser != null && paste == null) { // 发送消息
+                OutMessageRouter router = (OutMessageRouter) MainContext.getContext().getBean(agentUser.getChannel());
                 MessageOutContent outMessage = new MessageOutContent();
-                if (router != null) {
+                if (router != null) { // 发送消息给访客
                     outMessage.setMessage(fileURL);
-                    outMessage.setFilename(imgFile.getOriginalFilename());
-                    outMessage.setFilesize((int) imgFile.getSize());
-                    if (imgFile.getContentType() != null && imgFile.getContentType().indexOf("image") >= 0) {
+                    outMessage.setFilename(multipart.getOriginalFilename());
+                    outMessage.setFilesize((int) multipart.getSize());
+                    if (multipart.getContentType() != null && multipart.getContentType().indexOf(Constants.ATTACHMENT_TYPE_IMAGE) >= 0) {
                         outMessage.setMessageType(MainContext.MediaTypeEnum.IMAGE.toString());
                         data.setMsgtype(MainContext.MediaTypeEnum.IMAGE.toString());
                     } else {
@@ -753,7 +757,7 @@ public class AgentController extends Handler {
                 data.setAgentserviceid(agentUser.getAgentserviceid());
 
                 data.setCalltype(MainContext.CallTypeEnum.OUT.toString());
-                if (!StringUtils.isBlank(agentUser.getAgentno())) {
+                if (StringUtils.isNotBlank(agentUser.getAgentno())) {
                     data.setTouser(agentUser.getUserid());
                 }
                 data.setChannel(agentUser.getChannel());
@@ -771,11 +775,10 @@ public class AgentController extends Handler {
                 // 通知文件上传消息
                 NettyClients.getInstance().publishAgentEventMessage(agentUser.getAgentno(), MainContext.MessageTypeEnum.MESSAGE.toString(), data);
             }
-
         } else {
-            upload = new UploadStatus("请选择图片文件");
+            notify = new UploadStatus("请选择图片文件");
         }
-        map.addAttribute("upload", upload);
+        map.addAttribute("upload", notify);
         return view;
     }
 
@@ -785,7 +788,7 @@ public class AgentController extends Handler {
         ChatMessage message = chatMessageRepository.findById(id);
         map.addAttribute("chatMessage", message);
         map.addAttribute("agentUser", CacheHelper.getAgentUserCacheBean().getCacheObject(message.getUserid(), message.getOrgi()));
-    	/*if(!StringUtils.isBlank(t)){
+    	/*if(StringUtils.isNotBlank(t)){
     		map.addAttribute("t", t) ;
     	}*/
         map.addAttribute("t", true);
@@ -794,22 +797,37 @@ public class AgentController extends Handler {
 
     @RequestMapping("/message/image/upload")
     @Menu(type = "im", subtype = "image", access = false)
-    public ModelAndView messageimage(ModelMap map, HttpServletRequest request, @RequestParam(value = "image", required = false) MultipartFile image, @Valid String id, @Valid String userid, @Valid String fileid) throws IOException {
-        if (image != null && !StringUtils.isBlank(fileid)) {
+    public ModelAndView messageimage(ModelMap map,
+                                     HttpServletRequest request,
+                                     @RequestParam(value = "image", required = false) MultipartFile image,
+                                     @Valid String id,
+                                     @Valid String userid,
+                                     @Valid String fileid) throws IOException {
+        logger.info("messageimage id {}, fileid {}", id, fileid);
+        if (image != null && StringUtils.isNotBlank(fileid)) {
             File tempFile = File.createTempFile(fileid, ".png");
             try {
-                String fileName = "upload/" + fileid + "_cooperation";
-                File imageFile = new File(path, fileName);
+                // 创建临时图片文件
                 if (!tempFile.getParentFile().exists()) {
                     tempFile.getParentFile().mkdirs();
                 }
+                // 写入临时文件
                 FileCopyUtils.copy(image.getBytes(), tempFile);
                 ChatMessage chatMessage = chatMessageRepository.findById(id);
                 chatMessage.setCooperation(true);
                 chatMessageRepository.save(chatMessage);
 
+                // 写入协作文件
+                String fileName = "upload/" + fileid + "_cooperation";
+                File imageFile = new File(path, fileName);
                 MainUtils.scaleImage(imageFile, tempFile, 0.1F);
 
+                // 保存到数据库
+                StreamingFile sf = streamingFileRepository.findOne(fileid);
+                if (sf != null) {
+                    sf.setCooperation(jpaBlobHelper.createBlobWithFile(imageFile));
+                    streamingFileRepository.save(sf);
+                }
 
                 OutMessageRouter router = null;
                 AgentUser agentUser = (AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(chatMessage.getUserid(), chatMessage.getOrgi());
@@ -818,7 +836,7 @@ public class AgentController extends Handler {
                     router = (OutMessageRouter) MainContext.getContext().getBean(agentUser.getChannel());
                     MessageOutContent outMessage = new MessageOutContent();
                     if (router != null) {
-                        outMessage.setMessage("/res/image.html?id=" + fileName);
+                        outMessage.setMessage("/res/image.html?id=" + fileid + "&cooperation=true");
                         outMessage.setFilename(imageFile.getName());
 
                         outMessage.setAttachmentid(chatMessage.getAttachmentid());
@@ -841,36 +859,33 @@ public class AgentController extends Handler {
         return request(super.createRequestPageTempletResponse("/public/success"));
     }
 
-    private String processAttachmentFile(MultipartFile file, HttpServletRequest request) throws IOException {
+    private String processAttachmentFile(final MultipartFile multipart, final String fileid, HttpServletRequest request) throws IOException {
         String id = null;
-        if (file.getSize() > 0) {            //文件尺寸 限制 ？在 启动 配置中 设置 的最大值，其他地方不做限制
-            String fileid = MainUtils.md5(file.getBytes());    //使用 文件的 MD5作为 ID，避免重复上传大文件
-            if (StringUtils.isNotBlank(fileid)) {
-                AttachmentFile attachmentFile = new AttachmentFile();
-                attachmentFile.setCreater(super.getUser(request).getId());
-                attachmentFile.setOrgi(super.getOrgi(request));
-                attachmentFile.setOrgan(super.getUser(request).getOrgan());
-                attachmentFile.setModel(MainContext.ModelType.WEBIM.toString());
-                attachmentFile.setFilelength((int) file.getSize());
-                if (file.getContentType() != null && file.getContentType().length() > 255) {
-                    attachmentFile.setFiletype(file.getContentType().substring(0, 255));
-                } else {
-                    attachmentFile.setFiletype(file.getContentType());
-                }
-                File uploadFile = new File(file.getOriginalFilename());
-                if (uploadFile.getName() != null && uploadFile.getName().length() > 255) {
-                    attachmentFile.setTitle(uploadFile.getName().substring(0, 255));
-                } else {
-                    attachmentFile.setTitle(uploadFile.getName());
-                }
-                if (StringUtils.isNotBlank(attachmentFile.getFiletype()) && attachmentFile.getFiletype().indexOf("image") >= 0) {
-                    attachmentFile.setImage(true);
-                }
-                attachmentFile.setFileid(fileid);
-                attachementRes.save(attachmentFile);
-                FileUtils.writeByteArrayToFile(new File(path, "upload/" + fileid), file.getBytes());
-                id = attachmentFile.getId();
+        if (multipart.getSize() > 0) {            //文件尺寸 限制 ？在 启动 配置中 设置 的最大值，其他地方不做限制
+            AttachmentFile attachmentFile = new AttachmentFile();
+            attachmentFile.setCreater(super.getUser(request).getId());
+            attachmentFile.setOrgi(super.getOrgi(request));
+            attachmentFile.setOrgan(super.getUser(request).getOrgan());
+            attachmentFile.setModel(MainContext.ModelType.WEBIM.toString());
+            attachmentFile.setFilelength((int) multipart.getSize());
+            if (multipart.getContentType() != null && multipart.getContentType().length() > 255) {
+                attachmentFile.setFiletype(multipart.getContentType().substring(0, 255));
+            } else {
+                attachmentFile.setFiletype(multipart.getContentType());
             }
+            File uploadFile = new File(multipart.getOriginalFilename());
+            if (uploadFile.getName() != null && uploadFile.getName().length() > 255) {
+                attachmentFile.setTitle(uploadFile.getName().substring(0, 255));
+            } else {
+                attachmentFile.setTitle(uploadFile.getName());
+            }
+            if (StringUtils.isNotBlank(attachmentFile.getFiletype()) && attachmentFile.getFiletype().indexOf(Constants.ATTACHMENT_TYPE_IMAGE) >= 0) {
+                attachmentFile.setImage(true);
+            }
+            attachmentFile.setFileid(fileid);
+            attachementRes.save(attachmentFile);
+            FileUtils.writeByteArrayToFile(new File(path, "upload/" + fileid), multipart.getBytes());
+            id = attachmentFile.getId();
         }
         return id;
     }
@@ -879,7 +894,7 @@ public class AgentController extends Handler {
     @RequestMapping(value = "/contacts")
     @Menu(type = "apps", subtype = "contacts")
     public ModelAndView contacts(ModelMap map, HttpServletRequest request, @Valid String contactsid, @Valid String userid, @Valid String agentserviceid, @Valid String agentuserid) {
-        if (!StringUtils.isBlank(userid) && !StringUtils.isBlank(contactsid)) {
+        if (StringUtils.isNotBlank(userid) && StringUtils.isNotBlank(contactsid)) {
             List<OnlineUser> onlineUserList = this.onlineUserRes.findByUseridAndOrgi(userid, super.getOrgi(request));
             if (onlineUserList.size() > 0) {
                 OnlineUser onlineUser = onlineUserList.get(0);
@@ -925,9 +940,9 @@ public class AgentController extends Handler {
                                 @Valid String agentserviceid,
                                 @Valid String agentuserid,
                                 @Valid String channel) {
-        if (!StringUtils.isBlank(userid) && !StringUtils.isBlank(agentuserid)) {
+        if (StringUtils.isNotBlank(userid) && StringUtils.isNotBlank(agentuserid)) {
             AgentUser agentUser = this.agentUserRepository.findByIdAndOrgi(agentuserid, super.getOrgi(request));
-            if (agentUser != null && !StringUtils.isBlank(agentUser.getAgentserviceid())) {
+            if (agentUser != null && StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
                 List<AgentServiceSummary> summaries = this.serviceSummaryRes.findByAgentserviceidAndOrgi(agentUser.getAgentserviceid(), super.getOrgi(request));
                 if (summaries.size() > 0) {
                     map.addAttribute("summary", summaries.get(0));
@@ -955,7 +970,7 @@ public class AgentController extends Handler {
                                     @Valid String agentserviceid,
                                     @Valid String agentuserid,
                                     @Valid String channel) {
-        if (!StringUtils.isBlank(userid) && !StringUtils.isBlank(agentuserid)) {
+        if (StringUtils.isNotBlank(userid) && StringUtils.isNotBlank(agentuserid)) {
             summary.setOrgi(super.getOrgi(request));
             summary.setCreater(super.getUser(request).getId());
 
@@ -981,7 +996,7 @@ public class AgentController extends Handler {
     @RequestMapping(value = "/transfer")
     @Menu(type = "apps", subtype = "transfer")
     public ModelAndView transfer(ModelMap map, HttpServletRequest request, @Valid String userid, @Valid String agentserviceid, @Valid String agentuserid) {
-        if (!StringUtils.isBlank(userid) && !StringUtils.isBlank(agentuserid)) {
+        if (StringUtils.isNotBlank(userid) && StringUtils.isNotBlank(agentuserid)) {
             //map.addAttribute("organList", organRes.findByOrgiAndOrgid(super.getOrgi(request),super.getOrgid(request))) ;
 
             List<Organ> skillList = OnlineUserUtils.organ(super.getOrgi(request), true);
@@ -1022,7 +1037,7 @@ public class AgentController extends Handler {
     @RequestMapping(value = "/transfer/agent")
     @Menu(type = "apps", subtype = "transferagent")
     public ModelAndView transferagent(ModelMap map, HttpServletRequest request, @Valid String organ) {
-        if (!StringUtils.isBlank(organ)) {
+        if (StringUtils.isNotBlank(organ)) {
             List<String> usersids = new ArrayList<String>();
             List<AgentStatus> agentStatusList = AutomaticServiceDist.getAgentStatus(organ, super.getOrgi(request));
             if (!agentStatusList.isEmpty()) {
@@ -1047,7 +1062,7 @@ public class AgentController extends Handler {
     @RequestMapping(value = "/transfer/save")
     @Menu(type = "apps", subtype = "transfersave")
     public ModelAndView transfersave(ModelMap map, HttpServletRequest request, @Valid String userid, @Valid String agentserviceid, @Valid String agentuserid, @Valid String agentno, @Valid String memo) {
-        if (!StringUtils.isBlank(userid) && !StringUtils.isBlank(agentuserid) && !StringUtils.isBlank(agentno)) {
+        if (StringUtils.isNotBlank(userid) && StringUtils.isNotBlank(agentuserid) && StringUtils.isNotBlank(agentno)) {
             AgentUser agentUser = (AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(userid, super.getOrgi(request));
             AgentService agentService = this.agentServiceRepository.findByIdAndOrgi(agentserviceid, super.getOrgi(request));
             if (agentUser != null) {
@@ -1081,7 +1096,7 @@ public class AgentController extends Handler {
 
             if (agentService != null) {
                 agentService.setAgentno(agentno);
-                if (!StringUtils.isBlank(memo)) {
+                if (StringUtils.isNotBlank(memo)) {
                     agentService.setTransmemo(memo);
                 }
                 agentService.setTrans(true);
@@ -1103,7 +1118,7 @@ public class AgentController extends Handler {
         quickTypeList.addAll(priQuickTypeList);
         map.addAttribute("pubQuickTypeList", quickTypeList);
 
-        if (!StringUtils.isBlank(typeid)) {
+        if (StringUtils.isNotBlank(typeid)) {
             map.addAttribute("quickType", quickTypeRes.findByIdAndOrgi(typeid, super.getOrgi(request)));
         }
 
@@ -1114,7 +1129,7 @@ public class AgentController extends Handler {
     @RequestMapping("/quickreply/add")
     @Menu(type = "setting", subtype = "quickreplyadd", admin = true)
     public ModelAndView quickreplyadd(ModelMap map, HttpServletRequest request, @Valid String parentid) {
-        if (!StringUtils.isBlank(parentid)) {
+        if (StringUtils.isNotBlank(parentid)) {
             map.addAttribute("quickType", quickTypeRes.findByIdAndOrgi(parentid, super.getOrgi(request)));
         }
         map.addAttribute("quickTypeList", quickTypeRes.findByOrgiAndQuicktypeAndCreater(super.getOrgi(request), MainContext.QuickTypeEnum.PRI.toString(), super.getUser(request).getId()));
@@ -1124,7 +1139,7 @@ public class AgentController extends Handler {
     @RequestMapping("/quickreply/save")
     @Menu(type = "setting", subtype = "quickreply", admin = true)
     public ModelAndView quickreplysave(ModelMap map, HttpServletRequest request, @Valid QuickReply quickReply) {
-        if (!StringUtils.isBlank(quickReply.getTitle()) && !StringUtils.isBlank(quickReply.getContent())) {
+        if (StringUtils.isNotBlank(quickReply.getTitle()) && StringUtils.isNotBlank(quickReply.getContent())) {
             quickReply.setOrgi(super.getOrgi(request));
             quickReply.setCreater(super.getUser(request).getId());
             quickReply.setType(MainContext.QuickTypeEnum.PRI.toString());
@@ -1158,7 +1173,7 @@ public class AgentController extends Handler {
     @RequestMapping("/quickreply/update")
     @Menu(type = "setting", subtype = "quickreply", admin = true)
     public ModelAndView quickreplyupdate(ModelMap map, HttpServletRequest request, @Valid QuickReply quickReply) {
-        if (!StringUtils.isBlank(quickReply.getId())) {
+        if (StringUtils.isNotBlank(quickReply.getId())) {
             QuickReply temp = quickReplyRes.findOne(quickReply.getId());
             quickReply.setOrgi(super.getOrgi(request));
             quickReply.setCreater(super.getUser(request).getId());
@@ -1175,7 +1190,7 @@ public class AgentController extends Handler {
     @Menu(type = "apps", subtype = "kbs")
     public ModelAndView addtype(ModelMap map, HttpServletRequest request, @Valid String typeid) {
         map.addAttribute("quickTypeList", quickTypeRes.findByOrgiAndQuicktypeAndCreater(super.getOrgi(request), MainContext.QuickTypeEnum.PRI.toString(), super.getUser(request).getId()));
-        if (!StringUtils.isBlank(typeid)) {
+        if (StringUtils.isNotBlank(typeid)) {
             map.addAttribute("quickType", quickTypeRes.findByIdAndOrgi(typeid, super.getOrgi(request)));
         }
         return request(super.createRequestPageTempletResponse("/apps/agent/quickreply/addtype"));

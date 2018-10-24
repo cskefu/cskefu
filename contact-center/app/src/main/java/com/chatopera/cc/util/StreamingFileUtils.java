@@ -19,20 +19,20 @@ package com.chatopera.cc.util;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class AttachementFormatValidator {
+public class StreamingFileUtils {
 
-    private static AttachementFormatValidator singleton = new AttachementFormatValidator();
+    private static StreamingFileUtils singleton = new StreamingFileUtils();
 
     private final HashMap<String, String> extMap = new HashMap<String, String>();
 
-    private AttachementFormatValidator() {
+    private StreamingFileUtils() {
         extMap.put(Constants.ATTACHMENT_TYPE_IMAGE, "gif,jpg,jpeg,png,bmp");
         extMap.put(Constants.ATTACHMENT_TYPE_FILE, "doc,docx,xls,xlsx,ppt,htm,html,txt,zip,rar,gz,bz2,c66");
         extMap.put("flash", "swf,flv");
         extMap.put("media", "swf,flv,mp3,wav,wma,wmv,mid,avi,mpg,asf,rm,rmvb");
     }
 
-    public static AttachementFormatValidator getInstance() {
+    public static StreamingFileUtils getInstance() {
         return singleton;
     }
 
@@ -49,4 +49,5 @@ public class AttachementFormatValidator {
         }
         return null;
     }
+
 }

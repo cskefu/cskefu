@@ -35,7 +35,7 @@
 			    //创建新的图片对象
 			    var img = new Image();
 			    //指定图片的URL
-			    img.src = "/res/image.html?id=upload/${chatMessage.attachmentid!''}_cooperation";
+			    img.src = "/res/image.html?id=${chatMessage.attachmentid!''}&cooperation=true&original=true";
 			    //浏览器加载图片完毕后再绘制图片
 			    img.onload = function(){
 			        //以Canvas画布上的坐标(10,10)为起始点，绘制图像
@@ -49,7 +49,7 @@
 <div class='ukefu-preview-image scrawl-main' id="scrawl-main">
 	<div class='ukefu-image-content hot'>
 		<div class='ukefu-image-canvas' id='ukefu-image-content'>
-			<img id="ukefu_img_ctx" src='${chatMessage.message!''}_original'>
+			<img id="ukefu_img_ctx" src='${chatMessage.message!''}&original=true'>
 		</div>
 		<div class='drawBoard'>
 			<canvas id="canvas-borad" class="brushBorad">你的浏览器不支持 canvas 绘图</canvas>

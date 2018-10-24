@@ -16,41 +16,52 @@
  */
 package com.chatopera.cc.app.handler.resource;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
+import com.chatopera.cc.app.basic.MainUtils;
+import com.chatopera.cc.app.handler.Handler;
+import com.chatopera.cc.app.model.AttachmentFile;
+import com.chatopera.cc.app.model.StreamingFile;
+import com.chatopera.cc.app.model.UploadStatus;
+import com.chatopera.cc.app.persistence.blob.JpaBlobHelper;
+import com.chatopera.cc.app.persistence.repository.AttachmentRepository;
+import com.chatopera.cc.app.persistence.repository.StreamingFileRepository;
+import com.chatopera.cc.util.Menu;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.basic.MainUtils;
-import com.chatopera.cc.app.persistence.repository.AttachmentRepository;
-import com.chatopera.cc.app.handler.Handler;
-import com.chatopera.cc.app.model.AttachmentFile;
-import com.chatopera.cc.app.model.UploadStatus;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.sql.SQLException;
 
 @Controller
 @RequestMapping("/res")
 public class MediaController extends Handler {
+    private final static Logger logger = LoggerFactory.getLogger(MediaController.class);
 
     @Value("${web.upload-path}")
     private String path;
+
+    @Autowired
+    private StreamingFileRepository streamingFileRepository;
+
+    @Autowired
+    private JpaBlobHelper jpaBlobHelper;
 
     private String TEMPLATE_DATA_PATH = "WEB-INF/data/templates/";
 
@@ -59,31 +70,24 @@ public class MediaController extends Handler {
 
     @RequestMapping("/image")
     @Menu(type = "resouce", subtype = "image", access = true)
-    public void index(HttpServletResponse response, @Valid String id) throws IOException {
-        File file = new File(path, id);
-        if (!StringUtils.isBlank(id) && !(id.endsWith(".png") || id.endsWith(".jpg"))) {
-            if (id.endsWith("_original") && !file.exists()) {
-                File orgFile = new File(path, id.substring(0, id.indexOf("_original")));
-                if (orgFile.exists()) {
-                    MainUtils.processImage(file = new File(path, id), orgFile);
-                }
-            } else if (!StringUtils.isBlank(id) && file.exists() && !id.endsWith("_original")) {
-                File originalFile = new File(path, id + "_original");
-                if (!originalFile.exists()) {
-                    MainUtils.processImage(new File(path, id + "_original"), file);
-                }
-            } else if (!StringUtils.isBlank(id) && !file.exists() && !id.endsWith("_original")) {
-                File destFile = new File(path, id + "_original");
-                if (destFile.exists()) {
-                    MainUtils.processImage(new File(path + id), destFile);
-                }
-                file = new File(path, id);
+    public void index(HttpServletResponse response,
+                      @Valid String id,
+                      @RequestParam(value = "original", required = false) boolean original,
+                      @RequestParam(value = "cooperation", required = false) boolean cooperation) throws IOException, SQLException {
+        logger.info("index id {}, original {}, cooperation {}", id, original, cooperation);
+        StreamingFile sf = streamingFileRepository.findOne(id);
+        if (sf != null) {
+            response.setHeader("Content-Type", sf.getMime());
+            response.setContentType(sf.getMime());
+            if (cooperation && (sf.getCooperation() != null)) { // 协作文件
+                IOUtils.copy(sf.getCooperation().getBinaryStream(), response.getOutputStream());
+            } else if (original && sf.getData() != null) { // 源文件
+                IOUtils.copy(sf.getData().getBinaryStream(), response.getOutputStream());
+            } else if (sf.getThumbnail() != null) { // 缩略图
+                IOUtils.copy(sf.getThumbnail().getBinaryStream(), response.getOutputStream());
+            } else {
+                logger.warn("[index] can not get streaming file id {}, original {}, cooperation {}", id, original, cooperation);
             }
-        }
-        if (file.exists() && file.isFile()) {
-            response.setHeader("Content-Type", "image/png");
-            response.setContentType("image/png");
-            response.getOutputStream().write(FileUtils.readFileToByteArray(new File(path, id)));
         }
     }
 
@@ -102,7 +106,7 @@ public class MediaController extends Handler {
         byte[] data = new byte[1024];
         int length = 0;
         OutputStream out = response.getOutputStream();
-        if (!StringUtils.isBlank(url)) {
+        if (StringUtils.isNotBlank(url)) {
             InputStream input = new URL(url).openStream();
             while ((length = input.read(data)) > 0) {
                 out.write(data, 0, length);
@@ -113,44 +117,43 @@ public class MediaController extends Handler {
 
     @RequestMapping("/image/upload")
     @Menu(type = "resouce", subtype = "imageupload", access = false)
-    public ModelAndView upload(ModelMap map, HttpServletRequest request, @RequestParam(value = "imgFile", required = false) MultipartFile imgFile) throws IOException {
+    public ModelAndView upload(ModelMap map,
+                               HttpServletRequest request,
+                               @RequestParam(value = "imgFile", required = false) MultipartFile multipart) throws IOException {
         ModelAndView view = request(super.createRequestPageTempletResponse("/public/upload"));
-        UploadStatus upload = null;
-        String fileName = null;
-        if (imgFile != null && imgFile.getOriginalFilename().lastIndexOf(".") > 0) {
+        UploadStatus notify = null;
+        if (multipart != null && multipart.getOriginalFilename().lastIndexOf(".") > 0) {
             File uploadDir = new File(path, "upload");
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
-            fileName = "upload/" + MainUtils.md5(imgFile.getBytes()) + imgFile.getOriginalFilename().substring(imgFile.getOriginalFilename().lastIndexOf(".")).toLowerCase();
-            FileCopyUtils.copy(imgFile.getBytes(), new File(path, fileName));
-
-            String fileURL = request.getScheme() + "://" + request.getServerName() + "/res/image.html?id=" + fileName;
-            if (request.getServerPort() == 80) {
-                fileURL = request.getScheme() + "://" + request.getServerName() + "/res/image.html?id=" + fileName;
-            } else {
-                fileURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/res/image.html?id=" + fileName;
-            }
-            upload = new UploadStatus("0", fileURL); //图片直接发送给 客户，不用返回
+            String fileid = MainUtils.getUUID();
+            StreamingFile sf = new StreamingFile();
+            sf.setId(fileid);
+            sf.setName(multipart.getOriginalFilename());
+            sf.setMime(multipart.getContentType());
+            sf.setData(jpaBlobHelper.createBlob(multipart.getInputStream(), multipart.getSize()));
+            streamingFileRepository.save(sf);
+            String fileURL = "/res/image.html?id=" + fileid;
+            notify = new UploadStatus("0", fileURL); //图片直接发送给 客户，不用返回
         } else {
-            upload = new UploadStatus("请选择图片文件");
+            notify = new UploadStatus("请选择图片文件");
         }
-        map.addAttribute("upload", upload);
+        map.addAttribute("upload", notify);
         return view;
     }
 
     @RequestMapping("/file")
     @Menu(type = "resouce", subtype = "file", access = false)
-    public void file(HttpServletResponse response, HttpServletRequest request, @Valid String id) throws IOException {
-        if (!StringUtils.isBlank(id)) {
+    public void file(HttpServletResponse response, HttpServletRequest request, @Valid String id) throws IOException, SQLException {
+        if (StringUtils.isNotBlank(id)) {
             AttachmentFile attachmentFile = attachementRes.findByIdAndOrgi(id, super.getOrgi(request));
-            if (attachmentFile != null) {
-                response.setContentType(attachmentFile.getFiletype());
-                response.setHeader("Content-Disposition", "attachment;filename=" + java.net.URLEncoder.encode(attachmentFile.getTitle(), "UTF-8"));
-                if (StringUtils.isNotBlank(attachmentFile.getModel()) && attachmentFile.getModel().equals("app")) {
-                    response.getOutputStream().write(FileUtils.readFileToByteArray(new File(path, "app/" + attachmentFile.getFileid())));
-                } else {
-                    response.getOutputStream().write(FileUtils.readFileToByteArray(new File(path, "upload/" + attachmentFile.getFileid())));
+            if (attachmentFile != null && attachmentFile.getFileid() != null) {
+                StreamingFile sf = streamingFileRepository.findOne(attachmentFile.getFileid());
+                if (sf != null) {
+                    response.setContentType(attachmentFile.getFiletype());
+                    response.setHeader("Content-Disposition", "attachment;filename=" + java.net.URLEncoder.encode(attachmentFile.getTitle(), "UTF-8"));
+                    IOUtils.copy(sf.getData().getBinaryStream(), response.getOutputStream());
                 }
             }
         }
@@ -159,7 +162,7 @@ public class MediaController extends Handler {
     @RequestMapping("/template")
     @Menu(type = "resouce", subtype = "template", access = false)
     public void template(HttpServletResponse response, HttpServletRequest request, @Valid String filename) throws IOException {
-        if (!StringUtils.isBlank(filename)) {
+        if (StringUtils.isNotBlank(filename)) {
             InputStream is = MediaController.class.getClassLoader().getResourceAsStream(TEMPLATE_DATA_PATH + filename);
             if (is != null) {
                 response.setContentType("text/plain");

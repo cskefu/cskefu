@@ -300,7 +300,7 @@
         var chat=document.getElementsByClassName('chatting-left').innerText;
         chat = data.message;
         if(data.messageType == "image"){
-        	chat = "<a href='"+data.message+"_original' target='_blank'><img src='"+data.message+"' class='ukefu-media-image'/></a>" ;
+        	chat = "<a href='"+data.message+"&original=true' target='_blank'><img src='"+data.message+"' class='ukefu-media-image'/></a>" ;
         }else if(data.messageType == "cooperation"){
         	chat = "<a href='javascript:void(0)' onclick='acceptInvite(\""+data.message+"\", \""+data.attachmentid+"\")'>您收到一个协作邀请，点击进入协作</a>" ;
         }else if(data.messageType == "action"){
@@ -322,7 +322,7 @@
     }
     function acceptInvite(msgid,fileid){
     	document.getElementById("cooperation").style.display = "block" ;
-    	document.getElementById("ukefu_img_ctx").src = "/res/image.html?id=upload/"+fileid ;
+    	document.getElementById("ukefu_img_ctx").src = "/res/image.html?id="+fileid + "&cooperation=true&original=true";
     	
     	$("#ukefu_img_ctx").load(function() {
 			var height = document.getElementById("ukefu-image-content").offsetHeight;
@@ -346,7 +346,7 @@
 			//创建新的图片对象
 			var img = new Image();
 			//指定图片的URL
-			img.src = "/res/image.html?id=upload/" + fileid + "_cooperation";
+			img.src = "/res/image.html?id=" + fileid + "&cooperation=true&original=true";
 			//浏览器加载图片完毕后再绘制图片
 			img.onload = function() {
 				ctx.clearRect(0,0,canvas.width,canvas.height);    
