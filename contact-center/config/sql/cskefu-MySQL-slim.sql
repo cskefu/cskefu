@@ -437,6 +437,19 @@ CREATE TABLE `cs_callout_targets` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='外呼计划目标客户';
 
+-- ----------------------------
+-- Table structure for cs_stream_file
+-- ----------------------------
+DROP TABLE IF EXISTS `cs_stream_file`;
+CREATE TABLE `cs_stream_file` (
+  `id` varchar(32)  NOT NULL COMMENT '文件ID',
+  `name` varchar(300)  NOT NULL COMMENT '文件名称',
+  `data` mediumblob NOT NULL COMMENT '原始文件',
+  `thumbnail` mediumblob COMMENT '缩略图',
+  `mime` varchar(200) DEFAULT NULL COMMENT '文件类型 Content Type',
+  `cooperation` mediumblob COMMENT '协作文件',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT '文件';
 
 -- ----------------------------
 -- Table structure for uk_ad_position
