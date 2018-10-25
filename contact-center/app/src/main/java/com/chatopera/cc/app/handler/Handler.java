@@ -21,9 +21,12 @@ import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.app.basic.Viewport;
 import com.chatopera.cc.app.cache.CacheHelper;
 import com.chatopera.cc.app.handler.api.rest.QueryParams;
+import com.chatopera.cc.app.model.StreamingFile;
 import com.chatopera.cc.app.model.SystemConfig;
 import com.chatopera.cc.app.model.Tenant;
 import com.chatopera.cc.app.model.User;
+import com.chatopera.cc.app.persistence.blob.JpaBlobHelper;
+import com.chatopera.cc.app.persistence.repository.StreamingFileRepository;
 import com.chatopera.cc.app.persistence.repository.TenantRepository;
 import com.chatopera.cc.exception.CSKefuException;
 import org.apache.commons.lang.StringUtils;
@@ -38,10 +41,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.text.ParseException;
 
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
@@ -55,6 +60,12 @@ public class Handler {
 
     @Autowired
     private TenantRepository tenantRes;
+
+    @Autowired
+    private JpaBlobHelper jpaBlobHelper;
+
+    @Autowired
+    private StreamingFileRepository streamingFileRes;
 
     public final static int PAGE_SIZE_BG = 1;
     public final static int PAGE_SIZE_TW = 20;
@@ -461,4 +472,17 @@ public class Handler {
     public void setStarttime(long starttime) {
         this.starttime = starttime;
     }
+
+    public String saveImageFileWithMultipart(MultipartFile multipart) throws IOException {
+        StreamingFile sf = new StreamingFile();
+        final String fileid = MainUtils.getUUID();
+        sf.setId(fileid);
+        sf.setMime(multipart.getContentType());
+        sf.setData(jpaBlobHelper.createBlob(multipart.getInputStream(), multipart.getSize()));
+        sf.setName(multipart.getOriginalFilename());
+        streamingFileRes.save(sf);
+        return fileid;
+    }
+
+
 }

@@ -69,24 +69,6 @@ public class WebIMController extends Handler {
     @Autowired
     private SNSAccountRepository snsAccountRes;
 
-    @Autowired
-    private JpaBlobHelper jpaBlobHelper;
-
-    @Autowired
-    private StreamingFileRepository streamingFileRes;
-
-
-    private String saveImageFile(MultipartFile multipart) throws IOException {
-        StreamingFile sf = new StreamingFile();
-        final String fileid = MainUtils.getUUID();
-        sf.setId(fileid);
-        sf.setMime(multipart.getContentType());
-        sf.setData(jpaBlobHelper.createBlob(multipart.getInputStream(), multipart.getSize()));
-        sf.setName(multipart.getOriginalFilename());
-        streamingFileRes.save(sf);
-        return fileid;
-    }
-
     @RequestMapping("/index")
     @Menu(type = "app", subtype = "app", admin = true)
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String snsid) {
@@ -125,12 +107,12 @@ public class WebIMController extends Handler {
         inviteData.setOrgi(super.getOrgi(request));
         // 网页品牌标识
         if (webimlogo != null && webimlogo.getOriginalFilename().lastIndexOf(".") > 0) {
-            inviteData.setConsult_dialog_logo(saveImageFile(webimlogo));
+            inviteData.setConsult_dialog_logo(super.saveImageFileWithMultipart(webimlogo));
         }
 
         // 网页坐席头像
         if (agentheadimg != null && agentheadimg.getOriginalFilename().lastIndexOf(".") > 0) {
-            inviteData.setConsult_dialog_headimg(saveImageFile(agentheadimg));
+            inviteData.setConsult_dialog_headimg(super.saveImageFileWithMultipart(agentheadimg));
         }
         invite.save(inviteData);
         CacheHelper.getSystemCacheBean().put(inviteData.getSnsaccountid(), inviteData, inviteData.getOrgi());
@@ -208,7 +190,7 @@ public class WebIMController extends Handler {
                 tempInviteData.setCtrlenter(inviteData.isCtrlenter());
 
                 if (dialogad != null && !StringUtils.isBlank(dialogad.getName()) && dialogad.getBytes() != null && dialogad.getBytes().length > 0) {
-                    tempInviteData.setDialog_ad(saveImageFile(dialogad));
+                    tempInviteData.setDialog_ad(super.saveImageFileWithMultipart(dialogad));
                 }
                 invite.save(tempInviteData);
                 inviteData = tempInviteData;
@@ -248,7 +230,7 @@ public class WebIMController extends Handler {
                 tempInviteData.setConsult_invite_color(inviteData.getConsult_invite_color());
 
                 if (invotebg != null && !StringUtils.isBlank(invotebg.getName()) && invotebg.getBytes() != null && invotebg.getBytes().length > 0) {
-                    tempInviteData.setConsult_invite_bg(saveImageFile(invotebg));
+                    tempInviteData.setConsult_invite_bg(super.saveImageFileWithMultipart(invotebg));
                 }
                 invite.save(tempInviteData);
                 inviteData = tempInviteData;
