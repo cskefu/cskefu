@@ -473,6 +473,12 @@ public class Handler {
         this.starttime = starttime;
     }
 
+    /**
+     * 使用Blob保存文件
+     * @param multipart
+     * @return id
+     * @throws IOException
+     */
     public String saveImageFileWithMultipart(MultipartFile multipart) throws IOException {
         StreamingFile sf = new StreamingFile();
         final String fileid = MainUtils.getUUID();

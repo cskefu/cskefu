@@ -72,7 +72,6 @@ public class AutomaticServiceDist {
     /**
      * 载入坐席 ACD策略配置
      *
-     * @param orgi
      * @return
      */
     @SuppressWarnings("unchecked")
@@ -530,7 +529,7 @@ public class AutomaticServiceDist {
      * @return
      * @throws Exception
      */
-    public static AgentService processChatbotService(final AgentUser agentUser, final String orgi) {
+    public static AgentService processChatbotService(final String botName, final AgentUser agentUser, final String orgi) {
         AgentService agentService = new AgentService();    //放入缓存的对象
         AgentServiceRepository agentServiceRes = MainContext.getContext().getBean(AgentServiceRepository.class);
         Date now = new Date();
@@ -550,6 +549,8 @@ public class AutomaticServiceDist {
             agentService.setRegion(agentUser.getRegion());
             agentService.setUsername(agentUser.getUsername());
             agentService.setChannel(agentUser.getChannel());
+            if (botName != null)
+                agentService.setAgentusername(botName);
 
             if (StringUtils.isNotBlank(agentUser.getContextid())) {
                 agentService.setContextid(agentUser.getContextid());

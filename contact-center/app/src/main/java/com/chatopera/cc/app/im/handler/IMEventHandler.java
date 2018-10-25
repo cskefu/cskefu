@@ -167,7 +167,7 @@ public class IMEventHandler {
         }
 
         AgentServiceRepository agentServiceRes = MainContext.getContext().getBean(AgentServiceRepository.class);
-        List<AgentService> agentServiceList = agentServiceRes.findByUseridAndOrgi(user, orgi);
+        List<AgentService> agentServiceList = agentServiceRes.findByUseridAndOrgiOrderByLogindateDesc(user, orgi);
         if (agentServiceList.size() > 0) {
             AgentService agentService = agentServiceList.get(0);
             agentService.setName(contacts.getName());

@@ -161,6 +161,7 @@ public class ChatbotEventHandler {
                 agentUser.setCreatetime(now);
                 agentUser.setUpdatetime(now);
                 agentUser.setSessionid(session);
+                agentUser.setRegion(onlineUser.getRegion());
 
                 // 聊天机器人处理的请求
                 agentUser.setOpttype(MainContext.OptTypeEnum.CHATBOT.toString());
@@ -168,7 +169,7 @@ public class ChatbotEventHandler {
                 agentUser.setCity(onlineUser.getCity());
                 agentUser.setProvince(onlineUser.getProvince());
                 agentUser.setCountry(onlineUser.getCountry());
-                AgentService agentService = AutomaticServiceDist.processChatbotService(agentUser, orgi);
+                AgentService agentService = AutomaticServiceDist.processChatbotService(invite != null ? invite.getAiname() : "机器人客服", agentUser, orgi);
                 agentUser.setAgentserviceid(agentService.getId());
 
                 // 标记为机器人坐席
@@ -194,7 +195,7 @@ public class ChatbotEventHandler {
             AgentUser agentUser = (AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(user, orgi);
             OnlineUser onlineUser = (OnlineUser) CacheHelper.getOnlineUserCacheBean().getCacheObject(user, orgi);
             if (agentUser != null) {
-                AutomaticServiceDist.processChatbotService(agentUser, orgi);
+                AutomaticServiceDist.processChatbotService(null, agentUser, orgi);
                 CacheHelper.getAgentUserCacheBean().delete(user, MainContext.SYSTEM_ORGI);
                 CacheHelper.getOnlineUserCacheBean().delete(user, orgi);
                 agentUser.setStatus(MainContext.OnlineUserOperatorStatus.OFFLINE.toString());
