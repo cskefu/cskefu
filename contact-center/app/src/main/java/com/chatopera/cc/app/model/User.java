@@ -515,6 +515,10 @@ public class User implements java.io.Serializable{
 		this.ordertype = ordertype;
 	}
 
+	public boolean inMyorgans(final String organ){
+		return myorgans.contains(organ);
+	}
+
     @Transient
     public HashSet<String> getMyorgans() {
         return myorgans;
