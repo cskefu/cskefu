@@ -16,12 +16,11 @@
  */
 package com.chatopera.cc.app.handler.admin.channel;
 
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.app.cache.CacheHelper;
 import com.chatopera.cc.app.handler.Handler;
-import com.chatopera.cc.app.model.CousultInvite;
-import com.chatopera.cc.app.model.Organ;
-import com.chatopera.cc.app.model.OrgiSkillRel;
-import com.chatopera.cc.app.model.User;
+import com.chatopera.cc.app.model.*;
+import com.chatopera.cc.app.persistence.blob.JpaBlobHelper;
 import com.chatopera.cc.app.persistence.repository.*;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang.StringUtils;
@@ -70,6 +69,24 @@ public class WebIMController extends Handler {
     @Autowired
     private SNSAccountRepository snsAccountRes;
 
+    @Autowired
+    private JpaBlobHelper jpaBlobHelper;
+
+    @Autowired
+    private StreamingFileRepository streamingFileRes;
+
+
+    private String saveImageFile(MultipartFile multipart) throws IOException {
+        StreamingFile sf = new StreamingFile();
+        final String fileid = MainUtils.getUUID();
+        sf.setId(fileid);
+        sf.setMime(multipart.getContentType());
+        sf.setData(jpaBlobHelper.createBlob(multipart.getInputStream(), multipart.getSize()));
+        sf.setName(multipart.getOriginalFilename());
+        streamingFileRes.save(sf);
+        return fileid;
+    }
+
     @RequestMapping("/index")
     @Menu(type = "app", subtype = "app", admin = true)
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String snsid) {
@@ -106,23 +123,14 @@ public class WebIMController extends Handler {
             inviteData.setSnsaccountid(super.getUser(request).getId());
         }
         inviteData.setOrgi(super.getOrgi(request));
+        // 网页品牌标识
         if (webimlogo != null && webimlogo.getOriginalFilename().lastIndexOf(".") > 0) {
-            File logoDir = new File(path, "logo");
-            if (!logoDir.exists()) {
-                logoDir.mkdirs();
-            }
-            String fileName = "logo/" + inviteData.getId() + webimlogo.getOriginalFilename().substring(webimlogo.getOriginalFilename().lastIndexOf("."));
-            FileCopyUtils.copy(webimlogo.getBytes(), new File(path, fileName));
-            inviteData.setConsult_dialog_logo(fileName);
+            inviteData.setConsult_dialog_logo(saveImageFile(webimlogo));
         }
+
+        // 网页坐席头像
         if (agentheadimg != null && agentheadimg.getOriginalFilename().lastIndexOf(".") > 0) {
-            File headimgDir = new File(path, "headimg");
-            if (!headimgDir.exists()) {
-                headimgDir.mkdirs();
-            }
-            String fileName = "headimg/" + inviteData.getId() + agentheadimg.getOriginalFilename().substring(agentheadimg.getOriginalFilename().lastIndexOf("."));
-            FileCopyUtils.copy(agentheadimg.getBytes(), new File(path, fileName));
-            inviteData.setConsult_dialog_headimg(fileName);
+            inviteData.setConsult_dialog_headimg(saveImageFile(agentheadimg));
         }
         invite.save(inviteData);
         CacheHelper.getSystemCacheBean().put(inviteData.getSnsaccountid(), inviteData, inviteData.getOrgi());
@@ -200,13 +208,7 @@ public class WebIMController extends Handler {
                 tempInviteData.setCtrlenter(inviteData.isCtrlenter());
 
                 if (dialogad != null && !StringUtils.isBlank(dialogad.getName()) && dialogad.getBytes() != null && dialogad.getBytes().length > 0) {
-                    String fileName = "ad/" + inviteData.getId() + dialogad.getOriginalFilename().substring(dialogad.getOriginalFilename().lastIndexOf("."));
-                    File file = new File(path, fileName);
-                    if (!file.getParentFile().exists()) {
-                        file.getParentFile().mkdirs();
-                    }
-                    FileCopyUtils.copy(dialogad.getBytes(), file);
-                    tempInviteData.setDialog_ad(fileName);
+                    tempInviteData.setDialog_ad(saveImageFile(dialogad));
                 }
                 invite.save(tempInviteData);
                 inviteData = tempInviteData;
@@ -246,13 +248,7 @@ public class WebIMController extends Handler {
                 tempInviteData.setConsult_invite_color(inviteData.getConsult_invite_color());
 
                 if (invotebg != null && !StringUtils.isBlank(invotebg.getName()) && invotebg.getBytes() != null && invotebg.getBytes().length > 0) {
-                    String fileName = "invote/" + inviteData.getId() + invotebg.getOriginalFilename().substring(invotebg.getOriginalFilename().lastIndexOf("."));
-                    File file = new File(path, fileName);
-                    if (!file.getParentFile().exists()) {
-                        file.getParentFile().mkdirs();
-                    }
-                    FileCopyUtils.copy(invotebg.getBytes(), file);
-                    tempInviteData.setConsult_invite_bg(fileName);
+                    tempInviteData.setConsult_invite_bg(saveImageFile(invotebg));
                 }
                 invite.save(tempInviteData);
                 inviteData = tempInviteData;
@@ -291,7 +287,6 @@ public class WebIMController extends Handler {
      * 获取当前产品下人员信息
      *
      * @param request
-     * @param q
      * @return
      */
     private List<User> getUsers(HttpServletRequest request) {

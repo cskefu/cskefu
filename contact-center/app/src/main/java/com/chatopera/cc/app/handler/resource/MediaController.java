@@ -58,7 +58,7 @@ public class MediaController extends Handler {
     private String path;
 
     @Autowired
-    private StreamingFileRepository streamingFileRepository;
+    private StreamingFileRepository streamingFileRes;
 
     @Autowired
     private JpaBlobHelper jpaBlobHelper;
@@ -74,7 +74,7 @@ public class MediaController extends Handler {
                       @Valid String id,
                       @RequestParam(value = "original", required = false) boolean original,
                       @RequestParam(value = "cooperation", required = false) boolean cooperation) throws IOException, SQLException {
-        StreamingFile sf = streamingFileRepository.findOne(id);
+        StreamingFile sf = streamingFileRes.findOne(id);
         if (sf != null) {
             response.setHeader("Content-Type", sf.getMime());
             response.setContentType(sf.getMime());
@@ -84,6 +84,8 @@ public class MediaController extends Handler {
                 IOUtils.copy(sf.getData().getBinaryStream(), response.getOutputStream());
             } else if (sf.getThumbnail() != null) { // 缩略图
                 IOUtils.copy(sf.getThumbnail().getBinaryStream(), response.getOutputStream());
+            } else if (sf.getData() != null) {
+                IOUtils.copy(sf.getData().getBinaryStream(), response.getOutputStream());
             } else {
                 logger.warn("[index] can not get streaming file id {}, original {}, cooperation {}", id, original, cooperation);
             }
@@ -132,7 +134,7 @@ public class MediaController extends Handler {
             sf.setName(multipart.getOriginalFilename());
             sf.setMime(multipart.getContentType());
             sf.setData(jpaBlobHelper.createBlob(multipart.getInputStream(), multipart.getSize()));
-            streamingFileRepository.save(sf);
+            streamingFileRes.save(sf);
             String fileURL = "/res/image.html?id=" + fileid;
             notify = new UploadStatus("0", fileURL); //图片直接发送给 客户，不用返回
         } else {
@@ -148,12 +150,16 @@ public class MediaController extends Handler {
         if (StringUtils.isNotBlank(id)) {
             AttachmentFile attachmentFile = attachementRes.findByIdAndOrgi(id, super.getOrgi(request));
             if (attachmentFile != null && attachmentFile.getFileid() != null) {
-                StreamingFile sf = streamingFileRepository.findOne(attachmentFile.getFileid());
+                StreamingFile sf = streamingFileRes.findOne(attachmentFile.getFileid());
                 if (sf != null) {
                     response.setContentType(attachmentFile.getFiletype());
                     response.setHeader("Content-Disposition", "attachment;filename=" + java.net.URLEncoder.encode(attachmentFile.getTitle(), "UTF-8"));
                     IOUtils.copy(sf.getData().getBinaryStream(), response.getOutputStream());
+                } else {
+                    logger.warn("[streaming file] can not get file id {}", attachmentFile.getFileid());
                 }
+            } else {
+                logger.warn("[attachment file] can not find attachment file id {}", id);
             }
         }
     }
