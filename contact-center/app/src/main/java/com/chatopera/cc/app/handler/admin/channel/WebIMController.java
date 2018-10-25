@@ -16,11 +16,12 @@
  */
 package com.chatopera.cc.app.handler.admin.channel;
 
-import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.app.cache.CacheHelper;
 import com.chatopera.cc.app.handler.Handler;
-import com.chatopera.cc.app.model.*;
-import com.chatopera.cc.app.persistence.blob.JpaBlobHelper;
+import com.chatopera.cc.app.model.CousultInvite;
+import com.chatopera.cc.app.model.Organ;
+import com.chatopera.cc.app.model.OrgiSkillRel;
+import com.chatopera.cc.app.model.User;
 import com.chatopera.cc.app.persistence.repository.*;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang.StringUtils;
@@ -30,7 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,7 +38,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +73,8 @@ public class WebIMController extends Handler {
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String snsid) {
 
         CousultInvite coultInvite = invite.findBySnsaccountidAndOrgi(snsid, super.getOrgi(request));
+        logger.info("[index] snsaccount Id {}, AiFirst {}", coultInvite.getSnsaccountid(), coultInvite.isAifirst());
+
         if (coultInvite != null) {
             map.addAttribute("inviteData", coultInvite);
             map.addAttribute("skillList", getOrgans(request));
@@ -89,7 +90,7 @@ public class WebIMController extends Handler {
     @RequestMapping("/save")
     @Menu(type = "admin", subtype = "app", admin = true)
     public ModelAndView save(HttpServletRequest request, @Valid CousultInvite inviteData, @RequestParam(value = "webimlogo", required = false) MultipartFile webimlogo, @RequestParam(value = "agentheadimg", required = false) MultipartFile agentheadimg) throws IOException {
-        if (!StringUtils.isBlank(inviteData.getSnsaccountid())) {
+        if (StringUtils.isNotBlank(inviteData.getSnsaccountid())) {
             CousultInvite tempData = invite.findBySnsaccountidAndOrgi(inviteData.getSnsaccountid(), super.getOrgi(request));
             if (tempData != null) {
                 tempData.setConsult_vsitorbtn_model(inviteData.getConsult_vsitorbtn_model());
@@ -98,7 +99,6 @@ public class WebIMController extends Handler {
                 tempData.setConsult_vsitorbtn_content(inviteData.getConsult_vsitorbtn_content());
                 tempData.setConsult_vsitorbtn_display(inviteData.getConsult_vsitorbtn_display());
                 tempData.setConsult_dialog_color(inviteData.getConsult_dialog_color());
-
                 inviteData = tempData;
             }
         } else {
@@ -137,7 +137,7 @@ public class WebIMController extends Handler {
     @Menu(type = "admin", subtype = "profile", admin = true)
     public ModelAndView saveprofile(HttpServletRequest request, @Valid CousultInvite inviteData, @RequestParam(value = "dialogad", required = false) MultipartFile dialogad) throws IOException {
         CousultInvite tempInviteData;
-        if (inviteData != null && !StringUtils.isBlank(inviteData.getId())) {
+        if (inviteData != null && StringUtils.isNotBlank(inviteData.getId())) {
             tempInviteData = invite.findOne(inviteData.getId());
             if (tempInviteData != null) {
                 tempInviteData.setDialog_name(inviteData.getDialog_name());
@@ -189,7 +189,7 @@ public class WebIMController extends Handler {
 
                 tempInviteData.setCtrlenter(inviteData.isCtrlenter());
 
-                if (dialogad != null && !StringUtils.isBlank(dialogad.getName()) && dialogad.getBytes() != null && dialogad.getBytes().length > 0) {
+                if (dialogad != null && StringUtils.isNotBlank(dialogad.getName()) && dialogad.getBytes() != null && dialogad.getBytes().length > 0) {
                     tempInviteData.setDialog_ad(super.saveImageFileWithMultipart(dialogad));
                 }
                 invite.save(tempInviteData);
@@ -218,7 +218,7 @@ public class WebIMController extends Handler {
     @Menu(type = "admin", subtype = "profile", admin = true)
     public ModelAndView saveinvote(HttpServletRequest request, @Valid CousultInvite inviteData, @RequestParam(value = "invotebg", required = false) MultipartFile invotebg) throws IOException {
         CousultInvite tempInviteData;
-        if (inviteData != null && !StringUtils.isBlank(inviteData.getId())) {
+        if (inviteData != null && StringUtils.isNotBlank(inviteData.getId())) {
             tempInviteData = invite.findOne(inviteData.getId());
             if (tempInviteData != null) {
                 tempInviteData.setConsult_invite_enable(inviteData.isConsult_invite_enable());
@@ -229,7 +229,7 @@ public class WebIMController extends Handler {
 
                 tempInviteData.setConsult_invite_color(inviteData.getConsult_invite_color());
 
-                if (invotebg != null && !StringUtils.isBlank(invotebg.getName()) && invotebg.getBytes() != null && invotebg.getBytes().length > 0) {
+                if (invotebg != null && StringUtils.isNotBlank(invotebg.getName()) && invotebg.getBytes() != null && invotebg.getBytes().length > 0) {
                     tempInviteData.setConsult_invite_bg(super.saveImageFileWithMultipart(invotebg));
                 }
                 invite.save(tempInviteData);
