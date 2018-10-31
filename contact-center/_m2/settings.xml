@@ -136,11 +136,6 @@ under the License.
     </server>
     -->
 
-    <server>
-      <id>chatopera</id>
-      <username>ada</username>
-      <password>L1OBFepgSZ</password>
-    </server>
   </servers>
   
   <mirrors>
