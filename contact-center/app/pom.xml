@@ -368,23 +368,6 @@
         </plugins>
         <defaultGoal>compile</defaultGoal>
     </build>
-    <repositories>
-        <repository>
-            <id>SPRING-LIBS-snapshot</id>
-            <url>https://repo.spring.io/libs-milestone</url>
-        </repository>
-        <repository>
-            <id>mvn_repository</id>
-            <name>MVNREPOSITORY</name>
-            <url>http://repo1.maven.org/maven2</url>
-        </repository>
-    </repositories>
-    <distributionManagement>
-        <repository>
-            <id>SPRING-LIBS-snapshot</id>
-            <url>https://repo.spring.io/libs-milestone</url>
-        </repository>
-    </distributionManagement>
     <developers>
         <developer>
             <id>hain</id>
