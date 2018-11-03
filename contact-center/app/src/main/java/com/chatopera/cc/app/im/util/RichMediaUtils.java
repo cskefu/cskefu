@@ -103,7 +103,7 @@ public class RichMediaUtils {
             data.setTouser(agentUser.getAgentno());
             data.setAppid(agentUser.getAppid());
             data.setOrgi(agentUser.getOrgi());
-            if (StringUtils.equals(agentUser.getOpttype(), MainContext.OptTypeEnum.CHATBOT.toString())) {
+            if (agentUser.isChatbotops()) {
                 // TODO #75 create Chatbot Message
                 // https://github.com/chatopera/cosin/issues/75
                 logger.info("[createRichMediaMessageWithChannel] TODO #75 create Chatbot Message");

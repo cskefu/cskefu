@@ -37,7 +37,7 @@ public class Chatbot {
     private String description;
     private String primaryLanguage;
     private String fallback;
-    private String welcome;
+    private String welcome; // 问候语
     private String baseUrl; // 智能问答引擎服务地址
     private String orgi;    // 租户标识
     private String organ;   // 组织机构

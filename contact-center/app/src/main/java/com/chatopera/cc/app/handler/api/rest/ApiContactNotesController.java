@@ -16,6 +16,7 @@
 package com.chatopera.cc.app.handler.api.rest;
 
 import com.chatopera.cc.app.basic.MainContext;
+import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.util.Constants;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.exception.CSKefuRestException;
@@ -154,6 +155,7 @@ public class ApiContactNotesController extends Handler {
         }
 
         ContactNotes cn = new ContactNotes();
+        cn.setId(MainUtils.getUUID());
         cn.setCategory(payload.get("category").getAsString());
         cn.setContent(payload.get("content").getAsString());
         cn.setCreater(payload.get("creater").getAsString());

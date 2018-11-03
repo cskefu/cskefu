@@ -31,7 +31,7 @@ public abstract interface AgentServiceRepository
 {
   public abstract AgentService findByIdAndOrgi(String paramString , String orgi);
   
-  public abstract List<AgentService> findByUseridAndOrgi(String paramString, String orgi);
+  public abstract List<AgentService> findByUseridAndOrgiOrderByLogindateDesc(String paramString, String orgi);
   
   public abstract Page<AgentService> findByOrgi(String orgi, Pageable paramPageable);
   

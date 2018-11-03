@@ -51,7 +51,7 @@ public class CalloutEventHandler
         String admin = client.getHandshakeData().getSingleUrlParam("admin") ;
         logger.info("onConnect userid {}, orgi {}.", user, orgi);
 
-        if(!StringUtils.isBlank(user) && !StringUtils.isBlank(user)){
+        if(StringUtils.isNotBlank(user) && StringUtils.isNotBlank(user)){
             client.set("agentno", user);
             InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress()  ;
             String ip = MainUtils.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString()) ;

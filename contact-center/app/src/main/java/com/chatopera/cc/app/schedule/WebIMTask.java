@@ -15,25 +15,19 @@
  */
 package com.chatopera.cc.app.schedule;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
 import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
 import com.chatopera.cc.app.basic.MainContext;
-import com.chatopera.cc.app.im.client.NettyClients;
 import com.chatopera.cc.app.basic.MainUtils;
-import com.chatopera.cc.exchange.DataExchangeInterface;
-import com.chatopera.cc.util.freeswitch.model.CallCenterAgent;
 import com.chatopera.cc.app.cache.CacheHelper;
-import com.chatopera.cc.app.persistence.impl.CallOutQuene;
-import com.chatopera.cc.app.persistence.repository.AgentUserTaskRepository;
-import com.chatopera.cc.app.persistence.repository.JobDetailRepository;
-import com.chatopera.cc.app.persistence.repository.OnlineUserRepository;
-import com.chatopera.cc.util.OnlineUserUtils;
-import com.chatopera.cc.app.im.router.OutMessageRouter;
+import com.chatopera.cc.app.im.client.NettyClients;
 import com.chatopera.cc.app.im.message.ChatMessage;
+import com.chatopera.cc.app.im.router.OutMessageRouter;
+import com.chatopera.cc.app.model.*;
+import com.chatopera.cc.app.persistence.impl.CallOutQuene;
+import com.chatopera.cc.app.persistence.repository.*;
+import com.chatopera.cc.exchange.DataExchangeInterface;
+import com.chatopera.cc.util.OnlineUserUtils;
+import com.chatopera.cc.util.freeswitch.model.CallCenterAgent;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -43,18 +37,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import com.chatopera.cc.app.persistence.repository.ChatMessageRepository;
-import com.chatopera.cc.app.persistence.repository.ConsultInviteRepository;
-import com.chatopera.cc.app.model.AgentStatus;
-import com.chatopera.cc.app.model.AgentUser;
-import com.chatopera.cc.app.model.AgentUserTask;
-import com.chatopera.cc.app.model.AiConfig;
-import com.chatopera.cc.app.model.AiUser;
-import com.chatopera.cc.app.model.CousultInvite;
-import com.chatopera.cc.app.model.JobDetail;
-import com.chatopera.cc.app.model.MessageOutContent;
-import com.chatopera.cc.app.model.OnlineUser;
-import com.chatopera.cc.app.model.SessionConfig;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 @Configuration
 @EnableScheduling
@@ -72,7 +58,7 @@ public class WebIMTask {
     @Autowired
     private TaskExecutor webimTaskExecutor;
 
-    @Scheduled(fixedDelay = 5000) // 每5秒执行一次
+    @Scheduled(fixedDelay = 5000) // 处理超时消息，每5秒执行一次
     public void task() {
         List<SessionConfig> sessionConfigList = AutomaticServiceDist.initSessionConfigList();
         if (sessionConfigList != null && sessionConfigList.size() > 0 && MainContext.getContext() != null) {
@@ -255,7 +241,7 @@ public class WebIMTask {
     private void processMessage(SessionConfig sessionConfig, String message, String servicename, AgentUser agentUser, AgentStatus agentStatus, AgentUserTask task) {
 
         MessageOutContent outMessage = new MessageOutContent();
-        if (!StringUtils.isBlank(message)) {
+        if (StringUtils.isNotBlank(message)) {
             outMessage.setMessage(message);
             outMessage.setMessageType(MainContext.MediaTypeEnum.TEXT.toString());
             outMessage.setCalltype(MainContext.CallTypeEnum.OUT.toString());
@@ -279,7 +265,7 @@ public class WebIMTask {
                 data.setAgentserviceid(agentUser.getAgentserviceid());
 
                 data.setCalltype(MainContext.CallTypeEnum.OUT.toString());
-                if (!StringUtils.isBlank(agentUser.getAgentno())) {
+                if (StringUtils.isNotBlank(agentUser.getAgentno())) {
                     data.setTouser(agentUser.getUserid());
                 }
                 data.setChannel(agentUser.getChannel());
@@ -304,11 +290,12 @@ public class WebIMTask {
                  */
                 MainContext.getContext().getBean(ChatMessageRepository.class).save(data);
 
-                if (agentUser != null && !StringUtils.isBlank(agentUser.getAgentno())) {    //同时发送消息给双方
-                    NettyClients.getInstance().sendAgentEventMessage(agentUser.getAgentno(), MainContext.MessageTypeEnum.MESSAGE.toString(), data);
+                // 同时发送消息给双方
+                if (agentUser != null && StringUtils.isNotBlank(agentUser.getAgentno())) {
+                    NettyClients.getInstance().publishAgentEventMessage(agentUser.getAgentno(), MainContext.MessageTypeEnum.MESSAGE.toString(), data);
                 }
 
-                if (!StringUtils.isBlank(data.getTouser())) {
+                if (StringUtils.isNotBlank(data.getTouser())) {
                     OutMessageRouter router = null;
                     router = (OutMessageRouter) MainContext.getContext().getBean(agentUser.getChannel());
                     if (router != null) {

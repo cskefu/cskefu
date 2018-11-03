@@ -15,8 +15,10 @@
  */
 package com.chatopera.cc.app.config;
 
-import com.chatopera.cc.util.Constants;
 import com.chatopera.cc.app.schedule.CallOutWireTask;
+import com.chatopera.cc.app.schedule.WebIMAgentDispatcher;
+import com.chatopera.cc.app.schedule.WebIMOnlineUserDispatcher;
+import com.chatopera.cc.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,17 +40,25 @@ public class RedisConfigure {
     @Autowired
     CallOutWireTask callOutWireTask;
 
+    @Autowired
+    WebIMAgentDispatcher webIMAgentDispatcher;
+
+    @Autowired
+    WebIMOnlineUserDispatcher webIMOnlineUserDispatcher;
+
     @Bean
     RedisMessageListenerContainer redisContainer() {
         final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory);
-        container.addMessageListener(messageListener(), pbxEvents());
+        container.addMessageListener(pbxMessageListener(), pbxEvents());
+        container.addMessageListener(imAgentDispatchListener(), imAgentEvents());
+        container.addMessageListener(imOnlineUserDispatchListener(), imOnlineUserEvents());
         container.setTaskExecutor(Executors.newFixedThreadPool(50));
         return container;
     }
 
     @Bean
-    MessageListenerAdapter messageListener() {
+    MessageListenerAdapter pbxMessageListener() {
         return new MessageListenerAdapter(callOutWireTask);
     }
 
@@ -56,5 +66,26 @@ public class RedisConfigure {
     PatternTopic pbxEvents() {
         return new PatternTopic(Constants.FS_CHANNEL_FS_TO_CC);
     }
+
+    @Bean
+    MessageListenerAdapter imAgentDispatchListener() {
+        return new MessageListenerAdapter(webIMAgentDispatcher);
+    }
+
+    @Bean
+    PatternTopic imAgentEvents() {
+        return new PatternTopic(Constants.INSTANT_MESSAGING_WEBIM_AGENT_CHANNEL);
+    }
+
+    @Bean
+    MessageListenerAdapter imOnlineUserDispatchListener(){
+        return new MessageListenerAdapter(webIMOnlineUserDispatcher);
+    }
+
+    @Bean
+    PatternTopic imOnlineUserEvents() {
+        return new PatternTopic(Constants.INSTANT_MESSAGING_WEBIM_ONLINE_USER_CHANNEL);
+    }
+
 
 }

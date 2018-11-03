@@ -311,7 +311,7 @@
 								<div class="chat-left"> 
 									<img class="user-img" src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" alt="">
 									<div class="chat-message">
-										<label class="user"><#if chatMessage?? && chatMessage.chatype?? && chatMessage.chatype == 'aireply'>${inviteData.ainame!'小E'}<#else>${chatMessage.username!''}</#if></label> 
+										<label class="user"><#if chatMessage?? && chatMessage.chatype?? && chatMessage.chatype == 'aireply'>${inviteData.ainame!'小松'}<#else>${chatMessage.username!''}</#if></label>
 										<label class="time">${chatMessage.createtime!''}</label>										
 									</div>
 									<div class="chatting-left">
@@ -452,9 +452,10 @@
     // 参数连接
 	var hostname = location.hostname ;
     var protocol = window.location.protocol.replace(/:/g,'');
-    var socket = io.connect(protocol + '://'+hostname+':${port}/im/user?userid=${userid!''}&orgi=${orgi!''}&session=${sessionid!''}&appid=${appid!''}&osname=${(osname!'')?url}&browser=${(browser!'')?url}<#if skill??>&skill=${skill}</#if><#if username??>&nickname=${username}</#if><#if agent??>&agent=${agent}</#if><#if title??>&title=${title?url}</#if><#if traceid??>&url=${url?url}</#if><#if traceid??>&traceid=${traceid}</#if>');
+    var socket = io(protocol + '://'+hostname+':${port}/im/user?userid=${userid!''}&orgi=${orgi!''}&session=${sessionid!''}&appid=${appid!''}&osname=${(osname!'')?url}&browser=${(browser!'')?url}<#if skill??>&skill=${skill}</#if><#if username??>&nickname=${username}</#if><#if agent??>&agent=${agent}</#if><#if title??>&title=${title?url}</#if><#if traceid??>&url=${url?url}</#if><#if traceid??>&traceid=${traceid}</#if>', {transports: ['websocket', 'polling']});
     socket.on('connect',function(){
-    	<#if contacts?? && contacts.name??>
+    	console.log("on connect ...");
+        <#if contacts?? && contacts.name??>
     	socket.emit('new', {
 			name : "${contacts.name!''}",
 			phone:"${contacts.phone!''}",
@@ -488,10 +489,11 @@
 		}
     })
     socket.on('message', function(data) {
+        console.log("on message", data);
         var chat=document.getElementsByClassName('chatting-left').innerText;
         chat = data.message;
         if(data.messageType == "image"){
-        	chat = "<a href='"+data.message+"_original' target='_blank'><img src='"+data.message+"' class='ukefu-media-image'/></a>" ;
+        	chat = "<a href='"+data.message+"&original=true' target='_blank'><img src='"+data.message+"' class='ukefu-media-image'/></a>" ;
         }else if(data.messageType == "file"){
         	chat = "<div class='ukefu-message-file'><div class='ukefu-file-icon'><img src='/im/img/file.png'></div><div class='ukefu-file-desc'><a href='"+data.message+"' target='_blank'><div>"+data.filename+"</div><div>"+(data.filesize/1024).toFixed(3)+"Kb</div></a></div></div>" ;
         }

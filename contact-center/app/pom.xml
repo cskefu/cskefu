@@ -159,9 +159,9 @@
         </dependency>
         <dependency>
             <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast</artifactId>
-            <version>3.8</version>
-            <!--$NO-MVN-MAN-VER$-->
+            <artifactId>hazelcast-all</artifactId>
+            <version>3.10.5</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
@@ -346,6 +346,14 @@
                     <attachClasses>true</attachClasses>
                     <warSourceExcludes>**/WEB-INF</warSourceExcludes>
                     <packagingExcludes>**/WEB-INF,**/resources</packagingExcludes>
+                    <webResources>
+                        <resource>
+                            <directory>../config/sql/</directory>
+                            <includes>
+                                <include>cskefu-MySQL-slim.sql</include>
+                            </includes>
+                        </resource>
+                    </webResources>
                 </configuration>
                 <version>2.1.1</version>
             </plugin>
@@ -360,23 +368,6 @@
         </plugins>
         <defaultGoal>compile</defaultGoal>
     </build>
-    <repositories>
-        <repository>
-            <id>SPRING-LIBS-snapshot</id>
-            <url>https://repo.spring.io/libs-milestone</url>
-        </repository>
-        <repository>
-            <id>mvn_repository</id>
-            <name>MVNREPOSITORY</name>
-            <url>http://repo1.maven.org/maven2</url>
-        </repository>
-    </repositories>
-    <distributionManagement>
-        <repository>
-            <id>SPRING-LIBS-snapshot</id>
-            <url>https://repo.spring.io/libs-milestone</url>
-        </repository>
-    </distributionManagement>
     <developers>
         <developer>
             <id>hain</id>
@@ -384,7 +375,7 @@
             <email>hailiang.hl.wang@gmail.com</email>
             <url>https://github.com/Samurais</url>
             <organization>Chatopera Inc.</organization>
-            <organizationUrl>http://www.chatopera.com</organizationUrl>
+            <organizationUrl>https://www.chatopera.com</organizationUrl>
             <roles>
                 <role>architect</role>
                 <role>developer</role>

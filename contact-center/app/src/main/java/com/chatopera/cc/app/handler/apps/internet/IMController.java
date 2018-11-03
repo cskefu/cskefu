@@ -17,13 +17,14 @@
 
 package com.chatopera.cc.app.handler.apps.internet;
 
+import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
 import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.app.basic.MainUtils;
+import com.chatopera.cc.app.cache.CacheHelper;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.im.util.RichMediaUtils;
 import com.chatopera.cc.app.model.*;
-import com.chatopera.cc.app.algorithm.AutomaticServiceDist;
-import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.persistence.blob.JpaBlobHelper;
 import com.chatopera.cc.app.persistence.es.ContactsRepository;
 import com.chatopera.cc.app.persistence.repository.*;
 import com.chatopera.cc.util.*;
@@ -77,6 +78,12 @@ public class IMController extends Handler {
 
     @Value("${web.upload-path}")
     private String path;
+
+    @Autowired
+    private StreamingFileRepository streamingFileRepository;
+
+    @Autowired
+    private JpaBlobHelper jpaBlobHelper;
 
     @Autowired
     private ConsultInviteRepository inviteRepository;
@@ -707,51 +714,79 @@ public class IMController extends Handler {
 
     @RequestMapping("/image/upload")
     @Menu(type = "im", subtype = "image", access = true)
-    public ModelAndView upload(ModelMap map, HttpServletRequest request, @RequestParam(value = "imgFile", required = false) MultipartFile imgFile, @Valid String channel, @Valid String userid, @Valid String username, @Valid String appid, @Valid String orgi, @Valid String paste) throws IOException {
+    public ModelAndView upload(ModelMap map, HttpServletRequest request,
+                               @RequestParam(value = "imgFile", required = false) MultipartFile multipart,
+                               @Valid String channel,
+                               @Valid String userid,
+                               @Valid String username,
+                               @Valid String appid,
+                               @Valid String orgi,
+                               @Valid String paste) throws IOException {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/im/upload"));
         UploadStatus upload = null;
         String fileName = null;
-        if (imgFile != null && imgFile.getOriginalFilename().lastIndexOf(".") > 0 && StringUtils.isNotBlank(userid)) {
+        if (multipart != null
+                && multipart.getOriginalFilename().lastIndexOf(".") > 0
+                && StringUtils.isNotBlank(userid)) {
             File uploadDir = new File(path, "upload");
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
-            String fileid = MainUtils.md5(imgFile.getBytes());
-            if (imgFile.getContentType() != null && imgFile.getContentType().indexOf("image") >= 0) {
-                fileName = "upload/" + fileid + "_original";
-                File imageFile = new File(path, fileName);
-                FileCopyUtils.copy(imgFile.getBytes(), imageFile);
-                String thumbnailsFileName = "upload/" + fileid;
-                MainUtils.processImage(new File(path, thumbnailsFileName), imageFile);
 
-                upload = new UploadStatus("0", "/res/image.html?id=" + thumbnailsFileName);
-                String image = "/res/image.html?id=" + thumbnailsFileName;
-                if (request.getServerPort() == 80) {
-                    image = "/res/image.html?id=" + thumbnailsFileName;
-                } else {
-                    image = "/res/image.html?id=" + thumbnailsFileName;
-                }
-                if (paste == null) {
-                    if (StringUtils.isNotBlank(channel)) {
-                        RichMediaUtils.uploadImageWithChannel(image, fileid, (int) imgFile.getSize(), imgFile.getName(), channel, userid, username, appid, orgi);
-                    } else {
-                        RichMediaUtils.uploadImage(image, fileid, (int) imgFile.getSize(), imgFile.getName(), userid);
+            String fileid = MainUtils.getUUID();
+            StreamingFile sf = new StreamingFile();
+            sf.setId(fileid);
+            sf.setName(multipart.getOriginalFilename());
+            sf.setMime(multipart.getContentType());
+            if (multipart.getContentType() != null
+                    && multipart.getContentType().indexOf(Constants.ATTACHMENT_TYPE_IMAGE) >= 0) {
+                // 检查文件格式
+                String invalid = StreamingFileUtils.getInstance().validate(Constants.ATTACHMENT_TYPE_IMAGE, multipart.getOriginalFilename());
+                if (invalid == null) {
+                    fileName = "upload/" + fileid + "_original";
+                    File imageFile = new File(path, fileName);
+                    FileCopyUtils.copy(multipart.getBytes(), imageFile);
+                    String thumbnailsFileName = "upload/" + fileid;
+                    File thumbnail = new File(path, thumbnailsFileName);
+                    MainUtils.processImage(thumbnail, imageFile);
+
+                    //  存储数据库
+                    sf.setData(jpaBlobHelper.createBlob(multipart.getInputStream(), multipart.getSize()));
+                    sf.setThumbnail(jpaBlobHelper.createBlobWithFile(thumbnail));
+                    streamingFileRepository.save(sf);
+                    String fileUrl = "/res/image.html?id=" + fileid;
+                    upload = new UploadStatus("0", fileUrl);
+
+                    if (paste == null) {
+                        if (StringUtils.isNotBlank(channel)) {
+                            RichMediaUtils.uploadImageWithChannel(fileUrl, fileid, (int) multipart.getSize(), multipart.getName(), channel, userid, username, appid, orgi);
+                        } else {
+                            RichMediaUtils.uploadImage(fileUrl, fileid, (int) multipart.getSize(), multipart.getName(), userid);
+                        }
                     }
+                } else {
+                    upload = new UploadStatus(invalid);
                 }
             } else {
-                String id = processAttachmentFile(imgFile, request);
-                upload = new UploadStatus("0", "/res/file.html?id=" + id);
-                String file = "/res/file.html?id=" + id;
-                if (request.getServerPort() == 80) {
-                    file = "/res/file.html?id=" + id;
+                String invalid = StreamingFileUtils.getInstance().validate(Constants.ATTACHMENT_TYPE_FILE, multipart.getOriginalFilename());
+                if (invalid == null) {
+                    // 存储数据库
+                    sf.setData(jpaBlobHelper.createBlob(multipart.getInputStream(), multipart.getSize()));
+                    streamingFileRepository.save(sf);
+
+                    // 存储到本地硬盘
+                    String id = processAttachmentFile(multipart, fileid, request);
+                    upload = new UploadStatus("0", "/res/file.html?id=" + id);
+                    String file = "/res/file.html?id=" + id;
+
+                    File tempFile = new File(multipart.getOriginalFilename());
+                    if (StringUtils.isNotBlank(channel)) {
+                        RichMediaUtils.uploadFileWithChannel(file, (int) multipart.getSize(), tempFile.getName(), channel, userid, username, appid, orgi, id);
+                    } else {
+                        RichMediaUtils.uploadFile(file, (int) multipart.getSize(), tempFile.getName(), userid, id);
+                    }
                 } else {
-                    file = "/res/file.html?id=" + id;
-                }
-                File tempFile = new File(imgFile.getOriginalFilename());
-                if (StringUtils.isNotBlank(channel)) {
-                    RichMediaUtils.uploadFileWithChannel(file, (int) imgFile.getSize(), tempFile.getName(), channel, userid, username, appid, orgi, id);
-                } else {
-                    RichMediaUtils.uploadFile(file, (int) imgFile.getSize(), tempFile.getName(), userid, id);
+                    upload = new UploadStatus(invalid);
                 }
             }
         } else {
@@ -761,36 +796,33 @@ public class IMController extends Handler {
         return view;
     }
 
-    private String processAttachmentFile(MultipartFile file, HttpServletRequest request) throws IOException {
+    private String processAttachmentFile(final MultipartFile file, final String fileid, HttpServletRequest request) throws IOException {
         String id = null;
         if (file.getSize() > 0) {            //文件尺寸 限制 ？在 启动 配置中 设置 的最大值，其他地方不做限制
-            String fileid = MainUtils.md5(file.getBytes());    //使用 文件的 MD5作为 ID，避免重复上传大文件
-            if (StringUtils.isNotBlank(fileid)) {
-                AttachmentFile attachmentFile = new AttachmentFile();
-                attachmentFile.setCreater(super.getUser(request).getId());
-                attachmentFile.setOrgi(super.getOrgi(request));
-                attachmentFile.setOrgan(super.getUser(request).getOrgan());
-                attachmentFile.setModel(MainContext.ModelType.WEBIM.toString());
-                attachmentFile.setFilelength((int) file.getSize());
-                if (file.getContentType() != null && file.getContentType().length() > 255) {
-                    attachmentFile.setFiletype(file.getContentType().substring(0, 255));
-                } else {
-                    attachmentFile.setFiletype(file.getContentType());
-                }
-                File uploadFile = new File(file.getOriginalFilename());
-                if (uploadFile.getName() != null && uploadFile.getName().length() > 255) {
-                    attachmentFile.setTitle(uploadFile.getName().substring(0, 255));
-                } else {
-                    attachmentFile.setTitle(uploadFile.getName());
-                }
-                if (StringUtils.isNotBlank(attachmentFile.getFiletype()) && attachmentFile.getFiletype().indexOf("image") >= 0) {
-                    attachmentFile.setImage(true);
-                }
-                attachmentFile.setFileid(fileid);
-                attachementRes.save(attachmentFile);
-                FileUtils.writeByteArrayToFile(new File(path, "app/app/" + fileid), file.getBytes());
-                id = attachmentFile.getId();
+            AttachmentFile attachmentFile = new AttachmentFile();
+            attachmentFile.setCreater(super.getUser(request).getId());
+            attachmentFile.setOrgi(super.getOrgi(request));
+            attachmentFile.setOrgan(super.getUser(request).getOrgan());
+            attachmentFile.setModel(MainContext.ModelType.WEBIM.toString());
+            attachmentFile.setFilelength((int) file.getSize());
+            if (file.getContentType() != null && file.getContentType().length() > 255) {
+                attachmentFile.setFiletype(file.getContentType().substring(0, 255));
+            } else {
+                attachmentFile.setFiletype(file.getContentType());
             }
+            File uploadFile = new File(file.getOriginalFilename());
+            if (uploadFile.getName() != null && uploadFile.getName().length() > 255) {
+                attachmentFile.setTitle(uploadFile.getName().substring(0, 255));
+            } else {
+                attachmentFile.setTitle(uploadFile.getName());
+            }
+            if (StringUtils.isNotBlank(attachmentFile.getFiletype()) && attachmentFile.getFiletype().indexOf("image") >= 0) {
+                attachmentFile.setImage(true);
+            }
+            attachmentFile.setFileid(fileid);
+            attachementRes.save(attachmentFile);
+            FileUtils.writeByteArrayToFile(new File(path, "upload/" + fileid), file.getBytes());
+            id = attachmentFile.getId();
         }
         return id;
     }

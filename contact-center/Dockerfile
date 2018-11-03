@@ -1,6 +1,11 @@
 FROM chatopera/java:1.0.0
 MAINTAINER Hai Liang Wang <hain@chatopera.com>
 
+ARG VCS_REF
+
+LABEL org.label-schema.vcs-ref=$VCS_REF \
+          org.label-schema.vcs-url="https://github.com/chatopera/cosin"
+
 # Set timezone
 RUN apt-get update && \
    apt-get install --no-install-recommends -y tzdata && \ 
@@ -26,10 +31,11 @@ RUN /bin/bash -c "mkdir -p /{data,logs}"
 # build WAR
 COPY _m2/settings.xml /root/.m2/settings.xml
 COPY app /app
+COPY config /config
 WORKDIR /app
 RUN mvn clean package && \
     rm -rf /opt/apache-tomcat/webapps/ROOT && \
-    cp target/contact-center-3.9.0.war /opt/apache-tomcat/webapps/ROOT.war && \
+    cp target/contact-center-*.war.original /opt/apache-tomcat/webapps/ROOT.war && \
     rm -rf /app && \
     rm -rf /root/.m2
 

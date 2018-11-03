@@ -32,17 +32,15 @@
 					<#list snsAccountList.content as snsAccount>
 					<tr>
 					  <td>
-					  	   <a href="/admin/callout/index.html?snsid=${snsAccount.snsid!''}">
-							${snsAccount.name!''}
-						   </a>
+						  ${snsAccount.name!''}
 					  </td>
 					  <td>${snsAccount.baseURL!''}</td>
 					  <td>${snsAccount.createtime?string("yyyy-MM-dd HH:mm:ss")}</td>
 					  <td style="white-space:nowrap;" nowrap="nowrap">
-					  		<a href="/admin/callout/edit.html?id=${snsAccount.id!''}" data-toggle="ajax"  data-width="550" data-height="300" data-title="编辑">
-					  			<i class="layui-icon">&#xe642;</i>
-					  			编辑
-					  		</a>
+					  		<!--<a href="/admin/callout/edit.html?id=${snsAccount.id!''}" data-toggle="ajax"  data-width="550" data-height="300" data-title="编辑">-->
+					  			<!--<i class="layui-icon">&#xe642;</i>-->
+					  			<!--编辑-->
+					  		<!--</a>-->
 					  		<#if !(snsAccount.usertype?? && snsAccount.usertype == "0") && snsAccount.datastatus != true >
 					  		<a href="/admin/callout/delete.html?id=${snsAccount.id!''}" style="margin-left:10px;" data-toggle="tip"  <#if secret?? && secret.enable == true>data-confirm="请输入二次安全验证密码"</#if> title="删除语音需要进行二次密码验证，请确认是否删除？" >
 					  			<i class="layui-icon" style="color:red;">&#x1006;</i>

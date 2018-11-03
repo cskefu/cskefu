@@ -68,7 +68,7 @@
                     if (data.rc == 0) {
                         resolve(data.data);
                     } else {
-                        reject(data.error);
+                        reject(data);
                     }
                 })
                 .fail(function (jqXHR, textStatus) {
@@ -107,7 +107,18 @@
 
                 var isEnabled = $('<td><input type="checkbox" lay-skin="switch" lay-text="开启|关闭" ' + (r.enabled ? 'checked' : '') + '></td>');
                 isEnabled.change(function () {
-                    change(r.id, $(this).find('input').prop('checked'));
+                    change(r.id, $(this).find('input').prop('checked'))
+                        .then(null, function(err){
+                            layer.confirm(err.data||err.error, {
+                                btn: ['关闭'],
+                                icon: 2,
+                                title: '提示'
+                            }, function (index, layero) {
+                                layer.close(index)
+                            }, function (index) {
+                                // 取消方法
+                            });
+                        });
                 })
 
                 var rows = [
@@ -123,6 +134,16 @@
             })
 
             $('#bots').html(tds);
+        }, function(err){
+            layer.confirm(err.data||err.error, {
+                btn: ['关闭'],
+                icon: 2,
+                title: '提示'
+            }, function (popup, layero) {
+                layer.close(popup)
+            }, function (popup) {
+                // 取消方法
+            });
         })
     }
 
@@ -146,7 +167,7 @@
     }
 
     function init() {
-        query(1, 10);
+        query(1, 50);
     }
 
     layui.use(['form'], function () {

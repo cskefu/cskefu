@@ -437,6 +437,19 @@ CREATE TABLE `cs_callout_targets` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='外呼计划目标客户';
 
+-- ----------------------------
+-- Table structure for cs_stream_file
+-- ----------------------------
+DROP TABLE IF EXISTS `cs_stream_file`;
+CREATE TABLE `cs_stream_file` (
+  `id` varchar(32)  NOT NULL COMMENT '文件ID',
+  `name` varchar(300)  NOT NULL COMMENT '文件名称',
+  `data` mediumblob NOT NULL COMMENT '原始文件',
+  `thumbnail` mediumblob COMMENT '缩略图',
+  `mime` varchar(200) DEFAULT NULL COMMENT '文件类型 Content Type',
+  `cooperation` mediumblob COMMENT '协作文件',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT '文件';
 
 -- ----------------------------
 -- Table structure for uk_ad_position
@@ -457,7 +470,7 @@ CREATE TABLE `uk_ad_position` (
   `AREA` text COMMENT '分类描述',
   `IMGURL` varchar(255) DEFAULT NULL COMMENT '图片URL',
   `TIPTEXT` varchar(100) DEFAULT NULL COMMENT '提示文本',
-  `URL` varchar(255) DEFAULT NULL COMMENT '路径',
+  `URL` text DEFAULT NULL COMMENT '路径',
   `CONTENT` text COMMENT '内容',
   `WEIGHT` int(11) DEFAULT NULL COMMENT '权重',
   `ADTYPE` varchar(50) DEFAULT NULL COMMENT '广告类型',
@@ -498,7 +511,7 @@ CREATE TABLE `uk_agentservice` (
   `lastmessage` datetime DEFAULT NULL COMMENT '最后一条消息时间',
   `waittingtimestart` datetime DEFAULT NULL COMMENT '进入排队时间',
   `lastgetmessage` datetime DEFAULT NULL COMMENT '坐席最后一条消息时间',
-  `lastmsg` varchar(100) DEFAULT '' COMMENT '最后一条消息内容',
+  `lastmsg` text COMMENT '最后一条消息内容',
   `agentskill` varchar(100) DEFAULT '' COMMENT '技能组',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `creater` varchar(255) DEFAULT NULL COMMENT '创建人',
@@ -637,7 +650,7 @@ CREATE TABLE `uk_agentuser` (
   `lastmessage` datetime DEFAULT NULL COMMENT '最后一条消息时间',
   `waittingtimestart` datetime DEFAULT NULL COMMENT '进入队列时间',
   `lastgetmessage` datetime DEFAULT NULL COMMENT '最后一条消息时间',
-  `lastmsg` varchar(100) DEFAULT '' COMMENT '最后一条消息',
+  `lastmsg` text COMMENT '最后一条消息',
   `agentskill` varchar(100) DEFAULT '' COMMENT '技能组',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `creater` varchar(255) DEFAULT NULL COMMENT '创建人',
@@ -676,7 +689,7 @@ CREATE TABLE `uk_agentuser` (
   `avgreplytime` int(11) DEFAULT '0' COMMENT '平均回复时长',
   `sessionid` varchar(32) DEFAULT NULL COMMENT '会话ID',
   `title` varchar(255) DEFAULT NULL COMMENT '标题',
-  `url` varchar(255) DEFAULT NULL COMMENT 'URL',
+  `url` text DEFAULT NULL COMMENT 'URL',
   `traceid` varchar(32) DEFAULT NULL COMMENT '跟踪ID',
   `agenttimeout` int(11) DEFAULT '0' COMMENT '坐席超时时长',
   `agenttimeouttimes` int(11) DEFAULT '0' COMMENT '坐席超时次数',
@@ -781,7 +794,7 @@ CREATE TABLE `uk_attachment_file` (
   `organ` varchar(32) DEFAULT NULL COMMENT '组织机构ID',
   `datastatus` tinyint(4) DEFAULT NULL COMMENT '数据状态（逻辑删除）',
   `title` varchar(255) DEFAULT NULL COMMENT '标题',
-  `url` varchar(255) CHARACTER SET utf32 DEFAULT NULL COMMENT '地址',
+  `url` text CHARACTER SET utf32 DEFAULT NULL COMMENT '地址',
   `updatetime` datetime DEFAULT NULL COMMENT '更新时间',
   `filelength` int(11) DEFAULT NULL COMMENT '文件长度',
   `filetype` varchar(255) DEFAULT NULL COMMENT '文件类型',
@@ -1610,7 +1623,7 @@ CREATE TABLE `cs_contact_notes` (
   `createtime` datetime NOT NULL COMMENT '创建时间',
   `updatetime` datetime NOT NULL COMMENT '更新时间',
   `category` varchar(200) DEFAULT NULL COMMENT '内容类型',
-  `content` varchar(1000) DEFAULT NULL COMMENT '内容',
+  `content` text COMMENT '内容',
   `creater` varchar(32) DEFAULT NULL COMMENT '创建人',
   `datastatus` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否已删除',
   `agentuser` varchar(32) DEFAULT NULL COMMENT '在线访客记录ID',
@@ -2112,7 +2125,7 @@ CREATE TABLE `uk_inviterecord` (
   `responsetime` int(11) DEFAULT NULL COMMENT '响应时间',
   `appid` varchar(32) DEFAULT NULL COMMENT 'SNSID',
   `title` varchar(255) DEFAULT NULL COMMENT '标题',
-  `url` varchar(255) DEFAULT NULL COMMENT '地址',
+  `url` text DEFAULT NULL COMMENT '地址',
   `traceid` varchar(32) DEFAULT NULL COMMENT '跟踪ID',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='邀请记录表';
@@ -2481,7 +2494,7 @@ CREATE TABLE `uk_onlineuser` (
   `keyword` varchar(100) DEFAULT NULL COMMENT '搜索引擎关键词',
   `source` varchar(50) DEFAULT NULL COMMENT '来源',
   `title` varchar(255) DEFAULT NULL COMMENT '标题',
-  `url` varchar(255) DEFAULT NULL COMMENT '来源URL',
+  `url` text DEFAULT NULL COMMENT '来源URL',
   `useragent` text COMMENT 'UA',
   `invitetimes` int(11) DEFAULT NULL COMMENT '要求次数',
   `invitestatus` varchar(10) DEFAULT NULL COMMENT '邀请状态',
@@ -2541,7 +2554,7 @@ CREATE TABLE `uk_onlineuser_his` (
   `keyword` varchar(100) DEFAULT NULL COMMENT '搜索引擎关键词',
   `source` varchar(50) DEFAULT NULL COMMENT '来源',
   `title` varchar(255) DEFAULT NULL COMMENT '标题',
-  `url` varchar(255) DEFAULT NULL COMMENT '来源URL',
+  `url` text DEFAULT NULL COMMENT '来源URL',
   `useragent` text COMMENT 'UA',
   `invitetimes` int(11) DEFAULT NULL COMMENT '要求次数',
   `invitestatus` varchar(10) DEFAULT NULL COMMENT '邀请状态',
@@ -2914,7 +2927,7 @@ CREATE TABLE `uk_recentuser` (
   `name` varchar(100) DEFAULT NULL COMMENT '名称',
   `orgi` varchar(100) DEFAULT NULL COMMENT '租户ID',
   `user_id` varchar(32) DEFAULT NULL COMMENT '用户ID',
-  `lastmsg` varchar(100) DEFAULT NULL COMMENT '最后一条消息',
+  `lastmsg` text COMMENT '最后一条消息',
   `newmsg` int(11) DEFAULT NULL COMMENT '未读消息数量',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='公共已读消息';
@@ -3475,7 +3488,7 @@ CREATE TABLE `uk_sysdic` (
   `DICID` varchar(32) DEFAULT NULL COMMENT '目录ID',
   `DEFAULTVALUE` tinyint(4) DEFAULT NULL COMMENT '默认值',
   `DISCODE` tinyint(4) DEFAULT NULL COMMENT '编码',
-  `URL` varchar(255) DEFAULT NULL COMMENT '系统权限资源的URL',
+  `URL` text DEFAULT NULL COMMENT '系统权限资源的URL',
   `MODULE` varchar(32) DEFAULT NULL COMMENT '权限资源所属模块',
   `MLEVEL` varchar(32) DEFAULT NULL COMMENT '菜单级别（一级/二级）',
   `RULES` varchar(100) DEFAULT NULL,
@@ -7130,9 +7143,7 @@ INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612ce8b990057e', '在线坐�
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612ce8e6a2057f', '全部坐席', 'pub', 'A08_A04_A02', NULL, 'auth', '402881ef612b1f5b01612cdd1e930570', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:41:56', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/service/user/index.html', 'webim', '3', NULL, 'left');
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612ce964ae0580', '智能机器人', 'pub', 'A09_A01', NULL, 'auth', '402881ef612b1f5b01612cc602450546', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:42:28', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, 'javascript:;', 'webim', '2', NULL, 'left');
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612ce996f80581', '语料库配置', 'pub', 'A09_A02', NULL, 'auth', '402881ef612b1f5b01612cc602450546', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:42:41', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, 'javascript:;', 'webim', '2', NULL, 'left');
-INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612ce9d8150582', '机器人选项', 'pub', 'A09_A01_A01', NULL, 'auth', '402881ef612b1f5b01612ce964ae0580', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:42:58', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/xiaoe/index.html', 'webim', '3', NULL, 'left');
-INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cea04810583', '对话测试', 'pub', 'A09_A01_A02', NULL, 'auth', '402881ef612b1f5b01612ce964ae0580', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:43:09', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/xiaoe/chat.html', 'webim', '3', NULL, 'left');
-INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cea430f0584', '用户提问历史', 'pub', 'A09_A01_A03', NULL, 'auth', '402881ef612b1f5b01612ce964ae0580', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:43:25', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/xiaoe/history.html', 'webim', '3', NULL, 'left');
+INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612ce9d8150582', '机器人管理', 'pub', 'A09_A01_A01', NULL, 'auth', '402881ef612b1f5b01612ce964ae0580', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:42:58', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/xiaoe/index.html', 'webim', '3', NULL, 'left');
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612ceaff050587', '对话场景', 'pub', 'A09_A02_A03', NULL, 'auth', '402881ef612b1f5b01612ce996f80581', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:44:13', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/xiaoe/scene.html', 'webim', '3', NULL, 'left');
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612ced9d5f0588', '知识维护', 'pub', 'A09_A02_A01', NULL, 'auth', '402881ef612b1f5b01612ce996f80581', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:47:05', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/xiaoe/knowledge.html', 'webim', '3', NULL, 'left');
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cedca5e0589', '词库配置', 'pub', 'A09_A02_A02', NULL, 'auth', '402881ef612b1f5b01612ce996f80581', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:47:16', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/xiaoe/words.html', 'webim', '3', NULL, 'left');
@@ -7146,7 +7157,6 @@ INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cefb4120590', '语音留�
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612ceffa060591', '漏话列表', 'pub', 'A10_A01_A06', NULL, 'auth', '402881ef612b1f5b01612cee4fbb058a', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:49:40', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/callcenter/misscall/index.html', 'webim', '3', NULL, 'left');
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cf03d740592', '在线坐席', 'pub', 'A10_A02_A01', NULL, 'auth', '402881ef612b1f5b01612cee80ed058b', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:49:57', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/callcenter/online/index.html', 'webim', '3', NULL, 'left');
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cf065f40593', '全部坐席', 'pub', 'A10_A02_A02', NULL, 'auth', '402881ef612b1f5b01612cee80ed058b', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:50:07', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/callcenter/agents/index.html', 'webim', '3', NULL, 'left');
-INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cf11a140594', '坐席工作台', 'pub', 'B01', NULL, 'auth', '402888815d2fe37f015d2fe75cc80002', NULL, NULL, '', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:50:53', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/agent/index.html', 'webim', '1', NULL, 'left');
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cf147810595', '系统管理', 'pub', 'B02', NULL, 'auth', '402888815d2fe37f015d2fe75cc80002', NULL, NULL, '<i class=\"layui-icon\" style=\"position: relative;\">&#xe631;</i>', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:51:05', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/admin/content.html', 'webim', '1', NULL, 'left');
 INSERT INTO `uk_sysdic` VALUES ('402881fb61e49a9a0161e4a8a1260392', '过滤器类型', 'pub', 'com.dic.filter.modeltype', NULL, 'data', '0', '', NULL, NULL, NULL, NULL, '4028cac3614cd2f901614cf8be1f0324', '2018-03-02 11:01:52', NULL, 1, 0, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `uk_sysdic` VALUES ('402881fb61e49a9a0161e4a925a20393', '过滤器取值方式', 'pub', 'com.dic.filter.convalue', NULL, 'data', '0', '', NULL, NULL, NULL, NULL, '4028cac3614cd2f901614cf8be1f0324', '2018-03-02 11:02:25', NULL, 1, 0, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL);
@@ -7752,7 +7762,7 @@ CREATE TABLE `uk_system_message` (
   `SECLEV` varchar(50) DEFAULT NULL COMMENT '启用SSL',
   `SSLPORT` varchar(50) DEFAULT NULL COMMENT 'SSL端口',
   `ORGI` varchar(32) DEFAULT NULL COMMENT '租户ID',
-  `URL` varchar(255) DEFAULT NULL COMMENT 'URL',
+  `URL` text DEFAULT NULL COMMENT 'URL',
   `smstype` varchar(32) DEFAULT NULL COMMENT '短信类型',
   `APPKEY` varchar(200) DEFAULT NULL COMMENT 'APPKEY',
   `APPSEC` varchar(200) DEFAULT NULL COMMENT 'APPSEC',
@@ -7837,7 +7847,7 @@ CREATE TABLE `uk_systemconfig` (
 -- Records of uk_systemconfig
 -- ----------------------------
 BEGIN;
-INSERT INTO `uk_systemconfig` VALUES ('2c93809364e0a6d00164ef6722270582', NULL, '春松客服-全渠道智能客服', NULL, 'cskefu', NULL, NULL, NULL, NULL, 'www.chatopera.com', NULL, NULL, '4028cac3614cd2f901614cf8be1f0324', '2018-07-31 08:14:30', NULL, NULL, NULL, NULL, NULL, '01', 'info', 0, NULL, NULL, '', 0, 0, '', '', '', '', '', '', NULL, 0, 0, 0, 0, '', '', NULL, NULL, '', '', NULL, 0, 0, NULL, NULL, NULL, 0, '', NULL, 0, 0, '租户', 0, 0, NULL, NULL, NULL);
+INSERT INTO `uk_systemconfig` VALUES ('2c93809364e0a6d00164ef6722270582', NULL, '春松客服-全渠道智能客服', NULL, 'cskefu', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '4028cac3614cd2f901614cf8be1f0324', '2018-07-31 08:14:30', NULL, NULL, NULL, NULL, NULL, '01', 'info', 0, NULL, NULL, '', 0, 0, '', '', '', '', '', '', NULL, 0, 0, 0, 0, '', '', NULL, NULL, '', '', NULL, 0, 0, NULL, NULL, NULL, 0, '', NULL, 0, 0, '租户', 0, 0, NULL, NULL, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -8179,7 +8189,7 @@ CREATE TABLE `uk_userevent` (
   `city` varchar(32) DEFAULT NULL COMMENT '城市',
   `isp` varchar(32) DEFAULT NULL COMMENT '运营商',
   `province` varchar(32) DEFAULT NULL COMMENT '省份',
-  `url` varchar(255) DEFAULT NULL COMMENT '接入URL',
+  `url` text DEFAULT NULL COMMENT '接入URL',
   `sessionid` varchar(32) DEFAULT NULL COMMENT '会话ID',
   `param` text COMMENT '请求参数',
   `times` int(11) DEFAULT NULL COMMENT '访问次数',

@@ -166,7 +166,7 @@
 						</li>
 					</#if>
 					<#if user?? && user.agent == true>
-					<#if (user?? && user.roleAuthMap["B01"]??   || user.usertype == "0")>
+					<#if (user?? && user.roleAuthMap["A01"]??   || user.usertype == "0")>
 					<li class="layui-nav-item " style="position: relative;">
 						<div class="ukefu-last-msg" data-num="0" id="ukefu-last-msg">
 							<small class="ukefu-msg-tip bg-red" id="msgnum">0</small>
@@ -299,15 +299,15 @@
 							 -->
 							
 							
-							<#if models?? && models["xiaoe"]?? && models["xiaoe"] == true>
-								<#if user?? &&( user.roleAuthMap["A09"]?? || user.usertype == "0") >
-									<dd class="ukefu-left-menu" data-tooltip="智能机器人">
-										<a href="javascript:void(0)" data-title="智能机器人" data-href="/apps/xiaoe/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange"> 
-										<i class="kfont"	style="position: relative;">&#xe63a;</i>
-										</a>
-									</dd>
-								</#if>
-							</#if>
+							<!--<#if models?? && models["xiaoe"]?? && models["xiaoe"] == true>-->
+								<!--<#if user?? &&( user.roleAuthMap["A09"]?? || user.usertype == "0") >-->
+									<!--<dd class="ukefu-left-menu" data-tooltip="智能机器人">-->
+										<!--<a href="javascript:void(0)" data-title="智能机器人" data-href="/apps/xiaoe/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange">-->
+										<!--<i class="kfont"	style="position: relative;">&#xe63a;</i>-->
+										<!--</a>-->
+									<!--</dd>-->
+								<!--</#if>-->
+							<!--</#if>-->
 							<#if models?? && models["sales"]?? && models["sales"] == true>
 								<#if user?? &&( user.roleAuthMap["A11"]?? || user.usertype == "0") >
 								<dd class="ukefu-left-menu" data-tooltip="外呼系统">
@@ -317,11 +317,11 @@
 								</dd>
 								</#if>
 							</#if>
-							<#if models?? && models["sales"]?? && models["sales"] == true>
-								<#if user?? &&( user.roleAuthMap["A11"]?? || user.usertype == "0") >
-								<dd class="ukefu-left-menu" data-tooltip="机器人">
-									<a href="javascript:void(0)" data-title="机器人"" data-href="/apps/chatbot/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange"> 
-									<i class="kfont"	style="position: relative;">&#xe63a;</i>
+							<#if models?? && models["chatbot"]?? && models["chatbot"] == true>
+								<#if user?? &&( user.roleAuthMap["A09"]?? || user.usertype == "0") >
+								<dd class="ukefu-left-menu" data-tooltip="智能机器人">
+									<a href="javascript:void(0)" data-title="智能机器人" data-href="/apps/chatbot/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange">
+									<i class="kfont" style="position: relative;">&#xe63a;</i>
 									</a>
 								</dd>
 								</#if>

@@ -32,7 +32,7 @@ public class WebIMOutMessageRouter implements OutMessageRouter{
 	@Override
 	public void handler(String touser, String msgtype, String appid,
 			MessageOutContent outMessage) {
-		NettyClients.getInstance().sendIMEventMessage(touser, msgtype, outMessage);
+		NettyClients.getInstance().publishIMEventMessage(touser, msgtype, outMessage);
 	}
 
 }

@@ -55,8 +55,6 @@ import java.util.List;
 @Component
 public class CallOutWireTask implements MessageListener {
     private static final Logger logger = LoggerFactory.getLogger(CallOutWireTask.class);
-    private static final RedisSerializer<String> redisStringSerializer = new StringRedisSerializer();
-
 
     @Autowired
     private CallOutDialplanRepository callOutDialplanRes;

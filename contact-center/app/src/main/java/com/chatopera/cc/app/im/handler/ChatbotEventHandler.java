@@ -24,6 +24,7 @@ import com.chatopera.cc.app.im.message.AgentStatusMessage;
 import com.chatopera.cc.app.im.message.ChatMessage;
 import com.chatopera.cc.app.im.message.NewRequestMessage;
 import com.chatopera.cc.app.im.util.ChatbotUtils;
+import com.chatopera.cc.app.im.util.IMServiceUtils;
 import com.chatopera.cc.app.model.*;
 import com.chatopera.cc.app.persistence.repository.AgentUserRepository;
 import com.chatopera.cc.app.persistence.repository.ChatbotRepository;
@@ -65,6 +66,7 @@ public class ChatbotEventHandler {
     @OnConnect
     public void onConnect(SocketIOClient client) {
         try {
+
             String user = client.getHandshakeData().getSingleUrlParam("userid");
             String nickname = client.getHandshakeData().getSingleUrlParam("nickname");
             String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
@@ -73,6 +75,7 @@ public class ChatbotEventHandler {
             String aiid = client.getHandshakeData().getSingleUrlParam("aiid");
 //			String agent = client.getHandshakeData().getSingleUrlParam("agent") ;
 //			String skill = client.getHandshakeData().getSingleUrlParam("skill") ;
+            logger.info("onConnect userid {}, nickname {}", user, nickname);
             Date now = new Date();
 
             if (StringUtils.isNotBlank(user)) {
@@ -80,20 +83,39 @@ public class ChatbotEventHandler {
                  * 加入到 缓存列表
                  */
                 NettyClients.getInstance().putChatbotEventClient(user, client);
-                MessageOutContent outMessage = new MessageOutContent();
                 CousultInvite invite = OnlineUserUtils.cousult(appid, orgi, MainContext.getContext().getBean(ConsultInviteRepository.class));
+
+                /**
+                 * 更新坐席服务类型
+                 */
+                IMServiceUtils.shiftOpsType(user, orgi, MainContext.OptTypeEnum.CHATBOT);
+
+                // send out tip
+                MessageOutContent tip = new MessageOutContent();
+                tip.setMessage("您正在使用机器人客服！");
+                tip.setMessageType(MainContext.MessageTypeEnum.MESSAGE.toString());
+                tip.setCalltype(MainContext.CallTypeEnum.IN.toString());
+                tip.setNickName(invite.getAiname());
+                tip.setCreatetime(MainUtils.dateFormate.format(now));
+
+                client.sendEvent(MainContext.MessageTypeEnum.STATUS.toString(), tip);
+
+                // send out welcome message
                 if (invite != null && StringUtils.isNotBlank(invite.getAisuccesstip())) {
-                    outMessage.setMessage(invite.getAisuccesstip());
-                } else {
-                    outMessage.setMessage("欢迎使用华夏春松机器人客服！");
+                    ChatMessage welcome = new ChatMessage();
+                    welcome.setCalltype(MainContext.CallTypeEnum.OUT.toString());
+                    welcome.setAppid(appid);
+                    welcome.setOrgi(orgi);
+                    welcome.setAiid(aiid);
+                    welcome.setMessage(invite.getAisuccesstip());
+                    welcome.setTouser(user);
+                    welcome.setTousername(nickname);
+                    welcome.setMsgtype(MainContext.MessageTypeEnum.MESSAGE.toString());
+                    welcome.setUserid(user);
+                    welcome.setUsername(invite.getAiname());
+                    welcome.setUpdatetime(System.currentTimeMillis());
+                    client.sendEvent(MainContext.MessageTypeEnum.MESSAGE.toString(), welcome);
                 }
-
-                outMessage.setMessageType(MainContext.MessageTypeEnum.MESSAGE.toString());
-                outMessage.setCalltype(MainContext.CallTypeEnum.IN.toString());
-                outMessage.setNickName(invite.getAiname());
-                outMessage.setCreatetime(MainUtils.dateFormate.format(now));
-
-                client.sendEvent(MainContext.MessageTypeEnum.STATUS.toString(), outMessage);
 
                 InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress();
                 String ip = MainUtils.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString());
@@ -139,6 +161,7 @@ public class ChatbotEventHandler {
                 agentUser.setCreatetime(now);
                 agentUser.setUpdatetime(now);
                 agentUser.setSessionid(session);
+                agentUser.setRegion(onlineUser.getRegion());
 
                 // 聊天机器人处理的请求
                 agentUser.setOpttype(MainContext.OptTypeEnum.CHATBOT.toString());
@@ -146,7 +169,7 @@ public class ChatbotEventHandler {
                 agentUser.setCity(onlineUser.getCity());
                 agentUser.setProvince(onlineUser.getProvince());
                 agentUser.setCountry(onlineUser.getCountry());
-                AgentService agentService = AutomaticServiceDist.processChatbotService(agentUser, orgi);
+                AgentService agentService = AutomaticServiceDist.processChatbotService(invite != null ? invite.getAiname() : "机器人客服", agentUser, orgi);
                 agentUser.setAgentserviceid(agentService.getId());
 
                 // 标记为机器人坐席
@@ -172,7 +195,7 @@ public class ChatbotEventHandler {
             AgentUser agentUser = (AgentUser) CacheHelper.getAgentUserCacheBean().getCacheObject(user, orgi);
             OnlineUser onlineUser = (OnlineUser) CacheHelper.getOnlineUserCacheBean().getCacheObject(user, orgi);
             if (agentUser != null) {
-                AutomaticServiceDist.processChatbotService(agentUser, orgi);
+                AutomaticServiceDist.processChatbotService(null, agentUser, orgi);
                 CacheHelper.getAgentUserCacheBean().delete(user, MainContext.SYSTEM_ORGI);
                 CacheHelper.getOnlineUserCacheBean().delete(user, orgi);
                 agentUser.setStatus(MainContext.OnlineUserOperatorStatus.OFFLINE.toString());

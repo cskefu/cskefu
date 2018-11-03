@@ -11,11 +11,11 @@
 						<div class="row">
 							<div class="col-lg-8">
 								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">1、系统颜色风格选择</div>
+									<div class="ukefu-webim-tl" style="clear:both;">系统颜色风格选择</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
-												<p>优客服系统界面颜色风格</p>
+												<p>春松客服系统界面颜色风格</p>
 												<p style="color:#888888;font-size:13px;margin-top:10px;">默认的配色是绿色，选择颜色可以在右侧预览风格，点击保存即可生效</p>
 											</div>
 											<div class="col-lg-4">
@@ -29,8 +29,8 @@
 									</div>
 								</div>
 								
-								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">2、请填写服务器的访问地址</div>
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">请填写服务器的访问地址</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
@@ -39,7 +39,7 @@
 											</div>
 											<div class="col-lg-4" style="text-align:right;">
 												<div class="layui-input-block">
-												     <input type="text" name="iconstr" value="<#if systemConfig.iconstr?? && systemConfig.iconstr!= ''>${systemConfig.iconstr!''}<#else>www.chatopera.com</#if>" autocomplete="off" class="layui-input">
+												     <input type="text" name="iconstr" value="<#if systemConfig.iconstr?? && systemConfig.iconstr!= ''>${systemConfig.iconstr!''}</#if>" autocomplete="off" class="layui-input">
 												</div>	
 											</div>
 										</div>
@@ -47,7 +47,7 @@
 								</div>
 								
 								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">3、产品登录界面和后台管理界面标题</div>
+									<div class="ukefu-webim-tl" style="clear:both;">产品登录界面和后台管理界面标题</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
@@ -62,7 +62,7 @@
 								</div>
 								
 								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">4、登录页欢迎Logo图片</div>
+									<div class="ukefu-webim-tl" style="clear:both;">登录页欢迎Logo图片</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
@@ -87,7 +87,7 @@
 								</div>
 								
 								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">5、产品后台管理界面Logo图片</div>
+									<div class="ukefu-webim-tl" style="clear:both;">产品后台管理界面Logo图片</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
@@ -112,7 +112,7 @@
 								</div>
 								
 								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">6、产品标题栏缩略小图</div>
+									<div class="ukefu-webim-tl" style="clear:both;">产品标题栏缩略小图</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
@@ -137,7 +137,7 @@
 								</div>
 								
 								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">7、重启或停止对话服务</div>
+									<div class="ukefu-webim-tl" style="clear:both;">重启或停止对话服务</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
@@ -153,8 +153,8 @@
 									</div>
 								</div>
 								
-								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">8、启用EntIM内部IM功能</div>
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">启用EntIM内部IM功能</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
@@ -165,7 +165,8 @@
 												<#if entim?? && entim == true>
 													<a href="/admin/config/stopentim.html" data-toggle="tip" title="请确认是否关闭EntIM功能？" class="layui-btn layui-btn-small layui-btn-danger">关闭EntIM功能</a>
 												<#else>
-													<a href="/admin/config/startentim.html" data-toggle="tip" title="启用EntIM功能" class="layui-btn layui-btn-small">启用EntIM功能</a>
+													<!-- <a href="/admin/config/startentim.html" data-toggle="tip" title="启用EntIM功能" class="layui-btn layui-btn-small">启用EntIM功能</a> -->
+													<a href="" data-toggle="tip" title="启用EntIM功能" class="layui-btn layui-btn-small">启用EntIM功能</a>
 												</#if>		
 											</div>
 										</div>
@@ -173,12 +174,12 @@
 								</div>
 								
 								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">9、启用权限数据采集功能功能</div>
+									<div class="ukefu-webim-tl" style="clear:both;">启用权限数据采集功能功能</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
 												<p>启用权限数据采集功能后，会进入数据采集模式,当前状态：<#if infoace?? && infoace == true><small class="ukefu-label theme4">已启用</small><#else><small class="ukefu-label theme4" style="background-color:#FF5722;">已关闭</small></#if></p>
-												<p style="color:#888888;font-size:13px;margin-top:10px;">启用后，在优客服界面上的任何链接点击操作都会触发数据收集功能</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">启用后，在春松客服界面上的任何链接点击操作都会触发数据收集功能</p>
 											</div>
 											<div class="col-lg-4">
 												<#if infoace?? && infoace == true>
@@ -191,8 +192,8 @@
 									</div>
 								</div>
 								
-								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">10、停止优客服系统</div>
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">停止春松客服系统</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
@@ -207,7 +208,7 @@
 								</div>
 								
 								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">11、修改微信接收消息的日志级别</div>
+									<div class="ukefu-webim-tl" style="clear:both;">修改微信接收消息的日志级别</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
@@ -223,8 +224,8 @@
 										</div>
 									</div>
 								</div>
-								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">12、启用服务SSL安全访问</div>
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">启用服务SSL安全访问</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
@@ -265,8 +266,8 @@
 									</div>
 								</div>
 								
-								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">13、启用涉及重要操作的二次验证密码</div>
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">启用涉及重要操作的二次验证密码</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
@@ -309,7 +310,7 @@
 									</div>
 								</div>
 								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">14、百度地图的Key代码（AK）</div>
+									<div class="ukefu-webim-tl" style="clear:both;">百度地图的Key代码（AK）</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
@@ -323,8 +324,8 @@
 									</div>
 								</div>
 								
-								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">15、工单系统布局方式</div>
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">工单系统布局方式</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
@@ -339,7 +340,7 @@
 								</div>
 								
 								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">16、启用权限控制</div>
+									<div class="ukefu-webim-tl" style="clear:both;">启用权限控制</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
@@ -353,8 +354,8 @@
 									</div>
 								</div>
 								
-								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">17、启用语音平台模板配置</div>
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">启用语音平台模板配置</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
@@ -492,8 +493,8 @@
 									</div>
 								</div>
 								
-								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">18、启用工单系统的邮件通知</div>
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">启用工单系统的邮件通知</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">
@@ -627,8 +628,8 @@
 									</div>
 								</div>
 								
-								<div class="ukefu-webim-prop">
-									<div class="ukefu-webim-tl" style="clear:both;">19、启用多${systemConfig.namealias!'租户'}管理模式</div>
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">启用多${systemConfig.namealias!'租户'}管理模式</div>
 									<div class="box-item">
 										<div class="row">
 											<div class="col-lg-8">

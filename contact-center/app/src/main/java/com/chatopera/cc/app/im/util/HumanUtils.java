@@ -137,14 +137,14 @@ public class HumanUtils {
             }
         }
         if (StringUtils.isNotBlank(data.getUserid()) && MainContext.MessageTypeEnum.MESSAGE.toString().equals(data.getType())) {
-            NettyClients.getInstance().sendIMEventMessage(data.getUserid(), MainContext.MessageTypeEnum.MESSAGE.toString(), outMessage);
+            NettyClients.getInstance().publishIMEventMessage(data.getUserid(), MainContext.MessageTypeEnum.MESSAGE.toString(), outMessage);
             if (statusMessage != null) {
-                NettyClients.getInstance().sendIMEventMessage(data.getUserid(), MainContext.MessageTypeEnum.STATUS.toString(), statusMessage);
+                NettyClients.getInstance().publishIMEventMessage(data.getUserid(), MainContext.MessageTypeEnum.STATUS.toString(), statusMessage);
             }
         }
         if (agentUser != null && StringUtils.isNotBlank(agentUser.getAgentno())) {
-            //将消息发送给 坐席
-            NettyClients.getInstance().sendAgentEventMessage(agentUser.getAgentno(), MainContext.MessageTypeEnum.MESSAGE.toString(), data);
+            // TODO 将消息发送给 坐席
+            NettyClients.getInstance().publishAgentEventMessage(agentUser.getAgentno(), MainContext.MessageTypeEnum.MESSAGE.toString(), data);
         }
     }
 
@@ -176,7 +176,7 @@ public class HumanUtils {
 //        outMessage.setCreatetime(data.getCreatetime());
 //
 //        if (!StringUtils.isBlank(data.getUserid()) && MainContext.MessageTypeEnum.MESSAGE.toString().equals(data.getType())) {
-//            NettyClients.getInstance().sendIMEventMessage(data.getUserid(), MainContext.MessageTypeEnum.MESSAGE.toString(), outMessage);
+//            NettyClients.getInstance().publishIMEventMessage(data.getUserid(), MainContext.MessageTypeEnum.MESSAGE.toString(), outMessage);
 //        }
 //    }
 

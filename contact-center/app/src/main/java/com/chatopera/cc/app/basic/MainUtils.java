@@ -766,14 +766,14 @@ public class MainUtils {
         return workintTime;
     }
 
-    public static File processImage(File destFile, File imageFile) throws FileNotFoundException, IOException {
+    public static File processImage(final File destFile, final File imageFile) throws FileNotFoundException, IOException {
         if (imageFile != null && imageFile.exists()) {
             Thumbnails.of(imageFile).width(460).keepAspectRatio(true).toFile(destFile);
         }
         return destFile;
     }
 
-    public static File scaleImage(File destFile, File imageFile, float quality) throws FileNotFoundException, IOException {
+    public static File scaleImage(final File destFile, final File imageFile, float quality) throws FileNotFoundException, IOException {
         if (imageFile != null && imageFile.exists()) {
             Thumbnails.of(imageFile).scale(1f).outputQuality(quality).toFile(destFile);
         }
@@ -844,45 +844,6 @@ public class MainUtils {
             execute = true;
         }
         return execute;
-    }
-
-    public static void processAttachmentFile(MultipartFile[] files, AttachmentRepository attachementRes, String path, User user, String orgi, WorkOrders workOrders, HttpServletRequest request, String dataid, String modelid) throws IOException {
-        if (files != null && files.length > 0) {
-            workOrders.setAnonymous(true);//变更用途为是否有 附件
-            //保存附件
-            for (MultipartFile file : files) {
-                if (file.getSize() > 0) {            //文件尺寸 限制 ？在 启动 配置中 设置 的最大值，其他地方不做限制
-                    String fileid = MainUtils.md5(file.getBytes());    //使用 文件的 MD5作为 ID，避免重复上传大文件
-                    if (!StringUtils.isBlank(fileid)) {
-                        AttachmentFile attachmentFile = new AttachmentFile();
-                        attachmentFile.setCreater(user.getId());
-                        attachmentFile.setOrgi(orgi);
-                        attachmentFile.setOrgan(user.getOrgan());
-                        attachmentFile.setDataid(dataid);
-                        attachmentFile.setModelid(modelid);
-                        attachmentFile.setModel(MainContext.ModelType.WORKORDERS.toString());
-                        attachmentFile.setFilelength((int) file.getSize());
-                        if (file.getContentType() != null && file.getContentType().length() > 255) {
-                            attachmentFile.setFiletype(file.getContentType().substring(0, 255));
-                        } else {
-                            attachmentFile.setFiletype(file.getContentType());
-                        }
-                        if (file.getOriginalFilename() != null && file.getOriginalFilename().length() > 255) {
-                            attachmentFile.setTitle(file.getOriginalFilename().substring(0, 255));
-                        } else {
-                            attachmentFile.setTitle(file.getOriginalFilename());
-                        }
-                        if (!StringUtils.isBlank(attachmentFile.getFiletype()) && attachmentFile.getFiletype().indexOf("image") >= 0) {
-                            attachmentFile.setImage(true);
-                        }
-                        attachmentFile.setFileid(fileid);
-                        attachementRes.save(attachmentFile);
-                        FileUtils.writeByteArrayToFile(new File(path, "app/workorders/" + fileid), file.getBytes());
-                    }
-                }
-            }
-
-        }
     }
 
     /**

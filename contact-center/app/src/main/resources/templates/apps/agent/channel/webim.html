@@ -2,14 +2,16 @@
 	<li class="ukefu-channel-tip">
 		访问渠道：<i class="layui-icon">&#xe63a;</i>
 			         在线客服
-		<#if summary??>
-		<div class="ukefu-summary">
-			<a href="/agent/summary.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}" data-toggle="ajax" data-width="950" data-height="450" title="记录服务小结">
-				<i class="layui-icon">&#xe618;</i> 已记录服务小结
-			</a>
-		</div>
-		</#if>
 	</li>
+
+	<li class="ukefu-channel-tip">
+		服务小结： <#if summary??>
+				<i class="layui-icon">&#xe618;</i>已记录
+				<#else>
+				<i class="layui-icon">&#xe64d;</i>未记录
+				</#if>
+	</li>
+
 	<#if snsAccount??>
 	<li class="ukefu-channel-tip">
 		接入网站：${snsAccount.name!''}（${snsAccount.baseURL!''}）

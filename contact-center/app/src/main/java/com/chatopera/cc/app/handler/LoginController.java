@@ -18,13 +18,13 @@ package com.chatopera.cc.app.handler;
 
 import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.app.basic.MainUtils;
-import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.app.model.*;
 import com.chatopera.cc.app.cache.CacheHelper;
+import com.chatopera.cc.app.model.*;
 import com.chatopera.cc.app.persistence.repository.OrganRepository;
 import com.chatopera.cc.app.persistence.repository.RoleAuthRepository;
 import com.chatopera.cc.app.persistence.repository.UserRepository;
 import com.chatopera.cc.app.persistence.repository.UserRoleRepository;
+import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.OnlineUserUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -78,10 +78,18 @@ public class LoginController extends Handler {
     private void organs(final User user, final String organ) {
         if (organ == null)
             return;
+
+        if (user.inMyorgans(organ))
+            return;
+
         user.getMyorgans().add(organ);
         List<Organ> y = organRepository.findByOrgiAndParent(user.getOrgi(), organ);
         for (Organ x : y) {
-            organs(user, x.getId());
+            try {
+                organs(user, x.getId());
+            } catch (Exception e) {
+                logger.error("organs", e);
+            }
         }
     }
 

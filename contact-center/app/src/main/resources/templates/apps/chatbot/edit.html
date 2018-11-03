@@ -30,9 +30,10 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">智能问答引擎地址</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="baseUrl" required lay-verify="required" placeholder="请输入智能问答引擎地址"
+                        <input type="text" name="baseUrl" required lay-verify="required" placeholder="联系info@chatopera.com，获得智能问答引擎地址"
                             autocomplete="off" class="layui-input" value="${bot.baseUrl}" <#if id!=null>disabled</#if>>
                     </div>
+                    <label class="layui-form-label"></label>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">名称</label>
@@ -48,6 +49,13 @@
                             <option value="zh_CN" <#if bot.primaryLanguage=="zh_CN">selected="selected"</#if>>中文</option>
                             <option value="en_US" <#if bot.primaryLanguage=="en_US">selected="selected"</#if>>英文</option>
                         </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">问候语</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="welcome" required lay-verify="required" placeholder="请输入问候语" autocomplete="off"
+                               class="layui-input" value="${bot.welcome}">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -115,7 +123,7 @@
                 if (data.rc == 0) {
                     cb(null, data.data);
                 } else {
-                    cb(data.error);
+                    cb(data);
                 }
             })
             .fail(function (jqXHR, textStatus) {
@@ -128,10 +136,17 @@
         var form = layui.form();
         form.on('submit(save)', function (data) {
             var field = data.field;
-
             var submitFinish = function (err, bot) {
                 if (err) {
-                    console.error(err);
+                    layer.confirm(err.data||err.error, {
+                        btn: ['关闭'],
+                        icon: 2,
+                        title: '提示'
+                    }, function (popup, layero) {
+                        layer.close(popup)
+                    }, function (popup) {
+                        // 取消方法
+                    });
                 } else {
                     layer.open({
                         title: '提示'
