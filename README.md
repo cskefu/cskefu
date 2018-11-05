@@ -167,7 +167,7 @@
 <p align="center">
   <b>观看视频介绍</b><br>
   <a href="https://pan.baidu.com/s/1tqxqfYSvtjDGhh6bDQ-Vog" target="_blank">
-      <img src="https://user-images.githubusercontent.com/3538629/45403926-6a039b80-b68f-11e8-86e2-5d1f04e3a7c7.png" width="600">
+      <img src="https://user-images.githubusercontent.com/3538629/45403926-6a039b80-b68f-11e8-86e2-5d1f04e3a7c7.png" width="900">
   </a>
 </p>
 
@@ -176,7 +176,7 @@
 <p align="center">
   <b>春松客服 on QingCloud</b><br>
   <a href="https://appcenter.qingcloud.com/apps/app-zdh88kz7/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D" target="_blank">
-      <img src="https://user-images.githubusercontent.com/3538629/47984044-4c433780-e110-11e8-88b0-8f28c8aba93e.png" width="600">
+      <img src="https://user-images.githubusercontent.com/3538629/47984143-a17f4900-e110-11e8-95c9-d8302e000c34.png" width="900">
   </a>
 </p>
 
