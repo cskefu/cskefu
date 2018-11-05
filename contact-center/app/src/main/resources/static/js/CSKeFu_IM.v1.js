@@ -5,7 +5,7 @@ newmessage['mp3'] = '/images/message.mp3';
 ring['mp3'] = '/images/ring.mp3';
 $(document).ready(function(){
     var protocol = window.location.protocol.replace(/:/g,'');
-    socket = io.connect(protocol+'://'+hostname+':'+port+'/im/agent?orgi='+orgi+"&userid="+userid+"&session="+session+"&admin="+adminuser );
+    socket = io(protocol+'://'+hostname+':'+port+'/im/agent?orgi='+orgi+"&userid="+userid+"&session="+session+"&admin="+adminuser , {transports: ['websocket', 'polling']});
     socket.on('connect',function() {
 		console.log("连接初始化成功");
 		//请求服务端记录 当前用户在线事件
