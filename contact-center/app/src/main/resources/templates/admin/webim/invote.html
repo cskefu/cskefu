@@ -30,12 +30,20 @@
 			<#if inviteData??>
 				<input type="hidden" name="id" value="${inviteData.id!''}">
 				<input type="hidden" name="snsaccountid" value="${inviteData.snsaccountid!''}">
-                <input type="hidden" name="ai" value="${inviteData.ai!''}">
-                <input type="hidden" name="aisuccesstip" value="${inviteData.aisuccesstip!''}">
-                <input type="hidden" name="aifirst" value="${inviteData.aifirst!''}">
-                <input type="hidden" name="ainame" value="${inviteData.ainame!''}">
-                <input type="hidden" name="aiid" value="${inviteData.aiid!''}">
-			</#if>
+				<#if inviteData.ai??>
+					<input type="hidden" name="ai" value="${inviteData.ai?then('true','false')}">
+				<#else>
+					<input type="hidden" name="ai" value="false">
+				</#if>
+				<#if inviteData.aifirst??>
+					<input type="hidden" name="aifirst" value="${inviteData.aifirst?then('true','false')}">
+				<#else>
+					<input type="hidden" name="aifirst" value="false">
+				</#if>
+	            <input type="hidden" name="aisuccesstip" value="${inviteData.aisuccesstip!''}">
+			    <input type="hidden" name="ainame" value="${inviteData.ainame!''}">
+			    <input type="hidden" name="aiid" value="${inviteData.aiid!''}">
+            </#if>
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="ukefu-customer-div setting-wrapper">

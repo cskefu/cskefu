@@ -177,7 +177,13 @@ public class SystemConfigController extends Handler {
 
     @RequestMapping("/save")
     @Menu(type = "admin", subtype = "save", admin = true)
-    public ModelAndView save(ModelMap map, HttpServletRequest request, @Valid SystemConfig config, BindingResult result, @RequestParam(value = "keyfile", required = false) MultipartFile keyfile, @RequestParam(value = "loginlogo", required = false) MultipartFile loginlogo, @RequestParam(value = "consolelogo", required = false) MultipartFile consolelogo, @RequestParam(value = "favlogo", required = false) MultipartFile favlogo, @Valid Secret secret) throws SQLException, IOException, NoSuchAlgorithmException {
+    public ModelAndView save(ModelMap map, HttpServletRequest request,
+                             @Valid SystemConfig config, BindingResult result,
+                             @RequestParam(value = "keyfile", required = false) MultipartFile keyfile,
+                             @RequestParam(value = "loginlogo", required = false) MultipartFile loginlogo,
+                             @RequestParam(value = "consolelogo", required = false) MultipartFile consolelogo,
+                             @RequestParam(value = "favlogo", required = false) MultipartFile favlogo,
+                             @Valid Secret secret) throws SQLException, IOException, NoSuchAlgorithmException {
     	/*SystemConfig systemConfig = systemConfigRes.findByOrgi(super.getOrgi(request)) ;
     	config.setOrgi(super.getOrgi(request));*/
         SystemConfig systemConfig = systemConfigRes.findByOrgi(MainContext.SYSTEM_ORGI);

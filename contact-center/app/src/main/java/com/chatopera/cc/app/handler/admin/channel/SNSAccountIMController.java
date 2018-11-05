@@ -112,6 +112,8 @@ public class SNSAccountIMController extends Handler {
                     coultInvite.setOrgi(super.getOrgi(request));
                     coultInvite.setName(snsAccount.getName());
                     coultInvite.setOwner(snsAccount.getCreater());
+                    coultInvite.setAi(false);
+                    coultInvite.setAifirst(false);
                     invite.save(coultInvite);
                 }
             }

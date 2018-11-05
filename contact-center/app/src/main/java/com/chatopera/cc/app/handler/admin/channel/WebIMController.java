@@ -89,7 +89,11 @@ public class WebIMController extends Handler {
 
     @RequestMapping("/save")
     @Menu(type = "admin", subtype = "app", admin = true)
-    public ModelAndView save(HttpServletRequest request, @Valid CousultInvite inviteData, @RequestParam(value = "webimlogo", required = false) MultipartFile webimlogo, @RequestParam(value = "agentheadimg", required = false) MultipartFile agentheadimg) throws IOException {
+    public ModelAndView save(HttpServletRequest request,
+                             @Valid CousultInvite inviteData,
+                             @RequestParam(value = "webimlogo", required = false) MultipartFile webimlogo,
+                             @RequestParam(value = "agentheadimg", required = false) MultipartFile agentheadimg) throws IOException {
+
         if (StringUtils.isNotBlank(inviteData.getSnsaccountid())) {
             CousultInvite tempData = invite.findBySnsaccountidAndOrgi(inviteData.getSnsaccountid(), super.getOrgi(request));
             if (tempData != null) {
