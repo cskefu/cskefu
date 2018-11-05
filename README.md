@@ -28,10 +28,11 @@
 
 [产品体系](https://github.com/chatopera/cosin#%E4%BA%A7%E5%93%81%E4%BD%93%E7%B3%BB)
 
+[立即部署](https://github.com/chatopera/cosin#%E7%AB%8B%E5%8D%B3%E9%83%A8%E7%BD%B2)
+
 [鸣谢](https://github.com/chatopera/cosin#%E9%B8%A3%E8%B0%A2)
 
 [开源许可协议](https://github.com/chatopera/cosin#%E5%BC%80%E6%BA%90%E8%AE%B8%E5%8F%AF%E5%8D%8F%E8%AE%AE)
-
 
 ## 产品演示
 
