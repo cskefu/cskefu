@@ -196,8 +196,3 @@ Copyright (2018) <a href="https://www.chatopera.com/" target="_blank">北京华�
 
 [co-banner-image]: https://user-images.githubusercontent.com/3538629/42383104-da925942-8168-11e8-8195-868d5fcec170.png
 [co-url]: https://www.chatopera.com
-
-[co-qingcloud-image]: https://user-images.githubusercontent.com/3538629/47983779-5a448880-e10f-11e8-9c15-fbb6d7353b96.png
-
-[co-qingcloud-url]: https://appcenter.qingcloud.com/apps/app-zdh88kz7/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D
-
