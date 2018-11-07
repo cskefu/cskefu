@@ -368,6 +368,19 @@
         </plugins>
         <defaultGoal>compile</defaultGoal>
     </build>
+    <repositories>
+        <repository>
+            <id>chatopera</id>
+            <name>Chatopera Inc.</name>
+            <url>https://nexus.chatopera.com/repository/maven-public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
     <developers>
         <developer>
             <id>hain</id>

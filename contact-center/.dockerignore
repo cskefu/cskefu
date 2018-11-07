@@ -1,2 +1,4 @@
 ./app/target/
 ./logs/
+./tmp/
+./data/
