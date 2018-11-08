@@ -28,41 +28,17 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">智能问答引擎地址</label>
+                    <label class="layui-form-label">ClientId</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="baseUrl" required lay-verify="required" placeholder="联系info@chatopera.com，获得智能问答引擎地址"
-                            autocomplete="off" class="layui-input" value="${bot.baseUrl}" <#if id!=null>disabled</#if>>
-                    </div>
-                    <label class="layui-form-label"></label>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">名称</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="name" required lay-verify="required" placeholder="请输入名称" autocomplete="off"
-                            class="layui-input" value="${bot.name}">
+                        <input type="text" name="clientId" required lay-verify="required" placeholder="请输入ClientId" autocomplete="off"
+                            class="layui-input" value="${bot.clientId}">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">语言</label>
+                    <label class="layui-form-label">Secret</label>
                     <div class="layui-input-inline">
-                        <select name="primaryLanguage" lay-verify="required">
-                            <option value="zh_CN" <#if bot.primaryLanguage=="zh_CN">selected="selected"</#if>>中文</option>
-                            <option value="en_US" <#if bot.primaryLanguage=="en_US">selected="selected"</#if>>英文</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">问候语</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="welcome" required lay-verify="required" placeholder="请输入问候语" autocomplete="off"
-                               class="layui-input" value="${bot.welcome}">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">兜底回复</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="fallback" required lay-verify="required" autocomplete="off" value="${bot.fallback}"
-                            class="layui-input">
+                        <input type="text" name="secret" required lay-verify="required" placeholder="请输入Secret" autocomplete="off"
+                               class="layui-input" value="${bot.secret}">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -72,13 +48,6 @@
                             <option <#if bot.workmode=="机器人客服优先">selected="selected"</#if>>机器人客服优先</option>
                             <option <#if bot.workmode=="人工客服优先">selected="selected"</#if>>人工客服优先</option>
                         </select>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">描述</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="description" required lay-verify="required" autocomplete="off" value="${bot.description}"
-                            class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">

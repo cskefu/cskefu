@@ -3374,12 +3374,13 @@ DROP TABLE IF EXISTS `cs_chatbot`;
 CREATE TABLE `cs_chatbot` (
   `ID` varchar(32) NOT NULL COMMENT '主键ID',
   `base_url` varchar(255) NOT NULL COMMENT '基础URL',
+  `client_id` varchar(32) NOT NULL COMMENT 'Client Id',
+  `secret` varchar(32) NOT NULL COMMENT 'Client Secret',
   `creater` varchar(32) NOT NULL COMMENT '创建人',
   `orgi` varchar(255) NOT NULL COMMENT '租户ID',
   `organ` varchar(32) NOT NULL COMMENT '部门ID',
   `createtime` datetime NOT NULL COMMENT '创建时间',
   `updatetime` datetime NOT NULL COMMENT '更新时间',
-  `chatbotid` varchar(255) NOT NULL COMMENT '聊天机器人ID',
   `name` varchar(255) NOT NULL COMMENT '聊天机器人名字',
   `description` varchar(255) NOT NULL COMMENT '描述',
   `primary_language` varchar(20) NOT NULL COMMENT '首选语言',
@@ -3390,8 +3391,7 @@ CREATE TABLE `cs_chatbot` (
   `enabled` tinyint(1) DEFAULT '0' COMMENT '是否开启',
   `workmode` varchar(32) NOT NULL COMMENT '工作模式',
   PRIMARY KEY (`ID`) USING BTREE,
-  UNIQUE KEY `snsid` (`sns_account_identifier`,`orgi`) USING BTREE COMMENT '按照渠道标识唯一',
-  UNIQUE KEY `chatbotID` (`chatbotid`,`orgi`) USING BTREE COMMENT '按照ChatbotID唯一'
+  UNIQUE KEY `snsid` (`sns_account_identifier`,`orgi`) USING BTREE COMMENT '按照渠道标识唯一'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='机器人客服表';
 
 

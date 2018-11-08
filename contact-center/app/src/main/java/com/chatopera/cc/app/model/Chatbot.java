@@ -15,12 +15,9 @@
  */
 package com.chatopera.cc.app.model;
 
-import com.chatopera.chatbot.ChatbotAPI;
-import com.chatopera.chatbot.ChatbotAPIRuntimeException;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.net.MalformedURLException;
 import java.util.Date;
 
 @Entity
@@ -30,9 +27,6 @@ public class Chatbot {
 
     private String id;
     private String name;
-
-    @Column(unique=true)
-    private String chatbotID;
 
     private String description;
     private String primaryLanguage;
@@ -44,14 +38,15 @@ public class Chatbot {
     private String creater; // 创建者
     private String channel; // 渠道类型
 
-    @Column(unique=true)
+    @Column(unique = true)
     private String snsAccountIdentifier; // 渠道唯一标识
     private boolean enabled; // 当前是否被启用
     private String workmode; // 工作模式, 机器人优先还是人工客服优先
 
-    private ChatbotAPI api;
     private Date createtime;
     private Date updatetime;
+    private String clientId;
+    private String secret;
 
 
     @Id
@@ -72,14 +67,6 @@ public class Chatbot {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getChatbotID() {
-        return chatbotID;
-    }
-
-    public void setChatbotID(String chatbotID) {
-        this.chatbotID = chatbotID;
     }
 
     public String getDescription() {
@@ -178,14 +165,6 @@ public class Chatbot {
         this.workmode = workmode;
     }
 
-    @Transient
-    public ChatbotAPI getApi() throws MalformedURLException, ChatbotAPIRuntimeException {
-        if(api == null){
-            api = new ChatbotAPI(this.baseUrl);
-        }
-        return api;
-    }
-
     public Date getCreatetime() {
         return createtime;
     }
@@ -200,6 +179,22 @@ public class Chatbot {
 
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 }
 

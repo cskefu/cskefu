@@ -15,17 +15,16 @@
  */
 package com.chatopera.cc.app.handler.api.rest;
 
-import com.chatopera.cc.util.Menu;
+import com.chatopera.bot.exception.ChatbotException;
 import com.chatopera.cc.app.basic.MainUtils;
-import com.chatopera.cc.exception.CallOutRecordException;
-import com.chatopera.cc.app.model.*;
-import com.chatopera.cc.app.persistence.repository.*;
-import com.chatopera.cc.util.OnlineUserUtils;
-import com.chatopera.cc.app.im.util.ChatbotUtils;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.handler.api.request.RestUtils;
-import com.chatopera.chatbot.ChatbotAPI;
-import com.chatopera.chatbot.ChatbotAPIRuntimeException;
+import com.chatopera.cc.app.im.util.ChatbotUtils;
+import com.chatopera.cc.app.model.*;
+import com.chatopera.cc.app.persistence.repository.*;
+import com.chatopera.cc.exception.CallOutRecordException;
+import com.chatopera.cc.util.Menu;
+import com.chatopera.cc.util.OnlineUserUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -54,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/chatbot")
@@ -182,7 +182,8 @@ public class ApiChatbotController extends Handler {
         }
 
         try {
-            if (c.getApi().exists(c.getChatbotID())) {
+            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(c.getClientId(), c.getSecret());
+            if (bot.exists()) {
                 c.setEnabled(isEnabled);
                 chatbotRes.save(c);
 
@@ -198,12 +199,12 @@ public class ApiChatbotController extends Handler {
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_7);
                 resp.addProperty(RestUtils.RESP_KEY_ERROR, "智能问答引擎不存在该聊天机器人，未能正确设置。");
             }
-        } catch (ChatbotAPIRuntimeException e) {
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
-            resp.addProperty(RestUtils.RESP_KEY_DATA, "设置不成功，智能问答引擎服务异常。");
         } catch (MalformedURLException e) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
             resp.addProperty(RestUtils.RESP_KEY_DATA, "设置不成功，智能问答引擎地址不合法。");
+        } catch (ChatbotException e) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
+            resp.addProperty(RestUtils.RESP_KEY_DATA, "设置不成功，智能问答引擎服务异常。");
         }
         return resp;
     }
@@ -231,6 +232,23 @@ public class ApiChatbotController extends Handler {
             return resp;
         }
 
+        // update clientId and secret
+        if (j.has("clientId")) {
+            c.setClientId(j.get("clientId").getAsString());
+        } else {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【clientId】。");
+            return resp;
+        }
+
+        if (j.has("secret")) {
+            c.setSecret(j.get("secret").getAsString());
+        } else {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【secret】。");
+            return resp;
+        }
+
         // 更新访客网站配置
         CousultInvite invite = OnlineUserUtils.cousult(c.getSnsAccountIdentifier(), c.getOrgi(), consultInviteRes);
 
@@ -239,55 +257,37 @@ public class ApiChatbotController extends Handler {
             invite.setAifirst(StringUtils.equals(ChatbotUtils.CHATBOT_FIRST, c.getWorkmode()));
         }
 
-        String description = j.has("description") ? j.get("description").getAsString() : null;
-        String fallback = j.has("fallback") ? j.get("fallback").getAsString() : null;
-        String welcome = j.has("welcome") ? j.get("welcome").getAsString() : null;
-        String name = j.has("name") ? j.get("name").getAsString() : null;
-
-
         if (j.has("enabled")) {
             boolean enabled = j.get("enabled").getAsBoolean();
             c.setEnabled(enabled);
             invite.setAi(enabled);
         }
 
-        if (StringUtils.isNotBlank(description) ||
-                StringUtils.isNotBlank(fallback) ||
-                StringUtils.isNotBlank(welcome)) {
-            try {
-                if (c.getApi().updateByChatbotID(c.getChatbotID(), name, description, fallback, welcome)) {
-                    resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
-                    resp.addProperty(RestUtils.RESP_KEY_DATA, "更新成功。");
-                } else {
-                    resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
-                    resp.addProperty(RestUtils.RESP_KEY_ERROR, "更新失败。");
-                    return resp;
-                }
-            } catch (ChatbotAPIRuntimeException e) {
-                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
-                resp.addProperty(RestUtils.RESP_KEY_ERROR, "更新智能问答引擎失败。" + e.toString());
-                return resp;
-            } catch (MalformedURLException e) {
+        try {
+            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(c.getClientId(), c.getSecret());
+            if (bot.exists()) {
+                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
+                resp.addProperty(RestUtils.RESP_KEY_DATA, "更新成功。");
+                JSONObject botDetails = bot.details();
+                c.setDescription(botDetails.getJSONObject("data").getString("description"));
+                c.setFallback(botDetails.getJSONObject("data").getString("fallback"));
+                c.setWelcome(botDetails.getJSONObject("data").getString("welcome"));
+                invite.setAisuccesstip(botDetails.getJSONObject("data").getString("welcome"));
+                c.setName(botDetails.getJSONObject("data").getString("name"));
+                invite.setAiname(c.getName());
+            } else {
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
-                resp.addProperty(RestUtils.RESP_KEY_ERROR, "更新智能问答引擎失败。" + e.toString());
+                resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera开发者平台提示：该机器人不存在，请先创建机器人, 登录 https://bot.chatopera.com");
                 return resp;
             }
-        }
-
-        if (StringUtils.isNotBlank(description))
-            c.setDescription(description);
-
-        if (StringUtils.isNotBlank(fallback))
-            c.setFallback(fallback);
-
-        if (StringUtils.isNotBlank(welcome)) {
-            c.setWelcome(welcome);
-            invite.setAisuccesstip(welcome);
-        }
-
-        if (StringUtils.isNotBlank(name)) {
-            c.setName(name);
-            invite.setAiname(name);
+        } catch (ChatbotException e) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera开发者平台提示：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。");
+            return resp;
+        } catch (MalformedURLException e) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_7);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "更新智能问答引擎失败。" + e.toString());
+            return resp;
         }
 
         c.setUpdatetime(new Date());
@@ -337,7 +337,7 @@ public class ApiChatbotController extends Handler {
 
             // SNSAccount
             SNSAccount snsAccount = snsAccountRes.findBySnsidAndOrgi(c.getSnsAccountIdentifier(), orgi);
-            if(snsAccount == null){
+            if (snsAccount == null) {
                 chatbotRes.delete(c); // 删除不存在snsAccount的机器人
                 continue; // 忽略不存在snsAccount的机器人
             }
@@ -395,37 +395,21 @@ public class ApiChatbotController extends Handler {
             return resp;
         }
 
-        try {
-            if (c.getApi().deleteByChatbotID(c.getChatbotID())) {
-                // 更新访客网站配置
-                CousultInvite invite = OnlineUserUtils.cousult(c.getSnsAccountIdentifier(), c.getOrgi(), consultInviteRes);
-                if (invite != null) {
-                    invite.setAi(false);
-                    invite.setAiname(null);
-                    invite.setAisuccesstip(null);
-                    invite.setAifirst(false);
-                    invite.setAiid(null);
-                    consultInviteRes.save(invite);
-                    OnlineUserUtils.cacheCousult(invite);
-                }
-                chatbotRes.delete(c);
-                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
-                resp.addProperty(RestUtils.RESP_KEY_DATA, "删除成功。");
-                return resp;
-            } else {
-                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
-                resp.addProperty(RestUtils.RESP_KEY_ERROR, "未成功删除该聊天机器人。");
-                return resp;
-            }
-        } catch (ChatbotAPIRuntimeException e) {
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "该聊天机器人服务请求异常。" + e.toString());
-            return resp;
-        } catch (MalformedURLException e) {
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "该聊天机器人地址错误。");
-            return resp;
+        // 更新访客网站配置
+        CousultInvite invite = OnlineUserUtils.cousult(c.getSnsAccountIdentifier(), c.getOrgi(), consultInviteRes);
+        if (invite != null) {
+            invite.setAi(false);
+            invite.setAiname(null);
+            invite.setAisuccesstip(null);
+            invite.setAifirst(false);
+            invite.setAiid(null);
+            consultInviteRes.save(invite);
+            OnlineUserUtils.cacheCousult(invite);
         }
+        chatbotRes.delete(c);
+        resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
+        resp.addProperty(RestUtils.RESP_KEY_DATA, "删除成功。");
+        return resp;
     }
 
     /**
@@ -439,39 +423,26 @@ public class ApiChatbotController extends Handler {
      */
     private JsonObject create(JsonObject j, String creater, String organ, String orgi) {
         JsonObject resp = new JsonObject();
-        String baseUrl = null;
-        String chatbotID = null;
-        String name = null;
-        String description = null;
-        String fallback = null;
-        String welcome = null;
-        String primaryLanguage = null;
+        String baseUrl = "https://bot.chatopera.com";
         String snsid = null;
         String workmode = null;
+        String clientId = null;
+        String secret = null;
 
-        // 验证数据: 必须字段
-        if ((!j.has("baseUrl")) || StringUtils.isBlank(j.get("baseUrl").getAsString())) {
+        if ((!j.has("clientId")) || StringUtils.isBlank(j.get("clientId").getAsString())) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【baseUrl】。");
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【clientId】。");
             return resp;
         } else {
-            baseUrl = j.get("baseUrl").getAsString();
+            clientId = j.get("clientId").getAsString();
         }
 
-        if ((!j.has("name")) || StringUtils.isBlank(j.get("name").getAsString())) {
+        if ((!j.has("secret")) || StringUtils.isBlank(j.get("secret").getAsString())) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【name】。");
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【secret】。");
             return resp;
         } else {
-            name = j.get("name").getAsString();
-        }
-
-        if (!(j.has("primaryLanguage") && ChatbotUtils.VALID_LANGS.contains(j.get("primaryLanguage").getAsString()))) {
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入有效【primaryLanguage】。");
-            return resp;
-        } else {
-            primaryLanguage = j.get("primaryLanguage").getAsString();
+            secret = j.get("secret").getAsString();
         }
 
         if (!(j.has("workmode") && ChatbotUtils.VALID_WORKMODELS.contains(j.get("workmode").getAsString()))) {
@@ -502,48 +473,28 @@ public class ApiChatbotController extends Handler {
             }
         }
 
-        chatbotID = ChatbotUtils.resolveChatbotIDWithSnsid(snsid, clientId);
-        if (chatbotRes.existsByChatbotIDAndOrgi(chatbotID, orgi)) {
+        if (chatbotRes.existsByClientIdAndOrgi(clientId, orgi)) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，数据库中存在该聊天机器人。");
             return resp;
         }
 
-        if ((!j.has("fallback")) || StringUtils.isBlank(j.get("fallback").getAsString())) {
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【fallback】。");
-            return resp;
-        } else {
-            fallback = j.get("fallback").getAsString();
-        }
-
-        // 可选字段
-        if (j.has("description"))
-            description = j.get("description").getAsString();
-
-        if (j.has("welcome"))
-            welcome = j.get("welcome").getAsString();
-
         try {
-            ChatbotAPI capi = new ChatbotAPI(baseUrl);
-            JSONObject result = capi.createBot(chatbotID,
-                    name,
-                    primaryLanguage,
-                    fallback,
-                    description,
-                    welcome);
+            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(clientId, secret);
 
-            if (result.getInt("rc") == 0) {
+            if (bot.exists()) { // 该机器人存在，clientId 和 Secret配对成功
                 // 创建成功
                 Chatbot c = new Chatbot();
+                JSONObject botDetails = bot.details();
                 c.setId(MainUtils.getUUID());
-                c.setBaseUrl(capi.getBaseUrl());
-                c.setChatbotID(chatbotID);
-                c.setDescription(description);
-                c.setFallback(fallback);
-                c.setPrimaryLanguage(primaryLanguage);
-                c.setName(name);
-                c.setWelcome(result.getJSONObject("data").getString("welcome"));
+                c.setClientId(clientId);
+                c.setSecret(secret);
+                c.setBaseUrl(baseUrl);
+                c.setDescription(botDetails.getJSONObject("data").getString("description"));
+                c.setFallback(botDetails.getJSONObject("data").getString("fallback"));
+                c.setPrimaryLanguage(botDetails.getJSONObject("data").getString("primaryLanguage"));
+                c.setName(botDetails.getJSONObject("data").getString("name"));
+                c.setWelcome(botDetails.getJSONObject("data").getString("welcome"));
                 c.setCreater(creater);
                 c.setOrgan(organ);
                 c.setOrgi(orgi);
@@ -577,16 +528,16 @@ public class ApiChatbotController extends Handler {
             } else {
                 // 创建失败
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
-                resp.addProperty(RestUtils.RESP_KEY_ERROR, "创建失败，失败原因 [" + result.getString("error") + "]");
+                resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera开发者平台提示：该机器人不存在，请先创建机器人, 登录 https://bot.chatopera.com");
                 return resp;
             }
-        } catch (ChatbotAPIRuntimeException e) {
+        } catch (ChatbotException e) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "智能问答引擎服务异常，该机器人【chatbotID】已经存在或服务不能访问到，请联系 [info@chatopera.com] 获得支持。");
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera开发者平台提示：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。");
             return resp;
         } catch (MalformedURLException e) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的智能问答引擎服务URL。");
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera开发者平台提示：不合法的聊天机器人服务URL。");
             return resp;
         }
     }

@@ -11,7 +11,7 @@ import java.util.List;
 
 public abstract interface ChatbotRepository extends JpaRepository<Chatbot, String> {
 
-    public abstract boolean existsByChatbotIDAndOrgi(String chatbotID, String orgi);
+    public abstract boolean existsByClientIdAndOrgi(String clientId, String orgi);
 
     public abstract boolean existsBySnsAccountIdentifierAndOrgi(String snsid, String orgi);
 
