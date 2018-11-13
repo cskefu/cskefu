@@ -162,7 +162,7 @@ public class ChatbotUtils {
      * @param resp
      */
     public static void saveAndPublish(ChatMessage resp) {
-        getChatMessageRes().save(resp);
         NettyClients.getInstance().sendChatbotEventMessage(resp.getUserid(), MainContext.MessageTypeEnum.MESSAGE.toString(), resp);
+        getChatMessageRes().save(resp);
     }
 }

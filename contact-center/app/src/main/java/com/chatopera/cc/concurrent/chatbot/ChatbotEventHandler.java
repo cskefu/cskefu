@@ -85,6 +85,9 @@ public class ChatbotEventHandler implements EventHandler<UserDataEvent> {
             resp.setUserid(request.getUserid());
             resp.setType(request.getType());
             resp.setChannel(request.getChannel());
+            if(data.has("params")){
+                resp.setExpmsg(data.get("params").toString());
+            }
             resp.setContextid(request.getContextid());
             resp.setSessionid(request.getSessionid());
             resp.setUsession(request.getUsession());

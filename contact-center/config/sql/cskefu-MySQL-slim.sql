@@ -1358,7 +1358,7 @@ CREATE TABLE `uk_chat_message` (
   `msgtype` varchar(100) DEFAULT '' COMMENT '消息类型',
   `orgi` varchar(100) DEFAULT '' COMMENT '租户ID',
   `msgid` varchar(100) DEFAULT '' COMMENT '消息ID（微信）',
-  `expmsg` varchar(100) DEFAULT '' COMMENT '原始消息',
+  `expmsg` text DEFAULT '' COMMENT '原始消息',
   `name` varchar(255) DEFAULT NULL COMMENT '名称',
   `createtime` varchar(50) DEFAULT NULL COMMENT '创建时间',
   `creater` varchar(255) DEFAULT NULL COMMENT '创建人',

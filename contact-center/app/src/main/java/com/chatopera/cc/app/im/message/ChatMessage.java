@@ -70,7 +70,7 @@ public class ChatMessage implements java.io.Serializable ,UserEvent{
 	private boolean aichat ;	//是否和AI提问
 	
 	private String message ;
-	private String expmsg ;		//显示消息
+	private String expmsg ;		// 语音消息时，显示为ASR的识别结果，文字消息时，显示为附带的动态业务字段
 	
 	private String orgi ;
 	private String channel ;
@@ -103,8 +103,8 @@ public class ChatMessage implements java.io.Serializable ,UserEvent{
 	private String suggestmsg ;	//推荐消息
 	
 	private int tokenum ; 	//当前未读消息数量
-	private String agentuser ;	
-	
+	private String agentuser ;
+
 	public String getAppid() {
 		return appid;
 	}
