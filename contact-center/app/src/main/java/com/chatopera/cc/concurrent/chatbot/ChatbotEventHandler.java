@@ -40,6 +40,7 @@ public class ChatbotEventHandler implements EventHandler<UserDataEvent> {
 
     private ChatbotRepository chatbotRes;
     private AgentUserRepository agentUserRes;
+    private String botServiceUrl;
 
     /**
      * 根据聊天机器人返回数据更新agentUser
@@ -62,9 +63,9 @@ public class ChatbotEventHandler implements EventHandler<UserDataEvent> {
         Chatbot c = getChatbotRes()
                 .findOne(request.getAiid());
 
-        logger.info("[chatbot disruptor] chat request baseUrl {}, chatbot {}, fromUserId {}, textMessage {}", c.getBaseUrl(), c.getName(), request.getUserid(), request.getMessage());
+        logger.info("[chatbot disruptor] chat request baseUrl {}, chatbot {}, fromUserId {}, textMessage {}", getChatbotServiceUrl(), c.getName(), request.getUserid(), request.getMessage());
         // Get response from Conversational Engine.
-        com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(c.getClientId(), c.getSecret());
+        com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(c.getClientId(), c.getSecret(), getChatbotServiceUrl());
         JSONObject result = bot.conversation(request.getUserid(), request.getMessage());
 
         // parse response
@@ -85,7 +86,7 @@ public class ChatbotEventHandler implements EventHandler<UserDataEvent> {
             resp.setUserid(request.getUserid());
             resp.setType(request.getType());
             resp.setChannel(request.getChannel());
-            if(data.has("params")){
+            if (data.has("params")) {
                 resp.setExpmsg(data.get("params").toString());
             }
             resp.setContextid(request.getContextid());
@@ -136,6 +137,14 @@ public class ChatbotEventHandler implements EventHandler<UserDataEvent> {
         if (chatbotRes == null)
             chatbotRes = MainContext.getContext().getBean(ChatbotRepository.class);
         return chatbotRes;
+    }
+
+
+    private String getChatbotServiceUrl() {
+        if (botServiceUrl == null) {
+            botServiceUrl = MainContext.getContext().getEnvironment().getProperty("chatopera.bot.url");
+        }
+        return botServiceUrl;
     }
 
 }
