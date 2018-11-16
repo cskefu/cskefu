@@ -588,7 +588,7 @@
         for (let i = 0; i < data.length; i++) {
             var item = data[i];
             var allowClick = true;
-            var btn = $('<div class="msg-list">'(i + 1) + '.' + item.label + '</div>');
+            var btn = $('<div class="msg-list">' + item.label + '</div>');
             var regClick = function (key) {
                 btn.click(function () {
                     if (allowClick) {
