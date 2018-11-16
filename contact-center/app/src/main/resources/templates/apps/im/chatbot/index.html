@@ -258,7 +258,7 @@
     </script>
     <!-- kindeditor -->
     <style>
-        .msg-btn{
+        .msg-btn {
             border: #4598ee 1px solid;
             padding: 5px;
             margin: 5px;
@@ -269,8 +269,26 @@
             cursor: default;
         }    
 
-        .msg-list{
+        .msg-list {
             color: #4598ee
+        }
+
+        .msg-card {
+            display: inline-block;
+            color: #000000;
+        }
+
+        .msg-crad-right {
+            position: relative;
+            top: -36px;
+            left: 10px;
+        }
+
+        .card-box{
+            cursor: default;
+            width: 300px;
+            height: 82px;
+            padding: 6px;
         }
     </style>
 </head>
@@ -590,13 +608,21 @@
     }
 
     function createCard(message,data){
-        for (let i = 0; i < data.length; i++) {
+        let item = data[0];
 
-        }
+        let html = '<div class="card-box" style="background-color: #fff !important;"><div class="msg-card" style="background-color: #fff !important;"><img src="' + item.thumbnail + '" style="width: 80px;height: 80px;"></div><div class="msg-card msg-crad-right" style="background-color: #fff !important;"><h3 style="background-color: #fff !important;">' + item.title + '</h3><p style="background-color: #fff !important;">' + item.summary + '</p></div></div>'
+
+        var element = $(html);
+        element.click(function(){
+            window.open(item.hyperlink);
+        })
+
+        return element;
     }
 
     function showExtmsg(username,createtime,message,json) {
         var expmsg = JSON.parse(json);
+
         var type = expmsg[0].type;
         var content;
         if (type == 'button') {
