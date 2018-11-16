@@ -586,21 +586,17 @@
         var list = element.find('.button-box');
         for (let i = 0; i < data.length; i++) {
             var item = data[i];
-            var allowClick = true;
             var btn = $('<div class="msg-list">' + item.label + '</div>');
             var regClick = function (key) {
                 btn.click(function () {
-                    if (allowClick) {
-                        allowClick = false;
-                        socket.emit('message', {
-                            appid: "${appid!''}",
-                            userid: "${userid!''}",
-                            type: "message",
-                            session: "${sessionid!''}",
-                            orgi: "${orgi!''}",
-                            message: key
-                        });
-                    }
+                    socket.emit('message', {
+                        appid: "${appid!''}",
+                        userid: "${userid!''}",
+                        type: "message",
+                        session: "${sessionid!''}",
+                        orgi: "${orgi!''}",
+                        message: key
+                    });
                 });
             }
             regClick(item.text);
