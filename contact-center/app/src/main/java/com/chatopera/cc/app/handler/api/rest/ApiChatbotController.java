@@ -16,6 +16,7 @@
 package com.chatopera.cc.app.handler.api.rest;
 
 import com.chatopera.bot.exception.ChatbotException;
+import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.handler.api.request.RestUtils;
@@ -78,6 +79,8 @@ public class ApiChatbotController extends Handler {
 
     @Autowired
     private ConsultInviteRepository consultInviteRes;
+
+    private String botBaseUrl;
 
     @RequestMapping(method = RequestMethod.POST)
     @Menu(type = "apps", subtype = "chatbot", access = true)
@@ -277,14 +280,16 @@ public class ApiChatbotController extends Handler {
                 invite.setAiname(c.getName());
             } else {
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
-                resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera开发者平台提示：该机器人不存在，请先创建机器人, 登录 https://bot.chatopera.com");
+                resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera开发者平台Chatopera开发者平台提示：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。提示：该机器人不存在，请先创建机器人, 登录 https://bot.chatopera.com");
                 return resp;
             }
         } catch (ChatbotException e) {
+            logger.error("bot create error", e);
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera开发者平台提示：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。");
             return resp;
         } catch (MalformedURLException e) {
+            logger.error("bot request error", e);
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_7);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "更新智能问答引擎失败。" + e.toString());
             return resp;
@@ -423,7 +428,7 @@ public class ApiChatbotController extends Handler {
      */
     private JsonObject create(JsonObject j, String creater, String organ, String orgi) {
         JsonObject resp = new JsonObject();
-        String baseUrl = "https://bot.chatopera.com";
+        String baseUrl = getBotBaseUrl();
         String snsid = null;
         String workmode = null;
         String clientId = null;
@@ -480,7 +485,7 @@ public class ApiChatbotController extends Handler {
         }
 
         try {
-            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(clientId, secret);
+            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(clientId, secret, getBotBaseUrl());
 
             if (bot.exists()) { // 该机器人存在，clientId 和 Secret配对成功
                 // 创建成功
@@ -532,14 +537,22 @@ public class ApiChatbotController extends Handler {
                 return resp;
             }
         } catch (ChatbotException e) {
+            logger.error("bot create error", e);
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera开发者平台提示：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。");
             return resp;
         } catch (MalformedURLException e) {
+            logger.error("bot request error", e);
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera开发者平台提示：不合法的聊天机器人服务URL。");
             return resp;
         }
+    }
+
+    private String getBotBaseUrl(){
+        if(this.botBaseUrl == null)
+            this.botBaseUrl = MainContext.getContext().getEnvironment().getProperty("chatopera.bot.url");
+        return this.botBaseUrl;
     }
 
 }

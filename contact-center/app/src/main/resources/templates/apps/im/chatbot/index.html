@@ -515,7 +515,7 @@
         <#if sessionConfig?? && sessionConfig.satisfaction?? && sessionConfig.satisfaction>
 
             document.getElementById("diaShade").style.display = "block" ;
-            document.getElementById("dialogWrap").style.display = "block" ;
+            document.getElementById("dialogWrap").style.display = "block";
         </#if>
         }
         if(document.getElementById("agentserviceid")){
@@ -525,7 +525,7 @@
     socket.on('message', function(data) {
         var chat=document.getElementsByClassName('chatting-left').innerText;
         chat = data.message;
-        // console.log("On Server Message from Chatbot: ", chat, ", 动态参数：", data.expmsg);
+        console.log("On Server Message from Chatbot: ", chat, ", 动态参数 data.expmsg：", data.expmsg);
 
         if(data.messageType == "image"){
             chat = "<a href='"+data.message+"&original=true' target='_blank'><img src='"+data.message+"' class='ukefu-media-image'/></a>" ;

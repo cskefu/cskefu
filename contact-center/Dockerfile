@@ -6,6 +6,8 @@ ARG VCS_REF
 LABEL org.label-schema.vcs-ref=$VCS_REF \
           org.label-schema.vcs-url="https://github.com/chatopera/cosin"
 
+COPY 163.source.list /etc/apt/sources.list
+
 # Set timezone
 RUN apt-get update && \
    apt-get install --no-install-recommends -y tzdata && \ 
