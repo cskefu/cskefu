@@ -281,10 +281,12 @@ public class ApiChatbotController extends Handler {
                 return resp;
             }
         } catch (ChatbotException e) {
+            logger.error("bot create error", e);
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera开发者平台提示：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。");
             return resp;
         } catch (MalformedURLException e) {
+            logger.error("bot request error", e);
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_7);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "更新智能问答引擎失败。" + e.toString());
             return resp;
