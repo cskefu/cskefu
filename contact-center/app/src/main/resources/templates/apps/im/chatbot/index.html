@@ -268,6 +268,10 @@
             background-color: #e6f2ff;
             cursor: default;
         }    
+
+        .msg-list{
+            color: #4598ee
+        }
     </style>
 </head>
 <body style="overflow:hidden;" class="ukefu-point-text">
@@ -557,9 +561,32 @@
     }
 
     function createQList(message,data){
+        var element = $('<div><p>' + message + '</p><div class="button-box"></div></div>')
+        var list = element.find('.button-box');
         for (let i = 0; i < data.length; i++) {
-
+            var item = data[i];
+            var allowClick = true;
+            var btn = $('<div class="msg-list">'(i + 1) + '.' + item.label + '</div>');
+            var regClick = function (key) {
+                btn.click(function () {
+                    if (allowClick) {
+                        allowClick = false;
+                        socket.emit('message', {
+                            appid: "${appid!''}",
+                            userid: "${userid!''}",
+                            type: "message",
+                            session: "${sessionid!''}",
+                            orgi: "${orgi!''}",
+                            message: key
+                        });
+                    }
+                });
+            }
+            regClick(item.text);
+            list.append(btn);
         }
+
+        return element;
     }
 
     function createCard(message,data){
