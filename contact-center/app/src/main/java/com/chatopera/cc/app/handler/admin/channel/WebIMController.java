@@ -73,7 +73,7 @@ public class WebIMController extends Handler {
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String snsid) {
 
         CousultInvite coultInvite = invite.findBySnsaccountidAndOrgi(snsid, super.getOrgi(request));
-        logger.info("[index] snsaccount Id {}, AiFirst {}", coultInvite.getSnsaccountid(), coultInvite.isAifirst());
+        logger.info("[index] snsaccount Id {}, Ai {}, Aifirst {}, Ainame {}, Aisuccess {}, Aiid {}", coultInvite.getSnsaccountid(), coultInvite.isAi(), coultInvite.isAifirst(), coultInvite.getAiname(), coultInvite.getAisuccesstip(), coultInvite.getAiid());
 
         if (coultInvite != null) {
             map.addAttribute("inviteData", coultInvite);
@@ -93,6 +93,7 @@ public class WebIMController extends Handler {
                              @Valid CousultInvite inviteData,
                              @RequestParam(value = "webimlogo", required = false) MultipartFile webimlogo,
                              @RequestParam(value = "agentheadimg", required = false) MultipartFile agentheadimg) throws IOException {
+        logger.info("[save] snsaccount Id {}, Ai {}, Aifirst {}, Ainame {}, Aisuccess {}, Aiid {}", inviteData.getSnsaccountid(), inviteData.isAi(), inviteData.isAifirst(), inviteData.getAiname(), inviteData.getAisuccesstip(), inviteData.getAiid());
 
         if (StringUtils.isNotBlank(inviteData.getSnsaccountid())) {
             CousultInvite tempData = invite.findBySnsaccountidAndOrgi(inviteData.getSnsaccountid(), super.getOrgi(request));
@@ -127,6 +128,8 @@ public class WebIMController extends Handler {
     @Menu(type = "app", subtype = "profile", admin = true)
     public ModelAndView profile(ModelMap map, HttpServletRequest request, @Valid String snsid) {
         CousultInvite coultInvite = invite.findBySnsaccountidAndOrgi(snsid, super.getOrgi(request));
+        logger.info("[profile] snsaccount Id {}, Ai {}, Aifirst {}, Ainame {}, Aisuccess {}, Aiid {}", coultInvite.getSnsaccountid(), coultInvite.isAi(), coultInvite.isAifirst(), coultInvite.getAiname(), coultInvite.getAisuccesstip(), coultInvite.getAiid());
+
         if (coultInvite != null) {
             map.addAttribute("inviteData", coultInvite);
         }
@@ -141,6 +144,8 @@ public class WebIMController extends Handler {
     @Menu(type = "admin", subtype = "profile", admin = true)
     public ModelAndView saveprofile(HttpServletRequest request, @Valid CousultInvite inviteData, @RequestParam(value = "dialogad", required = false) MultipartFile dialogad) throws IOException {
         CousultInvite tempInviteData;
+        logger.info("[profile/save] snsaccount Id {}, Ai {}, Aifirst {}, Ainame {}, Aisuccess {}, Aiid {}", inviteData.getSnsaccountid(), inviteData.isAi(), inviteData.isAifirst(), inviteData.getAiname(), inviteData.getAisuccesstip(), inviteData.getAiid());
+
         if (inviteData != null && StringUtils.isNotBlank(inviteData.getId())) {
             tempInviteData = invite.findOne(inviteData.getId());
             if (tempInviteData != null) {
@@ -210,6 +215,8 @@ public class WebIMController extends Handler {
     @Menu(type = "app", subtype = "invote", admin = true)
     public ModelAndView invote(ModelMap map, HttpServletRequest request, @Valid String snsid) {
         CousultInvite coultInvite = invite.findBySnsaccountidAndOrgi(snsid, super.getOrgi(request));
+        logger.info("[invote] snsaccount Id {}, Ai {}, Aifirst {}, Ainame {}, Aisuccess {}, Aiid {}", coultInvite.getSnsaccountid(), coultInvite.isAi(), coultInvite.isAifirst(), coultInvite.getAiname(), coultInvite.getAisuccesstip(), coultInvite.getAiid());
+
         if (coultInvite != null) {
             map.addAttribute("inviteData", coultInvite);
         }
@@ -222,6 +229,8 @@ public class WebIMController extends Handler {
     @Menu(type = "admin", subtype = "profile", admin = true)
     public ModelAndView saveinvote(HttpServletRequest request, @Valid CousultInvite inviteData, @RequestParam(value = "invotebg", required = false) MultipartFile invotebg) throws IOException {
         CousultInvite tempInviteData;
+        logger.info("[invote/save] snsaccount Id {}, Ai {}, Aifirst {}, Ainame {}, Aisuccess {}, Aiid {}", inviteData.getSnsaccountid(), inviteData.isAi(), inviteData.isAifirst(), inviteData.getAiname(), inviteData.getAisuccesstip(), inviteData.getAiid());
+
         if (inviteData != null && StringUtils.isNotBlank(inviteData.getId())) {
             tempInviteData = invite.findOne(inviteData.getId());
             if (tempInviteData != null) {

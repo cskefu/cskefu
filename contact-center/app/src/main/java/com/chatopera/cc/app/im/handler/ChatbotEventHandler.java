@@ -42,6 +42,7 @@ import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,20 +102,56 @@ public class ChatbotEventHandler {
                 client.sendEvent(MainContext.MessageTypeEnum.STATUS.toString(), tip);
 
                 // send out welcome message
-                if (invite != null && StringUtils.isNotBlank(invite.getAisuccesstip())) {
-                    ChatMessage welcome = new ChatMessage();
-                    welcome.setCalltype(MainContext.CallTypeEnum.OUT.toString());
-                    welcome.setAppid(appid);
-                    welcome.setOrgi(orgi);
-                    welcome.setAiid(aiid);
-                    welcome.setMessage(invite.getAisuccesstip());
-                    welcome.setTouser(user);
-                    welcome.setTousername(nickname);
-                    welcome.setMsgtype(MainContext.MessageTypeEnum.MESSAGE.toString());
-                    welcome.setUserid(user);
-                    welcome.setUsername(invite.getAiname());
-                    welcome.setUpdatetime(System.currentTimeMillis());
-                    client.sendEvent(MainContext.MessageTypeEnum.MESSAGE.toString(), welcome);
+                if (invite != null) {
+                    Chatbot chatbot = getChatbotRes().findOne(invite.getAiid());
+                    com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(chatbot.getClientId(), chatbot.getSecret(), chatbot.getBaseUrl());
+                    JSONObject details = bot.details();
+
+                    // 发送欢迎语
+                    if (details.has("rc") &&
+                            details.getInt("rc") == 0) {
+                        ChatMessage welcome = new ChatMessage();
+                        String welcomeTextMessage = details.getJSONObject("data").getString("welcome");
+                        if (StringUtils.isNotBlank(welcomeTextMessage)) {
+                            welcome.setCalltype(MainContext.CallTypeEnum.OUT.toString());
+                            welcome.setAppid(appid);
+                            welcome.setOrgi(orgi);
+                            welcome.setAiid(aiid);
+                            welcome.setMessage(welcomeTextMessage);
+                            welcome.setTouser(user);
+                            welcome.setTousername(nickname);
+                            welcome.setMsgtype(MainContext.MessageTypeEnum.MESSAGE.toString());
+                            welcome.setUserid(user);
+                            welcome.setUsername(invite.getAiname());
+                            welcome.setUpdatetime(System.currentTimeMillis());
+                            client.sendEvent(MainContext.MessageTypeEnum.MESSAGE.toString(), welcome);
+                        }
+
+                        // 发送常见问题列表
+                        JSONObject faqhotresp = bot.conversation(user, "__faq_hot_list");
+                        logger.info("faqhot {}", faqhotresp.toString());
+                        if (faqhotresp.getInt("rc") == 0) {
+                            JSONObject faqhotdata = faqhotresp.getJSONObject("data");
+                            if ((!faqhotdata.getBoolean("logic_is_fallback")) &&
+                                    faqhotdata.has("string") &&
+                                    faqhotdata.has("params")) {
+                                ChatMessage faqhotmsg = new ChatMessage();
+                                faqhotmsg.setCalltype(MainContext.CallTypeEnum.OUT.toString());
+                                faqhotmsg.setAppid(appid);
+                                faqhotmsg.setOrgi(orgi);
+                                faqhotmsg.setAiid(aiid);
+                                faqhotmsg.setMessage(faqhotdata.getString("string"));
+                                faqhotmsg.setExpmsg(faqhotdata.getJSONArray("params").toString());
+                                faqhotmsg.setTouser(user);
+                                faqhotmsg.setTousername(nickname);
+                                faqhotmsg.setMsgtype(MainContext.MessageTypeEnum.MESSAGE.toString());
+                                faqhotmsg.setUserid(user);
+                                faqhotmsg.setUsername(invite.getAiname());
+                                faqhotmsg.setUpdatetime(System.currentTimeMillis());
+                                client.sendEvent(MainContext.MessageTypeEnum.MESSAGE.toString(), faqhotmsg);
+                            }
+                        }
+                    }
                 }
 
                 InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress();

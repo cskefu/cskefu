@@ -428,7 +428,6 @@ public class ApiChatbotController extends Handler {
      */
     private JsonObject create(JsonObject j, String creater, String organ, String orgi) {
         JsonObject resp = new JsonObject();
-        String baseUrl = getBotBaseUrl();
         String snsid = null;
         String workmode = null;
         String clientId = null;
@@ -494,7 +493,7 @@ public class ApiChatbotController extends Handler {
                 c.setId(MainUtils.getUUID());
                 c.setClientId(clientId);
                 c.setSecret(secret);
-                c.setBaseUrl(baseUrl);
+                c.setBaseUrl(getBotBaseUrl());
                 c.setDescription(botDetails.getJSONObject("data").getString("description"));
                 c.setFallback(botDetails.getJSONObject("data").getString("fallback"));
                 c.setPrimaryLanguage(botDetails.getJSONObject("data").getString("primaryLanguage"));
