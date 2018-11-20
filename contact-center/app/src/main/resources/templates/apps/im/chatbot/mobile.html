@@ -164,6 +164,44 @@
             });
         });
     </script>
+    <style>
+        .msg-btn {
+            border: #4598ee 1px solid;
+            padding: 5px;
+            margin: 5px;
+            min-width: 125px;
+            text-align: center;
+            display: inline-block;
+            background-color: #e6f2ff;
+            cursor: default;
+        }    
+
+        .msg-list {
+            color: #4598ee
+        }
+
+        .msg-card {
+            display: inline-block;
+            color: #000000;
+        }
+
+        .msg-crad-right {
+            position: relative;
+            left: 10px;
+            width: 170px;
+            height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-box{
+            cursor: default;
+            width: 250px;
+            height: 72px;
+            padding: 6px;
+            line-height:20px;
+        }
+    </style>
     <!-- kindeditor -->
 </head>
 <body class="ukefu-im-theme" style="overflow:hidden;height:calc(100%);overflow-y: atuo;/* 或者scroll */-webkit-overflow-scrolling: touch;/* 解决ios滑动不流畅问题 */" class="ukefu-point-text">
@@ -312,9 +350,102 @@
         if(data.calltype == "呼入"){
             output('<div class="chat-right"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label class="time">'+data.createtime+'</label><label  class="user">'+data.username+'</label> </div><div class="chatting-right"><i class="arrow arrow${inviteData.consult_dialog_color!''}"></i><div class="chat-content theme${inviteData.consult_dialog_color!''}">'+chat+'</div></div>' , "chat-block");
         }else if(data.calltype == "呼出"){
-            output('<div class="chat-left"> <img class="user-img" src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" alt=""><div class="chat-message"><label  class="user">'+data.username+'</label><label class="time">'+data.createtime+'</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content">'+chat+'</div></div>' , "chat-block");
+            if(data.expmsg){
+                showExtmsg(data.username, data.createtime,data.message ,data.expmsg);
+            }
+            else{
+                output('<div class="chat-left"> <img class="user-img" src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" alt=""><div class="chat-message"><label  class="user">'+data.username+'</label><label class="time">'+data.createtime+'</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content">'+chat+'</div></div>' , "chat-block");
+            }
+
         }
     });
+
+    function showExtmsg(username,createtime,message,json) {
+        var expmsg = JSON.parse(json);
+        
+        var type = expmsg[0].type;
+        var content;
+        if (type == 'button') {
+            content = createButton(message,expmsg);
+        } else if (type == 'qlist') {
+            content = createQList(message,expmsg);
+        } else if (type == 'card') {
+            content = createCard(message,expmsg);
+        }
+
+        var box = $('<div class="chat-left"> <img class="user-img" src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" alt=""><div class="chat-message"><label  class="user">'+username+'</label><label class="time">'+createtime+'</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content"></div></div>');
+
+        box.find('.chat-content').append(content);
+
+        output(box,'chat-block')
+    }
+
+    function createButton(message, data) {
+        var element = $('<div><p>' + message + '</p><div class="button-box"></div></div>')
+        var list = element.find('.button-box');
+        for (let i = 0; i < data.length; i++) {
+            var item = data[i];
+            var allowClick = true;
+            var btn = $('<div class="msg-btn" style="background-color: #e6f2ff !important;">' + item.label + '</div>');
+            var regClick = function (key) {
+                btn.click(function () {
+                    if (allowClick) {
+                        allowClick = false;
+                        socket.emit('message', {
+                            appid: "${appid!''}",
+                            userid: "${userid!''}",
+                            type: "message",
+                            session: "${sessionid!''}",
+                            orgi: "${orgi!''}",
+                            message: key
+                        });
+                    }
+                });
+            }
+            regClick(item.text);
+            list.append(btn);
+        }
+
+        return element;
+    }
+
+    function createQList(message,data){
+        var element = $('<div><p>' + message + '</p><div class="button-box"></div></div>')
+        var list = element.find('.button-box');
+        for (let i = 0; i < data.length; i++) {
+            var item = data[i];
+            var btn = $('<div class="msg-list">' + item.label + '</div>');
+            var regClick = function (key) {
+                btn.click(function () {
+                    socket.emit('message', {
+                        appid: "${appid!''}",
+                        userid: "${userid!''}",
+                        type: "message",
+                        session: "${sessionid!''}",
+                        orgi: "${orgi!''}",
+                        message: key
+                    });
+                });
+            }
+            regClick(item.text);
+            list.append(btn);
+        }
+
+        return element;
+    }
+
+    function createCard(message,data){
+        let item = data[0];
+
+        let html = '<div class="card-box" style="background-color: #fff !important;"><div class="msg-card" style="background-color: #fff !important;"><img src="' + item.thumbnail + '" style="width: 60px;height: 60px;"></div><div class="msg-card msg-crad-right" style="background-color: #fff !important;"><h4 style="background-color: #fff !important;">' + item.title + '</h4><p style="background-color: #fff !important;">' + item.summary + '</p></div></div>'
+
+        var element = $(html);
+        element.click(function(){
+            window.open(item.hyperlink);
+        })
+
+        return element;
+    }
 
     socket.on('disconnect',function() {
         output('<span id="connect-message">连接坐席失败，在线咨询服务不可用</span>' , 'message connect-message');
@@ -394,9 +525,9 @@
                 inx++;
             }
         }
-        var element = ("<div class='clearfix "+clazz+"'>" + " " + message + "</div>");
-        document.getElementById('above').innerHTML = (document
-            .getElementById('above').innerHTML + element);
+        var element = $("<div class='clearfix "+clazz+"'></div>");
+        element.append(message);
+        $('#above').append(element);
         document.getElementById('above').scrollTop = document.getElementById('above').scrollHeight ;
         //$("#welcome-message").html(document.getElementById('above').scrollHeight);
     }
