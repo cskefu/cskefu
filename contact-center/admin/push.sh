@@ -5,18 +5,12 @@
 
 # constants
 baseDir=$(cd `dirname "$0"`;pwd)
-appHome=$baseDir/..
 imagename=chatopera/contact-center
 PACKAGE_VERSION=1.0.0
+
 # functions
 
 # main 
 [ -z "${BASH_SOURCE[0]}" -o "${BASH_SOURCE[0]}" = "$0" ] || return
-set -x
-# package
-$baseDir/package.sh
-
-# build
-cd $appHome
-docker build --build-arg VCS_REF=`git rev-parse --short HEAD` --force-rm=true --tag $imagename:$PACKAGE_VERSION .
-docker tag $imagename:$PACKAGE_VERSION $imagename:develop
+docker push $imagename:$PACKAGE_VERSION
+docker push $imagename:develop

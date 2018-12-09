@@ -1,4 +1,5 @@
-./app/target/
-./logs/
-./tmp/
-./data/
+app/target
+!app/target/contact-center-*.war.original
+logs/
+tmp/
+data/
