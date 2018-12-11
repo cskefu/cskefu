@@ -40,7 +40,7 @@ public class ChatbotEventHandler implements EventHandler<UserDataEvent> {
 
     private ChatbotRepository chatbotRes;
     private AgentUserRepository agentUserRes;
-    private String botServiceUrl;
+    private static String botServiceUrl;
 
     /**
      * 根据聊天机器人返回数据更新agentUser
@@ -140,11 +140,10 @@ public class ChatbotEventHandler implements EventHandler<UserDataEvent> {
     }
 
 
-    private String getChatbotServiceUrl() {
+    public static String getChatbotServiceUrl() {
         if (botServiceUrl == null) {
             botServiceUrl = MainContext.getContext().getEnvironment().getProperty("chatopera.bot.url");
         }
         return botServiceUrl;
     }
-
 }

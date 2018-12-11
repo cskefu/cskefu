@@ -16,13 +16,13 @@
 package com.chatopera.cc.app.handler.api.rest;
 
 import com.chatopera.bot.exception.ChatbotException;
-import com.chatopera.cc.app.basic.MainContext;
 import com.chatopera.cc.app.basic.MainUtils;
 import com.chatopera.cc.app.handler.Handler;
 import com.chatopera.cc.app.handler.api.request.RestUtils;
 import com.chatopera.cc.app.im.util.ChatbotUtils;
 import com.chatopera.cc.app.model.*;
 import com.chatopera.cc.app.persistence.repository.*;
+import com.chatopera.cc.concurrent.chatbot.ChatbotEventHandler;
 import com.chatopera.cc.exception.CallOutRecordException;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.OnlineUserUtils;
@@ -185,7 +185,7 @@ public class ApiChatbotController extends Handler {
         }
 
         try {
-            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(c.getClientId(), c.getSecret());
+            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(c.getClientId(), c.getSecret(), ChatbotEventHandler.getChatbotServiceUrl());
             if (bot.exists()) {
                 c.setEnabled(isEnabled);
                 chatbotRes.save(c);
@@ -206,6 +206,7 @@ public class ApiChatbotController extends Handler {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
             resp.addProperty(RestUtils.RESP_KEY_DATA, "设置不成功，智能问答引擎地址不合法。");
         } catch (ChatbotException e) {
+
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
             resp.addProperty(RestUtils.RESP_KEY_DATA, "设置不成功，智能问答引擎服务异常。");
         }
@@ -267,7 +268,7 @@ public class ApiChatbotController extends Handler {
         }
 
         try {
-            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(c.getClientId(), c.getSecret());
+            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(c.getClientId(), c.getSecret(), ChatbotEventHandler.getChatbotServiceUrl());
             if (bot.exists()) {
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
                 resp.addProperty(RestUtils.RESP_KEY_DATA, "更新成功。");
@@ -484,7 +485,8 @@ public class ApiChatbotController extends Handler {
         }
 
         try {
-            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(clientId, secret, getBotBaseUrl());
+            logger.info("create bot with url {}", ChatbotEventHandler.getChatbotServiceUrl());
+            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(clientId, secret, ChatbotEventHandler.getChatbotServiceUrl());
 
             if (bot.exists()) { // 该机器人存在，clientId 和 Secret配对成功
                 // 创建成功
@@ -493,7 +495,7 @@ public class ApiChatbotController extends Handler {
                 c.setId(MainUtils.getUUID());
                 c.setClientId(clientId);
                 c.setSecret(secret);
-                c.setBaseUrl(getBotBaseUrl());
+                c.setBaseUrl(ChatbotEventHandler.getChatbotServiceUrl());
                 c.setDescription(botDetails.getJSONObject("data").getString("description"));
                 c.setFallback(botDetails.getJSONObject("data").getString("fallback"));
                 c.setPrimaryLanguage(botDetails.getJSONObject("data").getString("primaryLanguage"));
@@ -547,11 +549,4 @@ public class ApiChatbotController extends Handler {
             return resp;
         }
     }
-
-    private String getBotBaseUrl(){
-        if(this.botBaseUrl == null)
-            this.botBaseUrl = MainContext.getContext().getEnvironment().getProperty("chatopera.bot.url");
-        return this.botBaseUrl;
-    }
-
 }

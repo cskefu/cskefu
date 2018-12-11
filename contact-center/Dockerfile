@@ -1,4 +1,4 @@
-FROM tomcat:8.5.35-slim
+FROM chatopera/java:1.0.0
 MAINTAINER Hai Liang Wang <hain@chatopera.com>
 
 ARG VCS_REF
@@ -20,12 +20,20 @@ ENV LANG C.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL C.UTF-8
 
+# set ENVs
+ENV JAVA_HOME=/opt/java-8-oracle
+ENV TOMCAT_HOME=/opt/apache-tomcat
+ENV PATH=$PATH:$JAVA_HOME/bin
+
 # create dirs
 RUN /bin/bash -c "mkdir -p /{data,logs}"
 
-# copy WAR
-RUN rm -rf /usr/local/tomcat/webapps/*
-COPY ./app/target/contact-center-3.9.0.war.original /usr/local/tomcat/webapps/ROOT.war
-COPY ./config/tomcat.context.xml  /usr/local/tomcat/conf/context.xml
+# build WAR
+RUN rm -rf /opt/apache-tomcat/webapps/ROOT*
+COPY ./app/target/contact-center-*.war.original /opt/apache-tomcat/webapps/ROOT.war
+
+# clean files
+RUN rm -rf /root/.m2
 
 EXPOSE 8030-8090 9200 9300
+CMD ["/opt/apache-tomcat/bin/catalina.sh", "run"]
