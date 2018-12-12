@@ -73,7 +73,7 @@
             elem.style.resize = 'none';
             
             var textchange = function(){
-            	changeTextArea(38);
+            	changeTextArea(0);
             }
             
             var change = function () {
@@ -83,7 +83,9 @@
             
             addEvent('propertychange', textchange);
             addEvent('input', textchange);
-            // addEvent('focus', changeTextArea);
+            addEvent('focus', function(){
+                changeTextArea(0);
+            });
             change();
     };
   	//多行文本框 
@@ -404,7 +406,7 @@
 	autoTextarea(document.getElementById("message"));// 调用
 	$('#message').click(function() {
 		wordinx = getPositionForTextArea(document.getElementById('message'));
-		closeFaceDialog(44);
+		closeFaceDialog(0);
 	});
 
 	var message = {
