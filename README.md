@@ -34,22 +34,6 @@
 
 [开源许可协议](https://github.com/chatopera/cosin#%E5%BC%80%E6%BA%90%E8%AE%B8%E5%8F%AF%E5%8D%8F%E8%AE%AE)
 
-## 产品演示
-
-* 坐席工作台
-
-[http://cc.chatopera.com/](http://cc.chatopera.com/)
-
-
-| **登录账号** | **密码** | 
-| --- | --- |
-| admin | admin1234 | 
-
-
-* 网页端访客程序
-
-[http://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
-
 ## 功能
 
 * 账号及组织机构管理：按组织、角色分配账号权限
@@ -59,6 +43,8 @@
 * 网页聊天组件：一分钟接入对话窗口
 
 * 坐席工作台：汇聚多渠道访客请求
+
+* 机器人客服：集成机器人平台服务，完成多轮对话和知识库问答
 
 * 外呼系统：自动外呼，手动外呼，监听和报表等
 
@@ -122,6 +108,33 @@
 
 [*下载视频合集*](https://pan.baidu.com/s/1YH7d7nMm5wZQp7P8kID3KA)
 
+## 使用说明
+
+关于产品的具体使用说明，请参考[文档中心](https://docs.chatopera.com/omni-channel-customer-support-system.html)。
+
+## 来自真实用户的反馈
+
+```
+项目代码写的挺好的，容易维护，是不错的开源项目。
+```
+
+-- 海洋 (深圳银之杰项目经理)
+
+
+```
+Amazing! 要的就是这个效果。
+```
+
+-- 常经理 (某电器世界五百强企业)
+
+
+```
+我要在APP内集成，我看了好多项目了，就你们这个最好，基本就是一个商用化的项目。
+```
+
+-- Engine X (某二手车出售平台技术负责人)
+
+
 ## 开发文档
 
 <p align="center">
@@ -159,6 +172,16 @@
 </p>
 
 <p align="center">
+  <b>集成客服机器人</b><br>
+  <img src="https://user-images.githubusercontent.com/3538629/51080565-4b82df00-1719-11e9-8cc4-dbbec0459224.png" width="900">
+</p>
+
+<p align="center">
+  <b>客服机器人应答</b><br>
+  <img src="https://user-images.githubusercontent.com/3538629/51080567-50479300-1719-11e9-85d8-d209370c9d10.png" width="900">
+</p>
+
+<p align="center">
   <b>更多功能，敬请期待 ...</b><br>
   <img src="https://user-images.githubusercontent.com/3538629/44916014-28a5ee80-ad67-11e8-936a-a2cdbe62f529.png" width="900">
 </p>
@@ -174,12 +197,24 @@
 
 ## 立即部署
 
+* 企业版
+
+通过青云AppCenter部署，青云AppCenter是开发运维一体化(DevOps)管理企业应用的平台，Chatopera的春松客服在2018年10月登录AppCenter，并借助PaaS平台强大的计算能力实现计算节点集群、存储节点HADR。从而保证了服务高可靠性、高性能、动态伸缩、一键备份和一键回滚等功能。
+
+青云AppCenter以其提供的资源秒级计算特点，企业使用AppCenter中的春松客服应用，可以按需付费，灵活升配和降配，Chatopera也非常推荐客户使用青云服务。
+
 <p align="center">
   <b>春松客服 on QingCloud</b><br>
   <a href="https://appcenter.qingcloud.com/apps/app-zdh88kz7/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D" target="_blank">
       <img src="https://user-images.githubusercontent.com/3538629/47984143-a17f4900-e110-11e8-95c9-d8302e000c34.png" width="900">
   </a>
 </p>
+
+更为详细的部署文档见[春松客服上架青云AppCenter](https://github.com/chatopera/cosin/wiki/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E4%B8%8A%E6%9E%B6%E9%9D%92%E4%BA%91AppCenter)。
+
+* 社区版
+
+参考部署[开源社区版本文档](https://github.com/chatopera/cosin/wiki/%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2)。
 
 ## 鸣谢
 
