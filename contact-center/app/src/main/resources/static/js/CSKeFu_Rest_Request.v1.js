@@ -1,9 +1,5 @@
 // 统一处理请求restapi
 function httpRequest(opts) {
-    var localUrl = 'http://localhost:8035';
-    var devUrl = 'http://47.104.19.187:8035';
-    var proUrl = 'http://pro';
-
     var postfix = '/api/';
 
     var urlPath = opts.path || '';
