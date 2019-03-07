@@ -40,7 +40,7 @@ services:
     image: "chatopera/contact-center:develop"
     restart: always
     ports:
-      - "8035:8080"
+      - "8035:8035"
       - "8036:8036"
     volumes:
      - $PWD/contact-center/data:/data
