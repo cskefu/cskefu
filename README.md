@@ -34,6 +34,19 @@
 
 [开源许可协议](https://github.com/chatopera/cosin#%E5%BC%80%E6%BA%90%E8%AE%B8%E5%8F%AF%E5%8D%8F%E8%AE%AE)
 
+## 产品演示
+* 坐席工作台
+
+[http://cc.chatopera.com/](http://cc.chatopera.com/)
+
+| **登录账号** | **密码** | 
+| --- | --- |
+| admin | admin1234 | 
+
+* 网页端访客程序
+
+[http://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
+
 
 ## 功能
 
