@@ -49,7 +49,7 @@
 						<div class="layui-inline">
 							<label class="layui-form-label" id="cusname">客户名称：</label>
 							<div class="layui-input-inline">
-								<input type="text" name="entcustomer.name" required  lay-verify="required" autocomplete="off"
+								<input type="text" name="entcustomer.name" required  lay-verify="customer_username" autocomplete="off"
 									class="layui-input">
 							</div>
 						</div>
@@ -160,7 +160,7 @@
 							<label class="layui-form-label">姓名：</label>
 							<div class="layui-input-inline">
 								<input type="text" name="contacts.name" autocomplete="off"
-									class="layui-input">
+									class="layui-input" lay-verify="customer_username">
 							</div>
 						</div>
 						<div class="layui-inline uckefu-inline">
@@ -187,7 +187,7 @@
 							<label class="layui-form-label">座机电话：</label>
 							<div class="layui-input-inline" style="width:auto;">
 								<div class="layui-input-block">
-									<input type="text" name="contacts.phone" autocomplete="off" class="layui-input">	
+									<input type="text" name="contacts.phone" autocomplete="off" class="layui-input" lay-verify="landlinephone">
 								</div>
 							</div>
 						</div>
@@ -197,14 +197,14 @@
 						<div class="layui-inline">
 							<label class="layui-form-label">电子邮件：</label>
 							<div class="layui-input-inline">
-								<input type="text" name="contacts.email" autocomplete="off" class="layui-input">
+								<input type="text" name="contacts.email" autocomplete="off" lay-verify="entemail" class="layui-input">
 							</div>
 						</div>
 						<div class="layui-inline uckefu-inline">
 							<label class="layui-form-label">手机号：</label>
 							<div class="layui-input-inline" style="width:auto;">
 								<div class="layui-input-block">
-									<input type="text" name="contacts.mobile" id="getdate" autocomplete="off" class="layui-input">
+									<input type="text" name="contacts.mobile" id="getdate" autocomplete="off" class="layui-input" lay-verify="entphone">
 								</div>
 							</div>
 						</div>
@@ -246,9 +246,19 @@
 			    }
 			},
 			entemail: function(value){
-			    if(value!="" && !new RegExp(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/).test(value)){
+			    if(value!="" && !new RegExp(/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/).test(value)){
 			      return '请输入正确的电子邮箱地址';
 			    }
+			},
+			landlinephone: function(value){
+				if(value!="" && !new RegExp(/^((0\d{2,3}-\d{7,8})|(1[3584]\d{9}))$/).test(value)){
+					return '请输入正确的电话号码';
+				}
+			},
+			customer_username: function (value) {
+				if (value.length > 100){
+					return "用户姓名不能超过100字";
+				}
 			}
 		});  
 		form.on("radio(etype)" , function(data){

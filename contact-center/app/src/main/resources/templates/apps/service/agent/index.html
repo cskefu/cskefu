@@ -21,16 +21,16 @@
 							<th>操作</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody style="table-layout: fixed; word-break: break-all;">
 						<#if agentStatusList??>
 						<#list agentStatusList as agentStatus>
 						<tr class="tdHasContorllor design-dropable-td">
-							<td class=" first_td_head">
+							<td class=" first_td_head" style="width: 150px">
 								<a href="javascript:void(0)">
 								${agentStatus.username!''}
 								</a>
 							</td>
-							<td>
+							<td style="width: 150px">
 								${agentStatus.skillname!''}
 							</td>
 							<td>
@@ -52,7 +52,7 @@
 						<#else>
 							<tr>
 								<td colspan="20" style="height:400px;">
-									<div class="ukefu-empty">
+									<div class="ukefu-empty" style="background: none">
 										<i class="layui-icon">&#xe63a;</i>
 										<div style="">当前没有在线坐席</div>
 									</div>

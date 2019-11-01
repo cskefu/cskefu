@@ -3,7 +3,9 @@
         <#include "/apps/callout/include/left.html">
     </div>
 </div>
+
 <script src="/js/CSKeFu_Rest_Request.v1.js"></script>
+
 <script>
     var statusArr = ['初始化', '执行中', '已停止', '已删除'];
 
@@ -143,11 +145,11 @@
                         data: { ops: "execute", dialplanId: id },
                     };
 
-                    httpRequest(payload).then(function (data) {
+                    restApiRequest(payload).then(function (data) {
                         // remove a click exchange and set color to gray
                         // AUTH_ERROR
                         if(data.status && data.status === "AUTH_ERROR"){
-                            openFail(data.status);
+                            handleRestApiFail(data.status);
                             return;
                         }
 
@@ -157,14 +159,14 @@
 
                             $("#" + "status_" + id).html(statusArr[1]);
                             // open modal
-                            openSucc()
+                            handleRestApiSucc()
                         } else {
-                            openFail(null, data.error)
+                            handleRestApiFail(null, data.error)
                         }
                     }, function (err) {
                         console.log(err)
                         // open modal
-                        openFail()
+                        handleRestApiFail()
                     });
                     layer.close(index)
                 }, function(index){
@@ -199,11 +201,11 @@
                         data: { ops: "pause", dialplanId: id },
                     };
 
-                    httpRequest(payload).then(function (data) {
+                    restApiRequest(payload).then(function (data) {
                         // remove a click exchange and set color to gray
                         // AUTH_ERROR
                         if(data.status && data.status === "AUTH_ERROR"){
-                            openFail(data.status);
+                            handleRestApiFail(data.status);
                             return;
                         }
 
@@ -212,14 +214,14 @@
 
                             $("#" + "status_" + id).html(statusArr[2]);
                             // open modal
-                            openSucc()
+                            handleRestApiSucc()
                         } else {
-                            openFail(null, data.error)
+                            handleRestApiFail(null, data.error)
                         }
                     }, function (err) {
                         console.log(err)
                         // open modal
-                        openFail()
+                        handleRestApiFail()
                     });
                     layer.close(index)
                 }, function(index){
@@ -272,24 +274,24 @@
                         data: { ops: "delete", dialplanId: id },
                     };
 
-                    httpRequest(payload).then(function (data) {
+                    restApiRequest(payload).then(function (data) {
                         // remove a click exchange and set color to gray
                         if(data.status && data.status === "AUTH_ERROR"){
-                            openFail(data.status);
+                            handleRestApiFail(data.status);
                             return;
                         }
 
                         if(data.rc === 0){
                             // open modal
-                            openSucc()
+                            handleRestApiSucc()
                             $("#tr_" + id).remove();
                         } else {
-                            openFail(null, data.error)
+                            handleRestApiFail(null, data.error)
                         }
                     }, function (err) {
                         console.log(err)
                         // open modal
-                        openFail()
+                        handleRestApiFail()
                     });
                     layer.close(index)
                 }, function(index){

@@ -44,6 +44,13 @@
 layui.use('form', function(){
   var form = layui.form();
   form.render(); //更新全部
+  form.verify({
+	  required: function (value) {
+		  if (value.length > 50){
+		 	return "部门名称不能超过50字";
+	  	}
+	  }
+	})
   form.on("switch(area)",function(data){
   	if(data.elem.checked){
   		$('#area').show();

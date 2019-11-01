@@ -1,0 +1,7 @@
+# ignore plugins source code
+src/main/java/com/chatopera/cc/plugins/
+
+# ignore views within plugins
+!src/main/resources/templates/admin/channel/callout/
+!src/main/resources/templates/admin/channel/im/
+src/main/resources/templates/admin/channel/*

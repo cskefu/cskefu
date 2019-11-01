@@ -112,6 +112,15 @@
 							</div>
 						</div>
 					</div>
+
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label" style="widht:80px;" id="contacts_skypeid">Skype ID:</label>
+							<div class="layui-input-inline">
+								<input type="text" name="skypeid" id="skypeid" lay-verify="skypeid" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+					</div>
 					
 					<div class="layui-form-item">
 						<div class="layui-inline">
@@ -161,6 +170,11 @@
 			    if(value!="" && !new RegExp(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/).test(value)){
 			      return '请输入正确的电子邮箱地址';
 			    }
+			},
+			required: function (value) {
+				if (value.length>100) {
+					return '联系人名称不能超过100';
+				}
 			}
 		});  
 	});

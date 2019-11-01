@@ -50,7 +50,7 @@
 						<div class="layui-inline">
 							<label class="layui-form-label" id="cusname">客户名称：</label>
 							<div class="layui-input-inline">
-								<input type="text" name="entcustomer.name" required  lay-verify="required" autocomplete="off" value="${entCustomer.name!''}"
+								<input type="text" name="entcustomer.name" required  lay-verify="customer_username" autocomplete="off" value="${entCustomer.name!''}"
 									class="layui-input">
 							</div>
 						</div>
@@ -182,6 +182,11 @@
 			    if(value!="" && !new RegExp(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/).test(value)){
 			      return '请输入正确的电子邮箱地址';
 			    }
+			},
+			customer_username: function (value) {
+				if (value.length > 100){
+					return "用户姓名不能超过100字";
+				}
 			}
 		});  
 		form.on("radio(etype)" , function(data){

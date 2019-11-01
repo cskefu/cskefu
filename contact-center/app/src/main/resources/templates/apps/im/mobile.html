@@ -35,6 +35,7 @@
     </style>
     
     <script src="/im/js/socket.io.js"></script>
+    <script src="/im/js/dayjs.min.js"></script>
     <script type="text/javascript">
 	var editor , words , textheight , wordinx = 0 ;
     
@@ -176,7 +177,7 @@
 		
 		<div class="ukefu-func-tab">
 		   		<ul>
-		   			<#if models?? && models["chatbot"]?? && models["chatbot"] == true && inviteData.ai?? && inviteData.ai == true && aiid??>
+		   			<#if models?seq_contains("chatbot") && inviteData.ai?? && inviteData.ai == true && aiid??>
 		   				<li><a href="/im/index.html?appid=${appid!''}&orgi=${orgi!''}<#if aiid??>&aiid=${aiid}</#if>&ai=true<#if client??>&client=${client!''}</#if><#if type??>&type=text</#if><#if skill??>&skill=${skill!''}</#if><#if agent??>&agent=${agent!''}</#if>&userid=${userid!''}&sessionid=${sessionid!''}&t=${.now?long}">智能客服</a></li>
 		   				<li class="cur"><a href="javascript:void(0)">人工坐席</a></li>
 		   			<#else>
@@ -283,8 +284,9 @@
 	// 参数连接
 	var hostname = location.hostname ;
     var protocol = window.location.protocol.replace(/:/g,'');
-    var socket = io(protocol + '://'+hostname+':${port}/im/user?userid=${userid!''}<#if aiid??>&aiid=${aiid}</#if>&orgi=${orgi!''}&session=${sessionid!''}&appid=${appid!''}&osname=${(osname!'')?url}&browser=${(browser!'')?url}<#if skill??>&skill=${skill}</#if><#if username??>&nickname=${username}</#if><#if agent??>&agent=${agent}</#if>', {transports: ['websocket', 'polling']});
-    socket.on('connect',function(){
+	var username = encodeURIComponent("${username}");
+	var socket = io(protocol + '://'+hostname+':${port}/im/user?userid=${userid!''}&orgi=${orgi!''}&session=${sessionid!''}&appid=${appid!''}&osname=${(osname!'')?url}&browser=${(browser!'')?url}<#if skill??>&skill=${skill}</#if><#if username??>&nickname='+username+'</#if><#if agent??>&agent=${agent}</#if><#if title??>&title=${title?url}</#if><#if traceid??>&url=${url?url}</#if><#if traceid??>&traceid=${traceid}</#if>', {transports: ['websocket', 'polling']});
+	socket.on('connect',function(){
         //service.sendRequestMessage(); 
 		//output('<span id="callOutConnect-message">'+ new Date().format("yyyy-MM-dd hh:mm:ss") + ' 开始沟通' +'</span>' , 'message callOutConnect-message');
     })
@@ -299,13 +301,14 @@
 		}
     })
     socket.on('message', function(data) {
-        var chat=document.getElementsByClassName('chatting-left').innerText;
+		var chat=document.getElementsByClassName('chatting-left').innerText;
+		data.createtime = dayjs(data.createtime).format('YYYY-MM-DD HH:mm:ss');
         chat = data.message;
-        if(data.messageType == "image"){
+        if(data.msgtype == "image"){
         	chat = "<a href='"+data.message+"&original=true' target='_blank'><img src='"+data.message+"' class='ukefu-media-image'/></a>" ;
-        }else if(data.messageType == "cooperation"){
+        }else if(data.msgtype == "cooperation"){
         	chat = "<a href='javascript:void(0)' onclick='acceptInvite(\""+data.message+"\", \""+data.attachmentid+"\")'>您收到一个协作邀请，点击进入协作</a>" ;
-        }else if(data.messageType == "action"){
+        }else if(data.msgtype == "action"){
         	//检查访客是否在协作页面上，如果在协作页面上，就开始执行重绘，否则不做处理
         	drawCanvasImage(data.attachmentid) ;
         }

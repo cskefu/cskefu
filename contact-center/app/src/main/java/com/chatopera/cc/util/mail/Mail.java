@@ -18,9 +18,7 @@ package com.chatopera.cc.util.mail;
 
 import java.util.List;
 
-import com.chatopera.cc.exchange.UserEvent;
-
-public class Mail implements UserEvent{
+public class Mail implements java.io.Serializable {
 	public Mail(String email, String subject, String content) {
 		super();
 		this.email = email;

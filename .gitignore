@@ -15,3 +15,7 @@ sftp-config.json
 ~$*.xls*
 ~$*.ppt*
 ~$*.doc*
+backups/
+.env
+build.gradle
+.vscode/

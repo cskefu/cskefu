@@ -1,40 +1,18 @@
-<style>
-    #create {
-        margin: 10px;
-    }
-
-    #create input {
-        width: 400px;
-    }
-</style>
-<div class="layui-layout-body">
-    <div class="row">
-        <div class="col-lg-12">
-            <h1>机器人列表
-                <div style="float: right;" class="ukefu-bt-text-content">
-                    <button class="layui-btn layui-btn-mini layui-btn-radius" onclick="openChatbotBotPlatform()"><i class="layui-icon">&#xe609;</i>机器人开发者平台</button>
-                </div>
-            </h1>
-        </div>
+<div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+        <#include "/apps/chatbot/include/left.html">
     </div>
-    <button class="layui-btn layui-btn-mini green" onclick="showCreate()">
-        <i class="layui-icon">&#xe64c;</i>
-        集成机器人
-    </button>
-    <div class="row">
-        <div class="col-lg-12">
-            <table class="layui-table" lay-skin="line">
-                <thead>
-                    <tr>
-                        <th>机器人名称</th>
-                        <th>网站渠道</th>
-                        <th>是否开启</th>
-                        <th style="white-space:nowrap;" nowrap="nowrap">操作</th>
-                    </tr>
-                </thead>
-                <tbody id="bots">
-                </tbody>
-            </table>
+</div>
+
+<div class="layui-body">
+    <div class="layui-side-scroll">
+        <div class="row">
+            <div class="col-lg-12">
+                <button class="layui-btn layui-btn-mini green" onclick="showCreate()">
+                    <i class="layui-icon">&#xe64c;</i>
+                    集成机器人
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -178,7 +156,7 @@
         query(1, 50);
     }
 
-    layui.use(['form'], function () {
+    layui.use(['form', 'element'], function () {
         init();
     })
 </script>

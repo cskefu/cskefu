@@ -5229,12 +5229,18 @@ KEditor.prototype = {
 		return this;
 	},
 	appendHtml : function(val) {
+		console.log(val);
+		alert(11)
 		this.html(this.html() + val);
 		if (this.isCreated) {
 			var cmd = this.cmd;
 			cmd.range.selectNodeContents(cmd.doc.body).collapse(false);
 			cmd.select();
 		}
+		return this;
+	},
+	appendChild : function(val) {
+		this.appendChild(val);
 		return this;
 	},
 	sync : function() {

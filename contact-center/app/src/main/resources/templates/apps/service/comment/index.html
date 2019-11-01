@@ -10,15 +10,15 @@
 				<h1 class="site-h1" style="border-top:1px solid #e6e6e6;">
 					满意度评价<#if serviceList??>（${serviceList.totalElements}）</#if>
 				</h1>
-				<table class="layui-table" lay-skin="line">
+				<table class="layui-table" lay-skin="line" style="table-layout: fixed; word-break: break-all;">
 					<thead>
 						<tr class="design-sortable-tr">
 							<th>用户名</th>
-							<th>接入渠道</th>
+							<th width="60px">接入渠道</th>
 							<th>服务坐席</th>
 							<th>咨询时间</th>
 							<th>评价时间</th>
-							<th>评价</th>
+							<th width="70px">评价</th>
 							<th>回复意见</th>
 						</tr>
 					</thead>
@@ -26,7 +26,7 @@
 						<#if serviceList?? && serviceList.content?? && serviceList.content?size gt 0>
 						<#list serviceList.content as agentService>
 						<tr class="tdHasContorllor design-dropable-td">
-							<td class=" first_td_head">
+							<td class=" first_td_head" title="${agentService.username!''}" style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">
 								<a href="/service/online/index.html?userid=${agentService.userid!''}&agentservice=${agentService.id!''}">
 								${agentService.username!''}
 								</a>
@@ -34,7 +34,7 @@
 							<td>
 								${agentService.channel!''}
 							</td>
-							<td>
+							<td title="${agentService.agentusername!''}" style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">
 								${agentService.agentusername!''}
 							</td>
 							<td>
@@ -56,8 +56,8 @@
 						</#list>
 						<#else>
 							<tr>
-								<td colspan="20" style="height:400px;">
-									<div class="ukefu-empty">
+								<td colspan="7" style="height:400px;">
+									<div class="ukefu-empty" style="background: none">
 										<i class="layui-icon">&#xe63a;</i>
 										<div style="">还没有历史会话</div>
 									</div>

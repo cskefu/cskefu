@@ -1,3 +1,6 @@
+<script src="/js/CSKeFu_Rest_Request.v1.js"></script>
+<script src="/js/CSKeFu_Agent_Invite.v1.js"></script>
+
 <div class="layui-side layui-bg-black layui-left-black">
 	<div class="layui-side-scroll">
 		<#include "/apps/desktop/include/left.html">
@@ -27,7 +30,7 @@
 							<a href="/service/agent/index.html" class="ukefu-bt"> 
 								<i class="kfont icon-iconfontagent ukewo-btn ukefu-measure-btn ukefu-bg-color-yellow"></i>
 								<div class="ukefu-bt-text">
-									<div class="ukefu-bt-text-title" style="font-weight:400;font-size:19px;">${agentReport.agents}/${agents!0}</div>
+									<div class="ukefu-bt-text-title" id="agentReportAgents" style="font-weight:400;font-size:19px;">${agentReport.agents}/${agents!0}</div>
 									<div class="ukefu-bt-text-content" style="">坐席:在线/全部</div>
 								</div>
 							</a>
@@ -63,7 +66,7 @@
 				<h1 class="site-h1" style="border-top:1px solid #e6e6e6;margin-top:15px;">
 					当前在线用户列表<#if onlineUserList??>（${onlineUserList.totalElements}）</#if>
 				</h1>
-				<table class="layui-table" lay-skin="line">
+				<table class="layui-table" lay-skin="line" style="word-wrap:break-word; word-break:break-all;table-layout: fixed">
 					<thead>
 						<tr class="design-sortable-tr">
 							<th>用户名</th>
@@ -75,7 +78,7 @@
 							<th>地域</th>
 							<th>邀请</th>
 							<th>拒绝</th>
-							<th>操作</th>
+							<th width="100px">操作</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -109,26 +112,26 @@
 								${(onlineuser.betweentime/(1000*60*60))?string('00')}:${((onlineuser.betweentime%(1000*60*60))/(1000*60))?string('00')}:${((onlineuser.betweentime%(1000*60))/(1000))?string('00')}
 							</td>
 							<td class=" ">${onlineuser.region!''}</td>
-							<td class=" ">${onlineuser.invitetimes!''}</td>
-							<td class=" ">${onlineuser.refusetimes!''}</td>
-							<td>
+							<td id="it-${onlineuser.id!''}">${onlineuser.invitetimes!0}</td>
+							<td id="rt-${onlineuser.id!''}">${onlineuser.refusetimes!0}</td>
+							<td style="white-space: nowrap">
 								<#if onlineuser.invitestatus?? && onlineuser.invitestatus == 'invite'>
-									<small class="ukefu-label theme4" title="访客已邀请">已邀请</small>
+									<small title="访客已邀请" class="layui-btn layui-btn-mini layui-btn-warm">已邀请</small>
 								<#elseif onlineuser.invitestatus?? && onlineuser.invitestatus == 'inserv'>
-									<small class="ukefu-label theme1" title="对话中">对话中</small>
+									<small title="对话中" class="layui-btn layui-btn-mini">对话中</small>
 								<#elseif onlineuser.invitestatus?? && onlineuser.invitestatus == 'refuse'>
-									<a href="/apps/invite.html?id=${onlineuser.id!''}" title="访客已拒绝邀请" class="layui-btn layui-btn-danger layui-btn-mini ">再次邀请</a>
+									<a href="javascript:;" name="${onlineuser.id!''}" title="访客已拒绝邀请" class="layui-btn layui-btn-mini  layui-btn-danger" onclick="sendInvitationToOnlineUser('${onlineuser.id}', false)">再次邀请</a>
 								<#else> 	
-									<a href="/apps/invite.html?id=${onlineuser.id!''}" title="邀请访客" class="layui-btn  layui-btn-normal layui-btn-mini">邀请</a>
+									<a href="javascript:;" name="${onlineuser.id!''}"  title="邀请访客" class="layui-btn layui-btn-mini  layui-btn-normal" onclick="sendInvitationToOnlineUser('${onlineuser.id}', true)">邀请</a>
 								</#if>
-								<a href="/service/trace.html?sessionid=${onlineuser.sessionid!''}" title="查看访客轨迹" data-toggle="ajax" data-width="1050" class="layui-btn  layui-btn-normal layui-btn-mini">轨迹</a>
+                <a href="/service/trace.html?sessionid=${onlineuser.sessionid!''}&userid=${onlineuser.id}" title="查看访客轨迹" data-toggle="ajax" data-width="1050" class="layui-btn layui-btn-mini layui-btn-normal">轨迹</a>
 							</td>
 						</tr>
 						</#list>
 						<#else>
 							<tr>
-								<td colspan="20" style="height:400px;">
-									<div class="ukefu-empty">
+								<td colspan="10" style="height:400px;">
+									<div class="ukefu-empty" style="background: none;">
 										<i class="layui-icon">&#xe63a;</i>
 										<div style="">还没有在线访客记录</div>
 									</div>
@@ -163,11 +166,11 @@
 				}
 		   });
 		  <#if msg?? && msg == 'username_exist'>
-			layer.alert('用户名存在，请重新填写', {icon: 2});
-		  <#elseif msg?? && msg == 'email_exist'>
-			layer.alert('邮件存在，请重新填写', {icon: 2});
-			<#elseif msg?? && msg == 'mobile_exist'>
-			layer.alert('手机存在，请重新填写', {icon: 2}); 
-		  </#if>
+			layer.msg('用户名存在，请重新填写',{icon: 2, offset: 'rb', time: 3000})
+		<#elseif msg?? && msg == 'email_exist'>
+			layer.msg('邮件存在，请重新填写',{icon: 2, offset: 'rb', time: 3000})
+		<#elseif msg?? && msg == 'mobile_exist'>
+			layer.msg('手机存在，请重新填写',{icon: 2, offset: 'rb', time: 3000})
+		</#if>
 		});
 </script>

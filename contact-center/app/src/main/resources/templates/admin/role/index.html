@@ -14,7 +14,7 @@
 					<#if roleList??>
 					<#list roleList as role>
 					<li class="uk_role <#if roleData?? && roleData.id == role.id>this</#if>">
-						<a href="/admin/role/index.html?role=${role.id!''}">
+						<a href="/admin/role/index.html?role=${role.id!''}" style="word-wrap: break-word;word-break: break-all;">
 							<i class="kfont">&#xe7d0;</i>
 							${role.name!''}
 						</a>
@@ -27,7 +27,8 @@
 	</div>
 	<div class="col-lg-9">
 		<h1 class="site-h1" style="background-color:#FFFFFF;">
-			<#if roleData??>${roleData.name!''}<#else>坐席组</#if><#if userList??>（${userList?size!''}）</#if>
+			<span style="width:200px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;word-wrap: break-word;
+word-break: break-all;"><#if roleData??>${roleData.name!''}<#else>坐席组</#if><#if userList??>（${userList?size!''}）</#if></span>
 			<span style="float:right;">
 				<#if roleData??>
 				<button class="layui-btn layui-btn-small green" href="/admin/role/seluser.html?role=${roleData.id!''}" data-toggle="ajax" data-width="750" data-title="添加用户到角色">
@@ -36,11 +37,11 @@
 				<button class="layui-btn layui-btn-primary layui-btn-small" href="/admin/role/edit.html?id=${roleData.id}" data-toggle="ajax" data-width="550" data-height="200" data-title="修改角色">
 					修改角色
 				</button>
-				<button class="layui-btn layui-btn-primary layui-btn-small" href="/admin/role/delete.html?id=${roleData.id!''}" data-toggle="tip" data-title="请确认是否删除角色？">
-					删除角色
-				</button>
-				<button class="layui-btn layui-btn-danger layui-btn-small" href="/admin/role/auth.html?id=${roleData.id}" data-toggle="ajax" title="角色授权" data-width="400" data-height="500">
+				<button class="layui-btn layui-btn-warm layui-btn-small" href="/admin/role/auth.html?id=${roleData.id}" data-toggle="ajax" title="角色授权" data-width="400" data-height="500">
 					角色授权
+				</button>
+				<button class="layui-btn layui-btn-danger layui-btn-small" href="/admin/role/delete.html?id=${roleData.id!''}" data-toggle="tip" data-title="请确认是否删除角色？">
+					删除角色
 				</button>
 				</#if>
 			</span>
@@ -65,11 +66,11 @@
 					  <th style="white-space:nowrap;" nowrap="nowrap">操作</th>
 					</tr> 
 				  </thead>
-				  <tbody>
+				  <tbody style="table-layout: fixed; word-break: break-all;">
 					<#if userRoleList?? && userRoleList.content??>
 					<#list userRoleList.content as userRole>
 					<tr>
-					  <td>
+					  <td style="150px">
 							<a href="">
 								<i class="layui-icon headimg">&#xe612;</i>
 								<div style="margin-left:50px;margin-top:0px;">
@@ -79,10 +80,9 @@
 									</div>
 								</div>
 							</a>
-							
 					  </td>
-					  <td>${userRole.user.uname!''}</td>
-					  <td>${userRole.user.email!''}</td>
+					  <td style="width:150px">${userRole.user.uname!''}</td>
+					  <td style="wdth:150px">${userRole.user.email!''}</td>
 					  <td>${userRole.user.mobile!''}</td>
 					  <td style="white-space: nowrap;">
 					  		<a href="/admin/role/user/delete.html?id=${userRole.id!''}&role=${userRole.role.id!''}"  data-toggle="tip" data-title="请确认是否移除？">
@@ -102,3 +102,22 @@
 		</div>
 	</div>	
 </div>
+
+<script>
+	layui.use('layer', function(){
+		var layer = layui.layer
+	<#if msg?? && msg == 'admin_role_save_success'>
+		layer.msg('添加成功',{icon: 1, offset: 'rb', time: 1000})
+	</#if>
+	<#if msg?? && msg == 'admin_role_save_exist'>
+		layer.msg('角色添加失败，角色已存在',{icon: 2, offset: 'rb', time: 3000})
+	</#if>
+	<#if msg?? && msg == 'admin_role_update_success'>
+		layer.msg('角色修改成功',{icon: 1, offset: 'rb', time: 1000})
+	</#if>
+	<#if msg?? && msg == 'admin_role_update_not_exist'>
+		layer.msg('角色修改失败',{icon: 2, offset: 'rb', time: 3000})
+	</#if>
+	});
+
+</script>

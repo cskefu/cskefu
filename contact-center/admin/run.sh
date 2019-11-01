@@ -5,6 +5,10 @@
 
 # constants
 baseDir=$(cd `dirname "$0"`;pwd)
+registryName=dockerhub.qingcloud.com
+imagename=chatopera/contact-center
+PACKAGE_VERSION=w4l
+
 # functions
 
 # main 
@@ -35,4 +39,4 @@ docker run -it --rm \
     -e SPRING_DATA_ELASTICSEARCH_CLUSTER_NODES=elasticsearch:8040 \
     -e SPRING_DATA_ELASTICSEARCH_LOCAL=false \
     -e SPRING_DATA_ELASTICSEARCH_REPOSITORIES_ENABLED=true \
-    chatopera/contact-center:develop
+    $registryName/$imagename:$PACKAGE_VERSION

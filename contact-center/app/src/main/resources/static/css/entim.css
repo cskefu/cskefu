@@ -974,9 +974,9 @@ p.submitBtnWrap {
 .group-rig .layui-tab-title li{
 	font-size:20px;
 }
-.ukefu-session-tip{
-	display:none;
-	position: absolute;
+.ukefu-session-tip {
+    display: none;
+    position: absolute;
     right: 0px;
     top: 10px;
     color: #FFF;
@@ -986,8 +986,7 @@ p.submitBtnWrap {
     text-align: center;
     font-size: 12px;
     background-color: red;
-        border-radius: 10px;
-<<<<<<< .mine
+    border-radius: 10px;
 }
 .ukefu-entim-search{
     padding: 5px 20px 5px 20px;	

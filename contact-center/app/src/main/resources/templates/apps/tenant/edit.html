@@ -39,12 +39,12 @@
 				</div>
 			</div>
 		</#if>
-		<#if isShowSkillList?? && isShowSkillList==true>
+		<#if isShowSkillGroups?? && isShowSkillGroups==true>
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width:150px;">选择技能组：</label>
 			    <div class="layui-input-block" style="padding-top:0px;">
-			    	<#if skillList??>
-				    	<#list skillList as skill>
+			    	<#if skillGroups??>
+				    	<#list skillGroups as skill>
 				    	<div style="padding-left:170px;"><input type="checkbox" name="skills" value="${skill.id!''}" title="${skill.name!''}" lay-skin="primary" <#if orgiSkillRelList??><#list orgiSkillRelList as rel><#if rel.skillid?? && rel.skillid == skill.id>checked="checked"</#if></#list></#if>></div>
 				    	</#list>
 			    	<#else>

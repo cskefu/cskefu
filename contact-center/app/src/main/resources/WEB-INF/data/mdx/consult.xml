@@ -10,7 +10,7 @@
 		</View>
 		<Dimension name='agent' foreignKey="agentno">
 			<Hierarchy hasAll='true' allMemberName='合计' primaryKey="id">
-				<Table name="uk_user"></Table>
+				<Table name="cs_user"></Table>
 				<Level name='坐席'  column='uname' uniqueMembers='false' type='' />
 			</Hierarchy>
 		</Dimension>        

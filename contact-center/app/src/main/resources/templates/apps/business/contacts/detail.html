@@ -163,7 +163,14 @@
                                                 </div>
                                             </div>
                                         </div>
-
+                                        <div class="layui-form-item">
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label">skype账号：</label>
+                                                <div class="layui-input-inline" style="line-height: 2.5em">
+                                                    ${contacts.skypeid!''}
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="layui-form-item">
                                             <div class="layui-inline">
                                                 <label class="layui-form-label">城市：</label>
@@ -256,12 +263,13 @@
         var payload = {
             path: 'contacts/notes',
             data: { ops: "fetch", contactid: id },
+            silent: true
         };
-        httpRequest(payload).then(function (data) {
+        restApiRequest(payload).then(function (data) {
             // remove a click exchange and set color to gray
             // AUTH_ERROR
             if(data.status && data.status === "AUTH_ERROR"){
-                openFail(data.status);
+                handleRestApiFail(data.status);
                 return;
             }
 
@@ -299,10 +307,11 @@
                     xid: xid,
 
                 },
+                silent: true
             };
-            httpRequest(payload).then(function (data) {
+            restApiRequest(payload).then(function (data) {
                 if(data.status && data.status === "AUTH_ERROR"){
-                    openFail(data.status);
+                    handleRestApiFail(data.status);
                     return;
                 }
 
@@ -324,11 +333,12 @@
                     contactid: contactid,
                     tagId: id,
                 },
+                silent: true
             };
 
-            httpRequest(payload).then(function (data) {
+            restApiRequest(payload).then(function (data) {
                 if(data.status && data.status === "AUTH_ERROR"){
-                    openFail(data.status);
+                    handleRestApiFail(data.status);
                     return;
                 }
 
@@ -352,10 +362,11 @@
                 ops: "fetch",
                 contactid: id,
             },
+            silent: true
         };
-        httpRequest(payload).then(function (data) {
+        restApiRequest(payload).then(function (data) {
             if(data.status && data.status === "AUTH_ERROR"){
-                openFail(data.status);
+                handleRestApiFail(data.status);
                 return;
             }
 
@@ -407,14 +418,16 @@
                     agentuser: '',
                     onlineuser: ''
                 },
+                silent: true
             };
-            httpRequest(payload).then(function (data) {
+            restApiRequest(payload).then(function (data) {
                 if(data.status && data.status === "AUTH_ERROR"){
-                    openFail(data.status);
+                    handleRestApiFail(data.status);
                     return;
                 }
 
                 if(data.rc === 0){
+                    $('#notesContent').val('').change();
                     var item = data.data;
                     // get all notes by contact id.
                     $("#timeline").prepend('<div class="card">' +

@@ -323,6 +323,11 @@
     background-color: #fff;
     color: #555;
 }
+.layui-btn-warm {
+	border: 1px solid #C9C9C9;
+	background-color: #F7B824!important;
+	color: #555;
+}
 .layui-laypage .layui-laypage-curr .layui-laypage-em{
 	background-color:#32c24d  !important;;
 }

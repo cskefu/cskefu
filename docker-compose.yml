@@ -1,78 +1,120 @@
-version: '2'
+version: "3"
 services:
+  nginx:
+    image: nginx
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/logs:/var/log/nginx
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/certs:/certs
+    depends_on:
+      - contact-center
+
   mysql:
-    image: "mysql:5.6"
+    image: "chatopera/mysql:5.7"
     restart: always
     environment:
-     - MYSQL_ROOT_PASSWORD=123456
-     - MYSQL_DATABASE=contactcenter
-     - MYSQL_USER=admin
-     - MYSQL_PASSWORD=admin123456
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWD:-123456}
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=${DB_PASSWD:-123456}
     ports:
-     - "8037:3306"
+      - "${MYSQL_PORT:-8037}:3306"
     volumes:
-     - $PWD/mysql/data:/var/lib/mysql
-     - $PWD/mysql/config:/etc/mysql
-     - $PWD/contact-center/config/sql/cskefu-MySQL-slim.sql:/docker-entrypoint-initdb.d/0.cskefu-MySQL-slim.sql
+      - ./mysql/data:/var/lib/mysql
     command: --max_allowed_packet=32505856
 
   redis:
-    image: redis:latest
+    image: chatopera/redis:5.0.5
+    environment:
+      - REDIS_PASSWORD=${DB_PASSWD:-123456}
     restart: always
-    command: redis-server --appendonly yes
     volumes:
-     - $PWD/redis/data:/data
+      - ./redis/data:/data
     ports:
-     - "8041:6379"
+      - "${REDIS_PORT:-8041}:6379"
 
   elasticsearch:
     image: "elasticsearch:2.4.6"
     restart: always
     volumes:
-     - $PWD/elasticsearch/data:/usr/share/elasticsearch/data
-     - $PWD/elasticsearch/config:/usr/share/elasticsearch/config
-     - $PWD/elasticsearch/plugins:/usr/share/elasticsearch/plugins
+      - ./elasticsearch/data:/usr/share/elasticsearch/data
+      - ./elasticsearch/config:/usr/share/elasticsearch/config
+      - ./elasticsearch/plugins:/usr/share/elasticsearch/plugins
     ports:
-     - "8039:9200"
-     - "8040:9300"
+      - "${ES_PORT1:-8039}:9200"
+      - "${ES_PORT2:-8040}:9300"
 
   contact-center:
-    image: "chatopera/contact-center:develop"
+    image: "dockerhub.qingcloud.com/chatopera/contact-center:develop"
     restart: always
     ports:
-      - "8035:8035"
-      - "8036:8036"
+      - "${CC_WEB_PORT:-8035}:8035"
+      - "${CC_SOCKET_PORT:-8036}:8036"
     volumes:
-     - $PWD/contact-center/data:/data
-     - $PWD/contact-center/logs:/logs
+      - ./contact-center/data:/data
+      - ./contact-center/logs:/logs
     environment:
-     - JAVA_OPTS=-Xmx12288m -Xms2048m -XX:PermSize=256m -XX:MaxPermSize=1024m -Djava.net.preferIPv4Stack=true
-     - SERVER_PORT=8035
-     - SERVER_LOG_PATH=/logs
-     - SERVER_LOG_LEVEL=INFO
-     - WEB_UPLOAD_PATH=/data
-     - SPRING_FREEMARKER_CACHE=true
-     - SPRING_DATA_ELASTICSEARCH_PROPERTIES_PATH_DATA=/data
-     - UK_IM_SERVER_PORT=8036
-     - UK_IM_SERVER_HOST=localhost
-     - UK_IM_SERVER_THREADS=10
-     # set a separated port for SSL
-     - CS_IM_SERVER_SSL_PORT=
-     - SPRING_DATASOURCE_TYPE=com.alibaba.druid.pool.DruidDataSource
-     - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.jdbc.Driver
-     - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/contactcenter?useUnicode=true&characterEncoding=UTF-8
-     - SPRING_DATASOURCE_USERNAME=root
-     - SPRING_DATASOURCE_PASSWORD=123456
-     - MANAGEMENT_SECURITY_ENABLED=false
-     - SPRING_REDIS_DATABASE=2
-     - SPRING_REDIS_HOST=redis
-     - SPRING_REDIS_PORT=6379
-     - CSKEFU_CALLOUT_WATCH_INTERVAL=60000
-     - SPRING_DATA_ELASTICSEARCH_CLUSTER_NAME=elasticsearch
-     - SPRING_DATA_ELASTICSEARCH_CLUSTER_NODES=elasticsearch:9300
-     - SPRING_DATA_ELASTICSEARCH_LOCAL=false
-     - SPRING_DATA_ELASTICSEARCH_REPOSITORIES_ENABLED=true
+      - JAVA_OPTS=-Xmx12288m -Xms2048m -XX:PermSize=256m -XX:MaxPermSize=1024m -Djava.net.preferIPv4Stack=true
+      - SERVER_PORT=8035
+      - SERVER_LOG_PATH=/logs
+      - SERVER_LOG_LEVEL=${LOG_LEVEL:-WARN}
+      - WEB_UPLOAD_PATH=/data
+      - SPRING_FREEMARKER_CACHE=true
+      - SPRING_DATA_ELASTICSEARCH_PROPERTIES_PATH_DATA=/data
+      - UK_IM_SERVER_PORT=8036
+      - UK_IM_SERVER_HOST=localhost
+      - UK_IM_SERVER_THREADS=10
+      # set a separated port for SSL
+      - CS_IM_SERVER_SSL_PORT=
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/cosinee?useUnicode=true&characterEncoding=UTF-8
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWD:-123456}
+      - MANAGEMENT_SECURITY_ENABLED=false
+      - SPRING_REDIS_DATABASE=2
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      - SPRING_REDIS_PASSWORD=${DB_PASSWD:-123456}
+      - CSKEFU_CALLOUT_WATCH_INTERVAL=60000
+      - SPRING_DATA_ELASTICSEARCH_CLUSTER_NAME=elasticsearch
+      - SPRING_DATA_ELASTICSEARCH_CLUSTER_NODES=elasticsearch:9300
+      - SPRING_DATA_ELASTICSEARCH_LOCAL=false
+      - SPRING_DATA_ELASTICSEARCH_REPOSITORIES_ENABLED=true
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://activemq:61616
+      - CSKEFU_MODULE_CALLOUT=false
+      - CSKEFU_MODULE_CONTACTS=true
+      - CSKEFU_MODULE_CHATBOT=true
+      - CHANNEL_SKYPE_CRM=${SKYPE_CHANNEL_CRM:-placeholder}
     depends_on:
-     - mysql
-     - redis
-     - elasticsearch
+      - mysql
+      - redis
+      - elasticsearch
+      - activemq
+
+  activemq:
+    image: "chatopera/activemq:5.14.3"
+    restart: always
+    environment:
+      - ACTIVEMQ_ADMIN_LOGIN=admin
+      - ACTIVEMQ_ADMIN_PASSWORD=${DB_PASSWD:-123456}
+      - ACTIVEMQ_ENABLED_SCHEDULER=true
+      - ACTIVEMQ_MIN_MEMORY=1024
+      - ACTIVEMQ_MAX_MEMORY=4096
+    volumes:
+      - ./activemq/data:/data
+      - ./activemq/logs:/var/log/activemq
+    ports:
+      - "${ACTIVEMQ_PORT1:-8051}:8161"
+      - "${ACTIVEMQ_PORT2:-8052}:61616"
+      - "${ACTIVEMQ_PORT3:-8053}:61613"
+
+  skype:
+    image: dockerhub.qingcloud.com/chatopera/skype:develop
+    restart: always
+    environment:
+      - COSIN_URL=http://contact-center:8035
+      - ACTIVEMQ_ADDR=activemq
+    depends_on:
+      - activemq

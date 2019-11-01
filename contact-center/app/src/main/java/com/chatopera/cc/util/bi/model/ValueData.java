@@ -19,8 +19,8 @@ package com.chatopera.cc.util.bi.model;
 
 import java.util.List;
 
-import com.chatopera.cc.app.basic.MainUtils;
-import com.chatopera.cc.app.model.ColumnProperties;
+import com.chatopera.cc.basic.MainUtils;
+import com.chatopera.cc.model.ColumnProperties;
 
 public class ValueData implements java.io.Serializable,Cloneable{
 	/**

@@ -22,43 +22,6 @@
 			<div class="layui-tab-item layui-show">
 				<form class="layui-form" action="">
 				<ul>
-					<li class="ukefu-entim-organ-open">
-						<h5 class="ukefu-entim-organ" lay-filter="spread" lay-type="true">
-							<i class="layui-icon"></i>
-							<span>未分组用户</span>
-							<#assign curusers = 0 >
-							<#if userList??>
-							<#list userList as entimuser>
-								<#if !(entimuser.organ??) && entimuser.id != user.id>
-								<#assign curusers = curusers+1 >
-								</#if>
-							</#list>
-							</#if>
-							<em>(<cite class="layim-count"> ${curusers} </cite>)</em>
-						</h5>
-						<ul class="ukefu-user-list">
-							<#if userList??>
-							<#list userList as entimuser>
-								<#if !(entimuser.organ??) && entimuser.id != user.id>
-								<li id="user_${entimuser.id}">
-									<a href="javascript:void(0)" onclick="openchat('/ent/im/chat.html?userid=${entimuser.id!''}' , '/images/user-pc.png' , '${entimuser.uname!''}' , '${entimuser.id!''}' , '最近登陆:${entimuser.lastlogintime}');">
-										<img src="/images/user-pc.png">
-										<span>${entimuser.uname!''}</span>
-										<p>最近登陆:${entimuser.lastlogintime?string('yyyy-MM-dd HH:mm:ss')}</p>
-									</a>
-									<#if user.id = imGroup.creater>
-									<div class="ukefu-group-join">
-										<#assign useringroup = false >
-										<#if imGroupUserList??><#list imGroupUserList as imGroupUser><#if imGroupUser.user?? && imGroupUser.user.id == entimuser.id><#assign useringroup = true ><#break/></#if></#list></#if>
-										<input type="checkbox" name="user" title="加入" value="${entimuser.id!''}" lay-filter="save" <#if useringroup == true>checked="checked"</#if>>
-									</div>
-									</#if>
-								</li>
-								</#if>
-							</#list>
-							</#if>
-						</ul>
-					</li>
 					<#if organList??>
 					<#list organList as organ>
 					<li class="ukefu-entim-organ-open">
@@ -68,7 +31,7 @@
 							<#assign curusers = 0 >
 							<#if userList??>
 							<#list userList as entimuser>
-								<#if entimuser.organ?? && entimuser.id != user.id && entimuser.organ == organ.id>
+								<#if entimuser.organs?? && entimuser.id != user.id && entimuser.organs[organ.id]??>
 								<#assign curusers = curusers+1 >
 								</#if>
 							</#list>
@@ -78,13 +41,11 @@
 						<ul class="ukefu-user-list">
 							<#if userList??>
 							<#list userList as entimuser>
-								<#if entimuser.organ?? && entimuser.id != user.id && entimuser.organ == organ.id>
+								<#if entimuser.organs?? && entimuser.id != user.id && entimuser.organs[organ.id]??>
 								<li id="user_${entimuser.id}">
-									<a href="javascript:void(0)" onclick="openchat('/ent/im/chat.html?userid=${entimuser.id!''}' , '/images/user-pc.png' , '${entimuser.uname!''}' , '${entimuser.id!''}' , '最近登陆:${entimuser.lastlogintime}');">
-										<img src="/images/user-pc.png">
-										<span>${entimuser.uname!''}</span>
-										<p>最近登陆:${entimuser.lastlogintime?string('yyyy-MM-dd HH:mm:ss')}</p>
-									</a>
+									<img src="/images/user-pc.png">
+									<span>${entimuser.uname!''}</span>
+									<p>最近登陆:${entimuser.lastlogintime?string('yyyy-MM-dd HH:mm:ss')}</p>
 									<#if user.id = imGroup.creater>
 									<div class="ukefu-group-join">
 										<#assign useringroup = false >

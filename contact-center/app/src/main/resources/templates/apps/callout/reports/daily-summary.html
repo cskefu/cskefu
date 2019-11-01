@@ -154,12 +154,12 @@
 
         body.ops = 'agg';
 
-        httpRequest({
+        restApiRequest({
             data: body,
             path: 'callout/records',
         }).then(function (data) {
             if(data.status && data.status === "AUTH_ERROR"){
-                openFail(data.status);
+                handleRestApiFail(data.status);
                 return;
             }
 
@@ -188,10 +188,10 @@
                 $("#all_call_pri").html(allData.succ_percentage);
                 $("#all_call_duration").html(allData.duration);
             } else {
-                openFail(null, data.error)
+                handleRestApiFail(null, data.error)
             }
         }, function (reason) {
-            openFail()
+            handleRestApiFail()
         })
     });
 </script>

@@ -18,8 +18,8 @@
             <label class="layui-form-label">技能组：</label>
             <div class="layui-input-inline">
                 <select name="skillid" lay-verify="required">
-                	<#if skillList??>
-                	<#list skillList as skill>
+                	<#if skillGroups??>
+                	<#list skillGroups as skill>
 			        <option value="${skill.id}">${skill.name}</option>
 			        </#list>
 			        </#if>

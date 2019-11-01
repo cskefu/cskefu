@@ -1,0 +1,378 @@
+<script language="javascript">
+	cursession = "<#if curagentuser??>${curagentuser.userid!''}</#if>" ;
+	var userid = "${curagentuser.userid!''}" , agentserviceid = "${curagentuser.agentserviceid!''}" , agentuserid = "${curagentuser.id}";
+</script>
+
+<div class="main-agentuser">
+	<div class="chat-agent-callout" style="height: 102%;">
+		<h1 class="site-h1">
+			<#if curagentuser??>${curagentuser.username!''}（${curagentuser.region!''}）
+			<div style="float:right;" class="ukefu-service-btn">
+				<a href="/agent/summary.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}" data-toggle="ajax" data-width="950" data-height="450" title="记录服务小结"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe65c;</i> 服务小结</button></a>
+				<a href="/agent/calloutcontact/add.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}" data-toggle="ajax" data-width="950" data-height="550" title="选择转接对象"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe7be;</i> 转接坐席</button></a>
+				<!--<a href="/agent/transfer.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}" data-toggle="ajax" data-width="950" data-height="550" title="选择转接对象"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe7be;</i> 转接坐席</button></a>-->
+				<a href="/agent/end.html?id=${curagentuser.id!''}" data-toggle="tip" data-title="请确认是否关闭和用户“${curagentuser.username!''}”的对话？"><button class="layui-btn layui-btn-small layui-btn-danger"><i class="kfont">&#xe621;</i> 结束对话</button></a>
+			</div>
+			<#else>
+				&nbsp;
+			</#if>
+		</h1>
+        <#if contacts?? && curagentuser??>
+            <#include "/apps/agent/calloutcontact/edit.html">
+        <#else>
+            <#include "/apps/agent/calloutcontact/add.html">
+        </#if>
+	</div>
+</div>
+<#if contacts?? && curagentuser??>
+<input hidden value="${contacts.id!''}" id="contactsId"/>
+<input hidden value="${contacts.creater!''}" id="creater"/>
+<div class="ukefu-chat-prop">
+    <div class="ukefu-prop-list">
+        <div class="layui-side-scroll">
+    <div class="layui-collapse">
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">往来历史</h2>
+            <div class="layui-colla-content layui-show">
+                <div id="timeline" class="timeline-container" type="text">
+                </div>
+                <!--<div id="timeline" class="timeline-container" type="text" style="height: 617px; overflow-y: auto;">-->
+                <!--</div>-->
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+</div>
+<style>
+    .card {
+        /* Add shadows to create the "card" effect */
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        margin-top: 5px;
+    }
+
+    /* On mouse-over, add a deeper shadow */
+    .card:hover {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+
+    /* Add some padding inside the card container */
+    .container {
+        width: 100%;
+        word-break: break-all;
+    }
+</style>
+<script src="/js/CSKeFu_Rest_Request.v1.js"></script>
+<script>
+    function getNotesByContactId () {
+        // 获取数据
+        var id = $('#contactsId').val();
+        var payload = {
+            path: 'contacts/notes',
+            data: { ops: "fetch", contactid: id },
+        };
+        restApiRequest(payload).then(function (data) {
+            // remove a click exchange and set color to gray
+            // AUTH_ERROR
+            if(data.status && data.status === "AUTH_ERROR"){
+                handleRestApiFail(data.status);
+                return;
+            }
+
+            if(data.rc === 0){
+                if(data.totalElements > 0) {
+                    for(var item of data.data){
+                        $("#timeline").append('<div class="card">' +
+                            '<div class="container">' +
+                            '<h4>时间：' + item.updatetime + '</h4>' +
+                            '<h5>笔记者：' + item.creatername + '</h5>' +
+                            '<h5>事件类型：' + item.category + '</h5>' +
+                            '<div>笔记：' + item.content + '</div>' +
+                            '</div>' +
+                            '</div>');
+                    }
+                }
+            } else {
+            }
+        }, function (err) {
+            console.log(err)
+        });
+    }
+
+    // unselect tag
+    function unOrselectTag(id) {
+        var el = $("#tag_" + id);
+        var xid = el.attr("name");
+
+        if(xid){
+            // unselected tag
+            var payload = {
+                path: 'contacts/tags',
+                data: {
+                    ops: "remove",
+                    xid: xid,
+
+                },
+            };
+            restApiRequest(payload).then(function (data) {
+                if(data.status && data.status === "AUTH_ERROR"){
+                    handleRestApiFail(data.status);
+                    return;
+                }
+
+                if(data.rc === 0){
+                    console.log(data.data);
+                    el.removeClass("ukefu-label").addClass("unselectedClass").attr("name", "");
+                } else {
+                }
+            }, function (err) {
+                console.log(err)
+            });
+        } else  {
+            // select tag
+            var contactid = $('#contactsId').val();
+            var payload = {
+                path: 'contacts/tags',
+                data: {
+                    ops: "create",
+                    contactid: contactid,
+                    tagId: id,
+                },
+            };
+
+            restApiRequest(payload).then(function (data) {
+                if(data.status && data.status === "AUTH_ERROR"){
+                    handleRestApiFail(data.status);
+                    return;
+                }
+
+                if(data.rc === 0){
+                    console.log(data.data);
+                    el.removeClass("unselectedClass").addClass("ukefu-label").attr("name", data.data.id);
+                } else {
+                }
+            }, function (err) {
+                console.log(err)
+            });
+        }
+    }
+
+    // get tags
+    function getTags(){
+        var id = $('#contactsId').val();
+        var payload = {
+            path: 'contacts/tags',
+            data: {
+                ops: "fetch",
+                contactid: id,
+            },
+        };
+        restApiRequest(payload).then(function (data) {
+            if(data.status && data.status === "AUTH_ERROR"){
+                handleRestApiFail(data.status);
+                return;
+            }
+
+            if(data.rc === 0){
+                var tagsData = data.data;
+
+                for (var item of tagsData){
+                    if(item.tagged){
+                        $("#contactTags").append(
+                            '<small name="' + item.xid + '" id="tag_' + item.id + '" class="ukefu-label" style="margin: 0 6px 5px 0;cursor: pointer;" onclick="unOrselectTag(\'' + item.id + '\')">' + item.name + '</small>'
+                        );
+                    } else  {
+                        $("#contactTags").append(
+                            '<small name="" id="tag_' + item.id + '" class="unselectedClass" style="margin: 0 6px 5px 0; cursor: pointer;" onclick="unOrselectTag(\'' + item.id + '\')">' + item.name + '</small>'
+                        );
+                    }
+                }
+            } else {
+            }
+        }, function (err) {
+            console.log(err)
+        });
+    }
+
+
+    layui.use('layer', function() {
+        layer = layui.layer;
+
+        // get all notes by contact id.
+        getNotesByContactId();
+
+        // get tags
+        getTags()
+
+        // add notes
+        $('#notesAddBtn').on('click', function(){
+            var content = $('#notesContent').val() || '';
+            if(!content) return;
+
+            var id = $('#contactsId').val();
+            var category = $("#notesCategory option:selected").text();
+
+            var payload = {
+                path: 'contacts/notes',
+                data: {
+                    ops: "create",
+                    contactid: id,
+                    category: category,
+                    content: content,
+                    agentuser: '',
+                    onlineuser: ''
+                },
+            };
+            restApiRequest(payload).then(function (data) {
+                if(data.status && data.status === "AUTH_ERROR"){
+                    handleRestApiFail(data.status);
+                    return;
+                }
+
+                if(data.rc === 0){
+                    var item = data.data;
+                    // get all notes by contact id.
+                    $("#timeline").prepend('<div class="card">' +
+                        '<div class="container">' +
+                        '<h4><b>时间：' + item.updatetime + '</b></h4>' +
+                        '<h5>笔记者：' + item.creatername + '</h5>' +
+                        '<h5>事件类型：' + category + '</h5>' +
+                        '<div>笔记：' + content + '</div>' +
+                        '</div>' +
+                        '</div>');
+                } else {
+                }
+            }, function (err) {
+                console.log(err)
+            });
+        });
+    });
+</script>
+<#else>
+<div class="ukefu-chat-prop">
+	<div class="ukefu-prop-list">
+		<div class="layui-side-scroll">
+			<div class="layui-tab" style="margin-top:0px;">
+			  <ul class="layui-tab-title">
+			    <li class="layui-this">访客</li>
+			    <li>历史</li>
+			  </ul>
+			  <div class="layui-tab-content" style="padding: 5px 0px 0px;">
+			    <div class="layui-tab-item layui-show">
+			    	<div class="box">
+						<div class="box-title">
+							<h1 class="site-h1" style="background-color:#EEEEEE;">
+								访问信息
+								<div style="float:right;">
+									<button class="layui-btn layui-btn-small layui-btn-radius layui-btn-danger" href="/agent/blacklist/add.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}&times=${serviceCount!0}&chattime=<#if onlineUser?? && onlineUser.betweentime??>${onlineUser.betweentime}<#else>0</#if>" data-toggle="ajax" data-title="拉黑访客" data-width="900">拉黑访客</button>
+								</div>
+							</h1>
+						</div>
+						<div class="box-body" style="padding:0px 10px;position: relative;">
+                            <#include "/apps/agent/channel/phone.html">
+							<#if curagentuser.name??>
+							<ul class="info-list">
+								<li>
+									姓名：
+									<span class="tgreen">
+									${curagentuser.name!''}
+								    </span>
+								</li>
+								<#if curagentuser.phone??>
+								<li>
+									电话：
+								    <span class="tgreen">
+									${curagentuser.phone!''}
+								    </span>
+								</li>
+								</#if>
+								<#if curagentuser.email??>
+								<li>
+									邮件：
+								    <span class="tgreen">
+									${curagentuser.email!''}
+								    </span>
+								</li>
+								</#if>
+								<#if curagentuser.resion??>
+								<li>
+									来访原因：
+								    <span class="tgreen">
+									${curagentuser.resion!''}
+								    </span>
+								</li>
+								</#if>
+							</ul>
+							</#if>
+							<#if curAgentService?? && curAgentService.trans?? && curAgentService.trans>
+							<ul class="info-list">
+								<li>
+									转接：
+									<span class="tgreen">
+									<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
+								    </span>
+								</li>
+								<#if curAgentService.transtime??>
+								<li>
+									转接时间：
+								    <span class="tgreen">
+									${curAgentService.transtime?string("yyyy-MM-dd HH:mm:ss")}
+								    </span>
+								</li>
+								</#if>
+								<#if curAgentService.transmemo??>
+								<li>
+									转接附言：
+								    <span class="tgreen">
+									${curAgentService.transmemo!''}
+								    </span>
+								</li>
+								</#if>
+
+							</ul>
+							</#if>
+						</div>
+					</div>
+			    </div>
+			    <div class="layui-tab-item">
+			    	<div class="box">
+						<div class="box-title">
+							<h1 class="site-h1" style="background-color:#EEEEEE;">
+								历史记录
+							</h1>
+						</div>
+						<div class="box-body" style="padding:0px 10px;">
+							<ul class="info-list ukefu-quick-reply">
+								<#if agentServiceList?? && agentServiceList?size gt 0>
+								<#list agentServiceList as agentService>
+								<li class="ukefu-agentservice-list">
+									<a href="/service/online/chatmsg.html?id=${agentService.id!''}&title=false" data-toggle="ajax" data-width="950" data-height="500" data-title="服务记录">
+										<span class="quick-reply" style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;max-width:200px;display: inline-block;" data-id="content_${agentService.id!''}">${agentService.username!''}</span>
+										<div class="ukefu-agentservice-his">坐席：${agentService.agentusername!''}</div>
+										<div style="color:#333;position: relative;">
+											${agentService.servicetime?string("yyyy-MM-dd HH:mm:ss")}
+											<div class="ukefu-agentservice-his">时长：${(agentService.sessiontimes/(1000*60*60))?string('00')}:${((agentService.sessiontimes%(1000*60*60))/(1000*60))?string('00')}:${((agentService.sessiontimes%(1000*60))/(1000))?string('00')}</div>
+										</div>
+									</a>
+								</li>
+								</#list>
+								<#else>
+								<li style="list-style: none;background-image: url();padding: 50px 0 50px;">
+									<div class="ukefu-empty">
+										<i class="layui-icon"></i>
+										<div style="">还没有咨询记录</div>
+									</div>
+								</li>
+								</#if>
+							</ul>
+						</div>
+					</div>
+			    </div>
+			  </div>
+			</div>
+
+		</div>
+	</div>
+</div>
+</#if>

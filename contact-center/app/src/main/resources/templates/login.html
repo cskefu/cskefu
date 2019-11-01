@@ -20,15 +20,28 @@
 	}
 	layui.use('layer', function(){
 	  var layer = layui.layer;
-	  <#if msg?? && msg == '0'>
-		layer.alert('用户名或密码错误，请重新填写', {icon: 2});
-	  <#elseif msg?? && msg == '1'>
-		layer.alert('用户注册成功，请通过用户名和密码登陆', {icon: 1}); 
-	  </#if>
+		<#if msg?? && msg == '0'>
+		layer.msg('用户名或密码错误，请重新填写',{icon: 2, offset: 'b', time: 3000})
+		<#elseif msg?? && msg == '1'>
+		layer.msg('用户注册成功，请通过用户名和密码登陆',{icon: 2, offset: 'b', time: 3000})
+		<#elseif msg?? && msg == '2'>
+		layer.msg('您的账号已经在其它浏览器登录，请确认是您本人的操作，保证安全。',{icon: 2, offset: 't', time: 0})
+		</#if>
 	});   
 	layui.use('form', function(){
 		var form = layui.form();
 	});
+
+	function preLogin() {
+		localStorage.uid = document.getElementById("username").value;
+	}
+
+	window.onload = function() {
+		var uid = localStorage.uid;
+		if(uid){
+			document.getElementById("username").value = uid;
+		}
+	}
 </script>
 </head>
 
@@ -58,13 +71,6 @@
 					<input type="password" name="password" id="password" required lay-verify="required"  
 						class="form-control required" value="" placeholder="密码">
 				</div>
-				<div class="row" style="line-height:30px;padding:0 20px;">
-					<div class="col-lg-6">
-						<div class="checkbox">
-							<input type="checkbox" name="sla" value="1" lay-skin="primary" checked title="七天内自动登录">
-						</div>
-					</div>
-				</div>
 
 				<div class="row" style="margin-bottom:20px;padding:0 20px;">
 					<div class="col-md-6"></div>
@@ -73,7 +79,7 @@
 
 					<!-- /.col -->
 					<div class="col-xs-12">
-						<button class="btn btn-block btn-primary btn-lg">立即登录</button>
+						<button class="btn btn-block btn-primary btn-lg" onclick="preLogin()">立即登录</button>
 					</div>
 					<!-- /.col -->
 					<#if show?? && show==true>
@@ -83,9 +89,6 @@
 					</#if>
 				</div>
 			</form>
-			<div class="social-auth-links text-center">
-				<div class="networks"></div>
-			</div>
 		</div>
 		<!-- /.login-box-body -->
 	</div>

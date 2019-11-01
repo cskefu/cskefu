@@ -11,8 +11,8 @@
 		<div class="row" style="padding:5px;">
 			<div class="col-lg-12">
 				<ul>
-					<#if skillList??>
-					<#list skillList as skill>
+					<#if skillGroups??>
+					<#list skillGroups as skill>
 					<li class="uk_skill <#if skillData?? && skillData.id == skill.id>this</#if>">
 						<a href="/admin/skill/index.html?skill=${skill.id!''}">
 							<i class="kfont icon-iconfontagent" style="position: relative;"></i>

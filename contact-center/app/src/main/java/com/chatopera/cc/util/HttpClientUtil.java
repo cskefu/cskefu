@@ -33,10 +33,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
+import org.apache.http.*;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -135,62 +132,63 @@ public class HttpClientUtil {
         return result;  
     }  
   
-    /** 
-     * 发送 POST 请求（HTTP），K-V形式 
-     * @param apiUrl API接口URL 
-     * @param params 参数map 
-     * @return 
-     */  
-    public static String doPost(String apiUrl, Map<String, Object> params) {  
-        CloseableHttpClient httpClient = HttpClients.createDefault();  
-        String httpStr = null;  
-        HttpPost httpPost = new HttpPost(apiUrl);  
-        CloseableHttpResponse response = null;  
-  
-        try {  
-            httpPost.setConfig(requestConfig);  
-            List<NameValuePair> pairList = new ArrayList<>(params.size());  
-            for (Map.Entry<String, Object> entry : params.entrySet()) {  
-                NameValuePair pair = new BasicNameValuePair(entry.getKey(), entry  
-                        .getValue().toString());  
-                pairList.add(pair);  
-            }  
-            httpPost.setEntity(new UrlEncodedFormEntity(pairList, Charset.forName("UTF-8")));  
-            response = httpClient.execute(httpPost);  
-            HttpEntity entity = response.getEntity();  
-            httpStr = EntityUtils.toString(entity, "UTF-8");  
-        } catch (IOException e) {  
-            e.printStackTrace();  
-        } finally {  
-            if (response != null) {  
-                try {  
-                    EntityUtils.consume(response.getEntity());  
-                } catch (IOException e) {  
-                    e.printStackTrace();  
-                }  
-            }  
-        }  
-        return httpStr;  
-    }  
-  
+    /**
+     * 发送 POST 请求（HTTP），K-V形式
+     * @param apiUrl API接口URL
+     * @param params 参数map
+     * @return
+     */
+    public static String doPost(String apiUrl, Map<String, Object> params) {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        String httpStr = null;
+        HttpPost httpPost = new HttpPost(apiUrl);
+        CloseableHttpResponse response = null;
+
+        try {
+            httpPost.setConfig(requestConfig);
+            List<NameValuePair> pairList = new ArrayList<>(params.size());
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                NameValuePair pair = new BasicNameValuePair(entry.getKey(), entry
+                        .getValue().toString());
+                pairList.add(pair);
+            }
+            httpPost.setEntity(new UrlEncodedFormEntity(pairList, Charset.forName("UTF-8")));
+            response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            httpStr = EntityUtils.toString(entity, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (response != null) {
+                try {
+                    EntityUtils.consume(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return httpStr;
+    }
+
     /** 
      * 发送 POST 请求（HTTP），JSON形式 
      * @param apiUrl 
      * @param json json对象 
      * @return 
      * @throws IOException 
-     */  
+     */
     public static String doPost(String apiUrl, String json) throws IOException {  
         CloseableHttpClient httpClient = HttpClients.createDefault();  
         String httpStr = null;  
         HttpPost httpPost = new HttpPost(apiUrl);  
         CloseableHttpResponse response = null;  
   
-        try {  
+        try {
+
             httpPost.setConfig(requestConfig);  
             StringEntity stringEntity = new StringEntity(json,"UTF-8");//解决中文乱码问题  
             stringEntity.setContentEncoding("UTF-8");  
-            stringEntity.setContentType("application/json");  
+            stringEntity.setContentType("application/json");
             httpPost.setEntity(stringEntity);  
             response = httpClient.execute(httpPost);  
             HttpEntity entity = response.getEntity();  
@@ -210,8 +208,91 @@ public class HttpClientUtil {
             }
         }  
         return httpStr;  
-    }  
-  
+    }
+
+    /**
+     * 发送 POST 请求（HTTP），doPostToSkype形式
+     * @param apiUrl
+     * @param json json对象
+     * @return
+     * @throws IOException
+     */
+    public static String doPostToSkype(String apiUrl, String json) throws IOException {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        String httpStr = null;
+        HttpPost httpPost = new HttpPost(apiUrl);
+        CloseableHttpResponse response = null;
+
+
+
+        try {
+            httpPost.setHeader("Authorization", "Basic Y2hhdG9wZXJhOjEyMw==");
+
+            httpPost.setConfig(requestConfig);
+
+            StringEntity stringEntity = new StringEntity(json,"UTF-8");//解决中文乱码问题
+            stringEntity.setContentEncoding("UTF-8");
+            stringEntity.setContentType("application/json");
+            httpPost.setEntity(stringEntity);
+            response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            httpStr = EntityUtils.toString(entity, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (response != null) {
+                try {
+                    EntityUtils.consume(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(httpClient!=null) {
+                httpClient.close();
+            }
+        }
+        return httpStr;
+    }
+
+    /**
+     * 发送 POST 请求（HTTP），数组形式
+     * @param apiUrl
+     * @param json json对象
+     * @return
+     * @throws IOException
+     */
+    public static String doPost(String apiUrl, String[] json) throws IOException {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        String httpStr = null;
+        HttpPost httpPost = new HttpPost(apiUrl);
+        CloseableHttpResponse response = null;
+
+        try {
+            httpPost.setConfig(requestConfig);
+            StringEntity stringEntity = new StringEntity(String.valueOf(json),"UTF-8");//解决中文乱码问题
+            stringEntity.setContentEncoding("UTF-8");
+            stringEntity.setContentType("application/json");
+            httpPost.setEntity(stringEntity);
+            response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            httpStr = EntityUtils.toString(entity, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (response != null) {
+                try {
+                    EntityUtils.consume(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(httpClient!=null) {
+                httpClient.close();
+            }
+        }
+        return httpStr;
+    }
+
     /** 
      * 发送 SSL POST 请求（HTTPS），K-V形式 
      * @param apiUrl API接口URL 

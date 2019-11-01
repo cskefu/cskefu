@@ -61,7 +61,7 @@
 						<div class="layui-inline">
 							<label class="layui-form-label">文本内容：</label>
 							<div class="layui-input-inline" style="width: 664px;">
-								<textarea name="content" placeholder="请输入广告文本内容（支持HTML）" class="layui-textarea" style="resize:none;" maxlength="255"></textarea>
+								<textarea name="content" placeholder="请输入广告文本内容（支持HTML）" class="layui-textarea" style="resize:none;" maxlength="180"></textarea>
 							</div>
 						</div>
 					</div>
@@ -109,6 +109,14 @@ layui.use('form', function() {
 		if(data.elem.checked){
 			$('#image').hide();
 			$('#text').show();
+		}
+	});
+
+	//监听提交
+	form.on('submit(formDemo)', function(data){
+		if(data.field.content.length>180){
+			layer.msg("文本内容过长，最大长度为180个字符");
+			return false
 		}
 	});
 });

@@ -1,3 +1,13 @@
+<style>
+	.ztree li span {
+		display: inline-block !important;
+		white-space: pre-wrap;
+		width: 90px;
+		overflow:hidden;
+		white-space:nowrap;
+		text-overflow:ellipsis;
+	}
+</style>
 <div class="row" style="height:100%;">
 	<div class="col-lg-3" style="border-right:1px solid #e6e6e6;padding-right:0px;">
 		<h1 class="site-h1" style="background-color:#FFFFFF;">
@@ -14,9 +24,9 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-9">
+	<span class="col-lg-9">
 		<h1 class="site-h1" style="background-color:#FFFFFF;">
-			<#if organData??>${organData.name!''}<#else>默认机构</#if><#if userList??>（${userList?size!''}）</#if>
+			<span style="width:150px;display:inline-block;;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><#if organData??>${organData.name!''}<#else>默认机构</#if><#if userList??>（${userList?size!''}）</#if></span>
 			<span style="float:right;">
 				<#if organData??>
 				<button class="layui-btn layui-btn-small green" href="/admin/organ/seluser.html?organ=${organData.id!''}" data-toggle="ajax" data-width="750" data-title="添加用户到当前部门">
@@ -54,17 +64,16 @@
 					  <th style="white-space:nowrap;" nowrap="nowrap">操作</th>
 					</tr> 
 				  </thead>
-				  <tbody>
+				  <tbody style="table-layout: fixed; word-break: break-all;">
 					<#if userList??>
 					<#list userList as organUser>
 					<tr>
-					  <td>
+					  <td style="width:150px;">
 							<a href="">
 								${organUser.username!''}
 							</a>
-							
 					  </td>
-					  <td>${organUser.uname!''}</td>
+					  <td style="width: 100px">${organUser.uname!''}</td>
 					  <td>${organUser.email!''}</td>
 					  <td>${organUser.mobile!''}</td>
 					  <td style="white-space: nowrap;">
@@ -120,17 +129,34 @@
 		var ztree = $.fn.zTree.init($("#organTree"), setting, zNodes);
 		<#if organData??>
 		var node = ztree.getNodeByParam('id', '${organData.id!''}');//获取id为1的点  
-		ztree.selectNode(node);//选择点  
+		ztree.selectNode(node);//选择点
 		</#if>
+
+		//
+		// var x = document.getElementById("node_Name");
+		// var y = x.getElementsByClassName("child");
+		// var i;
+		// for (i = 0; i < y.length; i++) {
+		// 	y[i].style.backgroundColor = "red";
+		// }
 	});
 	
 	layui.use('layer', function(){
 		  var layer = layui.layer;
-		  <#if msg?? && msg == 'admin_organ_update_name_not'>
-			layer.alert('组织机构分类名已存在！', {icon: 2});
-		  <#elseif msg?? && msg == 'admin_organ_update'>
-			layer.alert('组织机构分类名已存在！', {icon: 2});
-		  
-		  </#if>
-		});  
+		<#if msg?? && msg == 'admin_organ_update_name_not'>
+			layer.msg('组织机构分类名已存在！',{icon: 2, time: 1500})
+		<#elseif msg?? && msg == 'admin_oran_not_delete'>
+			layer.msg('无法删除，因为存在子组织',{icon: 2, time: 1500})
+		<#elseif msg?? && msg == 'admin_organ_update_success'>
+			layer.msg('修改组织成功',{icon: 1, time: 1500})
+		<#elseif msg?? && msg == 'admin_organ_new_success'>
+			layer.msg('新建组织成功',{icon: 1, time: 1500})
+		<#elseif msg?? && msg == 'admin_organ_update_not_standard'>
+			layer.msg('修改无法完成，上级机构选择错误',{icon: 2, time: 1500})
+		</#if>
+
+
+		});
+
 </SCRIPT>
+

@@ -18,7 +18,7 @@ package com.chatopera.cc.util;
 
 import java.util.Date;
 
-import com.chatopera.cc.app.model.JobDetail;
+import com.chatopera.cc.model.JobDetail;
 
 public class TaskTools {
 	public static Date updateTaskNextFireTime(JobDetail jobDetail){

@@ -1,17 +1,12 @@
 @charset "utf-8";
 html { *overflow:auto; font-family:"Microsoft Yahei","Helvetica","Simsun","Arial";}
-body{
-	background: url(/images/bg.jpg) no-repeat;
-    background-size: 100%;	
-}
-
 
 @font-face {font-family: "kfont";
-  src: url('../ukfont/iconfont.eot?t=1484884962181'); /* IE9*/
-  src: url('../ukfont/iconfont.eot?t=1484884962181#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('../ukfont/iconfont.woff?t=1484884962181') format('woff'), /* chrome, firefox */
-  url('../ukfont/iconfont.ttf?t=1484884962181') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-  url('../ukfont/iconfont.svg?t=1484884962181#kfont') format('svg'); /* iOS 4.1- */
+  src: url('../fonts/kfont/iconfont.eot?t=1484884962181'); /* IE9*/
+  src: url('../fonts/kfont/iconfont.eot?t=1484884962181#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('../fonts/kfont/iconfont.woff?t=1484884962181') format('woff'), /* chrome, firefox */
+  url('../fonts/kfont/iconfont.ttf?t=1484884962181') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('../fonts/kfont/iconfont.svg?t=1484884962181#kfont') format('svg'); /* iOS 4.1- */
 }
 
 .kfont {

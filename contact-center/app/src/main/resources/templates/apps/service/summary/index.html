@@ -67,36 +67,36 @@
 						</div>
 					</span>
 				</h1>
-				<table class="layui-table" lay-skin="line">
+				<table class="layui-table" lay-skin="line" style="table-layout: fixed;">
 					<thead>
 						<tr class="design-sortable-tr">
-							<th>
+							<th width="10px">
 								<input type="checkbox" id="all" onclick="$('.ids').prop('checked' , $(this).prop('checked'));"/>
 							</th>
 							<th>访客</th>
 							<th>服务坐席</th>
 							<th>渠道</th>
-							<th>服务时间</th>
+							<th style="min-width: 80px">服务时间</th>
 							<th>服务类型</th>
 							<th>是否预约</th>
 							<th>预约方式</th>
-							<th>预约时间</th>
+							<th style="min-width: 80px">预约时间</th>
 							<th>操作</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody style="table-layout: fixed; word-break: break-all;">
 						<#if summaryList?? && summaryList.content??>
 						<#list summaryList.content as summary>
 						<tr class="tdHasContorllor design-dropable-td">
 							<td style="width:1%;">
 								<input type="checkbox" class="ids" name="ids" value="${summary.id!''}"/>
 							</td>
-							<td class="ukefu-online-client">
+							<td class="ukefu-online-client" title="${summary.username!''}" style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">
 								<a href="/service/online/index.html?userid=${summary.userid!''}&agentservice=${summary.agentserviceid!''}&id=${summary.id!''}">
 								${summary.username!''}
 								</a>
 							</td>
-							<td>
+							<td title="${summary.agentusername!''}" style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">
 								${summary.agentusername!''}
 							</td>
 							<td>
@@ -177,6 +177,51 @@
 		  var laypage = layui.laypage
 		  ,layer = layui.layer;
 		  var laydate = layui.laydate;
+
+		function getNowFormatDate() {
+			var date = new Date();
+			var seperator = "-";
+			var year = date.getFullYear();
+			var month = date.getMonth() + 1;
+			var strDate = date.getDate();
+			if (month >= 1 && month <= 9) {
+				month = "0" + month;
+			}
+			if (strDate >= 0 && strDate <= 9) {
+				strDate = "0" + strDate;
+			}
+			var currentdate = year + seperator + month + seperator + strDate;
+			return currentdate;
+		}
+
+		var start = {
+			istime: true,
+			format: 'YYYY-MM-DD',
+			max:getNowFormatDate(),//默认最大值为当前日期
+			istoday: true,
+			choose: function (datas) {
+				end.min = datas; //开始日选好后，重置结束日的最小日期
+			}
+		};
+
+		var end = {
+			istime: true,
+			format: 'YYYY-MM-DD',
+			max:getNowFormatDate(),//默认最大值为当前日期
+			istoday: true,
+			choose: function (datas) {
+				start.max = datas; //结束日选好后，重置开始日的最大日期
+			}
+		};
+
+		document.getElementById('start_time').onclick = function () {
+			start.elem = this;
+			laydate(start);
+		};
+		document.getElementById('end_time').onclick = function () {
+			end.elem = this;
+			laydate(end);
+		};
 		  
 		  laypage({
 				cont: 'page'

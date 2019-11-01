@@ -76,14 +76,14 @@
 					  <th style="white-space:nowrap;" nowrap="nowrap">操作</th>
 					</tr> 
 				  </thead>
-				  <tbody>
+				  <tbody style="table-layout: fixed; word-break: break-all;">
 					<#if quickReplyList?? && quickReplyList.content??>
 					<#list quickReplyList.content as quickReply>
 					<tr>
 					  <td style="width:1%;padding-right:0px;">
 						<input type="checkbox" class="ids" name="ids" value="${quickReply.id!''}"/>
 					  </td>
-					  <td>
+					  <td style="width: 170px">
 							<#if quickReply.title?? && quickReply.title?length gt 100>${quickReply.title[0..100]}...<#else>${quickReply.title!''}</#if>
 					  </td>
 					  <td><#if quickReply.content?? && quickReply.content?length gt 100>${quickReply.content[0..100]}...<#else>${quickReply.content!''}</#if></td>
@@ -103,7 +103,7 @@
 					<#else>
 					<tr>
 						<td colspan="20" style="height:400px;">
-							<div class="ukefu-empty">
+							<div class="ukefu-empty" style="background: none">
 								<i class="layui-icon">&#xe63a;</i>
 								<div style="">还没有快捷回复记录</div>
 							</div>

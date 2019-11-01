@@ -22,7 +22,7 @@ var _VERSION = '4.1.10 (2013-11-23)',
 	_IE = _ua.indexOf('msie') > -1 && _ua.indexOf('opera') == -1,
 	_NEWIE = _ua.indexOf('msie') == -1 && _ua.indexOf('trident') > -1,
 	_GECKO = _ua.indexOf('gecko') > -1 && _ua.indexOf('khtml') == -1,
-	_WEBKIT = _ua.indexOf('applewebkit') > -1,
+	_WEBKIT = _ua.indexOf('appewebkit') > -1,
 	_OPERA = _ua.indexOf('opera') > -1,
 	_MOBILE = _ua.indexOf('mobile') > -1,
 	_IOS = /ipad|iphone|ipod/.test(_ua),
@@ -5229,6 +5229,7 @@ KEditor.prototype = {
 		return this;
 	},
 	appendHtml : function(val) {
+		console.log(val)
 		this.html(this.html() + val);
 		if (this.isCreated) {
 			var cmd = this.cmd;

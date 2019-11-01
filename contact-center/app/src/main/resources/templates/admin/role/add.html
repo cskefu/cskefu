@@ -3,7 +3,7 @@
 	  <div class="layui-form-item">
 	    <label class="layui-form-label">角色：</label>
 	    <div class="layui-input-inline">
-	      <input type="text" name="name" required lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
+	      <input type="text" name="name" required lay-verify="required_name" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
 	    </div>
 	  </div>
 	  <div class="layui-form-button">
@@ -19,5 +19,12 @@
 //Demo
 layui.use('form', function(){
   var form = layui.form();
+	form.verify({
+		required_name: function (value) {
+			if (value.length > 50){
+				return "角色名称不能超过50字";
+			}
+		}
+	});
 });
 </script>

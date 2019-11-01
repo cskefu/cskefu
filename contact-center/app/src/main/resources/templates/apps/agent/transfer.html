@@ -6,33 +6,34 @@
 		<div class="col-lg-3">
 			<div class="box">
 				<div class="box-title">
-					<h1 class="site-h1" style="background-color:#FFFFFF;margin:0px;padding-bottom:4px;">
+					<h1 class="site-h1" style="background-color:#FFFFFF;margin:0px;padding:0 0 4px 20px;">
 						技能组
 					</h1>
 				</div>
 				<div class="box-body" style="padding:0px 0px;position: relative;height:250px;overflow-y:auto;">
 					<ul>
-						<#if skillList??>
-						<#list skillList as skill>
-						<#if skill.id == user.organ>
+						<#if skillGroups??>
+						<#list skillGroups as skill>
+						<#if user.affiliates?seq_contains(skill.id)>
 						<#assign agentNum = 0 >
-						<#if userList??><#list userList as agent><#if agent.organ == skill.id><#assign agentNum = agentNum + 1 ></#if></#list></#if>
-						<li class="uk_role <#if skill.id == currentorgan>this</#if>" style="margin:0px;padding:7px;" onclick="$('.uk_role.this').removeClass('this');$(this).addClass('this');"><a
+						<#if userList??><#list userList as agent><#if agent.affiliates?seq_contains(skill.id)><#assign agentNum = agentNum + 1 ></#if></#list></#if>
+						<li title="${skill.name!''}(${agentNum!''})" class="uk_role <#if skill.id == currentorgan>this</#if>" style="margin:0px;padding:7px 0 7px 20px;display: inline-block;max-width: 100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" onclick="$('.uk_role.this').removeClass('this');$(this).addClass('this');"><a
 							href="/agent/transfer/agent.html?organ=${skill.id!''}" data-toggle="load" data-target="#skillAgentList">
-								<i class="kfont"></i> ${skill.name!''}（${agentNum!''}）
+								<i class="kfont" style="margin-top: 3px;float: left"></i>
+							    <span style="max-width: 120px;text-overflow: ellipsis;white-space: nowrap; overflow: hidden;float: left;margin: 0 3px">${skill.name!''}</span>(${agentNum!''})
 						</a></li>
 						</#if>
 						</#list>
 						</#if>
 						
-						<#if skillList??>
-						<#list skillList as skill>
-						<#if skill.id != user.organ>
+						<#if skillGroups??>
+						<#list skillGroups as skill>
+						<#if !user.affiliates?seq_contains(skill.id)>
 						<#assign agentNum = 0 >
-						<#if userList??><#list userList as agent><#if agent.organ == skill.id><#assign agentNum = agentNum + 1 ></#if></#list></#if>
-						<li class="uk_role <#if skill.id == currentorgan>this</#if>" style="margin:0px;padding:7px;"  onclick="$('.uk_role.this').removeClass('this');$(this).addClass('this');"><a
+						<#if userList??><#list userList as agent><#if agent.affiliates?seq_contains(skill.id)><#assign agentNum = agentNum + 1 ></#if></#list></#if>
+						<li title="${skill.name!''}(${agentNum!''})" class="uk_role <#if skill.id == currentorgan>this</#if>" style="margin:0px;padding:7px 0 7px 20px;"  onclick="$('.uk_role.this').removeClass('this');$(this).addClass('this');"><a
 							href="/agent/transfer/agent.html?organ=${skill.id!''}" data-toggle="load" data-target="#skillAgentList">
-								<i class="kfont"></i> ${skill.name!''}（${agentNum!''}）
+							<i style="margin-top: 3px;float: left" class="kfont"></i><span style="max-width: 120px;text-overflow: ellipsis;white-space: nowrap; overflow: hidden;float: left;margin: 0 3px">${skill.name!''}</span>(${agentNum!''})
 						</a></li>
 						</#if>
 						</#list>
@@ -51,13 +52,13 @@
 	</div>
 	<div class="row" style="margin-top:5px;">
 		<div class="col-lg-12">
-			<h1 class="site-h1" style="background-color:#EEEEEE;">
+			<h1 class="site-h1" style="background-color:#EEEEEE;padding-left: 20px">
 				转接附言（最多不超过255个字符）</h1>
 			<div class="layui-form-item" style="padding-left:10px;padding-top:5px;">
 				<div class="layui-inline">
 					<div class="layui-input-inline" style="width: 720px;">
 						<textarea name="memo" placeholder="请输入转接附言" class="layui-textarea"
-							style="resize:none;height:90px;min-height:90px;" maxlength="255"><#if agentservice??>${agentservice.transmemo!''}</#if></textarea>
+							style="resize:none;height:90px;min-height:90px;margin-left: 5px" maxlength="255"><#if agentservice??>${agentservice.transmemo!''}</#if></textarea>
 					</div>
 				</div>
 			</div>
@@ -67,11 +68,17 @@
 	<div class="layui-form-button">
 		<div class="layui-button-block">
 			<button class="layui-btn" lay-submit lay-filter="contactsForm">转接</button>
-			<button type="reset" class="layui-btn layui-btn-primary" onclick="layer.close(layer.index);">关闭</button>
+			<button type="button" class="layui-btn layui-btn-primary" onclick="closedPage()">关闭</button>
 		</div>
 	</div>
 </form>
+
 <script>
+
+	function closedPage(){
+		layer.closeAll("page")
+	}
+
 	$('.ukefu-agentstatus td:not(:last-child)').on("click" , function(){
 		$('.ctxid').prop("checked" , false);
 		if($(this).parent().find("input").prop("checked")){

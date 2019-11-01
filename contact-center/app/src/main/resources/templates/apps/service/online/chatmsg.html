@@ -18,7 +18,7 @@
 				<div class="<#if (chatmessage.userid?? && chatmessage.userid == user.id) || (chatmessage.calltype?? && chatmessage.calltype == '呼出')>chat-right<#else>chat-left</#if>">
 					<img alt="" src="<#if chatmessage.userid?? && chatmessage.userid == user.id>/images/im/user.png<#else><#if curagentuser.headimgurl?? && curagentuser.headimgurl !=''>${curagentuser.headimgurl}<#else>/images/im/user.png</#if></#if>" style="width:45px;height:45px;" class="user-img">
 					<div class="chat-message">
-						<span class="user">${chatmessage.username!''}</span> 
+						<span class="user">${chatmessage.username!''}</span>
 						<span class="time">${chatmessage.createtime!''}</span>
 					</div>
 					<div class="<#if (chatmessage.userid?? && chatmessage.userid == user.id) || (chatmessage.calltype?? && chatmessage.calltype == '呼出')>chatting-right<#else>chatting-left</#if>">

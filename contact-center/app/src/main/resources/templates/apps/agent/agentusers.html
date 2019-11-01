@@ -40,7 +40,9 @@
                         <i class="kfont ukefu-channel-icon-end" id="tip_icon_wenxin_${agentuser.userid!''}">&#xe64d;</i>
                         <#elseif agentuser.channel?? && agentuser.channel == "webim">
                         <i class="kfont ukefu-channel-icon-end" id="tip_icon_webim_${agentuser.userid!''}">&#xe60d;</i>
-                        <#elseif agentuser.channel?? && agentuser.channel == "phone">
+						<#elseif agentuser.channel?? && agentuser.channel == "skype">
+						<i class="csfont ukefu-channel-icon-end" id="tip_icon_skype_${agentuser.userid!''}">&#59404;</i>
+						<#elseif agentuser.channel?? && agentuser.channel == "phone">
                         <img class="ukefu-channel-image" src="/images/cde-ico-gray.png" id="tip_icon_phone_${agentuser.userid!''}">
                         </#if>
                     <#else>
@@ -48,13 +50,16 @@
                         <i class="kfont ukefu-channel-icon" id="tip_icon_wenxin_${agentuser.userid!''}">&#xe64d;</i>
                         <#elseif agentuser.channel?? && agentuser.channel == "webim">
                         <i class="kfont ukefu-channel-icon" id="tip_icon_webim_${agentuser.userid!''}">&#xe60d;</i>
+						<#elseif agentuser.channel?? && agentuser.channel == "skype">
+						<i class="csfont ukefu-channel-icon" id="tip_icon_skype_${agentuser.userid!''}">&#59404;</i>
                         <#elseif agentuser.channel?? && agentuser.channel == "phone">
                         <img class="ukefu-channel-image" src="/images/phone-ico.png" id="tip_icon_phone_${agentuser.userid!''}">
                         </#if>
                     </#if>
 					<div class="dialog-info">
 						<div class="address">
-							<span>${agentuser.username!''}</span>
+							<span style="width:90px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;word-wrap: break-word;
+word-break: break-all;">${agentuser.username!''}</span>
 						</div>
 						<div class="news">
 							<#if agentUser.servicetime??>${agentuser.servicetime?string('yyyy-MM-dd HH:mm:ss')}<#else>${agentuser.servicetime?string('yyyy-MM-dd HH:mm:ss')}</#if>

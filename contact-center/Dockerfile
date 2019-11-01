@@ -12,13 +12,9 @@ LABEL org.label-schema.vcs-ref=$VCS_REF \
 COPY $PWD/assets/install-corretto-8.sh /opt
 RUN chmod +x /opt/install-corretto-8.sh && /opt/install-corretto-8.sh
 
-# install maven
-COPY $PWD/assets/install-maven.sh /opt
-RUN chmod +x /opt/install-maven.sh && /opt/install-maven.sh
-
-# configure timezone
+# install other lib and configure timezone
 RUN apt-get update && \
-   apt-get install --no-install-recommends -y tzdata && \ 
+   apt-get install --no-install-recommends -y tzdata mysql-client-5.7 zip unzip vim-tiny && \ 
    ln -sf /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime && \
    DEBIAN_FRONTEND=noninteractive dpkg-reconfigure --frontend noninteractive tzdata && \
    rm -rf /var/lib/apt/lists/*
@@ -30,22 +26,19 @@ ENV LC_ALL C.UTF-8
 
 # set ENVs
 ENV JAVA_HOME=/usr/lib/jvm/java-1.8.0-amazon-corretto
-ENV MAVEN_HOME=/opt/maven
-ENV PATH=$PATH:$JAVA_HOME/bin:$MAVEN_HOME/bin
+ENV PATH=$PATH:$JAVA_HOME/bin
 
 # create dirs
 RUN /bin/bash -c "mkdir -p /{data,logs}"
 
 # build WAR
-COPY app /app
-COPY config /config
-WORKDIR /app
-RUN mvn clean package && \
-    mkdir -p /opt/chatopera && \
-    mv target/contact-center-3.9.0.war /opt/chatopera && \
-    rm -rf /app && rm -rf /config && \
-    rm -rf /root/.m2
+RUN mkdir -p /opt/chatopera
+COPY ./app/target/contact-center-*.war /opt/chatopera/contact-center.war
+COPY ./assets/setup-mysql-db.sh /opt/chatopera
+COPY ./assets/utils.sh /opt/chatopera
+COPY ./assets/docker-entrypoint.sh /opt/chatopera
+RUN chmod +x /opt/chatopera/*.sh
 
 WORKDIR /opt/chatopera
 EXPOSE 8030-8050
-CMD ["java", "-jar", "contact-center-3.9.0.war"]
+CMD ["./docker-entrypoint.sh"]

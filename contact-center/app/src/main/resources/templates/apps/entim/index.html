@@ -19,7 +19,7 @@
 			</span>
 		</div>
 		<div class="ukefu-entim-desc">
-			<input class="ukefu-entim-remark" placeholder="编辑签名" value="在深邃的编码世界，做一枚轻盈的纸飞机">
+			<input class="ukefu-entim-remark" placeholder="编辑签名" value="用心沟通，成就客户">
 		</div>
 		<div class="ukefu-entim-close">
 			<a href="javascript:void(0)" onclick="top.closeentim()">
@@ -45,7 +45,7 @@
 						<#assign curusers = 0 >
 						<#if userList??>
 						<#list userList as entimuser>
-							<#if !(entimuser.organ??) && entimuser.id != user.id>
+							<#if !(entimuser.organs?size > 0) && entimuser.id != user.id>
 							<#assign curusers = curusers+1 >
 							</#if>
 						</#list>
@@ -55,7 +55,7 @@
 					<ul class="ukefu-user-list">
 						<#if userList??>
 						<#list userList as entimuser>
-							<#if !(entimuser.organ??) && entimuser.id != user.id>
+							<#if !(entimuser.organs?size > 0) && entimuser.id != user.id>
 							<li id="user_${entimuser.id}">
 								<a href="javascript:void(0)" onclick="openchat('/ent/im/chat.html?userid=${entimuser.id!''}' , '/images/user-pc.png' , '${entimuser.uname!''}' , '${entimuser.id!''}' , '最近登陆:${entimuser.lastlogintime}');">
 									<img src="/images/user-pc.png">
@@ -86,7 +86,7 @@
 						<#assign curusers = 0 >
 						<#if userList??>
 						<#list userList as entimuser>
-							<#if entimuser.organ?? && entimuser.id != user.id && entimuser.organ == organ.id>
+							<#if entimuser.organs?? && entimuser.id != user.id && entimuser.organs[organ.id]??>
 							<#assign curusers = curusers+1 >
 							</#if>
 						</#list>
@@ -96,7 +96,7 @@
 					<ul class="ukefu-user-list">
 						<#if userList??>
 						<#list userList as entimuser>
-							<#if entimuser.organ?? && entimuser.id != user.id && entimuser.organ == organ.id>
+							<#if entimuser.organs?? && entimuser.id != user.id && entimuser.organs[organ.id]??>
 							<li id="user_${entimuser.id}">
 								<a href="javascript:void(0)" onclick="openchat('/ent/im/chat.html?userid=${entimuser.id!''}' , '/images/user-pc.png' , '${entimuser.uname!''}' , '${entimuser.id!''}' , '最近登陆:${entimuser.lastlogintime}');">
 									<img src="/images/user-pc.png">
@@ -156,9 +156,11 @@
 			</#if>
 			<span class="layui-anim layer-anim-05 animated" id="msgbox" data-newmsg="${newmsg}" style="<#if newmsg == 0>display:none;</#if>">${newmsg}</span>
 		</li>
-		<li class="layui-icon " title="新建" onclick="layer.prompt({title: '新建一个群', offset: 'b', formType: 0}, function(text, index){layer.close(index);loadURL('/ent/im/group/save.html?name='+encodeURIComponent(text),'#imgroup')});"></li>
+		<#if user?? && (user.roleAuthMap[ "A14_A01"]?? || user.usertype=="0" )>
+			<li class="layui-icon " title="新建" onclick="layer.prompt({title: '新建一个群', offset: 'b', formType: 0}, function(text, index){layer.close(index);loadURL('/ent/im/group/save.html?name='+encodeURIComponent(text),'#imgroup')});"></li>
+		 </#if>
 		<li class="layui-icon" title="更换背景" onclick="skin()"></li>
-		<li class="layui-icon" title="关于" onclick="about()"></li>
+		<!-- <li class="layui-icon" title="关于" onclick="about()"></li> -->
 	</ul>
 </div>
 <script>
@@ -172,7 +174,7 @@
 			title: '关于' ,
 			btn: '关闭' ,
 			shade: 0 ,
-			content : '<span id="welcome-message"><p>欢迎使用春松客服企业IM</p><p>QQ群：<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=ef3061d99653e2f43619ddcefbf76ac2399196d89fd589501e19ae64423a5a31"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="春松客服开源社区" title="春松客服开源社区"></a></p><p>春松客服企业IM为收费产品</p><p>详情请咨询：<a href="https://www.chatopera.com" target="_blank" style="color:#32c24d;">春松客服</a></p></span>'});
+			content : '<span id="welcome-message"><p>欢迎使用春松客服企业聊天</p><p>QQ群：<a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5I1cJLP"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="春松客服开源社区" title="春松客服开源社区"></a></p><p>春松客服企业聊天为收费产品</p><p>详情请咨询：<a href="https://www.chatopera.com" target="_blank" style="color:#32c24d;">春松客服</a></p></span>'});
 	}
 	function search(){
 		layer.open({
@@ -238,7 +240,7 @@
 			$(this).children().first().html('&#xe61a;');
 		}
 	}) ;
-	var socket = io.connect("http://"+top.hostname+":"+top.port+"/im/ent?userid=${user.id!''!''}&orgi=${user.orgi!''}");
+	var socket = io.connect(top.schema+"://"+top.hostname+":"+top.port+"/im/ent?userid=${user.id!''!''}&orgi=${user.orgi!''}");
 	socket.on('connect',function(){
 		//service.sendRequestMessage(); 
 		//output('<span id="callOutConnect-message">'+ new Date().format("yyyy-MM-dd hh:mm:ss") + ' 开始沟通' +'</span>' , 'message callOutConnect-message');

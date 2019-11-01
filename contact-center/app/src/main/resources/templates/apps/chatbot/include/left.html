@@ -1,0 +1,23 @@
+<h1 class="site-h1" style="border-top:1px solid #e6e6e6;">
+    机器人列表
+</h1>
+
+<#if chatbots??>
+<table class="layui-table" lay-even lay-skin="nob">
+    <tbody>
+    <#list chatbots as chatbot>
+    <tr>
+        <td>
+            <a href="">${chatbot.name}</a>
+        </td>
+    </tr>
+    </#list>
+    </tbody>
+</table>
+<#else>
+    <div class="ukefu-empty" style="background: none">
+        <i class="layui-icon">&#xe63a;</i>
+        <div style="">还没有聊天机器人</div>
+    </div>
+</#if>
+

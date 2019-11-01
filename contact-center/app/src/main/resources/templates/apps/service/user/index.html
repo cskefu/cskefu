@@ -53,7 +53,7 @@
 							  <td>${user.email!''}</td>
 							  <td>${user.mobile!''}</td>
 							  <td>
-							  	<#if user.online>
+							  	<#if onlines[user.id]?? && onlines[user.id]>
 							  		<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
 							  	</#if>
 							  </td>

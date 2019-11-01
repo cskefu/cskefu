@@ -5,7 +5,7 @@
 	  <div class="layui-form-item">
 	    <label class="layui-form-label">部门：</label>
 	    <div class="layui-input-inline">
-	      <input type="text" name="name" required lay-verify="required" value="${organData.name!''}" placeholder="请输入部门名称" autocomplete="off" class="layui-input">
+	      <input type="text" name="name" lay-verify="requiredOrgiName" value="${organData.name!''}" placeholder="请输入部门名称" autocomplete="off" class="layui-input">
 	    </div>
 	  </div>
 	  <div class="layui-form-item">
@@ -13,7 +13,7 @@
 				<label class="layui-form-label">上级机构：</label>
 				<div class="layui-input-inline" style="position: relative;">
 					<input type="hidden" id="parent" name="parent" value="<#if organData??>${organData.parent}<#else>0</#if>">
-					<input type="text" name="parentname" id="parentname" required value="<#if organData??>${organData.name}<#else>组织机构</#if>" lay-verify="required" autocomplete="off" readOnly="readonly" onClick="showMenu();"
+					<input type="text" name="parentname" id="parentname" required value="<#if organData??>${organData.name}<#else>组织机构</#if>" lay-verify="requiredTwo" autocomplete="off" readOnly="readonly" onClick="showMenu();"
 						class="layui-input">
 					<i class="layui-icon" style="position: absolute;right: 3px;top: 6px;font-size: 25px;${systemConfig.color!'color:#0096C4;'}" onClick="showMenu()">&#xe631;</i>
 					<div id="menuContent" style="display:none; position: absolute;z-index:10000;width: 218px;" class="ukefu-ztree">
@@ -43,6 +43,21 @@
 layui.use('form', function(){
   var form = layui.form();
   form.render(); //更新全部
+	form.verify({
+		requiredOrgiName: function (value) {
+			if (value == $('#parentname').val()){
+				return '部门和上级部门不能一致';
+			}
+			if (value.length > 50){
+				return "部门名称不能超过50字";
+			}
+
+			if(!value){
+				return "部门名称必填";
+			}
+		},
+
+	})
   form.on("switch(area)",function(data){
   	if(data.elem.checked){
   		$('#area').show();

@@ -20,34 +20,51 @@ package com.chatopera.cc.util;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public class WebIMClient {
-	private String userid ;
-	private String client ;
-	private SseEmitter sse ;
-	
-	public WebIMClient(String userid , String client , SseEmitter sse){
-		this.userid = userid ;
-		this.sse = sse ;
-		this.client = client ;
-	}
+    private String userid;
+    private String client;
+    private SseEmitter sse;
+    private String traceid; // 跟踪用户的ID
 
-	public String getUserid() {
-		return userid;
-	}
+    public WebIMClient(String userid, String client, SseEmitter sse) {
+        this(userid, client, sse, null);
+    }
 
-	public void setUserid(String userid) {
-		this.userid = userid;
-	}
+    public WebIMClient(final String userid, final String client, final SseEmitter sse, final String traceid) {
+        this.userid = userid;
+        this.sse = sse;
+        this.client = client;
+        this.traceid = traceid;
+    }
 
-	public SseEmitter getSse() {
-		return sse;
-	}
-	public void setSse(SseEmitter sse) {
-		this.sse = sse;
-	}
-	public String getClient() {
-		return client;
-	}
-	public void setClient(String client) {
-		this.client = client;
-	}
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public SseEmitter getSse() {
+        return sse;
+    }
+
+    public void setSse(SseEmitter sse) {
+        this.sse = sse;
+    }
+
+    public String getClient() {
+        return client;
+    }
+
+    public void setClient(String client) {
+        this.client = client;
+    }
+
+    public String getTraceid() {
+        return traceid;
+    }
+
+    public void setTraceid(String traceid) {
+        this.traceid = traceid;
+    }
 }

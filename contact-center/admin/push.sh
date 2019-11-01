@@ -5,12 +5,12 @@
 
 # constants
 baseDir=$(cd `dirname "$0"`;pwd)
+registryName=dockerhub.qingcloud.com
 imagename=chatopera/contact-center
-PACKAGE_VERSION=1.0.0
+PACKAGE_VERSION=w4l
 
 # functions
 
 # main 
 [ -z "${BASH_SOURCE[0]}" -o "${BASH_SOURCE[0]}" = "$0" ] || return
-docker push $imagename:$PACKAGE_VERSION
-docker push $imagename:develop
+docker push $registryName/$imagename:$PACKAGE_VERSION

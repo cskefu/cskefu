@@ -35,7 +35,7 @@
 				  <#if title??>
 					<#if rows==values_index && title.name !="TOTAL_TEMP">
 					  	<#if title.leveltype !="newrow_extend_sum">
-						<td nowrap="nowrap" align="center" class="blue_k <#if title.total == true>total</#if>" rowspan="${title.rowspan!'0'}" <#if title.colspan gt 1>colspan="${title.colspan}"</#if>>
+                         <td title="${title.formatName!''}" style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;" nowrap="nowrap" align="center" class="blue_k <#if title.total == true>total</#if>" rowspan="${title.rowspan!'0'}" <#if title.colspan gt 1>colspan="${title.colspan}"</#if>>
 						  ${title.formatName!''}</td>
 						</#if>
 						<#if title.valueData??>

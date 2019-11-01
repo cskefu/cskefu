@@ -21,7 +21,17 @@
 			   		<img src="<#if inviteData?? && inviteData.consult_dialog_logo??>/res/image.html?id=${inviteData.consult_dialog_logo?url}<#else>/images/logo.png</#if>" style="height:30px;padding:10px;">
 			    </div>
 			    <div class="ukef-leavemsg-tip">
-			    	<#if sessionConfig?? && sessionConfig.notinwhmsg??>${(sessionConfig.notinwhmsg!'')?no_esc}</#if>
+					<#if inviteData?? && inviteData.leavemessage>
+						<#if sessionConfig?? && sessionConfig.hourcheck>
+							  <#if isInWorkingHours>
+								   <#if sessionConfig?? && sessionConfig.noagentmsg??>${(sessionConfig.noagentmsg!'')?no_esc}</#if>
+							  <#else>
+									<#if sessionConfig?? && sessionConfig.notinwhmsg??>${(sessionConfig.notinwhmsg!'')?no_esc}</#if>
+							  </#if>
+						<#else>
+			                <#if sessionConfig?? && sessionConfig.noagentmsg??>${(sessionConfig.noagentmsg!'')?no_esc}</#if>
+						</#if>
+					</#if>
 			    </div>
 		    	<div class="leaveCon">
 				    <form action="" method="" name="">

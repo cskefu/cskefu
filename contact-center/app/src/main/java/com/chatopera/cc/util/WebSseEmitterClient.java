@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2019 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,48 +16,58 @@
  */
 package com.chatopera.cc.util;
 
+import com.chatopera.cc.proxy.OnlineUserProxy;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import com.google.common.collect.MapMaker;
+public class WebSseEmitterClient {
+    private final static Logger logger = LoggerFactory.getLogger(WebSseEmitterClient.class);
+    private ConcurrentMap<String, WebIMClient> imClientsMap = new ConcurrentHashMap<>();
 
-public class WebSseEmitterClient{
-	
-	private ConcurrentMap<String, WebIMClient> imClientsMap = new MapMaker().weakValues().makeMap();
-	
-	public List<WebIMClient> getClients(String userid){
-		Collection<WebIMClient> values = imClientsMap.values() ;
-		List<WebIMClient> clents = new ArrayList<WebIMClient>();
-		for(WebIMClient client : values){
-			if(client.getUserid().equals(userid)){
-				clents.add(client) ;
-			}
-		}
-		return clents;
-	}
-	
-	public int size(){
-		return imClientsMap.size() ;
-	}
-	
-	public void putClient(String userid , WebIMClient client){
-		imClientsMap.put(client.getClient(), client) ;
-	}
-	
-	public void removeClient(String userid , String client , boolean timeout) throws Exception{
-		List<WebIMClient> keyClients = this.getClients(userid) ;
-		for(int i=0 ; i<keyClients.size() ; i++){
-			WebIMClient webIMClient = keyClients.get(i) ;
-			if(webIMClient.getClient()!=null && webIMClient.getClient().equals(client)){
-				imClientsMap.remove(client) ;
-				keyClients.remove(i) ;
-				break ;
-			}
-		}
-		if(keyClients.size() == 0 && timeout == true){
-			OnlineUserUtils.offline(userid, userid);
-		}
-	}
+    public List<WebIMClient> getClients(String userid) {
+
+        Collection<WebIMClient> values = imClientsMap.values();
+        List<WebIMClient> clients = new ArrayList<WebIMClient>();
+        for (WebIMClient client : values) {
+            if (client.getUserid().equals(userid)) {
+                clients.add(client);
+            }
+        }
+//        logger.info("[getClients] get clients for userId {}, size {}", userid, clients.size());
+        return clients;
+    }
+
+    public int size() {
+        return imClientsMap.size();
+    }
+
+    public void putClient(String userid, WebIMClient client) {
+//        logger.info("[putClient] userid {} client {}", userid, client.getClient());
+        imClientsMap.put(client.getClient(), client);
+    }
+
+    public void removeClient(String userid, String client, boolean timeout) throws Exception {
+//        logger.info("[removeClient] remove client {} for userid {}", client, userid);
+        List<WebIMClient> keyClients = this.getClients(userid);
+        for (int i = 0; i < keyClients.size(); i++) {
+            WebIMClient webIMClient = keyClients.get(i);
+            if (StringUtils.equals(webIMClient.getClient(), client)) {
+
+                imClientsMap.remove(client);
+                keyClients.remove(i);
+                break;
+            }
+        }
+        if (keyClients.size() == 0 && timeout == true) {
+            OnlineUserProxy.offline(userid, userid);
+//            logger.info("[removeClient] set onlineUser {} as offline.", userid);
+        }
+    }
 }

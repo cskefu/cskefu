@@ -126,23 +126,23 @@
                     };
                 }
                 data.ops = 'status';
-                httpRequest({
+                restApiRequest({
                     data: data,
                     path: 'callout/monitor',
                     query: '?p=1&ps=20',
                 }).then(function (d) {
                     if(d.status && d.status === "AUTH_ERROR"){
-                        openFail(d.status);
+                        handleRestApiFail(d.status);
                         return;
                     }
 
                     if(d.rc === 0){
                         newsList(d);
                     } else {
-                        openFail(null, d.error)
+                        handleRestApiFail(null, d.error)
                     }
                 }, function (reason) {
-                    openFail()
+                    handleRestApiFail()
                 });
             }
         });
@@ -172,23 +172,23 @@
         $("#search").click(function () {
             var data = formValues();
             data.ops = 'status';
-            httpRequest({
+            restApiRequest({
                 data: data,
                 path: 'callout/monitor',
                 query: '?p=1&ps=20',
             }).then(function (d) {
                 if(d.status && d.status === "AUTH_ERROR"){
-                    openFail(d.status);
+                    handleRestApiFail(d.status);
                     return;
                 }
 
                 if(d.rc === 0){
                     newsList(d);
                 } else {
-                    openFail(null, d.error)
+                    handleRestApiFail(null, d.error)
                 }
             }, function (reason) {
-                openFail()
+                handleRestApiFail()
             });
         });
 
@@ -205,23 +205,23 @@
             data.callid = fileHash[1];
             data.ops = 'dropin';
 
-            httpRequest({
+            restApiRequest({
                 data: data,
                 path: 'callout/monitor',
                 query: '?p=1&ps=20',
             }).then(function (d) {
                 if(d.status && d.status === "AUTH_ERROR"){
-                    openFail(d.status);
+                    handleRestApiFail(d.status);
                     return;
                 }
 
                 if(d.rc === 0){
-                    openSucc(d.data);
+                    handleRestApiSucc(d.data);
                 } else {
-                    openFail(null, d.error)
+                    handleRestApiFail(null, d.error)
                 }
             }, function (reason) {
-                openFail()
+                handleRestApiFail()
             });
         });
 
@@ -293,13 +293,13 @@
                 jump : function(obj, first){
                     var body = formValues();
                     body.ops = 'status';
-                    httpRequest({
+                    restApiRequest({
                         data: body,
                         path: 'callout/monitor',
                         query: '?p=' + obj.curr + '&ps=20',
                     }).then(function (d) {
                         if(d.status && d.status === "AUTH_ERROR"){
-                            openFail(d.status);
+                            handleRestApiFail(d.status);
                             return;
                         }
 
@@ -307,10 +307,10 @@
                             $("#news_content").html(renderDate(d.data, obj.curr));
                             form.render();
                         } else {
-                            openFail(null, d.error)
+                            handleRestApiFail(null, d.error)
                         }
                     }, function (reason) {
-                        openFail()
+                        handleRestApiFail()
                     });
                 }
             })

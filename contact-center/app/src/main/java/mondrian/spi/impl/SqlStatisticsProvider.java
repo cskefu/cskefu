@@ -15,7 +15,7 @@ import java.util.Arrays;
 
 import javax.sql.DataSource;
 
-import com.chatopera.cc.app.basic.MainUtils;
+import com.chatopera.cc.basic.MainUtils;
 
 import mondrian.rolap.RolapUtil;
 import mondrian.rolap.SqlStatement;

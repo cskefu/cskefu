@@ -10,24 +10,24 @@
 				<h1 class="site-h1" style="border-top:1px solid #e6e6e6;">
 					当前对话<#if agentServiceList??>（${agentServiceList.totalElements}）</#if>
 				</h1>
-				<table class="layui-table" lay-skin="line">
+				<table class="layui-table" lay-skin="line" style="table-layout: fixed">
 					<thead>
 						<tr class="design-sortable-tr">
 							<th>用户名</th>
-							<th>接入渠道</th>
-							<th>状态</th>
+							<th width="60px">接入渠道</th>
+							<th width="50px">状态</th>
 							<th>服务坐席</th>
 							<th>服务时间</th>
 							<th>等待时长</th>
 							<th>地域</th>
-							<th>操作</th>
+							<th class="operating">操作</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody style="table-layout: fixed; word-break: break-all;">
 						<#if agentServiceList?? && agentServiceList.content?? && agentServiceList.content?size gt 0>
 						<#list agentServiceList.content as agentService>
-						<tr class="tdHasContorllor design-dropable-td">
-							<td class=" first_td_head">
+						<tr class="tdHasContorllor design-dropable-td" title="${agentService.username!''}">
+							<td class=" first_td_head" style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">
 								<a href="/service/online/index.html?userid=${agentService.userid!''}&agentservice=${agentService.id!''}">
 								${agentService.username!''}
 								</a>
@@ -38,7 +38,7 @@
 							<td>
 								<#if agentService.status?? && agentService.status == 'end'>已结束<#elseif agentService.status?? && agentService.status == 'inservice'>服务中</#if>
 							</td>
-							<td>
+							<td style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;" title="${agentService.agentusername!''}">
 								${agentService.agentusername!''}
 							</td>
 							<td>
@@ -50,14 +50,14 @@
 								${(agentService.waittingtime/(1000*60*60))?string('00')}:${((agentService.waittingtime%(1000*60*60))/(1000*60))?string('00')}:${((agentService.waittingtime%(1000*60))/(1000))?string('00')}
 							</td>
 							<td class=" ">${agentService.region!''}</td>
-							<td style="width:1%" nowrap="nowrap">
+							<td style="white-space:nowrap">
 								<a href="/service/current/trans.html?id=${agentService.id!''}" data-toggle="ajax" data-title="转接坐席" data-width="750" data-height="550">
 									<i class="kfont">&#xe62c;</i>
 									转接
 								</a>
-								
-								<#if !(agentService.agent??)>
-								<a href="/service/current/invite.html?id=${agentService.id!''}" style="margin-left:10px;">
+
+								<#if agentService.channel?? && agentService.channel != 'skype'  && !(agentService.agent??) >
+								<a href="/service/current/invite.html?id=${agentService.id!''}" style="margin-left:10px;" class="isInvite">
 									<i class="kfont">&#xe62c;</i>
 									邀请
 								</a>
@@ -74,8 +74,8 @@
 						</#list>
 						<#else>
 							<tr>
-								<td colspan="20" style="height:400px;">
-									<div class="ukefu-empty">
+								<td colspan="8" style="height:400px;">
+									<div class="ukefu-empty" style="background: none">
 										<i class="layui-icon">&#xe63a;</i>
 										<div style="">当前没有进行中的对话</div>
 									</div>
@@ -109,5 +109,13 @@
 				}
 		   });
 		});
+
+	$(function(){
+		if($(".isInvite").length>0){
+			$(".operating").css('width','230px')
+		}else{
+			$(".operating").css('width','175px')
+		}
+	});
 </script>
 

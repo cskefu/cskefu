@@ -1,9 +1,9 @@
 <div id="containter" class="clearfix" style="margin-right:200px;">
 	<div class="content-left">
 		<div class="chat-above" id="above">
-			<div class="clearfix message connect-message"> 
+			<div class="clearfix message connect-message">
 				<span id="connect-message" style="background-color:#FFFFFF;color:#4665d4;">
-					<a href="javascript:void(0)" style="color:#4665d4;">
+					<a href="javascript:getMoreMessage()" style="color:#4665d4;">
 						<i class="layui-icon">&#xe63a;</i>
 						查看更多消息
 					</a>
@@ -13,11 +13,11 @@
 			<#list chatMessageList.content?reverse as chatMessage>
 				<#if chatMessage.userid?? && chatMessage.userid == user.id>
 					<div class="clearfix chat-block">
-						<div class="chat-right"> 
+						<div class="chat-right">
 							<img class="user-img" src="/im/img/user.png" alt="">
 							<div class="chat-message">
 								<label class="time">${chatMessage.createtime!''}</label>
-								<label class="user">${user.uname!''}</label> 
+								<label class="user">${user.uname!''}</label>
 							</div>
 							<div class="chatting-right">
 								<i class="arrow"></i>
@@ -26,37 +26,33 @@
 						</div>
 					</div>
 				<#else>
-					<#if imGroupUserList??>
-					<#list imGroupUserList as imGroupUser>
-						<div class="clearfix chat-block">
-							<div class="chat-left"> 
-								<img class="user-img" src="/im/img/user.png" alt="">
-								<div class="chat-message">
-									<label class="user">${imGroupUser.user.uname!''}</label> 						
-									<label class="time">${chatMessage.createtime!''}</label>
-								</div>
-								<div class="chatting-left">
-									<i class="arrow"></i>
-									<div class="chat-content">${(chatMessage.message!'')?no_esc}</div>
-								</div>
+					<div class="clearfix chat-block">
+						<div class="chat-left">
+							<img class="user-img" src="/im/img/user.png" alt="">
+							<div class="chat-message">
+								<label class="user">${chatMessage.username!''}</label>
+								<label class="time">${chatMessage.createtime!''}</label>
+							</div>
+							<div class="chatting-left">
+								<i class="arrow"></i>
+								<div class="chat-content">${(chatMessage.message!'')?no_esc}</div>
 							</div>
 						</div>
-						<#break/>
-					</#list>
-					</#if>
+					</div>
 				</#if>
 			</#list>
 			</#if>
-		</div>   
+		</div>
 		<div class="chat-bottom" id="bottom">
 			<textarea id="message" name="content" style="visibility:hidden;"></textarea>
 			<div class="btn-push clearfix">
 				<div style="float:left;height:24px;line-height:34px;margin: 5px 20px 10px 5px;" id="surplus">0/200</div>
+				<div style="display: inline-block;position: absolute;right: 110px;bottom: 14px;">Ctrl + Enter</div>
 				<button type="button" class="send-btn active special  clearfix" id="sent" onclick="sendMessage()" style="background-color:#32c24d;font-weight: 200;padding:5px;">
 					发送
 				</button>
 			</div>
-		</div> 
+		</div>
 	</div>
 	<div class="content-rig">
 		<div class="content-head">
@@ -76,12 +72,14 @@
 						<div class="ukefu-group-app-name">成员</div>
 					</a>
 				</li>
+				<#if user.id = imGroup.creater>
 				<li class="ukefu-group-app">
 					<a href="javascript:void(0)" onclick="group()">
 						<div class="ukefu-group-app-icon"><i class="layui-icon">&#xe63a;</i></div>
 						<div class="ukefu-group-app-name">公告</div>
 					</a>
 				</li>
+				</#if>
 			</ul>
 		</div>
 		<div class="content-head">
@@ -108,7 +106,7 @@
 					</li>
 				</#list>
 				</#if>
-			</ul>    
+			</ul>
 		</div>
 	</div>
 </div>
@@ -121,14 +119,14 @@
 			resizeType: 0,
 			themeType: 'simple',
 			fontsize: 14,
-			newlineTag : "br" , 
+			newlineTag : "br" ,
 			filterMode:true,
 			items: ['emoticons', 'cut'],
 			afterChange : function() {
 				var count = this.count() ;
-				
+
 				words = this.count("text") ;
-				var pattern = '字数：' + words + '字'; 
+				var pattern = '字数：' + words + '字';
 				document.getElementById('surplus').innerHTML = "字符： "+count+"  ，文字：" + pattern; //输入显示
 				 ////////
 			},
@@ -157,7 +155,7 @@
 					opt.error(xhr.responseText,xhr.status));
 			}
 			xhr.open(opt.type,opt.url,true);
-			if(opt.type!=='post') 
+			if(opt.type!=='post')
 				opt.data=null;
 			else
 				xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
@@ -212,26 +210,26 @@
 			}
 		}
 	};
-	Date.prototype.format = function(fmt) { 
-		 var o = { 
-			"M+" : this.getMonth()+1,                 //月份 
-			"d+" : this.getDate(),                    //日 
-			"h+" : this.getHours(),                   //小时 
-			"m+" : this.getMinutes(),                 //分 
-			"s+" : this.getSeconds(),                 //秒 
-			"q+" : Math.floor((this.getMonth()+3)/3), //季度 
-			"S"  : this.getMilliseconds()             //毫秒 
-		}; 
+	Date.prototype.format = function(fmt) {
+		 var o = {
+			"M+" : this.getMonth()+1,                 //月份
+			"d+" : this.getDate(),                    //日
+			"h+" : this.getHours(),                   //小时
+			"m+" : this.getMinutes(),                 //分
+			"s+" : this.getSeconds(),                 //秒
+			"q+" : Math.floor((this.getMonth()+3)/3), //季度
+			"S"  : this.getMilliseconds()             //毫秒
+		};
 		if(/(y+)/.test(fmt)) {
-				fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+				fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
 		}
 		 for(var k in o) {
 			if(new RegExp("("+ k +")").test(fmt)){
 				 fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
 			 }
 		 }
-		return fmt; 
-	} 
+		return fmt;
+	}
 	var R3Helper = {
 		resize : function(){
 			var height = document.body.offsetHeight ;
@@ -246,7 +244,7 @@
 			  closeBtn: 1, //不显示关闭按钮
 			  shade: false,
 			  area: ['700px', '520px'],
-			  maxmin: true, 
+			  maxmin: true,
 			  anim: 2,
 			  shade: 0,
 			  content: url
@@ -259,24 +257,25 @@
 	  ,element = layui.element(); //Tab的切换功能，切换事件监听等，需要依赖element模块
 	});
 	var hostname = location.hostname ;
-	var socket = io.connect("http://"+top.hostname+":"+top.port+"/im/ent?userid=${user.id!''!''}&orgi=${user.orgi!''}&contextid=${contextid!''}&group=${contextid!''}");
+	var socket = io.connect(top.schema+"://"+top.hostname+":"+top.port+"/im/ent?userid=${user.id!''!''}&orgi=${user.orgi!''}&contextid=${contextid!''}&group=${contextid!''}",{transports: ['websocket'], upgrade: false});
 
 	socket.on('message', function(data) {
+		data.createtime = formatDate(data.createtime);
 		var chat=document.getElementsByClassName('chatting-left').innerText;
 		chat = data.message;
 		var user = data.username ;
 		if(data.userid == "${user.id!''}"){
-			output('<div class="chat-right"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label class="time">'+data.createtime+'</label><label  class="user">'+user+'</label> </div><div class="chatting-right"><i class="arrow"></i><div class="chat-content">'+chat+'</div></div>' , "chat-block");
+			output('<div class="chat-right"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label class="time">'+data.createtime+'</label><label  class="user">' + user + '</label> </div><div class="chatting-right"><i class="arrow"></i><div class="chat-content">'+chat+'</div></div>' , "chat-block");
 		}else{
-			output('<div class="chat-left"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label  class="user">${entimuser.uname!''}</label><label class="time">'+data.createtime+'</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content">'+chat+'</div></div>' , "chat-block");	
-		}    
+			output('<div class="chat-left"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label  class="user">' + user + '</label><label class="time">'+data.createtime+'</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content">'+chat+'</div></div>' , "chat-block");
+		}
 	});
 	function sendMessage() {
 		editor.sync();
 		var count = editor.count("text");
 		if(count>0){
 			var message = document.getElementById('message').value;
-			if(message!= ""){ 
+			if(message!= ""){
 				socket.emit('message', {
 					userid:"${user.id!''}",
 					type:"message" ,
@@ -299,7 +298,7 @@
 			for(inx =0 ; inx < messages.length ; ){
 				document.getElementById('above').removeChild(messages[inx]) ;
 				inx++ ;
-			}			
+			}
 		}
 		var element = ("<div class='clearfix "+clazz+"'>" +" " + message + "</div>");
 		document.getElementById('above').innerHTML= (document.getElementById('above').innerHTML + element);
@@ -321,4 +320,18 @@
 			  }
 		});
 	}
+
+	function getMoreMessage(){
+		let firstCreateTime=$('.time').first().text();
+		R3Ajax.get("/ent/im/group/more.html?id=${contextid!''}&createtime="+firstCreateTime,function (html) {
+			$('.connect-message').after(html);
+		});
+	}
 </script>
+<style>
+	#group-tipmessage {
+		overflow-y: auto;
+		word-break: break-all;
+		text-indent: 0px;
+	}
+</style>

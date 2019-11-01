@@ -16,39 +16,33 @@
  */
 package com.chatopera.cc.util;
 
+import org.quartz.CronExpression;
+
 import java.text.ParseException;
 import java.util.Date;
 
-import com.chatopera.cc.app.basic.MainUtils;
-import org.quartz.CronExpression;
-
 
 public class CronTools {
-	/**
-	 * 
-	 * @param crontabExp
-	 * @return
-	 * @throws ParseException
-	 */
-	
-	public static CronExpression getFireTime(String crontabExp) throws ParseException{
-		return new CronExpression(crontabExp);
-		
-	}
-	/**
-	 * 
-	 * @param crontabExp
-	 * @return
-	 * @throws ParseException
-	 */
-	
-	public static Date getFinalFireTime(String crontabExp , Date date) throws ParseException{
-		CronExpression expression = new CronExpression(crontabExp) ;
-		return expression.getNextValidTimeAfter(date!=null ? date:new Date());
-		
-	}
-	public static void main(String[] args) throws Exception{
-		
-		System.out.println(MainUtils.dateFormate.format(CronTools.getFinalFireTime("0 0/40 0/1 * * ?",new Date())));
-	}
+    /**
+     * @param crontabExp
+     * @return
+     * @throws ParseException
+     */
+
+    public static CronExpression getFireTime(String crontabExp) throws ParseException {
+        return new CronExpression(crontabExp);
+
+    }
+
+    /**
+     * @param crontabExp
+     * @return
+     * @throws ParseException
+     */
+
+    public static Date getFinalFireTime(String crontabExp, Date date) throws ParseException {
+        CronExpression expression = new CronExpression(crontabExp);
+        return expression.getNextValidTimeAfter(date != null ? date : new Date());
+
+    }
 }

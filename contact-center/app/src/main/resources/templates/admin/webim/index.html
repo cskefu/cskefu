@@ -66,8 +66,8 @@
 								<div class="layui-tab layui-tab-card">
 								  <ul class="layui-tab-title">
 								    <li class="layui-this">文字链代码</li>
-								    <#if skillList??  && inviteData?? && inviteData.skill == true>
-								    <#list skillList as skill>
+								    <#if skillGroups??  && inviteData?? && inviteData.skill == true && inviteData.consult_skill_fixed == false>
+								    <#list skillGroups as skill>
 								    <li>${skill.name!''}</li>
 								    </#list>
 								    </#if>
@@ -77,8 +77,8 @@
 								    	<div class="ukefu-webim-tip">请将以下代码添加到你的网站 链接代码上，可以自由定义链接的内容形式</div>
 										<textarea class="ukefu-webim-sdk" readonly="readonly"><#if inviteData??>${schema!''}://${hostname!''}:${import?string('###')}/im/text/${inviteData.snsaccountid!''}.html<#else></#if></textarea>
 								    </div>
-								    <#if skillList??  && inviteData?? && inviteData.skill == true>
-								    <#list skillList as skill>
+								    <#if skillGroups??  && inviteData?? && inviteData.skill == true && inviteData.consult_skill_fixed == false>
+								    <#list skillGroups as skill>
 								    <div class="layui-tab-item">
 								    	<div class="ukefu-webim-tip">技能组“${skill.name!''}”文字连接，你可以复制此链接，并可以自由定义链接的内容形式</div>
 								    	<div class="ukefu-webim-tip">
@@ -309,30 +309,33 @@
 											</div>
 										</div>
 										<div class="ukefu-webim-tl">2、自定义LOGO</div>
-										<div class="box-item" style="position: relative;">
+										<div class="box-item" style="position: relative;padding-bottom: 40px">
 											<span class="ukefu-logo">
-												<img src="<#if inviteData?? && inviteData.consult_dialog_logo??>/res/image.html?id=${inviteData.consult_dialog_logo?url}<#else>/images/logo2.png</#if>" style="height:40px;">
+												<img id="webim_show" src="<#if inviteData?? && inviteData.consult_dialog_logo??>/res/image.html?id=${inviteData.consult_dialog_logo?url}<#else>/images/logo2.png</#if>" style="height:40px;">
 											</span>
-											<div class="layui-box layui-upload-button" style="position:absolute;left: 200px;">
-												<input type="file" name="webimlogo" accept="image/gif, image/jpeg, image/png" lay-ext="jpg|png|gif"  class="layui-upload-file" onchange="$('#logo_img').html($(this).val());">
-												<span class="layui-upload-icon"><i class="layui-icon"></i>上传图片</span>
+											<div class="layui-box layui-upload-button" style="position:absolute;left: 300px;">
+												<input type="file" id="webimlogo" name="webimlogo" accept="image/gif, image/jpeg, image/png" lay-ext="jpg|png|gif"  class="layui-upload-file" onchange="$('#logo_img').html($(this).val()); $('.webim_close').show();" >
+												<span class="layui-upload-icon" ><i class="layui-icon"></i>上传图片</span>
 											</div>
-											<span id="logo_img" style="position:absolute;left: 350px;"></span>
-											
-											 
+											<div style="margin-top: 20px;position: relative">
+												<span id="logo_img" style="float: left"></span>
+												<i class="layui-icon webim_close" style="display: none;float: left;margin-top: -5px;cursor:pointer;" onclick=" $('#logo_img').html(''); $('#webim_show').attr('src','<#if inviteData?? && inviteData.consult_dialog_logo??>/res/image.html?id=${inviteData.consult_dialog_logo?url}<#else>/images/logo2.png</#if>'); $('.webim_close').hide() ;clearWebimlogs()">&#x1006;</i>
+											</div>
 										</div>
 			
 										<div class="ukefu-webim-tl">3、自定义客服图标</div>
-										<div class="box-item" style="position: relative;">
+										<div class="box-item" style="position: relative;padding-bottom: 40px">
 											<span class="ukefu-logo">
-												<img src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" style="height:40px;">
+												<img id="agent_show" src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" style="height:40px;">
 											</span>
-											<div class="layui-box layui-upload-button" style="position:absolute;left: 200px;">
-												<input type="file" name="agentheadimg" accept="image/gif, image/jpeg, image/png" lay-ext="jpg|png|gif"  class="layui-upload-file" onchange="$('#agent_img').html($(this).val());">
+											<div class="layui-box layui-upload-button" style="position:absolute;left: 300px;">
+												<input type="file" id="agentheadimg" name="agentheadimg" accept="image/gif, image/jpeg, image/png" lay-ext="jpg|png|gif"  class="layui-upload-file" onchange="$('#agent_img').html($(this).val()); $('.agent_close').show()" >
 												<span class="layui-upload-icon"><i class="layui-icon"></i>上传图片</span>
 											</div>
-											<span id="agent_img" style="position:absolute;left: 350px;"></span>
-											
+											<div style="margin-top: 20px;position: relative;">
+												<span id="agent_img" style="float: left"></span>
+												<i class="layui-icon agent_close" style="display: none;float: left;margin-top: -5px;cursor:pointer;" onclick=" $('#agent_img').html('');$('#agent_show').attr('src','<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>');clearAgentheadimg(); $('.agent_close').hide()">&#x1006;</i>
+											</div>
 										</div>
 									</div>
 									<div class="col-md-4">
@@ -403,7 +406,15 @@
 </div>
 </div>
 
-<script language="javascript"> 		
+<script language="javascript">
+
+	function clearWebimlogs() {
+		webimlogo.outerHTML = webimlogo.outerHTML;
+	}
+	function clearAgentheadimg() {
+		agentheadimg.outerHTML = agentheadimg.outerHTML;
+	}
+
 	layui.use('upload', function(){
 		var target = $(this).attr("data-target");
 	});

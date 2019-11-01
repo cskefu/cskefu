@@ -8,8 +8,8 @@
 	  </settings>
 	
 	  <queues>
-	    <#if skillList??>
-	    <#list skillList as skill>
+	    <#if skillGroups??>
+	    <#list skillGroups as skill>
 		<queue name="${skill.skill!''}">
 	      <param name="strategy" value="longest-idle-agent"/>
 	      <param name="moh-sound" value="ivr-welcome.wav"/>
@@ -46,8 +46,8 @@
 	    <!-- If no level or position is provided, they will public to 1.  You should do this to keep db value on restart. -->
 	    <#if skillExtentionList??>
 	  	<#list skillExtentionList as skillExtention>
-	  	<#if skillList??>
-		<#list skillList as skill>
+	  	<#if skillGroups??>
+		<#list skillGroups as skill>
 		<#if skill.id == skillExtention.skillid>	  	
 	  	<tier agent="${skillExtention.extention}" queue="${skill.skill!''}" level="1" position="1"/>
 	  	</#if>

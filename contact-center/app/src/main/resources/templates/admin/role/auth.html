@@ -10,7 +10,7 @@
 		<div class="layui-form-button">
 			<div class="layui-button-block">
 				<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
-				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				<button id="reset" type="reset" class="layui-btn layui-btn-primary" href="/admin/role/auth.html?id=${role.id}">重置</button>
 			</div>
 		</div>
 	</form>
@@ -44,7 +44,6 @@
 	        $("#menus").val(msg);
 	    }    
 
-
 		var zNodes =[
 		    <#if sysDic??>{ id:'${sysDic.id!''}', pId:'0', name:"菜单资源", open:true , value : ""}</#if>
 		    <#if resourceList??>
@@ -57,4 +56,7 @@
 		$(document).ready(function(){
 			$.fn.zTree.init($("#roleTree"), setting, zNodes);
 		});
+	    $("#reset").on('click',function () {
+			$.fn.zTree.init($("#roleTree"), setting, zNodes);
+		})
 	</SCRIPT>

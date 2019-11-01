@@ -15,9 +15,9 @@
  */
 package com.chatopera.cc.exception;
 
-public class CallOutRecordException extends Exception {
+public class CalloutRecordException extends Exception {
 
-    public CallOutRecordException(String msg){
+    public CalloutRecordException(String msg){
         super(msg);
     }
 }

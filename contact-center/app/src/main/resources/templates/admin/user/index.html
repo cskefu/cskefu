@@ -11,14 +11,14 @@
 		<div class="row" style="padding:5px;">
 			<p style="color:red">提示：除管理员外，账号必须在【组织结构】中关联一个部门，必须在【系统角色】中关联一个角色，才可以使用资源。设置后，该账号需重新登系统才能生效。</p>
 			<div class="col-lg-12">
-				<table class="layui-table" lay-skin="line">
+				<table class="layui-table" lay-skin="line" style="table-layout: fixed;word-break: break-all">
 				  <colgroup>
 						<col>
 						<col>
 						<col>
 						<col>
 						<col>
-						<#if models?? && models["sales"]?? && models["sales"] == true>
+						<#if models?seq_contains("sales")>
 						<col>
 						</#if>
 						<col>
@@ -27,37 +27,34 @@
 				  </colgroup>
 				  <thead>
 					<tr>
-					  <th>用户</th>
-					  <th>姓名</th>
-					  <th>电子邮件</th>
-					  <th>手机</th>
-					  <th>多媒体</th>
-					  <#if models?? && models["sales"]?? && models["sales"] == true>
-					  <th>呼叫中心</th>
+					  <th width="18%">用户</th>
+					  <th width="10%">注册时间</th>
+					  <th width="15%">姓名</th>
+					  <th width="12%">电子邮件</th>
+					  <th width="12%">手机</th>
+					  <th width="50px">多媒体</th>
+					  <#if models?seq_contains("sales")>
+					  <th width="60px">呼叫中心</th>
 					  </#if>
-					  <th>管理员</th>
-					  <th style="white-space:nowrap;" nowrap="nowrap">操作</th>
+					  <th width="50px">管理员</th>
+					  <th style="white-space:nowrap;width: 110px" nowrap="nowrap">操作</th>
 					</tr> 
 				  </thead>
-				  <tbody>
+				  <tbody >
 					<#if userList?? && userList.content??>
 					<#list userList.content as user>
 					<tr>
 					  <td>
 							<a href="javascript:void(0)">
-								<i class="layui-icon headimg">&#xe612;</i>
-								<div style="margin-left:50px;margin-top:0px;">
+								<i class="layui-icon headimg" style="margin-right: 10px">&#xe612;</i>
+								<div title="${user.username!''}" style="margin-top:10px;width: 90px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">
 									${user.username!''}
 									<#if user.datastatus == true><i style="color:red;">（已删除）</i></#if>
-								</div>
-								<div title="注册时间" style="margin-left:50px;margin-top:0px;color:#cccccc;font-size:13px;">
-									${user.createtime!''}
-								</div>
-								
+		                      	</div>
 							</a>
-							
 					  </td>
-					  <td>${user.uname!''}</td>
+			          <td>${user.createtime!''}</td>
+					  <td title="${user.uname!''}" style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">${user.uname!''}</td>
 					  <td>${user.email!''}</td>
 					  <td>${user.mobile!''}</td>
 					  <td>
@@ -65,7 +62,7 @@
 					  		<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
 					  	</#if>
 					  </td>
-					  <#if models?? && models["sales"]?? && models["sales"] == true>
+					  <#if models?seq_contains("sales")>
 					  <td>
 					  	<#if user.callcenter>
 					  		<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
@@ -105,17 +102,21 @@
 	layui.use('layer', function(){
 	  var layer = layui.layer;
 	  <#if msg?? && msg == 'username_exist'>
-		layer.alert('用户名存在，请重新填写', {icon: 2});
+		layer.msg('用户名存在，请重新填写',{icon: 2, offset: 'rb', time: 3000})
 	  <#elseif msg?? && msg == 'email_exist'>
-		layer.alert('邮件存在，请重新填写', {icon: 2});
+		layer.msg('邮件存在，请重新填写',{icon: 2, offset: 'rb', time: 3000})
       <#elseif msg?? && msg == 'mobile_exist'>
-		layer.alert('手机存在，请重新填写', {icon: 2});
+		layer.msg('手机存在，请重新填写',{icon: 2, offset: 'rb', time: 3000})
       <#elseif msg?? && msg == 'sip_account_exist'>
-        layer.alert('SIP地址已经存在，请重新填写', {icon: 2});
+		layer.msg('SIP地址已经存在，请重新填写',{icon: 2, offset: 'rb', time: 3000})
       <#elseif msg?? && msg == 't1'>
-		layer.alert('当前用户坐席就绪或对话未结束，不能切换为非坐席', {icon: 2});
-	  </#if>
-	});  
+		layer.msg('当前用户坐席就绪或对话未结束，不能切换为非坐席',{icon: 2, offset: 'rb', time: 3000})
+	  <#elseif msg?? && msg == 'new_user_success'>
+		layer.msg('新用户创建成功',{icon: 1, offset: 'rb', time: 1000})
+		<#elseif msg?? && msg == 'edit_user_success'>
+			layer.msg('用户编辑成功',{icon: 1, offset: 'rb', time: 1000})
+		</#if>
+	});
 	layui.use(['laypage', 'layer'], function(){
 		  var laypage = layui.laypage
 		  ,layer = layui.layer;

@@ -16,17 +16,81 @@
 package com.chatopera.cc.util;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 public class SystemEnvHelper {
+    private final static Logger logger = LoggerFactory.getLogger(SystemEnvHelper.class);
+    private static Properties props;
+
+    /**
+     * 根据类的全名查找是否存在
+     * @param classFullName
+     * @return
+     */
+    public static boolean isClassExistByFullName(final String classFullName) {
+        try {
+//             Class<?> uriClass =
+            Class.forName(classFullName);
+            return true;
+        } catch (ClassNotFoundException ex) {
+            return false;
+        }
+    }
 
     /**
      * 分析是否加载模块，在变量为不存在或变量值为true的情况下加载
      * 也就是说，该变量值不为空或为true时时加载
-     * @param environmentVariable
+     *
+     * @param property
      * @return
      */
-    public static boolean parseModuleFlag(final String environmentVariable){
-        String val = System.getenv(environmentVariable);
-        return StringUtils.isBlank(val) || StringUtils.equalsIgnoreCase(val, "true");
+    public static boolean parseModuleFlag(final String property) {
+        String val = parseFromApplicationProps(property);
+        return StringUtils.isNotBlank(val) && StringUtils.equalsIgnoreCase(val, "true");
     }
+
+    /**
+     * 加载配置，先检查环境变量，再从application properties加载
+     *
+     * @param property
+     * @return
+     */
+    public static String parseFromApplicationProps(final String property) {
+        // 将 propert转化为环境变量
+        String P = StringUtils.upperCase(property);
+
+        P = StringUtils.replaceChars(P, "-", "_");
+        P = StringUtils.replaceChars(P, ".", "_");
+        String val = System.getenv(P);
+
+        if (StringUtils.isBlank(val)) {
+            val = getProps().getProperty(property);
+        }
+        return val;
+    }
+
+    /**
+     * 记载application.properties
+     *
+     * @return
+     */
+    private static Properties getProps() {
+        if (props == null) {
+            try (InputStream input = SystemEnvHelper.class.getClassLoader().getResourceAsStream(
+                    "application.properties")) {
+                // load a properties file
+                props = new Properties();
+                props.load(input);
+            } catch (IOException ex) {
+                logger.error("[getProps] error", ex);
+            }
+        }
+        return props;
+    }
+
 }

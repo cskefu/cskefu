@@ -104,7 +104,8 @@
 															  	<option value="10" <#if !(sessionConfig??) || !(sessionConfig.distribution??) || (sessionConfig.maxuser?? && sessionConfig.maxuser == 10) || (sessionConfig?? && sessionConfig.maxuser?? && sessionConfig.maxuser == 0)>selected="selected"</#if>>10</option>
 															  	<option value="15" <#if sessionConfig?? && sessionConfig.maxuser?? && sessionConfig.maxuser == 15>selected="selected"</#if>>15</option>
 															  	<option value="20" <#if sessionConfig?? && sessionConfig.maxuser?? && sessionConfig.maxuser == 20>selected="selected"</#if>>20</option>
-															  	<option value="30" <#if sessionConfig?? && sessionConfig.maxuser?? && sessionConfig.maxuser == 30>selected="selected"</#if>>30</option>
+<option value="30" <#if sessionConfig?? && sessionConfig.maxuser?? && sessionConfig.maxuser == 30>selected="selected"</#if>>30</option>
+<option value="999" <#if sessionConfig?? && sessionConfig.maxuser?? && sessionConfig.maxuser == 999>selected="selected"</#if>>无限制</option>
 															</select>
 														</div>
 													</div>
@@ -130,6 +131,7 @@
 															  	<option value="15" <#if sessionConfig?? && sessionConfig.initmaxuser?? && sessionConfig.initmaxuser == 15>selected="selected"</#if>>15</option>
 															  	<option value="20" <#if sessionConfig?? && sessionConfig.initmaxuser?? && sessionConfig.initmaxuser == 20>selected="selected"</#if>>20</option>
 															  	<option value="30" <#if sessionConfig?? && sessionConfig.initmaxuser?? && sessionConfig.initmaxuser == 30>selected="selected"</#if>>30</option>
+																<option value="999" <#if sessionConfig?? && sessionConfig.initmaxuser?? && sessionConfig.initmaxuser == 999>selected="selected"</#if>>无限制</option>
 															</select>
 														</div>
 													</div>
@@ -382,42 +384,7 @@
 											</div>
 											
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">15、会话超时提醒</div>
-												<div class="box-item">
-													<div class="row">
-														<div class="col-lg-8">
-															<p>客户与坐席对话的会话超时提醒功能</p>
-															<p style="color:#888888;font-size:13px;margin-top:10px;">开启后，用户和客服会话超时的时候会提醒</p>
-														</div>
-														<div class="col-lg-4" style="text-align:right;">
-															<input type="checkbox" title="启用" name="servicetimeoutlimit" id="servicetimeoutlimit" lay-filter="servicetimeoutlimit" <#if sessionConfig?? && sessionConfig.servicetimeoutlimit == true>checked="checked"</#if>>
-														</div>
-													</div>
-												</div>
-												<div class="box-item" id="timeout_limit" style="<#if sessionConfig?? && sessionConfig.servicetimeoutlimit == false>display:none;</#if>">	
-													<div class="row">
-														<div class="col-lg-8">
-															<p>超时时长（秒）</p>
-														</div>
-														<div class="col-lg-4" style="text-align:right;">
-															<input type="text" name="servicetimeout" id="servicetimeout" lay-verify="number" value="<#if sessionConfig?? && sessionConfig.servicetimeout gt 0>${sessionConfig.servicetimeout}<#else>120</#if>" autocomplete="off" class="layui-input" style="width:80px;display:inline;">
-														</div>
-													</div>
-													<div class="row">
-														<div class="col-lg-8">
-															<p>超时提示消息</p>
-														</div>
-													</div>
-													<div class="row" style="margin-top:10px;">
-														<div class="col-lg-12">
-															<textarea name="servicetimeoutmsg" id="servicetimeoutmsg" autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;"><#if sessionConfig?? && sessionConfig.servicetimeoutmsg??>${sessionConfig.servicetimeoutmsg}<#else>您好，您的当前会话已超时！</#if></textarea>
-														</div>
-													</div>
-												</div>
-											</div>
-											
-											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">16、排队超时设置</div>
+												<div class="ukefu-webim-tl" style="clear:both;">15、排队超时设置</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-8">
@@ -458,39 +425,24 @@
 													</div>
 												</div>
 											</div>
-											
+
+<!--											<div class="ukefu-webim-prop">-->
+<!--												<div class="ukefu-webim-tl" style="clear:both;">17、关闭或刷新浏览器坐席自动离线</div>-->
+<!--												<div class="box-item">-->
+<!--													<div class="row">-->
+<!--														<div class="col-lg-8">-->
+<!--															<p>开启此功能，坐席关闭浏览器后，会自动离线</p>-->
+<!--															<p style="color:#888888;font-size:13px;margin-top:10px;">此功能选项是为了避免将访客分配给已关闭浏览器的坐席</p>-->
+<!--														</div>-->
+<!--														<div class="col-lg-4" style="text-align:right;">-->
+<!--															<input type="checkbox" title="启用" name="agentautoleave" id="agentautoleave" <#if sessionConfig?? && sessionConfig.agentautoleave == true>checked="checked"</#if>>-->
+<!--														</div>-->
+<!--													</div>-->
+<!--												</div>-->
+<!--											</div>-->
+
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">17、关闭或刷新浏览器坐席自动离线</div>
-												<div class="box-item">
-													<div class="row">
-														<div class="col-lg-8">
-															<p>开启此功能，坐席关闭浏览器后，回自动离线</p>
-															<p style="color:#888888;font-size:13px;margin-top:10px;">此功能选项是为了避免将访客分配给已关闭浏览器的坐席</p>
-														</div>
-														<div class="col-lg-4" style="text-align:right;">
-															<input type="checkbox" title="启用" name="agentautoleave" id="agentautoleave" <#if sessionConfig?? && sessionConfig.agentautoleave == true>checked="checked"</#if>>
-														</div>
-													</div>
-												</div>
-											</div>
-											
-											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">18、启用坐席端CTRL+Enter快捷键发送消息 </div>
-												<div class="box-item">
-													<div class="row">
-														<div class="col-lg-8">
-															<p>坐席操作界面上启用CTRL+Enter快捷键发送消息</p>
-															<p style="color:#888888;font-size:13px;margin-top:10px;">默认是Enter快捷键发送消息，启用此功能后，快捷键变为 CTRL+Enter</p>
-														</div>
-														<div class="col-lg-4" style="text-align:right;">
-															<input type="checkbox" title="启用" name="agentctrlenter" id="agentctrlenter" <#if sessionConfig?? && sessionConfig.agentctrlenter == true>checked="checked"</#if>>
-														</div>
-													</div>
-												</div>
-											</div>
-											
-											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">19、启用坐席端使用快捷键输入快捷回复</div>
+												<div class="ukefu-webim-tl" style="clear:both;">16、启用坐席端使用快捷键输入快捷回复</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-8">
@@ -505,7 +457,7 @@
 											</div>
 											
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">20、启用坐席工作台的外部快捷回复</div>
+												<div class="ukefu-webim-tl" style="clear:both;">17、启用坐席工作台的外部快捷回复</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-8">

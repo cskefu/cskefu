@@ -19,21 +19,24 @@
 <link rel="stylesheet" type="text/css" href="/js/kindeditor/themes/default/default.css">
 
 <script src="/js/jquery-1.10.2.min.js"></script>
-
 <script src="/js/jquery.form.js"></script>
-
 <script src="/js/select/js/select2.min.js"></script>
+<script src="/js/moment.min.js"></script>
+<script src="/js/moment-timezone.js"></script>
+<script src="/js/moment-timezone-with-data.js"></script>
 
 <script src="/layui.js"></script>
-<script src="/js/ukefu.js"></script>
+<script src="/js/cskefu.js"></script>
 <script src="/im/js/socket.io.js"></script>	
 <script src="/js/CSKeFu_IM.v1.js"></script>
+<script src="/js/CSKeFu_Rest_Request.v1.js"></script>
+<script src="/js/CSKeFu_Agent_State.v1.js"></script>
 
-<#if models?? && models["sales"]?? && models["sales"] == true>
+<#if models?seq_contains("sales")>
 <script src="/js/CSKeFu_Callout.v1.js"></script>
 </#if>
 
-<#if models?? && models["callcenter"]?? && models["callcenter"] == true && user.callcenter == true>
+<#if models?seq_contains("callcenter")>
 <script src="/js/sip-0.11.2.js"></script>
 <script src="/js/UKeFu-SoftPhone.js"></script>
 </#if>
@@ -64,13 +67,13 @@
 		layui.use('layer', function(){
 			layerhelper = layer ;
 			<#if Request["msg"]?? && Request["msg"] == "security">
-				layer.alert("您访问的资源需要安全验证，请确认您有系统管理员权限！", {icon: 2});
-				<#elseif msg?? && msg == 't0'>
-					layer.alert('当前坐席就绪或对话未结束，不能切换${systemConfig.namealias!''}', {icon: 2});
-					<#elseif msg?? && msg == 't1'>
-					layer.alert('当前用户坐席就绪或对话未结束，不能切换为非坐席', {icon: 2});
+				layer.msg('您访问的资源需要安全验证，请确认您有系统管理员权限！',{icon: 2, offset: 'rb', time: 3000})
+			<#elseif msg?? && msg == 't0'>
+				layer.msg('当前坐席就绪或对话未结束，不能切换${systemConfig.namealias!''}',{icon: 2, offset: 'rb', time: 3000})
+			<#elseif msg?? && msg == 't1'>
+				layer.msg('当前用户坐席就绪或对话未结束，不能切换为非坐席',{icon: 2, offset: 'rb', time: 3000})
 			</#if>
-			<#if models?? && models["im"]?? && models["im"] == true>
+			<#if models?seq_contains("entim")>
 			var imDialogHelper = {
 				open : function(){
 					layinx = layer.open({
@@ -105,34 +108,12 @@
 			imDialogHelper.open();
 			</#if>
 		});
-		$('#agentstatus').on("click" , function(){
-			if($(this).hasClass('layui-form-onswitch')){
-				$(this).removeClass("layui-form-onswitch");
-				loadURL("/agent/notready.html",null, function(){
-					$('#agentstatus_busy').removeClass("layui-form-onswitch-busy").hide();
-				});
-			}else{
-				$(this).addClass("layui-form-onswitch");
-				loadURL("/agent/ready.html",null, function(){
-					$('#agentstatus_busy').show();
-				}) ;
-			}
-		});
-		$('#agentstatus_busy').on("click" , function(){
-			if($(this).hasClass('layui-form-onswitch-busy')){
-				$(this).removeClass("layui-form-onswitch-busy");
-				$(this).addClass("layui-form-onswitch-notbusy");
-				loadURL("/agent/notbusy.html")
-			}else{
-				$(this).removeClass("layui-form-onswitch-notbusy");
-				$(this).addClass("layui-form-onswitch-busy");
-				loadURL("/agent/busy.html") ;
-			}
-		});
+
 	    $(".ukefu-left-menu").darkTooltip({
 	    		gravity: "west"
 	    	});
 	});
+
 	function closeentim(){
 		if(layerhelper){
 			layerhelper.close(layinx);
@@ -142,12 +123,12 @@
 
 </head>
 
-<body>
+<body οnunlοad="CloseOpen(event)">
 	<div class="layui-layout layui-layout-admin">
 		<div class="layui-header header header-ukefu">
 			<div class="layui-main">
 				<a class="logo" href="/"><img src="<#if systemConfig?? && systemConfig.consolelogo?? && systemConfig.consolelogo != ''>/res/image.html?id=${systemConfig.consolelogo?url}<#else>images/logo.png</#if>"></a>
-				<#if models?? && models["callcenter"]?? && models["callcenter"] == true && user.callcenter == true>
+				<#if models?seq_contains("callcenter") && user.callcenter == true>
 				<#include "/apps/include/softphone.html">
 				</#if>
 				<ul class="layui-nav">
@@ -188,11 +169,12 @@
 					</#if>
 					
 					<li class="layui-nav-item"><a href="javascript:void(0)">
-						<i class="layui-icon" style="position: relative;">&#xe612;</i>
-						<#if user??>${user.uname!''}<#if tenant??&&tenant.tenantname??>（${tenant.tenantname!''}）</#if></#if></a>
+						<i class="layui-icon" style="position: relative;float:left;">&#xe612;</i>
+						<span style="display: inline-block;max-width: 90px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;float: left">
+							<#if user??>${user.uname!''}<#if tenant??&&tenant.tenantname??>（${tenant.tenantname!''}）</#if></#if></span></a>
 						<dl class="layui-nav-child">
 					      <dd><a href="/apps/profile.html" data-toggle="ajax" data-width="750" data-title="修改资料">个人资料</a></dd>
-					      <dd><a href="/logout.html">退出系统</a></dd>
+					      <dd><a href="javascript:void(0)" onclick="quitSystem()" >退出系统</a></dd>
 					    </dl>
 					</li>
 				</ul>
@@ -212,31 +194,32 @@
 							</dd>
 							<#if user?? && user.agent == true>
 								<#if user?? && (user.roleAuthMap["A01"]?? || user.usertype == "0") >
-								<dd class="ukefu-left-menu" data-tooltip="坐席工作台">
-									<a href="/ukefu/layer.html" href="javascript:void(0)" onclick="return false;" data-title="坐席对话" data-href="/agent/index.html" class="iframe_btn" data-id="multiMediaDialogWin" data-type="tabAdd"> <i class="layui-icon"
+								<dd class="ukefu-left-menu" data-tooltip="坐席工作台" >
+									<a href="javascript:void(0)" href="javascript:void(0)" id="agentdeskleft" onclick="return false;" data-title="坐席对话" data-href="/agent/index.html" class="iframe_btn" data-id="multiMediaDialogWin" data-type="tabAdd"> <i class="layui-icon"
 										style="top: 3px;">&#xe63a;</i>
 									</a>
 								</dd>
 								</#if>
 							</#if>
-							<#if models?? && models["contacts"]?? && models["contacts"] == true>
+
+							<#if models?seq_contains("contacts")>
 								<#if user?? && (user.roleAuthMap["A02"]??  || user.usertype == "0")>
 								<dd class="ukefu-left-menu" data-tooltip="全部联系人">
-									<a href="javascript:void(0)" data-title="全部联系人" data-href="/apps/contacts/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange"> 
+									<a href="javascript:void(0)" data-title="全部联系人" onclick="return false;" data-href="/apps/contacts/index.html" class="iframe_btn" data-id="contactsMainContentWin" data-type="tabAdd">
 									<i class="layui-icon"	style="position: relative;">&#xe612;</i>
 									</a>
 								</dd>
 								</#if>
 								<#if user?? && (user.roleAuthMap["A03"]?? || user.usertype == "0")>
 									<dd class="ukefu-left-menu" data-tooltip="全部客户">
-										<a href="javascript:void(0)" data-title="全部客户" data-href="/apps/customer/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange"> 
+										<a href="javascript:void(0)" data-title="全部客户" onclick="return false;" data-href="/apps/customer/index.html" class="iframe_btn" data-id="customersMainContentWin" data-type="tabAdd">
 										<i class="kfont" style="position: relative;">&#xe650;</i>
 										</a>
 									</dd>
 								</#if>
 							</#if>
 							
-							<#if models?? && models["workorders"]?? && models["workorders"] == true>
+							<#if models?seq_contains("workorders")>
 								<#if user?? && (user.roleAuthMap["A04"]??  || user.usertype == "0")>
 									<dd class="ukefu-left-menu" data-tooltip="工单管理">
 										<a href="javascript:void(0)" data-title="工单管理" data-href="<#if systemConfig?? && systemConfig.workorders>/apps/workordersthree/index.html<#else>/apps/workorders/index.html</#if>" class="iframe_btn" data-id="maincontent" data-type="tabChange"> 
@@ -252,16 +235,27 @@
 									</dd>
 								</#if> -->
 							</#if>
+
+							<!-- 会话监控 Customer Chats Audit -->
+							<#if models?seq_contains("cca")>
+							<#if user?? && (user.roleAuthMap["A13_A01"]?? || user.usertype == "0") >
+							<a href="javascript:void(0)" href="javascript:void(0)" id="customerchatsaudit"  onclick="return false;" data-title="会话监控" data-href="/apps/cca/index.html" class="iframe_btn" data-id="customerChatAudit" data-type="tabAdd">
+								<i class="csfont" style="position: relative;">&#58906;</i>
+							</a>
+							</#if>
+							</#if>
+
+							<!--
 							<#if user?? && (user.roleAuthMap["A09_A02_A01"]?? || user.usertype == "0") >
-							<!-- 
+
 							<dd class="ukefu-left-menu" data-tooltip="知识库">
 								<a href="javascript:void(0)" data-title="知识库" data-href="/apps/kbs/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange"> 
 									<i class="kfont" style="position: relative;">&#xe62a;</i>
 								</a>
 							</dd>
-							 -->
 							</#if>
-							<#if models?? && models["xiaoe"]?? && models["xiaoe"] == false>
+							-->
+							<#if models?seq_contains("xiaoe")>
 								<#if user?? && (user.roleAuthMap["A09_A02_A01"]?? || user.usertype == "0") >
 									<a href="javascript:void(0)" data-title="知识库" data-href="/apps/topic.html" class="iframe_btn" data-id="maincontent" data-type="tabChange"> 
 										<i class="kfont" style="position: relative;">&#xe62a;</i>
@@ -290,16 +284,16 @@
 									</a>
 								</dd>
 							</#if>
-							<!-- 
+
+							<!--
 							<dd class="ukefu-left-menu" data-tooltip="会话质检">
 								<a href="javascript:void(0)" data-title="会话质检" data-href="/apps/quality/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange"> 
 									<i class="kfont" style="position: relative;">&#xe644;</i>
 								</a>
 							</dd> 
 							 -->
-							
-							
-							<!--<#if models?? && models["xiaoe"]?? && models["xiaoe"] == true>-->
+
+							<!--<#if  models?seq_contains("xiaoe")>-->
 								<!--<#if user?? &&( user.roleAuthMap["A09"]?? || user.usertype == "0") >-->
 									<!--<dd class="ukefu-left-menu" data-tooltip="智能机器人">-->
 										<!--<a href="javascript:void(0)" data-title="智能机器人" data-href="/apps/xiaoe/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange">-->
@@ -308,7 +302,7 @@
 									<!--</dd>-->
 								<!--</#if>-->
 							<!--</#if>-->
-							<#if models?? && models["sales"]?? && models["sales"] == true>
+							<#if models?seq_contains("sales")>
 								<#if user?? &&( user.roleAuthMap["A11"]?? || user.usertype == "0") >
 								<dd class="ukefu-left-menu" data-tooltip="外呼系统">
 									<a href="javascript:void(0)" data-title="外呼系统" data-href="/apps/callout/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange"> 
@@ -317,16 +311,16 @@
 								</dd>
 								</#if>
 							</#if>
-							<#if models?? && models["chatbot"]?? && models["chatbot"] == true>
+							<#if models?seq_contains("chatbot")>
 								<#if user?? &&( user.roleAuthMap["A09"]?? || user.usertype == "0") >
 								<dd class="ukefu-left-menu" data-tooltip="智能机器人">
-									<a href="javascript:void(0)" data-title="智能机器人" data-href="/apps/chatbot/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange">
-									<i class="kfont" style="position: relative;">&#xe63a;</i>
+									<a href="javascript:void(0)" data-title="智能机器人" onclick="return false;" data-href="/apps/chatbot/index.html" class="iframe_btn" data-id="chatbotIntegrationWin" data-type="tabAdd">
+									<i class="csfont" style="position: relative;">&#58939;</i>
 									</a>
 								</dd>
 								</#if>
 							</#if>
-							<#if models?? && models["callcenter"]?? && models["callcenter"] == true>
+							<#if models?seq_contains("callcenter")>
 								<#if user?? && (user.roleAuthMap["A10"]?? || user.usertype == "0") >
 									<dd class="ukefu-left-menu" data-tooltip="语音渠道">
 										<a href="javascript:void(0)" data-title="语音渠道" data-href="/apps/callcenter/service/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange"> 
@@ -354,7 +348,7 @@
 							<!--</#if>-->
 						</dl>
 					</li>
-					<li class="layui-nav-item" style="height: 30px; text-align: center"></li>
+<!--					<li class="layui-nav-item" style="height: 30px; text-align: center"></li>-->
 				</ul>
 			</div>
 		</div>
@@ -378,27 +372,52 @@
 
 		</div>
 	</div>
+
 	<script>
-			layui.use('element', function(){
-			  var $ = layui.jquery,element = layui.element(); //Tab的切换功能，切换事件监听等，需要依赖element模块
-			  //触发事件
-			  $(".layui-tab").on("click",function(e){
+
+		// 登出系统
+		// https://gitlab.chatopera.com/chatopera/cosinee.w4l/issues/291
+		function quitSystem() {
+			// 当坐席从就绪状态，切换到非就绪状态前，请求接口查看当前坐席服务到客户数。
+			checkAgentStatusData().then(handleAgentStatusData)
+					.then(function (data) {
+						if(data.length == 0){
+							// 执行登出
+							window.location.href = "/logout.html";
+						} else {
+							// 弹出对话框提示
+							layer.alert("您有正在服务中的访客" + data.length + "人！结束全部会话，或转接后可登出。", {title: "提示", icon: 2});
+						}
+					}, function(error){
+						// 执行登出
+						window.location.href = "/logout.html";
+					});
+		}
+
+		//  获取时间差
+		var timeDifference=${timeDifference};
+
+		layui.use('element', function(){
+			var $ = layui.jquery,element = layui.element(); //Tab的切换功能，切换事件监听等，需要依赖element模块
+			//触发事件
+			$(".layui-tab").on("click",function(e){
 			  	if($(e.target).is(".layui-tab-close")){
 					var win = $(e.target).parent().attr("lay-id");
 					if(win == "outboundCallConsole" && uKeFuSoftPhone){
 						uKeFuSoftPhone.cancleoutbound();
 					}
 				}
-			  })
-			  $('.iframe_btn').on('click', function(){
+			})
+
+			$('.iframe_btn').on('click', function(){
 				var type = $(this).data('type');
 				if(type == "tabAdd"){
 					active.tabAdd($(this).data('href') , $(this).data('title'), $(this).data('id'));
 				}else if(type == "tabChange"){
 					active.tabChange($(this).data('href') , $(this).data('title'), $(this).data('id'));
 				}
-			  });
 			});
+		});
 		</script>
 </body>
 

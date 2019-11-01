@@ -1,9 +1,22 @@
+// 获得cookie
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++)
+    {
+        var c = ca[i].trim();
+        if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+    }
+    return "";
+}
+
 // 统一处理请求restapi
-function httpRequest(opts) {
+function restApiRequest(opts) {
     var postfix = '/api/';
 
     var urlPath = opts.path || '';
     var query = opts.query || '';
+    var silent = opts.silent || false;
 
     var apiHost = window.location.origin;
 
@@ -12,24 +25,27 @@ function httpRequest(opts) {
     payload.method = payload.method || 'POST';
     payload.contentType = 'application/json;charset=UTF-8';
     payload.headers = {
-        authorization: $.cookie('authorization')
+        authorization: getCookie('authorization').trim()
     };
     payload.dataType = 'json';
 
     payload.data = JSON.stringify(opts.data);
+    var popup = null;
 
-    var index = layer.msg('执行中，请稍候',{icon: 16,time:false,shade:0.8});
+    if(!silent){
+        popup = layer.msg('执行中，请稍候',{icon: 16,time:false,shade:0.8});
+    }
 
     return new Promise(function(resolve, reject) {
         $.ajax(payload)
             .done(function (data) {
-                console.log('Rest api 返回的值：', data);
-                layer.close(index);
+                // console.log('Rest api 返回的值：', data);
+                if(!silent) layer.close(popup);
                 resolve(data);
             })
             .fail(function (jqXHR, textStatus ) {
                 console.error('Rest api 返回error：', jqXHR);
-                layer.close(index);
+                if(!silent) layer.close(popup);
                 reject(jqXHR)
             });
 
@@ -37,30 +53,14 @@ function httpRequest(opts) {
 }
 
 // 操作成功的
-function openSucc(msg) {
-    layer.open({
-        content: msg || '操作成功',
-        icon: 1,
-        skin: 'demo-class',
-        success: function(layero, index){
-            console.log(layero, index);
-        }
-    });
+function handleRestApiSucc(msg) {
+    layer.msg( msg || '操作成功',{icon: 1, offset: 'b', time: 1000})
 }
 
 // 操作失败的
-function openFail(status, reason) {
-    if(status && status == 'AUTH_ERROR'){
-        layer.confirm('会话过期，请重新登录！', {
-            btn: ['是', '否'],
-            icon: 2,
-            title:'提示'
-        }, function(index, layero){
-            layer.close(index)
-            top.location.href='/logout.html'
-        }, function(index){
-            // 取消方法
-        });
+function handleRestApiFail(status, reason) {
+    if(status && status === 'AUTH_ERROR'){
+        layer.msg('会话过期，请重新登录！',{icon: 2, offset: 'b', time: 3000})
     } else  {
         layer.open({
             content: reason || '操作失败',

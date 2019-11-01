@@ -4,10 +4,11 @@
 			工作绩效（${.now?string('yyyy-MM-dd')}）
 		</h1>
 		<div class="box ukefu-console" style="padding-top:0px !important;">
-			<img src="/images/bg.jpg"
+			<img src="/images/agent.png"
 				alt="admin">
 			<div class="ukefu-user-index">
-				<h1>
+				<h1 style="width:120px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;word-wrap: break-word;
+word-break: break-all;">
 					${user.username!''}（${user.uname!''}）
 				  	<span style="color:#c00;">
 				  		<#if user?? && user.roleList??>
@@ -30,6 +31,7 @@
 					href="/service/current/index.html"
 					class="measure"> ${agentUserCount!0} </a>
 				</span> <span lay-event="" class="ukefu-relation-item">邀请<a
+					id="agentInviteTotalTimes"
 					href="/apps/onlineuser.html"
 					class="measure"> ${inviteResult.users + inviteResult.inviteusers + inviteResult.refuseusers} </a>
 				</span> <span lay-event="" class="ukefu-relation-item">拒绝<a

@@ -1,17 +1,21 @@
 <link rel="stylesheet" href="/js/ztree/zTreeStyle/zTreeStyle.css">
 <script src="/js/ztree/jquery.ztree.all.min.js"></script>
+<!--<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>-->
 <script id="message_tpl" type="text/html">
 	<div class="clearfix chat-block" <%if(data.type == 'writing'){%>id="writing"<%}%>>
 		<div class="<% if(data.calltype == '呼出'){%>chat-right<%}else{%>chat-left<%}%>">
 			<img alt="" src="<% if(data.headimgurl && data.headimgurl !=''){%><%=data.headimgurl%><%}else{%>/im/img/user.png<%} %>" class="user-img" style="width:45px;height:45px;">
 			<div class="chat-message">
 				<% if(data.userid == '${user.id!''}') {%>
+				<span class="<% if(data.calltype == '呼出'){%>rateright<%}else{%>rateleft<%}%>"><i class="layui-icon iconclick" id=<%=data.id%>  name="nolabe" style="cursor:pointer;font-size: 30px; color: #aaaaaa;">&#x1005;</i></span>
 					<span class="time"><%=data.createtime%></span>
 					<span class="user"><%=data.username%></span>
+				<span class="<% if(data.calltype == '呼出'){%>rateleft<%}else{%>rateright<%}%>"><i class="layui-icon iconclick" id=<%=data.id%>  name="nolabe"  style="cursor:pointer;font-size: 30px; color: #aaaaaa;">&#x1005;</i></span>
 				<% }else{%>
+				<span class="<% if(data.calltype == '呼出'){%>rateright<%}else{%>rateleft<%}%>"><i class="layui-icon iconclick" id=<%=data.id%>  name="nolabe" style="cursor:pointer;font-size: 30px; color: #aaaaaa;">&#x1005;</i></span>
 					<span class="user"><%=data.username%></span>
 					<span class="time"><%=data.createtime%></span>
-					
+				<span class="<% if(data.calltype == '呼出'){%>rateleft<%}else{%>rateright<%}%>"><i class="layui-icon iconclick" id=<%=data.id%>  name="nolabe" style="cursor:pointer;font-size: 30px; color: #aaaaaa;">&#x1005;</i></span>
 				<%}%>
 			</div>
 			<div class="<% if(data.calltype == '呼出'){%>chatting-right<%}else{%>chatting-left<%}%>">
@@ -104,6 +108,10 @@
     <div class="layui-body ukefu-chat-agent" id="ukefu-chat-agent">
         <#include "/apps/agent/mainagentuser_callout.html">
     </div>
+	<#elseif curagentuser?? && curagentuser.channel == "skype">
+	<div class="layui-body ukefu-chat-agent" id="ukefu-chat-agent">
+		<#include "/apps/agent/mainagentuser_skype.html">
+	</div>
     <#else>
     <div class="layui-body ukefu-chat-agent" id="ukefu-chat-agent">
         <#include "/apps/agent/mainagentuser.html">
@@ -116,7 +124,7 @@
 				<h3 class="box-title">坐席对话</h3>
 			</div>
 			<div class="box-body ukefu-im-theme">
-				<div class="ukefu-empty">
+				<div class="ukefu-empty" style="background: none">
 					<i class="layui-icon">&#xe63a;</i>
 					<div style="">还没有分配记录</div>
 				</div>	
@@ -133,6 +141,7 @@
 		})
 	});
 	function otherTopicSearch(){
+		console.log( "otherTopicSearch" )
 		loadURLWithTip("/agent/other/topic.html?q="+ encodeURIComponent($("#otherSearchQuery").val()), "#topiclist" , null , false , true);
 	}
 	function otherTopicEnter(){

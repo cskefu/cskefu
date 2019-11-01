@@ -2292,9 +2292,9 @@ public class FunUtil extends Util {
             case 0:
                 float ratio = (float) limit / (float) list.size();
                 if (ratio <= .05) {
-                    algorithm = 4; // julian's algorithm
+                    algorithm = 4; // julian's acd
                 } else if (ratio <= .35) {
-                    algorithm = 2; // marc's algorithm
+                    algorithm = 2; // marc's acd
                 } else {
                     algorithm = 1; // array sort
                 }
@@ -2327,7 +2327,7 @@ public class FunUtil extends Util {
     }
 
     /**
-     * Marc's original algorithm for stable partial sort of a list.
+     * Marc's original acd for stable partial sort of a list.
      * Now superseded by {@link #stablePartialSortJulian}.
      */
     public static <T> List<T> stablePartialSortMarc(
@@ -2381,7 +2381,7 @@ public class FunUtil extends Util {
     }
 
     /**
-     * Pedro's algorithm for stably sorting the top {@code limit} items in
+     * Pedro's acd for stably sorting the top {@code limit} items in
      * a list.
      */
     public static <T> List<T> stablePartialSortPedro(
@@ -2462,7 +2462,7 @@ public class FunUtil extends Util {
     }
 
     /**
-     * Julian's algorithm for stable partial sort. Improves Pedro's algorithm
+     * Julian's acd for stable partial sort. Improves Pedro's acd
      * by using a heap (priority queue) for the top {@code limit} items seen.
      * The items on the priority queue have an ordinal field, so the queue
      * can be used to generate a list of stably sorted items. (Heap sort is

@@ -1,3 +1,6 @@
+<script src="/js/CSKeFu_Rest_Request.v1.js"></script>
+<script src="/js/CSKeFu_Agent_Invite.v1.js"></script>
+
 <div class="layui-side layui-bg-black layui-left-black">
 	<div class="layui-side-scroll">
 		<#include "/apps/desktop/include/left.html">
@@ -21,10 +24,10 @@
 					</span>
 					
 				</h1>
-				<table class="layui-table" lay-skin="line">
+				<table class="layui-table" lay-skin="line" style="table-layout: fixed; word-break: break-all">
 					<thead>
 						<tr class="design-sortable-tr">
-							<th>用户名</th>
+							<th width="15%">用户名</th>
 							<th>终端</th>
 							<th>操作系统</th>
 							<th>浏览器</th>
@@ -32,14 +35,14 @@
 							<th>停留时间</th>
 							<th>地域</th>
 							<th>邀请次数</th>
-							<th>操作</th>
+							<th width="110px">操作</th>
 						</tr>
 					</thead>
 					<tbody>
 						<#if onlineUserList?? && onlineUserList.content?? && onlineUserList.content?size gt 0>
 						<#list onlineUserList.content as onlineuser>
 						<tr class="tdHasContorllor design-dropable-td">
-							<td class=" first_td_head">
+							<td title="${onlineuser.username!''}<#if onlineuser.contacts??>（${onlineuser.contacts.name!''}）</#if>" style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden">
 								<a href="/service/online/index.html?userid=${onlineuser.userid!''}">${onlineuser.username!''}
 								<#if onlineuser.contacts??>（${onlineuser.contacts.name!''}）</#if></a>
 							</td>
@@ -73,9 +76,9 @@
 								<#elseif onlineuser.invitestatus?? && onlineuser.invitestatus == 'inserv'>
 									<button class="layui-btn layui-btn-mini" title="访客已邀请">对话中</button>
 								<#elseif onlineuser.invitestatus?? && onlineuser.invitestatus == 'refuse'>
-									<a href="/apps/invite.html?id=${onlineuser.id!''}" title="访客已拒绝邀请" class="layui-btn layui-btn-danger layui-btn-mini ">再次邀请</a>
+									<a href="javascript:;" name="${onlineuser.id!''}" title="访客已拒绝邀请" class="layui-btn layui-btn-danger layui-btn-mini" onclick="sendInvitationToOnlineUser('${onlineuser.id}', false)">再次邀请</a>
 								<#else> 	
-									<a href="/apps/invite.html?id=${onlineuser.id!''}" title="邀请访客" class="layui-btn  layui-btn-normal layui-btn-mini">邀请</a>
+									<a href="javascript:;" name="${onlineuser.id!''}" title="邀请访客" class="layui-btn  layui-btn-normal layui-btn-mini" onclick="sendInvitationToOnlineUser('${onlineuser.id}', true)">邀请</a>
 								</#if>
 								<a href="/service/trace.html?sessionid=${onlineuser.sessionid!''}" title="查看访客轨迹" data-toggle="ajax" data-width="1050" class="layui-btn  layui-btn-normal layui-btn-mini">轨迹</a>
 							</td>
@@ -83,8 +86,8 @@
 						</#list>
 						<#else>
 							<tr>
-								<td colspan="20" style="height:400px;">
-									<div class="ukefu-empty">
+								<td colspan="9" style="height:400px;">
+									<div class="ukefu-empty" style="background: none">
 										<i class="layui-icon">&#xe63a;</i>
 										<div style="">还没有在线访客记录</div>
 									</div>

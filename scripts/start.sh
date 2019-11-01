@@ -10,5 +10,5 @@ baseDir=$(cd `dirname "$0"`;pwd)
 # main 
 [ -z "${BASH_SOURCE[0]}" -o "${BASH_SOURCE[0]}" = "$0" ] || return
 cd $baseDir/..
-docker-compose pull elasticsearch mysql redis contact-center
+docker-compose pull elasticsearch mysql redis rocketmq-nameserv rocketmq-broker skype contact-center
 docker-compose up -d

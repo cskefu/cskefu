@@ -10,7 +10,7 @@
 				<h1 class="site-h1" style="border-top:1px solid #e6e6e6;">
 					访客留言<#if leaveMsgList??>（${leaveMsgList.totalElements}）</#if>
 				</h1>
-				<table class="layui-table" lay-skin="line">
+				<table class="layui-table overflow" lay-skin="line" style="table-layout: fixed; word-break: break-all;">
 					<thead>
 						<tr class="design-sortable-tr">
 							<th>姓名</th>
@@ -18,8 +18,8 @@
 							<th>邮件</th>
 							<th>地址</th>
 							<th>QQ</th>
-							<th>内容</th>
-							<th>留言时间</th>
+							<th width="20%">内容</th>
+							<th width="80px">留言时间</th>
 							<th>操作</th>
 						</tr>
 					</thead>
@@ -27,21 +27,20 @@
 						<#if leaveMsgList?? && leaveMsgList.content??>
 						<#list leaveMsgList.content as leaveMsg>
 						<tr class="tdHasContorllor design-dropable-td">
-							<td class=" first_td_head">
-								<a href="javascript:void(0)">
-								${leaveMsg.name!''}
-								</a>
+							<td valign="top" class=" first_td_head" title="${leaveMsg.name!''}">
+								<p>
+									<a href="javascript:void(0)">
+									${leaveMsg.name!''}
+									</a>
+								</p>
 							</td>
-							<td>
-								${leaveMsg.mobile!''}
-							<td>${leaveMsg.email!''}</td>
-							<td>${leaveMsg.address!''}</td>
-							<td>${leaveMsg.qq!''}</td>
-							<td>${leaveMsg.content!''}</td>
-							
-							</td>
-							<td><#if leaveMsg.createtime??>${leaveMsg.createtime?string('yyyy-MM-dd HH:mm:ss')}</#if></td>
-							<td>
+							<td title="${leaveMsg.mobile!''}" valign="top"><p>${leaveMsg.mobile!''}</p></td>
+							<td title="${leaveMsg.email!''}" valign="top"><p>${leaveMsg.email!''}</p></td>
+							<td title="${leaveMsg.address!''}" valign="top"><p>${leaveMsg.address!''}</p></td>
+							<td title="${leaveMsg.qq!''}" valign="top"><p>${leaveMsg.qq!''}</p></td>
+							<td title="${leaveMsg.content!''}" valign="top" title="${leaveMsg.content!''}"><p>${leaveMsg.content!''}</p></td>
+							<td valign="top"><#if leaveMsg.createtime??>${leaveMsg.createtime?string('yyyy-MM-dd HH:mm:ss')}</#if></td>
+							<td valign="top">
 								<a href="/service/leavemsg/delete.html?id=${leaveMsg.id!''}" data-toggle="tip" title="删除留言不可恢复,请确认是否删除留言？">
 									<i class="layui-icon">&#x1006;</i>删除
 								</a>
@@ -50,8 +49,8 @@
 						</#list>
 						<#else>
 							<tr>
-								<td colspan="20" style="height:400px;">
-									<div class="ukefu-empty">
+								<td colspan="8" style="height:400px;">
+									<div class="ukefu-empty" style="background: none">
 										<i class="layui-icon">&#xe63a;</i>
 										<div style="">当前没有在线坐席</div>
 									</div>
@@ -68,6 +67,16 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	.overflow td p{
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 3;
+		overflow: hidden;
+	}
+
+</style>
 
 <script>
 	layui.use(['laypage', 'layer'], function(){

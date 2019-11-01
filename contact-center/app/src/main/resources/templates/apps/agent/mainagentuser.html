@@ -1,48 +1,54 @@
 <script language="javascript">
     cursession = "<#if curagentuser??>${curagentuser.userid!''}</#if>" ;
-    var userid = "${curagentuser.userid!''}" , agentserviceid = "${curagentuser.agentserviceid!''}" , agentuserid = "${curagentuser.id}";
+    var userid = "${curagentuser.userid!''}" , agentserviceid = "${curagentuser.agentserviceid!''}" , agentuserid = "${curagentuser.id}" , masscuragentuser = "${masscuragentuser}";
 </script>
 
 <div class="main-agentuser">
     <div class="chat-agent">
         <h1 class="site-h1">
-            <#if curagentuser??>${curagentuser.username!''}（${curagentuser.region!''}）
-            <div style="float:right;" class="ukefu-service-btn">
-                <a href="/agent/summary.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}&channel=${curagentuser.channel}" data-toggle="ajax" data-width="950" data-height="450" title="记录服务小结"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe65c;</i> 服务小结</button></a>
-                <a href="/agent/transfer.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}" data-toggle="ajax" data-width="950" data-height="550" title="选择转接对象"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe7be;</i> 转接坐席</button></a>
-                <a href="/agent/end.html?userid=${curagentuser.id!''}" data-toggle="tip" data-title="请确认是否关闭和用户“${curagentuser.username!''}”的对话？"><button class="layui-btn layui-btn-small layui-btn-danger"><i class="kfont">&#xe621;</i> 结束对话</button></a>
+            <div style="width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;word-wrap: break-word;
+word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if curagentuser.region??>  （ ${curagentuser.region!''} </#if></div>
+    <div style="float:right;" class="ukefu-service-btn">
+        <a href="/agent/summary.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}&channel=${curagentuser.channel}" data-toggle="ajax" data-width="950" data-height="450" title="记录服务小结"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe65c;</i> 服务小结</button></a>
+        <a href="/agent/transfer.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}" data-toggle="ajax" data-width="750" data-height="550" title="选择转接对象"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe7be;</i> 转接坐席</button></a>
+        <a href="/agent/end.html?id=${curagentuser.id!''}" data-toggle="tip" data-title="请确认是否关闭和用户“${curagentuser.username!''}”的对话？"><button class="layui-btn layui-btn-small layui-btn-danger"><i class="kfont">&#xe621;</i> 结束对话</button></a>
+    </div>
+    <#else>
+</#if>
+</h1>
+<div id="chat_msg_list" class="chat-message chat_msg_list" style="position: relative">
+    <#if agentUserMessageList?? && agentUserMessageList.content??>
+    <#list agentUserMessageList.content?reverse as chatmessage>
+    <div class="clearfix chat-block" name="${chatmessage.createtime}">
+        <div class="<#if (chatmessage.calltype?? && chatmessage.calltype == '呼出')>chat-right<#else>chat-left</#if>">
+            <img alt="" src="<#if chatmessage.userid?? && chatmessage.userid == user.id>/images/im/user.png<#else><#if curagentuser.headimgurl?? && curagentuser.headimgurl !=''>${curagentuser.headimgurl}<#else>/images/im/user.png</#if></#if>" style="width:45px;height:45px;" class="user-img">
+            <div class="chat-message">
+                        <span class="<#if (chatmessage.calltype?? && chatmessage.calltype == '呼出')>rateright<#else>rateleft</#if>">
+                            <i class="layui-icon iconclick" id=${chatmessage.id}  name="<#if (chatmessage.islabel == true??)>yeslabe<#else>nolabe</#if>"  style="font-size: 30px;cursor: pointer; color:<#if (chatmessage.islabel == true??)>#46cad4;<#else>#aaaaaa;</#if>;"> <#if (chatmessage.islabel == true??)>&#xe616;<#else>&#x1005;</#if></i>
+                        </span>
+                <span class="user"><#if chatmessage?? && chatmessage.calltype?? && chatmessage.calltype == '呼出'>${curagentuser.agentname}<#else>${curagentuser.username!''}</#if></span>
+                <span class="time">${chatmessage.createtime?string('yyyy-MM-dd HH:mm:ss')}</span>
+                <span class="<#if (chatmessage.calltype?? && chatmessage.calltype == '呼出')>rateleft<#else>rateright</#if>"  style="cursor: pointer; font-size: 30px">
+                            <i class="layui-icon iconclick" id=${chatmessage.id} name="<#if (chatmessage.islabel == true??)>yeslabe<#else>nolabe</#if>"  style="cursor: pointer; font-size: 30px; color:<#if (chatmessage.islabel == true??)>#46cad4;<#else>#aaaaaa;</#if>;"> <#if (chatmessage.islabel == true??)>&#xe616;<#else>&#x1005;</#if></i>
+                        </span>
             </div>
-            <#else>
-            &nbsp;
-        </#if>
-        </h1>
-        <div id="chat_msg_list" class="chat-message chat_msg_list">
-            <#if agentUserMessageList?? && agentUserMessageList.content??>
-            <#list agentUserMessageList.content?reverse as chatmessage>
-            <div class="clearfix chat-block">
-                <div class="<#if (chatmessage.calltype?? && chatmessage.calltype == '呼出')>chat-right<#else>chat-left</#if>">
-                    <img alt="" src="<#if chatmessage.userid?? && chatmessage.userid == user.id>/images/im/user.png<#else><#if curagentuser.headimgurl?? && curagentuser.headimgurl !=''>${curagentuser.headimgurl}<#else>/images/im/user.png</#if></#if>" style="width:45px;height:45px;" class="user-img">
-                    <div class="chat-message">
-                        <span class="user"><#if chatmessage?? && chatmessage.chatype?? && chatmessage.chatype == 'aireply' && inviteData?? && inviteData.ainame??>${inviteData.ainame!'小E'}<#else>${chatmessage.username!''}</#if></span>
-                        <span class="time">${chatmessage.createtime!''}</span>
-                    </div>
-                    <div class="<#if (chatmessage.calltype?? && chatmessage.calltype == '呼出')>chatting-right<#else>chatting-left</#if>">
-                        <i class="userarrow"></i>
-                        <div class="chat-content"><#include "/apps/agent/media/message.html"></div>
-                    </div>
-                </div>
+            <div class="<#if (chatmessage.calltype?? && chatmessage.calltype == '呼出')>chatting-right<#else>chatting-left</#if>">
+                <i class="userarrow"></i>
+                <div class="chat-content"><#include "/apps/agent/media/message.html"></div>
             </div>
-        </#list>
-        <#elseif curagentuser??>
-        <#if curagentuser.status?? && curagentuser.status == "end">
-        <div class="clearfix chat-block connect-end" id="agentuser-curstatus">
-            <span class="connect-message">用户“${curagentuser.username!''}”已经离开</span>
         </div>
-        <#else>
-        <div class="clearfix chat-block connect-begin" id="agentuser-curstatus">
-            <span class="connect-message">用户“${curagentuser.username!''}”开始对话</span>
-        </div>
-    </#if>
+    </div>
+</#list>
+<#elseif curagentuser??>
+<#if curagentuser.status?? && curagentuser.status == "end">
+<div class="clearfix chat-block connect-end" id="agentuser-curstatus">
+    <span class="connect-message">用户“${curagentuser.username!''}”已经离开</span>
+</div>
+<#else>
+<div class="clearfix chat-block connect-begin" id="agentuser-curstatus">
+    <span class="connect-message">用户“${curagentuser.username!''}”开始对话</span>
+</div>
+</#if>
 </#if>
 </div>
 </div>
@@ -62,58 +68,59 @@
                 var editor , layer;
                 $(document).ready(function(){
                     // KindEditor.ready(function(K) {
-                        var K = KindEditor;
-                        editor = K.create('#message', {
-                            height:"160px",
-                            themeType : 'simple',
-                            width:"100%",
-                            items:['undo', 'redo' , 'emoticons', 'image','insertfile'],
-                            resizeType:0,
-                            uploadJson : "/agent/image/upload.html?id=${curagentuser.id!''}",
-                            allowFileManager : false,
-                            newlineTag : "br" ,
-                            fontsize:16,
-                            allowFileUpload:true,
-                            allowInsertUpload:false,		//增加的参数，上传图片后是否插入到当前区域
-                            allowImageRemote:false,
-                            afterUpload: function (url) {
-                                return false;
-                            },
-                            afterCreate : function() { //设置编辑器创建后执行的回调函数
-                                var self = this;
-                            <#if sessionConfig?? && sessionConfig.agentctrlenter?? && sessionConfig.agentctrlenter == true>
-                                //Ctrl+Enter提交表单
-                                K.ctrl(document, 13, function() {
+                    var K = KindEditor;
+                    editor = K.create('#message', {
+                        height:"160px",
+                        themeType : 'simple',
+                        width:"100%",
+                        items:['emoticons', 'image','insertfile'],
+                        resizeType:0,
+                        uploadJson : "/agent/image/upload.html?id=${curagentuser.id!''}",
+                        allowFileManager : false,
+                        newlineTag : "br" ,
+                        fontsize:16,
+                        allowFileUpload:true,
+                        allowInsertUpload:false,		//增加的参数，上传图片后是否插入到当前区域
+                        allowImageRemote:false,
+                        afterUpload: function (url) {
+                            return false;
+                        },
+                        afterCreate : function() { //设置编辑器创建后执行的回调函数
+                            var self = this;
+
+                        <#if sessionConfig?? && sessionConfig.agentctrlenter?? && sessionConfig.agentctrlenter == true>
+                            //Ctrl+Enter提交表单
+                            K.ctrl(document, 13, function() {
+                                self.sync();
+                                sendMessage();
+                            });
+                            K.ctrl(self.edit.doc, 13, function() {
+                                self.sync();
+                                sendMessage();
+                            });
+                        <#else>
+                            var kindEditorIframe = $("iframe").contents().find("body");
+                            kindEditorIframe.keydown(function (event) {
+                                if(event.keyCode==13 && !event.ctrlKey){
                                     self.sync();
                                     sendMessage();
-                                });
-                                K.ctrl(self.edit.doc, 13, function() {
-                                    self.sync();
-                                    sendMessage();
-                                });
-                            <#else>
-                                var kindEditorIframe = $("iframe").contents().find("body");
-                                kindEditorIframe.keydown(function (event) {
-                                    if(event.keyCode==13 && !event.ctrlKey){
-                                        self.sync();
-                                        sendMessage();
-                                        return false;
-                                    }else if(event.keyCode==13 && event.ctrlKey){
-                                        editor.insertHtml('<br/>');
-                                    }
-                                });
-                                //Ctrl+Enter提交表单
-                                K.ctrl(document, 13, function() {
+                                    return false;
+                                }else if(event.keyCode==13 && event.ctrlKey){
                                     editor.insertHtml('<br/>');
-                                });
-                                K.ctrl(self.edit.doc, 13, function() {
-                                    editor.insertHtml('<br/>');
-                                });
-                            </#if>
-                                <#if sessionConfig?? && sessionConfig.enablequick>
-                                /**
-                                 var _self = this;
-                                 loadURL("/res/quickreply.html" , null , function(data){
+                                }
+                            });
+                            //Ctrl+Enter提交表单
+                            K.ctrl(document, 13, function() {
+                                editor.insertHtml('<br/>');
+                            });
+                            K.ctrl(self.edit.doc, 13, function() {
+                                editor.insertHtml('<br/>');
+                            });
+                        </#if>
+                            <#if sessionConfig?? && sessionConfig.enablequick>
+                            /**
+                             var _self = this;
+                             loadURL("/res/quickreply.html" , null , function(data){
 							            	$(_self).suggest('@', {
 												data : eval(data),
 												mapkey : ['title','id'],
@@ -126,10 +133,10 @@
 												}
 											});
 							            });
-                                 **/
-                                </#if>
-                            }
-                        });
+                             **/
+                            </#if>
+                        }
+                    });
                     // });
                     KindEditor.options.cssData = "body { font-size: 15px; font-family:'Microsoft Yahei', 'Helvetica', 'Simsun', 'Arial';}";
                 });
@@ -147,7 +154,8 @@
 
                     <li>快捷</li>
                     <li>历史</li>
-                    <#if models?? && models["workorders"]?? && models["workorders"] == true>
+                    <li>搜索历史消息</li>
+                    <#if models?seq_contains("workorders")>
                     <li>工单</li>
                 </#if>
                 <#if sessionConfig?? && sessionConfig.otherquickplay?? && sessionConfig.otherquickplay == true>
@@ -167,74 +175,71 @@
                         </div>
                         <div class="box-body" style="padding:0px 10px;position: relative;">
                             <#if curagentuser.channel?? && curagentuser.channel == "webim">
-                            <#include "/apps/agent/channel/webim.html">
-                            <#elseif curagentuser.channel?? && curagentuser.channel == "weixin">
-                            <#include "/apps/agent/channel/weixin.html">
+                                <#include "/apps/agent/channel/webim.html">
                             </#if>
-                        <#if curagentuser.name??>
-                        <ul class="info-list">
+                            <#if curagentuser.name??>
+                            <ul class="info-list">
+                                <li>
+                                    姓名：
+                                    <span class="tgreen">
+                                        ${curagentuser.name!''}
+                                        </span>
+                                </li>
+                                <#if curagentuser.phone??>
+                                <li>
+                                    电话：
+                                    <span class="tgreen">
+                                        ${curagentuser.phone!''}
+                                        </span>
+                                </li>
+                            </#if>
+                            <#if curagentuser.email??>
                             <li>
-                                姓名：
+                                邮件：
                                 <span class="tgreen">
-									${curagentuser.name!''}
-								    </span>
+                                        ${curagentuser.email!''}
+                                        </span>
                             </li>
-                            <#if curagentuser.phone??>
+                            </#if>
+                            <#if curagentuser.resion??>
                             <li>
-                                电话：
+                                来访原因：
                                 <span class="tgreen">
-									${curagentuser.phone!''}
-								    </span>
+                                            ${curagentuser.resion!''}
+                                            </span>
                             </li>
-                        </#if>
-                        <#if curagentuser.email??>
-                        <li>
-                            邮件：
-                            <span class="tgreen">
-									${curagentuser.email!''}
-								    </span>
-                        </li>
-                    </#if>
-                    <#if curagentuser.resion??>
-                    <li>
-                        来访原因：
-                        <span class="tgreen">
-									${curagentuser.resion!''}
-								    </span>
-                    </li>
-                </#if>
-                </ul>
-            </#if>
-            <#if curAgentService?? && curAgentService.trans?? && curAgentService.trans>
-            <ul class="info-list">
-                <li>
-                    转接：
-                    <span class="tgreen">
-									<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
-								    </span>
-                </li>
-                <#if curAgentService.transtime??>
-                <li>
-                    转接时间：
-                    <span class="tgreen">
-									${curAgentService.transtime?string("yyyy-MM-dd HH:mm:ss")}
-								    </span>
-                </li>
-            </#if>
-            <#if curAgentService.transmemo??>
-            <li>
-                转接附言：
-                <span class="tgreen">
-									${curAgentService.transmemo!''}
-								    </span>
-            </li>
-        </#if>
-
-        </ul>
-    </#if>
-</div>
-</div>
-<#if models?? && models["contacts"]?? && models["contacts"] == true>
+                             </#if>
+                            </ul>
+                            </#if>
+                            <#if curAgentService?? && curAgentService.trans?? && curAgentService.trans>
+                            <ul class="info-list">
+                            <li>
+                                转接：
+                                <span class="tgreen">
+                                                <i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
+                                                </span>
+                            </li>
+                            <#if curAgentService.transtime??>
+                            <li>
+                                转接时间：
+                                <span class="tgreen">
+                                                ${curAgentService.transtime?string("yyyy-MM-dd HH:mm:ss")}
+                                                </span>
+                            </li>
+                            </#if>
+                            <#if curAgentService.transmemo??>
+                            <li>
+                                转接附言：
+                                <span class="tgreen">
+                                                    ${curAgentService.transmemo!''}
+                                                    </span>
+                            </li>
+                            </#if>
+                            </ul>
+                            </#if>
+                        </div>
+                    </div>
+<#if models?seq_contains("contacts")>
 <div class="box">
     <div class="box-title">
         <h1 class="site-h1" style="background-color:#EEEEEE;">
@@ -304,8 +309,8 @@
                 <#list agentServiceList as agentService>
                 <li class="ukefu-agentservice-list">
                     <a href="/service/online/chatmsg.html?id=${agentService.id!''}&title=false" data-toggle="ajax" data-width="950" data-height="500" data-title="服务记录">
-                        <span style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;max-width:200px;display: inline-block;" class="quick-reply" data-id="content_${agentService.id!''}">${agentService.username!''}</span>
-                        <div class="ukefu-agentservice-his">坐席：${agentService.agentusername!''}</div>
+                        <span style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;max-width:48%;display: inline-block;" class="quick-reply" data-id="content_${agentService.id!''}" title="${agentService.username!''}">${agentService.username!''}</span>
+                        <div class="ukefu-agentservice-his" style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;max-width:48%;" title="${agentService.agentusername!''}">坐席：${agentService.agentusername!''}</div>
                         <div style="color:#333;position: relative;">
                             ${agentService.servicetime?string("yyyy-MM-dd HH:mm:ss")}
                             <div class="ukefu-agentservice-his">时长：${(agentService.sessiontimes/(1000*60*60))?string('00')}:${((agentService.sessiontimes%(1000*60*60))/(1000*60))?string('00')}:${((agentService.sessiontimes%(1000*60))/(1000))?string('00')}</div>
@@ -315,7 +320,7 @@
             </#list>
             <#else>
             <li style="list-style: none;background-image: url();padding: 50px 0 50px;">
-                <div class="ukefu-empty">
+                <div class="ukefu-empty"  style="background: none">
                     <i class="layui-icon"></i>
                     <div style="">还没有咨询记录</div>
                 </div>
@@ -325,7 +330,45 @@
     </div>
 </div>
 </div>
-<#if models?? && models["workorders"]?? && models["workorders"] == true>
+<div class="layui-tab-item">
+    <div class="box">
+        <div class="box-title">
+            <h1 class="site-h1" style="background-color:#ffffff;">
+                <div style="width:60%;height:40px;margin:0 auto ;display: -webkit-flex;display: flex;-webkit-justify-content:space-between;justify-content: space-between;">
+                    <div id='all' class="unselected" style="margin-top: 5px;height:30px;" >
+                        <i class="layui-icon" style="cursor: pointer;font-size:18px; float: left;margin:0 2px;">&#xe63a;</i>
+                        <p style="line-height: 30px">全部</p>
+                    </div>
+                    <div id='searchlabel'  class="unselected"  style="margin-top: 5px;height:30px;" >
+                        <i class="layui-icon" style="cursor: pointer;font-size:18px; float: left;margin:0 2px;">&#x1005;</i>
+                        <p style="line-height: 30px">标注</p>
+                    </div>
+                </div>
+                <div style="width: 300px;height:30px;border-radius: 5px;background:#f2f3f5; margin: 0 auto 10px;clear: both;border: 1px solid rgb(210, 210, 210);overflow: hidden;" class="searchbox">
+                    <i id="search" class="csfont" style="cursor: pointer;float: left;margin:0 0 0 50px;font-size: 24px;color: #757575">&#xe647;</i>
+                    <input id="searchconter" style="width: 150px;height: 30px;border: none;background:#f2f3f5;" type="text" name="title" required lay-verify="required" placeholder="  请输入搜索内容" autocomplete="off">
+                    <div id="searchSubmit" style="cursor:pointer">搜索</div>
+                </div>
+
+                <p id="numSearches"></p>
+            </h1>
+        </div>
+
+        <div id="nothing" style="margin-top: 150px">
+            <div style="width: 120px;height: 120px;margin: 0 auto">
+                <i class="csfont" style="font-size: 120px;color:#00a65a ">&#xe601;</i>
+            </div>
+            <p id="nothingTxt" style="text-align: center;color: #7e8790">请输入搜索内容</p>
+        </div>
+
+<!--        ${agentUserMessageNum!''}-->
+        <div class="box-body" style="padding:0px 10px;margin-top: 20px">
+            <ul class="info-list ukefu-quick-reply" id="searchlist">
+            </ul>
+        </div>
+    </div>
+</div>
+<#if models?seq_contains("workorders")>
 <div class="layui-tab-item" id="workorders">
     <#if workOrdersList?? && workOrdersList?size gt 0>
     <#include "/apps/agent/workorders.html">
@@ -358,8 +401,67 @@
 </div>
 </div>
 </div>
+<style>
+    .layui-flow-more{
+        position: absolute;
+        top: 0;
+        left: 45%;
+    }
+    .chat-left .chat-message .rateright{
+        display: inline-block;
+    }
+    .chat-left .chat-message .rateleft{
+        display: none;
+    }
+    .chat-right .chat-message .rateright{
+        display: inline-block;
+    }
+    .chat-right .chat-message .rateleft{
+        display: none;
+    }
+    #numSearches{
+        text-align: left;
+        clear: both;
+        color: #7e8790;
+        margin-left: 10px;
+    }
+    #numSearches span{
+        color: #000;
+    }
+    #searchSubmit{
+        float: right;
+        width: 50px;
+        background: #25c571;
+        text-align: center;
+        color: #fff;
+    }
+    .unselected{
+        margin-left: 10px;
+        width: 55px;
+        height: 30px;
+        float: left;
+        font-size: 16px;
+        text-align: center;
+        line-height: 30px;
+        color: #fff;
+        border-radius: 5px;
+        font-weight: 400;
+    }
+    .unselected i , .unselected p{
+        color: #000;
+    }
+    .selected i , .selected p{
+        color: #00a65a;
+        font-weight: bold;
+    }
+
+
+</style>
 <script>
-    document.getElementById('chat_msg_list').scrollTop = document.getElementById('chat_msg_list').scrollHeight  ;
+    $(document).ready(function() {
+        var test = window.location.search;
+    })
+    document.getElementById('chat_msg_list').scrollTop = document.getElementById('chat_msg_list').scrollHeight;
     layui.use('element', function(){
         var element = layui.element();
     });
@@ -375,7 +477,7 @@
                 } else {
                     $("#tags").append(
                         "<small id='tag_" + $(this).data("id")
-                        + "' class='ukefu-label "
+                        + "' class='ukefu-access-label "
                         + $(this).data("theme") + "'>"
                         + $(this).data("name") + "</small>");
                 }
@@ -406,13 +508,154 @@
             }
         });
     });
+
     function sendMessage(){
+        var skypeid = window.location.search.split("=")[1];
+        // alert(skypeid)
         editor.sync();
         var count = editor.count("text");
         if(count>0){
             var message = document.getElementById('message').value;
             top.WebIM.sendMessage(message , '${user.id!''}' , "${curagentuser.appid!''}" , "${user.sessionid!''}" , "${orgi!''}" , "<#if curagentuser??>${curagentuser.userid!''}</#if>" , "${user.username!''}");
+
+            console.log( editor,count )
         }
         editor.html('');
+    };
+
+    $(document).keyup(function(event){
+        if(event.keyCode ==13){
+            $("#search").click();
+        }
+    });
+
+    var current = 0;
+
+    var pieces = 0;
+
+    var searchSwitch = false;
+    $("#searchconter").focus(function(){
+        $(this).attr('placeholder',' ')
+        $(".searchbox").css({"border":"1px solid #3b99fc",'box-shadow':' 0 0 3px 0 #3b99fc'});
+        $("#search").css('margin-left','20px');
+    });
+
+    $("#searchconter").blur(function(){
+        $(this).attr('placeholder','  请输入搜索内容')
+        $(".searchbox").css({"border":"1px solid #d2d2d2",'box-shadow':'none'});
+        $("#search").css('margin-left','50px');
+    });
+
+    $('#searchSubmit').click(function () {
+        $("#search").click();
+    })
+
+    function search (conditionalParameter){
+        $.ajax({
+            url:'/agent/agentusersearch.html',
+            data:{'search':$('#searchconter').val(),'id':'${curagentuser.id}','condition':conditionalParameter},
+            type:"post",
+            success:function(data){
+                $('#searchlist').html(data);
+                pieces =  $('#totalSearches').val()
+                $('#numSearches').html("<span>"+ pieces +"</span>条相关记录");
+                if (pieces > 0){
+                    $('#nothing').css('display','none')
+                    $('.chatblock').click(function () {
+                        $.ajax({
+                            url:'/agent/agentusersearchdetails.html',
+                            data:{'createtime':$(this).attr('name'),'id':'${curagentuser.id}','thisid':$(this).attr('id')},
+                            type:"post",
+                            success:function(data){
+                                $('.chat-block').remove();
+                                $('#chat_msg_list').prepend(data);
+                                var element = document.getElementById("agentusersearchdetails");
+                                element.scrollIntoView();
+                                current = parseInt($('#totalElements').val()) -11
+                            }
+                        });
+                    })
+                }else if(pieces==0){
+                    $('#nothingTxt').html('无"'+$('#searchconter').val()+'"搜索结果')
+                    $('#nothing').css('display','block')
+                }
+            }
+        });
     }
+
+    // 点击全部
+    $('#all').click(function () {
+        searchSwitch=false;
+        search('all')
+        $('#searchlabel .layui-icon').html('&#x1005;')
+        $("#searchlabel").removeClass('selected')
+        $("#all").addClass('selected')
+    })
+    //点击标注
+    $('#searchlabel').click(function () {
+        searchSwitch = !searchSwitch;
+        if (searchSwitch){
+            $('#searchlabel .layui-icon').html('&#xe616;')
+            $("#all").removeClass('selected')
+            $("#searchlabel").addClass('selected')
+            search('label')
+        }else {
+            $('#searchlabel .layui-icon').html('&#x1005;')
+            $("#searchlabel").removeClass('selected')
+            $("#all").addClass('selected')
+            search('all')
+        }
+
+    })
+    //点击搜索
+    $('#search').click(function () {
+        if ( searchSwitch ){
+            $('#searchlabel .layui-icon').html('&#xe616;')
+            $("#searchlabel").addClass('selected')
+            $("#all").removeClass('selected')
+            search('label')
+        }else{
+            $("#all").addClass('selected')
+            search('all')
+        }
+    })
+
+    layui.use('flow', function(){
+        var flow = layui.flow;
+        flow.load({
+            elem: '#chat_msg_list' //流加载容器
+            ,scrollElem: '#chat_msg_list' //流加载容器
+            ,end:'没有更多了'
+            ,isAuto:false
+            ,done: function(page, next){ //执行下一页的回调
+                //模拟数据插入
+                current += 20;
+                console.log(current);
+                setTimeout(function(){
+                    var lis = [];
+                    var pages = 0;
+                    $.ajax({
+                        url:'/agent/agentuserpage.html',
+                        data:{'current':current,'id':'${curagentuser.id}'},
+                        type:"post",
+                        success:function(data){
+                            var element = document.getElementsByClassName("chat-block")[0];
+                            if (page!=1){
+                                element.scrollIntoView();
+                            }
+                            lis = lis + data;
+                            $('#chat_msg_list').prepend(data)
+                        }
+                    });
+                    //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
+                    //pages为Ajax返回的总页数，只有当前页小于总页数的情况下，才会继续出现加载更多
+                    pages='${agentUserMessageList.totalElements}'/20
+                    next(lis.join(''), page < pages); //假设总页数为 10
+                }, 500);
+            }
+        });
+
+    });
+
+
 </script>

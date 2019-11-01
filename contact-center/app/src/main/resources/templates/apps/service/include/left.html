@@ -14,7 +14,7 @@
 				</dd>
 			</#if>
 			<#if user?? && (user.roleAuthMap["A08_A01_A03"]?? || user.usertype == "0") >
-				<dd <#if subtype?? && subtype == 'quene'>class="layui-this"</#if>>
+				<dd <#if subtype?? && subtype == 'filter'>class="layui-this"</#if>>
 					<a href="/service/quene/index.html">排队队列</a>
 				</dd>
 			</#if>
@@ -59,14 +59,14 @@
 				</dd>
 			</#if>
 			<#if user?? && (user.roleAuthMap["A08_A03_A03"]?? || user.usertype == "0") >
-				<#if models?? && models["callcenter"]?? && models["callcenter"] == true>
+				<#if models?seq_contains("callcenter")>
 				<dd <#if subtype?? && subtype == 'summary'>class="layui-this"</#if>>
 					<a href="/apps/callcenter/summary/index.html">呼叫中心</a>
 				</dd>
 				</#if>
 			
 			</#if>
-			<#if models?? && models["callcenter"]?? && models["callcenter"] == true>
+			<#if models?seq_contains("callcenter")>
 				<#if user?? && (user.roleAuthMap["A08_A03_A04"]?? || user.usertype == "0") >
 				<dd <#if subtype?? && subtype == 'callcenterprocessed'>class="layui-this"</#if>>
 					<a href="/apps/callcenter/processed/index.html">已处理呼叫中心</a>
@@ -84,7 +84,7 @@
 				<dd <#if subtype?? && subtype == 'comment'>class="layui-this"</#if>>
 					<a href="/service/comment/index.html">在线客服</a>
 				</dd>
-			<#if models?? && models["callcenter"]?? && models["callcenter"] == true>
+			<#if models?seq_contains("callcenter")>
 				<dd <#if subtype?? && subtype == 'callentercomment'>class="layui-this"</#if>>
 					<a href="/apps/callcenter/comment/index.html">语音通话</a>
 				</dd>

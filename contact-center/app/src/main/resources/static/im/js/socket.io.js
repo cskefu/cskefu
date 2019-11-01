@@ -5512,7 +5512,7 @@ module.exports = Array.isArray || function (arr) {
             }
           };
         } else {
-          // No bugs detected; use the standard `for...in` algorithm.
+          // No bugs detected; use the standard `for...in` acd.
           forEach = function (object, callback) {
             var isFunction = getClass.call(object) == functionClass, property, isConstructor;
             for (property in object) {

@@ -10,7 +10,6 @@
 				<a href="/admin/user/index.html">用户账号</a>
 			</dd>
 			<dd <#if subtype?? && subtype == 'role'>class="layui-this"</#if>>
-				
 				<a href="/admin/role/index.html">系统角色</a>
 			</dd>
 			<dd  <#if subtype?? && subtype == 'organ'>class="layui-this"</#if>>
@@ -24,7 +23,14 @@
 			<dd <#if subtype?? && (maintype == 'webim' || subtype == 'im')>class="layui-this"</#if>>
 				<a href="/admin/im/index.html">网站列表</a>
 			</dd>
-		    <#if models?? && models["sales"]?? && models["sales"] == true>
+
+			<#if models?seq_contains("skype")>
+			<dd <#if subtype?? && (maintype == 'skype' || subtype == 'skype')>class="layui-this"</#if>>
+				<a href="/admin/skype/index.html">Skype</a>
+			</dd>
+			</#if>
+
+		    <#if models?seq_contains("sales")>
 			<dd <#if subtype?? && (maintype == 'callout' || subtype == 'channel')>class="layui-this"</#if>>
 				<a href="/admin/callout/index.html">语音渠道</a>
 			</dd>
@@ -32,7 +38,7 @@
 		</dl>
 	</li>
 	
-	<#if models?? && models["weixin"]?? && models["weixin"] == true>
+	<#if models?seq_contains("wexin")>
 	<li class="layui-nav-item layui-nav-itemed">
 		<a class="layui-nav-title" href="javascript:;">微信接入</a>
 		<dl class="layui-nav-child">
@@ -50,7 +56,7 @@
 		</dl>
 	</li>
 	</#if>
-	<#if models?? && models["callcenter"]?? && models["callcenter"] == true>
+	<#if models?seq_contains("callcenter")>
 		<li class="layui-nav-item layui-nav-itemed">
 			<a class="layui-nav-title" href="javascript:;">呼叫中心</a>
 			<dl class="layui-nav-child">
@@ -61,24 +67,7 @@
 		</li>
 	</#if>
 	<#if user.superuser?? && user.superuser == true>
-	<li class="layui-nav-item layui-nav-itemed">
-		<a class="layui-nav-title" href="javascript:;">系统日志</a>
-		<dl class="layui-nav-child">
-			<dd <#if subtype?? && subtype == 'syslog'>class="layui-this"</#if>>
-				<a href="/admin/log/index.html">所有日志</a>
-			</dd>
-			<dd <#if levels?? && levels == 'ERROR'>class="layui-this"</#if>>
-				<a href="/admin/log/levels.html?levels=ERROR">错误日志</a>
-			</dd>
-			<dd <#if levels?? && levels == 'WARN'>class="layui-this"</#if>>
-				<a href="/admin/log/levels.html?levels=WARN">警告日志</a>
-			</dd>
-			<dd <#if levels?? && levels == 'INFO'>class="layui-this"</#if>>
-				<a href="/admin/log/levels.html?levels=INFO">输出日志</a>
-			</dd>
-		</dl>
-	</li>
-	<#if models?? && models["report"]?? && models["report"] == true>
+	<#if models?seq_contains("report")>
 	<li class="layui-nav-item layui-nav-itemed">
 		<a class="layui-nav-title" href="javascript:;">数据报表</a>
 		<dl class="layui-nav-child">

@@ -16,7 +16,7 @@
 package com.chatopera.cc.exception;
 
 public class CSKefuException extends Exception{
-    public CSKefuException(String s){
+    public CSKefuException(final String s){
         super(s);
     }
 }

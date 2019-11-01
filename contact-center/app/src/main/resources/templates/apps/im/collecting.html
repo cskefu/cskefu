@@ -15,7 +15,7 @@
 	    <link rel="stylesheet" id="skin" type="text/css" href="/im/css/default/ukefu.css">
 	</head>
 	<body style="overflow:hidden;" class="<#if type?? && type='text'>ukefu-point-text</#if>">
-		<form action="${schema!'http'}://${hostname!''}<#if ukefport?? && ukefport != 80>:${ukefport!''}</#if>/im/index.html?userid=${userid!''}&ai=false&appid=${appid!''}&aiid=${aiid!''}&orgi=${inviteData.orgi!''}&client=${client}&type=text<#if skill??>&skill=${skill}</#if><#if agent??>&agent=${agent}</#if><#if sessionid??>&sessionid=${sessionid}</#if>" method="post">
+		<form action="${schema!'http'}://${hostname!''}<#if cskefuport?? && cskefuport != 80>:${cskefuport!''}</#if>/im/index.html?userid=${userid!''}&ai=false&appid=${appid!''}&aiid=${aiid!''}&orgi=${inviteData.orgi!''}&client=${client}&type=text<#if skill??>&skill=${skill}</#if><#if agent??>&agent=${agent}</#if><#if sessionid??>&sessionid=${sessionid}</#if>" method="post">
 		<div class="large ukefu-im-theme <#if type?? && type='text'>ukefu-theme-border-${inviteData.consult_dialog_color!''}</#if>">
 		    <div id="containter" class="clearfix">
 		    	<div id="header" class="theme${inviteData.consult_dialog_color!''}">
