@@ -1,0 +1,679 @@
+<div class="row" style="border-bottom: 10px solid #EFEFEF;padding:10px;">
+	<div class="col-lg-8">
+		<div class="ukefu-measure">
+			<div class="ukefu-bt"> 
+				<div	class="layui-icon ukewo-btn ukefu-content-ind"><img src="/images/webim.png" style="width:60px;height:60px;"></div>
+				<div class="ukefu-bt-text">
+					<div class="ukefu-bt-text-title"
+						style="font-weight:400;font-size:24px;border-bottom:1px solid #dedede;">
+							${snsAccount.name!''}
+							<span style="font-size:15px;color:#AAAAAA;">接入网站创建时间：${snsAccount.createtime!?string("yyyy-MM-dd HH:mm:ss")}</span>
+					</div>
+					<div class="ukefu-bt-text-content" style="">${snsAccount.name!''}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="ukefu-tab-title" style="margin-left: 0px;">
+	<ul class="tab-title">
+		<li <#if subtype == 'webim'>class="layui-this"</#if>><a href="/admin/webim/index.html?snsid=${snsAccount.snsid!''}">基本设置</a></li>
+		<li <#if subtype == 'invote'>class="layui-this"</#if>><a href="/admin/webim/invote.html?snsid=${snsAccount.snsid!''}">邀请设置</a></li>
+		<li <#if subtype == 'profile'>class="layui-this"</#if>><a href="/admin/webim/profile.html?snsid=${snsAccount.snsid!''}">客服信息</a></li>
+	</ul>
+</div>
+<div class="layui-tab">
+  <div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+		<form method="post" key="set-mine" enctype="multipart/form-data" action="/admin/webim/profile/save.html" class="layui-form">
+			<#if inviteData??>
+				<input type="hidden" name="id" value="${inviteData.id!''}">
+				<input type="hidden" name="snsaccountid" value="${inviteData.snsaccountid!''}">
+				<#if inviteData.ai??>
+					<input type="hidden" name="ai" value="${inviteData.ai?then('true','false')}">
+				<#else>
+					<input type="hidden" name="ai" value="false">
+				</#if>
+				<#if inviteData.aifirst??>
+					<input type="hidden" name="aifirst" value="${inviteData.aifirst?then('true','false')}">
+				<#else>
+					<input type="hidden" name="aifirst" value="false">
+				</#if>
+	            <input type="hidden" name="aisuccesstip" value="${inviteData.aisuccesstip!''}">
+	            <input type="hidden" name="ainame" value="${inviteData.ainame!''}">
+	            <input type="hidden" name="aiid" value="${inviteData.aiid!''}">
+			</#if>
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="ukefu-customer-div setting-wrapper">
+						<div class="box default-box">
+							<div class="box-header">
+								<h3 class="box-title">客服基本信息</h3>
+							</div>
+							<div class="box-body ukefu-im-theme">
+								<div class="row">
+									<div class="col-lg-7">
+										<div class="ukefu-webim-prop">
+											<div class="ukefu-webim-tl" style="clear:both;">1、企业/网站名称</div>
+											<div class="box-item">
+												<div class="row">
+													<div class="col-lg-8">
+														<p>信息提示区域显示的名称</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">默认显示信息 企业名称</p>
+													</div>
+													<div class="col-lg-4">
+														<input type="text" name="dialog_name" value="${inviteData.dialog_name!'春松客服'}" autocomplete="off" class="layui-input" oninput="$('#dialog_name').text($(this).val())" onchange="$('#dialog_name').text($(this).val())">
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="ukefu-webim-prop">
+											<div class="ukefu-webim-tl" style="clear:both;">2、企业地址信息</div>
+											<div class="box-item">
+												<div class="row">
+													<div class="col-lg-8">
+														<p>信息提示区域显示的企业地址信息</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">默认提示文本是：空白</p>
+													</div>
+													<div class="col-lg-4">
+														<input type="text" name="dialog_address" value="${inviteData.dialog_address!''}" autocomplete="off" class="layui-input" oninput="$('#dialog_address').text($(this).val())" onchange="$('#dialog_address').text($(this).val())">
+													</div>
+												</div>
+											</div>
+										</div>
+										
+										<div class="ukefu-webim-prop">
+											<div class="ukefu-webim-tl" style="clear:both;">3、联系电话</div>
+											<div class="box-item">
+												<div class="row">
+													<div class="col-lg-8">
+														<p>信息提示区域显示的企业联系电话</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">默认提示文本是：空白</p>
+													</div>
+													<div class="col-lg-4">
+														<input type="text" name="dialog_phone" value="${inviteData.dialog_phone!''}" autocomplete="off" class="layui-input" oninput="$('#dialog_phone').text($(this).val())" onchange="$('#dialog_phone').text($(this).val())">
+													</div>
+												</div>
+											</div>
+										</div>
+										
+										<div class="ukefu-webim-prop">
+											<div class="ukefu-webim-tl" style="clear:both;">4、联系邮件</div>
+											<div class="box-item">
+												<div class="row">
+													<div class="col-lg-8">
+														<p>信息提示区域显示的企业联系邮箱地址</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">默认提示文本是：空白</p>
+													</div>
+													<div class="col-lg-4">
+														<input type="text" name="dialog_mail" value="${inviteData.dialog_mail!''}" autocomplete="off" class="layui-input" oninput="$('#dialog_mail').text($(this).val())" onchange="$('#dialog_mail').text($(this).val())">
+													</div>
+												</div>
+											</div>
+										</div>
+										
+										<div class="ukefu-webim-prop">
+											<div class="ukefu-webim-tl" style="clear:both;">5、网站客服公告</div>
+											<div class="box-item">
+												<div class="row">
+													<div class="col-lg-8">
+														<p>信息提示区域显示的客服公告信息</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">默认提示文本是：空白</p>
+													</div>
+													<div class="col-lg-4">
+														<input type="text" name="dialog_introduction" value="${inviteData.dialog_introduction!''}" autocomplete="off" class="layui-input" oninput="$('#dialog_introduction').text($(this).val())" onchange="$('#dialog_introduction').text($(this).val())">
+													</div>
+												</div>
+											</div>
+										</div>
+										
+										<div class="ukefu-webim-prop">
+											<div class="ukefu-webim-tl" style="clear:both;">6、对话欢迎语</div>
+											<div class="box-item">
+												<div class="row">
+													<div class="col-lg-12">
+														<textarea name="dialog_message" autocomplete="off" class="layui-input" oninput="$('#dialog_message').text($(this).val())" style="height:60px;line-height:22px;">${inviteData.dialog_message!'欢迎使用春松客服！如需帮助请联系 info@chatopera.com'}</textarea>
+													</div>
+												</div>
+											</div>
+										</div>
+										
+										<div class="ukefu-webim-prop">
+											<div class="ukefu-webim-tl">7、自定义形象图片</div>
+											<div class="box-item" style="position: relative;">
+												<span class="ukefu-logo">
+													<img src="<#if inviteData?? && inviteData.dialog_ad??>/res/image.html?id=${inviteData.dialog_ad?url}<#else>/im/img/pic01.jpg</#if>" style="height:130px;">
+												</span>
+												<div class="layui-box layui-upload-button" style="position:absolute;left: 290px;">
+													<input type="file" name="dialogad" accept="image/gif, image/jpeg, image/png" lay-ext="jpg|png|gif"  class="layui-upload-file" onchange="$('#dialog_ad').html($(this).val());">
+													<span class="layui-upload-icon"><i class="layui-icon">&#xe608;</i>上传图片</span>
+												</div>
+												<span id="dialog_ad" style="position:absolute;left: 420px;top:10px;"></span>
+												
+												 
+											</div>
+										</div>
+										
+										<div class="ukefu-webim-prop">
+											<div class="ukefu-webim-tl" style="clear:both;">8、启用访客留言</div>
+											<div class="box-item">
+												<div class="row">
+													<div class="col-lg-8">
+														<p>坐席不在线或不在工作时间段内访客的留言功能</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">开启后，当前没有坐席在线或者不在工作时间段内访问将会弹出留言板</p>
+													</div>
+													<div class="col-lg-4" style="text-align:right;">
+														<input type="checkbox" title="启用" name="leavemessage" id="leavemessage" lay-filter="leavemessage" <#if inviteData?? && inviteData.leavemessage == true>checked="checked"</#if>>
+													</div>
+												</div>
+											</div>
+											<div class="box-item" id="leavemessage_tip" style="<#if inviteData?? && inviteData.leavemessage == false>display:none;</#if>">	
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-8">
+														<p>a、留言框弹出方式</p>
+														<p>
+															<div class="layui-input-block">
+														    	<input type="radio" name="lvmopentype" value="access" title="访问时弹出" <#if inviteData?? && inviteData.lvmopentype == 'access'>checked</#if>>
+		      													<input type="radio" name="lvmopentype" value="click" title="点击入口按钮后弹出" <#if !(inviteData?? && inviteData.lvmopentype == 'access')>checked</#if>>
+														    </div>
+														</p>
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-12">
+														<p>b、选择留言内容字段</p>
+														<p>
+															<div class="layui-input-block">
+														      <input type="checkbox" name="lvmname" lay-skin="primary" title="姓名" <#if inviteData.lvmname>checked</#if> value="1">
+														      <input type="checkbox" name="lvmphone" lay-skin="primary" title="电话" <#if inviteData.lvmphone>checked</#if> value="1">
+														      <input type="checkbox" name="lvmemail" lay-skin="primary" title="邮件" <#if inviteData.lvmemail>checked</#if> value="1">
+														      <input type="checkbox" name="lvmaddress" lay-skin="primary" title="地址" <#if inviteData.lvmaddress>checked</#if> value="1">
+														      <input type="checkbox" name="lvmqq" lay-skin="primary" title="QQ" <#if inviteData.lvmqq>checked</#if> value="1">
+														    </div>
+														</p>
+													</div>
+												</div>
+											</div>
+										</div>
+										
+										<div class="ukefu-webim-prop">
+											<div class="ukefu-webim-tl" style="clear:both;">9、启用技能组</div>
+											<div class="box-item">
+												<div class="row">
+													<div class="col-lg-8">
+														<p>坐席分组功能，访客能够直接选择服务的技能组或坐席</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">开启后，运行访客直接发起和坐席对话，如果坐席达到最大访客限制，则访客进入排队队列</p>
+													</div>
+													<div class="col-lg-4" style="text-align:right;">
+														<input type="checkbox" title="启用" name="skill" lay-filter="skill" <#if inviteData?? && inviteData.skill == true>checked="checked"</#if>>
+													</div>
+												</div>
+											</div>
+											<div class="box-item" id="skill" style="position: relative;<#if inviteData?? && inviteData.skill == true><#else>display:none;</#if>">
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-8">
+														<p>a、坐席组窗口显示标题</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">在访客邀请按钮的坐席分组窗口上显示的标题</p>
+													</div>
+													<div class="col-lg-4">
+														<div class="layui-input-block">
+														    <input type="text" name="consult_skill_title" value="${inviteData.consult_skill_title!'春松客服'}" autocomplete="off" class="layui-input">
+														</div>	
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-8">
+														<p>b、最多显示技能组数</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">在访客邀请按钮上显示的最大坐席分组数量</p>
+													</div>
+													<div class="col-lg-4">
+														<div class="layui-input-block">
+														    <select name="consult_skill_numbers">
+															  <option value="1" <#if inviteData?? && inviteData.consult_skill_numbers == 1>selected="selected"</#if>>1</option>
+															  <option value="2" <#if inviteData?? && inviteData.consult_skill_numbers == 2>selected="selected"</#if>>2</option>
+															  <option value="3" <#if inviteData?? && inviteData.consult_skill_numbers == 3>selected="selected"</#if>>3</option>
+															  <option value="4" <#if inviteData?? && inviteData.consult_skill_numbers == 4>selected="selected"</#if>>4</option>
+															  <option value="5" <#if !(inviteData??) || (inviteData?? && (inviteData.consult_skill_numbers == 0 || inviteData.consult_skill_numbers == 5))>selected="selected"</#if>>5</option>
+															  <option value="6" <#if inviteData?? && inviteData.consult_skill_numbers == 6>selected="selected"</#if>>6</option>
+															  <option value="7" <#if inviteData?? && inviteData.consult_skill_numbers == 7>selected="selected"</#if>>7</option>
+															  <option value="8" <#if inviteData?? && inviteData.consult_skill_numbers == 8>selected="selected"</#if>>8</option>
+															  <option value="9" <#if inviteData?? && inviteData.consult_skill_numbers == 9>selected="selected"</#if>>9</option>
+															  <option value="10" <#if inviteData?? && inviteData.consult_skill_numbers == 10>selected="selected"</#if>>10</option>
+															  <option value="11" <#if inviteData?? && inviteData.consult_skill_numbers == 11>selected="selected"</#if>>11</option>
+															  <option value="12" <#if inviteData?? && inviteData.consult_skill_numbers == 12>selected="selected"</#if>>12</option>
+															  <option value="13" <#if inviteData?? && inviteData.consult_skill_numbers == 13>selected="selected"</#if>>13</option>
+															  <option value="14" <#if inviteData?? && inviteData.consult_skill_numbers == 14>selected="selected"</#if>>14</option>
+															  <option value="15" <#if inviteData?? && inviteData.consult_skill_numbers == 15>selected="selected"</#if>>15</option>
+															</select>
+													    </div>	
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-8">
+														<p>c、是否显示技能组下的人工坐席</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">开启后，将会允许访客直接选择坐席</p>
+													</div>
+													<div class="col-lg-4" style="text-align:right;">
+														<input type="checkbox" title="启用" name="consult_skill_agent" lay-filter="consult_skill_agent" <#if inviteData?? && inviteData.consult_skill_agent == true>checked="checked"</#if>>
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-8">
+														<p>d、每个坐席分组下显示的最大坐席数</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">在访客邀请按钮的坐席分组下显示的最大坐席数量</p>
+													</div>
+													<div class="col-lg-4">
+														<div class="layui-input-block">
+														    <select name="consult_skill_maxagent">
+															  <option value="1" <#if inviteData?? && inviteData.consult_skill_maxagent == 1>selected="selected"</#if>>1</option>
+															  <option value="2" <#if inviteData?? && inviteData.consult_skill_maxagent == 2>selected="selected"</#if>>2</option>
+															  <option value="3" <#if inviteData?? && inviteData.consult_skill_maxagent == 3>selected="selected"</#if>>3</option>
+															  <option value="4" <#if inviteData?? && inviteData.consult_skill_maxagent == 4>selected="selected"</#if>>4</option>
+															  <option value="5" <#if !(inviteData??) || (inviteData?? && (inviteData.consult_skill_maxagent == 0 || inviteData.consult_skill_maxagent == 5))>selected="selected"</#if>>5</option>
+															  <option value="6" <#if inviteData?? && inviteData.consult_skill_maxagent == 6>selected="selected"</#if>>6</option>
+															  <option value="7" <#if inviteData?? && inviteData.consult_skill_maxagent == 7>selected="selected"</#if>>7</option>
+															  <option value="8" <#if inviteData?? && inviteData.consult_skill_maxagent == 8>selected="selected"</#if>>8</option>
+															  <option value="9" <#if inviteData?? && inviteData.consult_skill_maxagent == 9>selected="selected"</#if>>9</option>
+															  <option value="10" <#if inviteData?? && inviteData.consult_skill_maxagent == 10>selected="selected"</#if>>10</option>
+															  <option value="11" <#if inviteData?? && inviteData.consult_skill_maxagent == 11>selected="selected"</#if>>11</option>
+															  <option value="12" <#if inviteData?? && inviteData.consult_skill_maxagent == 12>selected="selected"</#if>>12</option>
+															  <option value="13" <#if inviteData?? && inviteData.consult_skill_maxagent == 13>selected="selected"</#if>>13</option>
+															  <option value="14" <#if inviteData?? && inviteData.consult_skill_maxagent == 14>selected="selected"</#if>>14</option>
+															  <option value="15" <#if inviteData?? && inviteData.consult_skill_maxagent == 15>selected="selected"</#if>>15</option>
+															</select>
+													    </div>	
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-8">
+														<p>e、坐席组窗口底部显示内容</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">在访客邀请按钮的坐席分组窗口底部显示的文本内容</p>
+													</div>
+													<div class="col-lg-4">
+														<div class="layui-input-block">
+														    <input type="text" name="consult_skill_bottomtitle" value="${inviteData.consult_skill_bottomtitle!'春松客服全渠道智能客服'}" autocomplete="off" class="layui-input">
+														</div>	
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-12">
+														<p>f、坐席组窗口提示信息</p>
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-12">
+														<textarea name=consult_skill_msg autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;">${(inviteData.consult_skill_msg!'工作时间<br/>08:30~17:30')?no_esc}</textarea>
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-8">
+														<p>g、配置地区的时候，只显示访客所在地区的技能组</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">默认不开启，开启后，访客端只显示当前地区内配置的技能组</p>
+													</div>
+													<div class="col-lg-4" style="text-align:right;">
+														<input type="checkbox" title="启用" name="onlyareaskill" <#if inviteData?? && inviteData.onlyareaskill == true>checked="checked"</#if>>
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-12">
+														<p>h、未配置地区技能组的提示消息</p>
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-12">
+														<textarea name=areaskilltipmsg autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;">${(inviteData.areaskilltipmsg!'您好，您所在的地区没有在线客服人员！')?no_esc}</textarea>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="ukefu-webim-prop">
+											<div class="ukefu-webim-tl" style="clear:both;">10、启用咨询前信息录入</div>
+											<div class="box-item">
+												<div class="row">
+													<div class="col-lg-8">
+														<p>启用咨询前用户录入个人信息</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">开启后会启用访客信息录入功能，访客需要填写姓名、电话、邮件、咨询原因等内容</p>
+													</div>
+													<div class="col-lg-4" style="text-align:right;">
+														<input type="checkbox" title="启用" name="consult_info" lay-filter="consult_info" <#if inviteData?? && inviteData.consult_info == true>checked="checked"</#if>>
+													</div>
+												</div>
+											</div>
+											<div class="box-item" id="consult_info" style="position: relative;<#if inviteData?? && inviteData.consult_info == true><#else>display:none;</#if>">
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-8">
+														<p>a、输入访客姓名</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">默认的访客姓名是随机生成的，访客输入后，在坐席对话界面上将会显示访客输入的姓名</p>
+													</div>
+													<div class="col-lg-4" style="text-align:right;">
+														<div class="layui-input-block">
+														    <input type="checkbox" title="启用" name="consult_info_name" <#if inviteData?? && inviteData.consult_info_name == true>checked="checked"</#if>>
+														</div>	
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-8">
+														<p>b、输入访客邮件地址</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">来访访客需要填写电子邮件信息后才能进入咨询</p>
+													</div>
+													<div class="col-lg-4" style="text-align:right;">
+														<div class="layui-input-block">
+														    <input type="checkbox" title="启用" name="consult_info_email" <#if inviteData?? && inviteData.consult_info_email == true>checked="checked"</#if>>
+														</div>	
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-8">
+														<p>c、填写电话号码</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">来访访客需要填写电话号码后才能进入咨询</p>
+													</div>
+													<div class="col-lg-4" style="text-align:right;">
+														<div class="layui-input-block">
+														    <input type="checkbox" title="启用" name="consult_info_phone" <#if inviteData?? && inviteData.consult_info_phone == true>checked="checked"</#if>>
+														</div>	
+													</div>
+												</div>
+												
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-8">
+														<p>d、填写咨询原因或者问题</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">来访访客需要填写咨询原因或者问题后才能进入咨询</p>
+													</div>
+													<div class="col-lg-4" style="text-align:right;">
+														<div class="layui-input-block">
+														    <input type="checkbox" title="启用" name="consult_info_resion" <#if inviteData?? && inviteData.consult_info_resion == true>checked="checked"</#if>>
+														</div>	
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-12">
+														<p>e、咨询信息录入窗口填写提示信息</p>
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-12">
+														<textarea name=consult_info_message autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;">${(inviteData.consult_info_message!'您好，请填写以下信息，方便我们更好的为您服务！')?no_esc}</textarea>
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-8">
+														<p>f、使用Cookies临时存储用户信息</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">来访访客填写的用户信息临时存放在Cookies，默认有效期是3600秒，信息将会被加密后存储</p>
+													</div>
+													<div class="col-lg-4" style="text-align:right;">
+														<div class="layui-input-block">
+														    <input type="checkbox" title="启用" name="consult_info_cookies" <#if inviteData?? && inviteData.consult_info_cookies == true>checked="checked"</#if>>
+														</div>	
+													</div>
+												</div>
+											</div>
+										</div>
+										<#if models?? && models["xiaoe"]?? && models["xiaoe"] == true>
+										<div class="ukefu-webim-prop">
+											<div class="ukefu-webim-tl" style="clear:both;">11、启用智能机器人</div>
+											<div class="box-item">
+												<div class="row">
+													<div class="col-lg-8">
+														<p>启用智能机器人回复，系统通过智能机器人回复客户消息</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">开启后会启用智能机器人功能，并且可以选择是否默认接入智能机器人</p>
+													</div>
+													<div class="col-lg-4" style="text-align:right;">
+														<input type="checkbox" title="启用" name="ai" lay-filter="ai" <#if inviteData?? && inviteData.ai == true>checked="checked"</#if>>
+													</div>
+												</div>
+											</div>
+											<div class="box-item" id="ai" style="position: relative;<#if inviteData?? && inviteData.ai == true><#else>display:none;</#if>">
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-8">
+														<p>a、智能机器人优先</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">默认接入咨询的应答方式是智能机器人</p>
+													</div>
+													<div class="col-lg-4" style="text-align:right;">
+														<div class="layui-input-block">
+														    <input type="checkbox" title="启用" name="aifirst" <#if inviteData?? && inviteData.aifirst == true>checked="checked"</#if>>
+														</div>	
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-8">
+														<p>b、默认接入的机器人</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">默认使用的机器人</p>
+													</div>
+													<div class="col-lg-4">
+														<div class="layui-input-block">
+														    <select name="aiid">
+														    	<option value="">请选择默认的机器人</option>
+														    	<#if serviceAiList??>
+														    	<#list serviceAiList as serviceAi>
+														    	<option value="${serviceAi.id!''}" <#if inviteData.aiid?? && inviteData.aiid == serviceAi.id>selected="selected"</#if>>${serviceAi.name!''}</option>
+														    	</#list>
+														    	</#if> 
+														    </select>
+														</div>	
+													</div>
+												</div>
+												
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-8">
+														<p>b、智能机器人名字</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">智能机器人回复消息的时候显示的名称</p>
+													</div>
+													<div class="col-lg-4">
+														<div class="layui-input-block">
+														    <input type="text" name="ainame" maxlength="100" value="${inviteData.ainame!'小E'}" autocomplete="off" class="layui-input">
+														</div>	
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-8">
+														<p>c、智能机器人欢迎语</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">接入智能机器人之后，对话窗口顶部显示的欢迎语，支持HTML代码</p>
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-12">
+														<div class="layui-input-block">
+														    <textarea name="aimsg" autocomplete="off" class="layui-input" style="height:90px;line-height:22px;">${inviteData.aimsg!'欢迎使用春松客服！如需帮助请联系 info@chatopera.com'}</textarea>
+														</div>	
+													</div>
+												</div>
+												<div class="row" style="margin-bottom:20px;">
+													<div class="col-lg-8">
+														<p>d、智能机器人对话服务连接成功提示</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">智能机器人服务连接成功的提示用语</p>
+													</div>
+													<div class="col-lg-4">
+														<div class="layui-input-block">
+														    <input type="text" name="aisuccesstip" maxlength="100" value="${inviteData.aisuccesstip!'欢迎使用春松客服小E，我来帮您解答问题'}" autocomplete="off" class="layui-input">
+														</div>	
+													</div>
+												</div>
+											</div>
+										</div>
+										</#if>
+										<div class="ukefu-webim-prop">
+											<div class="ukefu-webim-tl" style="clear:both;">12、记录访客轨迹</div>
+											<div class="box-item">
+												<div class="row">
+													<div class="col-lg-8">
+														<p>是否记录访客访问页面历史信息</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">开启后，访客访问页面的信息会被记录下来</p>
+													</div>
+													<div class="col-lg-4" style="text-align:right;">
+														<input type="checkbox" title="启用" name="recordhis" id="recordhis" <#if inviteData?? && inviteData.recordhis == true>checked="checked"</#if>>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="ukefu-webim-prop">
+											<div class="ukefu-webim-tl" style="clear:both;">13、实时跟踪访客状态</div>
+											<div class="box-item">
+												<div class="row">
+													<div class="col-lg-8">
+														<p>是否对访客进行实时跟踪</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">开启后，访客信息会被实时写入数据记录，系统开启实时交互模式</p>
+													</div>
+													<div class="col-lg-4" style="text-align:right;">
+														<input type="checkbox" title="启用" name="traceuser" id="traceuser" <#if inviteData?? && inviteData.traceuser == true>checked="checked"</#if>>
+													</div>
+												</div>
+											</div>
+										</div>
+										
+										<div class="ukefu-webim-prop">
+											<div class="ukefu-webim-tl" style="clear:both;">14、允许访客端输入的最大文本字数</div>
+											<div class="box-item">
+												<div class="row">
+													<div class="col-lg-8">
+														<p>访客端文本字数输入限制</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">开启后，访客超过设定的字数后会被截断</p>
+													</div>
+													<div class="col-lg-4" style="text-align:right;">
+														<input type="input" name="maxwordsnum" lay-verify="number" maxlength="5" id="maxwordsnum" value="${inviteData.maxwordsnum}" class="layui-input">
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="ukefu-webim-prop">
+											<div class="ukefu-webim-tl" style="clear:both;">15、启用访客端CTRL+Enter快捷键发送消息 </div>
+											<div class="box-item">
+												<div class="row">
+													<div class="col-lg-8">
+														<p>访客对话界面上启用CTRL+Enter快捷键发送消息</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">默认是Enter快捷键发送消息，启用此功能后，快捷键变为 CTRL+Enter</p>
+													</div>
+													<div class="col-lg-4" style="text-align:right;">
+														<input type="checkbox" title="启用" name="ctrlenter" id="ctrlenter" <#if inviteData?? && inviteData.ctrlenter == true>checked="checked"</#if>>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-5">
+										<div class="ukefu-im-preview ukefu-im-preview-dialog" id="pv" style="width:380px;position: fixed;">
+											<div class="ukefu-im-preview-bar ukefu-theme-color theme<#if inviteData??>${inviteData.consult_dialog_color!'1'}<#else>1</#if>" style="padding:5px;">
+													<img src="<#if inviteData?? && inviteData.consult_dialog_logo??>/res/image.html?id=${inviteData.consult_dialog_logo?url}<#else>/images/logo.png</#if>" style="height:22px;float:left;">
+													<span style="float:right;">	
+														<i class="layui-icon" style="font:size:12px;color:#ffffff;">&#x1006;</i>
+													</span>
+											</div>
+											<div class="ukefu-im-preview-wrap"
+												style="border:1px solid #EAEAEA">
+												<div class="ukefu-im-preview-tip" style="width:90%;height:5px;font-size:12px;height:32px;overflow:hidden;border-radius: 10px;padding: 2px 10px 2px 10px;" id="dialog_message">
+													${inviteData.dialog_message!'欢迎您来咨询！欢迎使用春松客服！如需帮助请联系 info@chatopera.com'}
+												</div>
+												
+												<div class="ukefu-im-preview-customer">
+													<i class="layui-icon" style="color:#377FED;float:left;">&#xe612;</i>
+													<div
+														class="ukefu-im-preview-customer-message ukefu-im-preview-customer-arrow">
+			
+													</div>
+												</div>
+												<div class="ukefu-im-preview-user">
+													<img src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" style="height:20px;float:right;">
+													<div
+														class="ukefu-im-preview-user-message ukefu-im-preview-user-arrow ukefu-theme-color theme<#if inviteData??>${inviteData.consult_dialog_color!'1'}<#else>1</#if>"
+														style="width:150px;"></div>
+												</div>
+			
+												<div class="ukefu-im-preview-user" style="height:60px;">
+													<img src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" style="height:20px;float:right;">
+													<div
+														class="ukefu-im-preview-user-message ukefu-im-preview-user-arrow ukefu-theme-color theme<#if inviteData??>${inviteData.consult_dialog_color!'1'}<#else>1</#if>"
+														style="width:100px;height:50px;"></div>
+												</div>
+			
+												<div class="ukefu-im-preview-hr"></div>
+			
+												<div class="ukefu-im-preview-submit">
+													<i class="fa fa-image" style="color:#dddddd;float:left;"></i>
+												</div>
+												<div class="ukefu-im-preview-submit">
+													<a class="ukefu-im-theme-submit-btn ukefu-theme-color theme<#if inviteData??>${inviteData.consult_dialog_color!'1'}<#else>1</#if>">发送</a>
+												</div>
+											</div>
+											<div class="ukefu-im-profile" style="width:130px;font-size:12px;">
+												<div class="ukefu-profile-title" style="clear:both;">信息提示</div>
+												<div class="box-item" style="padding:5px;white-space: nowrap;text-overflow: ellipsis;">
+													名称：<label id="dialog_name">${inviteData.dialog_name!'春松客服'}</label>
+												</div>
+												<div class="box-item" style="padding:5px;white-space: nowrap;text-overflow: ellipsis;">
+													地址：<label id="dialog_address">${inviteData.dialog_address!'北京'}</label>
+												</div>
+												<div class="box-item" style="padding:5px;white-space: nowrap;text-overflow: ellipsis;">
+													电话：<label id="dialog_phone">${inviteData.dialog_phone!'185-1935-7507'}</label>
+												</div>
+												<div class="box-item" style="padding:5px;white-space: nowrap;text-overflow: ellipsis;">
+													邮件：<label id="dialog_mail">${inviteData.dialog_mail!'info@chatopera.com'}</label>
+												</div>
+												<div class="box-item" style="padding:5px;text-indent: 25px;line-height:25px;">
+													<label id="dialog_introduction">${inviteData.dialog_introduction!'客服公告信息，内容在控制台设置。'}</label>
+												</div>
+												<div class="box-item" style="padding:5px;white-space: nowrap;text-overflow: ellipsis;text-align:center;border-top:1px solid #dedede;">
+													<img src="<#if inviteData?? && inviteData.dialog_ad??>/res/image.html?id=${inviteData.dialog_ad?url}<#else>/im/img/pic01.jpg</#if>" style="height:100px;">
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-3"></div>
+				<div class="col-lg-9">
+					<div class="layui-form-item">
+			          <div class="layui-input-block">
+			            <button class="layui-btn" lay-submit="" lay-filter="formDemo">保存</button>
+			            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			          </div>
+			        </div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+</div>
+
+<script language="javascript"> 		
+	layui.use('form', function(){
+		var form = layui.form();
+		form.render('select'); //刷新select选择框渲染
+		form.on("checkbox(leavemessage)" , function(data){
+			if(data.elem.checked == true){
+				$('#leavemessage_tip').show();		
+			}else{
+				$('#leavemessage_tip').hide();
+			}
+		});
+		form.on("checkbox(skill)" , function(data){
+			if(data.elem.checked == true){
+				$('#skill').show();		
+			}else{
+				$('#skill').hide();
+			}
+		});
+		form.on("checkbox(ai)" , function(data){
+			if(data.elem.checked == true){
+				$('#ai').show();		
+			}else{
+				$('#ai').hide();
+			}
+		});
+		form.on("checkbox(consult_info)" , function(data){
+			if(data.elem.checked == true){
+				$('#consult_info').show();		
+			}else{
+				$('#consult_info').hide();
+			}
+		});
+	});
+	
+			
+</script>
+

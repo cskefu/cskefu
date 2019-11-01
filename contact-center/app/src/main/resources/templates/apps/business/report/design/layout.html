@@ -1,0 +1,5 @@
+<#if model??>
+<div class="layui-row ukefu-row layui-col-space10 ${model.id!''}" data-type="layout" id="${model.mid!''}" data-val="${model.id!''}"  data-rid="" data-templet="${templet.id!''}">
+	<#if templet??><#assign inlineTemplate = templet.templettext?interpret><@inlineTemplate /></#if>
+</div>
+</#if>

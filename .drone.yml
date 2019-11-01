@@ -1,0 +1,20 @@
+pipeline:
+  build-contact-center:
+    group: build
+    image: plugins/docker
+    context: contact-center
+    dockerfile: contact-center/Dockerfile
+    repo: chatopera/contact-center
+    tags: develop
+    secrets: [ docker_username, docker_password ]
+
+  build-cc-switch:
+    group: build
+    image: plugins/docker
+    context: cc-switch/app
+    dockerfile: cc-switch/app/Dockerfile
+    repo: chatopera/cc-switch
+    tags: develop
+    secrets: [ docker_username, docker_password ]
+
+branches: develop

@@ -1,0 +1,136 @@
+<div class="row" style="height:100%;">
+	<div class="col-lg-3" style="border-right:1px solid #e6e6e6;padding-right:0px;">
+		<h1 class="site-h1" style="background-color:#FFFFFF;">
+			组织机构
+			<span style="float:right;">
+				<button class="layui-btn layui-btn-small green" href="/admin/organ/add.html<#if organData>?parent=${organData.id!''}</#if>" id="areaadd" data-toggle="ajax" data-height="400" data-width="650" data-title="创建部门">
+					创建部门
+				</button>
+			</span>
+		</h1>
+		<div class="row" style="padding:5px;">
+			<div class="col-lg-12">
+				<ul id="organTree" class="ztree"></ul>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-9">
+		<h1 class="site-h1" style="background-color:#FFFFFF;">
+			<#if organData??>${organData.name!''}<#else>默认机构</#if><#if userList??>（${userList?size!''}）</#if>
+			<span style="float:right;">
+				<#if organData??>
+				<button class="layui-btn layui-btn-small green" href="/admin/organ/seluser.html?organ=${organData.id!''}" data-toggle="ajax" data-width="750" data-title="添加用户到当前部门">
+					添加用户到当前部门
+				</button>
+				<button class="layui-btn layui-btn-primary layui-btn-small" href="/admin/organ/area.html?id=${organData.id}" data-toggle="ajax" data-width="450" data-height="400" data-title="地区设置">
+					地区设置
+				</button>
+				<button class="layui-btn layui-btn-primary layui-btn-small" href="/admin/organ/edit.html?id=${organData.id}" data-toggle="ajax" data-width="650" data-height="400" data-title="修改部门">
+					修改部门
+				</button>
+				<button class="layui-btn layui-btn-danger layui-btn-small" href="/admin/organ/delete.html?id=${organData.id!''}" data-toggle="tip" data-title="请确认是否删除该部门？">
+					删除部门
+				</button>
+				</#if>
+			</span>
+		</h1>
+		<div class="row" style="padding:5px;">
+			<div class="col-lg-12">
+				<table class="layui-table" lay-skin="line">
+				  <colgroup>
+						<col width="30%">
+						<col width="20%">
+						<col width="25%">
+						<col width="24%">
+						<col width="1%">
+					<col>
+				  </colgroup>
+				  <thead>
+					<tr>
+					  <th>用户</th>
+					  <th>姓名</th>
+					  <th>电子邮件</th>
+					  <th>手机</th>
+					  <th style="white-space:nowrap;" nowrap="nowrap">操作</th>
+					</tr> 
+				  </thead>
+				  <tbody>
+					<#if userList??>
+					<#list userList as organUser>
+					<tr>
+					  <td>
+							<a href="">
+								${organUser.username!''}
+							</a>
+							
+					  </td>
+					  <td>${organUser.uname!''}</td>
+					  <td>${organUser.email!''}</td>
+					  <td>${organUser.mobile!''}</td>
+					  <td style="white-space: nowrap;">
+					  		<a href="/admin/organ/user/delete.html?id=${organUser.id!''}&organ=${organData.id!''}"  data-toggle="tip" data-title="请确认是否从坐席组中移除坐席？">
+					  			<i class="layui-icon" style="color:red;">&#x1006;</i>
+					  			移除
+					  		</a>
+					  </td>
+					</tr>
+					</#list>
+					</#if>
+				  </tbody>
+				</table>
+			</div> 	   
+		</div>
+		<div class="row" style="padding:5px;">
+			<div class="col-lg-12" id="page" style="text-align:center;"></div>
+		</div>
+	</div>	
+</div>
+<SCRIPT type="text/javascript">
+	var setting = {
+		data: {
+			simpleData: {
+				enable: true
+			}
+		},
+		callback: {
+			onClick: onClick
+		}
+	};
+	
+	function onClick(e, treeId, treeNode) {
+		if(treeNode.topic){
+			location.href = "/admin/organ/index.html?organ="+treeNode.id;
+		}else if(treeNode.id == "0"){
+			location.href = "/admin/organ/index.html";
+		}else if(treeNode.area){
+			$('#areaadd').attr("href" , "/admin/organ/add.html?area="+treeNode.id);
+		}
+	}
+
+	var zNodes =[
+	    { id:'0', pId:'00', name:"组织机构", open:true , topic : false}
+	    <#if organList??>
+	    <#list organList as organ>
+	    ,{ id:'${organ.id!''}', pId:'${organ.parent!'0'}', name:"${organ.name!''}", open:true , topic : true ,  <#if organ.area?? && organ.area != "">icon:"/images/area.png" <#else>icon:"/images/dept.png"</#if> }
+	    </#list>
+	    </#if>
+	];
+	
+	$(document).ready(function(){
+		var ztree = $.fn.zTree.init($("#organTree"), setting, zNodes);
+		<#if organData??>
+		var node = ztree.getNodeByParam('id', '${organData.id!''}');//获取id为1的点  
+		ztree.selectNode(node);//选择点  
+		</#if>
+	});
+	
+	layui.use('layer', function(){
+		  var layer = layui.layer;
+		  <#if msg?? && msg == 'admin_organ_update_name_not'>
+			layer.alert('组织机构分类名已存在！', {icon: 2});
+		  <#elseif msg?? && msg == 'admin_organ_update'>
+			layer.alert('组织机构分类名已存在！', {icon: 2});
+		  
+		  </#if>
+		});  
+</SCRIPT>

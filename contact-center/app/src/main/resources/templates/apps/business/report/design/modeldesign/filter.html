@@ -1,0 +1,90 @@
+<#if filter?? && filter.modeltype == 'text'>
+	<#if filter.valuefiltertype =='range'>
+		<div class="layui-inline">
+		    <div class="layui-input-inline" style="width: 80px;">
+		      <input type="text" name="${filter.code!''}_startvalue" id="${filter.code!''}_startvalue"  class="layui-input" value="${filter.requeststartvalue!''}" <#if filter.mustvalue?? && filter.mustvalue=='mustvalue'>lay-verify=required</#if> >
+		    </div>
+		    <div class="layui-form-mid">-</div>
+		    <div class="layui-input-inline" style="width: 80px;">
+		      <input type="text" name="${filter.code!''}_endvalue" id="${filter.code!''}_endvalue"  class="layui-input"  value="${filter.requestendvalue!''}" <#if filter.mustvalue?? && filter.mustvalue=='mustvalue'>lay-verify=required</#if>>
+		    </div>
+		  </div>
+	<#else>
+		<div class="layui-input-inline" >
+		      <input type="text" name="${filter.code!''}"  id="${filter.code!''}"  class="layui-input" value="${filter.requestvalue!''}" <#if filter.mustvalue?? && filter.mustvalue=='mustvalue'>lay-verify=required</#if>>
+		    </div>
+	</#if>
+</#if>
+<#if filter?? && filter.modeltype == 'date'>
+	<#if filter.valuefiltertype =='range'>
+		<div class="layui-inline" style="margin-right:0px;">
+		    <div class="layui-input-inline" style="width: 98px;">
+		      <input type="text" name="${filter.code!''}" class="layui-input" value="${filter.requeststartvalue!''}" id="${filter.code!''}_startvalue" >
+		    </div>
+		    <div class="layui-form-mid">-</div>
+		    <div class="layui-input-inline" style="width: 98px;">
+		      <input type="text" name="${filter.code!''}_endvalue"  class="layui-input"  value="${filter.requestendvalue!''}" id="${filter.code!''}_endvalue" >
+		    </div>
+		  </div>
+		  <script>
+			   	layui.use('laydate', function(){
+			  	  	var laydate = layui.laydate;
+			  		laydate.render({ 
+			   	  		elem: document.getElementById('${filter.code!''}_startvalue'),
+			   		  	value: '${filter.startvalue!''}',
+			   		  	type:UKHelper.getLayDateType('${filter.formatstr!''}'),
+			   		 	format: '${filter.formatstr!''}'
+			   		});
+			  		laydate.render({ 
+			   	  		elem: document.getElementById('${filter.code!''}_endvalue'),
+			   		  	value: '${filter.endvalue!''}',
+			   		  	type:UKHelper.getLayDateType('${filter.formatstr!''}'),
+			   		 	format: '${filter.formatstr!''}'
+			   		});
+			  	});
+		   	</script>
+	<#else>
+		<div class="layui-input-inline" >
+		      <input type="text" name="${filter.code!''}" id="${filter.code!''}"  class="layui-input" >
+		    </div>
+		   	<script>
+			   	layui.use('laydate', function(){
+			  	  	var laydate = layui.laydate;
+			  		laydate.render({ 
+			   	  		elem: document.getElementById('${filter.code!''}'),
+			   		  	value: '${filter.requestvalue!''}',
+			   		  	type:UKHelper.getLayDateType('${filter.formatstr!''}'),
+			   		 	format: '${filter.formatstr!''}'
+			   		});
+			  	});
+		   	</script>
+	</#if>
+</#if>
+<#if filter?? && filter.modeltype == 'sigsel'>
+	<#if filter.valuefiltertype =='range'>
+	<#else>
+		<div class="layui-input-inline" >
+		 	<select  <#if filter.mustvalue?? && filter.mustvalue=='mustvalue'>lay-verify=required</#if>  name="${filter.code!''}" lay-filter=${filter.code!''} id="${filter.code!''}">
+				<option value="" <#if !(filter.requestvalue??)>selected=selected</#if> >请选择</option>
+				  <#if  filter.reportData.col?? && filter.reportData.col.childeren ??>
+					<#list filter.reportData.col.childeren as val>
+		  				<option value="${val.name!''}" <#if filter.requestvalue == val.name>selected=selected</#if> ><#list val.childeren as key><#if key_index ==1>${key.name!''}</#if></#list></option>
+			  		</#list>
+				  </#if>
+			</select>
+		 </div>
+		 <script>
+			layui.use('form', function(){
+			  var form = layui.form;
+			  <#if filter?? && filter.childFilter??>
+			  form.on('select(${filter.code!''})', function(data){
+				  if($('#item_${filter.childFilter.code}')){
+					  loadURL('/apps/report/design/filtervalchange.html?id=${filter.modelid}&fid=${filter.childFilter.id!''}&publishedid=<#if publishedReport??>${publishedReport.id!''}<#else></#if>&${filter.code!''}='+data.value, '#item_${filter.childFilter.code}'); 
+				  }
+			  });
+			  </#if>
+			  form.render();
+			});
+			</script>
+	</#if>
+</#if>

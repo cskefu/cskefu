@@ -1,0 +1,59 @@
+<link rel="stylesheet" href="/js/ztree/zTreeStyle/zTreeStyle.css">
+<script src="/js/ztree/jquery.ztree.all.min.js"></script>
+
+<div class="layui-side layui-bg-black layui-layout-content ukefu-tab">
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="site-h1">
+				知识分类
+				<span style="float:right;">
+					<button class="layui-btn layui-btn-small green" href="/apps/kbs/addtype.html" data-toggle="ajax" data-height="450" data-width="950" data-title="创建分类">
+						<i class="layui-icon">&#xe608;</i>
+						创建分类
+					</button>
+				</span>
+			</h1>
+			<div class="box">
+				<ul id="kbsTree" class="ztree"></ul>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="layui-body" id="ukefu-kbs-content">
+	<#include "/apps/business/kbs/typelist.html">
+</div>
+<script>
+layui.use('form', function(){
+  var form = layui.form();
+  form.render();
+});
+</script>
+<SCRIPT type="text/javascript">
+	var setting = {
+		data: {
+			simpleData: {
+				enable: true
+			}
+		},
+		callback: {
+			onClick: onClick
+		}
+	};
+	
+	function onClick(e, treeId, treeNode) {
+		loadURLWithTip("/apps/kbs/list/type.html?typeid="+treeNode.id,"#ukefu-kbs-content" , null , null , true);
+	}
+
+	var zNodes =[
+	    { id:'0', pId:'0', name:"知识库目录", open:true }
+	    <#if kbsTypeResList??>
+	    <#list kbsTypeResList as kbsType>
+	    ,{ id:'${kbsType.id!''}', pId:'${kbsType.parentid!''}', name:"${kbsType.name!''}", open:true }
+	    </#list>
+	    </#if>
+	];
+	
+	$(document).ready(function(){
+		$.fn.zTree.init($("#kbsTree"), setting, zNodes);
+	});
+</SCRIPT>

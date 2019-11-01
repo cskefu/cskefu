@@ -1,0 +1,46 @@
+<script src="/js/audioplayer.min.js"></script>
+<link rel="stylesheet" href="/css/audioplayer.css">
+
+<div class="uk-layui-form">
+	<div class="layui-collapse">
+		<div class="layui-colla-item">
+			<h2 class="layui-colla-title">录音信息</h2>
+		</div>
+		<div class="layui-colla-item">
+			<h2 class="layui-colla-title">录音文件：
+				<table>				
+					<tr class="tdHasContorllor design-dropable-td">
+						<td align="right">
+							录音文件：
+						</td>
+						<td colspan="5">
+								<#if mediaRes.name?length gt 50>
+								${mediaRes.name[0..50]}
+								<#else>
+								${mediaRes.id!''}
+								</#if>
+						</td>
+					</tr>
+				</table>
+			</h2>
+			 <div class="layui-colla-content layui-show">
+				<div class="layui-form-item">
+					<div class="layui-inline" style="width:100%;">
+						<div class="layui-input-inline" style="width:100%;">
+							<audio preload="auto" controls>
+								<source src="/apps/resource/voice/${mediaRes.id!''}.wav">
+							</audio>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script language="javascript">
+	layui.use('element', function(){
+	  var element = layui.element();
+	  element.init();
+	});
+	$( 'audio' ).audioPlayer();
+</script> 

@@ -1,0 +1,266 @@
+<style>
+	*{
+		margin: 0;
+		padding: 0;
+		-webkit-touch-callout: none; /* iOS Safari */
+		-webkit-user-select: none; /* Chrome/Safari/Opera */
+		-khtml-user-select: none; /* Konqueror */
+		-moz-user-select: none; /* Firefox */
+		-ms-user-select: none; /* Internet Explorer/Edge */
+		user-select: none; /* Non-prefixed version, currently	not supported by any browser */
+	}
+</style>
+<div id="header">
+	<div class="ukefu-entim-info">
+		<div class="ukefu-entim-user">
+			${user.uname!''}
+			<span class="ukefu-entim-status online" title="在线">
+				<i class="layui-icon">&#xe616;</i>
+			</span>
+		</div>
+		<div class="ukefu-entim-desc">
+			<input class="ukefu-entim-remark" placeholder="编辑签名" value="在深邃的编码世界，做一枚轻盈的纸飞机">
+		</div>
+		<div class="ukefu-entim-close">
+			<a href="javascript:void(0)" onclick="top.closeentim()">
+				<i class="layui-icon">&#x1006;</i>
+			</a>
+		</div>
+	</div>
+</div>
+<div id="containter" class="clearfix">
+	<div class="layui-tab layui-tab-brief">
+	  <ul class="layui-tab-title ukefu-entim-type">
+		<li class="layui-this"><i class="layui-icon">&#xe612;</i></li>
+		<li><i class="layui-icon">&#xe613;</i></li>
+		<li><i class="layui-icon">&#xe63a;</i></li>
+	  </ul>
+	  <div class="layui-tab-content" style="height:350px;overflow-y:auto;padding: 0px 10px;">
+		<div class="layui-tab-item layui-show">
+			<ul id="frends">
+				<li class="ukefu-entim-organ-open">
+					<h5 class="ukefu-entim-organ" lay-filter="spread" lay-type="true">
+						<i class="layui-icon"></i>
+						<span>未分组用户</span>
+						<#assign curusers = 0 >
+						<#if userList??>
+						<#list userList as entimuser>
+							<#if !(entimuser.organ??) && entimuser.id != user.id>
+							<#assign curusers = curusers+1 >
+							</#if>
+						</#list>
+						</#if>
+						<em>(<cite class="layim-count"> ${curusers} </cite>)</em>
+					</h5>
+					<ul class="ukefu-user-list">
+						<#if userList??>
+						<#list userList as entimuser>
+							<#if !(entimuser.organ??) && entimuser.id != user.id>
+							<li id="user_${entimuser.id}">
+								<a href="javascript:void(0)" onclick="openchat('/ent/im/chat.html?userid=${entimuser.id!''}' , '/images/user-pc.png' , '${entimuser.uname!''}' , '${entimuser.id!''}' , '最近登陆:${entimuser.lastlogintime}');">
+									<img src="/images/user-pc.png">
+									<span>${entimuser.uname!''}</span>
+									<p>最近登陆:${entimuser.lastlogintime?string('yyyy-MM-dd HH:mm:ss')}</p>
+								</a>
+								<#assign newmsg = 0>
+								<#if recentUserList??>
+								<#list recentUserList as recentUser>
+									<#if recentUser.user.id == entimuser.id>
+									<#assign newmsg = recentUser.newmsg>
+									</#if>
+								</#list>
+								</#if>
+								<div class="ukefu-session-tip cont_${entimuser.id!''}" data-newmsg="${newmsg}" <#if newmsg gt 0>style="display:block;"</#if>>${newmsg}</div>
+							</li>
+							</#if>
+						</#list>
+						</#if>
+					</ul>
+				</li>
+				<#if organList??>
+				<#list organList as organ>
+				<li class="ukefu-entim-organ-open">
+					<h5 class="ukefu-entim-organ" lay-filter="spread" lay-type="true">
+						<i class="layui-icon"></i>
+						<span>${organ.name!''}</span>
+						<#assign curusers = 0 >
+						<#if userList??>
+						<#list userList as entimuser>
+							<#if entimuser.organ?? && entimuser.id != user.id && entimuser.organ == organ.id>
+							<#assign curusers = curusers+1 >
+							</#if>
+						</#list>
+						</#if>
+						<em>(<cite class="layim-count"> ${curusers} </cite>)</em>
+					</h5>
+					<ul class="ukefu-user-list">
+						<#if userList??>
+						<#list userList as entimuser>
+							<#if entimuser.organ?? && entimuser.id != user.id && entimuser.organ == organ.id>
+							<li id="user_${entimuser.id}">
+								<a href="javascript:void(0)" onclick="openchat('/ent/im/chat.html?userid=${entimuser.id!''}' , '/images/user-pc.png' , '${entimuser.uname!''}' , '${entimuser.id!''}' , '最近登陆:${entimuser.lastlogintime}');">
+									<img src="/images/user-pc.png">
+									<span>${entimuser.uname!''}</span>
+									<p>最近登陆:${entimuser.lastlogintime?string('yyyy-MM-dd HH:mm:ss')}</p>
+								</a>
+								<#assign newmsg = 0>
+								<#if recentUserList??>
+								<#list recentUserList as recentUser>
+									<#if recentUser.user.id == entimuser.id>
+									<#assign newmsg = recentUser.newmsg>
+									</#if>
+								</#list>
+								</#if>
+								<div class="ukefu-session-tip cont_${entimuser.id!''}" data-newmsg="${newmsg}" <#if newmsg gt 0>style="display:block;"</#if>>${newmsg}</div>
+							</li>
+							</#if>
+						</#list>
+						</#if>  
+					</ul>
+				</li>
+				</#list>
+				</#if>
+			</ul>
+		</div>
+		<div class="layui-tab-item" id="imgroup">
+			<#include "/apps/entim/group/grouplist.html">	
+		</div>
+		<div class="layui-tab-item">
+			<ul class="ukefu-user-list" style="display:block;">
+			<#if recentUserList??>
+			<#list recentUserList as recentUser>
+				<li id="recentuser_${recentUser.id}">
+					<a href="javascript:void(0)" onclick="openchat('/ent/im/chat.html?userid=${recentUser.user.id!''}' , '/images/user-pc.png' , '${recentUser.user.uname!''}' , '${recentUser.user.id!''}' , '最近登陆:${recentUser.user.lastlogintime}');">
+						<img src="/images/user-pc.png">
+						<span>${recentUser.user.uname!''}</span>
+						<p><#if recentUser.lastmsg??>${recentUser.lastmsg!''}<#else>最近登陆:${recentUser.user.lastlogintime?string('yyyy-MM-dd HH:mm:ss')}</#if></p>
+					</a>
+					<div class="ukefu-session-tip cont_${recentUser.user.id!''}" data-newmsg="${recentUser.newmsg}" <#if recentUser.newmsg gt 0>style="display:block;"</#if>>${recentUser.newmsg}</div>
+				</li>
+			</#list>
+			</#if>
+			</ul>
+		</div>
+	  </div>
+	</div> 
+</div>
+<div id="footer">
+	<ul class="ukefu-entim-tool">
+		<li class="layui-icon" title="搜索"  onclick="search();"></li>
+		<li class="layui-icon ukefu-entim-msgbox" title="消息盒子">
+			<#assign newmsg = 0>
+			<#if recentUserList??>
+			<#list recentUserList as recentUser>
+				<#assign newmsg = recentUser.newmsg + newmsg>
+			</#list>
+			</#if>
+			<span class="layui-anim layer-anim-05 animated" id="msgbox" data-newmsg="${newmsg}" style="<#if newmsg == 0>display:none;</#if>">${newmsg}</span>
+		</li>
+		<li class="layui-icon " title="新建" onclick="layer.prompt({title: '新建一个群', offset: 'b', formType: 0}, function(text, index){layer.close(index);loadURL('/ent/im/group/save.html?name='+encodeURIComponent(text),'#imgroup')});"></li>
+		<li class="layui-icon" title="更换背景" onclick="skin()"></li>
+		<li class="layui-icon" title="关于" onclick="about()"></li>
+	</ul>
+</div>
+<script>
+	layui.use('element', function(){
+	  var $ = layui.jquery
+	  ,element = layui.element(); //Tab的切换功能，切换事件监听等，需要依赖element模块
+	});
+	
+	function about(){
+		layer.open({
+			title: '关于' ,
+			btn: '关闭' ,
+			shade: 0 ,
+			content : '<span id="welcome-message"><p>欢迎使用春松客服企业IM</p><p>QQ群：<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=ef3061d99653e2f43619ddcefbf76ac2399196d89fd589501e19ae64423a5a31"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="春松客服开源社区" title="春松客服开源社区"></a></p><p>春松客服企业IM为收费产品</p><p>详情请咨询：<a href="https://www.chatopera.com" target="_blank" style="color:#32c24d;">春松客服</a></p></span>'});
+	}
+	function search(){
+		layer.open({
+			  title: '查询用户' ,
+			  type: 1
+			  ,id:'search'
+			  ,offset: 'b' //具体配置参考：offset参数项
+			  ,content: '<div><div id="" class="layui-layer-content ukefu-entim-search"><input type="text" id="frend_search" class="layui-layer-input" value=""></div></div>'
+			  ,btn: '关闭'
+			  ,shade: 0 //不显示遮罩
+			  ,yes: function(){
+				  layer.closeAll();
+			  }
+			  ,end:function(){
+				  $("#frends li").show();  
+			  }
+		});
+		$('#frend_search').on('input' , function(){
+			$('#frends li').addClass("ukefu-entim-organ-open");
+			if($.trim($(this).val())!=""){
+		        $("#frends li").hide().filter(":contains('"+$(this).val()+"')").show();
+		    }else{
+		    	$("#frends li").show();
+		    }
+		})
+	}
+	function skin(){
+		layer.open({
+			  title: '选择风格' ,
+			  type: 2
+			  ,id:'selskin'
+			  ,content: '/ent/im/skin.html'
+			  ,btn: '关闭'
+			  ,shade: 0 //不显示遮罩
+		});
+	}
+	function openchat(url , img , name, id , text){
+		top.layer.open({
+			  type: 2,
+			  id : id,
+			  title: ["<div style='position: relative;height: 42px;padding: 5px 15px 5px 0px;line-height: 20px;cursor: pointer;display: inline-block;vertical-align: top;' id='dialog_"+id+"'><img src='"+img+"' style='max-height:50px;'><div style='padding:0px 5px;line-height: 23px;display: inline-block;vertical-align: top;'><span style='vertical-align: top;font-size:18px;'>"+name+"<span class='ukefu-entim-status offline' id='chat_"+id+"' title='离线'><i class='layui-icon'></i></span></span><p style='vertical-align: top;font-size: 12px;color: #999;'>"+text+"</p></div></div>" , "height:55px"],
+			  closeBtn: 1, //不显示关闭按钮
+			  shade: false,
+			  area: ['700px', '520px'],
+			  maxmin: true, 
+			  anim: 2,
+			  shade: 0,
+			  content: url
+		  });
+		if($('#msgbox').data("msgbox") - $('.cont_'+id).data("newmsg") > 0){
+			$('#msgbox').data("newmsg" , $('#msgbox').data("msgbox") - $('.cont_'+id).data("newmsg")) ;
+		}else{
+			$('#msgbox').data("newmsg" , 0).hide();
+		}
+		$('.cont_'+id).data("newmsg" , 0).hide();
+	}
+	$('.ukefu-entim-organ').click(function(){
+		if($(this).parent().hasClass('ukefu-entim-organ-open')){
+			$(this).parent().removeClass('ukefu-entim-organ-open');
+			$(this).children().first().html('&#xe602;');
+		}else{
+			$(this).parent().addClass('ukefu-entim-organ-open')
+			$(this).children().first().html('&#xe61a;');
+		}
+	}) ;
+	var socket = io.connect("http://"+top.hostname+":"+top.port+"/im/ent?userid=${user.id!''!''}&orgi=${user.orgi!''}");
+	socket.on('connect',function(){
+		//service.sendRequestMessage(); 
+		//output('<span id="callOutConnect-message">'+ new Date().format("yyyy-MM-dd hh:mm:ss") + ' 开始沟通' +'</span>' , 'message callOutConnect-message');
+	})
+	socket.on('message', function(data) {
+		if(top.$('#dialog_'+data.contextid).length == 0){
+			var user ;
+			if($('.cont_'+data.contextid).length > 0){
+				user = $('.cont_'+data.contextid)[0] ;
+			}
+			if($(user).data('newmsg')){
+				$('.cont_'+data.contextid).data('newmsg' , $(user).data('newmsg')+1).text($(user).data('newmsg'));
+			}else{
+				$('.cont_'+data.contextid).data('newmsg' , 1).text($(user).data('newmsg'));
+			}
+			$('.cont_'+data.contextid).show();	
+			$('#msgbox').data("newmsg" , $('#msgbox').data("newmsg")+1).text($('#msgbox').data("newmsg")).show();
+		}
+	});
+	socket.on('status',function(data){
+				
+	})
+	socket.on('disconnect',function() {
+	});
+</script>

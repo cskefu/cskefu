@@ -1,0 +1,77 @@
+<div class="">
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="site-h1" style="border-top:1px solid #e6e6e6;height:26px;">
+				<div>
+					已发布模型
+				</div>
+			</h1>
+			<table class="layui-table" lay-skin="line">
+				<thead>
+					<tr class="design-sortable-tr">
+						<th>
+						</th>
+						<th>名称</th>
+						<th>类型</th>
+						<th>版本</th>
+						<th>时间</th>
+					</tr>
+				</thead>
+				<tbody>
+					<#if cubeList?? && cubeList.content?? && cubeList.content?size gt 0>
+					<#list cubeList.content as cube>
+					<tr class="tdHasContorllor design-dropable-td">
+						<td style="width:1%;">
+							<input type="radio" lay-ignore name="cubeid" value="${cube.id!''}" lay-verify="required" style="display:block;"/>
+						</td>
+						<td class=" first_td_head">
+							${cube.name!''}
+						</td>
+						<td>
+							<#if cube.modeltype?? && cube.modeltype == 'cube'>立方体<#else>数据表</#if>
+						</td>
+						<td>
+							${cube.dataversion!''} 
+						</td>
+						<td>
+							${cube.createtime!''}
+						</td>
+					</tr>
+					</#list>
+					<#else>
+						<tr>
+							<td colspan="20" style="height:400px;">
+								<div class="ukefu-empty">
+									<i class="layui-icon">&#xe60a;</i>
+									<div style="">还没有模型</div>
+								</div>
+							</td>
+						</tr>
+					</#if>
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+	<div class="row" style="padding:5px;">
+		<div class="col-lg-12" id="page" style="text-align:center;"></div>
+	</div>
+</div>
+<script>
+	layui.use(['laypage', 'layer','form'], function(){
+		  var laypage = layui.laypage
+		  ,layer = layui.layer;
+		  laypage.render({
+			  elem:'page'
+				,count: <#if cubeList??>${cubeList.totalElements}<#else>0</#if> 
+				,curr:<#if cubeList??>${cubeList.number+1}<#else>0</#if>
+				,groups: 5 //连续显示分页数
+				,limit:20
+				,jump:function(data , first){
+					if(!first){
+						loadURL("/apps/report/cube/selpbcubelist.html?p="+data.curr+"&typeid=<#if typeid??>${typeid!''}</#if>","#ukefu-cube-content");
+					}
+				}
+		   });
+		});
+</script>

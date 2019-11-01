@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="viewport"
+	content="width=device-width, maximum-scale=1.0, initial-scale=1.0,initial-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<title>春松客服-全渠道智能客服</title>
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?t=${.now?long}"/>
+<link rel="stylesheet" href="/css/layui.css">
+<link rel="stylesheet" href="/css/login.css">
+<script src="/layui.js"></script>
+<script src="/js/jquery-1.10.2.min.js"></script>
+</head>
+
+<body class="login">
+	<#include "/public/macro.html">
+	<div class="login-box">
+		<div class="login-logo">
+			<a> <img src="/images/logo2.png" style="height:60px;">
+			</a>
+		</div>
+		<!-- /.login-logo -->
+		<div class="login-box-body">
+
+			<p class="login-box-msg">创建企业</p>
+			<form id="loginForm" action="/apps/organization/save.html" class="layui-form" method="post">
+				<div class="form-group has-feedback" style="margin-bottom:10px;">
+					<input name="name"  autofocus required lay-verify="required"   style="padding: 6px 40px 6px 6px;"
+						class="form-control required" value="" placeholder="企业名称" maxlength="50">
+				</div>
+				<div class="form-group has-feedback" style="margin-bottom:10px;">
+						<@select2 "com.dic.organization.type" "orgtype" "" "lay-verify=required" "style=width:360px;padding: 6px 40px 6px 6px;" "企业类型"/>
+				</div>
+				<div class="form-group has-feedback" style="margin-bottom:10px;">
+					<@select2 "com.dic.organization.scale" "orgscale" "" "lay-verify=required" "style=width:360px;padding: 6px 40px 6px 6px;" "企业规模"/>
+				</div>
+				<div class="row" style="margin-bottom:20px;padding:0 20px;">
+					<div class="col-md-6"></div>
+				</div>
+				<div class="row" style="margin-bottom:20px;">
+
+					<!-- /.col -->
+					<div class="col-xs-12">
+						<button class="btn btn-block btn-primary btn-lg" lay-submit  lay-filter="formDemo">立即创建</button>
+					</div>
+					<!-- /.col -->
+				</div>
+			</form>
+		</div>
+		<!-- /.login-box-body -->
+	</div>
+</body>
+<script language="javascript">
+	if((window.frameElement && window.frameElement.id || '') != ""){
+		top.location.href = "/apps/organization/add.html" ;
+	}
+	layui.use('form', function(){
+		var form = layui.form();
+		form.render(); //更新全部
+	});
+</script>
+</html>

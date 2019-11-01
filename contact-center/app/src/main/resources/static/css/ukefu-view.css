@@ -1,0 +1,430 @@
+.layui-form{
+	margin-top:10px;
+}
+.uckefu-design-chartitem{
+	border:1px solid #dedede;
+	width:60px;
+	height:55px;
+	margin:5px;
+	padding:5px;
+	float:left;
+	background-color:#EFEFEF;
+	line-height:30px;
+	text-align:center;
+	font-size:12px;
+}
+.uckefu-design-chartitem:hover{
+	background-color:#e0e2e5;
+}
+.ukefu-design-type{
+	color: #000;
+    background: #f4f4f5;
+    padding: 12px 5px 12px 15px;
+    display: block;
+    margin-bottom:5px;
+}
+.ukefu-design-item{
+	padding:0 10px 0 10px;
+    line-height: 30px;
+}
+.ukefu-design-group{
+	clear:both;
+	
+}
+.ukefu-design-title{
+	padding:10px;	
+	background-color:#f8f8f8;
+}
+.ukefu-design-container{
+	margin-top: 5px;
+	margin-left: 5px;
+    height:calc(100% - 15px) ;
+    padding: 10px;
+    border: 1px solid #D7D7D7;
+    overflow:auto;
+}
+.ukefu-design-container canvas{
+	height:100% !important;
+}
+.content canvas{
+	max-height:250px !important;
+}
+.ukefu-design-righter{
+	margin-top: 5px;
+	margin-left: 5px;
+    height:calc(100% - 15px) ;
+    padding: 0px;
+     border: 1px solid #D7D7D7;
+}
+.ukefu-menu .comp-item:hover {
+    background-color: #FFE6B0;
+    border: 1px solid #CCCCCC;
+}
+.ukefu-menu .comp-item {
+    background-color: #F3F3F3;
+    cursor: move;
+    border: 1px solid #D7D7D7;
+    z-index: 100000;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ui-draggable-dragging{
+	position: fixed !important;
+}
+.ui-th-highlight {
+    height: 3px;
+    background-color: blue;
+    margin-top: -0px;
+    z-index: 100;
+    position: absolute;
+    width: 100% ;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+.ui-filter-highlight{
+	height: 70px;
+    background-color: blue;
+    margin-top: -0px;
+    z-index: 100;
+	float:left;
+	margin-left:-3px;
+    width: 3px;
+}
+.design {
+    padding-bottom: 40px;
+}
+.content {
+    margin-top: 5px;
+    min-height: 250px;
+    height:calc(100% - 15px) ;
+    padding: 0px;
+}
+.design {
+    border: 1px solid #EEEEEE;
+}
+
+.design >.row , .design >.ukefu-row{ 
+	border:1px dashed #cccccc; 
+	padding:1px; 
+	position:relative;
+	background-color:#ecf0f5 !important;
+} 
+.design >.cur_row{ 
+	border:2px dashed #9bc6ff !important;
+	padding:0px; 
+}
+.design{
+	border:1px solid #EEEEEE;
+}
+
+.ukefu-filters-content{
+	border:1px solid #EEEEEE;
+	margin: 5px;
+}
+
+#ukefu-filter-list{
+	min-height:70px;
+}
+.ui-th-highlight{
+	height:3px; 
+	background-color:blue; 
+	margin-top: -10px; 
+	left:0px;
+	z-index:100;
+	position: absolute;
+	width: 100%; 
+	margin-left:0px;
+	margin-right:0px;
+}
+.ukefu-col .ui-th-highlight{
+	margin-top:0px !important;
+}
+.col-content{
+	min-height:25px;
+	background-color:#FFFFFF;
+}
+.content{
+	padding:5px;
+}
+.content .comp-item {
+    background-color: #F3F3F3;
+    text-align: center;
+    width: 63px;
+    margin: 5px 3px 5px 3px;
+    cursor: move;
+    border: 1px solid #D7D7D7;
+    padding-top: 5px;
+    z-index: 100000;
+	float:left;
+	overflow:hidden;
+    text-overflow: ellipsis;
+}
+.content .comp-item img{
+	width:32px;
+	height:32px;
+}
+.content .comp-item p{
+	margin-bottom:0px;
+	font-size:12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.content .comp-item:hover {
+    background-color: #FFE6B0;
+    border: 1px solid #CCCCCC;
+}
+.ukefu-row .handle{
+	position: absolute;
+	z-index:10;
+	padding-top:5px;
+	display:none;
+	width:25px;
+	height:calc(100% - 15px);
+	top:0;
+	left:0;
+	word-wrap: break-word;
+	padding-left: 10px;
+	color:#CDCDCD;
+	overflow:hidden;
+	cursor: move;
+	letter-spacing: 20px; 
+	border-right:1px dashed #cccccc;
+	background-image:url(/images/handle.png); background-repeat:repeat;
+}
+.design .ukefu-row:hover .handle{
+	display:none;
+}
+.design .ukefu-row{
+	border:1px solid #dddddd;
+}
+
+.ukefu-row{
+    position: relative;	
+}
+.ukefu-design-img img{
+	width:32px;
+}
+
+
+.ukefu-col{
+    min-height:50px;
+    border: 1px dashed #cccccc;
+    position: relative;
+}
+.cur_row .handle{
+	display:none !important;
+}
+
+.ui-selecting { background: #FFFFFF !important; }
+.ui-selected { background: #FFFFFF;}
+
+.design .ukefu-title {
+    cursor: move;
+    position: relative;
+}
+.ukefu-title, .ukefu-prop-title {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #ffffff;
+    border-color: #e7eaec;
+    border-image: none;
+    border-style: solid solid none;
+    border-width: 3px 0 0;
+    color: inherit;
+    margin-bottom: 0;
+    padding: 7px 15px 2px 5px;
+    height: 22px;
+}
+.ukefu {
+    clear: both;
+    margin-top: 0;
+    padding: 0;
+    border: 1px solid #DEDEDE;
+    height: 100%;
+    min-height: 50px;
+    background-color: #FFFFFF;
+}
+
+.ukefu-design-btn {
+    display: none;
+    position: absolute;
+    right: 2px;
+    top: 2px;
+    color:#ffffff;
+}
+.ukefu-title:hover .ukefu-design-btn{
+	display:block;
+}
+
+.ukefu-report-design{
+	color:#ffffff;
+}
+.ukefu-report-design:hover{
+	color:#ffffff;
+}
+.ukefu-btn-small{
+	height:25px;
+	line-height:25px;
+}
+
+.uk-layui-form{
+	height: calc(100% - 60px);
+	padding-top:0px;
+	overflow-y: auto;
+}
+
+.site-h1{margin-bottom: 5px; line-height: 30px; padding-bottom: 5px; padding-left:5px;padding-top:5px;background-color:#f5f5f5;color: #393D49;padding-right: 5px; border-bottom: 1px solid #eee;  font-size: 16px; font-weight: 500;margin-top:0px;}
+.site-h1 .layui-icon{position: relative; top: 0px; font-size: 50px; margin-right: 0px;}
+.site-h1{
+    position: relative;	
+    border-bottom: 0px solid #eee;
+}
+
+.ukefu-empty{
+	margin:0 auto;
+	font-size:20px;
+	color:#CCCCCC;
+	text-align:center;
+}
+.ukefu-empty i{
+	font-size:100px;
+	color:#EFEFEF;
+}
+.ukefu-empty div{
+	font-size:16px;
+	margin-top:10px;
+}
+
+.layui-form-button{
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    margin: 0px auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #e6e6e6;
+}
+.layui-button-block{
+	text-align: center;
+}
+.layui-btn-primary {
+    border: 1px solid #C9C9C9;
+    background-color: #fff;
+    color: #555;
+}
+.layui-laypage .layui-laypage-curr .layui-laypage-em{
+	background-color:#32c24d  !important;;
+}
+
+.uk_sortable { list-style-type: none; margin: 0; padding: 0; width: 90%; }
+  .uk_sortable li { margin: 0 5px 5px 5px; padding: 5px; }
+  .uk-state-highlight {     
+  		border: 1px solid #fcefa1;
+    	background-color: #fbf9ee;
+    	color: #363636;
+    	width:100%;
+    }
+  
+  .uk-state-default{
+  	border: 1px solid #d3d3d3;
+    background-color: #f4f4f5;
+    color: #555;
+    width:100%;
+   }
+   
+   .uk_sortable .layui-input-inline{
+		width:100%;
+		margin-top:5px;
+   }
+   
+   .connectedSortable{
+   	min-height:10px;
+   }
+   
+   .ukefu-right-item{
+		color: #000;
+	    background: #f4f4f5;
+	    padding: 8px 5px 8px 15px;
+	    display: block;
+	    border:1px solid #e6e6e6;
+	    margin-bottom:1px;
+	}
+	.ukefu-right-item{
+		color: #000;
+	    background: #f4f4f5;
+	    padding: 8px 5px 8px 15px;
+	    display: block;
+	    border:1px solid #e6e6e6;
+	    border-top:none;
+	    margin-bottom:1px;
+	}
+	.ukefu-right-item-span{
+		float:right;
+		margin-top: -7px;
+	}
+	.ukefu-right-content{
+	    padding: 8px 5px 8px 5px;
+	    border:1px solid #e6e6e6;
+	    border-top:none;
+	}
+	.ukefu-right-content span{
+		width:100px;
+		display:inline-block;
+	}
+
+.content canvas{
+	max-height:250px !important;
+}
+.ukefu-title:hover .ukefu-design-btn{
+	display:none;
+}
+.design >.row , .design >.ukefu-row{ 
+	border:0px dashed #cccccc; 
+	padding:1px; 
+	position:relative;
+	background-color:#ecf0f5 !important;
+} 
+.ukefu-col{
+    min-height:50px;
+    border: 0px dashed #cccccc;
+}
+.design .ukefu-title {
+    cursor: default;
+    position: relative;
+}
+.design {
+    border: 0px solid #EEEEEE;
+    background-color:#ecf0f5 !important;
+}
+.design .ukefu-row{
+	border:0px solid #dddddd;
+}
+.ukefu-title{
+	border:0 !important;
+}
+.ukefu-filter{
+		position:relative;
+		padding:5px;
+	}
+	.ukefu-filter .ukefu-design-btn {
+	    display: none;
+	    position: absolute;
+	    right: 20px;
+	    top: 8px;
+	    color:#ffffff;
+	}
+	.ukefu-title {
+	    cursor: move;
+	    border:0;
+	}
+	.ukefu-filter-submit{
+		text-align:center;
+		margin-top:20px;
+	}
+	.uk-layui-form {
+    height: calc(100% - 60px);
+    padding-top: 0px;
+    overflow-y: auto;
+}

@@ -1,0 +1,7 @@
+<option value="">请选择</option>
+	<#if fktableidList??>
+	<#list fktableidList as fktableid>
+	<option value="${fktableid.id!''}" >${fktableid.fieldname!''}（${fktableid.name!''}）</option>
+	</#list>
+	</#if> 
+

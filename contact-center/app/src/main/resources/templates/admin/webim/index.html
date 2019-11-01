@@ -1,0 +1,480 @@
+<div class="row" style="border-bottom: 10px solid #EFEFEF;padding:10px;">
+	<div class="col-lg-8">
+		<div class="ukefu-measure">
+			<div class="ukefu-bt"> 
+				<div	class="layui-icon ukewo-btn ukefu-content-ind"><img src="/images/webim.png" style="width:60px;height:60px;"></div>
+				<div class="ukefu-bt-text">
+					<div class="ukefu-bt-text-title"
+						style="font-weight:400;font-size:24px;border-bottom:1px solid #dedede;">
+							${snsAccount.name!''}
+							<span style="font-size:15px;color:#AAAAAA;">接入网站创建时间：${snsAccount.createtime!?string("yyyy-MM-dd HH:mm:ss")}</span>
+					</div>
+					<div class="ukefu-bt-text-content" style="">${snsAccount.name!''}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="ukefu-tab-title" style="margin-left: 0px;">
+	<ul class="tab-title">
+		<li <#if subtype == 'webim'>class="layui-this"</#if>><a href="/admin/webim/index.html?snsid=${snsAccount.snsid!''}">基本设置</a></li>
+		<li <#if subtype == 'invote'>class="layui-this"</#if>><a href="/admin/webim/invote.html?snsid=${snsAccount.snsid!''}">邀请设置</a></li>
+		<li <#if subtype == 'profile'>class="layui-this"</#if>><a href="/admin/webim/profile.html?snsid=${snsAccount.snsid!''}">客服信息</a></li>
+	</ul>
+</div>
+<div class="layui-tab">
+  <div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+		<form method="post" key="set-mine" enctype="multipart/form-data" action="/admin/webim/save.html" class="layui-form">
+			<#if inviteData??>
+				<input type="hidden" name="id" value="${inviteData.id!''}">
+				<input type="hidden" name="snsaccountid" value="${inviteData.snsaccountid!''}">
+                <#if inviteData.ai??>
+                    <input type="hidden" name="ai" value="${inviteData.ai?then('true','false')}">
+                <#else>
+                    <input type="hidden" name="ai" value="false">
+                </#if>
+                <#if inviteData.aifirst??>
+                    <input type="hidden" name="aifirst" value="${inviteData.aifirst?then('true','false')}">
+                <#else>
+                    <input type="hidden" name="aifirst" value="false">
+                </#if>
+				<input type="hidden" name="aisuccesstip" value="${inviteData.aisuccesstip!''}">
+				<input type="hidden" name="ainame" value="${inviteData.ainame!''}">
+				<input type="hidden" name="aiid" value="${inviteData.aiid!''}">
+			</#if>
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="ukefu-customer-div setting-wrapper">
+						<div class="box default-box">
+							<div class="box-header">
+								<h3 class="box-title">接入代码</h3>
+							</div>
+							<div class="box-body">
+								<div class="ukefu-webim-tip">请将以下代码添加到你的网站 HTML
+									源代码中，放在&lt;head&gt;&lt;/head&gt;标签之间.</div>
+								<textarea class="ukefu-webim-sdk" readonly="readonly"><#if inviteData??>&lt;script defer="true" src="${schema!''}://${hostname!''}:${import?string('###')}/im/${inviteData.snsaccountid!''}.html"&gt;&lt;/script&gt;<#else></#if></textarea>
+			
+							</div>
+						</div>
+						<div class="box default-box">
+							<div class="box-header">
+								<h3 class="box-title">文字链代码</h3>
+							</div>
+							<div class="box-body" style="padding-top:5px;">
+								<div class="layui-tab layui-tab-card">
+								  <ul class="layui-tab-title">
+								    <li class="layui-this">文字链代码</li>
+								    <#if skillList??  && inviteData?? && inviteData.skill == true>
+								    <#list skillList as skill>
+								    <li>${skill.name!''}</li>
+								    </#list>
+								    </#if>
+								  </ul>
+								  <div class="layui-tab-content">
+								    <div class="layui-tab-item layui-show">
+								    	<div class="ukefu-webim-tip">请将以下代码添加到你的网站 链接代码上，可以自由定义链接的内容形式</div>
+										<textarea class="ukefu-webim-sdk" readonly="readonly"><#if inviteData??>${schema!''}://${hostname!''}:${import?string('###')}/im/text/${inviteData.snsaccountid!''}.html<#else></#if></textarea>
+								    </div>
+								    <#if skillList??  && inviteData?? && inviteData.skill == true>
+								    <#list skillList as skill>
+								    <div class="layui-tab-item">
+								    	<div class="ukefu-webim-tip">技能组“${skill.name!''}”文字连接，你可以复制此链接，并可以自由定义链接的内容形式</div>
+								    	<div class="ukefu-webim-tip">
+								    		<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+											  <ul class="layui-tab-title">
+											    <li class="layui-this">${skill.name!''}</li>
+											    <#if agentList?? >
+											    <#list agentList as agent>
+											    <#if agent.organ?? && agent.organ == skill.id>
+											    <li title="${agent.uname!''}">${agent.username!''}</li>
+											    </#if>
+											    </#list>
+											    </#if>
+											  </ul>
+											  <div class="layui-tab-content">
+											  	<div class="layui-tab-item layui-show">
+											  		<textarea class="ukefu-webim-sdk" readonly="readonly"><#if inviteData??>${schema!''}://${hostname!''}:${import?string('###')}/im/text/${inviteData.snsaccountid!''}.html?skill=${skill.id!''}<#else></#if></textarea>
+											  	</div>
+											  	<#if agentList?? >
+											    <#list agentList as agent>
+											    <#if agent.organ?? && agent.organ == skill.id>
+											    <div class="layui-tab-item ">
+											  		<textarea class="ukefu-webim-sdk" readonly="readonly"><#if inviteData??>${schema!''}://${hostname!''}:${import?string('###')}/im/text/${inviteData.snsaccountid!''}.html?skill=${skill.id!''}&agent=${agent.id!''}<#else></#if></textarea>
+											  	</div>
+											    </#if>
+											    </#list>
+											    </#if>
+											  </div>
+											</div>    
+								    	</div>
+										
+								    </div>
+								    </#list>
+								    </#if>
+								  </div>
+								</div>
+							</div>
+						</div>
+						<div class="box default-box">
+							<div class="box-header">
+								<h3 class="box-title">访客对话入口样式</h3>
+							</div>
+							<div class="box-body ukefu-im-theme">
+								<div class="row" style="margin-right:0px;">
+									<div class="col-md-8">
+										<div class="ukefu-webim-tl">1、访客入口样式</div>
+										<div class="box-item">
+											<input type="hidden" name="consult_vsitorbtn_model" id="consult_vsitorbtn_model" value="<#if inviteData??>${inviteData.consult_vsitorbtn_model!'1'}<#else>1</#if>">
+											<div class="ukefu-im-point <#if !(inviteData?? && inviteData.consult_vsitorbtn_model??) || (inviteData?? && inviteData.consult_vsitorbtn_model?? && inviteData.consult_vsitorbtn_model == '1')>ukefu-point-checked</#if>"
+												data-class="ukefu-point-theme1" data-value="1">
+												<div class="ukefu-point-theme1" style="text-align:center;">
+													<div class="ukefu-im-point-text">
+														<i class="layui-icon">&#xe63a;</i> <br> 在线客服
+													</div>
+												</div>
+												<div class="ok">
+													<i class="layui-icon">&#xe605;</i>
+												</div>
+											</div>
+											<div class="ukefu-im-point <#if inviteData?? && inviteData.consult_vsitorbtn_model?? && inviteData.consult_vsitorbtn_model == '2'>ukefu-point-checked</#if>" data-class="ukefu-point-theme2" data-value="2">
+												<div class="ukefu-point-theme2">
+													<div class="ukefu-im-point-text">
+														<i class="layui-icon">&#xe63a;</i> <br>在线客服
+													</div>
+												</div>
+												<div class="ok">
+													<i class="layui-icon">&#xe605;</i>
+												</div>
+											</div>
+											<div class="ukefu-im-point <#if inviteData?? && inviteData.consult_vsitorbtn_model?? && inviteData.consult_vsitorbtn_model == '3'>ukefu-point-checked</#if>" data-class="ukefu-point-theme3" data-value="3">
+												<div class="ukefu-point-theme3">
+													<div class="ukefu-im-point-text">
+														<i class="layui-icon">&#xe63a;</i> <br>在线客服
+													</div>
+												</div>
+												<div class="ok">
+													<i class="layui-icon">&#xe605;</i>
+												</div>
+											</div>
+										</div>
+										<div class="ukefu-webim-tl" style="clear:both;">2、选择入口颜色</div>
+										<div class="box-item">
+											<input type="hidden" name="consult_vsitorbtn_color" id="consult_vsitorbtn_color" value="<#if inviteData??>${inviteData.consult_vsitorbtn_color!'1'}<#else>1</#if>"> 
+											<div class="item-cnt ukefu-im-ping-color" style="display: block;">
+												<div class="ukefu-im-item theme1 <#if !(inviteData?? && inviteData.consult_vsitorbtn_color??) || (inviteData?? && inviteData.consult_vsitorbtn_color?? && inviteData.consult_vsitorbtn_color == '1')>ukefu-im-checked</#if>"
+													data-class="theme1" data-value="1">
+													<i
+														class="layui-icon ukefu-im-check">&#xe618;</i>
+												</div>
+												<div class="ukefu-im-item theme2 <#if inviteData?? && inviteData.consult_vsitorbtn_color?? && inviteData.consult_vsitorbtn_color == '2'>ukefu-im-checked</#if>" data-class="theme2" data-value="2">
+													<i
+														class="layui-icon ukefu-im-check">&#xe618;</i>
+												</div>
+												<div class="ukefu-im-item theme3 <#if inviteData?? && inviteData.consult_vsitorbtn_color?? && inviteData.consult_vsitorbtn_color == '3'>ukefu-im-checked</#if>" data-class="theme3" data-value="3">
+													<i
+														class="layui-icon ukefu-im-check">&#xe618;</i>
+												</div>
+												<div class="ukefu-im-item theme4 <#if inviteData?? && inviteData.consult_vsitorbtn_color?? && inviteData.consult_vsitorbtn_color == '4'>ukefu-im-checked</#if>" data-class="theme4" data-value="4">
+													<i
+														class="layui-icon ukefu-im-check">&#xe618;</i>
+												</div>
+												<div class="ukefu-im-item theme5 <#if inviteData?? && inviteData.consult_vsitorbtn_color?? && inviteData.consult_vsitorbtn_color == '5'>ukefu-im-checked</#if>" data-class="theme5" data-value="5">
+													<i
+														class="layui-icon ukefu-im-check">&#xe618;</i>
+												</div>
+												<div class="ukefu-im-item theme6 <#if inviteData?? && inviteData.consult_vsitorbtn_color?? && inviteData.consult_vsitorbtn_color == '6'>ukefu-im-checked</#if>" data-class="theme6" data-value="6">
+													<i
+														class="layui-icon ukefu-im-check">&#xe618;</i>
+												</div>
+											</div>
+										</div>
+										<div class="ukefu-webim-tl" style="clear:both;">3、选择入口按钮位置</div>
+										<div class="box-item">
+											<input type="hidden" name="consult_vsitorbtn_position" id="consult_vsitorbtn_position" value="<#if inviteData??>${inviteData.consult_vsitorbtn_position!'right,middle'}<#else>right,middle</#if>">
+											<div class="item-cnt ukefu-im-position" style="display: block;">
+												<a href="javascript:void(0)" onclick="$('#ukefu-point-theme').attr('style' , 'left:10px;top:10px;position: absolute;margin-top:0px;');$('.ukefu-pos').removeClass('ukefu-pos-checked');$(this).children().first().addClass('ukefu-pos-checked');$('#consult_vsitorbtn_position').val('left,top');"><div class="ukefu-pos <#if inviteData?? && inviteData.consult_vsitorbtn_position?? && inviteData.consult_vsitorbtn_position == 'left,top'>ukefu-pos-checked</#if>" style="left:-40px;top:0px;">左上</div></a>
+												<a href="javascript:void(0)" onclick="$('#ukefu-point-theme').attr('style' , 'left:10px;top:70px;position: absolute;margin-top:0px;');$('.ukefu-pos').removeClass('ukefu-pos-checked');$(this).children().first().addClass('ukefu-pos-checked');$('#consult_vsitorbtn_position').val('left,middle');"><div class="ukefu-pos <#if inviteData?? && inviteData.consult_vsitorbtn_position?? && inviteData.consult_vsitorbtn_position == 'left,middle'>ukefu-pos-checked</#if>" style="left:-40px;top:70px;">左中</div></a>
+												<a href="javascript:void(0)" onclick="$('#ukefu-point-theme').attr('style' , 'left:10px;bottom:10px;position: absolute;margin-top:0px;');$('.ukefu-pos').removeClass('ukefu-pos-checked');$(this).children().first().addClass('ukefu-pos-checked');$('#consult_vsitorbtn_position').val('left,bottom');"><div class="ukefu-pos <#if inviteData?? && inviteData.consult_vsitorbtn_position?? && inviteData.consult_vsitorbtn_position == 'left,bottom'>ukefu-pos-checked</#if>" style="left:-40px;bottom:0px;">左下</div></a>
+												<a href="javascript:void(0)" onclick="$('#ukefu-point-theme').attr('style' , 'right:10px;top:10px;position: absolute;margin-top:0px;');$('.ukefu-pos').removeClass('ukefu-pos-checked');$(this).children().first().addClass('ukefu-pos-checked');$('#consult_vsitorbtn_position').val('right,top');"><div class="ukefu-pos <#if inviteData?? && inviteData.consult_vsitorbtn_position?? && inviteData.consult_vsitorbtn_position == 'right,top'>ukefu-pos-checked</#if>" style="right:-40px;top:0px;">右上</div></a>
+												<a href="javascript:void(0)" onclick="$('#ukefu-point-theme').attr('style' , 'right:10px;top:70px;position: absolute;margin-top:0px;');$('.ukefu-pos').removeClass('ukefu-pos-checked');$(this).children().first().addClass('ukefu-pos-checked');$('#consult_vsitorbtn_position').val('right,middle');"><div class="ukefu-pos  <#if !(inviteData?? && inviteData.consult_vsitorbtn_position??) || (inviteData?? && inviteData.consult_vsitorbtn_position?? && inviteData.consult_vsitorbtn_position == 'right,middle')>ukefu-pos-checked</#if>" style="right:-40px;top:70px;">右中</div></a>
+												<a href="javascript:void(0)" onclick="$('#ukefu-point-theme').attr('style' , 'right:10px;bottom:10px;position: absolute;margin-top:0px;');$('.ukefu-pos').removeClass('ukefu-pos-checked');$(this).children().first().addClass('ukefu-pos-checked');$('#consult_vsitorbtn_position').val('right,bottom');"><div class="ukefu-pos <#if inviteData?? && inviteData.consult_vsitorbtn_position?? && inviteData.consult_vsitorbtn_position == 'right,bottom'>ukefu-pos-checked</#if>" style="right:-40px;bottom:0px;">右下</div></a>
+											</div>
+										</div>
+										<div class="ukefu-webim-prop">
+											<div class="ukefu-webim-tl" style="clear:both;">4、入口按钮文本</div>
+											<div class="box-item">
+												<div class="row">
+													<div class="col-lg-8">
+														<p>用户访问接入网站的时候提示用户操作的文本内容</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">默认提示文本是：在线客服</p>
+													</div>
+													<div class="col-lg-4">
+														<input type="text" name="consult_vsitorbtn_content" id="consult_vsitorbtn_content" value="<#if inviteData??>${inviteData.consult_vsitorbtn_content!'在线客服'}<#else>在线客服</#if>" autocomplete="off" class="layui-input" onkeyup="$('#consult_content').text($(this).val())" onchange="$('#consult_content').text($(this).val())">
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="ukefu-webim-prop">
+										
+											<div class="ukefu-webim-tl" style="clear:both;">5、延时显示</div>
+											<div class="box-item">
+												<div class="row">
+													<div class="col-lg-8">
+														<p>用户访问接入网站的时候提示用户的按钮弹出延时时间</p>
+														<p style="color:#888888;font-size:13px;margin-top:10px;">如果不设置延时时间，则页面载入即显示入口按钮</p>
+													</div>
+													<div class="col-lg-4">
+														<select name="consult_vsitorbtn_display">
+														  <option value="0" <#if !(inviteData??) || (inviteData?? && inviteData.consult_vsitorbtn_display == 0)>selected="selected"</#if>>无延时</option>
+														  <option value="1000" <#if inviteData?? && inviteData.consult_vsitorbtn_display == 1000>selected="selected"</#if>>1秒</option>
+														  <option value="2000" <#if inviteData?? && inviteData.consult_vsitorbtn_display == 2000>selected="selected"</#if>>2秒</option>
+														  <option value="3000" <#if inviteData?? && inviteData.consult_vsitorbtn_display == 3000>selected="selected"</#if>>3秒</option>
+														  <option value="4000" <#if inviteData?? && inviteData.consult_vsitorbtn_display == 4000>selected="selected"</#if>>4秒</option>
+														  <option value="5000" <#if inviteData?? && inviteData.consult_vsitorbtn_display == 5000>selected="selected"</#if>>5秒</option>
+														  <option value="10000" <#if inviteData?? && inviteData.consult_vsitorbtn_display == 10000>selected="selected"</#if>>10秒</option>
+														</select>     					
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4" style="padding-top:50px;">
+										<div class="ukefu-im-point" id="ukefu-point"
+											<#assign position = "right:10px;top:80px;">
+											<#if inviteData?? && inviteData.consult_vsitorbtn_position?? && inviteData.consult_vsitorbtn_position == 'left,top'>
+												<#assign position = "left:10px;top:10px;">
+											<#elseif inviteData?? && inviteData.consult_vsitorbtn_position?? && inviteData.consult_vsitorbtn_position == 'left,middle'>
+												<#assign position = "left:10px;top:80px;">
+											<#elseif inviteData?? && inviteData.consult_vsitorbtn_position?? && inviteData.consult_vsitorbtn_position == 'left,bottom'>
+												<#assign position = "left:10px;bottom:10px;">
+											<#elseif inviteData?? && inviteData.consult_vsitorbtn_position?? && inviteData.consult_vsitorbtn_position == 'right,top'>
+												<#assign position = "right:10px;top:10px;">
+											<#elseif inviteData?? && inviteData.consult_vsitorbtn_position?? && inviteData.consult_vsitorbtn_position == 'right,middle'>
+												<#assign position = "right:10px;top:80px;">
+											<#elseif inviteData?? && inviteData.consult_vsitorbtn_position?? && inviteData.consult_vsitorbtn_position == 'right,bottom'>
+												<#assign position = "right:10px;bottom:10px;">
+											</#if>
+											style="width: 227px;height: 200px;border-radius: 2px;padding: 70px 20px;">
+											<div class="ukefu-point-theme<#if inviteData??>${inviteData.consult_vsitorbtn_model!'1'}<#else>1</#if> ukefu-theme-color theme<#if inviteData??>${inviteData.consult_vsitorbtn_color!'1'}<#else>1</#if>"
+												style="text-align:center;position: absolute;${position!''}" id="ukefu-point-theme">
+			
+												<div class="ukefu-im-point-text">
+													<i class="layui-icon chat-icon">&#xe63a;</i> <br> <span id="consult_content"><#if inviteData??>${(inviteData.consult_vsitorbtn_content!'在线客服')?no_esc}<#else>在线客服</#if></span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+			
+						</div>
+						<div class="box default-box">
+							<div class="box-header">
+								<h3 class="box-title">对话框样式</h3>
+							</div>
+							<div class="box-body ukefu-im-theme">
+								<div class="row" style="margin-right:0px;">
+									<div class="col-md-8">
+										<div class="ukefu-webim-tl">1、选择对话框颜色</div>
+										<div class="box-item">
+											<div class="item-cnt ukefu-im-dialog" style="display: block;">
+												<input type="hidden" name="consult_dialog_color" id="consult_dialog_color" value="<#if inviteData??>${inviteData.consult_dialog_color!'1'}<#else>1</#if>">
+												<div class="ukefu-im-item theme1 <#if !(inviteData?? && inviteData.consult_dialog_color??) || (inviteData?? && inviteData.consult_dialog_color?? && inviteData.consult_dialog_color == '1')>ukefu-im-checked</#if>"
+													data-class="theme1" data-value="1">
+													<i
+														class="layui-icon ukefu-im-check">&#xe618;</i>
+												</div>
+												<div class="ukefu-im-item theme2 <#if inviteData?? && inviteData.consult_dialog_color?? && inviteData.consult_dialog_color == '2'>ukefu-im-checked</#if>" data-class="theme2" data-value="2">
+													<i
+														class="layui-icon ukefu-im-check">&#xe618;</i>
+												</div>
+												<div class="ukefu-im-item theme3 <#if inviteData?? && inviteData.consult_dialog_color?? && inviteData.consult_dialog_color == '3'>ukefu-im-checked</#if>" data-class="theme3" data-value="3">
+													<i
+														class="layui-icon ukefu-im-check">&#xe618;</i>
+												</div>
+												<div class="ukefu-im-item theme4 <#if inviteData?? && inviteData.consult_dialog_color?? && inviteData.consult_dialog_color == '4'>ukefu-im-checked</#if>" data-class="theme4" data-value="4">
+													<i
+														class="layui-icon ukefu-im-check">&#xe618;</i>
+												</div>
+												<div class="ukefu-im-item theme5 <#if inviteData?? && inviteData.consult_dialog_color?? && inviteData.consult_dialog_color == '5'>ukefu-im-checked</#if>" data-class="theme5" data-value="5">
+													<i
+														class="layui-icon ukefu-im-check">&#xe618;</i>
+												</div>
+												<div class="ukefu-im-item theme6 <#if inviteData?? && inviteData.consult_dialog_color?? && inviteData.consult_dialog_color == '6'>ukefu-im-checked</#if>" data-class="theme6" data-value="6">
+													<i
+														class="layui-icon ukefu-im-check">&#xe618;</i>
+												</div>
+											</div>
+										</div>
+										<div class="ukefu-webim-tl">2、自定义LOGO</div>
+										<div class="box-item" style="position: relative;">
+											<span class="ukefu-logo">
+												<img src="<#if inviteData?? && inviteData.consult_dialog_logo??>/res/image.html?id=${inviteData.consult_dialog_logo?url}<#else>/images/logo2.png</#if>" style="height:40px;">
+											</span>
+											<div class="layui-box layui-upload-button" style="position:absolute;left: 200px;">
+												<input type="file" name="webimlogo" accept="image/gif, image/jpeg, image/png" lay-ext="jpg|png|gif"  class="layui-upload-file" onchange="$('#logo_img').html($(this).val());">
+												<span class="layui-upload-icon"><i class="layui-icon"></i>上传图片</span>
+											</div>
+											<span id="logo_img" style="position:absolute;left: 350px;"></span>
+											
+											 
+										</div>
+			
+										<div class="ukefu-webim-tl">3、自定义客服图标</div>
+										<div class="box-item" style="position: relative;">
+											<span class="ukefu-logo">
+												<img src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" style="height:40px;">
+											</span>
+											<div class="layui-box layui-upload-button" style="position:absolute;left: 200px;">
+												<input type="file" name="agentheadimg" accept="image/gif, image/jpeg, image/png" lay-ext="jpg|png|gif"  class="layui-upload-file" onchange="$('#agent_img').html($(this).val());">
+												<span class="layui-upload-icon"><i class="layui-icon"></i>上传图片</span>
+											</div>
+											<span id="agent_img" style="position:absolute;left: 350px;"></span>
+											
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="ukefu-im-preview ukefu-im-preview-dialog" id="pv">
+											<div class="ukefu-im-preview-wrap"
+												style="border:1px solid #EAEAEA">
+												<div class="ukefu-im-preview-bar ukefu-theme-color theme<#if inviteData??>${inviteData.consult_dialog_color!'1'}<#else>1</#if>" style="padding:5px;">
+													<img src="<#if inviteData?? && inviteData.consult_dialog_logo??>/res/image.html?id=${inviteData.consult_dialog_logo?url}<#else>/images/logo.png</#if>" style="height:22px;float:left;">
+													<span style="float:right;">	
+														<i class="layui-icon" style="font:size:12px;color:#ffffff;">&#x1006;</i>
+													</span>
+												</div>
+												<div class="ukefu-im-preview-tip"></div>
+												<div class="ukefu-im-preview-tip" style="width:70%;height:5px;"></div>
+												<div class="ukefu-im-preview-customer">
+													<i class="layui-icon" style="color:#377FED;float:left;">&#xe612;</i>
+													<div
+														class="ukefu-im-preview-customer-message ukefu-im-preview-customer-arrow">
+			
+													</div>
+												</div>
+												<div class="ukefu-im-preview-user">
+													<img src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" style="height:20px;float:right;">
+													<div
+														class="ukefu-im-preview-user-message ukefu-im-preview-user-arrow ukefu-theme-color theme<#if inviteData??>${inviteData.consult_dialog_color!'1'}<#else>1</#if>"
+														style="width:150px;"></div>
+												</div>
+			
+												<div class="ukefu-im-preview-user" style="height:60px;">
+													<img src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" style="height:20px;float:right;">
+													<div
+														class="ukefu-im-preview-user-message ukefu-im-preview-user-arrow ukefu-theme-color theme<#if inviteData??>${inviteData.consult_dialog_color!'1'}<#else>1</#if>"
+														style="width:100px;height:50px;"></div>
+												</div>
+			
+												<div class="ukefu-im-preview-hr"></div>
+			
+												<div class="ukefu-im-preview-submit">
+													<i class="fa fa-image" style="color:#dddddd;float:left;"></i>
+												</div>
+												<div class="ukefu-im-preview-submit">
+													<a class="ukefu-im-theme-submit-btn ukefu-theme-color theme<#if inviteData??>${inviteData.consult_dialog_color!'1'}<#else>1</#if>">发送</a>
+												</div>
+			
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+			
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-3"></div>
+				<div class="col-lg-9">
+					<div class="layui-form-item">
+			          <div class="layui-input-block">
+			            <button class="layui-btn" lay-submit="" lay-filter="formDemo">保存</button>
+			            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			          </div>
+			        </div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+</div>
+
+<script language="javascript"> 		
+	layui.use('upload', function(){
+		var target = $(this).attr("data-target");
+	});
+	layui.use('form', function(){
+		var form = layui.form();
+		form.render('select'); //刷新select选择框渲染
+	});
+	layui.use('element', function(){
+		var element = layui.element();
+	});
+			
+	$(document)
+			.ready(
+					function() {
+						$('.ukefu-im-dialog .ukefu-im-item')
+								.click(
+										function() {
+											var theme = $(this).attr(
+													'data-class');
+											$('#pv .ukefu-theme-color')
+													.each(
+															function() {
+																$(this)
+																		.removeClass(
+																				"theme1 theme2 theme3 theme4 theme5 theme6")
+																		.addClass(
+																				theme);
+															});
+											$('.ukefu-im-dialog .ukefu-im-item')
+													.removeClass(
+															'ukefu-im-checked');
+											$(this).addClass('ukefu-im-checked');
+											$('#consult_dialog_color').val($(this).attr('data-value'));
+										});
+						$('.ukefu-im-ping-color .ukefu-im-item')
+								.click(
+										function() {
+											var theme = $(this).attr(
+													'data-class');
+											$('#ukefu-point .ukefu-theme-color')
+													.each(
+															function() {
+																$(this)
+																		.removeClass(
+																				"theme1 theme2 theme3 theme4 theme5 theme6")
+																		.addClass(
+																				theme);
+															});
+											$('.ukefu-im-ping-color .ukefu-im-item')
+													.removeClass(
+															'ukefu-im-checked');
+											$(this).addClass('ukefu-im-checked');
+											$('#consult_vsitorbtn_color').val($(this).attr('data-value'));
+										});
+						$('.ukefu-im-point')
+								.click(
+										function() {
+											$("#ukefu-point-theme")
+													.removeClass(
+															"ukefu-point-theme1 ukefu-point-theme2 ukefu-point-theme3")
+													.addClass(
+															$(this)
+																	.attr(
+																			'data-class'));
+											$('.ukefu-im-point').removeClass(
+													"ukefu-point-checked");
+											$(this)
+													.addClass(
+															"ukefu-point-checked");
+											$('#consult_vsitorbtn_model').val($(this).attr('data-value'));
+										});
+					});
+</script>
+

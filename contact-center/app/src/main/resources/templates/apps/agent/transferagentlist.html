@@ -1,0 +1,40 @@
+<table class="layui-table" lay-skin="line">
+	<colgroup>
+		<col width="2%">
+		<col width="20%">
+		<col width="20%">
+		<col width="10%">
+		<col width="10%">
+	</colgroup>
+    <thead>
+	<tr>
+	    <th style="width:3px;padding:10px 10px 10px 10px;"></th>
+	    <th>用户</th>
+	    <th>登陆时间</th>
+	    <th>最大用户数</th>
+	    <th>服务用户数</th>
+	</tr>
+    </thead>
+    <tbody>
+	<#if userList?? && currentorgan??>
+	    <#list userList as agent>
+		<#if agent.organ == currentorgan>
+		<tr class="ukefu-agentstatus">
+		    <td style="width:1px;padding:10px 0px 10px 10px;">
+			<input type="checkbox" name="agentno" class="ctxid" value="${agent.id!''}" id="user_${agent.id}" style="display:block;">
+		    </td>
+		    <td>${agent.username!''}（${agent.uname!''}）</td>
+		    <td><#if agent.agentStatus??>${agent.agentStatus.logindate?string('yyyy-MM-dd HH:mm:ss')}</#if></td>
+		    <td>
+			<#if agent.agentStatus??>${agent.agentStatus.maxusers!0}</#if>
+		    </td>
+		    <td>
+			<#if agent.agentStatus??>${agent.agentStatus.users!0}</#if>
+		    </td>
+		</tr>
+		</#if>
+		    
+	    </#list>
+	</#if>
+    </tbody>
+</table>

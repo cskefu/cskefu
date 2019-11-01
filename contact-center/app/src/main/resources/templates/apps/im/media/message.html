@@ -1,0 +1,30 @@
+<#if chatMessage.msgtype?? && chatMessage.msgtype == "image">
+	<a href="${(chatMessage.message!'')?no_esc}&original=true" target="_blank"><img src="${(chatMessage.message!'')?no_esc}" class="ukefu-media-image"></a>
+<#elseif chatMessage.msgtype?? && chatMessage.msgtype == "cooperation">
+	<a href='javascript:void(0)' onclick='acceptInvite("${chatMessage.message!''}" , "${chatMessage.attachmentid!''}")'>您收到一个协作邀请，点击进入协作</a>
+<#elseif chatMessage.msgtype?? && chatMessage.msgtype == "file">
+<div class="ukefu-message-file">
+	<div class="ukefu-file-icon">
+		<img src="/im/img/file.png">
+	</div>
+	<div class="ukefu-file-desc">
+		<a href="${chatMessage.message!''}" target="_blank">
+		<div>${chatMessage.filename!''}</div>
+		<div>${(chatMessage.filesize/1024!0)?string("###,###.###")}Kb</div>
+		</a>
+	</div>
+</div>
+<#else>
+	${(chatMessage.message!'')?no_esc}
+	<#if chatMessage.suggestmsg?? && chatMessage.suggestmsg!="">
+	<ul class="info-list">
+		<#list chatMessage.suggest as item>
+		<li class="ukefu-suggest-item">
+			<a href="javascript:void(0)" class="suggestitem" onclick="sendMessageTextWithID('${item.title!''}' , '${item.id!''}')">
+				${item.title!''}
+			</a>
+		</li>
+		</#list>
+	</ul>
+	</#if>
+</#if>

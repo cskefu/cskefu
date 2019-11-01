@@ -1,0 +1,406 @@
+<#include "/public/macro.html">
+<div class="layui-side layui-bg-black">
+	<div class="layui-side-scroll">
+		<#include "/apps/quality/include/left.html">
+	</div>
+</div>
+<div class="layui-body">
+	<div class="layui-side-scroll">
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="site-h1" style="border-top:1px solid #e6e6e6;">
+					对话质检设置
+				</h1>
+				<form method="post" key="set-mine" action="/apps/quality/save.html" class="layui-form">
+				<#if sessionConfig??><input type="hidden" name="id" value="${sessionConfig.id!''}"></#if>
+								
+				<div class="box default-box">
+					<div class="box-body ukefu-im-theme">
+						<div class="row">
+							<div class="col-lg-10">
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">1、请选择对话质检方式</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-6">
+												<input type="radio" name="qualityscore" value="score" lay-filter="ukefu-qualtytype-score" title="评分制" <#if !(sessionConfig??) || !(sessionConfig.qualityscore??) || (sessionConfig?? && sessionConfig.qualityscore?? && sessionConfig.qualityscore == 'score')>checked="checked"</#if>>
+												<input type="radio" name="qualityscore" value="points" lay-filter="ukefu-qualtytype-points" title="扣分制" <#if sessionConfig?? && sessionConfig.qualityscore?? && sessionConfig.qualityscore == 'points'>checked="checked"</#if>>
+											</div>
+											<div class="col-lg-6" style="font-weight:bold;font-size:16px;">
+												<span id="ukefu-qualityscore"><#if sessionConfig?? && sessionConfig.qualityscore?? && sessionConfig.qualityscore == 'score'>当前总分：<#else>能扣的总分：</#if></span>
+												<span id="total">100</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<h1 class="site-h1" style="border-top:1px solid #e6e6e6;">
+					2、请设置对话质检项
+				</h1>
+				<div class="box default-box">
+					<div class="box-body ukefu-im-theme">
+						<div class="row">
+							<div class="col-lg-10">
+								<div class="ukefu-webim-prop">
+									<div class="box-item" id="mertics">
+										<#if qualityList?? && qualityList?size gt 0>
+										<#list qualityList as quality>
+										<div class="row  ukefu-item" style="margin-top:10px;">
+											<div class="col-lg-10">
+												<div class="row">
+													<div class="col-lg-2">
+														指标项名称
+													</div>
+													<div class="col-lg-3">
+														 <input type="text" name="title" value="${quality.name!''}" required  lay-verify="required" placeholder="指标项名称" autocomplete="off" class="layui-input">
+													</div>
+													<div class="col-lg-1">
+													
+													</div>
+													<div class="col-lg-2">
+														 <input type="checkbox" name="disdesc" lay-filter="disdesc" title="指标说明" <#if quality.description?? && quality.description !="">checked="checked"</#if> lay-skin="primary"> 
+													</div>
+													<div class="col-lg-2 ukefu-qualitytype">
+														<#if sessionConfig?? && sessionConfig.qualityscore?? && sessionConfig.qualityscore == 'score'>满分值<#else>最多扣分</#if>
+													</div>
+													<div class="col-lg-2">
+														 <input type="text" name="score" oninput="totalScore()" onchange="totalScore()"  required value="5" value="${quality.score!'0'}" lay-verify="required|number" placeholder="请输入满分值" autocomplete="off" class="layui-input  score">
+													</div>
+												</div>
+												
+												<div class="row" style="margin-top:10px;<#if !(quality.description?? && quality.description !="")>display:none;</#if>">
+													<div class="col-lg-2">
+														指标项说明
+													</div>
+													<div class="col-lg-10">
+														<textarea name="description" placeholder="请输入" class="layui-textarea">${quality.description!''}</textarea>
+													</div>
+												</div>
+											</div>
+											<div class="col-lg-1">
+												<div style="padding-top:8px;">
+													<a href="javascript:void(0)" onClick="removeItem(this);" class="ukefu-quality-del" style="padding:8px;border:1px solid #dedede;width:30px;margin-left:20px;"><i class="layui-icon">&#x1006;</i></a>
+												</div>
+											</div>
+										</div>
+										</#list>
+										<#else>
+										<div class="row ukefu-item" style="margin-top:10px;">
+											<div class="col-lg-10">
+												<div class="row">
+													<div class="col-lg-2">
+														指标项名称
+													</div>
+													<div class="col-lg-3">
+														 <input type="text" name="title" required  lay-verify="required" placeholder="指标项名称" autocomplete="off" class="layui-input">
+													</div>
+													<div class="col-lg-1">
+													
+													</div>
+													<div class="col-lg-2">
+														 <input type="checkbox" name="disdesc" lay-filter="disdesc" title="指标说明" lay-skin="primary"> 
+													</div>
+													<div class="col-lg-2 ukefu-qualitytype">
+														<#if sessionConfig?? && sessionConfig.qualityscore?? && sessionConfig.qualityscore == 'score'>满分值<#else>最多扣分</#if>
+													</div>
+													<div class="col-lg-2">
+														 <input type="text" name="score" oninput="totalScore()" onchange="totalScore()"  required value="5" lay-verify="required|number" placeholder="请输入<#if sessionConfig?? && sessionConfig.qualityscore?? && sessionConfig.qualityscore == 'score'>满分值<#else>最多扣分</#if>" autocomplete="off" class="layui-input  score">
+													</div>
+												</div>
+												
+												<div class="row" style="margin-top:10px;display:none;">
+													<div class="col-lg-2">
+														指标项说明
+													</div>
+													<div class="col-lg-10">
+														<textarea name="description" placeholder="请输入" class="layui-textarea"></textarea>
+													</div>
+												</div>
+											</div>
+											<div class="col-lg-1">
+												<div style="padding-top:8px;">
+													<a href="javascript:void(0)" onClick="removeItem(this);" class="ukefu-quality-del" style="padding:8px;border:1px solid #dedede;width:30px;margin-left:20px;"><i class="layui-icon">&#x1006;</i></a>
+												</div>
+											</div>
+										</div>
+										<div class="row  ukefu-item" style="margin-top:10px;">
+											<div class="col-lg-10">
+												<div class="row">
+													<div class="col-lg-2">
+														指标项名称
+													</div>
+													<div class="col-lg-3">
+														 <input type="text" name="title" required  lay-verify="required" placeholder="指标项名称" autocomplete="off" class="layui-input">
+													</div>
+													<div class="col-lg-1">
+													
+													</div>
+													<div class="col-lg-2">
+														 <input type="checkbox" name="disdesc" lay-filter="disdesc" title="指标说明" lay-skin="primary"> 
+													</div>
+													<div class="col-lg-2 ukefu-qualitytype">
+														<#if sessionConfig?? && sessionConfig.qualityscore?? && sessionConfig.qualityscore == 'score'>满分值<#else>最多扣分</#if>
+													</div>
+													<div class="col-lg-2">
+														 <input type="text" name="score" oninput="totalScore()" onchange="totalScore()"  required value="5" lay-verify="required|number" placeholder="请输入<#if sessionConfig?? && sessionConfig.qualityscore?? && sessionConfig.qualityscore == 'score'>满分值<#else>最多扣分</#if>" autocomplete="off" class="layui-input  score">
+													</div>
+												</div>
+												
+												<div class="row" style="margin-top:10px;display:none;">
+													<div class="col-lg-2">
+														指标项说明
+													</div>
+													<div class="col-lg-10">
+														<textarea name="description" placeholder="请输入" class="layui-textarea"></textarea>
+													</div>
+												</div>
+											</div>
+											<div class="col-lg-1">
+												<div style="padding-top:8px;">
+													<a href="javascript:void(0)" onClick="removeItem(this);" class="ukefu-quality-del" style="padding:8px;border:1px solid #dedede;width:30px;margin-left:20px;"><i class="layui-icon">&#x1006;</i></a>
+												</div>
+											</div>
+										</div>
+										<div class="row  ukefu-item" style="margin-top:10px;">
+											<div class="col-lg-10">
+												<div class="row">
+													<div class="col-lg-2">
+														指标项名称
+													</div>
+													<div class="col-lg-3">
+														 <input type="text" name="title" required  lay-verify="required" placeholder="指标项名称" autocomplete="off" class="layui-input">
+													</div>
+													<div class="col-lg-1">
+													
+													</div>
+													<div class="col-lg-2">
+														 <input type="checkbox" name="disdesc" lay-filter="disdesc" title="指标说明" lay-skin="primary"> 
+													</div>
+													<div class="col-lg-2 ukefu-qualitytype">
+														<#if sessionConfig?? && sessionConfig.qualityscore?? && sessionConfig.qualityscore == 'score'>满分值<#else>最多扣分</#if>
+													</div>
+													<div class="col-lg-2">
+														 <input type="text" name="score" oninput="totalScore()" onchange="totalScore()"  required value="5" lay-verify="required|number" placeholder="请输入<#if sessionConfig?? && sessionConfig.qualityscore?? && sessionConfig.qualityscore == 'score'>满分值<#else>最多扣分</#if>" autocomplete="off" class="layui-input  score">
+													</div>
+												</div>
+												
+												<div class="row" style="margin-top:10px;display:none;">
+													<div class="col-lg-2">
+														指标项说明
+													</div>
+													<div class="col-lg-10">
+														<textarea name="description" placeholder="请输入" class="layui-textarea"></textarea>
+													</div>
+												</div>
+											</div>
+											<div class="col-lg-1">
+												<div style="padding-top:8px;">
+													<a href="javascript:void(0)" onClick="removeItem(this);" class="ukefu-quality-del" style="padding:8px;border:1px solid #dedede;width:30px;margin-left:20px;"><i class="layui-icon">&#x1006;</i></a>
+												</div>
+											</div>
+										</div>
+										</#if>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop">
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-10" style="text-align:center;">
+												<a href="javascript:void(0)"  onClick="newMetrics();"><i class="layui-icon">&#xe608;</i>
+												新建指标</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<h1 class="site-h1" style="border-top:1px solid #e6e6e6;">
+					3、禁忌项
+				</h1>
+				<div class="box default-box">
+					<div class="box-body ukefu-im-theme">
+						<div class="row">
+							<div class="col-lg-10">
+								<div class="ukefu-webim-prop">
+									<div class="box-item" id="disdiv">
+										<#if tagList?? && tagList?size gt 0>
+										<#list tagList as tag>
+										<div class="row ukefu-item" style="margin-top:10px;">
+											<div class="col-lg-10">
+												<div class="row">
+													<div class="col-lg-2">
+														禁忌项
+													</div>
+													<div class="col-lg-3">
+														 <input type="text" value="${tag.tag!''}" name="tag" required  lay-verify="required" placeholder="禁忌项名称" autocomplete="off" class="layui-input">
+													</div>
+												</div>
+											</div>
+											<div class="col-lg-1">
+												<div style="padding-top:8px;">
+													<a href="javascript:void(0)" onClick="removeItem(this);" class="ukefu-quality-del" style="padding:8px;border:1px solid #dedede;width:30px;margin-left:20px;"><i class="layui-icon">&#x1006;</i></a>
+												</div>
+											</div>
+										</div>
+										</#list>
+										<#else>
+										<div class="row ukefu-item" style="margin-top:10px;">
+											<div class="col-lg-10">
+												<div class="row">
+													<div class="col-lg-2">
+														禁忌项
+													</div>
+													<div class="col-lg-3">
+														 <input type="text" name="tag" required  lay-verify="required" placeholder="禁忌项名称" autocomplete="off" class="layui-input">
+													</div>
+												</div>
+											</div>
+											<div class="col-lg-1">
+												<div style="padding-top:8px;">
+													<a href="javascript:void(0)" onClick="removeItem(this);" class="ukefu-quality-del" style="padding:8px;border:1px solid #dedede;width:30px;margin-left:20px;"><i class="layui-icon">&#x1006;</i></a>
+												</div>
+											</div>
+										</div>
+										</#if>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop">
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-10" style="text-align:center;">
+												<a href="javascript:void(0)" onClick="newDis();">
+													<i class="layui-icon">&#xe608;</i>
+												新建禁忌项</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-3"></div>
+					<div class="col-lg-9">
+						<div class="layui-form-item">
+						  <div class="layui-input-block">
+							<button class="layui-btn" lay-submit="" lay-filter="formDemo">保存</button>
+							<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						  </div>
+						</div>
+					</div>
+				</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script id="tpl" type="text/html">
+	<div class="row ukefu-item" style="margin-top:10px;">
+		<div class="col-lg-10">
+			<div class="row">
+				<div class="col-lg-2">
+					指标项名称
+				</div>
+				<div class="col-lg-3">
+					 <input type="text" name="title" required  lay-verify="required" placeholder="指标项名称" autocomplete="off" class="layui-input">
+				</div>
+				<div class="col-lg-1">
+				
+				</div>
+				<div class="col-lg-2">
+					 <input type="checkbox" name="disdesc" lay-filter="disdesc" title="指标说明" lay-skin="primary"> 
+				</div>
+				<div class="col-lg-2 ukefu-qualitytype">
+					<#if sessionConfig?? && sessionConfig.qualityscore?? && sessionConfig.qualityscore == 'score'>满分值<#else>最多扣分</#if>
+				</div>
+				<div class="col-lg-2">
+					 <input type="text" name="score" oninput="totalScore()" onchange="totalScore()"  required value="5" lay-verify="required|number" placeholder="请输入<#if sessionConfig?? && sessionConfig.qualityscore?? && sessionConfig.qualityscore == 'score'>满分值<#else>最多扣分</#if>" autocomplete="off" class="layui-input  score">
+				</div>
+			</div>
+			
+			<div class="row" style="margin-top:10px;display:none;">
+				<div class="col-lg-2">
+					指标项说明
+				</div>
+				<div class="col-lg-10">
+					<textarea name="description" placeholder="请输入" class="layui-textarea"></textarea>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-1">
+			<div style="padding-top:8px;">
+					<a href="javascript:void(0)" onClick="removeItem(this);" class="ukefu-quality-del" style="padding:8px;border:1px solid #dedede;width:30px;margin-left:20px;"><i class="layui-icon">&#x1006;</i></a>
+			</div>
+		</div>
+	</div>
+</script>
+<script id="dis" type="text/html">
+<div class="row ukefu-item" style="margin-top:10px;">
+	<div class="col-lg-10">
+		<div class="row">
+			<div class="col-lg-2">
+				禁忌项
+			</div>
+			<div class="col-lg-3">
+				 <input type="text" name="tag" required  lay-verify="required" placeholder="禁忌项名称" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-1">
+		<div style="padding-top:8px;">
+			<a href="javascript:void(0)" onClick="removeItem(this);" class="ukefu-quality-del" style="padding:8px;border:1px solid #dedede;width:30px;margin-left:20px;"><i class="layui-icon">&#x1006;</i></a>
+		</div>
+	</div>
+</div>	
+</script>
+
+<script language="javascript"> 	
+	function newMetrics(){
+		$('#mertics').append($('#tpl').text());
+		form.render('checkbox'); //刷新select选择框渲染
+		totalScore();
+	}
+	function newDis(){
+		$('#disdiv').append($('#dis').text());
+	}
+	function removeItem(obj){
+		$(obj).closest(".ukefu-item").remove();
+	}
+	function totalScore(){
+		var total = 0 ;
+		$(".score").each(function(){
+			total = total + parseInt($(this).val());
+		})
+		$("#total").text(total);
+	}
+	var form ;
+	layui.use('form', function(){
+		form = layui.form();
+		form.render('checkbox'); //刷新select选择框渲染
+		form.on("checkbox(disdesc)",function(data){
+			if(data.elem.checked){
+				$(this).closest(".row").next().show();
+			}else{
+				$(this).closest(".row").next().hide();
+			}
+			$(this).closest(".ukefu-item").find("textarea").val("");
+		});
+		form.on("radio(ukefu-qualtytype-score)",function(data){
+			$('.ukefu-qualitytype').text("满分值");
+			$("#ukefu-qualityscore").text("当前总分：");
+		});
+		form.on("radio(ukefu-qualtytype-points)" , function(data){
+			$('.ukefu-qualitytype').text("最多扣分");
+			$("#ukefu-qualityscore").text("能扣的总分：");
+		});
+		totalScore();
+	});
+</script>

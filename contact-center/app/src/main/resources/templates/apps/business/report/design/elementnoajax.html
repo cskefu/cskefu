@@ -1,0 +1,11 @@
+<div class="ukefu" >
+	<div class="ukefu-content">
+		<div class="ukefu-model no-padding" id="elementdiv_${element.id!''}" >
+			<div id="chart_${element.mid!''}" ></div>
+			<div id="json_${element.mid!''}" style="display:none;">${reportModel.chartPropertiesJson?no_esc}</div>	
+			<#if eltemplet??>
+			<#assign inlineTemplate = eltemplet.templettext?interpret><@inlineTemplate />						
+			</#if>
+		</div>                                 
+	</div>
+</div>

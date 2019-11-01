@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="viewport"
+	content="width=device-width, maximum-scale=1.0, initial-scale=1.0,initial-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<title><#if systemConfig?? && systemConfig.title?? && systemConfig.title != ''>${systemConfig.title}<#else>春松客服-全渠道智能客服</#if></title>
+<link rel="shortcut icon" type="image/x-icon" href="<#if systemConfig?? && systemConfig.favlogo?? && systemConfig.favlogo != ''>/res/image.html?id=${systemConfig.favlogo?url}<#else>/images/favicon.ico</#if>?t=${.now?long}"/>
+<link rel="stylesheet" href="/css/layui.css">
+<link rel="stylesheet" href="/css/login.css">
+<link rel="stylesheet" href="/css/flexboxgrid.min.css">
+<script src="/layui.js"></script>
+<script language="javascript">
+	if((window.frameElement && window.frameElement.id || '') != ""){
+		top.location.href = "/login.html" ;
+	}
+	layui.use('layer', function(){
+	  var layer = layui.layer;
+	  <#if msg?? && msg == '0'>
+		layer.alert('用户名或密码错误，请重新填写', {icon: 2});
+	  <#elseif msg?? && msg == '1'>
+		layer.alert('用户注册成功，请通过用户名和密码登陆', {icon: 1}); 
+	  </#if>
+	});   
+	layui.use('form', function(){
+		var form = layui.form();
+	});
+</script>
+</head>
+
+<body class="login">
+	<div class="login-box">
+	
+		
+		<div class="login-logo">
+			<a> <img src="<#if systemConfig?? && systemConfig.loginlogo?? && systemConfig.loginlogo != ''>/res/image.html?id=${systemConfig.loginlogo?url}<#else>images/logo2.png</#if>" style="height:60px;width:220px;">
+			</a>
+		</div>
+		<div class="login-box-body">
+
+			<p class="login-box-msg">账号密码登陆</p>
+			<form id="loginForm" action="/login.html"class="layui-form" method="post">
+				<div class="form-group has-feedback">
+					<span class="layui-icon form-control-feedback">&#xe612;</span> 
+					<!-- <input name="username" id="username" autofocus required lay-verify="required"  
+						class="form-control required" value="" placeholder="用户名/邮件/手机号"> -->
+						<input name="username" id="username" autofocus required lay-verify="required"  
+						class="form-control required" value="" placeholder="用户名">
+				</div>
+				<div class="form-group has-feedback" style="margin-bottom:10px;">
+					<span class="kfont form-control-feedback">&#xe618;</span>
+					<!-- <input type="password" name="password" required lay-verify="required"  
+						class="form-control required" value="" placeholder="密码"> -->
+					<input type="password" name="password" id="password" required lay-verify="required"  
+						class="form-control required" value="" placeholder="密码">
+				</div>
+				<div class="row" style="line-height:30px;padding:0 20px;">
+					<div class="col-lg-6">
+						<div class="checkbox">
+							<input type="checkbox" name="sla" value="1" lay-skin="primary" checked title="七天内自动登录">
+						</div>
+					</div>
+				</div>
+
+				<div class="row" style="margin-bottom:20px;padding:0 20px;">
+					<div class="col-md-6"></div>
+				</div>
+				<div class="row" style="margin-bottom:20px;padding:0 20px;">
+
+					<!-- /.col -->
+					<div class="col-xs-12">
+						<button class="btn btn-block btn-primary btn-lg">立即登录</button>
+					</div>
+					<!-- /.col -->
+					<#if show?? && show==true>
+						<div class="col-xs-12">
+							<p class="btm-text">还没有账号？<a  href="/register.html">注册新账号</a></p>
+						</div>
+					</#if>
+				</div>
+			</form>
+			<div class="social-auth-links text-center">
+				<div class="networks"></div>
+			</div>
+		</div>
+		<!-- /.login-box-body -->
+	</div>
+</body>
+
+</html>

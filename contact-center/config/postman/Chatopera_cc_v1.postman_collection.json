@@ -1,0 +1,753 @@
+{
+	"info": {
+		"_postman_id": "fa86aeb9-fcf2-4843-ab4c-c97132a46f8f",
+		"name": "Chatopera_cc_v1",
+		"description": "Chatopera Contact Center API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://{{IP}}:{{PORT}}/tokens",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/tokens?username=admin&password=admin1234",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"tokens"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "admin"
+						},
+						{
+							"key": "password",
+							"value": "admin1234"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://{{IP}}:{{PORT}}/api/user",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "{{AUTH}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/user",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "启动呼叫计划",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "4ef6064932a04f7c87d431f1189392d6"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"ops\": \"execute\", \"dialplanId\": \"402882516556801d016556db24e908de\"}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/callout/dialplan",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"callout",
+						"dialplan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "暂停呼叫计划",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "75dc28487bb84fb59edbb7231fd6bfda"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"ops\": \"pause\", \"dialplanId\": \"402882516546e777016546eeb00c0452\"}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/callout/dialplan",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"callout",
+						"dialplan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "删除呼叫计划",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "098e0f79525d472a9beb4197f02ff8cb"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"ops\": \"delete\", \"dialplanId\": \"402882516556801d016556db24e908de\"}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/callout/dialplan",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"callout",
+						"dialplan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "通话记录查询",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "05f13a549bb04a2a9849563e38a60695"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"ops\": \"query\", \"fromdate\": \"2018-08-21\", \"enddate\": \"2018-08-20\"}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/callout/records?p=1&ps=20",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"callout",
+						"records"
+					],
+					"query": [
+						{
+							"key": "p",
+							"value": "1"
+						},
+						{
+							"key": "ps",
+							"value": "20"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取语音渠道坐席监控数据",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "55d8348d753b432c9b9e42c39d35ccc8"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"ops\": \"status\", \"channel\": \"bxzq\"}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/callout/monitor",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"callout",
+						"monitor"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取文件URL",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "6db1ae1e5f5740df98b7d54d38fdb89c"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"ops\": \"wav\", \"file\": \"2018-08-22/63187a63-f2c8-4463-85a6-db5d49851945.wav\"}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/callout/records",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"callout",
+						"records"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "外呼日报查询",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "ad163116e63b4764ba0a741cf882ed23"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"ops\": \"agg\", \"datestr\": \"2018-08-22\", \"channel\": \"bxzq\", \"direction\": \"out\"}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/callout/records",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"callout",
+						"records"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "坐席报表查询",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "ca8c28e459fd477b9ccc9f210a3a81ea"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ops\": \"audit\",\n  \"fromdate\": \"2018-08-22\",\n  \"channel\": \"bxzq\",\n  \"enddate\": \"2018-08-24\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/callout/records",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"callout",
+						"records"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "坐席监控",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "570d6bd5f37441af977ab7eceeb6951a"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ops\": \"status\",\n  \"channel\": \"bxzq\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/callout/monitor",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"callout",
+						"monitor"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "坐席监听",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "ea9639dd357941f4986b8d19d2a91496"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ops\": \"dropin\",\n  \"channel\": \"bxzq\",\n  \"callid\": \"2523f480-9e16-4a7a-9c3d-318ea7624109\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/callout/monitor",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"callout",
+						"monitor"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "\b联系人笔记：创建",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "1e597e76a338439ebc2411a4a69d7d9f"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"ops\": \"create\", \"category\": \"外呼\", \"content\": \"xx\", \"contactid\": \"25d61fe78db54bec95c9d0f405d0b20b\"}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/contacts/notes",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"contacts",
+						"notes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "\b联系人笔记：详情",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "d6e1a25c36194b2ba501a01f6ab4aaae"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"ops\": \"detail\", \"id\": \"xxx\"}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/contacts/notes",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"contacts",
+						"notes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "\b联系人笔记：获取联系人所有笔记",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "06d09745a0964d258d86c07cc4f7f838"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"ops\": \"fetch\", \"contactid\": \"xxx\"}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/contacts/notes",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"contacts",
+						"notes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "机器人客服：创建",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "{{AUTH}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ops\": \"create\",\n  \"primaryLanguage\": \"zh_CN\",\n  \"snsid\": \"104eac\",\n  \"name\": \"小C\",\n  \"baseUrl\": \"http://lhc-dev:8003\",\n  \"description\": \"描述\",\n  \"fallback\": \"我不理解。\",\n  \"welcome\": \"你好\",\n  \"workmode\": \"机器人客服优先\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/chatbot",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chatbot"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "机器人客服：查询",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "{{AUTH}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ops\": \"fetch\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/chatbot",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chatbot"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "机器人客服：更新",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "b641622ea4c54f1e9e45520e7fed266b"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ops\": \"update\",\n  \"id\": \"54509c828fcd4d0e9709a975a04bf190\",\n  \"workmode\": \"\",\n  \"enabled\": false,\n  \"description\": \"描述\",\n  \"fallback\": \"我不知道。\",\n  \"welcome\": \"你好！\",\n  \"name\": \"cc\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/chatbot",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chatbot"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "机器人客服：删除",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "{{AUTH}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ops\": \"delete\",\n  \"id\": \"fdf372d7ffb0456f8bd7fdfc1a054beb\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/chatbot",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chatbot"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "机器人客服：启用",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "{{AUTH}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ops\": \"enable\",\n  \"id\": \"eb53580ddbe3473bb112ade4eeeb3b45\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/chatbot",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chatbot"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "机器人客服：禁用",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "{{AUTH}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ops\": \"disable\",\n  \"id\": \"eb53580ddbe3473bb112ade4eeeb3b45\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/chatbot",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"chatbot"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "ee82d425-91be-4e85-b3da-7fbfd5d0da19",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "26cdde89-40b3-4b7f-85ad-09652137888c",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

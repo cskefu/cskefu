@@ -1,0 +1,795 @@
+<form method="post" key="set-mine" enctype="multipart/form-data" action="/admin/config/save.html" class="layui-form">
+	<#if systemConfig??><input type="hidden" name="id" value="${systemConfig.id!''}"></#if>
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ukefu-customer-div setting-wrapper">
+				<div class="box default-box">
+					<div class="box-header">
+						<h3 class="box-title">系统设置</h3>
+					</div>
+					<div class="box-body ukefu-im-theme">
+						<div class="row">
+							<div class="col-lg-8">
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">系统颜色风格选择</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>春松客服系统界面颜色风格</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">默认的配色是绿色，选择颜色可以在右侧预览风格，点击保存即可生效</p>
+											</div>
+											<div class="col-lg-4">
+												<select name="theme" lay-filter="sysconfig">
+													<option value="01" <#if systemConfig?? && systemConfig.theme?? && systemConfig.theme == '01'>selected="selected"</#if>>绿色</option>
+													<option value="02" <#if systemConfig?? && systemConfig.theme?? && systemConfig.theme == '02'>selected="selected"</#if>>黑色</option>
+													<option value="03" <#if systemConfig?? && systemConfig.theme?? && systemConfig.theme == '03'>selected="selected"</#if>>蓝色</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">请填写服务器的访问地址</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>服务器的访问地址，包含端口。</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">后台访问静态资源时需要使用</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												     <input type="text" name="iconstr" value="<#if systemConfig.iconstr?? && systemConfig.iconstr!= ''>${systemConfig.iconstr!''}</#if>" autocomplete="off" class="layui-input">
+												</div>	
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">产品登录界面和后台管理界面标题</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>登录页和产品后台页面显示标题</p>
+												
+											</div>
+											<div class="col-lg-4" style="text-align:right;position: relative;">
+												<input type="text" name="title" value="${systemConfig.title!'春松客服-全渠道智能客服'}" autocomplete="off" class="layui-input">
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">登录页欢迎Logo图片</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>登录页显示的Logo图片，建议尺寸220*60。</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">
+													<span class="ukefu-logo">
+														<img src="<#if systemConfig?? && systemConfig.loginlogo?? && systemConfig.loginlogo != ''>/res/image.html?id=${systemConfig.loginlogo?url}<#else>/images/logo2.png</#if>" style="height:60px;">
+													</span>
+												</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;position: relative;">
+												<div class="layui-input-block">
+													<div class="layui-box layui-upload-button">
+														<input type="file" name="loginlogo" accept="image/gif, image/jpeg, image/png" lay-ext="jpg|png|gif"  class="layui-upload-file" onchange="$('#logo_img').html($(this).val());">
+														<span class="layui-upload-icon"><i class="layui-icon"></i>上传图片</span>
+													</div>
+												</div>
+												<div id="logo_img" style="position:absolute;right: 20px;"></div>	
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">产品后台管理界面Logo图片</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>登录页显示的Logo图片，建议尺寸280*80。</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">
+													<div class="ukefu-console-logo <#if systemConfig?? && systemConfig.theme?? && systemConfig.theme == '01'>ukefu-system-theme1</#if><#if systemConfig?? && systemConfig.theme?? && systemConfig.theme == '02'>ukefu-system-theme2</#if><#if systemConfig?? && systemConfig.theme?? && systemConfig.theme == '03'>ukefu-system-theme3</#if>" style="width:140px;height:40px;padding:5px;">
+														<img src="<#if systemConfig?? && systemConfig.consolelogo?? && systemConfig.consolelogo != ''>/res/image.html?id=${systemConfig.consolelogo?url}<#else>/images/logo.png</#if>" style="height:40px;">
+													</div>
+												</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;position: relative;">
+												<div class="layui-input-block">
+													<div class="layui-box layui-upload-button">
+														<input type="file" name="consolelogo" accept="image/gif, image/jpeg, image/png" lay-ext="jpg|png|gif"  class="layui-upload-file" onchange="$('#consolelogo_img').html($(this).val());">
+														<span class="layui-upload-icon"><i class="layui-icon"></i>上传图片</span>
+													</div>
+												</div>
+												<div id="consolelogo_img" style="position:absolute;right: 20px;"></div>	
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">产品标题栏缩略小图</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>产品登录页和后台管理页面的标题栏小缩略图，文件扩展名是ico格式</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">
+													<div class="ukefu-console-logo" style="width:140px;height:40px;padding:5px;">
+														<img src="<#if systemConfig?? && systemConfig.favlogo?? && systemConfig.favlogo != ''>/res/image.html?id=${systemConfig.favlogo?url}<#else>/images/favicon.ico</#if>" style="height:40px;">
+													</div>
+												</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;position: relative;">
+												<div class="layui-input-block">
+													<div class="layui-box layui-upload-button">
+														<input type="file" name="favlogo" accept="image/ico, image/gif, image/jpeg, image/png" lay-ext="jpg|png|gif"  class="layui-upload-file" onchange="$('#favlogo_img').html($(this).val());">
+														<span class="layui-upload-icon"><i class="layui-icon"></i>上传图片</span>
+													</div>
+												</div>
+												<div id="favlogo_img" style="position:absolute;right: 20px;"></div>	
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">重启或停止对话服务</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>Netty SocketIO服务，服务端口：${webimport} , 状态：<#if imServerStatus?? && imServerStatus == true><small class="ukefu-label theme4">服务中</small><#else><small class="ukefu-label theme4" style="background-color:#FF5722;">已停止</small></#if></p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">建议通过界面停止或启动对话服务，避免出现端口被占用的问题</p>
+											</div>
+											<div class="col-lg-4">
+												<#if imServerStatus?? && imServerStatus == true>
+												<a href="/admin/config/stopimserver.html" data-toggle="tip" <#if secret?? && secret.enable == true>data-confirm="请输入二次安全验证密码"</#if> title="停止对话服务后不能从Web界面再次启动，请确认是否退出？" class="layui-btn layui-btn-small layui-btn-danger">停止对话服务</a>
+												</#if>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">启用EntIM内部IM功能</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>启用EntIM组件，右下角出现EntIM窗口,当前状态：<#if entim?? && entim == true><small class="ukefu-label theme4">已启用</small><#else><small class="ukefu-label theme4" style="background-color:#FF5722;">已关闭</small></#if></p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">默认关闭EntIM功能</p>
+											</div>
+											<div class="col-lg-4">
+												<#if entim?? && entim == true>
+													<a href="/admin/config/stopentim.html" data-toggle="tip" title="请确认是否关闭EntIM功能？" class="layui-btn layui-btn-small layui-btn-danger">关闭EntIM功能</a>
+												<#else>
+													<!-- <a href="/admin/config/startentim.html" data-toggle="tip" title="启用EntIM功能" class="layui-btn layui-btn-small">启用EntIM功能</a> -->
+													<a href="" data-toggle="tip" title="启用EntIM功能" class="layui-btn layui-btn-small">启用EntIM功能</a>
+												</#if>		
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">启用权限数据采集功能功能</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>启用权限数据采集功能后，会进入数据采集模式,当前状态：<#if infoace?? && infoace == true><small class="ukefu-label theme4">已启用</small><#else><small class="ukefu-label theme4" style="background-color:#FF5722;">已关闭</small></#if></p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">启用后，在春松客服界面上的任何链接点击操作都会触发数据收集功能</p>
+											</div>
+											<div class="col-lg-4">
+												<#if infoace?? && infoace == true>
+													<a href="/admin/auth/infoacq.html" target="parent" class="layui-btn layui-btn-small layui-btn-danger">退出数据采集功能</a>
+												<#else>
+													<a href="/admin/auth/infoacq.html" target="parent" class="layui-btn layui-btn-small">进入数据采集功能</a>
+												</#if>		
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">停止春松客服系统</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>安全退出系统服务，停止服务调用JVM的退出指令</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">适用于Tomcat、Jetty等系统，WebLogic/WebSphere等中间件严禁使用</p>
+											</div>
+											<div class="col-lg-4">
+												<a href="/admin/config/stop.html" data-toggle="tip" <#if secret?? && secret.enable == true>data-confirm="请输入二次安全验证密码"</#if> title="停止服务将会调用JVM退出指令，请确认是否退出？" class="layui-btn layui-btn-small layui-btn-danger">停止服务</a>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">修改微信接收消息的日志级别</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>动态修改微信接收消息的日志级别</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">默认是INFO，调整到DEBUG能够方便微信消息排查错误</p>
+											</div>
+											<div class="col-lg-4">
+												<select name="loglevel" lay-filter="sysconfig">
+													<option value="info" <#if systemConfig?? && systemConfig.loglevel?? && systemConfig.loglevel == 'debug'>selected="selected"</#if>>INFO</option>
+													<option value="debug" <#if systemConfig?? && systemConfig.loglevel?? && systemConfig.loglevel == 'debug'>selected="selected"</#if>>DEBUG</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">启用服务SSL安全访问</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>启用SSL安全协议</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">启用后需要上传SSL证书和设置SSL证书密码</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="checkbox" title="启用" name="enablessl" lay-filter="enablessl" value="1" <#if systemConfig.enablessl>checked="checked"</#if>>
+											</div>
+										</div>
+										<div class="row httpsconfig" style="margin-top:20px;<#if systemConfig.enablessl == false>display:none;</#if>">
+											<div class="col-lg-8">
+												<p>
+													JKS证书文件
+													<span style="color:red;font-weight:bold;">${systemConfig.jksfile!''}</span>
+												</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">受信的SSL证书文件，请上传.JKS类型的证书文件
+													
+												</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<span id="jkstip"></span>
+												<div class="layui-box layui-upload-button">
+													<input type="file" name="keyfile" accept=".jks" lay-ext="jks"  class="layui-upload-file" onchange="$('#jkstip').html($(this).val());">
+													<span class="layui-upload-icon"><i class="layui-icon"></i>上传JKS文件</span>
+												</div>
+											</div>
+										</div>
+										<div class="row httpsconfig" style="margin-top:20px;<#if systemConfig.enablessl == false>display:none;</#if>">
+											<div class="col-lg-8">
+												<p>JKS证书密码</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">.JKS文件的证书密码，<b style="color:red;font-weight:bold;">如无改变，不用填写</b></p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="password" name="jkspassword" value="" autocomplete="off" class="layui-input">
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">启用涉及重要操作的二次验证密码</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>启用重要操作的二次密码验证</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">启用后重启服务器、关闭对话服务器和修改证书等操作将会进行二次安全验证</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="checkbox" title="启用" name="enable" lay-filter="enable" value="1" <#if secret?? && secret.enable>checked="checked"</#if>>
+											</div>
+										</div>
+										<#if secret?? && secret.enable == true>
+										<div class="row elablesec" style="margin-top:20px;<#if secret?? && secret.enable == true><#else>display:none;</#if>">
+											<div class="col-lg-8">
+												<p>已设定的旧的密码</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">请填写已经保存的旧的密码，提交后会验证旧密码是否正确</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="password" name="oldpass" id="oldpass" value="" autocomplete="off" class="layui-input">
+											</div>
+										</div>
+										</#if>
+										<div class="row elablesec" style="margin-top:20px;<#if secret?? && secret.enable == true><#else>display:none;</#if>">
+											<div class="col-lg-8">
+												<p>安全操作的二次验证新密码</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">首次设置密码无需验证旧密码</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="password" name="password" id="password" value="" autocomplete="off" class="layui-input">
+											</div>
+										</div>
+										<div class="row elablesec" style="margin-top:20px;<#if secret?? && secret.enable == true><#else>display:none;</#if>">
+											<div class="col-lg-8">
+												<p>再次确认安全操作的二次验证新密码</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;"><b style="color:red;font-weight:bold;">请保证新密码两次输入相同	</b></p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="password" name="repassword" id="repassword" value="" lay-verify="pass" autocomplete="off" class="layui-input">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">百度地图的Key代码（AK）</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>用于调用百度地图的API</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">需要使用的API包括坐标转换和Javascript接口</p>
+											</div>
+											<div class="col-lg-4">
+												<input type="text" name="mapkey" value="${systemConfig.mapkey!''}" autocomplete="off" class="layui-input">
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">工单系统布局方式</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>启用三栏布局</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">工单系统默认采用的是两栏布局，启用此功能后，工单系统展现将采用三栏布局方式</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="checkbox" title="启用" name="workorders" lay-filter="workorders" value="1" <#if systemConfig.workorders>checked="checked"</#if>>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop">
+									<div class="ukefu-webim-tl" style="clear:both;">启用权限控制</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>系统菜单的权限控制</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">默认不启用权限控制，如果选择启用，用户需要授权才能访问需要授权的系统菜单功能，系统管理员账号（admin）不受控制</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="checkbox" title="启用" name="auth" value="1" <#if systemConfig.auth>checked="checked"</#if>>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">启用语音平台模板配置</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>启用语音接入平台上的模板配置功能</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">开启后语音平台能够从系统模板中的配置信息读取配置文件，具备热更新能力</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="checkbox" title="启用" name="callcenter" lay-filter="callcenter" <#if systemConfig?? && systemConfig.callcenter == true>checked="checked"</#if>>
+											</div>
+										</div>
+									</div>
+									<div class="box-item" id="callcenter" style="position: relative;<#if systemConfig?? && systemConfig.callcenter == true><#else>display:none;</#if>">
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>a、选择分机配置模板</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">语音平台的分机资源模板配置文件，用于配置分机号码资源</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												     <select name="cc_extention">
+												     	<option value="">请选择分机配置模板...</option>
+												     	<#if templateList??>
+												     	<#list templateList as template>
+												        <option value="${template.id!''}" <#if systemConfig.cc_extention?? && template.id == systemConfig.cc_extention>selected="selected"</#if>>${template.name!''}</option>
+												        </#list>
+												        </#if>
+												      </select>
+												</div>	
+											</div>
+										</div>
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>b、呼叫中心配置</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">语音平台的呼叫中心配置模板</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												     <select name="cc_quene">
+												     	<option value="">请选择呼叫中心配置模板...</option>
+												     	<#if templateList??>
+												     	<#list templateList as template>
+												        <option value="${template.id!''}" <#if systemConfig.cc_quene?? && template.id == systemConfig.cc_quene>selected="selected"</#if>>${template.name!''}</option>
+												        </#list>
+												        </#if>
+												      </select>
+												</div>	
+											</div>
+										</div>
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>c、拨号计划（路由规则）</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">系统拨号计划、路由规则配置模板</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												    <select name="cc_router">
+												    	<option value="">请选择路由规则模板...</option>
+												     	<#if templateList??>
+												     	<#list templateList as template>
+												        <option value="${template.id!''}" <#if systemConfig.cc_router?? && template.id == systemConfig.cc_router>selected="selected"</#if>>${template.name!''}</option>
+												        </#list>
+												        </#if>
+												      </select>
+												</div>	
+											</div>
+										</div>
+										
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>d、IVR导航语音配置模板</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">语音平台的IVR导航语音菜单配置</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												    <select name="cc_ivr">
+												    	<option value="">请选择IVR模板...</option>
+												     	<#if templateList??>
+												     	<#list templateList as template>
+												        <option value="${template.id!''}" <#if systemConfig.cc_ivr?? && template.id == systemConfig.cc_ivr>selected="selected"</#if>>${template.name!''}</option>
+												        </#list>
+												        </#if>
+												      </select>
+												</div>	
+											</div>
+										</div>
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>e、访问列表控制（ACL）</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">语音平台的访问控制列表配置模板</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												    <select name="cc_acl">
+												    	<option value="">请选择ACL模板...</option>
+														<#if templateList??>
+													    <#list templateList as template>
+														<option value="${template.id!''}" <#if systemConfig.cc_acl?? && template.id == systemConfig.cc_acl>selected="selected"</#if>>${template.name!''}</option>
+													  	</#list>
+													   	</#if>
+													</select>
+												</div>	
+											</div>
+										</div>
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>f、语音网关配置（SPI中继）</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">语音平台的语音接入网关配置模板（SIP Trunk）</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												    <select name="cc_siptrunk">
+												    	<option value="">请选择SIP中继模板...</option>
+														<#if templateList??>
+													    <#list templateList as template>
+														<option value="${template.id!''}" <#if systemConfig.cc_siptrunk?? && template.id == systemConfig.cc_siptrunk>selected="selected"</#if>>${template.name!''}</option>
+													  	</#list>
+													   	</#if>
+													</select>
+												</div>	
+											</div>
+										</div>
+										
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>g、启用号码外呼功能</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">点击联系人电话号码自动拨号</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												    <input type="checkbox" title="启用" name="callout" <#if systemConfig?? && systemConfig.callout == true>checked="checked"</#if>>
+												</div>	
+											</div>
+										</div>
+										
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">启用工单系统的邮件通知</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>工单在流转到达的时候是否发送邮件通知</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">开启后工单状态变更的时候，会发送</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="checkbox" title="启用" name="enablemail" lay-filter="email" <#if systemConfig?? && systemConfig.enablemail == true>checked="checked"</#if>>
+											</div>
+										</div>
+									</div>
+									<div class="box-item" id="email" style="position: relative;<#if systemConfig?? && systemConfig.enablemail == true><#else>display:none;</#if>">
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>a、发送邮件的服务器</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">选用发送邮件的邮件服务器配置信息</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												     <select name="emailid">
+												     	<option value="">请选择邮件服务器...</option>
+												     	<#if sysMessageList??>
+												     	<#list sysMessageList as server>
+												        <option value="${server.id!''}" <#if systemConfig.emailid?? && server.id == systemConfig.emailid>selected="selected"</#if>>${server.name!''}</option>
+												        </#list>
+												        </#if>
+												      </select>
+												</div>	
+											</div>
+										</div>
+										
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>b、默认邮件模板</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">发送邮件的时候，默认使用的邮件模板</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												     <select name="emailworkordertp">
+												     	<option value="">请选择邮件模板...</option>
+												     	<#if workOrderList??>
+												     	<#list workOrderList as template>
+												        <option value="${template.id!''}" <#if systemConfig.emailworkordertp?? && template.id == systemConfig.emailworkordertp>selected="selected"</#if>>${template.name!''}</option>
+												        </#list>
+												        </#if>
+												      </select>
+												</div>	
+											</div>
+										</div>
+										
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>c、创建工单的邮件模板</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">创建工单的时候，发送给发起人的邮件模板</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												     <select name="mailcreatetp">
+												     	<option value="">请选择邮件模板...</option>
+												     	<#if workOrderList??>
+												     	<#list workOrderList as template>
+												        <option value="${template.id!''}" <#if systemConfig.mailcreatetp?? && template.id == systemConfig.mailcreatetp>selected="selected"</#if>>${template.name!''}</option>
+												        </#list>
+												        </#if>
+												      </select>
+												</div>	
+											</div>
+										</div>
+										
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>d、工单有状态改变的模板</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">工单的状态发生改变时候，发送给当前处理人的邮件模板</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												     <select name="mailupdatetp">
+												     	<option value="">请选择邮件模板...</option>
+												     	<#if workOrderList??>
+												     	<#list workOrderList as template>
+												        <option value="${template.id!''}" <#if systemConfig.mailupdatetp?? && template.id == systemConfig.mailupdatetp>selected="selected"</#if>>${template.name!''}</option>
+												        </#list>
+												        </#if>
+												      </select>
+												</div>	
+											</div>
+										</div>
+										
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>e、工单有状态变更的时候发送邮件给创建人</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">工单的状态发生改变时候，发送给工单状态变更邮件给创建人</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												     <input type="checkbox" title="启用" name="emailtocreater" <#if systemConfig?? && systemConfig.emailtocreater == true>checked="checked"</#if>>
+												</div>	
+											</div>
+										</div>
+										
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>f、工单有状态变更的时候发送给创建人的邮件模板</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">工单的状态发生改变时候，发送给工单创建人的邮件模板</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												     <select name="emailtocreatertp">
+												     	<option value="">请选择邮件模板...</option>
+												     	<#if workOrderList??>
+												     	<#list workOrderList as template>
+												        <option value="${template.id!''}" <#if systemConfig.emailtocreatertp?? && template.id == systemConfig.emailtocreatertp>selected="selected"</#if>>${template.name!''}</option>
+												        </#list>
+												        </#if>
+												      </select>
+												</div>	
+											</div>
+										</div>
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>g、工单邮件是否显示邮件收件人名称</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">工单邮件是否显示邮件收件人名称</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												     <input type="checkbox" title="启用" name="emailshowrecipient" <#if systemConfig?? && systemConfig.emailshowrecipient== true>checked="checked"</#if>>
+												</div>	
+											</div>
+										</div>
+										
+									</div>
+								</div>
+								
+								<div class="ukefu-webim-prop" hidden>
+									<div class="ukefu-webim-tl" style="clear:both;">启用多${systemConfig.namealias!'租户'}管理模式</div>
+									<div class="box-item">
+										<div class="row">
+											<div class="col-lg-8">
+												<p>启用多${systemConfig.namealias!'租户'}管理模式，运行系统中运行多个组织机构</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">开启后登录后首页会进入到${systemConfig.namealias!'租户'}选择模式</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<input type="checkbox" title="启用" name="enabletneant" lay-filter="tenant" <#if systemConfig?? && systemConfig.enabletneant == true>checked="checked"</#if>>
+											</div>
+										</div>
+									</div>
+									<div class="box-item" id="tenant" style="position: relative;<#if systemConfig?? && systemConfig.enabletneant == true><#else>display:none;</#if>">
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>a、多${systemConfig.namealias!'租户'}模式下共享组织机构、角色和用户</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">系统的组织机构、角色和账号系统租户共享</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												     <input type="checkbox" title="启用" name="tenantshare" <#if systemConfig?? && systemConfig.tenantshare == true>checked="checked"</#if>>
+												</div>	
+											</div>
+										</div>
+										
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>b、多${systemConfig.namealias!'租户'}模式别称</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">多${systemConfig.namealias!'租户'}模式在业务种的名称别称。</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												     <input type="text" name="namealias" value="<#if systemConfig.namealias?? && systemConfig.namealias!= ''>${systemConfig.namealias!''}<#else>租户</#if>" autocomplete="off" class="layui-input">
+												</div>	
+											</div>
+										</div>
+										
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>c、登录后进入到${systemConfig.namealias!'租户'}选择界面</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">登录后进入到${systemConfig.namealias!'租户'}选择界面</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												     <input type="checkbox" title="启用" name="tenantconsole" <#if systemConfig?? && systemConfig.tenantconsole == true>checked="checked"</#if>>
+												</div>	
+											</div>
+										</div>
+										
+										<div class="row" style="margin-bottom:20px;">
+											<div class="col-lg-8">
+												<p>d、开启自助注册机构的功能</p>
+												<p style="color:#888888;font-size:13px;margin-top:10px;">在登录界面上出现注册机构的功能，运行用户自助注册机构</p>
+											</div>
+											<div class="col-lg-4" style="text-align:right;">
+												<div class="layui-input-block">
+												     <input type="checkbox" title="启用" name="enableregorgi" <#if systemConfig?? && systemConfig.enableregorgi == true>checked="checked"</#if>>
+												</div>	
+											</div>
+										</div>
+										
+									</div>
+								</div>
+								
+							</div>
+							<div class="col-md-4">
+								<div class="ukefu-im-preview ukefu-im-preview-dialog" id="pv" style="width:380px;position: fixed;background-color:#e6e6e6;">
+									<div class="ukefu-im-preview-bar ukefu-theme-color <#if systemConfig?? && systemConfig.theme?? && systemConfig.theme == '01'>ukefu-system-theme1</#if><#if systemConfig?? && systemConfig.theme?? && systemConfig.theme == '02'>ukefu-system-theme2</#if><#if systemConfig?? && systemConfig.theme?? && systemConfig.theme == '03'>ukefu-system-theme3</#if>" style="padding:5px;" id="ukefu-sys-preview">
+										
+										<img src="/images/logo.png" style="height:22px;float:left;">
+									
+									</div>
+									<div class="ukefu-im-preview-menu"></div>
+									<div class="ukefu-im-preview-top">
+										<ul class="layui-tab-title">
+											<li lay-id="maincontent" class="ukefu-home"><i class="kfont" style="position: relative;"></i> 首页</li>
+											<li lay-id="admin" class="layui-this">系统管理</li>
+											<li lay-id="multiMediaDialogWin" class="">坐席对话</li>
+										</ul>
+									</div>
+									<div class="ukefu-im-preview-left"></div>
+									<div class="ukefu-im-preview-right"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-3"></div>
+		<div class="col-lg-9">
+			<div class="layui-form-item">
+			  <div class="layui-input-block">
+				<button class="layui-btn" lay-submit="" lay-filter="formDemo">保存</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			  </div>
+			</div>
+		</div>
+	</div>
+</form>
+
+<script language="javascript"> 	
+	<#if execute?? && execute == "false">
+	top.layer.alert('二次 验证密码设置失败，输入的密码错误，请重新操作！', {icon: 2});
+	</#if>
+	<#if msg??>
+		<#if msg == '1'>
+			top.layer.alert('二次验证密码设置成功', {icon: 1});
+		<#elseif msg == '2'>
+			top.layer.alert('二次验证密码设置失败，请确认两次输入的密码一致', {icon: 2});
+		<#elseif msg == '3'>
+			top.layer.alert('二次验证密码设置失败，旧的密码验证失败，请输入正确的密码', {icon: 2});
+		</#if>
+	</#if>
+	layui.use('form', function(){
+		var form = layui.form();
+		form.render('select'); //刷新select选择框渲染
+		form.on("checkbox(enablessl)" , function(data){
+			if(data.elem.checked == true){
+				$('.httpsconfig').show();
+			}else{
+				$('.httpsconfig').hide();
+			}
+		})
+		form.on("checkbox(enable)" , function(data){
+			if(data.elem.checked == true){
+				$('.elablesec').show();
+			}else{
+				$('.elablesec').hide();
+			}
+		})
+		form.on("checkbox(callcenter)" , function(data){
+			if(data.elem.checked == true){
+				$('#callcenter').show();		
+			}else{
+				$('#callcenter').hide();
+			}
+		});
+		form.on("checkbox(email)" , function(data){
+			if(data.elem.checked == true){
+				$('#email').show();		
+			}else{
+				$('#email').hide();
+			}
+		});
+		form.on("checkbox(tenant)" , function(data){
+			if(data.elem.checked == true){
+				$('#tenant').show();		
+			}else{
+				$('#tenant').hide();
+			}
+		});
+		form.verify({
+			pass:function(value){
+				if(value != $('#password').val()){
+					return "请确认两次输入密码相同" ;
+				}
+			}
+		});    
+	});
+</script>

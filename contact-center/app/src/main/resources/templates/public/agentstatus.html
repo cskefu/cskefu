@@ -1,0 +1,9 @@
+	<div class="agent-title" id="agents_status">服务中的人数：${agentStatusReport.users!''}人，当前排队人数：${agentStatusReport.inquene!''}人，在线坐席数：${agentStatusReport.agents!''}人，坐席忙：${agentStatusReport.busy!0}人</div>
+	<div id="agentstatus"
+		class="layui-unselect layui-form-switch <#if agentStatus??>layui-form-onswitch</#if>">
+		<i></i>
+	</div>
+	<div id="agentstatus_busy" style="<#if agentStatus??><#else>display:none;</#if>"
+		class="layui-unselect layui-form-switch layui-form-onswitch-notbusy <#if agentStatus?? && agentStatus.busy?? && agentStatus.busy>layui-form-onswitch-busy</#if>">
+		<i></i>
+	</div>

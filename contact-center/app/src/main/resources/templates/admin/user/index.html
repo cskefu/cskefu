@@ -1,0 +1,135 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="site-h1" style="background-color:#FFFFFF;">
+			用户列表<#if userList??>（${userList.totalElements!''}）</#if>
+			<span style="float:right;">
+				<button class="layui-btn layui-btn-small green" href="/admin/user/add.html" data-toggle="ajax" data-width="750" data-height="485" data-title="创建新用户">
+					创建新用户
+				</button>
+			</span>
+		</h1>
+		<div class="row" style="padding:5px;">
+			<p style="color:red">提示：除管理员外，账号必须在【组织结构】中关联一个部门，必须在【系统角色】中关联一个角色，才可以使用资源。设置后，该账号需重新登系统才能生效。</p>
+			<div class="col-lg-12">
+				<table class="layui-table" lay-skin="line">
+				  <colgroup>
+						<col>
+						<col>
+						<col>
+						<col>
+						<col>
+						<#if models?? && models["sales"]?? && models["sales"] == true>
+						<col>
+						</#if>
+						<col>
+						<col>
+						<col>
+				  </colgroup>
+				  <thead>
+					<tr>
+					  <th>用户</th>
+					  <th>姓名</th>
+					  <th>电子邮件</th>
+					  <th>手机</th>
+					  <th>多媒体</th>
+					  <#if models?? && models["sales"]?? && models["sales"] == true>
+					  <th>呼叫中心</th>
+					  </#if>
+					  <th>管理员</th>
+					  <th style="white-space:nowrap;" nowrap="nowrap">操作</th>
+					</tr> 
+				  </thead>
+				  <tbody>
+					<#if userList?? && userList.content??>
+					<#list userList.content as user>
+					<tr>
+					  <td>
+							<a href="javascript:void(0)">
+								<i class="layui-icon headimg">&#xe612;</i>
+								<div style="margin-left:50px;margin-top:0px;">
+									${user.username!''}
+									<#if user.datastatus == true><i style="color:red;">（已删除）</i></#if>
+								</div>
+								<div title="注册时间" style="margin-left:50px;margin-top:0px;color:#cccccc;font-size:13px;">
+									${user.createtime!''}
+								</div>
+								
+							</a>
+							
+					  </td>
+					  <td>${user.uname!''}</td>
+					  <td>${user.email!''}</td>
+					  <td>${user.mobile!''}</td>
+					  <td>
+					  	<#if user.agent>
+					  		<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
+					  	</#if>
+					  </td>
+					  <#if models?? && models["sales"]?? && models["sales"] == true>
+					  <td>
+					  	<#if user.callcenter>
+					  		<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
+					  	</#if>
+					  </td>
+					  </#if>
+					  <td>
+					  	<#if user.usertype?? && user.usertype =="0">
+					  		<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
+					  	</#if>
+					  </td>
+					  <td style="white-space:nowrap;" nowrap="nowrap">
+					  		<a href="/admin/user/edit.html?id=${user.id!''}" data-toggle="ajax" data-width="750" data-height="485" data-title="编辑用户信息">
+					  			<i class="layui-icon">&#xe642;</i>
+					  			编辑
+					  		</a>
+					  		<#if !(user.usertype?? && user.usertype == "0") && user.datastatus != true >
+					  		<a href="/admin/user/delete.html?id=${user.id!''}" style="margin-left:10px;" data-toggle="tip" data-title="请确认是否删除记录？">
+					  			<i class="layui-icon" style="color:red;">&#x1006;</i>
+					  			删除
+					  		</a>
+					  		</#if>
+					  </td>
+					</tr>
+					</#list>
+					</#if>
+				  </tbody>
+				</table>
+			</div> 	   
+		</div>
+		<div class="row" style="padding:5px;">
+			<div class="col-lg-12" id="page" style="text-align:center;"></div>
+		</div>
+	</div>	
+</div>
+<script>
+	layui.use('layer', function(){
+	  var layer = layui.layer;
+	  <#if msg?? && msg == 'username_exist'>
+		layer.alert('用户名存在，请重新填写', {icon: 2});
+	  <#elseif msg?? && msg == 'email_exist'>
+		layer.alert('邮件存在，请重新填写', {icon: 2});
+      <#elseif msg?? && msg == 'mobile_exist'>
+		layer.alert('手机存在，请重新填写', {icon: 2});
+      <#elseif msg?? && msg == 'sip_account_exist'>
+        layer.alert('SIP地址已经存在，请重新填写', {icon: 2});
+      <#elseif msg?? && msg == 't1'>
+		layer.alert('当前用户坐席就绪或对话未结束，不能切换为非坐席', {icon: 2});
+	  </#if>
+	});  
+	layui.use(['laypage', 'layer'], function(){
+		  var laypage = layui.laypage
+		  ,layer = layui.layer;
+		  
+		  laypage({
+				cont: 'page'
+				,pages: <#if userList??>${userList.totalPages}<#else>0</#if> //总页数
+				,curr:<#if userList??>${userList.number+1}<#else>0</#if>
+				,groups: 5 //连续显示分页数
+				,jump:function(data , first){
+					if(!first){
+						location.href = "/admin/user/index.html?p="+data.curr ;
+					}
+				}
+		   });
+		});
+</script>

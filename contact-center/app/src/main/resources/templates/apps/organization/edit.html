@@ -1,0 +1,55 @@
+<#include "/public/macro.html">
+<div class="uk-layui-form">
+	<form class="layui-form"  style="margin-top:10px;" action="/apps/organization/update.html"   method="post">
+	<input type="hidden" name="id" value="${organization.id!''}">
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label" style="width:150px;">企业名称：</label>
+				<div class="layui-input-inline">
+					<input type="text" name="name" required lay-verify="required" autocomplete="off"
+						class="layui-input" value="${organization.name!''}" maxlength="50">
+				</div>
+				<div class="layui-form-mid layui-word-aux">
+	            	<font color="red">*</font> 
+	            </div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label" style="width:150px;">企业类型：</label>
+				<div class="layui-input-inline">
+					<@select2 "com.dic.organization.type" "orgtype" organization.orgtype!'' "lay-verify=required" "style=width:360px;" "企业类型"/>
+				</div>
+				<div class="layui-form-mid layui-word-aux">
+	            	<font color="red">*</font> 
+	            </div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label" style="width:150px;">企业规模：</label>
+				<div class="layui-input-inline">
+					<@select2 "com.dic.organization.scale" "orgscale" organization.orgscale!'' "lay-verify=required" "style=width:360px;" "企业规模"/>
+				</div>
+				<div class="layui-form-mid layui-word-aux">
+	            	<font color="red">*</font> 
+	            </div>
+			</div>
+		</div>
+		<div class="layui-form-button">
+			<div class="layui-button-block">
+				<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+	</form>
+</div>
+<script>
+	layui.use('form', function() {
+		var form = layui.form();
+		form.render(); //更新全部
+	});
+	layui.use('element', function(){
+		var element = layui.element();
+	});
+</script>

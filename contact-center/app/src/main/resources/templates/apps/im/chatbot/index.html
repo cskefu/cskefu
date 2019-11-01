@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="viewport"
+          content="width=device-width, maximum-scale=1.0, initial-scale=1.0,initial-scale=1.0,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>在线咨询</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?t=1489039620156"/>
+    <link rel="stylesheet" type="text/css" href="/im/css/ukefu.css">
+    <link rel="stylesheet" id="skin" type="text/css" href="/im/css/default/ukefu.css">
+    <!-- kindeditor -->
+    <link rel="stylesheet" type="text/css" href="/im/js/kindeditor/themes/default/default.css">
+
+    <script src="/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="/im/js/kindeditor/kindeditor.js"></script>
+    <script type="text/javascript" src="/im/js/kindeditor/lang/zh-CN.js"></script>
+    <script src="/im/js/socket.io.js"></script>
+    <script type="text/javascript">
+        var editor , words;
+        var newmessage = [] , ring = [];
+        newmessage['mp3'] = '/images/message.mp3';
+        ring['mp3'] = '/images/ring.mp3';
+        KindEditor.ready(function (K) {
+            editor = K.create('textarea[name="content"]', {
+                autoHeightMode: false,
+                width: "100%",
+                resizeType: 0,
+                themeType: 'simple',
+                fontsize: 16,
+                newlineTag : "br" ,
+                uploadJson : "/im/image/upload.html?userid=${userid!''}",
+                allowFileManager : false,
+                allowInsertUpload:false,		//增加的参数，上传图片后是否插入到当前区域
+                allowImageRemote:false,
+                filterMode:true,
+                items: ['emoticons', 'cut'],
+                htmlTags: {img : ['src', 'width', 'height', 'border', 'alt', 'title', 'align', '.width', '.height', '.border'] , br:[]}  ,
+                afterChange : function() {
+                    var count = this.count() ;
+                    var limitNum = <#if inviteData.maxwordsnum gt 0>${inviteData.maxwordsnum}<#else>300</#if>;  //设定限制字数
+                    var pattern = '还可以输入' + limitNum + '字';
+                    var strValue = this.html();
+                    if(count > limitNum) {
+                        pattern = ('字数超过限制，请适当删除部分内容');
+                        //超过字数限制自动截取
+                        strValue = strValue.substring(0,limitNum);
+                        editor.html(strValue);
+                    } else {
+                        //计算剩余字数
+                        var result = limitNum - this.count();
+                        pattern = '还可以输入' +  result + '字';
+                        if(result < 20){
+                            document.getElementById('surplus').style.color = "red" ;
+                        }else{
+                            document.getElementById('surplus').style.color = "#000000" ;
+                        }
+                    }
+                    if(this.count("text") == 0){
+                        strValue= "" ;
+                    }
+                    // ignore writting in Chatbot Service
+                    // if(words != this.count("text")){
+                    //     socket.emit('message', {
+                    //         appid : "${appid!''}",
+                    //         userid:"${userid!''}",
+                    //         type:"writing",
+                    //         session:"${sessionid!''}",
+                    //         orgi:"${orgi!''}",
+                    //         message : strValue
+                    //     });
+                    // }
+                    words = this.count("text") ;
+                    document.getElementById('surplus').innerHTML = count+"/"+limitNum+" , " + pattern; //输入显示
+                    ////////
+                },
+                afterCreate : function() { //设置编辑器创建后执行的回调函数
+                    var self = this;
+                <#if inviteData?? && inviteData.ctrlenter?? && inviteData.ctrlenter == true>
+                    //Ctrl+Enter提交表单
+                    K.ctrl(document, 13, function() {
+                        self.sync();
+                        sendMessage();
+                    });
+                    K.ctrl(self.edit.doc, 13, function() {
+                        self.sync();
+                        sendMessage();
+                    });
+                <#else>
+                    var kindEditorIframe = $("iframe").contents().find("body");
+                    kindEditorIframe.keydown(function (event) {
+                        if(event.keyCode==13 && !event.ctrlKey){
+                            self.sync();
+                            sendMessage();
+                            return false;
+                        }else if(event.keyCode==13 && event.ctrlKey){
+                            editor.insertHtml('<br/>');
+                        }
+                    });
+                    //Ctrl+Enter提交表单
+                    K.ctrl(document, 13, function() {
+                        editor.insertHtml('<br/>');
+                    });
+                    K.ctrl(self.edit.doc, 13, function() {
+                        editor.insertHtml('<br/>');
+                    });
+                </#if>
+                }
+            });
+        });
+        KindEditor.options.cssData = "body { font-size: 15px; font-family:'Microsoft Yahei', 'Helvetica', 'Simsun', 'Arial';}";
+        var R3Ajax = {
+            ajax:function(opt){
+                var xhr = this.createXhrObject();
+                xhr.onreadystatechange = function(){
+                    if(xhr.readyState!=4) return ;
+                    (xhr.status===200 ?
+                        opt.success(xhr.responseText,xhr.responseXML):
+                        opt.error(xhr.responseText,xhr.status));
+                }
+                xhr.open(opt.type,opt.url,true);
+                if(opt.type!=='post')
+                    opt.data=null;
+                else
+                    xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+                opt.data = this.parseQuery(opt.data);
+                xhr.send(opt.data);
+            },
+            post:function(url,success,data){
+                var popt = {
+                    url:url,
+                    type:'post',
+                    data:data,
+                    success:success,
+                    error:function(data){}
+                }
+                this.ajax(popt);
+            },
+            get:function(url,success){
+                var gopt = {
+                    url:url,
+                    type:'get',
+                    success:success,
+                    error:function(){}
+                }
+                this.ajax(gopt);
+            },
+            createXhrObject:function(){
+                var methods = [
+                    function(){ return new XMLHttpRequest();},
+                    function(){ return new ActiveXObject('Msxml2.XMLHTTP');},
+                    function(){ return new ActiveXObject('Microsoft.XMLHTTP');}
+                ];
+                for(var i=0;len=methods.length,i<len;i++){
+                    try{
+                        methods[i]();
+                    }catch(e){
+                        continue;
+                    }
+                    this.createXhrObject = methods[i];
+                    return methods[i]();
+                }
+                throw new Error('Could not create an XHR object.');
+            },
+            parseQuery:function(json){
+                if(typeof json == 'object'){
+                    var str = '';
+                    for(var i in json){
+                        str += "&"+i+"="+encodeURIComponent(json[i]);
+                    }
+                    return str.length==0 ? str : str.substring(1);
+                }else{
+                    return json;
+                }
+            },
+            audioplayer:function(id, file, loop) {
+                var audioplayer = document.getElementById(id);
+                if (audioplayer != null) {
+                    document.body.removeChild(audioplayer);
+                }
+
+                if (typeof(file) != 'undefined') {
+                    if (navigator.userAgent.indexOf("MSIE") > 0) { // IE
+                        var player = document.createElement('bgsound');
+                        player.id = id;
+                        player.src = file['mp3'];
+                        player.setAttribute('autostart', 'true');
+                        if (loop) {
+                            player.setAttribute('loop', 'infinite');
+                        }
+                        document.body.appendChild(player);
+
+                    } else { // Other FF Chome Safari Opera
+                        var player = document.createElement('audio');
+                        player.id = id;
+                        player.setAttribute('autoplay', 'autoplay');
+                        if (loop) {
+                            player.setAttribute('loop', 'loop');
+                        }
+                        document.body.appendChild(player);
+
+                        var mp3 = document.createElement('source');
+                        mp3.src = file['mp3'];
+                        mp3.type = 'audio/mpeg';
+                        player.appendChild(mp3);
+                    }
+                }
+            }
+        };
+        Date.prototype.format = function(fmt) {
+            var o = {
+                "M+" : this.getMonth()+1,                 //月份
+                "d+" : this.getDate(),                    //日
+                "h+" : this.getHours(),                   //小时
+                "m+" : this.getMinutes(),                 //分
+                "s+" : this.getSeconds(),                 //秒
+                "q+" : Math.floor((this.getMonth()+3)/3), //季度
+                "S"  : this.getMilliseconds()             //毫秒
+            };
+            if(/(y+)/.test(fmt)) {
+                fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+            }
+            for(var k in o) {
+                if(new RegExp("("+ k +")").test(fmt)){
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+                }
+            }
+            return fmt;
+        }
+        var R3Helper = {
+            resize : function(){
+                var height = document.body.offsetHeight ;
+                document.getElementById('above').style.height = (height - 194 - 50)+"px" ;
+            }
+        }
+        function submitForm(form){
+            R3Ajax.post("/im/satis.html?orgi=${orgi!''}" , function(){
+                document.getElementById("diaShade").style.display = "none" ;
+                document.getElementById("dialogWrap").style.display = "none" ;
+                alert("服务评价已提及，请关闭浏览器！");
+                service_end = true;
+            } , "id="+form.id.value+"&satislevel="+document.getElementById("satislevel_input").value +"&satiscomment="+encodeURIComponent(document.getElementById("comment_input").value ));
+            return false ;
+        }
+        window.onbeforeunload = function(){
+            if(service_end == false){
+            <#if sessionConfig?? && sessionConfig.satisfaction?? && sessionConfig.satisfaction>
+                document.getElementById("diaShade").style.display = "block" ;
+                document.getElementById("dialogWrap").style.display = "block" ;
+            </#if>
+                return "您确定断开对话？" ;
+            }
+        }
+
+    </script>
+    <!-- kindeditor -->
+    <style>
+        .msg-btn {
+            border: #4598ee 1px solid;
+            padding: 5px;
+            margin: 5px;
+            min-width: 125px;
+            text-align: center;
+            display: inline-block;
+            background-color: #e6f2ff;
+            cursor: default;
+        }    
+
+        .msg-list {
+            color: #4598ee
+        }
+
+        .msg-card {
+            display: inline-block;
+            color: #000000;
+        }
+
+        .msg-crad-right {
+            position: relative;
+            left: 10px;
+            width: 210px;
+            height: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-box{
+            cursor: default;
+            width: 300px;
+            height: 82px;
+            padding: 6px;
+        }
+    </style>
+</head>
+<body style="overflow:hidden;" class="ukefu-point-text">
+<div class="large ukefu-im-theme <#if type?? && type='text'>ukefu-theme-border-${inviteData.consult_dialog_color!''}</#if>">
+    <div id="containter" class="clearfix">
+        <div id="header" class="theme${inviteData.consult_dialog_color!''}">
+            <img src="<#if inviteData?? && inviteData.consult_dialog_logo??>/res/image.html?id=${inviteData.consult_dialog_logo?url}<#else>/images/logo.png</#if>" style="height:30px;padding:10px;">
+            <div class="ukefu-func-tab">
+                <ul>
+                    <#if models?? && models["chatbot"]?? && models["chatbot"] == true && inviteData.ai && aiid??>
+                    <#if !exchange?? || exchange == "true">
+                    <li><a href="/im/index.html?appid=${appid!''}&orgi=${orgi!''}&ai=false<#if client??>&client=${client!''}</#if><#if type??>&type=text</#if><#if skill??>&skill=${skill!''}</#if><#if agent??>&agent=${agent!''}</#if><#if title??>&title=${title?url}</#if><#if url??>&url=${url?url}</#if><#if traceid??>&traceid=${traceid}</#if>&userid=${userid!''}&sessionid=${sessionid!''}&t=${.now?long}">人工坐席</a></li>
+                    </#if>
+                    <li class="cur"><a href="javascript:void(0)">智能客服</a></li>
+                <#else>
+                    <li class="cur"><a href="javascript:void(0)">智能客服</a></li>
+                </#if>
+            </ul>
+        </div>
+    </div>
+    <div class="content-left">
+        <div class="chat-above" id="above">
+            <#if welcomeAd>
+            <div class="clearfix message  welcome">
+            		<span id="welcome-message">
+            			<#if welcomeAd.adtype =="image">
+						<a href='${welcomeAd.url!''}' title='${welcomeAd.tiptext!''}' target='_blank'><img src='${welcomeAd.imgurl!''}' style='max-width:420px;max-height:178px;margin:0px;vertical-align: middle;'/></a>
+                        <#else>
+						<div style='padding:0px 5px 10px 5px;border-bottom:1px solid #dedede;'><a href='${welcomeAd.url!''}' title='${welcomeAd.tiptext!''}' target='_blank' id='point_ad_text'>${(welcomeAd.content!'')?no_esc}</a></div>
+						</#if>
+                </span>
+            </div>
+        </#if>
+        <div class="clearfix message  welcome">
+            <span id="welcome-message">${(inviteData.dialog_message!'欢迎您来咨询！欢迎使用春松客服！如需帮助请联系 info@chatopera.com')?no_esc}</span></div>
+        <#if chatMessageList?? && chatMessageList.content??>
+        <#list chatMessageList.content?reverse as chatMessage>
+        <#if chatMessage.userid?? && userid?? && chatMessage.calltype?? && chatMessage.calltype = "呼入">
+        <div class="clearfix chat-block">
+            <div class="chat-right">
+                <img class="user-img" src="/im/img/user.png" alt="">
+                <div class="chat-message">
+                    <label class="time">${chatMessage.createtime!''}</label>
+                    <label class="user">${chatMessage.username!''}</label>
+                </div>
+                <div class="chatting-right">
+                    <i class="arrow arrow${inviteData.consult_dialog_color!''}"></i>
+                    <div class="chat-content theme${inviteData.consult_dialog_color!''}"><#include "/apps/im/media/message.html"></div>
+                </div>
+            </div>
+        </div>
+        <#else>
+        <div class="clearfix chat-block">
+            <div class="chat-left">
+                <img class="user-img" src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" alt="">
+                <div class="chat-message">
+                    <label class="user"><#if chatMessage?? && chatMessage.chatype?? && chatMessage.chatype == 'aireply'>${inviteData.ainame!'小松'}<#else>${chatMessage.username!''}</#if></label>
+                    <label class="time">${chatMessage.createtime!''}</label>
+                </div>
+                <div class="chatting-left">
+                    <i class="arrow"></i>
+                    <div class="chat-content"><#include "/apps/im/media/message.html"></div>
+                </div>
+            </div>
+        </div>
+    </#if>
+</#list>
+</#if>
+</div>
+<div class="chat-bottom" id="bottom">
+    <textarea id="message" name="content" style="visibility:hidden;"></textarea>
+    <div class="btn-push clearfix">
+        <div style="float:left;height:34px;line-height:34px;margin: 10px 20px 10px 5px;" id="surplus">0/200</div>
+        <button type="button" class="send-btn active special  clearfix" id="sent" onclick="sendMessage()">
+            发送
+        </button>
+    </div>
+</div>
+</div>
+<div class="content-rig">
+    <div class="content-list" style="padding-top:50px;">
+        <div class="content-head">
+            <p>信息提示</p>
+        </div>
+        <ul>
+            <#if inviteData.dialog_name?? && inviteData.dialog_name != "">
+            <li>
+                <p>名称：${inviteData.dialog_name!''}</p>
+            </li>
+        </#if>
+        <#if inviteData.dialog_address?? && inviteData.dialog_address != "">
+        <li>
+            <p>地址：${inviteData.dialog_address!''}</p>
+        </li>
+    </#if>
+    <#if inviteData.dialog_phone?? && inviteData.dialog_phone != "">
+    <li>
+        <p>电话：${inviteData.dialog_phone!''}</p>
+    </li>
+</#if>
+<#if inviteData.dialog_mail?? && inviteData.dialog_mail != "">
+<li>
+    <p>邮件：${inviteData.dialog_mail!''}</p>
+</li>
+</#if>
+<#if inviteData.dialog_mail?? && inviteData.dialog_introduction != "">
+<li>
+    <p style="text-indent:25px;line-height:25px;">${(inviteData.dialog_introduction!'')?no_esc}</p>
+</li>
+</#if>
+</ul>
+</div>
+<div class="content-pic" style="width:100%;height:192px;">
+    <#if imageAd>
+    <#if imageAd.adtype =="image">
+    <a href='${imageAd.url!''}' title='${imageAd.tiptext!''}' target='_blank'><img src='${imageAd.imgurl!''}' style='max-width:100%;max-height:190px;margin:0px;vertical-align: middle;'/></a>
+    <#else>
+    <div style='padding:0px 5px 10px 5px;border-bottom:1px solid #dedede;'><a href='${imageAd.url!''}' title='${imageAd.tiptext!''}' target='_blank' id='point_ad_text'>${(imageAd.content!'')?no_esc}</a></div>
+</#if>
+<#elseif inviteData.dialog_ad??>
+<img src="/res/image.html?id=${inviteData.dialog_ad!''}" style="height:190px;width:100%;">
+</#if>
+</div>
+</div>
+</div>
+<div id="footer"></div>
+</div>
+<#if sessionConfig?? && sessionConfig.satisfaction?? && sessionConfig.satisfaction>
+<!--调查问卷弹框-->
+<div class="diaShade" id="diaShade" style="display: none"></div>
+<div class="dialogWrap" id="dialogWrap" style="display: none">
+    <div class="dialogCon">
+        <form id="commentContent" onSubmit="return submitForm(this)">
+            <input type="hidden" name="id" id="agentserviceid" name="agentserviceid">
+            <h2 class="diaHeader clearfix">
+                <span>评价</span>
+                <hr>
+            </h2>
+            <p class="title">您是否对此次服务满意?</p>
+            <!--评价-->
+            <p style="margin-top:20px;">
+                <span style="float:left;">评价：</span>
+                <span style="position: relative;top: 0px;left: 13px;">
+                <#assign defaultvalue = "">
+                <#if commentList??>
+                <#list commentList as comment>
+                <input type="radio" name="satislevel" value="${comment.code!''}" <#if comment_index == 0>checked="checked"</#if> id="dic_${comment.id!''}" onclick="document.getElementById('satislevel_input').value = this.value">
+                <label for="dic_${comment.id!''}" class="radio">${comment.name!''}</label>
+                <#if defaultvalue == "">
+                <#assign defaultvalue = comment.code>
+            </#if>
+        </#list>
+    </#if>
+    <input type="hidden" id="satislevel_input" name="t" value="${defaultvalue}">
+    </span>
+    </p>
+    <!--描述-->
+    <p style="margin-top:20px;">
+        <span style="float:left;">意见：</span>
+        <span style="position: relative;top: 0px;left: 10px;">
+                	<input type="hidden" id="comment_input" name="t">
+                	<#if commentItemList??>
+                	<#list commentItemList as item>
+                	<div style="margin-left:55px;margin-bottom:20px;">
+                		<input type="radio" name="comment" id="item_${item.id!''}" value="${item.id!''}" onclick="document.getElementById('comment_input').value = this.value">
+                		<label for="item_${item.id!''}" class="radio">
+                			${item.name!''}
+                		</label>
+                	</div>
+                	</#list>
+    </#if>
+    </span>
+    </p>
+    <!--按钮-->
+    <p class="submitBtnWrap">
+        <input type="submit" class="btn submitBtn" id="submitBtn" value="提 交">
+    </p>
+    </form>
+</div>
+</div>
+</#if>
+<script>
+    var service_end = false ;
+    R3Helper.resize();
+    // 调查问卷
+    var diaShade=document.getElementById('diaShade');
+    var dialogWrap=document.getElementById('dialogWrap');
+    function popup(para) {
+        diaShade.style.display=para;
+        dialogWrap.style.display=para;
+    }
+    <#if !welcomeAd>
+    document.getElementById('above').scrollTop = document.getElementById('above').scrollHeight  ;	//滚动到 对话内容的 底部
+    </#if>
+    // 参数连接
+    var hostname = location.hostname ;
+    var protocol = window.location.protocol.replace(/:/g,'');
+    var socket = io(protocol + '://'+hostname+':${port}/im/chatbot?userid=${userid!''}&orgi=${orgi!''}&session=${sessionid!''}&appid=${appid!''}&osname=${(osname!'')?url}&browser=${(browser!'')?url}<#if skill??>&skill=${skill}</#if><#if username??>&nickname=${username}</#if><#if agent??>&agent=${agent}</#if><#if title??>&title=${title?url}</#if><#if traceid??>&url=${url?url}</#if><#if traceid??>&traceid=${traceid}</#if><#if aiid??>&aiid=${aiid}</#if>', {transports: ['websocket', 'polling']});
+    socket.on('connect',function(){
+        <#if contacts?? && contacts.name??>
+        socket.emit('new', {
+            name : "${contacts.name!''}",
+            phone:"${contacts.phone!''}",
+            email:"${contacts.email}",
+            memo:"${contacts.memo!''}",
+            orgi:"${inviteData.orgi!''}",
+            appid : "${appid!''}"
+        });
+    </#if>
+    })
+    socket.on("agentstatus",function(data){
+        document.getElementById('connect-message').innerHTML=data.message;
+    })
+    socket.on("status",function(data){
+    <#if welcomeAd>
+            output('<span id="connect-message">'+data.message+'</span>' , 'message connect-message' , false);
+    <#else>
+        output('<span id="connect-message">'+data.message+'</span>' , 'message connect-message' , true);
+    </#if>
+        if(data.messageType == "end"){
+            service_end = true ;
+            editor.readonly();
+        <#if sessionConfig?? && sessionConfig.satisfaction?? && sessionConfig.satisfaction>
+
+            document.getElementById("diaShade").style.display = "block" ;
+            document.getElementById("dialogWrap").style.display = "block";
+        </#if>
+        }
+        if(document.getElementById("agentserviceid")){
+            document.getElementById("agentserviceid").value = data.agentserviceid ;
+        }
+    })
+    socket.on('message', function(data) {
+        var chat=document.getElementsByClassName('chatting-left').innerText;
+        chat = data.message;
+        console.log("On Server Message from Chatbot: ", chat, ", 动态参数 data.expmsg：", data.expmsg);
+
+        if(data.messageType == "image"){
+            chat = "<a href='"+data.message+"&original=true' target='_blank'><img src='"+data.message+"' class='ukefu-media-image'/></a>" ;
+        }else if(data.messageType == "file"){
+            chat = "<div class='ukefu-message-file'><div class='ukefu-file-icon'><img src='/im/img/file.png'></div><div class='ukefu-file-desc'><a href='"+data.message+"' target='_blank'><div>"+data.filename+"</div><div>"+(data.filesize/1024).toFixed(3)+"Kb</div></a></div></div>" ;
+        }
+        if(data.calltype == "呼入"){
+            output('<div class="chat-right"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label class="time">'+data.createtime+'</label><label class="user">' + data.username +  '</label></div><div class="chatting-right"><i class="arrow arrow${inviteData.consult_dialog_color!''}"></i><div class="chat-content theme${inviteData.consult_dialog_color!''}">'+chat+'</div></div>' , "chat-block");
+        }else if(data.calltype == "呼出"){
+            if(data.expmsg){
+                showExtmsg(data.username, data.createtime,data.message ,data.expmsg);
+            }
+            else{
+                output('<div class="chat-left"> <img class="user-img" src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" alt=""><div class="chat-message"><label  class="user">'+data.username+'</label><label class="time">'+data.createtime+'</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content">'+chat+'</div></div>' , "chat-block");
+            }
+            R3Ajax.audioplayer('audioplane', newmessage, false); // 播放
+        }
+    });
+
+    socket.on('disconnect',function() {
+        output('<span id="connect-message">连接坐席失败，在线咨询服务不可用</span>' , 'message connect-message');
+    });
+
+    function createButton(message, data) {
+        var element = $('<div><p>' + message + '</p><div class="button-box"></div></div>')
+        var list = element.find('.button-box');
+        for (let i = 0; i < data.length; i++) {
+            var item = data[i];
+            var allowClick = true;
+            var btn = $('<div class="msg-btn" style="background-color: #e6f2ff !important;">' + item.label + '</div>');
+            var regClick = function (key) {
+                btn.click(function () {
+                    if (allowClick) {
+                        allowClick = false;
+                        socket.emit('message', {
+                            appid: "${appid!''}",
+                            userid: "${userid!''}",
+                            type: "message",
+                            session: "${sessionid!''}",
+                            orgi: "${orgi!''}",
+                            message: key
+                        });
+                    }
+                });
+            }
+            regClick(item.text);
+            list.append(btn);
+        }
+
+        return element;
+    }
+
+    function createQList(message,data){
+        var element = $('<div><p>' + message + '</p><div class="button-box"></div></div>')
+        var list = element.find('.button-box');
+        for (let i = 0; i < data.length; i++) {
+            var item = data[i];
+            var btn = $('<div class="msg-list">' + item.label + '</div>');
+            var regClick = function (key) {
+                btn.click(function () {
+                    socket.emit('message', {
+                        appid: "${appid!''}",
+                        userid: "${userid!''}",
+                        type: "message",
+                        session: "${sessionid!''}",
+                        orgi: "${orgi!''}",
+                        message: key
+                    });
+                });
+            }
+            regClick(item.text);
+            list.append(btn);
+        }
+
+        return element;
+    }
+
+    function createCard(message,data){
+        let item = data[0];
+
+        let html = '<div class="card-box" style="background-color: #fff !important;"><div class="msg-card" style="background-color: #fff !important;"><img src="' + item.thumbnail + '" style="width: 80px;height: 80px;"></div><div class="msg-card msg-crad-right" style="background-color: #fff !important;"><h3 style="background-color: #fff !important;">' + item.title + '</h3><p style="background-color: #fff !important;">' + item.summary + '</p></div></div>'
+
+        var element = $(html);
+        element.click(function(){
+            window.open(item.hyperlink);
+        })
+
+        return element;
+    }
+
+    function showExtmsg(username,createtime,message,json) {
+        var expmsg = JSON.parse(json);
+
+        var type = expmsg[0].type;
+        var content;
+        if (type == 'button') {
+            content = createButton(message,expmsg);
+        } else if (type == 'qlist') {
+            content = createQList(message,expmsg);
+        } else if (type == 'card') {
+            content = createCard(message,expmsg);
+        }
+
+        var box = $('<div class="chat-left"> <img class="user-img" src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" alt=""><div class="chat-message"><label  class="user">'+username+'</label><label class="time">'+createtime+'</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content"></div></div>');
+
+        box.find('.chat-content').append(content);
+
+        output(box,'chat-block')
+    }
+
+    function sendDisconnect(){
+        socket.disconnect();
+    }
+    function sendMessage() {
+        editor.sync();
+        var count = editor.count("text");
+        if(count>0 && service_end == false){
+            var message = document.getElementById('message').value;
+            if(message!= ""){
+                socket.emit('message', {
+                    appid : "${appid!''}",
+                    userid:"${userid!''}",
+                    type:"message" ,
+                    session:"${sessionid!''}",
+                    orgi:"${orgi!''}",
+                    message :  message
+                });
+            }
+        }else if(service_end == true){
+            alert("坐席已断开和您的对话");
+        }
+        editor.html('');
+    }
+    function output(message , clazz , scroll) {
+        if(clazz == "message connect-message"){
+            var messages = document.getElementsByClassName("connect-message") ;
+            for(inx =0 ; inx < messages.length ; ){
+                document.getElementById('above').removeChild(messages[inx]) ;
+                inx++ ;
+            }
+        }
+
+        var element = $("<div class='clearfix "+clazz+"'></div>");
+        element.append(message);
+        $('#above').append(element);
+        if(scroll == null || scroll == true){
+            document.getElementById('above').scrollTop = document.getElementById('above').scrollHeight  ;
+        }
+    }
+    function update(id , message) {
+        document.getElementById(id).innerHTML= message;
+    }
+
+    var message={
+        // text:data.message,
+        // picture:function(){
+
+        // }
+        // file:function(){
+
+        // }
+        // lang:function(){
+
+        // }
+        // goods:function(){
+
+        // }
+        // POI:function(){
+
+        // }
+
+    }
+    // 回车事件
+    document.onkeyup=function(e){
+        if(!e) e=window.event;
+        if((e.keyCode||e.which)==13){
+            document.getElementById('sent').click();
+        }
+    }
+    window.onresize = function(){
+        R3Helper.resize();
+    };
+</script>
+</body>
+</html>

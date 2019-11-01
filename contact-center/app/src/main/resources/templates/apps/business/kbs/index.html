@@ -1,0 +1,508 @@
+<div class="layui-side layui-bg-black layui-layout-content ukefu-tab">
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="site-h1">
+				知识贡献
+			</h1>
+			<div class="box ukefu-console" style="padding-top:0px !important;">
+				<img src="/images/bg.jpg"
+					alt="admin">
+				<div class="ukefu-user-index">
+					<h1>
+						${user.username!''}（${user.uname!''}）
+					</h1>
+					<#if user.lastlogintime??>
+					<div class="ukefu-join-time ukefu-text-muted">
+				      登录时间：${user.lastlogintime?string("HH:mm:ss")}
+					</div>
+					</#if>
+				</div>
+			</div>
+			<div class="box ukefu-console">
+				<div class="ukefu-relation">
+					<span lay-event="" class="ukefu-relation-item">知识<a
+						href="/service/current/index.html"
+						class="measure"> ${agentUserCount!0} </a>
+					</span> <span lay-event="" class="ukefu-relation-item">评论<a
+						href="/apps/onlineuser.html"
+						class="measure"> ${0} </a>
+					</span> <span lay-event="" class="ukefu-relation-item">审核<a
+						href="/apps/onlineuser.html"
+						class="measure" <#if inviteResult.refuseusers gt 0>style="color:red !important;"</#if>> 0 </a>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12">	
+			<ul class="layui-nav layui-nav-tree" lay-filter="setting">
+				<li class="layui-nav-item layui-nav-itemed">
+					<a class="layui-nav-title" href="javascript:;">快捷菜单<span class="layui-nav-more"></span></a>
+					<dl class="layui-nav-child ukefu-kbs-quick">
+						<dd class="layui-this">
+							<a href="/apps/kbs/index.html">知识门户</a>
+							<div class="tip">1545</div>
+						</dd>
+						<dd>
+							<a href="/apps/kbs/list.html">共享知识库</a>
+							<div class="tip">1545</div>
+						</dd>
+						<dd>
+							<a href="/setting/agent/index.html">发表新知识</a>
+						</dd>
+						<dd>
+							<a href="/setting/blacklist.html">我发布的知识</a>
+							<div class="tip">0</div>
+						</dd>
+						<dd >
+							<a href="/setting/acd.html">我收藏的知识</a>
+							<div class="tip">0</div>
+						</dd>
+						<dd>
+							<a href="/setting/quickreply.html">待我审批的知识</a>
+							<div class="tip">0</div>
+						</dd>
+						<dd>
+							<a href="/setting/quickreply.html">知识库专家</a>
+							<div class="tip">2</div>
+						</dd>
+						<dd>
+							<a href="/setting/quickreply.html">最新知识（7天内）</a>
+							<div class="tip">2</div>
+						</dd>
+						<dd>
+							<a href="/setting/quickreply.html">最新评论知识</a>
+							<div class="tip">22</div>
+						</dd>
+					</dl>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="layui-body ukefu-chat-agent">
+	<div class="main-agentuser">
+		<div class="layui-side-scroll">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="site-h1">
+						知识地图
+					</h1>
+					<form class="layui-form" action="">
+					<div class="row">
+						<div class="col-lg-10">
+							<div class="ukefu-kbs-cat" style="padding-left:10px;">
+								<div class="layui-tab">
+								  <ul class="layui-tab-title">
+								    <li class="layui-this">所有知识</li>
+								    <li>个人知识</li>
+								    <li>部门知识</li>
+								    <li>收藏的知识</li>
+								  </ul>
+								  <div class="layui-tab-content" style="padding: 0px;">
+								    <div class="layui-input-inline" style="width:100%;padding:0px 20px 0px 0px;position: relative;">
+										<input type="text" placeholder="请输入查询条件" value="" class="layui-input layui-unselect" style="border-top:0px;">
+										<i class="layui-icon ukefu-kbs-btn" style="font-size:24px;">&#xe615;</i>
+									</div>
+								  </div>
+								</div>
+							</div>
+							<div class="ukefu-kbs-cat">
+								<div class="layui-form-item">
+									<label class="layui-form-label" style="padding:0px;">热门搜索：</label>
+									<div class="layui-input-block" style="padding:0px;margin-left: 100px;">
+										<a href="">产品手册</a> 
+										<a href="" style="margin-left:20px;">功能说明书</a>
+										<a href="" style="margin-left:20px;">功能说明书</a>
+										<a href="" style="margin-left:20px;">功能说明书</a>
+										<a href="" style="margin-left:20px;">功能说明书</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="ukefu-kbs-cat" style="width:100%;">
+								<div class="layui-form-item">
+									<label class="layui-form-label" style="padding:0px;">部门知识：</label>
+									<div class="layui-input-block" style="padding:0px;margin-left: 100px;line-height:25px;">
+										<span class="ukefu-kmmap-item"><a href="">产品手册（4）</a></span> 
+										<span class="ukefu-kmmap-item ukef-kmmap-current"><a href="" >客服部（124）</a></span> 
+										<span class="ukefu-kmmap-item"><a href="" >技术支持（43）</a></span> 
+										<span class="ukefu-kmmap-item"><a href="" >共享中心（543）</a></span> 
+										<span class="ukefu-kmmap-item"><a href="" >测试部门一（6）</a></span>
+										<span class="ukefu-kmmap-item"><a href="" >测试部门二（6）</a></span> 
+										<span class="ukefu-kmmap-item"><a href="" >测试部门三（6）</a></span> 
+									</div>
+								</div>
+							</div>
+							
+							<div class="ukefu-kbs-cat" style="width:100%;">
+								<div class="layui-form-item">
+									<label class="layui-form-label" style="padding:0px;">知识标签：</label>
+									<div class="layui-input-block" style="padding:0px;margin-left: 100px;line-height:25px;">
+										<span class="ukefu-kmmap-item"><a href="">培训课件（55）</a></span> 
+										<span class="ukefu-kmmap-item"><a href="" >产品问答（124）</a></span> 
+										<span class="ukefu-kmmap-item"><a href="" >部门分享（43）</a></span> 
+										<span class="ukefu-kmmap-item"><a href="" >经验总结（543）</a></span> 
+									</div>
+								</div>
+							</div>
+							
+							<div class="ukefu-kbs-cat" style="width:100%;">
+								<div class="layui-form-item">
+									<label class="layui-form-label" style="padding:0px;">发布时间：</label>
+									<div class="layui-input-block" style="padding:0px;margin-left: 100px;line-height:25px;">
+										<span class="ukefu-kmmap-item"><a href="">最近一天（42）</a></span> 
+										<span class="ukefu-kmmap-item"><a href="" >最近7天内（22）</a></span> 
+										<span class="ukefu-kmmap-item"><a href="" >最近30天（23）</a></span> 
+										<span class="ukefu-kmmap-item"><a href="" >最近12个月（2433）</a></span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					</form>
+				</div>
+			</div>
+			<div class="box">
+				<div class="box-title">
+					<h1 class="site-h1" style="background-color:#EEEEEE;">
+						最新知识（54）
+					</h1>
+				</div>
+				<div class="box-body" style="padding:0px 10px;position: relative;">
+					<ul class="search">
+						<li>
+							<div class="fav"><i class="kfont">&#xe608;</i></div>
+							<div class="ukefu-kbs-search-title">
+								<a href="">阿斯兰的开发了开放</a>
+								<span class="uk-kbs-search-type">[产品文档]</span>
+								<span class="uk-kbs-search-type">[2017-06-15 13:22:21]</span>
+							</div>
+							<div class="ukefu-kbs-search-content">
+								国产汽车6月SUV销量排行榜,最畅销7座SUV销量6月。据悉,2017年6月中国汽车市场乘用车销量166.1万辆,同比增长0.8%,乘用车市场发展态势进一步放缓
+							</div>
+							<div class="ukefu-kbs-search-comment">
+								[最新回复] <a href="">这篇知识已经过期了吧，怎么还在这里......</a>
+							</div>
+							
+							<div class="ukefu-kbs-search-comment">
+								[知识概况] 45 浏览 ， 15收藏 ， 5评论 ， 2017-10-02 15:40:33前有效 
+								<span>
+									<i class="kfont">&#xe61e;</i>
+									<a href="">春松客服v3.1.0 产品说明书.pdf 等3个附件</a>
+								</span>
+							</div>
+						</li>
+						<li>
+							<div class="fav"><i class="kfont">&#xe623;</i></div>
+							<div class="ukefu-kbs-search-title">
+								<a href="">阿斯兰的开发了开放</a>
+								<span class="uk-kbs-search-type">[产品文档]</span>
+								<span class="uk-kbs-search-type">[2017-06-15 13:22:21]</span>
+							</div>
+							<div class="ukefu-kbs-search-content">
+								国产汽车6月SUV销量排行榜,最畅销7座SUV销量6月。据悉,2017年6月中国汽车市场乘用车销量166.1万辆,同比增长0.8%,乘用车市场发展态势进一步放缓
+							</div>
+							<div class="ukefu-kbs-search-comment">
+								[最新回复] <a href="">这篇知识已经过期了吧，怎么还在这里......</a>
+							</div>
+							
+							<div class="ukefu-kbs-search-comment">
+								[知识概况] 45 浏览 ， 15收藏 ， 5评论 ， 2017-10-02 15:40:33前有效
+							</div>
+						</li>
+						<li>	
+							<div class="fav"><i class="kfont">&#xe608;</i></div>
+							<div class="ukefu-kbs-search-title">
+								<a href="">阿斯兰的开发了开放</a>
+								<span class="uk-kbs-search-type">[产品文档]</span>
+								<span class="uk-kbs-search-type">[2017-06-15 13:22:21]</span>
+							</div>
+							<div class="ukefu-kbs-search-content">
+								国产汽车6月SUV销量排行榜,最畅销7座SUV销量6月。据悉,2017年6月中国汽车市场乘用车销量166.1万辆,同比增长0.8%,乘用车市场发展态势进一步放缓
+							</div>
+							<div class="ukefu-kbs-search-comment">
+								[最新回复] <a href="">这篇知识已经过期了吧，怎么还在这里......</a>
+							</div>
+							
+							<div class="ukefu-kbs-search-comment">
+								[知识概况] 45 浏览 ， 15收藏 ， 5评论 ， 2017-10-02 15:40:33前有效 
+								<span>
+									<i class="kfont">&#xe61e;</i>
+									<a href="">春松客服v3.1.0 产品说明书.pdf 等3个附件</a>
+								</span>
+							</div>
+						</li>
+						<li>
+							<div class="fav"><i class="kfont">&#xe608;</i></div>
+							<div class="ukefu-kbs-search-title">
+								<a href="">阿斯兰的开发了开放</a>
+								<span class="uk-kbs-search-type">[产品文档]</span>
+								<span class="uk-kbs-search-type">[2017-06-15 13:22:21]</span>
+							</div>
+							<div class="ukefu-kbs-search-content">
+								国产汽车6月SUV销量排行榜,最畅销7座SUV销量6月。据悉,2017年6月中国汽车市场乘用车销量166.1万辆,同比增长0.8%,乘用车市场发展态势进一步放缓
+							</div>
+							<div class="ukefu-kbs-search-comment">
+								[最新回复] <a href="">这篇知识已经过期了吧，怎么还在这里......</a>
+							</div>
+							
+							<div class="ukefu-kbs-search-comment">
+								[知识概况] 45 浏览 ， 15收藏 ， 5评论 ， 2017-10-02 15:40:33前有效
+							</div>
+						</li>
+						<li>
+							<div class="fav"><i class="kfont">&#xe623;</i></div>
+							<div class="ukefu-kbs-search-title">
+								<a href="">阿斯兰的开发了开放</a>
+								<span class="uk-kbs-search-type">[产品文档]</span>
+								<span class="uk-kbs-search-type">[2017-06-15 13:22:21]</span>
+							</div>
+							<div class="ukefu-kbs-search-content">
+								国产汽车6月SUV销量排行榜,最畅销7座SUV销量6月。据悉,2017年6月中国汽车市场乘用车销量166.1万辆,同比增长0.8%,乘用车市场发展态势进一步放缓
+							</div>
+							<div class="ukefu-kbs-search-comment">
+								[最新回复] <a href="">这篇知识已经过期了吧，怎么还在这里......</a>
+							</div>
+							
+							<div class="ukefu-kbs-search-comment">
+								[知识概况] 45 浏览 ， 15收藏 ， 5评论 ， 2017-10-02 15:40:33前有效 
+								<span>
+									<i class="kfont">&#xe61e;</i>
+									<a href="">春松客服v3.1.0 产品说明书.pdf 等3个附件</a>
+								</span>
+							</div>
+						</li>
+						<li>
+							<div class="ukefu-kbs-search-title">
+								<a href="">阿斯兰的开发了开放</a>
+								<span class="uk-kbs-search-type">[产品文档]</span>
+								<span class="uk-kbs-search-type">[2017-06-15 13:22:21]</span>
+							</div>
+							<div class="ukefu-kbs-search-content">
+								国产汽车6月SUV销量排行榜,最畅销7座SUV销量6月。据悉,2017年6月中国汽车市场乘用车销量166.1万辆,同比增长0.8%,乘用车市场发展态势进一步放缓
+							</div>
+							<div class="ukefu-kbs-search-comment">
+								[最新回复] <a href="">这篇知识已经过期了吧，怎么还在这里......</a>
+							</div>
+							
+							<div class="ukefu-kbs-search-comment">
+								[知识概况] 45 浏览 ， 15收藏 ， 5评论 ， 2017-10-02 15:40:33前有效
+							</div>
+						</li>
+						<li>
+							<div class="ukefu-kbs-search-title">
+								<a href="">阿斯兰的开发了开放</a>
+								<span class="uk-kbs-search-type">[产品文档]</span>
+								<span class="uk-kbs-search-type">[2017-06-15 13:22:21]</span>
+							</div>
+							<div class="ukefu-kbs-search-content">
+								国产汽车6月SUV销量排行榜,最畅销7座SUV销量6月。据悉,2017年6月中国汽车市场乘用车销量166.1万辆,同比增长0.8%,乘用车市场发展态势进一步放缓
+							</div>
+							<div class="ukefu-kbs-search-comment">
+								[最新回复] <a href="">这篇知识已经过期了吧，怎么还在这里......</a>
+							</div>
+							
+							<div class="ukefu-kbs-search-comment">
+								[知识概况] 45 浏览 ， 15收藏 ， 5评论 ， 2017-10-02 15:40:33前有效 
+								<span>
+									<i class="kfont">&#xe61e;</i>
+									<a href="">春松客服v3.1.0 产品说明书.pdf 等3个附件</a>
+								</span>
+							</div>
+						</li>
+						<li>
+							<div class="ukefu-kbs-search-title">
+								<a href="">阿斯兰的开发了开放</a>
+								<span class="uk-kbs-search-type">[产品文档]</span>
+								<span class="uk-kbs-search-type">[2017-06-15 13:22:21]</span>
+							</div>
+							<div class="ukefu-kbs-search-content">
+								国产汽车6月SUV销量排行榜,最畅销7座SUV销量6月。据悉,2017年6月中国汽车市场乘用车销量166.1万辆,同比增长0.8%,乘用车市场发展态势进一步放缓
+							</div>
+							<div class="ukefu-kbs-search-comment">
+								[最新回复] <a href="">这篇知识已经过期了吧，怎么还在这里......</a>
+							</div>
+							
+							<div class="ukefu-kbs-search-comment">
+								[知识概况] 45 浏览 ， 15收藏 ， 5评论 ， 2017-10-02 15:40:33前有效
+							</div>
+						</li>
+						
+					</ul>							
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="site-h1" style="border-top:1px solid #e6e6e6;margin-top:15px;">
+						最新知识（54）
+					</h1>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="site-h1" style="border-top:1px solid #e6e6e6;margin-top:15px;">
+						我收藏的知识（54）
+					</h1>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="site-h1" style="border-top:1px solid #e6e6e6;margin-top:15px;">
+						最新评论知识（24）
+					</h1>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="ukefu-chat-prop">
+		<div class="ukefu-prop-list">
+			<div class="layui-side-scroll">
+				<div class="box">
+					<div class="box-title">
+						<h1 class="site-h1" style="background-color:#EEEEEE;">
+							个人贡献榜
+						</h1>
+					</div>
+					<div class="box-body" style="padding:0px 10px;position: relative;">
+						<ul class="info-list">
+							<li class="ukefu-channel-tip">
+								访问渠道：<i class="layui-icon"></i>
+										 在线客服
+									</li>
+							<li>
+								      首次访问来源：
+							    <span class="tgreen">
+								192.168.3.28
+							    </span>
+							</li>
+							<li>
+							    IP：192.168.3.28
+							</li>
+							<li>
+								位置：未知
+							</li>
+							<li>
+							    访问次数：11次
+							</li>
+							<li>
+							    停留时间：
+								00:13:43
+							</li>
+							<li>
+							    访问浏览器：
+							    Chrome
+							</li>
+							<li>
+								 操作系统：
+									<span class="ukefu-online-user">
+										<i class="kfont"></i>
+										windows
+									</span>
+							</li>
+						</ul>							
+					</div>
+				</div>
+				<div class="box">
+					<div class="box-title">
+						<h1 class="site-h1" style="background-color:#EEEEEE;">
+							部门贡献榜
+						</h1>
+					</div>
+					<div class="box-body" style="padding:0px 10px;position: relative;">
+						<ul class="info-list">
+							<li class="ukefu-channel-tip">
+								访问渠道：<i class="layui-icon"></i>
+										 在线客服
+									</li>
+							<li>
+								      首次访问来源：
+							    <span class="tgreen">
+								192.168.3.28
+							    </span>
+							</li>
+							<li>
+							    IP：192.168.3.28
+							</li>
+							<li>
+								位置：未知
+							</li>
+							<li>
+							    访问次数：11次
+							</li>
+							<li>
+							    停留时间：
+								00:13:43
+							</li>
+							<li>
+							    访问浏览器：
+							    Chrome
+							</li>
+							<li>
+								 操作系统：
+									<span class="ukefu-online-user">
+										<i class="kfont"></i>
+										windows
+									</span>
+							</li>
+							<li>
+								访问终端：
+									<span class="ukefu-online-user">
+									<i class="kfont"></i> PC
+									</span>
+							</li>
+						</ul>							
+					</div>
+				</div>
+				<div class="box">
+					<div class="box-title">
+						<h1 class="site-h1" style="background-color:#EEEEEE;">
+							热点知识榜
+						</h1>
+					</div>
+					<div class="box-body" style="padding:0px 10px;position: relative;">
+						<ul class="info-list">
+							<li class="ukefu-channel-tip">
+								访问渠道：<i class="layui-icon"></i>
+										 在线客服
+									</li>
+							<li>
+								      首次访问来源：
+							    <span class="tgreen">
+								192.168.3.28
+							    </span>
+							</li>
+							<li>
+							    IP：192.168.3.28
+							</li>
+							<li>
+								位置：未知
+							</li>
+							<li>
+							    访问次数：11次
+							</li>
+							<li>
+							    停留时间：
+								00:13:43
+							</li>
+							<li>
+							    访问浏览器：
+							    Chrome
+							</li>
+						</ul>							
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+layui.use('form', function(){
+  var form = layui.form();
+  form.render();
+});
+</script>

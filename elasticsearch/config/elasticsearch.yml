@@ -1,0 +1,15 @@
+http.host: 0.0.0.0
+# Consider to enable cors features for elasticsearch head
+# https://github.com/mobz/elasticsearch-head#enable-cors-in-elasticsearch
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+
+# Uncomment the following lines for a production cluster deployment
+transport.host: 0.0.0.0
+discovery.zen.minimum_master_nodes: 1
+cluster.routing.allocation.disk.threshold_enabled: true
+cluster.routing.allocation.disk.watermark.low: 1gb
+cluster.routing.allocation.disk.watermark.high: 1gb
+
+node.master: true
+node.data: true

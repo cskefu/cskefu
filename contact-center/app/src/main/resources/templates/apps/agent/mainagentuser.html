@@ -1,0 +1,418 @@
+<script language="javascript">
+    cursession = "<#if curagentuser??>${curagentuser.userid!''}</#if>" ;
+    var userid = "${curagentuser.userid!''}" , agentserviceid = "${curagentuser.agentserviceid!''}" , agentuserid = "${curagentuser.id}";
+</script>
+
+<div class="main-agentuser">
+    <div class="chat-agent">
+        <h1 class="site-h1">
+            <#if curagentuser??>${curagentuser.username!''}（${curagentuser.region!''}）
+            <div style="float:right;" class="ukefu-service-btn">
+                <a href="/agent/summary.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}&channel=${curagentuser.channel}" data-toggle="ajax" data-width="950" data-height="450" title="记录服务小结"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe65c;</i> 服务小结</button></a>
+                <a href="/agent/transfer.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}" data-toggle="ajax" data-width="950" data-height="550" title="选择转接对象"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe7be;</i> 转接坐席</button></a>
+                <a href="/agent/end.html?userid=${curagentuser.id!''}" data-toggle="tip" data-title="请确认是否关闭和用户“${curagentuser.username!''}”的对话？"><button class="layui-btn layui-btn-small layui-btn-danger"><i class="kfont">&#xe621;</i> 结束对话</button></a>
+            </div>
+            <#else>
+            &nbsp;
+        </#if>
+        </h1>
+        <div id="chat_msg_list" class="chat-message chat_msg_list">
+            <#if agentUserMessageList?? && agentUserMessageList.content??>
+            <#list agentUserMessageList.content?reverse as chatmessage>
+            <div class="clearfix chat-block">
+                <div class="<#if (chatmessage.calltype?? && chatmessage.calltype == '呼出')>chat-right<#else>chat-left</#if>">
+                    <img alt="" src="<#if chatmessage.userid?? && chatmessage.userid == user.id>/images/im/user.png<#else><#if curagentuser.headimgurl?? && curagentuser.headimgurl !=''>${curagentuser.headimgurl}<#else>/images/im/user.png</#if></#if>" style="width:45px;height:45px;" class="user-img">
+                    <div class="chat-message">
+                        <span class="user"><#if chatmessage?? && chatmessage.chatype?? && chatmessage.chatype == 'aireply' && inviteData?? && inviteData.ainame??>${inviteData.ainame!'小E'}<#else>${chatmessage.username!''}</#if></span>
+                        <span class="time">${chatmessage.createtime!''}</span>
+                    </div>
+                    <div class="<#if (chatmessage.calltype?? && chatmessage.calltype == '呼出')>chatting-right<#else>chatting-left</#if>">
+                        <i class="userarrow"></i>
+                        <div class="chat-content"><#include "/apps/agent/media/message.html"></div>
+                    </div>
+                </div>
+            </div>
+        </#list>
+        <#elseif curagentuser??>
+        <#if curagentuser.status?? && curagentuser.status == "end">
+        <div class="clearfix chat-block connect-end" id="agentuser-curstatus">
+            <span class="connect-message">用户“${curagentuser.username!''}”已经离开</span>
+        </div>
+        <#else>
+        <div class="clearfix chat-block connect-begin" id="agentuser-curstatus">
+            <span class="connect-message">用户“${curagentuser.username!''}”开始对话</span>
+        </div>
+    </#if>
+</#if>
+</div>
+</div>
+<div class="chat-bottom">
+    <div class="row">
+        <div class="col-lg-12">
+            <textarea id="message" name="message"></textarea>
+            <button type="button" class="send-btn" onclick="sendMessage()">
+                发送
+            </button>
+            <style>
+                .ke-container{
+                    border: 0px solid #E0E0E0 !important;
+                }
+            </style>
+            <script language="javascript">
+                var editor , layer;
+                $(document).ready(function(){
+                    // KindEditor.ready(function(K) {
+                        var K = KindEditor;
+                        editor = K.create('#message', {
+                            height:"160px",
+                            themeType : 'simple',
+                            width:"100%",
+                            items:['undo', 'redo' , 'emoticons', 'image','insertfile'],
+                            resizeType:0,
+                            uploadJson : "/agent/image/upload.html?id=${curagentuser.id!''}",
+                            allowFileManager : false,
+                            newlineTag : "br" ,
+                            fontsize:16,
+                            allowFileUpload:true,
+                            allowInsertUpload:false,		//增加的参数，上传图片后是否插入到当前区域
+                            allowImageRemote:false,
+                            afterUpload: function (url) {
+                                return false;
+                            },
+                            afterCreate : function() { //设置编辑器创建后执行的回调函数
+                                var self = this;
+                            <#if sessionConfig?? && sessionConfig.agentctrlenter?? && sessionConfig.agentctrlenter == true>
+                                //Ctrl+Enter提交表单
+                                K.ctrl(document, 13, function() {
+                                    self.sync();
+                                    sendMessage();
+                                });
+                                K.ctrl(self.edit.doc, 13, function() {
+                                    self.sync();
+                                    sendMessage();
+                                });
+                            <#else>
+                                var kindEditorIframe = $("iframe").contents().find("body");
+                                kindEditorIframe.keydown(function (event) {
+                                    if(event.keyCode==13 && !event.ctrlKey){
+                                        self.sync();
+                                        sendMessage();
+                                        return false;
+                                    }else if(event.keyCode==13 && event.ctrlKey){
+                                        editor.insertHtml('<br/>');
+                                    }
+                                });
+                                //Ctrl+Enter提交表单
+                                K.ctrl(document, 13, function() {
+                                    editor.insertHtml('<br/>');
+                                });
+                                K.ctrl(self.edit.doc, 13, function() {
+                                    editor.insertHtml('<br/>');
+                                });
+                            </#if>
+                                <#if sessionConfig?? && sessionConfig.enablequick>
+                                /**
+                                 var _self = this;
+                                 loadURL("/res/quickreply.html" , null , function(data){
+							            	$(_self).suggest('@', {
+												data : eval(data),
+												mapkey : ['title','id'],
+												map : function(topic) {
+													console.log(topic) ;
+													return {
+														value : topic.text,
+														text : '<p>' + topic.text+ '</p>'
+													}
+												}
+											});
+							            });
+                                 **/
+                                </#if>
+                            }
+                        });
+                    // });
+                    KindEditor.options.cssData = "body { font-size: 15px; font-family:'Microsoft Yahei', 'Helvetica', 'Simsun', 'Arial';}";
+                });
+            </script>
+        </div>
+    </div>
+</div>
+</div>
+<div class="ukefu-chat-prop">
+    <div class="ukefu-prop-list">
+        <div class="layui-side-scroll">
+            <div class="layui-tab" style="margin-top:0px;">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">访客</li>
+
+                    <li>快捷</li>
+                    <li>历史</li>
+                    <#if models?? && models["workorders"]?? && models["workorders"] == true>
+                    <li>工单</li>
+                </#if>
+                <#if sessionConfig?? && sessionConfig.otherquickplay?? && sessionConfig.otherquickplay == true>
+                <li>知识库</li>
+            </#if>
+            </ul>
+            <div class="layui-tab-content" style="padding: 5px 0px 0px;">
+                <div class="layui-tab-item layui-show">
+                    <div class="box">
+                        <div class="box-title">
+                            <h1 class="site-h1" style="background-color:#EEEEEE;">
+                                访问信息
+                                <div style="float:right;">
+                                    <button class="layui-btn layui-btn-small layui-btn-radius layui-btn-danger" href="/agent/blacklist/add.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}&times=${serviceCount!0}&chattime=<#if onlineUser?? && onlineUser.betweentime??>${onlineUser.betweentime}<#else>0</#if>" data-toggle="ajax" data-title="拉黑访客" data-width="900">拉黑访客</button>
+                                </div>
+                            </h1>
+                        </div>
+                        <div class="box-body" style="padding:0px 10px;position: relative;">
+                            <#if curagentuser.channel?? && curagentuser.channel == "webim">
+                            <#include "/apps/agent/channel/webim.html">
+                            <#elseif curagentuser.channel?? && curagentuser.channel == "weixin">
+                            <#include "/apps/agent/channel/weixin.html">
+                            </#if>
+                        <#if curagentuser.name??>
+                        <ul class="info-list">
+                            <li>
+                                姓名：
+                                <span class="tgreen">
+									${curagentuser.name!''}
+								    </span>
+                            </li>
+                            <#if curagentuser.phone??>
+                            <li>
+                                电话：
+                                <span class="tgreen">
+									${curagentuser.phone!''}
+								    </span>
+                            </li>
+                        </#if>
+                        <#if curagentuser.email??>
+                        <li>
+                            邮件：
+                            <span class="tgreen">
+									${curagentuser.email!''}
+								    </span>
+                        </li>
+                    </#if>
+                    <#if curagentuser.resion??>
+                    <li>
+                        来访原因：
+                        <span class="tgreen">
+									${curagentuser.resion!''}
+								    </span>
+                    </li>
+                </#if>
+                </ul>
+            </#if>
+            <#if curAgentService?? && curAgentService.trans?? && curAgentService.trans>
+            <ul class="info-list">
+                <li>
+                    转接：
+                    <span class="tgreen">
+									<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
+								    </span>
+                </li>
+                <#if curAgentService.transtime??>
+                <li>
+                    转接时间：
+                    <span class="tgreen">
+									${curAgentService.transtime?string("yyyy-MM-dd HH:mm:ss")}
+								    </span>
+                </li>
+            </#if>
+            <#if curAgentService.transmemo??>
+            <li>
+                转接附言：
+                <span class="tgreen">
+									${curAgentService.transmemo!''}
+								    </span>
+            </li>
+        </#if>
+
+        </ul>
+    </#if>
+</div>
+</div>
+<#if models?? && models["contacts"]?? && models["contacts"] == true>
+<div class="box">
+    <div class="box-title">
+        <h1 class="site-h1" style="background-color:#EEEEEE;">
+            联系人
+            <div style="float:right;">
+                <button class="layui-btn layui-btn-small layui-btn-normal" href="/apps/contacts/embed/index.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}&times=${serviceCount!0}&chattime=<#if onlineUser?? && onlineUser.betweentime??>${onlineUser.betweentime}<#else>0</#if>" data-toggle="ajax" title="请选择联系人" data-width="950" data-height="500">关联联系人</button>
+            </div>
+        </h1>
+    </div>
+    <div class="box-body" style="padding:0px 10px;" id="ukefu_contacts_info">
+        <#include "/apps/agent/contacts.html">
+    </div>
+</div>
+</#if>
+</div>
+
+<div class="layui-tab-item">
+    <div class="box">
+        <div class="box-title">
+            <h1 class="site-h1" style="background-color:#EEEEEE;">
+                快捷回复
+                <span style="float:right;margin-top:-3px;">
+									<div class="layui-btn-group" id="pri_btn_group" style="display:none;">
+									  <a href="/agent/quickreply/addtype.html" id="quick_type_add" style="" data-toggle="ajax" data-width="950" data-height="450">
+									  	<button class="layui-btn layui-btn-primary layui-btn-small" title="新建分类" style="background-color:#ffffff !important;color:#32c24d  !important;padding-left:5px;padding-right:5px;">
+									    	<i class="layui-icon">&#xe61f;</i>
+									  	</button>
+									  </a>
+									  <a href="/agent/quickreply/add.html" id="quick_add" style="" data-toggle="ajax" data-width="950" data-height="450">
+									  	<button class="layui-btn layui-btn-primary layui-btn-small" title="新建回复" style="background-color:#ffffff !important;color:#32c24d  !important;padding-left:5px;padding-right:5px;">
+									  		<i class="layui-icon">&#xe609;</i>
+									  	</button>
+									  </a>
+									  <a href="/agent/quickreply/edittype.html" id="quick_type_edit" style="" data-toggle="ajax" data-width="950" data-height="450">
+									  	<button class="layui-btn layui-btn-primary layui-btn-small" title="编辑分类" style="background-color:#ffffff !important;color:#32c24d  !important;padding-left:5px;padding-right:5px;">
+									  		<i class="layui-icon">&#xe642;</i>
+									  	</button>
+									  </a>
+									  <a href="/agent/quickreply/edit.html" id="quick_edit" style="" data-toggle="ajax" data-width="950" data-height="450">
+									  	<button class="layui-btn layui-btn-primary layui-btn-small" title="编辑回复" style="background-color:#ffffff !important;color:#32c24d  !important;padding-left:5px;padding-right:5px;">
+									  		<i class="layui-icon">&#xe60a;</i>
+									  	</button>
+									  </a>
+									</div>
+									<div class="layui-input-inline">
+										<input type="text" name="q" value="" oninput="search(this.value)" style="height: 30px;width:120px;line-height: 30px;padding-right:30px;border: 1px solid #32c24d;" placeholder="请输入查询条件" autocomplete="off" class="layui-input">
+										<i class="layui-icon" style="position: absolute;cursor: pointer;right: 3px;top: 0px;font-size: 20px;color:#32c24d;"></i>
+									</div>
+								</span>
+            </h1>
+        </div>
+        <div class="box-body" style="padding:0px 10px 0px 0px;" id="quick_reply">
+            <#include "/apps/agent/quicklist.html"/>
+        </div>
+    </div>
+</div>
+<div class="layui-tab-item">
+    <div class="box">
+        <div class="box-title">
+            <h1 class="site-h1" style="background-color:#EEEEEE;">
+                历史记录
+            </h1>
+        </div>
+        <div class="box-body" style="padding:0px 10px;">
+            <ul class="info-list ukefu-quick-reply">
+                <#if agentServiceList?? && agentServiceList?size gt 0>
+                <#list agentServiceList as agentService>
+                <li class="ukefu-agentservice-list">
+                    <a href="/service/online/chatmsg.html?id=${agentService.id!''}&title=false" data-toggle="ajax" data-width="950" data-height="500" data-title="服务记录">
+                        <span style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;max-width:200px;display: inline-block;" class="quick-reply" data-id="content_${agentService.id!''}">${agentService.username!''}</span>
+                        <div class="ukefu-agentservice-his">坐席：${agentService.agentusername!''}</div>
+                        <div style="color:#333;position: relative;">
+                            ${agentService.servicetime?string("yyyy-MM-dd HH:mm:ss")}
+                            <div class="ukefu-agentservice-his">时长：${(agentService.sessiontimes/(1000*60*60))?string('00')}:${((agentService.sessiontimes%(1000*60*60))/(1000*60))?string('00')}:${((agentService.sessiontimes%(1000*60))/(1000))?string('00')}</div>
+                        </div>
+                    </a>
+                </li>
+            </#list>
+            <#else>
+            <li style="list-style: none;background-image: url();padding: 50px 0 50px;">
+                <div class="ukefu-empty">
+                    <i class="layui-icon"></i>
+                    <div style="">还没有咨询记录</div>
+                </div>
+            </li>
+        </#if>
+        </ul>
+    </div>
+</div>
+</div>
+<#if models?? && models["workorders"]?? && models["workorders"] == true>
+<div class="layui-tab-item" id="workorders">
+    <#if workOrdersList?? && workOrdersList?size gt 0>
+    <#include "/apps/agent/workorders.html">
+</#if>
+</div>
+</#if>
+<#if sessionConfig?? && sessionConfig.otherquickplay?? && sessionConfig.otherquickplay == true>
+<div class="layui-tab-item" id="km">
+    <div class="box">
+        <div class="box-title">
+            <h1 class="site-h1" style="background-color:#EEEEEE;">
+                知识列表
+                <span style="float:right;margin-top:-3px;">
+									<div class="layui-input-inline">
+										<input type="text" name="q" id="otherSearchQuery" onKeyPress="otherTopicEnter()" style="height: 30px;width:120px;line-height: 30px;padding-right:30px;border: 1px solid #32c24d;" placeholder="请输入查询条件" autocomplete="off" class="layui-input">
+										<i class="layui-icon" onclick="otherTopicSearch();" style="position: absolute;cursor: pointer;right: 3px;top: 0px;font-size: 20px;color:#32c24d;"></i>
+									</div>
+								</span>
+            </h1>
+        </div>
+        <div class="box-body" style="padding:0px 10px;" id="topiclist">
+            <#include "/apps/agent/othertopic.html">
+        </div>
+    </div>
+</div>
+</#if>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<script>
+    document.getElementById('chat_msg_list').scrollTop = document.getElementById('chat_msg_list').scrollHeight  ;
+    layui.use('element', function(){
+        var element = layui.element();
+    });
+    layui.use('layer', function() {
+        layer = layui.layer;
+        $('#tag').click(function() {
+            $('#taglist').show();
+        })
+        $('.tag-switch').click(
+            function() {
+                if ($('#tag_' + $(this).data("id")).length > 0) {
+                    $('#tag_' + $(this).data("id")).remove();
+                } else {
+                    $("#tags").append(
+                        "<small id='tag_" + $(this).data("id")
+                        + "' class='ukefu-label "
+                        + $(this).data("theme") + "'>"
+                        + $(this).data("name") + "</small>");
+                }
+                loadURL($(this).data("href"));
+            });
+        $("#taglist").hover(null, function() {
+            $(this).hide();
+        });
+        $('.quick-reply').click(function(){
+            var target = $(this).data("id") ;
+            if($('#'+target).is(":hidden")){
+                $('#'+target).show() ;
+            }else{
+                $('#'+target).hide() ;
+            }
+        });
+        $('.quick-reply-content').click(function(){
+            if(editor != null){
+                var quickReply = $(this).html() ;
+                if(editor.count("text") == 0 ){
+                    editor.html(quickReply);
+                }else{
+                    top.layer.confirm("您已经输入了内容，覆盖当前输入框中内容？", {icon: 3, title:'覆盖提示'}, function(index){
+                        top.layer.close(index);
+                        editor.html(quickReply);
+                    });
+                }
+            }
+        });
+    });
+    function sendMessage(){
+        editor.sync();
+        var count = editor.count("text");
+        if(count>0){
+            var message = document.getElementById('message').value;
+            top.WebIM.sendMessage(message , '${user.id!''}' , "${curagentuser.appid!''}" , "${user.sessionid!''}" , "${orgi!''}" , "<#if curagentuser??>${curagentuser.userid!''}</#if>" , "${user.username!''}");
+        }
+        editor.html('');
+    }
+</script>

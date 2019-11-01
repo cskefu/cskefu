@@ -1,0 +1,17 @@
+*.swp
+*.swo
+*.sublime-*
+*.pyc
+jmeter.log
+__pycache__
+tmp/
+node_modules/
+sftp-config.json
+.DS_Store
+*.iml
+*.ipr
+*.iws
+*.idea
+~$*.xls*
+~$*.ppt*
+~$*.doc*

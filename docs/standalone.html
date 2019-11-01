@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html $if(lang)$ lang="$lang$" $endif$ dir="ltr">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>$if(title)$$title$$endif$</title>
+        <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+        <link rel="apple-touch-icon-precomposed" href="images/apple-touch-icon.png">
+
+$if(template_css)$
+<link rel="stylesheet" href="$template_css$">
+$else$
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.26.4/css/uikit.gradient.css">
+$endif$
+
+        <link rel="stylesheet" href="style.css">
+        <script src="https://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+        <script src="uikit.js"></script>
+        <script src="scripts.js"></script>
+        <script src="jquery.sticky-kit.js "></script>
+
+        <meta name="generator" content="pandoc-uikit" />
+        $for(author-meta)$
+        <meta name="author" content="$author-meta$" />
+        $endfor$
+        $if(date-meta)$
+        <meta name="date" content="$date-meta$" />
+        $endif$
+        <title>$if(title-prefix)$$title-prefix$ - $endif$$pagetitle$</title>
+        <style type="text/css">code{white-space: pre;}</style>
+        $if(quotes)$
+        <style type="text/css">q { quotes: "“" "”" "‘" "’"; }</style>
+        $endif$
+        $if(highlighting-css)$
+        <style type="text/css">
+            $highlighting-css$
+        </style>
+        $endif$
+        $for(css)$
+        <link rel="stylesheet" href="$css$" $if(html5)$$else$type="text/css" $endif$/>
+              $endfor$
+              $if(math)$
+              $math$
+              $endif$
+              $for(header-includes)$
+              $header-includes$
+              $endfor$   
+    </head>
+
+    <body>
+
+
+        <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
+
+            $if(title)$
+            <div class="uk-grid" data-uk-grid-margin>
+                <div class="uk-width-1-1">
+                    <h1 class="uk-heading-large">$title$</h1>
+                    $if(date)$
+                    <h3 class="uk-heading-large">$date$</p></h3>
+                    $endif$
+                    $for(author)$
+                    <p class="uk-text-large">$author$</p>
+                    $endfor$
+                </div>
+            </div>
+            $endif$
+
+            <div class="uk-grid" data-uk-grid-margin >          
+                <div class="uk-width-medium-1-4">
+                    <div class="uk-overflow-container" data-uk-sticky="{top:25,media: 768}">
+                        <div class="uk-panel uk-panel-box menu-begin" >
+
+                            $if(toc)$
+                            $toc$
+                            $endif$
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="uk-width-medium-3-4">
+$body$                    
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

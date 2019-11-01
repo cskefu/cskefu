@@ -1,0 +1,56 @@
+<div class="uk-layui-form">
+	<div class="layui-collapse">
+		<div class="layui-colla-item">
+			<h2 class="layui-colla-title">
+				日志信息（<span class="<#if log.levels?? && log.levels == 'ERROR'>error</#if>">级别：${log.levels!''}</span>）
+			</h2>
+			<div class="layui-colla-content layui-show">
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">输出信息：</label>
+						<div class="layui-input-inline " style="width:750px;padding-top:9px;">
+							${log.memo!''}
+						</div>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">类全名：</label>
+						<div class="layui-input-inline" style="width:750px;padding-top:9px;">
+							${log.clazz!''}
+						</div>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">方法名：</label>
+						<div class="layui-input-inline" style="padding-top:9px;">
+							${log.method!''} 
+						</div>
+					</div>
+					<div class="layui-inline uckefu-inline">
+						<label class="layui-form-label" >输出时间：</label>
+						<div class="layui-input-inline" style="padding-top:9px;">
+							${log.createdate?string("yyyy-MM-dd HH:mm:ss")} 
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<#if log.levels == "ERROR">
+		<div class="layui-colla-item">
+			<h2 class="layui-colla-title">堆栈信息</h2>
+			<div class="layui-colla-content layui-show">
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">日志堆栈：</label>
+						<div class="layui-input-inline" style="width:750px;padding-top:9px;">
+							<textarea name="desc" class="layui-textarea" style="height:120px;">${log.msg!''}</textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</#if>
+	</div>
+</div>

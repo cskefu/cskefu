@@ -1,0 +1,127 @@
+<div class="uk-layui-form">
+    <form class="layui-form uk-form" action="/admin/callcenter/extention/ivr/update.html" method="post" data-toggle="ajax-form" data-inner="#callCenterContent">
+    	<input type="hidden" name="hostid" value="${pbxHost.id!''}">
+    	<input type="hidden" name="id" value="${extention.id!''}">
+    	<div class="layui-form-item">
+            <label class="layui-form-label">启用机器人类型：</label>
+            <div class="layui-input-inline" style="width: 400px;">
+                <input type="radio" title="智能机器人" name="aitype" id="enableai" value="smartai" lay-filter="enable_ai" <#if !(extention?? && extention.aitype == 'businessai')>checked="checked"</#if>>
+                <input type="radio" title="业务机器人" name="aitype" id="enableai" value="businessai" lay-filter="bus_ai" <#if extention?? && extention.aitype == 'businessai'>checked="checked"</#if>>
+            </div>
+        </div>
+        <div class="box-item" id="ai_tip" style="<#if extention?? && extention.aitype == 'businessai'>display:none;</#if>">	
+	        <div class="layui-form-item">
+	            <label class="layui-form-label">选择智能机器人：</label>
+	            <div class="layui-input-inline" style="width:450px;">
+	                <select name="aiid" style="width:450px;">
+						<option value="">请选择默认的机器人</option>
+						<#if serviceAiList??>
+						<#list serviceAiList as serviceAi>
+						<option value="${serviceAi.id!''}" <#if extention.aiid?? && extention.aiid == serviceAi.id>selected="selected"</#if>>${serviceAi.name!''}</option>
+						</#list>
+						</#if> 
+					</select>
+	            </div>
+	        </div>
+	        <div class="layui-form-item">
+	            <label class="layui-form-label">智能IVR对接地址：</label>
+	            <div class="layui-input-inline">
+	               <input type="text" readOnly="readonly" style="width:450px;"  autocomplete="off" class="layui-input" value="${schema!''}://${hostname!''}:${port?string('###')}/apps/smartivr/asr?ext=${extention.extention!''}">
+	            </div>
+	        </div>
+	        <div class="layui-form-item">
+	            <label class="layui-form-label">欢迎提示语：</label>
+	            <div class="layui-input-inline">
+	               <textarea id="welcomemsg" style="width:450px;" name="welcomemsg" class="layui-textarea">${extention.welcomemsg!"您好，欢迎致电春松客服智能IVR演示系统，这里是电话机器人演示系统，请说要进入的测试流程，比如，客服系统！"}</textarea>
+	            </div>
+	        </div>
+	        
+	        <div class="layui-form-item">
+	            <label class="layui-form-label">无对话提示语：</label>
+	            <div class="layui-input-inline">
+	            	<input type="text" id="waitmsg" style="width:450px;" name="waitmsg" style="width:450px;"  autocomplete="off" class="layui-input" value="${extention.waitmsg!'请说话测试吧'}">
+	            </div>
+	        </div>
+	        
+	        <div class="layui-form-item">
+	            <label class="layui-form-label">查询等待提示语：</label>
+	            <div class="layui-input-inline">
+	            	<input type="text" id="tipmessage" style="width:450px;" name="tipmessage" style="width:450px;"  autocomplete="off" class="layui-input" value="${extention.tipmessage!'正在为您查询 ，请稍候'}">
+	            </div>
+	        </div>
+	        
+	        <div class="layui-form-item">
+	            <label class="layui-form-label">异常提示语：</label>
+	            <div class="layui-input-inline">
+	            	<input type="text" id="errormessage" style="width:450px;" name="errormessage" style="width:450px;"  autocomplete="off" class="layui-input" value="${extention.errormessage!'未配置机器人'}">
+	            </div>
+	        </div>
+	    </div>
+        <div class="box-item" id="ai_bus" style="<#if extention?? && extention.aitype == 'smartai'>display:none;</#if>">	
+	       	<div class="layui-form-item">
+	       		<label class="layui-form-label">业务类型：</label>
+		       	<div class="layui-input-inline">
+			        <select name="bustype"  lay-filter="bustype" >
+		            		<option value="">请选择业务类型</option>
+		            		<option value="sale" <#if extention?? && extention.bustype == 'sale'>selected="selected"</#if>>电销</option>
+		            		<option value="quesurvey" <#if extention?? && extention.bustype == 'quesurvey'>selected="selected"</#if>>调查问卷</option>
+		            </select>
+	            </div>
+            </div>
+	       	<div class="layui-form-item" id="pro" style="<#if extention?? && extention.bustype == 'sale'>display: inline;<#else>display: none;  </#if>">
+	       		<label class="layui-form-label">产品：</label>
+		       	<div class="layui-input-inline">
+			        <select name="proid"   >
+		            	<option value="">请选择产品</option>
+		            	<#list productList as product>
+		            		<option value="${product.id}" <#if extention?? && extention.proid == product.id>selected="selected"</#if>>${product.title!''}</option>
+		            	</#list>
+		            </select>
+	            </div>
+            </div>
+	       	<div class="layui-form-item" id="que" style="<#if extention?? && extention.bustype == 'quesurvey'>display: inline;<#else>display: none; </#if>">
+	       		<label class="layui-form-label">问卷：</label>
+		       	<div class="layui-input-inline">
+			        <select name="queid" >
+		            	<option value="">请选择问卷</option>
+		            	<#list queList as que>
+		            		<option value="${que.id}" <#if extention?? && extention.queid == que.id>selected="selected"</#if>>${que.name!''}</option>
+		            	</#list>	
+		            </select>
+	            </div>
+            </div>
+	        
+	    </div>
+		
+        <div class="layui-form-button">
+            <div class="layui-button-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+	layui.use('form', function(){
+	  var form = layui.form();
+	  form.render();
+	  form.on("radio(enable_ai)" , function(data){
+		  $('#ai_tip').show();		
+		  $('#ai_bus').hide();
+	  });
+	  form.on("radio(bus_ai)" , function(data){
+		  $('#ai_tip').hide();
+		  $('#ai_bus').show();
+	  });
+	  form.on("select(bustype)" , function(data){
+		  var val = data.value;
+		  if(val == 'sale'){
+			  $('#pro').show();
+			  $('#que').hide();
+		  }else{
+			  $('#pro').hide();
+			  $('#que').show();
+		  }
+	  });
+	});
+</script>

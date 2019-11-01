@@ -1,0 +1,52 @@
+<document type="freeswitch/xml">
+  <section name="directory">
+    <domain name="${r'$${domain}'}">
+      <params>
+        <param name="dial-string" value="${r'{^^:sip_invite_domain=${dialed_domain}:presence_id=${dialed_user}@${dialed_domain}}${sofia_contact(*/${dialed_user}@${dialed_domain})},${verto_contact(${dialed_user}@${dialed_domain})}'}"/>
+        <param name="jsonrpc-allowed-methods" value="verto"/>
+      </params>
+      <variables>
+	      <variable name="record_stereo" value="true"/>
+	      <variable name="default_gateway" value="${r'$${default_provider}'}"/>
+	      <variable name="default_areacode" value="${r'$${default_areacode}'}"/>
+	      <variable name="transfer_fallback_extension" value="operator"/>
+	  </variables>
+      <groups>
+      	<group name="default">
+			<users>
+				<#if extentionList??>
+				<#list extentionList as extention>
+			  	<user id="${extention.extention!''}">
+				    <params>
+				      <param name="password" value="${extention.password!''}"/>
+				      <param name="vm-password" value="${extention.extention!''}"/>
+				    </params>
+				    <variables>
+				      <variable name="sip-force-contact" value="NDLB-connectile-dysfunction"/>
+				      <variable name="toll_allow" value="domestic,international,local"/>
+				      <variable name="accountcode" value="${extention.extention!''}"/>
+				      <variable name="user_context" value="default"/>
+				      <variable name="effective_caller_id_name" value="Extension ${extention.extention!''}"/>
+				      <variable name="effective_caller_id_number" value="${extention.extention!''}"/>
+				      <variable name="outbound_caller_id_name" value="${r'$${outbound_caller_name}'}"/>
+				      <variable name="outbound_caller_id_number" value="${r'$${outbound_caller_id}'}"/>
+				      <variable name="callgroup" value="techsupport"/>
+				    </variables>
+				</user>
+				</#list>
+				</#if>
+			</users>
+	    </group>
+        <group name="sales">
+         <users>
+         	<#if extentionList??>
+			<#list extentionList as extention>
+          	<user id="${extention.extention!''}" type="pointer"/>
+          	</#list>
+			</#if>
+         </users>
+        </group>
+      </groups>
+    </domain>
+  </section>
+</document>

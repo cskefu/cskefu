@@ -1,0 +1,159 @@
+<style>
+    #create {
+        margin: 10px;
+        border-top: 1px solid #EEEEEE;
+        padding-top: 5px;
+    }
+
+    #create input {
+        width: 400px;
+    }
+</style>
+<div class="row">
+    <div class="col-lg-12">
+        <div id="create">
+            <form class="layui-form uk-form" style="width: 700px;margin: auto;">
+                <input id="id" type="hidden" name="id" value="${id}">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">网站渠道</label>
+                    <div class="layui-input-inline">
+                        <#if id!=null>
+                            <input type="text" name="snsurl" required lay-verify="required" value="${snsurl}"
+                                autocomplete="off" class="layui-input" disabled>
+                            <#else>
+                                <select id="snsid" name="snsid" lay-verify="required">
+                                    <option></option>
+                                </select>
+                        </#if>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">ClientId</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="clientId" required lay-verify="required" placeholder="请输入ClientId" autocomplete="off"
+                            class="layui-input" value="${bot.clientId}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">Secret</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="secret" required lay-verify="required" placeholder="请输入Secret" autocomplete="off"
+                               class="layui-input" value="${bot.secret}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工作模式</label>
+                    <div class="layui-input-inline">
+                        <select name="workmode" lay-verify="required">
+                            <option <#if bot.workmode=="机器人客服优先">selected="selected"</#if>>机器人客服优先</option>
+                            <option <#if bot.workmode=="人工客服优先">selected="selected"</#if>>人工客服优先</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        <button class="layui-btn" lay-submit lay-filter="save">保存</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function request(data, cb) {
+        var postfix = '/api/';
+        var payload = {
+            url: postfix + 'chatbot',
+            method: 'POST',
+            contentType: 'application/json;charset=UTF-8',
+            headers: {
+                authorization: $.cookie('authorization')
+            },
+            dataType: 'json',
+            data: JSON.stringify(data)
+        };
+
+        $.ajax(payload)
+            .done(function (data) {
+                console.log('Rest api 返回的值：', data);
+                if (data.status && data.status === "AUTH_ERROR") {
+                    layer.confirm('会话过期，请重新登录！', {
+                        btn: ['是', '否'],
+                        icon: 2,
+                        title: '提示'
+                    }, function (index, layero) {
+                        layer.close(index)
+                        top.location.href = '/logout.html'
+                    }, function (index) {
+                        // 取消方法
+                    });
+                    return;
+                }
+                if (data.rc == 0) {
+                    cb(null, data.data);
+                } else {
+                    cb(data);
+                }
+            })
+            .fail(function (jqXHR, textStatus) {
+                console.error('Rest api 返回error：', jqXHR);
+                cb(textStatus);
+            });
+    }
+
+    layui.use(['form'], function () {
+        var form = layui.form();
+        form.on('submit(save)', function (data) {
+            var field = data.field;
+            var submitFinish = function (err, bot) {
+                if (err) {
+                    layer.confirm(err.data||err.error, {
+                        btn: ['关闭'],
+                        icon: 2,
+                        title: '提示'
+                    }, function (popup, layero) {
+                        layer.close(popup)
+                    }, function (popup) {
+                        // 取消方法
+                    });
+                } else {
+                    layer.open({
+                        title: '提示'
+                        , content: '保存成功'
+                    });
+                    parent.init();
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);
+                }
+            }
+
+            if (field.id) {
+                field.ops = 'update';
+                request(field, submitFinish);
+            } else {
+                field.ops = 'create';
+                request(field, submitFinish);
+            }
+
+            console.log(data.field);
+            return false;
+        });
+
+        if (!$('#id').val()) {
+            request({
+                ops: 'vacant'
+            }, function (err, list) {
+                if (err) {
+                    console.error(err)
+                } else {
+                    var options = $.map(list, function (r) {
+                        return '<option value="' + r.snsid + '">' + r.snsurl + '</option>';
+                    });
+
+                    $('#snsid').html(options);
+                    form.render('select');
+                }
+            })
+        }
+    })
+</script>

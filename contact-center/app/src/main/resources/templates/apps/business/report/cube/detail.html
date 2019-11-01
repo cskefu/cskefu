@@ -1,0 +1,309 @@
+<link rel="stylesheet" href="/js/ztree/zTreeStyle/zTreeStyle.css">
+<script src="/js/ztree/jquery.ztree.all.min.js"></script>
+<div class="layui-bg-black layui-layout-content ukefu-tab" style="position:absolute;overflow-y:scroll;">
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="site-h1">
+				元数据
+				<span style="float:right;">
+					<button class="layui-btn layui-btn-small green" href="/apps/report/cube/imptb.html?cubeid=${cubeid!''}" data-toggle="ajax" data-height="300" data-width="600" data-title="导入元数据">
+						<i class="layui-icon">&#xe608;</i>
+						导入元数据
+					</button>
+				</span>
+				<span style="float:right;margin-right:5px;" >
+					<button class="layui-btn layui-btn-small green" style="display:none;" id="metadataeditbtn"  data-toggle="ajax" data-height="500" data-width="950" data-title="编辑元数据">
+						编辑
+					</button>
+				</span>
+				<span style="float:right;margin-right:5px;">
+				<button class="layui-btn layui-btn-small layui-btn-danger"  id="metadatadelbtn" data-toggle="tip" data-title="请确认是否删除？">
+					删除
+				</button>
+				</span>
+			</h1>
+			<div class="box">
+ 				<ul class="ztree" id="cubeMetadataTree"></ul>
+ 			</div>
+		</div>
+	</div>
+</div>
+<div class="layui-bg-black layui-layout-content ukefu-tab" style="position:absolute;left:280px;overflow-y:scroll;">
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="site-h1">
+				维度
+				<span style="float:right;">
+					<button class="layui-btn layui-btn-small green" href="/apps/report/dimension/add.html?cubeid=${cubeid!''}" data-toggle="ajax" data-height="550" data-width="950" data-title="新建维度">
+						<i class="layui-icon">&#xe608;</i>
+						新建维度
+					</button>
+				</span>
+			</h1>
+			<div class="box">
+				<ul class="layui-nav layui-nav-tree" lay-filter="setting">
+					<li class="layui-nav-item layui-nav-itemed">
+						<dl class="layui-nav-child">
+							<#if dimensionList?? && dimensionList?size gt 0>
+							<#list dimensionList as dimension >
+							<dd <#if dimensionId?? && dimensionId == dimension.id>class="layui-this"</#if>>
+								<a href="/apps/report/cube/detail.html?id=${cubeid!''}&dimensionId=${dimension.id!''}">${dimension.name!''}</a>
+							</dd>
+							</#list>
+							</#if>
+						</dl>
+					</li>
+				</ul>																						
+			</div>
+		</div>
+		<div class="col-lg-12">
+			<h1 class="site-h1">
+				指标
+			</h1>
+			<div class="box">
+				<ul class="layui-nav layui-nav-tree" lay-filter="setting">
+					<li class="layui-nav-item layui-nav-itemed">
+						<dl class="layui-nav-child">
+							<dd <#if dimensionId?? && dimensionId=='cubemeasure'>class="layui-this"</#if>>
+								<a href="/apps/report/cube/detail.html?id=${cubeid!''}&dimensionId=cubemeasure">全部指标</a>
+							</dd>
+						</dl>
+					
+					</li>
+				</ul>																						
+			</div>
+		</div>
+	</div>
+</div>
+<div class="layui-body" style="left:560px;">
+	<div class="row">
+	<#if dimensionId?? && !(dimensionId =='cubemeasure')>
+	<div class="col-lg-12">
+		<h1 class="site-h1" style="background-color:#FFFFFF;">
+			维度成员
+			<#if cubeLevelList??>（${cubeLevelList?size}）</#if>
+			<div style="float:right;" class="ukefu-bt-text-content">
+				<button class="layui-btn layui-btn-small" href="/apps/report/cube/cubepublish.html?cubeid=${cubeid!''}" data-toggle="ajax" data-width="600" data-height="300" data-title="发布模型">
+					<i class="layui-icon">&#xe609;</i> 
+					发布
+				</button>
+				<a class="layui-btn layui-btn-small" href="/apps/report/cube/index.html">
+					返回
+				</a>
+				<button class="layui-btn layui-btn-small" href="/apps/report/dimension/edit.html?id=${dimensionId!''}" data-toggle="ajax" data-width="950" data-height="550" data-title="编辑维度">
+					编辑维度
+				</button>
+				<button class="layui-btn layui-btn-small layui-btn-danger" href="/apps/report/dimension/delete.html?id=${dimensionId!''}" data-toggle="tip" data-title="删除维度将会同时删除维度下的所有维度成员，请确认是否删除？">
+					删除维度
+				</button>
+				<button class="layui-btn layui-btn-small green" href="/apps/report/cubelevel/add.html?dimid=${dimensionId!''}&cubeid=${cubeid!''}" data-toggle="ajax" data-height="450" data-width="750"  data-title="新建维度成员">
+					添加维度成员
+				</button>
+			</div>
+		</h1>
+		<div class="row" style="padding:5px;">
+			<div class="col-lg-12">
+				<table class="layui-table" lay-skin="line">
+				  <colgroup>
+				  		<col width="1%">
+						<col width="50%">
+						<col width="20%">
+						<col width="20%">
+					<col>
+				  </colgroup>
+				  <thead>
+					<tr>
+					  <th style="width:1%;padding-right:0px;">
+					  	<input type="checkbox" id="checkall" />
+					  </th>
+					  <th>名称</th>
+					  <th>数据类型</th>
+					  <th>创建时间</th>
+					  <th style="white-space:nowrap;" nowrap="nowrap">操作</th>
+					</tr> 
+				  </thead>
+				  <tbody>
+					<#if cubeLevelList?? && cubeLevelList?size gt 0>
+					<#list cubeLevelList as cubeLevel>
+					<tr>
+					  <td style="width:1%;padding-right:0px;">
+						<input type="checkbox" class="ids" name="ids" value="${cubeLevel.id!''}"/>
+					  </td>
+					  <td>
+					  	${cubeLevel.name}
+					  </td>
+					  <td>
+					  	${uKeFuDic[cubeLevel.type!''].name!''}
+					  </td>
+					  <td>${cubeLevel.createtime?string("yyyy-MM-dd HH:mm:ss")}</td>
+					  <td style="white-space:nowrap;" nowrap="nowrap">
+							<a href="/apps/report/cubelevel/edit.html?id=${cubeLevel.id!''}" data-toggle="ajax"  data-width="750" data-height="450"  data-title="编辑维度成员">
+								<i class="layui-icon">&#xe642;</i>
+								编辑
+							</a>
+							<a href="/apps/report/cubelevel/delete.html?id=${cubeLevel.id!''}" style="margin-left:10px;" data-toggle="tip" data-title="请确认是否删除记录？">
+								<i class="layui-icon" style="color:red;">&#x1006;</i>
+								删除
+							</a>
+					  </td>
+					</tr>
+					</#list>
+					<#else>
+					<tr>
+						<td colspan="20" style="height:400px;">
+							<div class="ukefu-empty">
+								<i class="layui-icon">&#xe63a;</i>
+								<div style="">还没有维度成员</div>
+							</div>
+						</td>
+					</tr>
+					</#if>
+				  </tbody>
+				</table>
+			</div> 	   
+		</div>
+	</div>
+	<#elseif  dimensionId?? && dimensionId =='cubemeasure'>
+	<div class="col-lg-12">
+		<h1 class="site-h1" style="background-color:#FFFFFF;">
+			指标
+			<#if cubeMeasureList??>（${cubeMeasureList?size}）</#if>
+			<div style="float:right;" class="ukefu-bt-text-content">
+				<button class="layui-btn layui-btn-small" href="/apps/report/cube/cubepublish.html?cubeid=${cubeid!''}" data-toggle="ajax" data-width="600" data-height="300" data-title="发布模型">
+					<i class="layui-icon">&#xe609;</i> 
+					发布
+				</button>
+				<a class="layui-btn layui-btn-small" href="/apps/report/cube/index.html">
+					返回
+				</a>
+				<button class="layui-btn layui-btn-small green" href="/apps/report/cubemeasure/add.html?cubeid=${cubeid!''}" data-toggle="ajax" data-width="750" data-height="450" data-title="新建指标">
+					添加指标
+				</button>
+			</div>
+		</h1>
+		<div class="row" style="padding:5px;">
+			<div class="col-lg-12">
+				<table class="layui-table" lay-skin="line">
+				  <colgroup>
+				  		<col width="1%">
+						<col width="50%">
+				  		<col width="15%">
+				  		<col width="30%">
+						<col width="10%">
+					<col>
+				  </colgroup>
+				  <thead>
+					<tr>
+					  <th style="width:1%;padding-right:0px;">
+					  	<input type="checkbox" id="checkall" />
+					  </th>
+					  <th>名称</th>
+					  <th>计算指标</th>
+					  <th>创建时间</th>
+					  <th style="white-space:nowrap;" nowrap="nowrap">操作</th>
+					</tr> 
+				  </thead>
+				  <tbody>
+					<#if cubeMeasureList?? && cubeMeasureList?size gt 0>
+					<#list cubeMeasureList as cubeMeasure>
+					<tr>
+					  <td style="width:1%;padding-right:0px;">
+						<input type="checkbox" class="ids" name="ids" value="${cubeMeasure.id!''}"/>
+					  </td>
+					  <td>
+					  	${cubeMeasure.name}
+					  </td>
+					  <td>
+					  	<#if cubeMeasure.calculatedmember>
+					  		<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
+					  	</#if>
+					  </td>
+					  <td>${cubeMeasure.createtime?string("yyyy-MM-dd HH:mm:ss")}</td>
+					  <td style="white-space:nowrap;" nowrap="nowrap">
+							<a href="/apps/report/cubemeasure/edit.html?id=${cubeMeasure.id!''}" data-toggle="ajax" data-width="750" data-height="450" data-title="编辑指标">
+								<i class="layui-icon">&#xe642;</i>
+								编辑
+							</a>
+							<a href="/apps/report/cubemeasure/delete.html?id=${cubeMeasure.id!''}" style="margin-left:10px;" data-toggle="tip" data-title="请确认是否删除记录？">
+								<i class="layui-icon" style="color:red;">&#x1006;</i>
+								删除
+							</a>
+					  </td>
+					</tr>
+					</#list>
+					<#else>
+					<tr>
+						<td colspan="20" style="height:400px;">
+							<div class="ukefu-empty">
+								<i class="layui-icon">&#xe63a;</i>
+								<div style="">还没有指标</div>
+							</div>
+						</td>
+					</tr>
+					</#if>
+				  </tbody>
+				</table>
+			</div> 	   
+		</div>
+	</div>
+	</#if>
+</div>
+<script>
+<#if cubeMetadataList?? && cubeMetadataList?size gt 0>
+		var zNodes =[
+			<#list cubeMetadataList as cubeMetadata >
+			<#if cubeMetadata.tb?? && cubeMetadata.tb.name?? && cubeMetadata_index == 0 >
+	    		{ id:'${cubeMetadata.id!''}', pId:'${cubeMetadata.id!''}', name:"${cubeMetadata.tb.name!''}<#if cubeMetadata.mtype=='0'>(主表)</#if>", open:false }
+	    	</#if>
+	    	<#if cubeMetadata.tb?? && cubeMetadata.tb.name?? && cubeMetadata_index gt 0 >
+    		,{ id:'${cubeMetadata.id!''}', pId:'${cubeMetadata.id!''}', name:"${cubeMetadata.tb.name!''}<#if cubeMetadata.mtype=='0'>(主表)</#if>", open:false }
+    		</#if>
+    		<#if cubeMetadata.tb?? && cubeMetadata.tb.tableproperty?? && cubeMetadata.tb.tableproperty?size gt 0>
+				<#list cubeMetadata.tb.tableproperty as tableproperty>
+				,{ id:'${tableproperty.id!''}', pId:'${cubeMetadata.id!''}', name:"${tableproperty.fieldname!''}", open:false }
+				</#list>
+			</#if>
+	   		</#list>
+	];
+	$(document).ready(function(){
+		var treeClick = function(e, treeId, treeNode) {
+			var metadataeditbtn = $('#metadataeditbtn');
+			var metadatadelbtn = $('#metadatadelbtn');
+			if(treeNode.isParent){
+				metadataeditbtn.show();
+				metadataeditbtn.attr("href","/apps/report/cube/metadata/edit.html?cubeid=${cubeid!''}&id="+treeNode.id);
+				metadatadelbtn.show();
+				metadatadelbtn.attr("href","/apps/report/cube/metadata/del.html?cubeid=${cubeid!''}&id="+treeNode.id);
+			}else{
+				metadataeditbtn.hide();
+				metadatadelbtn.hide();
+			}
+		}
+		var setting = {
+				data: {
+					simpleData: {
+						enable: true
+					}
+				},
+				view:{
+					showIcon:false
+				},
+				callback:{
+					onClick:treeClick
+				}
+			};
+		var ztree = $.fn.zTree.init($("#cubeMetadataTree"), setting, zNodes);
+	});
+	
+	</#if>	
+	
+	
+$(document).ready(function(){
+	layui.use('layer', function(){
+		<#if msg?? && msg =='CM_DEL_FAILED'>
+			layer.alert('删除元数据失败，存在关联数据', {icon: 2});
+		</#if>
+	});
+});
+</script>
+</div>

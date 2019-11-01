@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	    <meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="viewport"
+			content="width=device-width, maximum-scale=1.0, initial-scale=1.0,initial-scale=1.0,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	    <title>信息录入</title>
+	    
+		<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?t=1489039620156"/>
+	    <link rel="stylesheet" type="text/css" href="/im/css/ukefu.css">
+	    <link rel="stylesheet" type="text/css" href="/im/css/layui.css">
+	    <link rel="stylesheet" id="skin" type="text/css" href="/im/css/default/ukefu.css">
+	</head>
+	<body style="overflow:hidden;" class="<#if type?? && type='text'>ukefu-point-text</#if>">
+		<form action="${schema!'http'}://${hostname!''}<#if ukefport?? && ukefport != 80>:${ukefport!''}</#if>/im/index.html?userid=${userid!''}&ai=false&appid=${appid!''}&aiid=${aiid!''}&orgi=${inviteData.orgi!''}&client=${client}&type=text<#if skill??>&skill=${skill}</#if><#if agent??>&agent=${agent}</#if><#if sessionid??>&sessionid=${sessionid}</#if>" method="post">
+		<div class="large ukefu-im-theme <#if type?? && type='text'>ukefu-theme-border-${inviteData.consult_dialog_color!''}</#if>">
+		    <div id="containter" class="clearfix">
+		    	<div id="header" class="theme${inviteData.consult_dialog_color!''}">
+			   		<img src="<#if inviteData?? && inviteData.consult_dialog_logo??>/res/image.html?id=${inviteData.consult_dialog_logo?url}<#else>/images/logo.png</#if>" style="height:30px;padding:10px;">
+			    </div>
+			    <div class="ukef-leavemsg-tip">
+			    	<#if inviteData?? && inviteData.consult_info_message??>${(inviteData.consult_info_message!'')?no_esc}</#if>
+			    </div>
+		    	<div class="leaveCon">
+				    <form action="" method="" name="">
+				    	<#if inviteData?? && inviteData.consult_info_name == true>
+				    	<div class="layui-form-item ukefu-form-item">
+							<label class="layui-form-label ukefu-form-label" style="width:100%;text-align:left;">
+								您的姓名：
+								<font color="red">*（必填项）</font>
+							</label>
+							<div class="layui-input-block" style="margin-left: 15px;">
+								<input type="text" name="name" class="layui-input" required="required" maxlength="50">
+							</div>
+						</div>
+				        </#if>
+				        <#if inviteData?? && inviteData.consult_info_phone == true>
+				        <div class="layui-form-item ukefu-form-item">
+							<label class="layui-form-label ukefu-form-label" style="width:100%;text-align:left;">
+								您的电话
+								<font color="red">*（必填项）</font>
+							</label>
+							<div class="layui-input-block" style="margin-left: 15px;">
+								<input type="text" class="layui-input" name="phone" required="required"  maxlength="30">
+							</div>
+						</div>
+				        </#if>
+				        <#if inviteData?? && inviteData.consult_info_email == true>
+				        <div class="layui-form-item ukefu-form-item">
+							<label class="layui-form-label ukefu-form-label" style="width:100%;text-align:left;">
+								您的邮箱：
+								<font color="red">*（必填项）</font>
+							</label>
+							<div class="layui-input-block" style="margin-left: 15px;">
+								<input type="text" class="layui-input" name="email" maxlength="100">
+							</div>
+						</div>
+				        </#if>
+				        <#if inviteData?? && inviteData.consult_info_resion == true>
+				        <div class="layui-form-item ukefu-form-item">
+							<label class="layui-form-label ukefu-form-label" style="width:100%;text-align:left;">
+								您需要咨询的问题：
+							</label>
+							<div class="layui-input-block" style="margin-left: 15px;">
+								<textarea class="layui-textarea" style="position: relative; overflow: hidden;" name="memo" maxlength="240"></textarea>
+							</div>
+						</div>
+						</#if>
+				        <p class="submitBtnWrap">
+				            <input type="submit" class="btn submitBtn theme${inviteData.consult_dialog_color!''}" value="开始咨询"></p>
+					</form>
+				</div>
+		    </div>
+		</div>
+		</form>
+	</body>
+</html>

@@ -1,0 +1,11 @@
+<label class="layui-form-label">子表字段：</label>
+<div class="layui-input-inline">
+	<select lay-ignore class="ukefu-select" name="fktableid" id="fktableid"  style="width: 100%;display:block;">
+		<option value="">选择关联子表字段</option>
+	 	<#if fktableidList??>
+	 	<#list fktableidList as fktableid>
+	 	<option value="${fktableid.id!''}" <#if dimension?? && dimension.fktableid && fktableid.id == dimension.fktableid>selected="selected"</#if>>${fktableid.fieldname!''}</option>
+	 	</#list>
+	 	</#if> 
+	</select>
+</div>

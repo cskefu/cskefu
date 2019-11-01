@@ -1,0 +1,184 @@
+<style>
+    #create {
+        margin: 10px;
+    }
+
+    #create input {
+        width: 400px;
+    }
+</style>
+<div class="layui-layout-body">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>机器人列表
+                <div style="float: right;" class="ukefu-bt-text-content">
+                    <button class="layui-btn layui-btn-mini layui-btn-radius" onclick="openChatbotBotPlatform()"><i class="layui-icon">&#xe609;</i>机器人开发者平台</button>
+                </div>
+            </h1>
+        </div>
+    </div>
+    <button class="layui-btn layui-btn-mini green" onclick="showCreate()">
+        <i class="layui-icon">&#xe64c;</i>
+        集成机器人
+    </button>
+    <div class="row">
+        <div class="col-lg-12">
+            <table class="layui-table" lay-skin="line">
+                <thead>
+                    <tr>
+                        <th>机器人名称</th>
+                        <th>网站渠道</th>
+                        <th>是否开启</th>
+                        <th style="white-space:nowrap;" nowrap="nowrap">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="bots">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function request(path, data) {
+        var postfix = '/api/';
+        var payload = {
+            url: postfix + path,
+            method: 'POST',
+            contentType: 'application/json;charset=UTF-8',
+            headers: {
+                authorization: $.cookie('authorization')
+            },
+            dataType: 'json',
+            data: JSON.stringify(data)
+        };
+        return new Promise(function (resolve, reject) {
+            $.ajax(payload)
+                .done(function (data) {
+                    console.log('Rest api 返回的值：', data);
+                    if (data.status && data.status === "AUTH_ERROR") {
+                        layer.confirm('会话过期，请重新登录！', {
+                            btn: ['是', '否'],
+                            icon: 2,
+                            title: '提示'
+                        }, function (index, layero) {
+                            layer.close(index)
+                            top.location.href = '/logout.html'
+                        }, function (index) {
+                            // 取消方法
+                        });
+                        return;
+                    }
+
+                    if (data.rc == 0) {
+                        resolve(data.data);
+                    } else {
+                        reject(data);
+                    }
+                })
+                .fail(function (jqXHR, textStatus) {
+                    console.error('Rest api 返回error：', jqXHR);
+                    reject(textStatus)
+                });
+        })
+    }
+
+    function query(p, ps) {
+        request('chatbot?p=' + (p || 1) + '&ps=' + (ps || 10), { ops: 'fetch' }).then(function (rows) {
+            var tds = $.map(rows, function (r) {
+                var edit = $('<a href="#" data-width="550" data-height="300"><i class="layui-icon"></i>编辑</a>');
+                edit.click(function () {
+                    layer.open({
+                        title: '编辑机器人',
+                        type: 2,
+                        area: ['800px', '450px'],
+                        content: 'edit.html?id=' + r.id
+                    })
+                });
+
+                var remove = $('<a style="margin-left:10px;"><i class="layui-icon" style="color:red;">ဆ</i>删除</a>').click(function () {
+                    var lindex = layer.confirm('请确认是否删除？', {
+                        btn: ['确认', '删除']
+                    }, function () {
+                        console.log('ok', r.id)
+                        window.remove(r.id);
+
+                        layer.close(lindex);
+                    }, function () {
+                        console.log('cancel', r.id)
+                        layer.close(lindex);
+                    });
+                });
+
+                var isEnabled = $('<td><input type="checkbox" lay-skin="switch" lay-text="开启|关闭" ' + (r.enabled ? 'checked' : '') + '></td>');
+                isEnabled.change(function () {
+                    change(r.id, $(this).find('input').prop('checked'))
+                        .then(null, function(err){
+                            layer.confirm(err.data||err.error, {
+                                btn: ['关闭'],
+                                icon: 2,
+                                title: '提示'
+                            }, function (index, layero) {
+                                layer.close(index)
+                            }, function (index) {
+                                // 取消方法
+                            });
+                        });
+                })
+
+                var rows = [
+                    $('<td>' + r.name + '</td>'),
+                    $('<td>' + r.snsurl + '</td>'),
+                    isEnabled,
+                    $('<td style="white-space:nowrap;" nowrap="nowrap"></td>').html([edit, remove])
+                ];
+
+                var tr = $('<tr></tr>');
+                tr.html(rows);
+                return tr;
+            })
+
+            $('#bots').html(tds);
+        }, function(err){
+            layer.confirm(err.data||err.error, {
+                btn: ['关闭'],
+                icon: 2,
+                title: '提示'
+            }, function (popup, layero) {
+                layer.close(popup)
+            }, function (popup) {
+                // 取消方法
+            });
+        })
+    }
+
+    function remove(id) {
+        return request('chatbot', { ops: 'delete', id: id }).then(function () {
+            window.init();
+        })
+    }
+
+    function change(id, isEnabled) {
+        return request('chatbot', { ops: isEnabled ? 'enable' : 'disable', id: id })
+    }
+
+    function showCreate() {
+        layer.open({
+            title: '集成机器人',
+            type: 2,
+            area: ['800px', '450px'],
+            content: 'edit.html'
+        })
+    }
+
+    function openChatbotBotPlatform(){
+        window.open("https://bot.chatopera.com", "_blank");
+    }
+
+    function init() {
+        query(1, 50);
+    }
+
+    layui.use(['form'], function () {
+        init();
+    })
+</script>

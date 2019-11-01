@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<meta name="viewport"
+			content="width=device-width, maximum-scale=1.0, initial-scale=1.0,initial-scale=1.0,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<title>${report.name!''}-<#if systemConfig?? && systemConfig.title?? && systemConfig.title != ''>${systemConfig.title}<#else>春松客服-全渠道智能客服</#if></title>
+		<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?t=1487250759056"/>
+		<link rel="stylesheet" href="/layui/css/layui.css">
+		<link rel="stylesheet" href="/res/css/system.html">
+		<link rel="stylesheet" href="/css/ukefu-view.css">
+		<script src="/js/jquery-1.10.2.min.js"></script>
+		<script src="/js/jquery-ui-1.10.2.custom.min.js"></script>
+		<script src="/js/jquery.hotkeys.min.js"></script>
+		<script src="/js/template.js"></script>
+		<script src="/js/jquery.nicescroll.min.js"></script>
+		
+
+		<script src="/js/jquery.form.js"></script>
+
+		<script src="/js/select/js/select2.min.js"></script>
+
+		<script src="/layui/layui.js"></script>
+		<script src="/js/lodash-4.17.4.min.js"></script>
+		<script src="/js/maps.js"></script>
+		<script src="/js/main.js"></script>
+		<script src="/js/ukefu-report.js"></script>
+		<script src="/js/ukefu-report.chart.js"></script>
+		<script src="/js/UKeFu_Util.js"></script>
+		<script src="/js/g2.min.js"></script>
+		<script src="/js/data-set.min.js"></script>
+	</head>
+
+	<body class="layui-layout-content">
+		<#if report??>	
+		<div class="layui-side layui-bg-black">
+			<div class="layui-side-scroll">
+				<#include "/apps/business/view/include/left.html">
+			</div>
+		</div>
+		<div class="layui-body" style="overflow:hidden;">
+			<h1 class="site-h1 ukefu-tab" style="border-top:1px solid #e6e6e6;height:26px;margin-bottom:0px;">
+				<span class="ukefu-bt">
+					<i class="layui-icon ukewo-btn" style="font-size:20px;">
+						<i class="kfont" style="position: relative;margin:2px;">&#xe6d6;</i>
+					</i>
+					<#if report??>${report.name!''}</#if>
+				</span>
+				<div class="ukefu-tab-title" style="float:right;">
+					<#if report??>创建时间：${report.createtime?string("yyyy-MM-dd HH:mm:ss")}</#if>
+				</div>
+			</h1>
+			<#if reportFilters?? && reportFilters?size gt 0>
+			<div class="ukefu-filters-content layui-form">
+				<form  action="/apps/report/view.html?id=${report.id!''}" method="post">
+				<div  class="ui-sortable layui-row" >
+					<div class="layui-col-md11" id="ukefu-filter-list">
+						<#if reportFilters??>
+						<#list reportFilters as filter>
+						<#if filter.reportid == report.id>
+						<#assign eltemplet = filter.templet()>
+						<#include "/apps/business/report/design/filter.html"/>
+						</#if>
+						</#list>
+						</#if>
+					</div>
+					<div class="layui-col-md1 ukefu-filter-submit">
+						<button class="layui-btn layui-btn-normal" lay-submit  lay-filter="query">查询</button>
+					</div>
+				</div>
+				</form>
+			</div>
+			</#if>
+			<div class="content design" style="overflow:auto;margin-top:0px;height: calc(100% - 45px);">
+				<#if reportModels??>
+				<#list reportModels?reverse as model>
+				<#if model.parentid == report.id>
+				<#assign templet = model.templet()>
+				<#include "/apps/business/report/design/layout.html"/>
+				</#if>
+				</#list>
+				</#if>
+			</div>
+		</div>
+		<#else>
+		<div class="box default-box" style="height: 100%;">
+			<div class="box-header">
+				<h3 class="box-title">数据报表</h3>
+			</div>
+			<div class="box-body ukefu-im-theme">
+				<div class="ukefu-empty">
+					<i class="kfont" style="position: relative;margin:2px;">&#xe6d6;</i>
+					<div style="">还没有数据报表</div>
+				</div>	
+			</div>
+		</div>
+		</#if>
+		<script>
+			layui.use('element', function(){
+			  var element = layui.element;
+			});
+			layui.use('form', function(){
+				  var form = layui.form;
+				  form.on('submit(query)', function(data){
+					 let params = $(data.form).serialize();
+					 let ajaxelements = $(".ukefu-element-ajax");
+					 $.each(ajaxelements,function(){
+						 loadURL($(this).attr("data-url")+"&"+params,"#"+$(this).attr("id"));
+					 })
+					  return false;
+					});
+				  form.render();
+				});
+		</script>
+	</body>
+</html>

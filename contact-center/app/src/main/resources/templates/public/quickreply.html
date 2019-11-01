@@ -1,0 +1,6 @@
+[
+<#if quickReplyList??><#list quickReplyList as quickreply><#if quickreply_index gt 0>,</#if>{
+		"id" : "${quickreply.id!''}" ,
+		"text":"${quickreply.title!''}"
+	}</#list></#if>
+]

@@ -1,0 +1,4 @@
+<?php
+
+$LANG = array();
+

@@ -1,0 +1,6 @@
+[
+<#if usersList?? && usersList.content??><#list usersList.content as users><#if users_index gt 0>,</#if>{
+		"id" : "${users.id!''}" ,
+		"text":"${users.username!''}（${users.uname!''}）"
+	}</#list></#if>
+]

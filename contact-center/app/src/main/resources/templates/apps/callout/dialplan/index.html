@@ -1,0 +1,405 @@
+<div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+        <#include "/apps/callout/include/left.html">
+    </div>
+</div>
+<script src="/js/CSKeFu_Rest_Request.v1.js"></script>
+<script>
+    var statusArr = ['初始化', '执行中', '已停止', '已删除'];
+
+    // 为一些特定的元素设置属性
+    function setAttrs(opts) {
+        if(!opts.id)
+            return;
+
+        var el = $("#" + opts.id);
+
+        if(opts.css){
+            el.css(opts.css);
+        }
+
+        if(opts.attrs){
+            el.attr(opts.attrs);
+        }
+    };
+
+    // 根据当前数据的状态，更改button的状态
+    function changeBtnStatus(id, status) {
+        var event = 'onclick';
+        var css = { "color": "gray" };
+        var attrs = {'title': '任务正在初始化中，不可操作。'};
+
+        switch(status) {
+            // 初始化状态，此三个按钮都不能操作
+            case statusArr[0]:
+                setAttrs({
+                    id: 'start_' + id,
+                    event: event,
+                    css: css,
+                    attrs: attrs,
+                });
+                setAttrs({
+                    id: 'pause_' + id,
+                    event: event,
+                    css: css,
+                    attrs: attrs,
+                });
+                setAttrs({
+                    id: 'edit_' + id,
+                    event: event,
+                    css: css,
+                    attrs: attrs,
+                });
+                // setAttrs({
+                //     id: 'delete_' + id,
+                //     exchange: exchange,
+                //     css: css,
+                //     attrs: attrs,
+                // });
+                break;
+            case statusArr[1]:
+                // 执行中状态，开始/编辑按钮不能操作
+                setAttrs({
+                    id: 'pause_' + id,
+                    event: event,
+                    css: { "color": "#32c24d" },
+                    attrs: {'title': ''},
+                });
+
+                attrs = {'title': '任务执行中，不可操作。'};
+                setAttrs({
+                    id: 'start_' + id,
+                    event: event,
+                    css: css,
+                    attrs: attrs,
+                });
+                setAttrs({
+                    id: 'edit_' + id,
+                    event: event,
+                    css: css,
+                    attrs: attrs,
+                });
+                setAttrs({
+                    id: 'delete_' + id,
+                    event: event,
+                    css: css,
+                    attrs: attrs,
+                });
+                break;
+            case statusArr[2]:
+                // 已停止状态，停止按钮都不能操作
+                setAttrs({
+                    id: 'pause_' + id,
+                    event: event,
+                    css: css,
+                    attrs: {'title': '任务已经停止，不可操作。'},
+                });
+
+                css = { "color": "#32c24d" };
+                attrs = {'title': ''};
+                setAttrs({
+                    id: 'start_' + id,
+                    event: event,
+                    css: css,
+                    attrs: attrs,
+                });
+                setAttrs({
+                    id: 'edit_' + id,
+                    event: event,
+                    css: css,
+                    attrs: attrs,
+                });
+                setAttrs({
+                    id: 'delete_' + id,
+                    event: event,
+                    css: css,
+                    attrs: attrs,
+                });
+                break;
+            default:
+                console.log('本条任务的状态有问题:', status);
+        }
+    }
+
+    <!--任务执行开始-->
+    function start(id) {
+        var el = $("#status_" + id);
+        var status = el.html()
+        switch (status) {
+            case statusArr[0]:
+                layer.tips('初始化中，不可操作，请稍后刷新', el);
+                break;
+            case statusArr[1]:
+                layer.tips('执行中，不可操作', el);
+                break;
+            case statusArr[2]:
+                layer.confirm('确认开始任务?', {
+                    btn: ['是', '否'],
+                    icon: 3,
+                    title:'提示'
+                }, function(index, layero){
+                    var payload = {
+                        path: 'callout/dialplan',
+                        data: { ops: "execute", dialplanId: id },
+                    };
+
+                    httpRequest(payload).then(function (data) {
+                        // remove a click exchange and set color to gray
+                        // AUTH_ERROR
+                        if(data.status && data.status === "AUTH_ERROR"){
+                            openFail(data.status);
+                            return;
+                        }
+
+
+                        if(data.rc === 0){
+                            changeBtnStatus(id, statusArr[1]);
+
+                            $("#" + "status_" + id).html(statusArr[1]);
+                            // open modal
+                            openSucc()
+                        } else {
+                            openFail(null, data.error)
+                        }
+                    }, function (err) {
+                        console.log(err)
+                        // open modal
+                        openFail()
+                    });
+                    layer.close(index)
+                }, function(index){
+                    // 取消方法
+                });
+                break;
+            default:
+                console.log('本条任务的状态有问题:', status);
+
+        }
+    }
+
+    <!--停止任务-->
+    function pause(id) {
+        var el = $("#status_" + id);
+        var status = el.html()
+        switch (status) {
+            case statusArr[0]:
+                layer.tips('初始化中，不可操作，请稍后刷新', el);
+                break;
+            case statusArr[2]:
+                layer.tips('已经停止，不可操作', el);
+                break;
+            case statusArr[1]:
+                layer.confirm('确认停止任务?', {
+                    btn: ['是', '否'],
+                    icon: 3,
+                    title:'提示'
+                }, function(index, layero){
+                    var payload = {
+                        path: 'callout/dialplan',
+                        data: { ops: "pause", dialplanId: id },
+                    };
+
+                    httpRequest(payload).then(function (data) {
+                        // remove a click exchange and set color to gray
+                        // AUTH_ERROR
+                        if(data.status && data.status === "AUTH_ERROR"){
+                            openFail(data.status);
+                            return;
+                        }
+
+                        if(data.rc === 0){
+                            changeBtnStatus(id, statusArr[2]);
+
+                            $("#" + "status_" + id).html(statusArr[2]);
+                            // open modal
+                            openSucc()
+                        } else {
+                            openFail(null, data.error)
+                        }
+                    }, function (err) {
+                        console.log(err)
+                        // open modal
+                        openFail()
+                    });
+                    layer.close(index)
+                }, function(index){
+                });
+                break;
+            default:
+                console.log('本条任务的状态有问题:', status);
+
+        }
+    }
+
+    <!--编辑任务-->
+    // function edit(id) {
+    //     var el = $("#status_" + id);
+    //     var status = el.html()
+    //     switch (status) {
+    //         case statusArr[0]:
+    //             layer.tips('初始化中，不可操作，请稍后刷新', el);
+    //             break;
+    //         case statusArr[1]:
+    //             layer.tips('正在执行中，请先停止再删除。', el);
+    //             break;
+    //         case statusArr[2]:
+    //             // location.href ='/apps/callout/dialplan/edit.html?id=' + id;
+    //             self.location.replace('/apps/callout/dialplan/edit.html?id=' + id);
+    //             break;
+    //         default:
+    //             console.log('本条任务的状态有问题:', status);
+    //
+    //     }
+    // }
+
+    <!--删除任务-->
+    function del(id) {
+        var el = $("#status_" + id);
+        var status = el.html()
+        switch (status) {
+            case statusArr[1]:
+                layer.tips('正在执行中，请先停止再删除。', el);
+                break;
+            case statusArr[0]:
+            case statusArr[2]:
+                layer.confirm('确认删除任务?', {
+                    btn: ['是', '否'],
+                    icon: 3,
+                    title:'提示'
+                }, function(index, layero){
+                    var payload = {
+                        path: 'callout/dialplan',
+                        data: { ops: "delete", dialplanId: id },
+                    };
+
+                    httpRequest(payload).then(function (data) {
+                        // remove a click exchange and set color to gray
+                        if(data.status && data.status === "AUTH_ERROR"){
+                            openFail(data.status);
+                            return;
+                        }
+
+                        if(data.rc === 0){
+                            // open modal
+                            openSucc()
+                            $("#tr_" + id).remove();
+                        } else {
+                            openFail(null, data.error)
+                        }
+                    }, function (err) {
+                        console.log(err)
+                        // open modal
+                        openFail()
+                    });
+                    layer.close(index)
+                }, function(index){
+                });
+                break;
+            default:
+                console.log('本条任务的状态有问题:', status);
+
+        }
+    }
+</script>
+
+<div class="layui-body">
+    <div class="layui-side-scroll">
+        <div class="box-header" style="background-color: #f5f5f5;">
+            <h1 class="site-h1" style="background-color:#FFFFFF;">
+                呼叫任务列表
+                <span style="float:right;">
+					<button class="layui-btn layui-btn-small green" href="/apps/callout/dialplan/add.html"
+                            data-toggle="ajax" data-width="550" data-height="630" title="新建任务">
+						新建任务
+					</button>
+				</span>
+            </h1>
+        </div>
+        <div class="box-body ukefu-im-theme">
+            <table class="layui-table" lay-skin="line">
+                <thead>
+                <tr class="design-sortable-tr">
+                    <th>任务名称</th>
+                    <th>部门</th>
+                    <th>创建人</th>
+                    <th>状态</th>
+                    <th>执行次数</th>
+                    <th>目标客户总数</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <#if vm?? && vm.content??>
+                <#list vm.content as dialplan>
+                <tr id="tr_${dialplan.id}">
+                    <td>${dialplan.name}</td>
+                    <td>${dialplan.organ.name}</td>
+                    <td>${dialplan.creater.uname}</td>
+                    <td id="status_${dialplan.id}">${dialplan.status}</td>
+                    <td>${dialplan.executed}</td>
+                    <td>${dialplan.targetnum}</td>
+                    <td>${dialplan.createtime}</td>
+                    <td style="white-space:nowrap;" nowrap="nowrap">
+                        <a href="javascript:" id="start_${dialplan.id}" onclick="start('${dialplan.id}')">
+                            <i class="layui-icon">&#xe628;</i>
+                            开始
+                        </a>
+                        <a href="javascript:" id="pause_${dialplan.id}" onclick="pause('${dialplan.id}')">
+                            <i class="layui-icon">&#xe651;</i>
+                            停止
+                        </a>
+                        <a href="/apps/callout/reports/agent-monitor.html?channel=${dialplan.voicechannel.baseURL!''}&organ=${dialplan.organ.id!''}">
+                            <i class="layui-icon">&#xe62c;</i>
+                            监控
+                        </a>
+                        <a id="edit_${dialplan.id}" href="/apps/callout/dialplan/edit.html?id=${dialplan.id!''}" data-toggle="ajax" data-width="550" data-height="300" data-title="编辑任务:${dialplan.name}">
+                            <i class="layui-icon">&#xe642;</i>
+                            编辑
+                        </a>
+                        <a href="javascript:" id="delete_${dialplan.id}" onclick="del('${dialplan.id}')">
+                            <i class="layui-icon" style="color:red;">&#xe640;</i>
+                            删除
+                        </a>
+                    </td>
+                </tr>
+                </#list>
+                </#if>
+                </tbody>
+            </table>
+    </div>
+    <div class="row" style="padding:5px;">
+        <div class="col-lg-12" id="page" style="text-align:center;"></div>
+    </div>
+</div>
+<script>
+    layui.use(['laypage', 'layer'], function(){
+        var laypage = layui.laypage
+            ,layer = layui.layer;
+
+        laypage({
+            cont: 'page'
+            ,pages: <#if vm?? && vm.totalPages??>${vm.totalPages}<#else>0</#if> //总页数
+            ,curr:<#if vm??>${vm.number+1}<#else>0</#if>
+            ,groups: 5 //连续显示分页数
+            ,jump:function(vm , first){
+                if(!first){
+                    location.href = "/apps/callout/dialplan/index.html?p="+vm.curr ;
+                }
+            }
+        });
+    });
+</script>
+</div>
+<script>
+    $(function () {
+        var list = [];
+        <#if vm?? && vm.content??>
+            <#list vm.content as dialplan>
+                var id = '${dialplan.id}';
+                var status = '${dialplan.status}';
+                changeBtnStatus(id, status);
+            </#list>
+        </#if>
+    });
+</script>

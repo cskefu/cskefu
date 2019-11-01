@@ -1,0 +1,272 @@
+<div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+        <#include "/apps/callout/include/left.html">
+    </div>
+</div>
+
+<div class="layui-body" style="background-color: #f2f2f2;">
+    <div class="layui-side-scroll">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="site-h1" style="background-color:#FFFFFF;">
+                    系统状态
+                </h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12" style="padding-right:5px;">
+                <center>
+                    <table width="800px" class="cskefu-reports-ds-table-header">
+                        <tbody>
+                        <tr>
+                            <th style="background-color:#eaf2ff;">分&nbsp;机&nbsp;状&nbsp;态 </th>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <table width="800px" class="cskefu-reports-ds-table">
+                        <tbody>
+                        <tr>
+                            <td class="lcap bk_RoyalBlue white">分机总数</td>
+                            <td id="phs_total" class="ldat">60</td>
+                            <td class="lcap bk_LightGrey">离线数</td>
+                            <td id="phs_offlines" class="ldat">28</td>
+                            <td class="lcap bk_LimeGreen">注册数</td>
+                            <td id="phs_onlines" class="ldat">32</td>
+                            <td class="lcap bk_RosyBrown">离席数</td>
+                            <td id="phs_outs" class="ldat">23</td>
+                        </tr>
+                        <tr>
+                            <td class="lcap bk_LightSkyBlue">空闲数</td>
+                            <td id="phs_idles" class="ldat">18</td>
+                            <td class="lcap bk_Salmon">工作数</td>
+                            <td id="phs_actives" class="ldat">1</td>
+                            <td class="lcap bk_LightPink">通话数</td>
+                            <td id="phs_inused" class="ldat">1</td>
+                            <td class="lcap bk_Orange">振铃数</td>
+                            <td id="phs_rings" class="ldat">0</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </center>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12" style="padding-right:5px;">
+                <center>
+                    <table width="800px" class="cskefu-reports-ds-table-header">
+                        <tbody>
+                        <tr>
+                            <th class="bk_LavenderBlush">外&nbsp;呼&nbsp;任&nbsp;务 </th>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                <table width="800px" class="cskefu-reports-ds-table">
+                    <tbody><tr>
+                        <td class="lcap bk_RoyalBlue white">任务总数</td>
+                        <td id="task_total" class="ldat">47</td>
+                        <td class="lcap bk_LightGrey">完成数</td>
+                        <td id="task_ends" class="ldat">46</td>
+                        <td class="lcap bk_RosyBrown">暂停数</td>
+                        <td id="task_pauses" class="ldat">1</td>
+                        <td class="lcap bk_LimeGreen">运行数</td>
+                        <td id="task_runnings" class="ldat">0</td>
+                    </tr>
+                    <tr>
+                        <td class="lcap bk_LightSkyBlue">线程限制</td>
+                        <td id="task_tmax" class="ldat">0</td>
+                        <td class="lcap bk_LightSkyBlue">线程活动</td>
+                        <td id="task_tinuse" class="ldat red">0</td>
+
+                        <td class="lcap bk_Salmon">已呼数</td>
+                        <td id="job_calls" class="ldat">0</td>
+                        <td class="lcap bk_LightSlateGray">失败数</td>
+                        <td id="job_bads" class="ldat">0</td>
+                    </tr>
+                    <tr>
+                        <td class="lcap bk_LightPink">呼通数</td>
+                        <td id="job_finds" class="ldat">0</td>
+                        <td class="lcap bk_DeepSkyBlue">接听数</td>
+                        <td id="job_talks" class="ldat">0</td>
+                        <td class="lcap bk_Orange">意向数</td>
+                        <td id="job_goods" class="ldat gold">0</td>
+                        <td class="lcap bk_Peru">呼损数</td>
+                        <td id="job_losts" class="ldat red">0</td>
+
+                    </tr>
+                    </tbody></table>
+                </center>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12" style="padding-right:5px;">
+                <center>
+                    <table width="800px" class="cskefu-reports-ds-table-header">
+                        <tbody>
+                        <tr>
+                            <th class="bk_LightGreen">本&nbsp;日&nbsp;呼&nbsp;叫 </th>
+                        </tr>
+                        </tbody>
+                    </table>
+                <table width="800px" class="cskefu-reports-ds-table">
+                    <tbody><tr>
+                        <td class="lcap bk_RoyalBlue white">呼叫总数</td>
+                        <td id="call_total" class="ldat">111025</td>
+
+                        <td class="lcap bk_LightGrey">呼叫失败数</td>
+                        <td id="call_fails" class="ldat">93177</td>
+                        <td class="lcap bk_RoyalBlue white">呼叫成功数</td>
+                        <td id="call_success" class="ldat">17848</td>
+                        <td class="lcap bk_LightGrey">呼通率</td>
+                        <td id="call_pri" class="ldat">16.08%</td>
+                    </tr>
+                    <tr>
+
+                        <td class="lcap bk_Orange">手拨总数</td>
+                        <td id="dial_total" class="ldat">763</td>
+                        <td class="lcap bk_WhiteSmoke">手拨失败数</td>
+                        <td id="dial_fails" class="ldat">138</td>
+                        <td class="lcap bk_Orange white">手拨成功数</td>
+                        <td id="dial_success" class="ldat">625</td>
+                        <td class="lcap bk_WhiteSmoke">呼通率</td>
+                        <td id="dial_pri" class="ldat">81.91%</td>
+                    </tr><tr>
+                        <td class="lcap bk_RosyBrown">回拨总数</td>
+                        <td id="job_total" class="ldat">110262</td>
+                        <td class="lcap bk_LightGrey">回拨失败数</td>
+                        <td id="job_fails" class="ldat">93039</td>
+                        <td class="lcap bk_RosyBrown white">回拨成功数</td>
+                        <td id="job_success" class="ldat">17223</td>
+                        <td class="lcap bk_LightGrey">呼通率</td>
+                        <td id="job_pri" class="ldat">15.62%</td>
+                    </tr>
+                    </tbody>
+                </table>
+                </center>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12" style="padding-right:5px;">
+                <center>
+                    <table width="800px" border="0" cellpadding="0" cellspacing="0" style="border:0;">
+                        <tbody><tr><td style="width:20px;">
+                            <a href="javascript:SetRefreshTimer()" title="设置刷新时间">
+                                <i class="fa fa-clock-o fs18px"></i>
+                            </a>
+                        </td>
+                            <td id="interval" align="left">在&nbsp;7&nbsp;后更新</td>
+                            <td id="runtimes" align="right" width="80%"> 脚本运行时间 1.344763 秒</td>
+                        </tr></tbody></table>
+                </center>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var interval_max = 10;
+    var interval_sec = 10;
+
+
+    function phonedraw(total,offlines,onlines,outs,idles,actives,inused,rings)
+    {
+        $('phs_total').innerHTML = total;
+        $('phs_offlines').innerHTML = offlines;
+        $('phs_onlines').innerHTML = onlines;
+        $('phs_outs').innerHTML = outs;
+        $('phs_idles').innerHTML = idles;
+        $('phs_actives').innerHTML = actives;
+        $('phs_inused').innerHTML = inused;
+        $('phs_rings').innerHTML = rings;
+    }
+
+    function taskdraw(total,ends,pauses,runnings,tmaxs,tinuse)
+    {
+        $('task_total').innerHTML= total;
+        $('task_ends').innerHTML=ends;
+        $('task_pauses').innerHTML =pauses;
+        $('task_runnings').innerHTML = runnings;
+        $('task_tmax').innerHTML= tmaxs;
+        $('task_tinuse').innerHTML = tinuse;
+    }
+    function jobsdraw(calls,bads,finds,talks,goods,losts)
+    {
+        $('job_calls').innerHTML=calls;
+        $('job_bads').innerHTML = bads;
+        $('job_finds').innerHTML = finds;
+        $('job_talks').innerHTML =talks;
+        $('job_goods').innerHTML = goods;
+        $('job_losts').innerHTML = losts;
+    }
+
+    function callsdraw(call_total,call_fails,call_success,call_pri,
+                       dial_total,dial_fails,dial_success,dial_pri,
+                       job_total,job_fails,job_success,job_pri)
+    {
+        $('call_total').innerHTML = call_total;
+        $('call_fails').innerHTML =call_fails;
+        $('call_success').innerHTML = call_success;
+        $('call_pri').innerHTML = call_pri;
+        $('dial_total').innerHTML = dial_total;
+        $('dial_fails').innerHTML = dial_fails;
+        $('dial_success').innerHTML = dial_success;
+        $('dial_pri').innerHTML = dial_pri;
+        $('job_total').innerHTML = job_total;
+        $('job_fails').innerHTML = job_fails;
+        $('job_success').innerHTML = job_success;
+        $('job_pri').innerHTML = job_pri;
+    }
+
+    function SetRefreshTimer()
+    {
+        var old_sec = interval_sec;
+        interval_sec = -99999;
+
+        var s = "<TABLE class='EditView'>";
+        s += "<TR><TD class='fLabel'>选择刷新间隔</TD><TD class='fData'>";
+        s += "<SELECT id='fld_interval'>";
+        for(var i = 1; i <= 30; i += 1){
+            s += "<OPTION VALUE='"+i+"' ";
+            if( i == 10 ) s += "SELECTED ";
+            s += ">"+i+"秒</OPTION>";
+        }
+        s += "</SELECT>";
+        s += "</TD></TR>";
+        s += "</TABLE>";
+        tmpdialog = art.dialog({
+            padding:0, title : "选择刷新间隔",
+            content: s,
+            ok:function()
+            {
+                var pr = lbtext( $('fld_interval') );
+                if( pr != 10 ){
+                    location.href="main.php?M=SysInfo&A=index&Interval="+pr;
+                }else{
+                    interval_sec = old_sec;
+                }
+                return true;
+            },
+            cancel:function(){ interval_sec = old_sec; }
+        });
+    }
+
+    function en_auto_refresh(tick){	interval_sec = 1;$('runtimes').innerHTML=' 脚本运行时间 '+tick+ ' 秒'; setTimeout("auto_refresh()",1000);}
+
+    function auto_refresh()
+    {
+        if( interval_sec < interval_max ){
+            interval_sec ++;
+            $('interval').innerHTML = "在&nbsp;"+(interval_max-interval_sec)+"&nbsp;后更新";
+            setTimeout("auto_refresh()",1000);
+            return;
+        }
+        interval_sec = -99;
+        // TODO add API calls to retrive data
+        console.log("call data sync M=SysInfo&A=refresh&vip=343");
+    }
+    setTimeout("auto_refresh()",1000);
+</script>

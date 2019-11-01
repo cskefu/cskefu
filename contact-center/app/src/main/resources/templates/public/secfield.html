@@ -1,0 +1,29 @@
+<#macro secfield value type>
+	<#if type?? && type == "01"> <!-- 隐藏中间四位 -->
+		<#if value?? && value?length gt 4>
+			<#if value?length%2 == 0>
+			${value?substring(0 , (value?length / 2)?floor - 2)}****${value?substring((value?length / 2)?ceiling + 2)}
+			<#else>
+			${value?substring(0 , (value?length / 2)?floor - 2)}****${value?substring((value?length / 2)?ceiling + 1)}
+			</#if>
+		<#else>
+			<#list 0..value?length as size>*</#list>
+		</#if>
+	<#elseif type?? && type == "02"><!-- 隐藏后四位 -->
+		<#if value?? && value?length gt 4>
+			****${value?substring(4)}
+		<#else>
+			<#list 0..value?length as size>*</#list>
+		</#if>
+	<#elseif type?? && type == "03"><!-- 隐藏前四位 -->
+		<#if value?? && value?length gt 4>
+			${value?substring(0,value?length - 4)}****
+		<#else>
+			<#list 0..value?length as size>*</#list>
+		</#if>
+	<#elseif type?? && type == "04"><!-- 隐藏全部 -->
+		<#list 0..value?length as size>*</#list>
+	<#else>
+		${value!''}
+	</#if>
+</#macro>

@@ -1,0 +1,133 @@
+<div id="containter" class="clearfix">
+	<div class="group-left">
+		<div class="group-icon">
+			<img src="/images/imgroup.png">
+		</div>
+		<div class="group-name">
+			${imGroup.name!''}
+		</div>
+		<div class="group-btn">
+			<a class="layui-btn layui-btn-normal layui-btn-small" href="/ent/im/group.html?id=${imGroup.id!''}">发消息</a>
+			<#if user.id = imGroup.creater>
+			<a class="layui-btn layui-btn-danger layui-btn-small" data-toggle="tip" data-title="解散动作无法恢复，请确认是否解散该群？" href="/ent/im/rmgroup.html?id=${imGroup.id!''}">解散群</a>
+			</#if>
+		</div>	 
+	</div>
+	<div class="group-rig">
+		<div class="layui-tab layui-tab-brief" style="margin:0px;">
+		  <ul class="layui-tab-title">
+			<li class="layui-this">群成员</li>
+		  </ul>
+		  <div class="layui-tab-content">
+			<div class="layui-tab-item layui-show">
+				<form class="layui-form" action="">
+				<ul>
+					<li class="ukefu-entim-organ-open">
+						<h5 class="ukefu-entim-organ" lay-filter="spread" lay-type="true">
+							<i class="layui-icon"></i>
+							<span>未分组用户</span>
+							<#assign curusers = 0 >
+							<#if userList??>
+							<#list userList as entimuser>
+								<#if !(entimuser.organ??) && entimuser.id != user.id>
+								<#assign curusers = curusers+1 >
+								</#if>
+							</#list>
+							</#if>
+							<em>(<cite class="layim-count"> ${curusers} </cite>)</em>
+						</h5>
+						<ul class="ukefu-user-list">
+							<#if userList??>
+							<#list userList as entimuser>
+								<#if !(entimuser.organ??) && entimuser.id != user.id>
+								<li id="user_${entimuser.id}">
+									<a href="javascript:void(0)" onclick="openchat('/ent/im/chat.html?userid=${entimuser.id!''}' , '/images/user-pc.png' , '${entimuser.uname!''}' , '${entimuser.id!''}' , '最近登陆:${entimuser.lastlogintime}');">
+										<img src="/images/user-pc.png">
+										<span>${entimuser.uname!''}</span>
+										<p>最近登陆:${entimuser.lastlogintime?string('yyyy-MM-dd HH:mm:ss')}</p>
+									</a>
+									<#if user.id = imGroup.creater>
+									<div class="ukefu-group-join">
+										<#assign useringroup = false >
+										<#if imGroupUserList??><#list imGroupUserList as imGroupUser><#if imGroupUser.user?? && imGroupUser.user.id == entimuser.id><#assign useringroup = true ><#break/></#if></#list></#if>
+										<input type="checkbox" name="user" title="加入" value="${entimuser.id!''}" lay-filter="save" <#if useringroup == true>checked="checked"</#if>>
+									</div>
+									</#if>
+								</li>
+								</#if>
+							</#list>
+							</#if>
+						</ul>
+					</li>
+					<#if organList??>
+					<#list organList as organ>
+					<li class="ukefu-entim-organ-open">
+						<h5 class="ukefu-entim-organ" lay-filter="spread" lay-type="true">
+							<i class="layui-icon"></i>
+							<span>${organ.name!''}</span>
+							<#assign curusers = 0 >
+							<#if userList??>
+							<#list userList as entimuser>
+								<#if entimuser.organ?? && entimuser.id != user.id && entimuser.organ == organ.id>
+								<#assign curusers = curusers+1 >
+								</#if>
+							</#list>
+							</#if>
+							<em>(<cite class="layim-count"> ${curusers} </cite>)</em>
+						</h5>
+						<ul class="ukefu-user-list">
+							<#if userList??>
+							<#list userList as entimuser>
+								<#if entimuser.organ?? && entimuser.id != user.id && entimuser.organ == organ.id>
+								<li id="user_${entimuser.id}">
+									<a href="javascript:void(0)" onclick="openchat('/ent/im/chat.html?userid=${entimuser.id!''}' , '/images/user-pc.png' , '${entimuser.uname!''}' , '${entimuser.id!''}' , '最近登陆:${entimuser.lastlogintime}');">
+										<img src="/images/user-pc.png">
+										<span>${entimuser.uname!''}</span>
+										<p>最近登陆:${entimuser.lastlogintime?string('yyyy-MM-dd HH:mm:ss')}</p>
+									</a>
+									<#if user.id = imGroup.creater>
+									<div class="ukefu-group-join">
+										<#assign useringroup = false >
+										<#if imGroupUserList??><#list imGroupUserList as imGroupUser><#if imGroupUser.user?? && imGroupUser.user.id == entimuser.id><#assign useringroup = true ><#break/></#if></#list></#if>
+										<input type="checkbox" name="user" title="加入" value="${entimuser.id!''}" lay-filter="save" <#if useringroup == true>checked="checked"</#if>>
+									</div>
+									</#if>
+								</li>
+								</#if>
+							</#list>
+							</#if>  
+						</ul>
+					</li>
+					</#list>
+					</#if>
+				</ul>
+				</form>
+			</div>
+		  </div>
+		</div> 
+	</div>
+</div>
+<script>
+	layui.use('element', function(){
+	  var element = layui.element();
+	});
+	layui.use('form', function(){
+		  var form = layui.form();
+		  form.on("checkbox(save)" , function(data){
+			  if(data.elem.checked){
+				  loadURL('/ent/im/group/seluser.html?id=${imGroup.id!''}&user='+data.value);
+			  }else{
+			  	  loadURL('/ent/im/group/rmuser.html?id=${imGroup.id!''}&user='+data.value);
+			  }
+		  });
+	});
+	$('.ukefu-entim-organ').click(function(){
+		if($(this).parent().hasClass('ukefu-entim-organ-open')){
+			$(this).parent().removeClass('ukefu-entim-organ-open');
+			$(this).children().first().html('&#xe602;');
+		}else{
+			$(this).parent().addClass('ukefu-entim-organ-open')
+			$(this).children().first().html('&#xe61a;');
+		}
+	}) ;
+</script>

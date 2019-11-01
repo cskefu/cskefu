@@ -1,0 +1,7 @@
+<ul class="ukefu-ivr-item">
+	<#if ivrList??>
+	<#list ivrList as ivr>
+	<li><a href="javascript:void(0)" onclick="uKeFuSoftPhone.trans('${ivr.extention!''}');top.layer.close(top.layerwin);">${ivr.extention!''}<#if ivr.description?? && ivr.description != "">（${ivr.description!''}）</#if></a></li>
+	</#list>
+	</#if>
+</ul>

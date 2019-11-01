@@ -1,0 +1,321 @@
+<div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+        <#include "/apps/callout/include/left.html">
+    </div>
+</div>
+
+<div class="layui-body" style="background-color: #f2f2f2;">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="site-h1" style="background-color:#FFFFFF;">
+                坐席监控
+            </h1>
+            <div class="box-header" style="background-color: #f5f5f5;">
+                <h1 class="site-h1" style="background-color:#FFFFFF;">
+                    <div class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">语音渠道标识</label>
+                                <div class="layui-input-inline">
+                                    <select name="channel" lay-verify="channel" id="channel">
+                                        <#if voicechannels?? && voicechannels?size gt 0>
+                                            <#list voicechannels as voicechannel>
+                                        <option value="${voicechannel.baseURL}">${voicechannel.name}</option>
+                                            </#list>
+                                        </#if>
+                                    </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">部门</label>
+                            <div class="layui-input-inline">
+                                <select name="organ" lay-verify="organ" id="organ">
+                                    <option value="all">所有部门</option>
+                                    <#if departments?? && departments?size gt 0>
+                                        <#list departments as dep>
+                                    <option value="${dep.id}">${dep.name}</option>
+                                        </#list>
+                                    </#if>
+                                </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label"></label>
+                        <button id="search" class="layui-btn" lay-submit lay-filter="search">立即查询</button>
+                    </div>
+            </div>
+        </div>
+        </h1>
+    </div>
+    <style type="text/css" mce_bogus="1">
+        table th{white-space: nowrap;}
+        table td{white-space: nowrap;}
+        table.tab_css_1 tr.tr_css th, table.tab_css_1 tr td{
+            background-color:#f5fafe;
+            white-space: nowrap;
+            text-align: center;
+            border:1px solid #cad9ea;
+        }
+        table.tab_css_1 tr td{
+            background-color:#ffffff;
+            border:1px solid #cad9ea !important;
+        }
+    </style>
+
+    <div class="row" style="padding:5px;">
+        <div class="col-lg-12" style="overflow: auto; width: 100%;">
+            <table id="agentslist" class="layui-table tab_css_1" lay-skin="line">
+                <thead>
+                <tr class="tr_css">
+                    <th colspan="3">坐席</th>
+                    <th colspan="2">状态</th>
+                    <th colspan="4">电话</th>
+                    <th colspan="1">操作</th>
+                </tr>
+                <tr class="tr_css">
+                    <th>SIP地址</th>
+                    <th>部门</th>
+                    <th>姓名</th>
+                    <th>坐席</th>
+                    <th>SIP</th>
+                    <th>呼叫号码</th>
+                    <th>呼叫类型</th>
+                    <th>开始时间</th>
+                    <th>呼叫时长</th>
+                    <th>监听</th>
+                </tr>
+                </thead>
+                <tbody id="news_content">
+                    <tr><td colspan="11" style="text-align: center;">暂无数据</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row" style="padding:5px;">
+        <div class="col-lg-12" id="page" style="text-align:center;"></div>
+    </div>
+</div>
+</div>
+</div>
+<script src="/js/CSKeFu_Rest_Request.v1.js"></script>
+<script src="/js/lodash-4.17.4.min.js"></script>
+<script>
+    layui.use(['form','layer','jquery','laypage'],function(){
+        var form = layui.form(),
+            layer = parent.layer === undefined ? layui.layer : parent.layer,
+            laypage = layui.laypage,
+            $ = layui.jquery;
+
+        $(function () {
+            var p = window.location.search;
+            // 针对从 任务列表中href过来的，需要获取当前的id
+            if(p) {
+                p.substring(1, p.length);
+                p = p.split("&");
+                var channel = p[0].split("=")[1];
+                var organ = p[1].split("=")[1];
+                $("#channel").val(channel);
+                $("#organ").val(organ);
+
+                // 初始请求数据
+                var data = formValues();
+                if(_.isEmpty(data)){
+                    data = {
+                        channel: channel,
+                        organ: organ,
+                    };
+                }
+                data.ops = 'status';
+                httpRequest({
+                    data: data,
+                    path: 'callout/monitor',
+                    query: '?p=1&ps=20',
+                }).then(function (d) {
+                    if(d.status && d.status === "AUTH_ERROR"){
+                        openFail(d.status);
+                        return;
+                    }
+
+                    if(d.rc === 0){
+                        newsList(d);
+                    } else {
+                        openFail(null, d.error)
+                    }
+                }, function (reason) {
+                    openFail()
+                });
+            }
+        });
+
+        form.verify({
+            enddate: function(value){
+                if (moment(value).diff(moment($('#fromdate').val())) < 0) {
+                    return "结束日期不早于开始日期。";
+                }
+            }
+        });
+
+        function formValues() {
+            var formData = {};
+            var formOrgan = $("#organ").val();
+            if(formOrgan && formOrgan != 'all')
+                formData.organ = formOrgan;
+
+            var formChannel = $("#channel").val();
+            if(formChannel && formChannel != 'all')
+                formData.channel = formChannel;
+
+            return formData;
+        }
+
+        // 立即查询
+        $("#search").click(function () {
+            var data = formValues();
+            data.ops = 'status';
+            httpRequest({
+                data: data,
+                path: 'callout/monitor',
+                query: '?p=1&ps=20',
+            }).then(function (d) {
+                if(d.status && d.status === "AUTH_ERROR"){
+                    openFail(d.status);
+                    return;
+                }
+
+                if(d.rc === 0){
+                    newsList(d);
+                } else {
+                    openFail(null, d.error)
+                }
+            }, function (reason) {
+                openFail()
+            });
+        });
+
+        $(document).on("click", ".opts-monitor", function(){
+            var fileHash = this.id;
+            if(!fileHash) {
+                return false;
+            }
+
+            fileHash = fileHash.split('&');
+
+            var data = {};
+            data.channel = fileHash[0];
+            data.callid = fileHash[1];
+            data.ops = 'dropin';
+
+            httpRequest({
+                data: data,
+                path: 'callout/monitor',
+                query: '?p=1&ps=20',
+            }).then(function (d) {
+                if(d.status && d.status === "AUTH_ERROR"){
+                    openFail(d.status);
+                    return;
+                }
+
+                if(d.rc === 0){
+                    openSucc(d.data);
+                } else {
+                    openFail(null, d.error)
+                }
+            }, function (reason) {
+                openFail()
+            });
+        });
+
+        //
+        function newsList(data){
+            // 渲染数据
+            function renderDate(data, curr){
+                var dataHtml = '';
+                var constCurrent = {
+                    callid: '-',
+                    called: '-',
+                    direction: '-',
+                    createtime: '-',
+                    duration: 0,
+                };
+                if(data && data.length > 0){
+                    for(var i=0;i <data.length;i++){
+                        var d = data[i];
+
+                        var sipStatus = d.status;
+                        var current = d.current;
+
+                        var monitor = '<i class="layui-icon">&#xe643;</i>';
+
+                        if(sipStatus == '通话'){
+                            if(_.isEmpty(current)){
+                                current = constCurrent;
+                                sipStatus = '振铃';
+                            } else {
+                                var channel = $("#channel").val();
+                                var callid = current.callid;
+                                var id = channel + '&' + callid;
+                                monitor = '<a href="javascript:;" class="opts-monitor" id="'+ id + '">' + monitor + '</a>';
+                            }
+                        } else {
+                            current = constCurrent;
+                        }
+
+                        dataHtml +=
+                            '<tr>'
+                            + '<td>' + d.sip + '</td>'
+                            + '<td>' + d.organ + '</td>'
+                            + '<td>' + d.name + '</td>'
+                            + '<td>' + d.web + '</td>'
+                            + '<td>' + sipStatus + '</td>'
+                            + '<td>' + current.called + '</td>'
+                            + '<td>' + current.direction + '</td>'
+                            + '<td>' + current.createtime + '</td>'
+                            + '<td>' + current.duration + '</td>'
+                            + '<td>' + monitor + '</td>'
+                            // + '<td>' + '' + '</td>'
+                            // + '<td>' + '' + '</td>'
+                            // + '<td>' + '' + '</td>'
+                            // + '<td>' + '' + '</td>'
+                            + '</tr>';
+                    }
+                }else{
+                    dataHtml = '<tr><td colspan="11" style="text-align: center;">暂无数据</td></tr>';
+                }
+                return dataHtml;
+            }
+
+            //分页
+            laypage({
+                cont: "page",
+                pages: data.totalPage,
+                curr: data.number + 1,
+                groups: 5,
+                jump : function(obj, first){
+                    var body = formValues();
+                    body.ops = 'status';
+                    httpRequest({
+                        data: body,
+                        path: 'callout/monitor',
+                        query: '?p=' + obj.curr + '&ps=20',
+                    }).then(function (d) {
+                        if(d.status && d.status === "AUTH_ERROR"){
+                            openFail(d.status);
+                            return;
+                        }
+
+                        if(d.rc === 0){
+                            $("#news_content").html(renderDate(d.data, obj.curr));
+                            form.render();
+                        } else {
+                            openFail(null, d.error)
+                        }
+                    }, function (reason) {
+                        openFail()
+                    });
+                }
+            })
+        }
+    });
+
+
+</script>

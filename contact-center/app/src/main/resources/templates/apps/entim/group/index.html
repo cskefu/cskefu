@@ -1,0 +1,324 @@
+<div id="containter" class="clearfix" style="margin-right:200px;">
+	<div class="content-left">
+		<div class="chat-above" id="above">
+			<div class="clearfix message connect-message"> 
+				<span id="connect-message" style="background-color:#FFFFFF;color:#4665d4;">
+					<a href="javascript:void(0)" style="color:#4665d4;">
+						<i class="layui-icon">&#xe63a;</i>
+						查看更多消息
+					</a>
+				</span>
+			</div>
+			<#if chatMessageList?? && chatMessageList.content>
+			<#list chatMessageList.content?reverse as chatMessage>
+				<#if chatMessage.userid?? && chatMessage.userid == user.id>
+					<div class="clearfix chat-block">
+						<div class="chat-right"> 
+							<img class="user-img" src="/im/img/user.png" alt="">
+							<div class="chat-message">
+								<label class="time">${chatMessage.createtime!''}</label>
+								<label class="user">${user.uname!''}</label> 
+							</div>
+							<div class="chatting-right">
+								<i class="arrow"></i>
+								<div class="chat-content">${(chatMessage.message!'')?no_esc}</div>
+							</div>
+						</div>
+					</div>
+				<#else>
+					<#if imGroupUserList??>
+					<#list imGroupUserList as imGroupUser>
+						<div class="clearfix chat-block">
+							<div class="chat-left"> 
+								<img class="user-img" src="/im/img/user.png" alt="">
+								<div class="chat-message">
+									<label class="user">${imGroupUser.user.uname!''}</label> 						
+									<label class="time">${chatMessage.createtime!''}</label>
+								</div>
+								<div class="chatting-left">
+									<i class="arrow"></i>
+									<div class="chat-content">${(chatMessage.message!'')?no_esc}</div>
+								</div>
+							</div>
+						</div>
+						<#break/>
+					</#list>
+					</#if>
+				</#if>
+			</#list>
+			</#if>
+		</div>   
+		<div class="chat-bottom" id="bottom">
+			<textarea id="message" name="content" style="visibility:hidden;"></textarea>
+			<div class="btn-push clearfix">
+				<div style="float:left;height:24px;line-height:34px;margin: 5px 20px 10px 5px;" id="surplus">0/200</div>
+				<button type="button" class="send-btn active special  clearfix" id="sent" onclick="sendMessage()" style="background-color:#32c24d;font-weight: 200;padding:5px;">
+					发送
+				</button>
+			</div>
+		</div> 
+	</div>
+	<div class="content-rig">
+		<div class="content-head">
+			<p>群公告</p>
+		</div>
+		<div class="content-list ukefu-group-tipmsg" id="group-tipmessage">
+			<#include "/apps/entim/group/tipmsg.html">
+		</div>
+		<div class="content-head">
+			<p>群应用</p>
+		</div>
+		<div class="content-list" style="margin-top: 0px;">
+			<ul class="ukefu-group-apps">
+				<li class="ukefu-group-app">
+					<a href="/ent/im/group/user.html?id=${imGroup.id}">
+						<div class="ukefu-group-app-icon"><i class="layui-icon">&#xe613;</i></div>
+						<div class="ukefu-group-app-name">成员</div>
+					</a>
+				</li>
+				<li class="ukefu-group-app">
+					<a href="javascript:void(0)" onclick="group()">
+						<div class="ukefu-group-app-icon"><i class="layui-icon">&#xe63a;</i></div>
+						<div class="ukefu-group-app-name">公告</div>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="content-head">
+			<p>群成员（${imGroupUserList?size}）</p>
+		</div>
+		<div class="content-list" style="margin-top: 0px;">
+			<ul class="ukefu-user-list ukefu-group" style="display:block;">
+				<#if imGroupUserList??>
+				<#list imGroupUserList as imGroupUser>
+					<li id="gruop_user_${imGroupUser.user.id}">
+						<a href="javascript:void(0)" <#if imGroupUser.user.id != user.id>onclick="openchat('/ent/im/chat.html?userid=${imGroupUser.user.id!''}' , '/images/user-pc.png' , '${imGroupUser.user.uname!''}' , '${imGroupUser.user.id!''}' , '最近登陆:${imGroupUser.user.lastlogintime}');"</#if>>
+							<img src="/images/user-pc.png">
+							<span>${imGroupUser.user.uname!''}</span>
+						</a>
+						<#if imGroupUser.admin || imGroupUser.user.id == user.id>
+							<div class="admin">
+								<#if imGroup.creater == imGroupUser.user.id>
+									<img src="/images/creater.png" title="创建人">
+								<#elseif imGroupUser.admin == true>
+									<img src="/images/admin.png" title="系统管理员">
+								</#if>
+							</div>
+						</#if>
+					</li>
+				</#list>
+				</#if>
+			</ul>    
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	var editor , words;
+	KindEditor.ready(function (K) {
+		editor = K.create('textarea[name="content"]', {
+			autoHeightMode: false,
+			width: "100%",
+			resizeType: 0,
+			themeType: 'simple',
+			fontsize: 14,
+			newlineTag : "br" , 
+			filterMode:true,
+			items: ['emoticons', 'cut'],
+			afterChange : function() {
+				var count = this.count() ;
+				
+				words = this.count("text") ;
+				var pattern = '字数：' + words + '字'; 
+				document.getElementById('surplus').innerHTML = "字符： "+count+"  ，文字：" + pattern; //输入显示
+				 ////////
+			},
+			afterCreate : function() { //设置编辑器创建后执行的回调函数
+	            var self = this;
+	            //Ctrl+Enter提交表单
+	            K.ctrl(document, 13, function() {
+	                self.sync();
+	                sendMessage();
+	            });
+	            K.ctrl(self.edit.doc, 13, function() {
+	                self.sync();
+	                sendMessage();
+	            });
+	        }
+		});
+	});
+	KindEditor.options.cssData = "body { font-size: 15px; font-family:'Microsoft Yahei', 'Helvetica', 'Simsun', 'Arial';}";
+	var R3Ajax = {
+		ajax:function(opt){
+			var xhr = this.createXhrObject();
+			xhr.onreadystatechange = function(){
+				if(xhr.readyState!=4) return ;
+				(xhr.status===200 ?
+					opt.success(xhr.responseText,xhr.responseXML):
+					opt.error(xhr.responseText,xhr.status));
+			}
+			xhr.open(opt.type,opt.url,true);
+			if(opt.type!=='post') 
+				opt.data=null;
+			else
+				xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+			opt.data = this.parseQuery(opt.data);
+			xhr.send(opt.data);
+		},
+		post:function(url,success,data){
+			var popt = {
+				url:url,
+				type:'post',
+				data:data,
+				success:success,
+				error:function(data){}
+			}
+			this.ajax(popt);
+		},
+		get:function(url,success){
+			var gopt = {
+				url:url,
+				type:'get',
+				success:success,
+				error:function(){}
+			}
+			this.ajax(gopt);
+		},
+		createXhrObject:function(){
+			var methods = [
+				function(){ return new XMLHttpRequest();},
+				function(){ return new ActiveXObject('Msxml2.XMLHTTP');},
+				function(){ return new ActiveXObject('Microsoft.XMLHTTP');}
+			];
+			for(var i=0;len=methods.length,i<len;i++){
+				try{
+					methods[i]();
+				}catch(e){
+					continue;
+				}
+				this.createXhrObject = methods[i];
+				return methods[i]();
+			}
+			throw new Error('Could not create an XHR object.');
+		},
+		parseQuery:function(json){
+			if(typeof json == 'object'){
+				var str = '';
+				for(var i in json){
+					str += "&"+i+"="+encodeURIComponent(json[i]);
+				}
+				return str.length==0 ? str : str.substring(1);
+			}else{
+				return json;
+			}
+		}
+	};
+	Date.prototype.format = function(fmt) { 
+		 var o = { 
+			"M+" : this.getMonth()+1,                 //月份 
+			"d+" : this.getDate(),                    //日 
+			"h+" : this.getHours(),                   //小时 
+			"m+" : this.getMinutes(),                 //分 
+			"s+" : this.getSeconds(),                 //秒 
+			"q+" : Math.floor((this.getMonth()+3)/3), //季度 
+			"S"  : this.getMilliseconds()             //毫秒 
+		}; 
+		if(/(y+)/.test(fmt)) {
+				fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+		}
+		 for(var k in o) {
+			if(new RegExp("("+ k +")").test(fmt)){
+				 fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+			 }
+		 }
+		return fmt; 
+	} 
+	var R3Helper = {
+		resize : function(){
+			var height = document.body.offsetHeight ;
+			document.getElementById('above').style.height = (height - 194 - 50)+"px" ;
+		}
+	}
+	function openchat(url , img , name, id , text){
+		top.layer.open({
+			  type: 2,
+			  id : id,
+			  title: ["<div style='position: relative;height: 42px;padding: 5px 15px 5px 0px;line-height: 20px;cursor: pointer;display: inline-block;vertical-align: top;' id='dialog_"+id+"'><img src='"+img+"' style='max-height:50px;'><div style='padding:0px 5px;line-height: 23px;display: inline-block;vertical-align: top;'><span style='vertical-align: top;font-size:18px;'>"+name+"<span class='ukefu-entim-status offline' id='chat_"+id+"' title='离线'><i class='layui-icon'></i></span></span><p style='vertical-align: top;font-size: 12px;color: #999;'>"+text+"</p></div></div>" , "height:55px"],
+			  closeBtn: 1, //不显示关闭按钮
+			  shade: false,
+			  area: ['700px', '520px'],
+			  maxmin: true, 
+			  anim: 2,
+			  shade: 0,
+			  content: url
+		  });
+	}
+</script>
+<script>
+	layui.use('element', function(){
+	  var $ = layui.jquery
+	  ,element = layui.element(); //Tab的切换功能，切换事件监听等，需要依赖element模块
+	});
+	var hostname = location.hostname ;
+	var socket = io.connect("http://"+top.hostname+":"+top.port+"/im/ent?userid=${user.id!''!''}&orgi=${user.orgi!''}&contextid=${contextid!''}&group=${contextid!''}");
+
+	socket.on('message', function(data) {
+		var chat=document.getElementsByClassName('chatting-left').innerText;
+		chat = data.message;
+		var user = data.username ;
+		if(data.userid == "${user.id!''}"){
+			output('<div class="chat-right"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label class="time">'+data.createtime+'</label><label  class="user">'+user+'</label> </div><div class="chatting-right"><i class="arrow"></i><div class="chat-content">'+chat+'</div></div>' , "chat-block");
+		}else{
+			output('<div class="chat-left"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label  class="user">${entimuser.uname!''}</label><label class="time">'+data.createtime+'</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content">'+chat+'</div></div>' , "chat-block");	
+		}    
+	});
+	function sendMessage() {
+		editor.sync();
+		var count = editor.count("text");
+		if(count>0){
+			var message = document.getElementById('message').value;
+			if(message!= ""){ 
+				socket.emit('message', {
+					userid:"${user.id!''}",
+					type:"message" ,
+					username:"${user.uname!''}",
+					session:"${user.id!''}",
+					touser:"${contextid!''}",
+					contextid:"${contextid!''}",
+					orgi:"${user.orgi!''}",
+					model:"entim",
+					chatype:"group",
+					message : message
+				});
+			}
+		}
+		editor.html('');
+	}
+	function output(message , clazz) {
+		if(clazz == "message connect-message"){
+			var messages = document.getElementsByClassName("connect-message") ;
+			for(inx =0 ; inx < messages.length ; ){
+				document.getElementById('above').removeChild(messages[inx]) ;
+				inx++ ;
+			}			
+		}
+		var element = ("<div class='clearfix "+clazz+"'>" +" " + message + "</div>");
+		document.getElementById('above').innerHTML= (document.getElementById('above').innerHTML + element);
+		document.getElementById('above').scrollTop = document.getElementById('above').scrollHeight  ;
+	}
+	document.getElementById('above').scrollTop = document.getElementById('above').scrollHeight  ;
+	top.$('#chat_${imGroup.id}').removeClass('offline').addClass('online').attr('title' , '在线');
+	function group(){
+		layer.open({
+			  title: '公告' ,
+			  type: 1
+			  ,id:'tipmsg'
+			  ,content: '<div><div id="" class="layui-layer-content ukefu-entim-search"><#if user.id = imGroup.creater><textarea type="text" id="tipmsgcontent" class="layui-layer-input" style="height:100px;widht:300px;"></textarea><#else>${imGroup.tipmessage!''}</#if></div></div>'
+			  ,btn: ['保存','关闭']
+			  ,shade: 0 //不显示遮罩
+			  ,yes: function(){
+				  loadURL('/ent/im/group/tipmsg.html?id=${imGroup.id!''}&tipmsg='+encodeURIComponent($('#tipmsgcontent').val()) , '#group-tipmessage');
+				  layer.closeAll();
+			  }
+		});
+	}
+</script>

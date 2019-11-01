@@ -1,0 +1,6 @@
+[
+<#if owneruserList?? ><#list owneruserList as owneruser><#if owneruser_index gt 0>,</#if>{
+		"id" : "${owneruser.id!''}" ,
+		"text":"${owneruser.username!''}"
+	}</#list></#if>
+]
