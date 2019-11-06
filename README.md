@@ -142,7 +142,7 @@
 
 ## 使用说明
 
-关于产品的具体使用说明，请参考[文档中心](https://docs.chatopera.com/omni-channel-customer-support-system.html)。
+关于产品的具体使用说明，请参考[文档中心](https://docs.chatopera.com/products/cskefu/index.html)。
 
 ## 来自真实用户的反馈
 
