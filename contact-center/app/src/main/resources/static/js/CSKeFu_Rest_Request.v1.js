@@ -28,7 +28,6 @@ function restApiRequest(opts) {
         authorization: getCookie('authorization').trim()
     };
     payload.dataType = 'json';
-
     payload.data = JSON.stringify(opts.data);
     var popup = null;
 

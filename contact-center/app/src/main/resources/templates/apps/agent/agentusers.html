@@ -32,7 +32,7 @@
 			<#if agentUserList??>
 			<#list agentUserList as agentuser>
 			<li class="clearfix chat-list-item <#if curagentuser?? && curagentuser.id?? && agentuser.id?? && curagentuser.id == agentuser.id>active</#if>"
-				id="agentuser_${agentuser.userid!''}" data-id="${agentuser.userid!''}">
+				id="agentuser_${agentuser.userid!''}" remove-id="${agentuser.id!''}" data-id="${agentuser.userid!''}">
 				<a href="/agent/agentuser.html?id=${agentuser.id!''}&channel=${agentuser.channel!''}" data-toggle="load" data-target="#ukefu-chat-agent" onclick="$('.chat-list-item.active').removeClass('active');$(this).closest('li.chat-list-item').addClass('active');Proxy.cleanTopMsgTip(1) ;$('#last_msg_${agentuser.userid!''}').text(0).hide();">
 					<img src="<#if agentuser.headimgurl?? && agentuser.headimgurl != ''>${agentuser.headimgurl}<#else>/images/im/user.png</#if>" style="width:45px;height:45px;">
                     <#if agentuser.status?? && agentuser.status == 'end'>

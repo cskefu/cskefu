@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,13 @@
 package com.chatopera.cc.interceptor;
 
 import com.chatopera.cc.acd.AutomaticServiceDist;
-import com.chatopera.cc.basic.I18N;
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.config.MessagingServerConfigure;
 import com.chatopera.cc.model.Dict;
 import com.chatopera.cc.model.SystemConfig;
 import com.chatopera.cc.model.User;
-import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -36,7 +35,6 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.URLEncoder;
 
 public class UserInterceptorHandler extends HandlerInterceptorAdapter {
 

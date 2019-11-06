@@ -13,7 +13,7 @@
             <span class="<% if(data.calltype == '呼出'){%>rateleft<%}else{%>rateright<%}%>"><i class="layui-icon iconclick" id=<%=data.id%>  name="nolabe"  style="cursor:pointer;font-size: 30px; color: #aaaaaa;">&#x1005;</i></span>
             <% }else{%>
             <span class="<% if(data.calltype == '呼出'){%>rateright<%}else{%>rateleft<%}%>"><i class="layui-icon iconclick" id=<%=data.id%>  name="nolabe" style="cursor:pointer;font-size: 30px; color: #aaaaaa;">&#x1005;</i></span>
-            <span class="user"><%=data.username%></span>
+            <span class="user"><% if(data.intervented && data.supervisorname){%><%=data.supervisorname%><%}else{%><%=data.username%><%}%></span>
             <span class="time"><%=data.createtime%></span>
             <span class="<% if(data.calltype == '呼出'){%>rateleft<%}else{%>rateright<%}%>"><i class="layui-icon iconclick" id=<%=data.id%>  name="nolabe" style="cursor:pointer;font-size: 30px; color: #aaaaaa;">&#x1005;</i></span>
             <%}%>
@@ -94,7 +94,7 @@
         <#include "/apps/cca/searchbox.html">
 
         <div class="layui-side layui-bg-black layui-left-black cskefu-cca-leftside" style="height:calc(100% - 60px)">
-            <div class="layui-side-scroll" id="agentusers">
+            <div class="layui-side-scroll" id="agentuserscca">
                 <#include "/apps/cca/agentusers.html"/>
             </div>
         </div>

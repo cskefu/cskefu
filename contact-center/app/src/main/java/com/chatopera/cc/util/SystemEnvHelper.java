@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
+ * Copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ public class SystemEnvHelper {
 
     /**
      * 根据类的全名查找是否存在
+     *
      * @param classFullName
      * @return
      */
@@ -42,17 +43,23 @@ public class SystemEnvHelper {
         }
     }
 
+
     /**
-     * 分析是否加载模块，在变量为不存在或变量值为true的情况下加载
-     * 也就是说，该变量值不为空或为true时时加载
+     * 获得环境变量的值，如果不存在，返回默认值
      *
-     * @param property
+     * @param variable
+     * @param defaultvalue
      * @return
      */
-    public static boolean parseModuleFlag(final String property) {
-        String val = parseFromApplicationProps(property);
-        return StringUtils.isNotBlank(val) && StringUtils.equalsIgnoreCase(val, "true");
+    public static String getenv(final String variable, final String defaultvalue) {
+        final String val = System.getenv(variable);
+
+        if (StringUtils.isBlank(val)) {
+            return defaultvalue;
+        }
+        return val;
     }
+
 
     /**
      * 加载配置，先检查环境变量，再从application properties加载

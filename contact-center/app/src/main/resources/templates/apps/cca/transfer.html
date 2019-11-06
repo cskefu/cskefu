@@ -1,4 +1,4 @@
-<form class="layui-form" action="/apps/cca/transfer/save.html" method="post" >
+<form class="layui-form" id="selfTransAgentUserFormcca" method="post" >
 	<input type="hidden" name="userid" value="${userid!''}">
 	<input type="hidden" name="agentserviceid" value="${agentserviceid!''}">
 	<input type="hidden" name="agentuserid" value="${agentuserid!''}">
@@ -82,5 +82,68 @@
 		}else{
 			$(this).parent().find("input").prop("checked" , true);
 		}
+	});
+
+
+	/**
+	 * 转接访客坐席
+	 * @param agentUserId
+	 * @param targetAgentno
+	 * @param agentUserServiceId
+	 * @param memo
+	 */
+	function submitTransAgentUserOut(agentUserId, targetAgentno, agentUserServiceId, memo) {
+		restApiRequest({
+			silent: true,
+			path: 'agentuser',
+			data: {
+				ops: 'transout',
+				agentno: targetAgentno,
+				agentUserId: agentUserId,
+				agentServiceId: agentUserServiceId,
+				memo: memo
+			}
+		}).then(function(result){
+			if(result.status){
+				// Token过期
+				handleRestApiFail(result.status);
+			} else if(result.rc === 0){
+				// 转接成功
+				//  进行显示调整
+				customerChatAudit.$("li[remove-id="+agentUserId+"] a").click();
+				top.layer.msg('转接已完成',{icon: 1, time: 1000})
+			} else if(result.rc === 1){
+				top.layer.msg('不合法的请求参数',{icon: 2, offset: 'b', time: 3000})
+			} else if(result.rc === 2){
+				top.layer.msg('不合法的操作',{icon: 2, offset: 'b', time: 3000})
+			} else if(result.rc === 3){
+				top.layer.msg('您没有权限执行该操作',{icon: 2, offset: 'b', time: 3000})
+			} else if(result.rc === 4){
+				top.layer.msg('该访客会话不存在',{icon: 2, offset: 'b', time: 3000})
+			} else if(result.rc === 5){
+				top.layer.msg('参数不合法',{icon: 2, offset: 'b', time: 3000})
+			}
+		}, function(error){
+			console.log("error", error);
+			// 服务器异常
+			top.layer.msg('服务器抽风，请稍后再试！', {icon: 2, offset: 'b', time: 3000})
+		})
+	}
+
+	$(function(){
+		$('#selfTransAgentUserFormcca').on('submit', function(e){
+			e.preventDefault();  //prevent form from submitting
+			var data = $("#selfTransAgentUserFormcca :input").serializeArray();
+			var params = {};
+			for(var index = 0; index < data.length; index++){
+				params[data[index]['name']] = data[index]["value"];
+			}
+			// 验证数据的完整，以下为必填
+			if(params["userid"] && params["agentuserid"] && params["agentserviceid"] && params["agentno"]){
+				submitTransAgentUserOut(params["agentuserid"], params["agentno"], params["agentserviceid"], params["memo"]);
+			} else {
+				top.layer.msg('未选择合理的转接信息！',{icon: 2, offset: 'b', time: 3000});
+			}
+		});
 	});
 </script>

@@ -6,7 +6,7 @@
     <version>5.0.0</version>
     <packaging>war</packaging>
     <name>cskefu</name>
-    <description>春松客服企业版：多媒体呼叫中心，下一代呼叫中心</description>
+    <description>春松客服：多渠道智能客服系统</description>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>

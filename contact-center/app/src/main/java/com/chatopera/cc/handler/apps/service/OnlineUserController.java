@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,6 +85,9 @@ public class OnlineUserController extends Handler {
     @Autowired
     private Cache cache;
 
+    @Autowired
+    private AgentUserRepository agentUserRes;
+
     @RequestMapping("/online/index")
     @Menu(type = "service", subtype = "online", admin = true)
     public ModelAndView index(ModelMap map, HttpServletRequest request, String userid, String agentservice, @Valid String channel) {
@@ -108,8 +111,8 @@ public class OnlineUserController extends Handler {
             if (agentServiceList.size() > 0) {
                 map.put("serviceCount", Integer
                         .valueOf(this.agentServiceRes
-                                         .countByUseridAndOrgiAndStatus(userid, orgi,
-                                                                        MainContext.AgentUserStatusEnum.END.toString())));
+                                .countByUseridAndOrgiAndStatus(userid, orgi,
+                                        MainContext.AgentUserStatusEnum.END.toString())));
 
                 AgentService agentService = agentServiceList.get(0);
                 if (StringUtils.isNotBlank(agentservice)) {
@@ -147,9 +150,9 @@ public class OnlineUserController extends Handler {
                 map.put(
                         "agentUserMessageList",
                         chatMessageRepository.findByAgentserviceidAndOrgi(agentService.getId(), orgi,
-                                                                          new PageRequest(
-                                                                                  0, 50, Direction.DESC,
-                                                                                  "updatetime")));
+                                new PageRequest(
+                                        0, 50, Direction.DESC,
+                                        "updatetime")));
             }
 
             if (MainContext.ChannelType.WEIXIN.toString().equals(channel)) {
@@ -164,10 +167,12 @@ public class OnlineUserController extends Handler {
                     map.put("onlineUser", onlineUser);
                 }
             }
-            AgentUser agentUser = cache.findOneAgentUserByUserIdAndOrgi(userid, orgi).orElseGet(null);
 
-            map.put("agentUser", agentUser);
-            map.put("curragentuser", agentUser);
+            cache.findOneAgentUserByUserIdAndOrgi(userid, orgi).ifPresent(agentUser -> {
+                map.put("agentUser", agentUser);
+            });
+
+
         }
         return request(super.createAppsTempletResponse("/apps/service/online/index"));
     }
@@ -201,8 +206,8 @@ public class OnlineUserController extends Handler {
         map.put(
                 "agentUserMessageList",
                 chatMessageRepository.findByAgentserviceidAndOrgi(agentService.getId(), super.getOrgi(request),
-                                                                  new PageRequest(0, 50, Direction.DESC,
-                                                                                  "updatetime")));
+                        new PageRequest(0, 50, Direction.DESC,
+                                "updatetime")));
 
         return request(super.createRequestPageTempletResponse("/apps/service/online/chatmsg"));
     }
@@ -217,7 +222,7 @@ public class OnlineUserController extends Handler {
         if (StringUtils.isNotBlank(sessionid)) {
             map.addAttribute(
                     "traceHisList", userEventRes.findBySessionidAndOrgi(sessionid, super.getOrgi(request),
-                                                                        new PageRequest(0, 100)));
+                            new PageRequest(0, 100)));
         }
         return request(super.createRequestPageTempletResponse("/apps/service/online/trace"));
     }

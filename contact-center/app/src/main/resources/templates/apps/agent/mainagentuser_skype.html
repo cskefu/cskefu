@@ -31,7 +31,13 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
                         <span class="<#if (chatmessage.calltype?? && chatmessage.calltype == '呼出')>rateright<#else>rateleft</#if>">
                             <i class="layui-icon iconclick" id=${chatmessage.id}  name="<#if (chatmessage.islabel == true??)>yeslabe<#else>nolabe</#if>"  style="font-size: 30px;cursor: pointer; color:<#if (chatmessage.islabel == true??)>#46cad4;<#else>#aaaaaa;</#if>;"> <#if (chatmessage.islabel == true??)>&#xe616;<#else>&#x1005;</#if></i>
                         </span>
-                <span class="user"><#if chatmessage?? && chatmessage.calltype?? && chatmessage.calltype == '呼出'>${curagentuser.agentname}<#else>${curagentuser.username!''}</#if></span>
+                <span class="user">
+                    <#if chatmessage?? && chatmessage.calltype?? && chatmessage.calltype == '呼出'>
+                        ${chatmessage.intervented?string(chatmessage.supervisorname,curagentuser.agentname)}
+                    <#else>
+                        ${curagentuser.username!''}
+                    </#if>
+                </span>
                 <span class="time">${chatmessage.createtime?string('yyyy-MM-dd HH:mm:ss')}</span>
                 <span class="<#if (chatmessage.calltype?? && chatmessage.calltype == '呼出')>rateleft<#else>rateright</#if>"  style="cursor: pointer; font-size: 30px">
                             <i class="layui-icon iconclick" id=${chatmessage.id} name="<#if (chatmessage.islabel == true??)>yeslabe<#else>nolabe</#if>"  style="cursor: pointer; font-size: 30px; color:<#if (chatmessage.islabel == true??)>#46cad4;<#else>#aaaaaa;</#if>;"> <#if (chatmessage.islabel == true??)>&#xe616;<#else>&#x1005;</#if></i>

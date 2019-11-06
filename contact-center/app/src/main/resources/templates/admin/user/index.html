@@ -18,7 +18,7 @@
 						<col>
 						<col>
 						<col>
-						<#if models?seq_contains("sales")>
+						<#if models?seq_contains("callout")>
 						<col>
 						</#if>
 						<col>
@@ -33,7 +33,7 @@
 					  <th width="12%">电子邮件</th>
 					  <th width="12%">手机</th>
 					  <th width="50px">多媒体</th>
-					  <#if models?seq_contains("sales")>
+					  <#if models?seq_contains("callout")>
 					  <th width="60px">呼叫中心</th>
 					  </#if>
 					  <th width="50px">管理员</th>
@@ -62,7 +62,7 @@
 					  		<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
 					  	</#if>
 					  </td>
-					  <#if models?seq_contains("sales")>
+					  <#if models?seq_contains("callout")>
 					  <td>
 					  	<#if user.callcenter>
 					  		<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>

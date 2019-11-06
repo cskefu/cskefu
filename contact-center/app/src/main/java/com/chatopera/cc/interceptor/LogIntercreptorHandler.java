@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import com.chatopera.cc.persistence.repository.RequestLogRepository;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -41,6 +43,7 @@ import java.util.Enumeration;
  */
 public class LogIntercreptorHandler implements org.springframework.web.servlet.HandlerInterceptor {
 
+    private final static Logger logger = LoggerFactory.getLogger(LogIntercreptorHandler.class);
 
     private static RequestLogRepository requestLogRes;
 
@@ -109,7 +112,7 @@ public class LogIntercreptorHandler implements org.springframework.web.servlet.H
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-                             Object arg2) throws Exception {
+                             Object arg2) {
         HandlerMethod handlerMethod = (HandlerMethod) arg2;
         Object hander = handlerMethod.getBean();
         if (hander instanceof Handler) {

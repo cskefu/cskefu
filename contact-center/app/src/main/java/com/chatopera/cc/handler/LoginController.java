@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package com.chatopera.cc.handler;
 
 import com.chatopera.cc.acd.AutomaticServiceDist;
 import com.chatopera.cc.basic.Constants;
-import com.chatopera.cc.basic.I18N;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
@@ -177,51 +176,54 @@ public class LoginController extends Handler {
                         user.getUsername(), MainUtils.md5(user.getPassword()), false);
                 if (loginUser != null && StringUtils.isNotBlank(loginUser.getId())) {
                     view = this.processLogin(request, loginUser, referer);
-                    if (StringUtils.isNotBlank(sla) && sla.equals("1")) {
+
+                    // 自动登录
+                    if (StringUtils.equals("1", sla)) {
                         Cookie flagid = new Cookie(
                                 Constants.CSKEFU_SYSTEM_COOKIES_FLAG, MainUtils.encryption(loginUser.getId()));
                         flagid.setMaxAge(7 * 24 * 60 * 60);
                         response.addCookie(flagid);
-                        // add authorization code for rest api
-                        final String orgi = loginUser.getOrgi();
-                        String auth = MainUtils.getUUID();
-                        cache.putLoginUserByAuthAndOrgi(auth, loginUser, orgi);
-                        userRepository.save(loginUser); // 更新登录状态到数据库
-                        response.addCookie((new Cookie("authorization", auth)));
+                    }
 
-                        // 该登录用户是坐席，并且具有坐席对话的角色
-                        if ((loginUser.isAgent() &&
-                                loginUser.getRoleAuthMap().containsKey("A01") &&
-                                ((boolean) loginUser.getRoleAuthMap().get("A01") == true))
-                                || loginUser.isSuperuser()) {
-                            try {
-                                /****************************************
-                                 * 登录成功，设置该坐席为就绪状态（默认）
-                                 ****************************************/
-                                // https://gitlab.chatopera.com/chatopera/cosinee.w4l/issues/306
-                                final AgentStatus agentStatus = agentProxy.resolveAgentStatusByAgentnoAndOrgi(
-                                        loginUser.getId(), orgi, loginUser.getSkills());
-                                agentStatus.setBusy(false);
-                                agentProxy.ready(loginUser, agentStatus);
+                    // add authorization code for rest api
+                    final String orgi = loginUser.getOrgi();
+                    String auth = MainUtils.getUUID();
+                    cache.putLoginUserByAuthAndOrgi(auth, loginUser, orgi);
+                    userRepository.save(loginUser); // 更新登录状态到数据库
+                    response.addCookie((new Cookie("authorization", auth)));
 
-                                // 更新缓存和数据库
-                                cache.putAgentStatusByOrgi(agentStatus, loginUser.getOrgi());
-                                agentStatusRes.save(agentStatus);
+                    // 该登录用户是坐席，并且具有坐席对话的角色
+                    if ((loginUser.isAgent() &&
+                            loginUser.getRoleAuthMap().containsKey("A01") &&
+                            ((boolean) loginUser.getRoleAuthMap().get("A01") == true))
+                            || loginUser.isSuperuser()) {
+                        try {
+                            /****************************************
+                             * 登录成功，设置该坐席为就绪状态（默认）
+                             ****************************************/
+                            // https://gitlab.chatopera.com/chatopera/cosinee.w4l/issues/306
+                            final AgentStatus agentStatus = agentProxy.resolveAgentStatusByAgentnoAndOrgi(
+                                    loginUser.getId(), orgi, loginUser.getSkills());
+                            agentStatus.setBusy(false);
+                            agentProxy.ready(loginUser, agentStatus);
 
-                                // 工作状态记录
-                                AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(),
-                                                                       agentStatus.getUsername(),
-                                                                       agentStatus.getAgentno(),
-                                                                       user.isSuperuser(), // 0代表admin
-                                                                       agentStatus.getAgentno(),
-                                                                       MainContext.AgentStatusEnum.OFFLINE.toString(),
-                                                                       MainContext.AgentStatusEnum.READY.toString(),
-                                                                       MainContext.AgentWorkType.MEIDIACHAT.toString(),
-                                                                       orgi, null);
+                            // 更新缓存和数据库
+                            cache.putAgentStatusByOrgi(agentStatus, loginUser.getOrgi());
+                            agentStatusRes.save(agentStatus);
 
-                            } catch (Exception e) {
-                                logger.error("[login] set agent status", e);
-                            }
+                            // 工作状态记录
+                            AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(),
+                                                                   agentStatus.getUsername(),
+                                                                   agentStatus.getAgentno(),
+                                                                   user.isSuperuser(), // 0代表admin
+                                                                   agentStatus.getAgentno(),
+                                                                   MainContext.AgentStatusEnum.OFFLINE.toString(),
+                                                                   MainContext.AgentStatusEnum.READY.toString(),
+                                                                   MainContext.AgentWorkType.MEIDIACHAT.toString(),
+                                                                   orgi, null);
+
+                        } catch (Exception e) {
+                            logger.error("[login] set agent status", e);
                         }
                     }
                 } else {
@@ -260,6 +262,8 @@ public class LoginController extends Handler {
             // 更新redis session信息，用以支持sso
             agentSessionProxy.updateUserSession(
                     loginUser.getId(), MainUtils.getContextID(request.getSession().getId()), loginUser.getOrgi());
+            loginUser.setSessionid(MainUtils.getContextID(request.getSession().getId()));
+
 
             if (StringUtils.isNotBlank(referer)) {
                 view = new ModelAndView("redirect:" + referer);
@@ -327,7 +331,7 @@ public class LoginController extends Handler {
      *
      * @param request
      * @param response
-     * @param code      登出的代码
+     * @param code     登出的代码
      * @return
      */
     @RequestMapping("/logout")

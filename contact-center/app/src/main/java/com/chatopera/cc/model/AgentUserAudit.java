@@ -41,8 +41,9 @@ public class AgentUserAudit implements Serializable {
      * @param userId
      */
     public void removeSubscriber(final String userId) {
-        if (subscribers != null)
+        if (subscribers != null) {
             subscribers.remove(userId);
+        }
     }
 
     /**
@@ -52,8 +53,9 @@ public class AgentUserAudit implements Serializable {
      * @param permission 浏览消息：R, 发送消息 S, 转接消息 T
      */
     public void addSubscriber(final String userId, final String permission) {
-        if (subscribers == null)
+        if (subscribers == null) {
             subscribers = new HashMap<>();
+        }
         subscribers.put(userId, permission);
     }
 

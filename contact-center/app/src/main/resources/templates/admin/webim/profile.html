@@ -229,10 +229,12 @@
                                                                     <p style="color:#888888;font-size:13px;margin-top:10px;">指定服务于该网站渠道的技能组</p>
                                                                     <div class="layui-input-block">
                                                                         <select name="consult_skill_fixed_id">
-																			<#if skillGroups??>
-																			<#list skillGroups as skill>
-																				<option value="${skill.id}" <#if inviteData?? && inviteData.consult_skill_fixed_id == skill.id>selected="selected"</#if>>${skill.name}</option>
-																			</#list>
+																			<#if skillGroups?? && skillGroups?size gt 0 >
+																				<#list skillGroups as skill>
+																					<option value="${skill.id}" <#if inviteData?? && inviteData.consult_skill_fixed_id == skill.id>selected="selected"<#else>style="display:none"</#if>>${skill.name}</option>
+																				</#list>
+																			<#else>
+																				<option value="">请选择</option>
 																			</#if>
                                                                         </select>
                                                                     </div>

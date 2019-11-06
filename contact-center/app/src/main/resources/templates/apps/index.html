@@ -26,13 +26,14 @@
 <script src="/js/moment-timezone-with-data.js"></script>
 
 <script src="/layui.js"></script>
+<script src="/js/utils.js"></script>
 <script src="/js/cskefu.js"></script>
 <script src="/im/js/socket.io.js"></script>	
 <script src="/js/CSKeFu_IM.v1.js"></script>
 <script src="/js/CSKeFu_Rest_Request.v1.js"></script>
 <script src="/js/CSKeFu_Agent_State.v1.js"></script>
 
-<#if models?seq_contains("sales")>
+<#if models?seq_contains("callout")>
 <script src="/js/CSKeFu_Callout.v1.js"></script>
 </#if>
 
@@ -239,9 +240,11 @@
 							<!-- 会话监控 Customer Chats Audit -->
 							<#if models?seq_contains("cca")>
 							<#if user?? && (user.roleAuthMap["A13_A01"]?? || user.usertype == "0") >
-							<a href="javascript:void(0)" href="javascript:void(0)" id="customerchatsaudit"  onclick="return false;" data-title="会话监控" data-href="/apps/cca/index.html" class="iframe_btn" data-id="customerChatAudit" data-type="tabAdd">
-								<i class="csfont" style="position: relative;">&#58906;</i>
-							</a>
+							<dd class="ukefu-left-menu" data-tooltip="会话监控">
+								<a href="javascript:void(0)" href="javascript:void(0)" id="customerchatsaudit"  onclick="return false;" data-title="会话监控" data-href="/apps/cca/index.html" class="iframe_btn" data-id="customerChatAudit" data-type="tabAdd">
+									<i class="csfont" style="position: relative;">&#58906;</i>
+								</a>
+							</dd>
 							</#if>
 							</#if>
 
@@ -302,7 +305,7 @@
 									<!--</dd>-->
 								<!--</#if>-->
 							<!--</#if>-->
-							<#if models?seq_contains("sales")>
+							<#if models?seq_contains("callout")>
 								<#if user?? &&( user.roleAuthMap["A11"]?? || user.usertype == "0") >
 								<dd class="ukefu-left-menu" data-tooltip="外呼系统">
 									<a href="javascript:void(0)" data-title="外呼系统" data-href="/apps/callout/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange"> 

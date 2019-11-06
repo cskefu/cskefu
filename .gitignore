@@ -19,3 +19,4 @@ backups/
 .env
 build.gradle
 .vscode/
+private

@@ -11,7 +11,7 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
     <div style="float:right;" class="ukefu-service-btn">
         <a href="/agent/summary.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}&channel=${curagentuser.channel}" data-toggle="ajax" data-width="950" data-height="450" title="记录服务小结"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe65c;</i> 服务小结</button></a>
         <a href="/agent/transfer.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}" data-toggle="ajax" data-width="750" data-height="550" title="选择转接对象"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe7be;</i> 转接坐席</button></a>
-        <a href="/agent/end.html?id=${curagentuser.id!''}" data-toggle="tip" data-title="请确认是否关闭和用户“${curagentuser.username!''}”的对话？"><button class="layui-btn layui-btn-small layui-btn-danger"><i class="kfont">&#xe621;</i> 结束对话</button></a>
+        <a href="javascript:void(0)" onclick="submitEndAgentUser('${curagentuser.id}','${curagentuser.username}')"><button class="layui-btn layui-btn-small layui-btn-danger"><i class="kfont">&#xe621;</i> 结束对话</button></a>
     </div>
     <#else>
 </#if>
@@ -26,7 +26,13 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
                         <span class="<#if (chatmessage.calltype?? && chatmessage.calltype == '呼出')>rateright<#else>rateleft</#if>">
                             <i class="layui-icon iconclick" id=${chatmessage.id}  name="<#if (chatmessage.islabel == true??)>yeslabe<#else>nolabe</#if>"  style="font-size: 30px;cursor: pointer; color:<#if (chatmessage.islabel == true??)>#46cad4;<#else>#aaaaaa;</#if>;"> <#if (chatmessage.islabel == true??)>&#xe616;<#else>&#x1005;</#if></i>
                         </span>
-                <span class="user"><#if chatmessage?? && chatmessage.calltype?? && chatmessage.calltype == '呼出'>${curagentuser.agentname}<#else>${curagentuser.username!''}</#if></span>
+                <span class="user">
+                    <#if chatmessage?? && chatmessage.calltype?? && chatmessage.calltype == '呼出'>
+                        ${chatmessage.intervented?string(chatmessage.supervisorname,curagentuser.agentname)}
+                    <#else>
+                        ${curagentuser.username!''}
+                    </#if>
+                </span>
                 <span class="time">${chatmessage.createtime?string('yyyy-MM-dd HH:mm:ss')}</span>
                 <span class="<#if (chatmessage.calltype?? && chatmessage.calltype == '呼出')>rateleft<#else>rateright</#if>"  style="cursor: pointer; font-size: 30px">
                             <i class="layui-icon iconclick" id=${chatmessage.id} name="<#if (chatmessage.islabel == true??)>yeslabe<#else>nolabe</#if>"  style="cursor: pointer; font-size: 30px; color:<#if (chatmessage.islabel == true??)>#46cad4;<#else>#aaaaaa;</#if>;"> <#if (chatmessage.islabel == true??)>&#xe616;<#else>&#x1005;</#if></i>
@@ -510,15 +516,11 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
     });
 
     function sendMessage(){
-        var skypeid = window.location.search.split("=")[1];
-        // alert(skypeid)
         editor.sync();
         var count = editor.count("text");
         if(count>0){
             var message = document.getElementById('message').value;
             top.WebIM.sendMessage(message , '${user.id!''}' , "${curagentuser.appid!''}" , "${user.sessionid!''}" , "${orgi!''}" , "<#if curagentuser??>${curagentuser.userid!''}</#if>" , "${user.username!''}");
-
-            console.log( editor,count )
         }
         editor.html('');
     };

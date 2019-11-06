@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.basic.Viewport;
 import com.chatopera.cc.cache.Cache;
-import com.chatopera.cc.handler.api.rest.QueryParams;
+import com.chatopera.cc.handler.api.QueryParams;
 import com.chatopera.cc.model.StreamingFile;
 import com.chatopera.cc.model.SystemConfig;
 import com.chatopera.cc.model.Tenant;
@@ -102,7 +102,7 @@ public class Handler {
                 user.setSessionid(user.getId());
             }
         } else {
-            user.setSessionid(user.getId());
+            user.setSessionid(MainUtils.getContextID(request.getSession().getId()));
         }
         return user;
     }

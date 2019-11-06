@@ -17,18 +17,12 @@ package com.chatopera.cc.socketio.util;
 
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.socketio.message.ChatMessage;
-import com.chatopera.cc.model.AgentUser;
-import com.chatopera.cc.proxy.ChatbotProxy;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-
 public class RichMediaUtils {
     private final static Logger logger = LoggerFactory.getLogger(RichMediaUtils.class);
-
-    private static ChatbotProxy chatbotProxy;
 
     /**
      * 上传图片
@@ -172,21 +166,15 @@ public class RichMediaUtils {
             if (MainContext.getCache().findOneAgentUserByUserIdAndOrgi(
                     userid, MainContext.SYSTEM_ORGI).filter(p -> StringUtils.equals(
                     p.getOpttype(), MainContext.OptType.CHATBOT.toString())).isPresent()) {
-                getChatbotProxy().createMessage(
-                        data, appid, channel, MainContext.CallType.IN.toString(),
-                        MainContext.ChatbotItemType.USERINPUT.toString(), msgtype, data.getUserid(), orgi);
+                // TODO 给聊天机器人发送图片或文字
+                // #652 创建聊天机器人插件时去掉了对它的支持，需要将来实现
+//                getChatbotProxy().createMessage(
+//                        data, appid, channel, MainContext.CallType.IN.toString(),
+//                        MainContext.ChatbotItemType.USERINPUT.toString(), msgtype, data.getUserid(), orgi);
             } else {
                 HumanUtils.processMessage(data, msgtype, userid);
             }
         }
         return data;
     }
-
-    private static ChatbotProxy getChatbotProxy() {
-        if (chatbotProxy == null) {
-            chatbotProxy = MainContext.getContext().getBean(ChatbotProxy.class);
-        }
-        return chatbotProxy;
-    }
-
 }

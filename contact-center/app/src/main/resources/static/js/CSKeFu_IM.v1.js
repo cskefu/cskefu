@@ -19,55 +19,60 @@ $(document).ready(function(){
     }).on('task', function(data) {
 		
     }).on('new', function(data) {
-    	// if($('#multiMediaDialogWin').length > 0 && multiMediaDialogWin.$ &&multiMediaDialogWin.$('#agentusers').length > 0){
-    	// 	multiMediaDialogWin.Proxy.newAgentUserService(data);
-    	// }else{
-    	// 	//来电弹屏
-    	// 	$('#agentdesktop').attr('data-href' , '/agent/index.html?userid='+data.userid).click();
-    	// }
-        $('#agentdesktop').attr('data-href' , '/agent/index.html?userid='+data.userid).click();
-    	WebIM.audioplayer('audioplane', newuser, false); // 播放
-    }).on('status', function(data) {
-    	if(orgi == data.orgi){
-    		$('#agents_status').html("服务中的人数："+data.users+"人，当前排队人数："+data.inquene+"人，在线坐席数："+data.agents+"人，坐席忙："+data.busy+"人");	        	
-    	}
-    }).on('message', function(data) {
-    	console.log("receive message: ", data);
-    	if($('#multiMediaDialogWin').length > 0 && multiMediaDialogWin != null && multiMediaDialogWin.$ && multiMediaDialogWin.$('#agentusers').length > 0){
-    		multiMediaDialogWin.Proxy.newAgentUserMessage(data);
-    		if(data.type == 'message'){
-        		WebIM.audioplayer('audioplane', newmessage, false); // 播放
-        	}
+    	if($('#multiMediaDialogWin').length > 0 && multiMediaDialogWin != null && multiMediaDialogWin.$ &&multiMediaDialogWin.$('#agentusers').length > 0){
+    		multiMediaDialogWin.Proxy.newAgentUserService(data,"agent");
     	}else{
     		//来电弹屏
-    		$('#agentdesktop').attr('data-href' , '/agent/index.html?userid='+data.userid).click();
-    	}
-    }).on('workorder', function(data) {
-        
-    }).on('audit_message', function(data){
-    	// 会话监控：消息
-		if($('#customerChatAudit').length > 0 && customerChatAudit != null && customerChatAudit.$ && customerChatAudit.$('#agentusers').length > 0){
-			customerChatAudit.Proxy.newAgentUserMessagecca(data);
+			$('#agentdesktop').attr('data-href' , '/agent/index.html?userid='+data.userid).click();
+			WebIM.audioplayer('audioplane', newuser, false); // 播放
+		}
+	}).on('status', function(data) {
+		if(orgi == data.orgi){
+			$('#agents_status').html("服务中的人数："+data.users+"人，当前排队人数："+data.inquene+"人，在线坐席数："+data.agents+"人，坐席忙："+data.busy+"人");
+		}
+	}).on('message', function(data) {
+		if($('#multiMediaDialogWin').length > 0 && multiMediaDialogWin != null && multiMediaDialogWin.$ && multiMediaDialogWin.$('#agentusers').length > 0){
+			multiMediaDialogWin.Proxy.newAgentUserMessage(data,"agent");
 			if(data.type == 'message'){
 				WebIM.audioplayer('audioplane', newmessage, false); // 播放
 			}
 		}else{
 			//来电弹屏
-			$('#customerchatsaudit').click();
+			$('#agentdesktop').attr('data-href' , '/agent/index.html?userid='+data.userid).click();
+		}
+	}).on('workorder', function(data) {
+
+	}).on('transout', function(data){
+		// TODO 坐席会话被转接出去
+		if($('#multiMediaDialogWin').length > 0){
+			if(multiMediaDialogWin.document.getElementById('agentusers') != null){
+				multiMediaDialogWin.Proxy.transoutAgentUserService(data);
+			}
+		}
+		layer.msg("您与"+data.username+"的会话已被转接给"+data.agentname,{time:1500})
+
+	}).on('audit_message', function(data){
+		// 会话监控：消息
+		if($('#customerChatAudit').length > 0 && customerChatAudit != null && customerChatAudit.$ && customerChatAudit.$('#agentuserscca').length > 0){
+			customerChatAudit.Proxy.newAgentUserMessage(data,"cca");
+			if(data.type == 'message'){
+				WebIM.audioplayer('audioplane', newmessage, false); // 播放
+			}
 		}
 	}).on('audit_new', function(data){
 		// 会话监控：新建
-		$('#customerchatsaudit').click();
-		WebIM.audioplayer('audioplane', newuser, false); // 播放
+		if($('#customerChatAudit').length > 0 && customerChatAudit != null && customerChatAudit.$ && customerChatAudit.$('#agentuserscca').length > 0){
+			customerChatAudit.Proxy.newAgentUserService(data,"cca");
+			if(data.type == 'message'){
+				WebIM.audioplayer('audioplane', newmessage, false); // 播放
+			}
+		}
 	}).on('audit_end', function(data){
 		// 会话监控：结束
 		if($('#customerChatAudit').length > 0){
-			if(customerChatAudit.document.getElementById('agentusers') != null){
+			if(customerChatAudit.document.getElementById('agentuserscca') != null){
 				customerChatAudit.Proxy.endAgentUserService(data);
 			}
-		}else{
-			//来电弹屏
-			$('#customerchatsaudit').click();
 		}
 	}).on('end', function(data) {
     	if($('#multiMediaDialogWin').length > 0){
@@ -79,7 +84,6 @@ $(document).ready(function(){
     		$('#agentdesktop').attr('data-href', '/agent/index.html?userid='+data.userid).click();
     	}
     }).on('leave', function(data){
-    	console.log("[leave]", data);
 		// 执行登出
 		window.location.href = "/logout.html?code=2";
 	});

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import com.chatopera.cc.handler.Handler;
 import com.chatopera.cc.model.Extention;
 import com.chatopera.cc.model.PbxHost;
 import com.chatopera.cc.model.User;
-import com.chatopera.cc.proxy.CalloutQueneProxy;
+import com.chatopera.cc.proxy.CallcenterOutboundProxy;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.freeswitch.model.CallCenterAgent;
@@ -187,7 +187,7 @@ public class CallCenterExtentionController extends Handler {
                 ext.setUpdatetime(new Date());
                 extentionRes.save(ext);
 
-                List<CallCenterAgent> callOutAgentList = CalloutQueneProxy.extention(ext.getExtention());
+                List<CallCenterAgent> callOutAgentList = CallcenterOutboundProxy.extention(ext.getExtention());
                 for (CallCenterAgent callOutAgent : callOutAgentList) {
                     callOutAgent.setSiptrunk(ext.getSiptrunk());
                     cache.putCallCenterAgentByIdAndOrgi(callOutAgent.getUserid(), callOutAgent.getOrgi(), callOutAgent);

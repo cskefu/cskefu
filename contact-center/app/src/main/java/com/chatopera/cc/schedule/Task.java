@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import java.util.Date;
 public class Task implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(Task.class);
 
-    private static Cache cache;
     private JobDetail jobDetail;
     private JobDetailRepository jobDetailRes;
 
@@ -87,13 +86,7 @@ public class Task implements Runnable {
             /**
              * 存储历史信息
              */
-            Task.getCache().deleteJobByJobIdAndOrgi(this.jobDetail.getId(), this.jobDetail.getOrgi());
+            MainContext.getCache().deleteJobByJobIdAndOrgi(this.jobDetail.getId(), this.jobDetail.getOrgi());
         }
-    }
-
-    private static Cache getCache() {
-        if (cache == null)
-            cache = MainContext.getContext().getBean(Cache.class);
-        return cache;
     }
 }

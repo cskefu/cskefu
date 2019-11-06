@@ -7,7 +7,7 @@
 baseDir=$(cd `dirname "$0"`;pwd)
 # functions
 
-# main 
+# main
 [ -z "${BASH_SOURCE[0]}" -o "${BASH_SOURCE[0]}" = "$0" ] || return
 cd $baseDir/../app
 mvn clean package

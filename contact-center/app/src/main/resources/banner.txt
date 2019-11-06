@@ -6,7 +6,7 @@
   \____\___/|_| |_|\__\__,_|\___|\__|  \____\___|_| |_|\__\___|_|
 
 ==================== Powered by Chatopera Inc. =================
-春松客服: 全渠道智能客服 v${git.build.version} build ${git.commit.id.abbrev}
+春松客服: 多渠道智能客服 v${git.build.version} build ${git.commit.id.abbrev}
 版权所有 © 北京华夏春松科技有限公司️ https://www.chatopera.com/
 商业许可授权联系 info@chatopera.com
 ----------------------------------------------------------------

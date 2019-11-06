@@ -292,8 +292,7 @@ function formatDate(value) {
 }
 
 var Proxy = {
-	newAgentUserService:function(data){
-		console.log("newAgentUserService data", data);
+	newAgentUserService:function(data,type){
 		if($('#tip_message_'+data.userid).length >0){
             if(data.channel){
                 var channel = data.channel;
@@ -313,18 +312,17 @@ var Proxy = {
 		}else{
 			if($('.chat-list-item.active').length > 0){
 				var id = $('.chat-list-item.active').data('id') ;
-				loadURL('/agent/agentusers.html?newuser=true&userid='+id , '#agentusers');
+				type ==  "agent" ? loadURL('/agent/agentusers.html?newuser=true&userid='+id , '#agentusers') : loadURL('/apps/cca/agentusers.html?newuser=true&userid='+id , '#agentuserscca');
 			}else{
-				location.href = "/agent/index.html?newuser=true" ;
+				type ==  "agent" ? location.href = "/agent/index.html?newuser=true" : location.href = "/apps/cca/index.html?newuser=true";
 			}
 		}
 		if(data.userid == cursession){
 			$('#agentuser-curstatus').remove();
-			$("#chat_msg_list").append(template($('#begin_tpl').html(), {data: data}));
+			type ==  "agent" ? $("#chat_msg_list").append(template($('#begin_tpl').html(), {data: data})) : $("#chat_msg_list_cca").append(template($('#begin_tpl').html(), {data: data}));
 		}
 	},
-
-	newAgentUserMessage:function(data){
+	newAgentUserMessage:function(data,type){
 		if(data.usession == cursession){
 			if(data.type == 'writing' && $('#writing').length > 0){
 				$('#writing').remove();
@@ -353,58 +351,21 @@ var Proxy = {
 						}
 					});
 				});
-				$("#chat_msg_list").append(nodeMeassage);
-				document.getElementById('chat_msg_list').scrollTop = document.getElementById('chat_msg_list').scrollHeight  ;
+				type == "agent" ? $("#chat_msg_list").append(nodeMeassage) : $("#chat_msg_list_cca").append(nodeMeassage);
+				type == "agent" ?
+					document.getElementById('chat_msg_list').scrollTop = document.getElementById('chat_msg_list').scrollHeight
+					: document.getElementById('chat_msg_list_cca').scrollTop = document.getElementById('chat_msg_list_cca').scrollHeight;
 			}
 			loadURL("/agent/readmsg.html?userid="+data.agentuser);	//更新数据状态，将当前对话的新消息数量清空
 		}else{
 			if(data.type == 'message'){
 				$('#last_msg_'+data.userid).text(data.tokenum).show();
-				Proxy.addTopMsgTip(1) ;
+				if(type == "agent"){
+					Proxy.addTopMsgTip(1) ;
+				}
 			}
 		}
 	},
-	newAgentUserMessagecca:function(data){
-		if(data.usession == cursession) {
-			if (data.type == 'writing' && $('#writing').length > 0) {
-				$('#writing').remove();
-			}
-			var id = $('.chat-list-item.active').data('id');
-			if (data.message != "") {
-				data.createtime = formatDate(data.createtime);
-				var newlist = template($('#message_tpl').html(), {data: data})
-				var nodeMeassage = $(newlist);
-				nodeMeassage.find(".iconclick").click(function () {
-					console.log("点击标注")
-					if ($(this).attr('name') == 'nolabe') {
-						$(this).html('&#xe616;')
-						$(this).css('color', '#46cad4')
-						$(this).attr('name', 'yeslabe')
-					} else {
-						$(this).html('&#x1005;')
-						$(this).css('color', '#aaaaaa')
-						$(this).attr('name', 'nolabe')
-					}
-					$.ajax({
-						url: '/agent/agentuserLabel.html',
-						data: {'iconid': $(this).attr('id')},
-						type: "get",
-						success: function () {
-						}
-					});
-				});
-				$("#chat_msg_list_cca").append(nodeMeassage);
-				document.getElementById('chat_msg_list_cca').scrollTop = document.getElementById('chat_msg_list_cca').scrollHeight;
-			}
-			loadURL("/agent/readmsg.html?userid=" + data.agentuser);	//更新数据状态，将当前对话的新消息数量清空
-		}else{
-			if(data.type == 'message'){
-				$('#last_msg_'+data.userid).text(data.tokenum).show();
-				Proxy.addTopMsgTip(1) ;
-			}
-		}
-	},
-
 	endAgentUserService:function(data){
 		if($('#tip_message_'+data.userid).length >0){
             if(data.channel){
@@ -426,6 +387,14 @@ var Proxy = {
 		if(data.userid == cursession){
 			$('#agentuser-curstatus').remove();
 			$("#chat_msg_list").append(template($('#end_tpl').html(), {data: data}));
+		}
+	},
+	transoutAgentUserService:function(data){
+		if($("#chat_users li").length>1){
+			$('#agentuser_' + data.userid).remove();
+			$("#chat_users li:first-child a").click();
+		}else{
+			parent.$('#agentdesktop').click();
 		}
 	},
 	tipMsgForm : function(href){

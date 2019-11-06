@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,17 @@ package com.chatopera.cc.socketio;
 
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.config.conditions.CalloutBeanCondition;
+import com.chatopera.cc.basic.plugins.PluginRegistry;
+import com.chatopera.cc.basic.plugins.PluginsLoader;
+import com.chatopera.cc.config.plugins.CalloutPluginPresentCondition;
+import com.chatopera.cc.config.plugins.ChatbotPluginPresentCondition;
 import com.chatopera.cc.socketio.handler.AgentEventHandler;
 import com.chatopera.cc.socketio.handler.EntIMEventHandler;
 import com.chatopera.cc.socketio.handler.IMEventHandler;
 import com.corundumstudio.socketio.SocketIONamespace;
 import com.corundumstudio.socketio.SocketIOServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +40,8 @@ import java.lang.reflect.InvocationTargetException;
 
 @Component
 public class ServerRunner implements CommandLineRunner {
+    private final static Logger logger = LoggerFactory.getLogger(ServerRunner.class);
+
     private final SocketIOServer server;
     private final SocketIONamespace imSocketNameSpace;
     private final SocketIONamespace agentSocketIONameSpace;
@@ -50,7 +57,7 @@ public class ServerRunner implements CommandLineRunner {
         agentSocketIONameSpace = server.addNamespace(MainContext.NameSpaceEnum.AGENT.getNamespace());
         entIMSocketIONameSpace = server.addNamespace(MainContext.NameSpaceEnum.ENTIM.getNamespace());
 
-        if (MainContext.isEnableCalloutModule()) {
+        if (MainContext.hasModule(Constants.CSKEFU_MODULE_CALLOUT)) {
             calloutSocketIONameSpace = server.addNamespace(MainContext.NameSpaceEnum.CALLOUT.getNamespace());
         } else {
             calloutSocketIONameSpace = null;
@@ -62,7 +69,7 @@ public class ServerRunner implements CommandLineRunner {
             callCenterSocketIONameSpace = null;
         }
 
-        if (MainContext.isEnableChatbotModule()) {
+        if (MainContext.hasModule(Constants.CSKEFU_MODULE_CHATBOT)) {
             chatbotSocketIONameSpace = server.addNamespace(MainContext.NameSpaceEnum.CHATBOT.getNamespace());
         } else {
             chatbotSocketIONameSpace = null;
@@ -88,16 +95,17 @@ public class ServerRunner implements CommandLineRunner {
     }
 
     @Bean(name = "chatbotNamespace")
+    @Conditional(ChatbotPluginPresentCondition.class)
     public SocketIONamespace getChatbotSocketIONameSpace(SocketIOServer server) {
-        if (MainContext.isEnableChatbotModule()) {
-            Constructor<?> constructor;
-            try {
-                constructor = Class.forName("com.chatopera.cc.socketio.handler.ChatbotEventHandler").getConstructor(SocketIOServer.class);
-                chatbotSocketIONameSpace.addListeners(constructor.newInstance(server));
-            } catch (NoSuchMethodException | SecurityException
-                    | ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
+        Constructor<?> constructor;
+        try {
+            constructor = Class.forName(
+                    PluginsLoader.getIOEventHandler(PluginRegistry.PLUGIN_ENTRY_CHATBOT)).getConstructor(
+                    SocketIOServer.class);
+            chatbotSocketIONameSpace.addListeners(constructor.newInstance(server));
+        } catch (NoSuchMethodException | SecurityException
+                | ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            e.printStackTrace();
         }
         return chatbotSocketIONameSpace;
 
@@ -108,7 +116,9 @@ public class ServerRunner implements CommandLineRunner {
         if (MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER)) {
             Constructor<?> constructor;
             try {
-                constructor = Class.forName("com.chatopera.cc.socketio.server.handler.CallCenterEventHandler").getConstructor(SocketIOServer.class);
+                constructor = Class.forName(
+                        "com.chatopera.cc.socketio.server.handler.CallCenterEventHandler").getConstructor(
+                        SocketIOServer.class);
                 callCenterSocketIONameSpace.addListeners(constructor.newInstance(server));
             } catch (NoSuchMethodException | SecurityException
                     | ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -118,17 +128,19 @@ public class ServerRunner implements CommandLineRunner {
         return callCenterSocketIONameSpace;
     }
 
-    @Conditional(CalloutBeanCondition.class)
+    @Conditional(CalloutPluginPresentCondition.class)
     @Bean(name = "calloutNamespace")
     public SocketIONamespace getCalloutIMSocketIONameSpace(SocketIOServer server) {
         if (MainContext.hasModule(Constants.CSKEFU_MODULE_CALLOUT)) {
             Constructor<?> constructor;
             try {
-                constructor = Class.forName("com.chatopera.cc.socketio.handler.CalloutEventHandler").getConstructor(SocketIOServer.class);
+                constructor = Class.forName(
+                        PluginsLoader.getIOEventHandler(PluginRegistry.PLUGIN_ENTRY_CALLOUT)).getConstructor(
+                        SocketIOServer.class);
                 calloutSocketIONameSpace.addListeners(constructor.newInstance(server));
             } catch (NoSuchMethodException | SecurityException
                     | ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                e.printStackTrace();
+                logger.error("[calloutNamespace] error", e);
             }
         }
         return calloutSocketIONameSpace;

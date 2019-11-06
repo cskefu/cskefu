@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -786,6 +786,7 @@ public class MainContext {
         MESSAGE,
         END,
         TRANS,
+        TRANSOUT,     // 当前会话被转接出去
         STATUS,
         AGENTSTATUS,
         SERVICE,
@@ -1030,26 +1031,6 @@ public class MainContext {
     public static Class<?> getResource(String resource) {
         return csKeFuResourceMap.get(resource);
     }
-
-    /**
-     * 是否开启机器人客服模块
-     *
-     * @return
-     */
-    public static boolean isEnableChatbotModule() {
-        return modules.contains(Constants.CSKEFU_MODULE_CHATBOT);
-    }
-
-
-    /**
-     * 是否开启外呼模块
-     *
-     * @return
-     */
-    public static boolean isEnableCalloutModule() {
-        return modules.contains(Constants.CSKEFU_MODULE_CALLOUT);
-    }
-
 
     /**
      * Redis底层接口

@@ -13,42 +13,8 @@ services:
     depends_on:
       - contact-center
 
-  mysql:
-    image: "chatopera/mysql:5.7"
-    restart: always
-    environment:
-      - MYSQL_ROOT_PASSWORD=${DB_PASSWD:-123456}
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=${DB_PASSWD:-123456}
-    ports:
-      - "${MYSQL_PORT:-8037}:3306"
-    volumes:
-      - ./mysql/data:/var/lib/mysql
-    command: --max_allowed_packet=32505856
-
-  redis:
-    image: chatopera/redis:5.0.5
-    environment:
-      - REDIS_PASSWORD=${DB_PASSWD:-123456}
-    restart: always
-    volumes:
-      - ./redis/data:/data
-    ports:
-      - "${REDIS_PORT:-8041}:6379"
-
-  elasticsearch:
-    image: "elasticsearch:2.4.6"
-    restart: always
-    volumes:
-      - ./elasticsearch/data:/usr/share/elasticsearch/data
-      - ./elasticsearch/config:/usr/share/elasticsearch/config
-      - ./elasticsearch/plugins:/usr/share/elasticsearch/plugins
-    ports:
-      - "${ES_PORT1:-8039}:9200"
-      - "${ES_PORT2:-8040}:9300"
-
   contact-center:
-    image: "dockerhub.qingcloud.com/chatopera/contact-center:develop"
+    image: chatopera/contact-center:develop
     restart: always
     ports:
       - "${CC_WEB_PORT:-8035}:8035"
@@ -68,25 +34,20 @@ services:
       - UK_IM_SERVER_HOST=localhost
       - UK_IM_SERVER_THREADS=10
       # set a separated port for SSL
-      - CS_IM_SERVER_SSL_PORT=
+      - CS_IM_SERVER_SSL_PORT=${CC_SOCKET_PORT:-8036}
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/cosinee?useUnicode=true&characterEncoding=UTF-8
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWD:-123456}
-      - MANAGEMENT_SECURITY_ENABLED=false
-      - SPRING_REDIS_DATABASE=2
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
       - SPRING_REDIS_PASSWORD=${DB_PASSWD:-123456}
-      - CSKEFU_CALLOUT_WATCH_INTERVAL=60000
       - SPRING_DATA_ELASTICSEARCH_CLUSTER_NAME=elasticsearch
       - SPRING_DATA_ELASTICSEARCH_CLUSTER_NODES=elasticsearch:9300
-      - SPRING_DATA_ELASTICSEARCH_LOCAL=false
-      - SPRING_DATA_ELASTICSEARCH_REPOSITORIES_ENABLED=true
       - SPRING_ACTIVEMQ_BROKER_URL=tcp://activemq:61616
       - CSKEFU_MODULE_CALLOUT=false
       - CSKEFU_MODULE_CONTACTS=true
       - CSKEFU_MODULE_CHATBOT=true
-      - CHANNEL_SKYPE_CRM=${SKYPE_CHANNEL_CRM:-placeholder}
+      - SKYPE_CHANNEL_CRM=${SKYPE_CHANNEL_CRM:-placeholder}
     depends_on:
       - mysql
       - redis
@@ -94,7 +55,7 @@ services:
       - activemq
 
   activemq:
-    image: "chatopera/activemq:5.14.3"
+    image: chatopera/activemq:5.14.3
     restart: always
     environment:
       - ACTIVEMQ_ADMIN_LOGIN=admin
@@ -103,18 +64,43 @@ services:
       - ACTIVEMQ_MIN_MEMORY=1024
       - ACTIVEMQ_MAX_MEMORY=4096
     volumes:
-      - ./activemq/data:/data
-      - ./activemq/logs:/var/log/activemq
+      - ./database/activemq/data:/data
+      - ./database/activemq/logs:/var/log/activemq
     ports:
       - "${ACTIVEMQ_PORT1:-8051}:8161"
       - "${ACTIVEMQ_PORT2:-8052}:61616"
       - "${ACTIVEMQ_PORT3:-8053}:61613"
 
-  skype:
-    image: dockerhub.qingcloud.com/chatopera/skype:develop
+  mysql:
+    image: chatopera/mysql:5.7
     restart: always
     environment:
-      - COSIN_URL=http://contact-center:8035
-      - ACTIVEMQ_ADDR=activemq
-    depends_on:
-      - activemq
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWD:-123456}
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=${DB_PASSWD:-123456}
+    ports:
+      - "${MYSQL_PORT:-8037}:3306"
+    volumes:
+      - ./database/mysql/data:/var/lib/mysql
+    command: --max_allowed_packet=32505856
+
+  redis:
+    image: chatopera/redis:5.0.5
+    environment:
+      - REDIS_PASSWORD=${DB_PASSWD:-123456}
+    restart: always
+    volumes:
+      - ./database/redis/data:/data
+    ports:
+      - "${REDIS_PORT:-8041}:6379"
+
+  elasticsearch:
+    image: elasticsearch:2.4.6
+    restart: always
+    volumes:
+      - ./database/elasticsearch/data:/usr/share/elasticsearch/data
+      - ./database/elasticsearch/config:/usr/share/elasticsearch/config
+      - ./database/elasticsearch/plugins:/usr/share/elasticsearch/plugins
+    ports:
+      - "${ES_PORT1:-8039}:9200"
+      - "${ES_PORT2:-8040}:9300"

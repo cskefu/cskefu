@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  */
 package com.chatopera.cc.config;
 
-import com.chatopera.cc.config.conditions.CalloutBeanCondition;
+import com.chatopera.cc.config.plugins.CalloutPluginPresentCondition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
@@ -60,7 +60,7 @@ public class ExecutorConfig {
 	 * 外呼线程池
 	 * @return
 	 */
-	@Conditional(CalloutBeanCondition.class)
+	@Conditional(CalloutPluginPresentCondition.class)
 	@Bean(name = "callOutTaskExecutor")
 	public ThreadPoolTaskExecutor callout() {
 		ThreadPoolTaskExecutor poolTaskExecutor = new ThreadPoolTaskExecutor();

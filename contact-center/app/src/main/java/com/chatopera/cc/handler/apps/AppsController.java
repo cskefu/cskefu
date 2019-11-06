@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,12 +81,16 @@ public class AppsController extends Handler {
          ****************************/
 
 //        TODO 此处为从数据库加载
-        final Page<OnlineUser> onlineUserList = onlineUserRes.findByOrgiAndStatus(super.getOrgi(request),
-                                                                                  MainContext.OnlineUserStatusEnum.ONLINE.toString(),
-                                                                                  new PageRequest(super.getP(request),
+        final Page<OnlineUser> onlineUserList = onlineUserRes.findByOrgiAndStatus(
+                super.getOrgi(request),
+                MainContext.OnlineUserStatusEnum.ONLINE.toString(),
+                new PageRequest(
+                        super.getP(request),
                         super.getPs(request),
                         Sort.Direction.DESC,
-                        "createtime"));
+                        "createtime"
+                )
+        );
 
         final long msec = System.currentTimeMillis();
         final List<String> contactIds = new ArrayList<String>();
@@ -251,16 +255,23 @@ public class AppsController extends Handler {
             msg = "username_exist";
             return msg;
         }
-        tempUser = userRes.findByEmailAndDatastatus(user.getEmail(), false);
-        if (tempUser != null && !user.getEmail().equals(oldUser.getEmail())) {
-            msg = "email_exist";
-            return msg;
+
+        if (StringUtils.isNotBlank(user.getEmail())) {
+            tempUser = userRes.findByEmailAndDatastatus(user.getEmail(), false);
+            if (tempUser != null && !user.getEmail().equals(oldUser.getEmail())) {
+                msg = "email_exist";
+                return msg;
+            }
         }
-        tempUser = userRes.findByMobileAndDatastatus(user.getMobile(), false);
-        if (tempUser != null && !user.getMobile().equals(oldUser.getMobile())) {
-            msg = "mobile_exist";
-            return msg;
+
+        if (StringUtils.isNotBlank(user.getMobile())) {
+            tempUser = userRes.findByMobileAndDatastatus(user.getMobile(), false);
+            if (tempUser != null && !user.getMobile().equals(oldUser.getMobile())) {
+                msg = "mobile_exist";
+                return msg;
+            }
         }
+
         return msg;
     }
 

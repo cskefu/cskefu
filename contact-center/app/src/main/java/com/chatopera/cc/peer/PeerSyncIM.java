@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import com.chatopera.cc.basic.MainContext.MessageType;
 import com.chatopera.cc.basic.MainContext.ReceiverType;
 import com.chatopera.cc.basic.MainContext.ChannelType;
 import com.chatopera.cc.basic.plugins.PluginRegistry;
+import com.chatopera.cc.basic.plugins.PluginsLoader;
 import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.peer.im.ComposeMw1;
 import com.chatopera.cc.peer.im.ComposeMw2;
@@ -82,16 +83,9 @@ public class PeerSyncIM implements ApplicationContextAware {
 
         // 通过Skype发送消息
         if (MainContext.hasModule(Constants.CSKEFU_MODULE_SKYPE)) {
-            Class<?> clazz;
-            try {
-                clazz = Class.forName(PluginRegistry.PLUGIN_ENTRY_SKYPE);
-                IPluginDescriptor clazzInst = (IPluginDescriptor) clazz.newInstance();
-                Method method = clazz.getMethod("getPluginName");
-                composer.use((Middleware) applicationContext.getBean(
-                        (String) method.invoke(clazzInst) + PluginRegistry.PLUGIN_CHANNEL_MESSAGER_SUFFIX));
-            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-                logger.info("[postConstruct] error", e);
-            }
+            composer.use((Middleware) applicationContext.getBean(
+                    PluginsLoader.getPluginName(
+                            PluginRegistry.PLUGIN_ENTRY_SKYPE) + PluginRegistry.PLUGIN_CHANNEL_MESSAGER_SUFFIX));
         }
 
         composer.use(imMw3);

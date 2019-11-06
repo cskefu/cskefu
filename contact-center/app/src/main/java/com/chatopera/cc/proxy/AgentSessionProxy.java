@@ -86,7 +86,7 @@ public class AgentSessionProxy {
         boolean result = true;
         if (cache.existUserSessionByAgentnoAndOrgi(userid, orgi)) {
             final String curr = cache.findOneSessionIdByAgentnoAndOrgi(userid, orgi);
-            logger.info("[isInvalidSessionId] current session {}", curr);
+//            logger.info("[isInvalidSessionId] current session {}", curr);
             result = !StringUtils.equals(curr, session);
         } else {
             // 不存在该用户的Session

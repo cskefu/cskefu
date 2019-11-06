@@ -52,10 +52,11 @@ public class ComposeMw3 implements Middleware<PeerContext> {
 
     /**
      * 发送消息给会话监控
+     *
      * @param ctx
      * @return
      */
-    private boolean sendAgentAuditMessage(final PeerContext ctx) {
+    private void sendAgentAuditMessage(final PeerContext ctx) {
         boolean send = true;
         if (ctx.getMessage().getChannelMessage() instanceof ChatMessage) {
             final ChatMessage msg = (ChatMessage) ctx.getMessage().getChannelMessage();
@@ -65,13 +66,18 @@ public class ComposeMw3 implements Middleware<PeerContext> {
         }
 
         if (send) {
-            agentAuditProxy.publishMessage(
-                    ctx.getMessage().getAgentUser(),
-                    ctx.getMessage().getChannelMessage(),
-                    MainContext.MessageType.toValue(
-                            ("audit_" + ctx.getMsgType().toString()))
-                                          );
+            switch (ctx.getMsgType()) {
+                case TRANSOUT:
+                    // 忽略坐席转出事件
+                    break;
+                default:
+                    agentAuditProxy.publishMessage(
+                            ctx.getMessage().getAgentUser(),
+                            ctx.getMessage().getChannelMessage(),
+                            MainContext.MessageType.toValue(
+                                    ("audit_" + ctx.getMsgType().toString()))
+                                                  );
+            }
         }
-        return send;
     }
 }

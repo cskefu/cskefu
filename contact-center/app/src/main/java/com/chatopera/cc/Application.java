@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,52 +65,34 @@ public class Application {
     /**
      * 记载模块
      */
-    // 外呼模块
-    private final static boolean isCalloutModule = SystemEnvHelper.parseModuleFlag("cskefu.module.callout");
-
-    // CRM模块
-    private final static boolean isContactsModule = SystemEnvHelper.parseModuleFlag("cskefu.module.contacts");
-
-    // 聊天机器人模块
-    private final static boolean isChatbotModule = SystemEnvHelper.parseModuleFlag("cskefu.module.chatbot");
-
-    // 访客聊天监控模块
-    private final static boolean isCcaModule = SystemEnvHelper.parseModuleFlag("cskefu.module.cca");
-
-    // 企业聊天模块
-    private final static boolean isEntImModule = SystemEnvHelper.parseModuleFlag("cskefu.module.entim");
-
-    // 渠道:Skype渠道
-    private final static boolean isSkypeModule = SystemEnvHelper.isClassExistByFullName(
-            PluginRegistry.PLUGIN_ENTRY_SKYPE);
-
     static {
-        // 外呼模块
-        if (isCalloutModule) {
-            MainContext.enableModule(Constants.CSKEFU_MODULE_CALLOUT);
-        }
         // CRM模块
-        if (isContactsModule) {
-            MainContext.enableModule(Constants.CSKEFU_MODULE_CONTACTS);
-        }
-        // 聊天机器人模块
-        if (isChatbotModule) {
-            MainContext.enableModule(Constants.CSKEFU_MODULE_CHATBOT);
+        MainContext.enableModule(Constants.CSKEFU_MODULE_CONTACTS);
+
+        // 会话监控模块 Customer Chats Audit
+        MainContext.enableModule(Constants.CSKEFU_MODULE_CCA);
+
+        // 企业聊天模块
+        MainContext.enableModule(Constants.CSKEFU_MODULE_ENTIM);
+
+        /**
+         * 插件组
+         */
+        // 外呼模块
+        if (SystemEnvHelper.isClassExistByFullName(
+                PluginRegistry.PLUGIN_ENTRY_CALLOUT)) {
+            MainContext.enableModule(Constants.CSKEFU_MODULE_CALLOUT);
         }
 
         // skype模块
-        if (isSkypeModule) {
+        if (SystemEnvHelper.isClassExistByFullName(
+                PluginRegistry.PLUGIN_ENTRY_SKYPE)) {
             MainContext.enableModule(Constants.CSKEFU_MODULE_SKYPE);
         }
 
-        // 会话监控模块 Customer Chats Audit
-        if (isCcaModule) {
-            MainContext.enableModule(Constants.CSKEFU_MODULE_CCA);
-
-        }
-        // 企业聊天模块
-        if (isEntImModule) {
-            MainContext.enableModule(Constants.CSKEFU_MODULE_ENTIM);
+        // 聊天机器人模块
+        if (SystemEnvHelper.isClassExistByFullName(PluginRegistry.PLUGIN_ENTRY_CHATBOT)) {
+            MainContext.enableModule(Constants.CSKEFU_MODULE_CHATBOT);
         }
     }
 

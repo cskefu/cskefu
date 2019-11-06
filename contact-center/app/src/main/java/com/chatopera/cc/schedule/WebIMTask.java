@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Chatopera Inc, <https://www.chatopera.com>
+ * Copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
