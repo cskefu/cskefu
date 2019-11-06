@@ -66,7 +66,7 @@
 			</dl>
 		</li>
 	</#if>
-	<#if user.superuser?? && user.superuser == true>
+	<#if user.admin>
 	<#if models?seq_contains("report")>
 	<li class="layui-nav-item layui-nav-itemed">
 		<a class="layui-nav-title" href="javascript:;">数据报表</a>
