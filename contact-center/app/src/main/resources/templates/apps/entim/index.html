@@ -156,7 +156,7 @@
 			</#if>
 			<span class="layui-anim layer-anim-05 animated" id="msgbox" data-newmsg="${newmsg}" style="<#if newmsg == 0>display:none;</#if>">${newmsg}</span>
 		</li>
-		<#if user?? && (user.roleAuthMap[ "A14_A01"]?? || user.usertype=="0" )>
+		<#if user?? && (user.roleAuthMap[ "A14_A01"]?? || user.admin )>
 			<li class="layui-icon " title="新建" onclick="layer.prompt({title: '新建一个群', offset: 'b', formType: 0}, function(text, index){layer.close(index);loadURL('/ent/im/group/save.html?name='+encodeURIComponent(text),'#imgroup')});"></li>
 		 </#if>
 		<li class="layui-icon" title="更换背景" onclick="skin()"></li>

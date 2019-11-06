@@ -2,26 +2,34 @@
 	<div class="col-lg-12">
 		<h1 class="site-h1">
 			对话列表
-			<div style="clefloat:right;">
-				<div class="layui-btn-group">
-					<a href="/apps/cca/index.html?sort=lastmessage<#if skill??>&&skill=${skill}</#if><#if agentno??>&&agentno=${agentno}</#if>" style="<#if sort?? && sort == "lastmessage">color:#ffffff !important;</#if>">
-					  <button class="layui-btn layui-btn-primary layui-btn-small" style="<#if sort?? && sort == "lastmessage">color:#ffffff !important;<#else>background-color:#ffffff !important;color:#32c24d  !important;</#if>">
-					    	消息
-					  </button>
-				  </a>
-				  <a href="/apps/cca/index.html?sort=logintime<#if skill??>&&skill=${skill}</#if><#if agentno??>&&agentno=${agentno}</#if>" style="<#if sort?? && sort == "logintime">color:#ffffff !important;</#if>">
-					  <button class="layui-btn layui-btn-primary layui-btn-small" style="<#if sort?? && sort == "logintime">color:#ffffff !important;<#else>background-color:#ffffff !important;color:#32c24d  !important;</#if>">
-					 	接入
-					  </button>
-				  </a>
-				  <a href="/apps/cca/index.html?sort=default<#if skill??>&&skill=${skill}</#if><#if agentno??>&&agentno=${agentno}</#if>" style="<#if !sort?? || sort == "default">color:#ffffff !important;</#if>">
-				  <button class="layui-btn layui-btn-primary layui-btn-small" style="<#if !sort?? || sort == "default">color:#ffffff !important;<#else>background-color:#ffffff !important;color:#32c24d  !important;</#if>">
-				  	默认
-				  </button>
-				  </a>
+			<form class="layui-form" name="search" method="post" id="searchConversation">
+				<div class="layui-form-item">
+					<div class="layui-inline" style="margin-right:0px;width: 100%">
+						<select name="skill" class="ukefu-input" lay-ignore style="width: 90px" onchange="findAgentByOrgan(this.value)" >
+							<option value="">所有技能组</option>
+							<#if skillGroups??>
+							<#list skillGroups as tpskill>
+							<option value="${tpskill.id}" <#if skill?? && skill == tpskill.id>selected="selected"</#if>>${tpskill.name!''}</option>
+							</#list>
+							</#if>
+						</select>
+				        <label>~</label>
+						<select id="agent" name="agentno" class="ukefu-input" lay-ignore style="width: 90px">
+							<option value="">所有坐席</option>
+							<#if agentList??>
+							<#list agentList as useragent>
+							<option value="${useragent.id}" <#if agentno?? && agentno == useragent.id>selected="selected"</#if>>${useragent.uname!''}</option>
+							</#list>
+							</#if>
+						</select>
+						<div class="layui-input-inline" style="float: right;width: auto">
+							<button class="layui-btn layui-btn-small layui-btn-primary" style="color:#ffffff;">
+								<i class="layui-icon"></i>
+							</button>
+						</div>
+					</div>
 				</div>
-				
-			</div>
+			</form>
 		</h1>
 		<ul class="dialog-list" id="chat_users">
 			<#if agentUserList??>
@@ -29,7 +37,8 @@
 			<li class="clearfix chat-list-item <#if curagentuser?? && curagentuser.id?? && agentuser.id?? && curagentuser.id == agentuser.id>active</#if>"
 			id="agentuser_${agentuser.userid!''}" remove-id="${agentuser.id!''}" data-id="${agentuser.userid!''}">
 			<a href="/apps/cca/agentuser.html?id=${agentuser.id!''}&channel=${agentuser.channel!''}" data-toggle="load" data-target="#ukefu-chat-agent" onclick="$('.chat-list-item.active').removeClass('active');$(this).closest('li.chat-list-item').addClass('active');Proxy.cleanTopMsgTip(1) ;$('#last_msg_${agentuser.userid!''}').text(0).hide();">
-					<img src="<#if agentuser.headimgurl?? && agentuser.headimgurl != ''>${agentuser.headimgurl}<#else>/images/im/user.png</#if>" style="width:45px;height:45px;">  <#if agentuser.status?? && agentuser.status == 'end'>
+					<img src="<#if agentuser.headimgurl?? && agentuser.headimgurl != ''>${agentuser.headimgurl}<#else>/images/im/user.png</#if>" style="width:45px;height:45px;">
+				  <#if agentuser.status?? && agentuser.status == 'end'>
 						<#if agentuser.channel?? && agentuser.channel == "weixin">
 						<i class="kfont ukefu-channel-icon-end" id="tip_icon_wenxin_${agentuser.userid!''}">&#xe64d;</i>
 						<#elseif agentuser.channel?? && agentuser.channel == "webim">
@@ -39,7 +48,7 @@
 						<#elseif agentuser.channel?? && agentuser.channel == "phone">
 						<img class="ukefu-channel-image" src="/images/cde-ico-gray.png" id="tip_icon_phone_${agentuser.userid!''}">
 					    </#if>
-						<#else>
+					<#else>
 						<#if agentuser.channel?? && agentuser.channel == "weixin">
 						<i class="kfont ukefu-channel-icon" id="tip_icon_wenxin_${agentuser.userid!''}">&#xe64d;</i>
 						<#elseif agentuser.channel?? && agentuser.channel == "webim">
@@ -75,3 +84,58 @@ word-break: break-all;">${agentuser.username!''}</span>
 		</ul>
 	</div>
 </div>
+<script src="/js/CSKeFu_Rest_Request.v1.js"></script>
+<script>
+	function findAgentByOrgan(data){
+		restApiRequest({
+			silent: true,
+			path: 'user/findByOrgan?organ='+data,
+		}).then(function(result){
+			if(result.status !== 'OK'){
+				// Token过期
+				handleRestApiFail(result.status);
+			} else{
+                $("#agent").html('<option value="">所有坐席</option>');
+				for (var i=0 ; i<result.data.length ; i++) {
+					$("#agent").prepend('<option value="' + result.data[i].id + '"  <#if agentno?? && agentno == result.data[i].id>selected="selected"</#if>>' + result.data[i].uname + '</option>')
+				};
+			}
+		}, function(error){
+			// 服务器异常
+			top.layer.msg('服务器抽风，请稍后再试！', {icon: 2, offset: 'b', time: 3000})
+		})
+	}
+
+
+	$(function(){
+		$('#searchConversation').on('submit', function(e){
+			e.preventDefault();  //prevent form from submitting
+			var data = $("#searchConversation :input").serializeArray();
+			console.log(data)
+			var params = {};
+			for(var index = 0; index < data.length; index++){
+				params[data[index]['name']] = data[index]["value"];
+			}
+			$.ajax({
+				url:'/apps/cca/query',
+				data:{skill:params["skill"],agentno:params["agentno"]},
+				type:"post",
+				success:function(data){
+					$("#chat_users").html(data);
+					if($("#chat_users li").length > 0){
+						if($("#chat_users li:first-child").attr('id').substring(10) !== cursession){
+							$("#chat_users li:first-child a").click();
+						}else{
+							$("#chat_users li:first-child").addClass("active")
+						}
+					}else {
+						cursession = "";
+                        $("#ukefu-chat-agent").html(" <div style=\"height: 100%;background: #fff;padding-top: 100px\" class=\"box-body ukefu-im-theme\"><div class=\"ukefu-empty\"><i class=\"layui-icon\">&#xe63a;</i><div style=\"\">没有搜索结果</div>\</div>\</div>");
+					}
+				}
+			});
+		});
+	});
+</script>
+
+

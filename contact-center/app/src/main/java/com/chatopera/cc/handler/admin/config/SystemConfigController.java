@@ -150,7 +150,7 @@ public class SystemConfigController extends Handler {
     @RequestMapping("/startentim")
     @Menu(type = "admin", subtype = "startentim", access = false, admin = true)
     public ModelAndView startentim(ModelMap map, HttpServletRequest request) throws SQLException {
-        MainContext.hasModule(Constants.CSKEFU_MODULE_ENTIM);
+        MainContext.enableModule(Constants.CSKEFU_MODULE_ENTIM);
         return request(super.createRequestPageTempletResponse("redirect:/admin/config/index.html"));
     }
 

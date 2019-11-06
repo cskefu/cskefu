@@ -99,7 +99,6 @@
 	 * @param memo
 	 */
 	function submitTransAgentUserOut(agentUserId, targetAgentno, agentUserServiceId, memo) {
-		console.log("[submitTransAgentUser] ", agentUserId, targetAgentno, agentUserServiceId, memo);
 		restApiRequest({
 			silent: true,
 			path: 'agentuser',
@@ -125,20 +124,20 @@
 					$('#agentdesktop').click();
 				}
 			} else if(result.rc === 1){
-				top.layer.msg('不合法的请求参数',{icon: 2, offset: 'b', time: 3000})
+				top.layer.msg('不合法的请求参数',{icon: 2, time: 3000})
 			} else if(result.rc === 2){
-				top.layer.msg('不合法的操作',{icon: 2, offset: 'b', time: 3000})
+				top.layer.msg('不合法的操作',{icon: 2, time: 3000})
 			} else if(result.rc === 3){
-				top.layer.msg('您没有权限执行该操作',{icon: 2, offset: 'b', time: 3000})
+				top.layer.msg('您没有权限执行该操作',{icon: 2, time: 3000})
 			} else if(result.rc === 4){
-				top.layer.msg('该访客会话不存在',{icon: 2, offset: 'b', time: 3000})
+				top.layer.msg('该访客会话不存在',{icon: 2, time: 3000})
 			} else if(result.rc === 5){
-				top.layer.msg('参数不合法',{icon: 2, offset: 'b', time: 3000})
+				top.layer.msg('参数不合法',{icon: 2, time: 3000})
 			}
 		}, function(error){
 			console.log("error", error);
 			// 服务器异常
-			top.layer.msg('服务器抽风，请稍后再试！', {icon: 2, offset: 'b', time: 3000})
+			top.layer.msg('服务器抽风，请稍后再试！', {icon: 2, time: 3000})
 		})
 	}
 
@@ -154,7 +153,7 @@
 			if(params["userid"] && params["agentuserid"] && params["agentserviceid"] && params["agentno"]){
 				submitTransAgentUserOut(params["agentuserid"], params["agentno"], params["agentserviceid"], params["memo"]);
 			} else {
-				top.layer.msg('未选择合理的转接信息！',{icon: 2, offset: 'b', time: 3000});
+				top.layer.msg('未选择合理的转接信息！',{icon: 2, time: 3000});
 			}
 		});
 	});

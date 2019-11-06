@@ -80,10 +80,14 @@ public class OrganController extends Handler {
     @Autowired
     private Cache cache;
 
+    @Autowired
+    private UserProxy userProxy;
+
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "organ")
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String organ, @Valid String msg) {
-        List<Organ> organList = organRepository.findByOrgiAndOrgid(super.getOrgiByTenantshare(request), super.getOrgid(request));
+        List<Organ> organList = organRepository.findByOrgiAndOrgid(
+                super.getOrgiByTenantshare(request), super.getOrgid(request));
         map.addAttribute("organList", organList);
         if (organList.size() > 0) {
             Organ organData = null;
@@ -98,11 +102,16 @@ public class OrganController extends Handler {
                 map.addAttribute("organData", organData = organList.get(0));
             }
             if (organData != null) {
-                map.addAttribute("userList", UserProxy.findByOrganAndOrgiAndDatastatus(organData.getId(), super.getOrgiByTenantshare(request), false));
+                map.addAttribute(
+                        "userList", userProxy.findByOrganAndOrgiAndDatastatus(organData.getId(),
+                                                                              super.getOrgiByTenantshare(request),
+                                                                              false));
             }
         }
         map.addAttribute("areaList", areaRepository.findByOrgi(super.getOrgiByTenantshare(request)));
-        map.addAttribute("roleList", roleRepository.findByOrgiAndOrgid(super.getOrgiByTenantshare(request), super.getOrgid(request)));
+        map.addAttribute(
+                "roleList", roleRepository.findByOrgiAndOrgid(super.getOrgiByTenantshare(request),
+                                                              super.getOrgid(request)));
         map.put("msg", msg);
         return request(super.createAdminTempletResponse("/admin/organ/index"));
     }
@@ -118,7 +127,9 @@ public class OrganController extends Handler {
             map.addAttribute("area", areaRepository.findByIdAndOrgi(area, super.getOrgiByTenantshare(request)));
         }
 
-        map.addAttribute("organList", organRepository.findByOrgiAndOrgid(super.getOrgiByTenantshare(request), super.getOrgid(request)));
+        map.addAttribute(
+                "organList", organRepository.findByOrgiAndOrgid(super.getOrgiByTenantshare(request),
+                                                                super.getOrgid(request)));
 
         return request(super.createRequestPageTempletResponse("/admin/organ/add"));
     }
@@ -126,7 +137,8 @@ public class OrganController extends Handler {
     @RequestMapping("/save")
     @Menu(type = "admin", subtype = "organ")
     public ModelAndView save(HttpServletRequest request, @Valid Organ organ) {
-        Organ tempOrgan = organRepository.findByNameAndOrgiAndOrgid(organ.getName(), super.getOrgiByTenantshare(request), super.getOrgid(request));
+        Organ tempOrgan = organRepository.findByNameAndOrgiAndOrgid(
+                organ.getName(), super.getOrgiByTenantshare(request), super.getOrgid(request));
         String msg = "admin_organ_new_success";
         String firstId = null;
         if (tempOrgan != null) {
@@ -145,7 +157,8 @@ public class OrganController extends Handler {
 
             OnlineUserProxy.clean(super.getOrgi(request));
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/organ/index.html?msg=" + msg + "&organ=" + firstId));
+        return request(super.createRequestPageTempletResponse(
+                "redirect:/admin/organ/index.html?msg=" + msg + "&organ=" + firstId));
     }
 
     /**
@@ -159,9 +172,12 @@ public class OrganController extends Handler {
     @RequestMapping("/seluser")
     @Menu(type = "admin", subtype = "seluser", admin = true)
     public ModelAndView seluser(ModelMap map, HttpServletRequest request, @Valid String organ) {
-        map.addAttribute("userList", userRepository.findByOrgiAndDatastatusAndOrgid(super.getOrgiByTenantshare(request), false, super.getOrgid(request)));
+        map.addAttribute(
+                "userList", userRepository.findByOrgiAndDatastatusAndOrgid(super.getOrgiByTenantshare(request), false,
+                                                                           super.getOrgid(request)));
         Organ organData = organRepository.findByIdAndOrgi(organ, super.getOrgiByTenantshare(request));
-        map.addAttribute("userOrganList", UserProxy.findByOrganAndOrgiAndDatastatus(organ, super.getOrgiByTenantshare(request), false));
+        map.addAttribute("userOrganList", userProxy
+                .findByOrganAndOrgiAndDatastatus(organ, super.getOrgiByTenantshare(request), false));
         map.addAttribute("organ", organData);
         return request(super.createRequestPageTempletResponse("/admin/organ/seluser"));
     }
@@ -181,7 +197,7 @@ public class OrganController extends Handler {
             HttpServletRequest request,
             final @Valid String[] users,
             final @Valid String organ
-    ) {
+                                ) {
         logger.info("[saveuser] save users {} into organ {}", StringUtils.join(users, ","), organ);
         final User loginUser = super.getUser(request);
 
@@ -205,12 +221,13 @@ public class OrganController extends Handler {
                 /**
                  * 以下更新技能组状态
                  */
-                AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(user.getId(), super.getOrgiByTenantshare(request));
+                AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
+                        user.getId(), super.getOrgiByTenantshare(request));
 
                 // TODO 因为一个用户可以包含在多个技能组中，所以，skill应该对应
                 // 一个List列表，此处需要重构Skill为列表
                 if (agentStatus != null) {
-                    UserProxy.attachOrgansPropertiesForUser(user);
+                    userProxy.attachOrgansPropertiesForUser(user);
                     agentStatus.setSkills(user.getSkills());
                     cache.putAgentStatusByOrgi(agentStatus, super.getOrgiByTenantshare(request));
                 }
@@ -228,7 +245,7 @@ public class OrganController extends Handler {
             final HttpServletRequest request,
             final @Valid String id,
             final @Valid String organ
-    ) {
+                                      ) {
         logger.info("[userroledelete] user id {}, organ {}", id, organ);
         if (id != null) {
             organUserRes.deleteOrganUserByUseridAndOrgan(id, organ);
@@ -244,7 +261,9 @@ public class OrganController extends Handler {
         map.addAttribute("areaList", areaRepository.findByOrgi(super.getOrgiByTenantshare(request)));
         view.addObject("organData", organRepository.findByIdAndOrgi(id, super.getOrgiByTenantshare(request)));
 
-        map.addAttribute("organList", organRepository.findByOrgiAndOrgid(super.getOrgiByTenantshare(request), super.getOrgid(request)));
+        map.addAttribute(
+                "organList", organRepository.findByOrgiAndOrgid(super.getOrgiByTenantshare(request),
+                                                                super.getOrgid(request)));
         return view;
     }
 
@@ -252,7 +271,8 @@ public class OrganController extends Handler {
     @Menu(type = "admin", subtype = "organ")
     public ModelAndView update(HttpServletRequest request, @Valid Organ organ) {
         String msg = organProxy.updateOrgan(organ, super.getOrgi(request), super.getUser(request));
-        return request(super.createRequestPageTempletResponse("redirect:/admin/organ/index.html?msg=" + msg + "&organ=" + organ.getId()));
+        return request(super.createRequestPageTempletResponse(
+                "redirect:/admin/organ/index.html?msg=" + msg + "&organ=" + organ.getId()));
     }
 
     @RequestMapping("/area")
@@ -283,7 +303,8 @@ public class OrganController extends Handler {
         } else {
             msg = "admin_organ_update_not_exist";
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/organ/index.html?msg=" + msg + "&organ=" + organ.getId()));
+        return request(super.createRequestPageTempletResponse(
+                "redirect:/admin/organ/index.html?msg=" + msg + "&organ=" + organ.getId()));
     }
 
     @RequestMapping("/delete")
@@ -328,6 +349,7 @@ public class OrganController extends Handler {
 
             }
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/organ/index.html?organ=" + organData.getId()));
+        return request(
+                super.createRequestPageTempletResponse("redirect:/admin/organ/index.html?organ=" + organData.getId()));
     }
 }

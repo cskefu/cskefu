@@ -88,6 +88,9 @@ public class LoginController extends Handler {
     @Autowired
     private AgentSessionProxy agentSessionProxy;
 
+    @Autowired
+    private UserProxy userProxy;
+
     /**
      * 登录页面
      *
@@ -196,7 +199,7 @@ public class LoginController extends Handler {
                     if ((loginUser.isAgent() &&
                             loginUser.getRoleAuthMap().containsKey("A01") &&
                             ((boolean) loginUser.getRoleAuthMap().get("A01") == true))
-                            || loginUser.isSuperuser()) {
+                            || loginUser.isAdmin()) {
                         try {
                             /****************************************
                              * 登录成功，设置该坐席为就绪状态（默认）
@@ -215,7 +218,7 @@ public class LoginController extends Handler {
                             AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(),
                                                                    agentStatus.getUsername(),
                                                                    agentStatus.getAgentno(),
-                                                                   user.isSuperuser(), // 0代表admin
+                                                                   user.isAdmin(), // 0代表admin
                                                                    agentStatus.getAgentno(),
                                                                    MainContext.AgentStatusEnum.OFFLINE.toString(),
                                                                    MainContext.AgentStatusEnum.READY.toString(),
@@ -273,7 +276,7 @@ public class LoginController extends Handler {
 
             // 登录成功 判断是否进入多租户页面
             SystemConfig systemConfig = MainUtils.getSystemConfig();
-            if (systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantconsole() && !loginUser.isSuperuser()) {
+            if (systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantconsole() && !loginUser.isAdmin()) {
                 view = new ModelAndView("redirect:/apps/tenant/index");
             }
             List<UserRole> userRoleList = userRoleRes.findByOrgiAndUser(loginUser.getOrgi(), loginUser);
@@ -284,7 +287,7 @@ public class LoginController extends Handler {
             }
 
             // 获取用户部门以及下级部门
-            UserProxy.attachOrgansPropertiesForUser(loginUser);
+            userProxy.attachOrgansPropertiesForUser(loginUser);
 
             // 获取用户的角色权限，进行授权
             List<RoleAuth> roleAuthList = roleAuthRes.findAll(new Specification<RoleAuth>() {
@@ -381,7 +384,7 @@ public class LoginController extends Handler {
             return request(super.createRequestPageTempletResponse("redirect:/register.html?msg=" + msg));
         } else {
             user.setUname(user.getUsername());
-            user.setUsertype("0");
+            user.setAdmin(true);
             if (StringUtils.isNotBlank(user.getPassword())) {
                 user.setPassword(MainUtils.md5(user.getPassword()));
             }

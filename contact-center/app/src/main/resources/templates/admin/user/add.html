@@ -38,7 +38,7 @@
 	  <div class="layui-form-item">
 	    <label class="layui-form-label">管理员：</label>
 	    <div class="layui-input-inline">
-	      <input type="checkbox" name="superuser" lay-skin="switch" lay-filter="admincheckbox" value="1" lay-text="是|否">
+	      <input type="checkbox" name="admin" lay-skin="switch" lay-filter="admincheckbox" value="1" lay-text="是|否">
 	    </div>
 	  </div>
 	  <div class="layui-form-item"  id="agentDiv">
@@ -60,15 +60,16 @@
 	  </#if>
 	  <div class="layui-form-button">
 	    <div class="layui-button-block">
-	      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
-	      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+	      <button class="layui-btn" lay-submit lay-filter="sys-user-create">提交</button>
+<!--		  <button class="layui-btn" lay-submit lay-filter="sys-user-create-follow">提交并创建下一个</button>-->
+	      <button type="reset" class="layui-btn layui-btn-warm">重置</button>
 	    </div>
 	  </div>
 	</form>
 </div>
  
 <script>
-//Demo
+
 layui.use('form', function(){
   var form = layui.form();
   form.render(); //更新全部
@@ -121,5 +122,18 @@ layui.use('form', function(){
 			$('#sipAccountDiv').hide();
 		}
 	});
+
+  	form.on('submit(sys-user-create)', function (data) {
+  		// TODO use RestAPI
+		// console.log(data.field)
+		return true;
+	})
+
+	// // 保存成功后，继续留在当前页面，重制并创建下一个
+	// form.on('submit(sys-user-create-follow)', function (data) {
+	// // TODO use RestAPI
+	// 	console.log(data.field)
+	// 	return false;
+	// })
 });
 </script>

@@ -51,8 +51,10 @@ public class ApplicationController extends Handler {
         view.addObject("timeDifference", timezone.getRawOffset());
 
         if (super.isEnabletneant()) {
-            //多租户启用 非超级管理员 一定要选择租户才能进入界面
-            if (!logined.isSuperuser() && StringUtils.isNotBlank(logined.getOrgid()) && super.isTenantconsole() && MainContext.SYSTEM_ORGI.equals(logined.getOrgi())) {
+            // 多租户启用 非管理员 一定要选择租户才能进入界面
+            if (!logined.isAdmin() && StringUtils.isNotBlank(
+                    logined.getOrgid()) && super.isTenantconsole() && MainContext.SYSTEM_ORGI.equals(
+                    logined.getOrgi())) {
                 view = request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index"));
             }
             if (StringUtils.isBlank(logined.getOrgid())) {

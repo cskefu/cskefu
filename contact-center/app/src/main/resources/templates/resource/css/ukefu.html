@@ -2907,7 +2907,7 @@ select{
     left: 150px;
     background-color: rgba(0,0,0,.15);
     border-radius: 50px;
-    <#if user?? && user.usertype?? && user.usertype == "0">
+    <#if user?? && user.admin>
     width: 740px;
     <#else>
     width: 690px;
@@ -3979,12 +3979,4 @@ background:#FFFFFF;
 <!-- Customer Chats Audit -->
 .cskefu-cca-header {
     padding-top: 0px;
-}
-
-.cskefu-cca-leftside {
-    top: 40px !important;
-}
-
-.cskefu-cca-content {
-    top: 40px !important;
 }

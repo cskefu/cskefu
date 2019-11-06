@@ -74,6 +74,15 @@
 				<li>
 					<p>电话：${entimuser.mobile!''}</p>
 				</li>
+				<li>
+					<p>部门：
+					<#if organs?? >
+					<#list organs as organ>
+					${organ.name!''}&nbsp
+					</#list>
+					</#if>
+					</p>
+				</li>
 			</ul>
 		</div>
 		<div class="content-bottom">

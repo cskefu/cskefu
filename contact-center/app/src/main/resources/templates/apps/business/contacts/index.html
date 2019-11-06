@@ -31,26 +31,26 @@
                                 </div>
                             </div>
                         </form>
-                        <#if user?? && (user.roleAuthMap[ "A02_A01_A02_B05"]?? || user.usertype=="0" )>
+                        <#if user?? && (user.roleAuthMap[ "A02_A01_A02_B05"]?? || user.admin)>
                             <div class="layui-btn-group">
                                 <a href="/apps/contacts/add.html<#if ckind??>?ckind=${ckind}</#if>" title="新建联系人" data-toggle="ajax" data-width="950" data-height="600" class="layui-btn layui-btn-small"><i class="layui-icon">&#xe608;</i>新建联系人</a>
                             </div>
                         </#if>
-                        <#if user?? && (user.roleAuthMap[ "A02_A01_A02_B08"]?? || user.usertype=="0" )>
+                        <#if user?? && (user.roleAuthMap[ "A02_A01_A02_B08"]?? || user.admin)>
                             <div class="layui-btn-group ukefu-btn-group">
                                 <button class="layui-btn layui-btn-small" id="mass" title="群发" data-toggle="ajax" data-width="700" data-height="495">
                                     <i class="kfont">&#xe654;</i> 群发
                                 </button>
                             </div>
                         </#if>
-                        <#if user?? && (user.roleAuthMap[ "A02_A01_A02_B08"]?? || user.usertype=="0" )>
+                        <#if user?? && (user.roleAuthMap[ "A02_A01_A02_B08"]?? || user.admin)>
                             <div class="layui-btn-group ukefu-btn-group">
                                 <button class="layui-btn layui-btn-small" href="/apps/contacts/imp.html<#if ckind??>?ckind=${ckind}</#if>" title="导入联系人" data-toggle="ajax" data-width="950" data-height="600">
 								    <i class="kfont">&#xe641;</i> 导入
 							    </button>
                             </div>
                         </#if>
-                        <#if user?? && (user.roleAuthMap[ "A02_A01_A02_B09"]?? || user.usertype=="0" )>
+                        <#if user?? && (user.roleAuthMap[ "A02_A01_A02_B09"]?? || user.admin)>
                             <div class="layui-btn-group ukefu-btn-group">
                                 <button class="layui-btn layui-btn-small dropdown-menu">
 								<i class="kfont">&#xe672;</i> 导出
@@ -151,12 +151,12 @@
                                         <a href="/apps/contacts/detail.html?id=${contacts.id!''}" style="margin-left:10px;">
                                             <i class="layui-icon">&#xe60a;</i> 详情
                                         </a>
-                                        <#if user?? && (user.roleAuthMap[ "A02_A01_A02_B06"]?? || user.usertype=="0" )>
+                                        <#if user?? && (user.roleAuthMap[ "A02_A01_A02_B06"]?? || user.admin)>
                                             <a href="/apps/contacts/edit.html?id=${contacts.id!''}" data-toggle="ajax" data-width="950" data-height="600" data-title="编辑联系人信息">
                                                 <i class="layui-icon">&#xe642;</i> 编辑
                                             </a>
                                         </#if>
-                                        <#if user?? && (user.roleAuthMap[ "A02_A01_A02_B07"]?? || user.usertype=="0" )>
+                                        <#if user?? && (user.roleAuthMap[ "A02_A01_A02_B07"]?? || user.admin)>
                                             <a href="/apps/contacts/delete.html?id=${contacts.id!''}" style="margin-left:10px;" data-toggle="tip" data-title="请确认是否删除联系人？">
                                                 <i class="layui-icon" style="color:red;">&#x1006;</i> 删除
                                             </a>
@@ -283,7 +283,7 @@
     });
 
     function unreachableDialogWinByContactid(id){
-        layer.msg('该联系人正在被其它客服服务或没有可触达的联系方式！',{icon: 2, offset: 'b', time: 3000})
+        layer.msg('该联系人正在被其它客服服务或没有可触达的联系方式！',{icon: 2, time: 3000})
     }
 
     function openDialogWinByContactid(id){

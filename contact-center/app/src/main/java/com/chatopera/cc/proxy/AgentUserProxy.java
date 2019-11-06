@@ -276,8 +276,8 @@ public class AgentUserProxy {
             bypass.add(agentUser.getAgentno());
         }
 
-        // 首先查看超级用户
-        List<User> admins = userRes.findBySuperuserAndOrgi(true, orgi);
+        // 首先查看管理员
+        List<User> admins = userRes.findByAdminAndOrgi(true, orgi);
 
         for (final User user : admins) {
             if (bypass.contains(user.getId())) continue;

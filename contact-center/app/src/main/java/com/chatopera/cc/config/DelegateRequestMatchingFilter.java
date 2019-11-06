@@ -40,38 +40,38 @@ public class DelegateRequestMatchingFilter implements Filter {
     }
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-         HttpServletRequest request = (HttpServletRequest) req;
-         boolean matchAnyRoles = false ;
-         for(RequestMatcher anyRequest : ignoredRequests ){
-        	 if(anyRequest.matches(request)){
-        		 matchAnyRoles = true ;
-        	 }
-         }
-         User user = (User) request.getSession().getAttribute(Constants.USER_SESSION_NAME) ;
-         if(matchAnyRoles){
-        	 if(user !=null && "0".equals(user.getUsertype())){
-        		 chain.doFilter(req,resp);
-        	 }else{
-	        	 //重定向到 无权限执行操作的页面
-	        	 HttpServletResponse response = (HttpServletResponse) resp ;
-	        	 response.sendRedirect("/?msg=security");
-        	 }
-         }else{
-        	 try{
-        		 chain.doFilter(req,resp);
-        	 }catch(ClientAbortException ex){
-        		 //Tomcat异常，不做处理
-        	 }
-         }
+        HttpServletRequest request = (HttpServletRequest) req;
+        boolean matchAnyRoles = false;
+        for (RequestMatcher anyRequest : ignoredRequests) {
+            if (anyRequest.matches(request)) {
+                matchAnyRoles = true;
+            }
+        }
+        User user = (User) request.getSession().getAttribute(Constants.USER_SESSION_NAME);
+        if (matchAnyRoles) {
+            if (user != null && (user.isAdmin())) {
+                chain.doFilter(req, resp);
+            } else {
+                // 重定向到 无权限执行操作的页面
+                HttpServletResponse response = (HttpServletResponse) resp;
+                response.sendRedirect("/?msg=security");
+            }
+        } else {
+            try {
+                chain.doFilter(req, resp);
+            } catch (ClientAbortException ex) {
+                //Tomcat异常，不做处理
+            }
+        }
     }
 
-	@Override
-	public void destroy() {
-		
-	}
+    @Override
+    public void destroy() {
 
-	@Override
-	public void init(FilterConfig arg0) throws ServletException {
-		
-	}
+    }
+
+    @Override
+    public void init(FilterConfig arg0) throws ServletException {
+
+    }
 }

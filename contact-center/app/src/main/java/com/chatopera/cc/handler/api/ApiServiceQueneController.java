@@ -74,7 +74,9 @@ public class ApiServiceQueneController extends Handler {
     @RequestMapping(method = RequestMethod.GET)
     @Menu(type = "apps", subtype = "user", access = true)
     public ResponseEntity<RestResult> list(HttpServletRequest request) {
-        return new ResponseEntity<>(new RestResult(RestResultType.OK, AutomaticServiceDist.getAgentReport(super.getOrgi(request))), HttpStatus.OK);
+        return new ResponseEntity<>(
+                new RestResult(RestResultType.OK, AutomaticServiceDist.getAgentReport(super.getOrgi(request))),
+                HttpStatus.OK);
     }
 
     /**
@@ -85,12 +87,14 @@ public class ApiServiceQueneController extends Handler {
      */
     @RequestMapping(method = RequestMethod.PUT)
     @Menu(type = "apps", subtype = "user", access = true)
-    public ResponseEntity<RestResult> agentStatus(HttpServletRequest request,
-                                                  @Valid String status) throws CharacterCodingException {
+    public ResponseEntity<RestResult> agentStatus(
+            HttpServletRequest request,
+            @Valid String status) throws CharacterCodingException {
         User logined = super.getUser(request);
         AgentStatus agentStatus = null;
         if (StringUtils.isNotBlank(status) && status.equals(MainContext.AgentStatusEnum.READY.toString())) {
-            List<AgentStatus> agentStatusList = agentStatusRepository.findByAgentnoAndOrgi(logined.getId(), super.getOrgi(request));
+            List<AgentStatus> agentStatusList = agentStatusRepository.findByAgentnoAndOrgi(
+                    logined.getId(), super.getOrgi(request));
             if (agentStatusList.size() > 0) {
                 agentStatus = agentStatusList.get(0);
                 agentStatus.setSkills(logined.getSkills());
@@ -104,7 +108,10 @@ public class ApiServiceQueneController extends Handler {
 
                 SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(super.getOrgi(request));
 
-                agentStatus.setUsers(agentUserRepository.countByAgentnoAndStatusAndOrgi(logined.getId(), MainContext.AgentUserStatusEnum.INSERVICE.toString(), super.getOrgi(request)));
+                agentStatus.setUsers(agentUserRepository.countByAgentnoAndStatusAndOrgi(
+                        logined.getId(),
+                        MainContext.AgentUserStatusEnum.INSERVICE.toString(),
+                        super.getOrgi(request)));
 
                 agentStatus.setUpdatetime(new Date());
 
@@ -117,38 +124,64 @@ public class ApiServiceQueneController extends Handler {
                 /**
                  * 更新当前用户状态
                  */
-                agentStatus.setUsers(cache.getInservAgentUsersSizeByAgentnoAndOrgi(agentStatus.getAgentno(), super.getOrgi(request)));
+                agentStatus.setUsers(cache.getInservAgentUsersSizeByAgentnoAndOrgi(
+                        agentStatus.getAgentno(),
+                        super.getOrgi(request)));
                 agentStatus.setStatus(MainContext.AgentStatusEnum.READY.toString());
                 cache.putAgentStatusByOrgi(agentStatus, super.getOrgi(request));
 
-                AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(), agentStatus.getUsername(), agentStatus.getAgentno(), logined.isSuperuser(), agentStatus.getAgentno(), MainContext.AgentStatusEnum.OFFLINE.toString(), MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString(), agentStatus.getOrgi(), null);
+                AutomaticServiceDist.recordAgentStatus(
+                        agentStatus.getAgentno(), agentStatus.getUsername(), agentStatus.getAgentno(),
+                        logined.isAdmin(), agentStatus.getAgentno(),
+                        MainContext.AgentStatusEnum.OFFLINE.toString(), MainContext.AgentStatusEnum.READY.toString(),
+                        MainContext.AgentWorkType.MEIDIACHAT.toString(), agentStatus.getOrgi(), null);
                 AutomaticServiceDist.allotAgent(agentStatus.getAgentno(), super.getOrgi(request));
             }
         } else if (StringUtils.isNotBlank(status)) {
             if (status.equals(MainContext.AgentStatusEnum.NOTREADY.toString())) {
-                List<AgentStatus> agentStatusList = agentStatusRepository.findByAgentnoAndOrgi(logined.getId(), super.getOrgi(request));
+                List<AgentStatus> agentStatusList = agentStatusRepository.findByAgentnoAndOrgi(
+                        logined.getId(), super.getOrgi(request));
                 for (AgentStatus temp : agentStatusList) {
-                    AutomaticServiceDist.recordAgentStatus(temp.getAgentno(), temp.getUsername(), temp.getAgentno(), logined.isSuperuser(), temp.getAgentno(), temp.isBusy() ? MainContext.AgentStatusEnum.BUSY.toString() : MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentStatusEnum.NOTREADY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString(), temp.getOrgi(), temp.getUpdatetime());
+                    AutomaticServiceDist.recordAgentStatus(
+                            temp.getAgentno(), temp.getUsername(), temp.getAgentno(),
+                            logined.isAdmin(),
+                            temp.getAgentno(),
+                            temp.isBusy() ? MainContext.AgentStatusEnum.BUSY.toString() : MainContext.AgentStatusEnum.READY.toString(),
+                            MainContext.AgentStatusEnum.NOTREADY.toString(),
+                            MainContext.AgentWorkType.MEIDIACHAT.toString(), temp.getOrgi(), temp.getUpdatetime());
                     agentStatusRepository.delete(temp);
                 }
                 cache.deleteAgentStatusByAgentnoAndOrgi(super.getUser(request).getId(), super.getOrgi(request));
             } else if (StringUtils.isNotBlank(status) && status.equals(MainContext.AgentStatusEnum.BUSY.toString())) {
-                List<AgentStatus> agentStatusList = agentStatusRepository.findByAgentnoAndOrgi(logined.getId(), super.getOrgi(request));
+                List<AgentStatus> agentStatusList = agentStatusRepository.findByAgentnoAndOrgi(
+                        logined.getId(), super.getOrgi(request));
                 if (agentStatusList.size() > 0) {
                     agentStatus = agentStatusList.get(0);
                     agentStatus.setBusy(true);
-                    AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(), agentStatus.getUsername(), agentStatus.getAgentno(),  logined.isSuperuser(), agentStatus.getAgentno(), MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentStatusEnum.BUSY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString(), agentStatus.getOrgi(), agentStatus.getUpdatetime());
+                    AutomaticServiceDist.recordAgentStatus(
+                            agentStatus.getAgentno(), agentStatus.getUsername(), agentStatus.getAgentno(),
+                            logined.isAdmin(), agentStatus.getAgentno(),
+                            MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentStatusEnum.BUSY.toString(),
+                            MainContext.AgentWorkType.MEIDIACHAT.toString(), agentStatus.getOrgi(),
+                            agentStatus.getUpdatetime());
                     agentStatus.setUpdatetime(new Date());
 
                     agentStatusRepository.save(agentStatus);
                     cache.putAgentStatusByOrgi(agentStatus, super.getOrgi(request));
                 }
-            } else if (StringUtils.isNotBlank(status) && status.equals(MainContext.AgentStatusEnum.NOTBUSY.toString())) {
-                List<AgentStatus> agentStatusList = agentStatusRepository.findByAgentnoAndOrgi(logined.getId(), super.getOrgi(request));
+            } else if (StringUtils.isNotBlank(status) && status.equals(
+                    MainContext.AgentStatusEnum.NOTBUSY.toString())) {
+                List<AgentStatus> agentStatusList = agentStatusRepository.findByAgentnoAndOrgi(
+                        logined.getId(), super.getOrgi(request));
                 if (agentStatusList.size() > 0) {
                     agentStatus = agentStatusList.get(0);
                     agentStatus.setBusy(false);
-                    AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(), agentStatus.getUsername(), agentStatus.getAgentno(), logined.isSuperuser(), agentStatus.getAgentno(), MainContext.AgentStatusEnum.BUSY.toString(), MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentWorkType.MEIDIACHAT.toString(), agentStatus.getOrgi(), agentStatus.getUpdatetime());
+                    AutomaticServiceDist.recordAgentStatus(
+                            agentStatus.getAgentno(), agentStatus.getUsername(), agentStatus.getAgentno(),
+                            logined.isAdmin(), agentStatus.getAgentno(),
+                            MainContext.AgentStatusEnum.BUSY.toString(), MainContext.AgentStatusEnum.READY.toString(),
+                            MainContext.AgentWorkType.MEIDIACHAT.toString(), agentStatus.getOrgi(),
+                            agentStatus.getUpdatetime());
 
                     agentStatus.setUpdatetime(new Date());
                     agentStatusRepository.save(agentStatus);
@@ -156,7 +189,8 @@ public class ApiServiceQueneController extends Handler {
                 }
                 AutomaticServiceDist.allotAgent(agentStatus.getAgentno(), super.getOrgi(request));
             }
-            AutomaticServiceDist.broadcastAgentsStatus(super.getOrgi(request), "agent", "api", super.getUser(request).getId());
+            AutomaticServiceDist.broadcastAgentsStatus(
+                    super.getOrgi(request), "agent", "api", super.getUser(request).getId());
         }
         return new ResponseEntity<>(new RestResult(RestResultType.OK, agentStatus), HttpStatus.OK);
     }

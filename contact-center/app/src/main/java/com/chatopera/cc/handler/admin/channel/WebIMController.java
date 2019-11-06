@@ -73,6 +73,9 @@ public class WebIMController extends Handler {
     @Autowired
     private Cache cache;
 
+    @Autowired
+    private UserProxy userProxy;
+
     @RequestMapping("/index")
     @Menu(type = "app", subtype = "app", admin = true)
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String snsid) {
@@ -323,7 +326,7 @@ public class WebIMController extends Handler {
                     organIdList.add(rel.getSkillid());
                 }
             }
-            userList = UserProxy.findByOrganInAndAgentAndDatastatus(organIdList, true, false);
+            userList = userProxy.findByOrganInAndAgentAndDatastatus(organIdList, true, false);
         } else {
             userList = userRes.findByOrgiAndAgentAndDatastatus(super.getOrgi(request), true, false);
         }

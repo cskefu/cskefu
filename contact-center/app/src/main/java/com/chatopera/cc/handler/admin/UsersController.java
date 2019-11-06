@@ -27,6 +27,7 @@ import com.chatopera.cc.model.UserRole;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.persistence.repository.UserRoleRepository;
 import com.chatopera.cc.proxy.OnlineUserProxy;
+import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -64,22 +65,26 @@ public class UsersController extends Handler {
     @Autowired
     private Cache cache;
 
+    @Autowired
+    private UserProxy userProxy;
+
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "user")
     public ModelAndView index(ModelMap map, HttpServletRequest request) throws IOException {
         map.addAttribute(
                 "userList",
-                userRepository.findByDatastatusAndOrgiAndOrgid(
+                userRepository.findByDatastatusAndOrgiAndOrgidAndSuperadminNot(
                         false,
                         super.getOrgiByTenantshare(request),
                         super.getOrgid(request),
+                        true,
                         new PageRequest(
                                 super.getP(request),
                                 super.getPs(request),
                                 Sort.Direction.ASC,
                                 "createtime"
                         )
-                                                              )
+                                                                              )
                         );
         return request(super.createAdminTempletResponse("/admin/user/index"));
     }
@@ -93,74 +98,9 @@ public class UsersController extends Handler {
     @RequestMapping("/save")
     @Menu(type = "admin", subtype = "user")
     public ModelAndView save(HttpServletRequest request, @Valid User user) {
-        String msg = "";
-        msg = validUser(user);
-        if (!StringUtils.isBlank(msg) && !msg.equals("new_user_success")) {
-            return request(super.createRequestPageTempletResponse("redirect:/admin/user/index.html?msg=" + msg));
-        } else {
-//            if (request.getParameter("admin") != null) {
-//                user.setUsertype("0");
-//            } else {
-//                user.setUsertype(null);
-//            }
-            if (user.isSuperuser()) {
-                user.setSuperuser(true);
-                user.setUsertype("0");
-            } else {
-                user.setSuperuser(false);
-                user.setUsertype("");
-            }
-            if (!StringUtils.isBlank(user.getPassword())) {
-                user.setPassword(MainUtils.md5(user.getPassword()));
-            }
-
-            user.setOrgi(super.getOrgiByTenantshare(request));
-            if (!StringUtils.isBlank(super.getUser(request).getOrgid())) {
-                user.setOrgid(super.getUser(request).getOrgid());
-            } else {
-                user.setOrgid(MainContext.SYSTEM_ORGI);
-            }
-            userRepository.save(user);
-            OnlineUserProxy.clean(super.getOrgi(request));
-        }
+        String msg = userProxy.createNewUser(
+                user, super.getOrgi(request), super.getUser(request).getOrgid(), super.getOrgiByTenantshare(request));
         return request(super.createRequestPageTempletResponse("redirect:/admin/user/index.html?msg=" + msg));
-    }
-
-    private String validUser(User user) {
-        String msg = "";
-        User tempUser = userRepository.findByUsernameAndDatastatus(user.getUsername(), false);
-        if (tempUser != null) {
-            msg = "username_exist";
-            return msg;
-        }
-
-        if (StringUtils.isNotBlank(user.getEmail())) {
-            tempUser = userRepository.findByEmailAndDatastatus(user.getEmail(), false);
-            if (tempUser != null) {
-                msg = "email_exist";
-                return msg;
-            }
-        }
-
-        if (StringUtils.isNotBlank(user.getMobile())) {
-            tempUser = userRepository.findByMobileAndDatastatus(user.getMobile(), false);
-            if (tempUser != null) {
-                msg = "mobile_exist";
-                return msg;
-            }
-        }
-
-        if (!validUserCallcenterParams(user)) {
-            msg = "sip_account_exist";
-            return msg;
-        }
-
-        if (tempUser == null && validUserCallcenterParams(user)) {
-            msg = "new_user_success";
-            return msg;
-        }
-
-        return msg;
     }
 
     @RequestMapping("/edit")
@@ -177,15 +117,8 @@ public class UsersController extends Handler {
         User tempUser = userRepository.getOne(user.getId());
         String msg = validUserUpdate(user, tempUser);
         if (tempUser != null) {
-            if (!StringUtils.isBlank(msg) && !msg.equals("edit_user_success")) {
+            if (StringUtils.isNotBlank(msg) && !msg.equals("edit_user_success")) {
                 return request(super.createRequestPageTempletResponse("redirect:/admin/user/index.html?msg=" + msg));
-            }
-            if (user.isSuperuser()) {
-                tempUser.setSuperuser(true);
-                tempUser.setUsertype("0");
-            } else {
-                tempUser.setSuperuser(false);
-                tempUser.setUsertype("");
             }
             tempUser.setUname(user.getUname());
             tempUser.setUsername(user.getUsername());
@@ -205,22 +138,16 @@ public class UsersController extends Handler {
 
             tempUser.setOrgi(super.getOrgiByTenantshare(request));
 
-            if (!StringUtils.isBlank(super.getUser(request).getOrgid())) {
+            if (StringUtils.isNotBlank(super.getUser(request).getOrgid())) {
                 tempUser.setOrgid(super.getUser(request).getOrgid());
             } else {
                 tempUser.setOrgid(MainContext.SYSTEM_ORGI);
             }
 
             tempUser.setCallcenter(user.isCallcenter());
-            if (!StringUtils.isBlank(user.getPassword())) {
+            if (StringUtils.isNotBlank(user.getPassword())) {
                 tempUser.setPassword(MainUtils.md5(user.getPassword()));
             }
-
-//            if (request.getParameter("admin") != null) {
-//                tempUser.setUsertype("0");
-//            } else {
-//                tempUser.setUsertype(null);
-//            }
 
             if (tempUser.getCreatetime() == null) {
                 tempUser.setCreatetime(new Date());
@@ -256,19 +183,17 @@ public class UsersController extends Handler {
             }
         }
 
-        if (!validUserCallcenterParams(user)) {
+        if (!userProxy.validUserCallcenterParams(user)) {
             msg = "sip_account_exist";
             return msg;
         }
 
         if (user.getUsername().equals(oldUser.getUsername()) && user.getEmail().equals(
-                oldUser.getEmail()) && user.getMobile().equals(oldUser.getMobile()) && validUserCallcenterParams(
+                oldUser.getEmail()) && user.getMobile().equals(
+                oldUser.getMobile()) && userProxy.validUserCallcenterParams(
                 user)) {
             return "";
         }
-
-
-//        if ()
 
         return msg;
     }
@@ -288,20 +213,6 @@ public class UsersController extends Handler {
             msg = "admin_user_not_exist";
         }
         return request(super.createRequestPageTempletResponse("redirect:/admin/user/index.html?msg=" + msg));
-    }
-
-    /**
-     * 根据是否开启呼叫中心模块检测账号
-     *
-     * @param user
-     * @return
-     */
-    private boolean validUserCallcenterParams(final User user) {
-        if (user.isCallcenter() && MainContext.hasModule(Constants.CSKEFU_MODULE_CALLOUT)) {
-            List<User> tempUserList = userRepository.findBySipaccountAndDatastatus(user.getSipaccount(), false);
-            return tempUserList.size() == 0 || user.getSipaccount() == "";
-        }
-        return true;
     }
 
 }

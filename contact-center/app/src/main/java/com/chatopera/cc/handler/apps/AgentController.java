@@ -160,6 +160,9 @@
      private BrokerPublisher brokerPublisher;
 
 
+     @Autowired
+     private UserProxy userProxy;
+
      /**
       * 坐席从联系人列表进入坐席工作台和该联系人聊天
       *
@@ -521,7 +524,8 @@
      public ModelAndView ready(HttpServletRequest request) {
          final User logined = super.getUser(request);
          final String orgi = super.getOrgi(request);
-         final AgentStatus agentStatus = agentProxy.resolveAgentStatusByAgentnoAndOrgi(logined.getId(), orgi, logined.getSkills());
+         final AgentStatus agentStatus = agentProxy.resolveAgentStatusByAgentnoAndOrgi(
+                 logined.getId(), orgi, logined.getSkills());
 
          // 缓存就绪状态
          agentProxy.ready(logined, agentStatus);
@@ -538,7 +542,7 @@
          AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(),
                                                 agentStatus.getUsername(),
                                                 agentStatus.getAgentno(),
-                                                StringUtils.equals(logined.getUsertype(), "0"), // 0代表admin
+                                                logined.isAdmin(), // 0代表admin
                                                 agentStatus.getAgentno(),
                                                 MainContext.AgentStatusEnum.NOTREADY.toString(),
                                                 MainContext.AgentStatusEnum.READY.toString(),
@@ -574,7 +578,7 @@
          AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(),
                                                 agentStatus.getUsername(),
                                                 agentStatus.getAgentno(),
-                                                logined.isSuperuser(), // 0代表admin
+                                                logined.isAdmin(), // 0代表admin
                                                 agentStatus.getAgentno(),
                                                 MainContext.AgentStatusEnum.READY.toString(),
                                                 MainContext.AgentStatusEnum.NOTREADY.toString(),
@@ -603,7 +607,7 @@
                  agentStatus.getAgentno(),
                  agentStatus.getUsername(),
                  agentStatus.getAgentno(),
-                 "0".equals(super.getUser(request).getUsertype()),
+                 super.getUser(request).isAdmin(),
                  agentStatus.getAgentno(),
                  MainContext.AgentStatusEnum.NOTBUSY.toString(),
                  MainContext.AgentStatusEnum.BUSY.toString(),
@@ -644,7 +648,7 @@
                  agentStatus.getAgentno(),
                  agentStatus.getUsername(),
                  agentStatus.getAgentno(),
-                 "0".equals(super.getUser(request).getUsertype()),
+                 super.getUser(request).isAdmin(),
                  agentStatus.getAgentno(),
                  MainContext.AgentStatusEnum.BUSY.toString(),
                  MainContext.AgentStatusEnum.NOTBUSY.toString(),
@@ -705,7 +709,7 @@
 
          if (agentUser != null) {
              if ((StringUtils.equals(
-                     logined.getId(), agentUser.getAgentno()) || logined.isSuperuser())) {
+                     logined.getId(), agentUser.getAgentno()) || logined.isAdmin())) {
                  // 删除访客-坐席关联关系，包括缓存
                  try {
                      AutomaticServiceDist.deleteAgentUser(agentUser, orgi);
@@ -1151,7 +1155,7 @@
              for (final User o : userList) {
                  o.setAgentStatus(agentStatusMap.get(o.getId()));
                  // find user's skills
-                 UserProxy.attachOrgansPropertiesForUser(o);
+                 userProxy.attachOrgansPropertiesForUser(o);
              }
 
              map.addAttribute("userList", userList);
@@ -1194,7 +1198,7 @@
              }
              List<User> userList = userRes.findAll(usersids);
              for (User user : userList) {
-                 UserProxy.attachOrgansPropertiesForUser(user);
+                 userProxy.attachOrgansPropertiesForUser(user);
                  for (final AgentStatus as : agentStatusList) {
                      if (StringUtils.equals(as.getAgentno(), user.getId())) {
                          user.setAgentStatus(as);

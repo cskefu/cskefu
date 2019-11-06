@@ -85,7 +85,7 @@ public class AgentAuditController extends Handler {
     private ServiceSummaryRepository serviceSummaryRes;
 
     @Autowired
-    private StatusEventRepository statusEventRes;
+    private UserProxy userProxy;
 
     @Autowired
     private OnlineUserRepository onlineUserRes;
@@ -121,7 +121,8 @@ public class AgentAuditController extends Handler {
             HttpServletRequest request,
             @Valid final String skill,
             @Valid final String agentno,
-            @Valid String sort) {
+            @Valid String sort
+    ) {
         final String orgi = super.getOrgi(request);
         final User logined = super.getUser(request);
         logger.info("[index] skill {}, agentno {}, logined {}", skill, agentno, logined.getId());
@@ -192,6 +193,38 @@ public class AgentAuditController extends Handler {
         return view;
     }
 
+    @RequestMapping("/query")
+    @Menu(type = "apps", subtype = "cca")
+    public ModelAndView query(HttpServletRequest request, String skill, String agentno) {
+        ModelAndView view = request(super.createRequestPageTempletResponse("/apps/cca/chatusers"));
+
+        final String orgi = super.getOrgi(request);
+        final User logined = super.getUser(request);
+
+        Sort defaultSort = new Sort(Sort.Direction.DESC, "status");
+
+        // 坐席对话列表
+        List<AgentUser> agentUsers;
+
+        if (StringUtils.isBlank(skill) && StringUtils.isBlank(agentno)) {
+            agentUsers = agentUserRes.findByOrgiAndStatusAndAgentnoIsNot(
+                    orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), logined.getId(), defaultSort);
+        } else if (StringUtils.isNotBlank(skill) && StringUtils.isNotBlank(agentno)) {
+            agentUsers = agentUserRes.findByOrgiAndStatusAndSkillAndAgentno(
+                    orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), skill, agentno, defaultSort);
+        } else if (StringUtils.isNotBlank(skill)) {
+            agentUsers = agentUserRes.findByOrgiAndStatusAndSkillAndAgentnoIsNot(
+                    orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), skill, agentno, defaultSort);
+        } else {
+            // agent is not Blank
+            agentUsers = agentUserRes.findByOrgiAndStatusAndAgentno(
+                    orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), agentno, defaultSort);
+        }
+
+        view.addObject("agentUserList", agentUsers);
+
+        return view;
+    }
 
     @RequestMapping("/agentusers")
     @Menu(type = "apps", subtype = "cca")
@@ -216,7 +249,8 @@ public class AgentAuditController extends Handler {
             ModelMap map,
             HttpServletRequest request,
             String id,
-            String channel) throws IOException, TemplateException {
+            String channel
+    ) throws IOException, TemplateException {
         String mainagentuser = "/apps/cca/mainagentuser";
         if (channel.equals("phone")) {
             mainagentuser = "/apps/cca/mainagentuser_callout";
@@ -247,8 +281,11 @@ public class AgentAuditController extends Handler {
             view.addObject(
                     "agentUserMessageList",
                     this.chatMessageRepository.findByUsessionAndOrgi(agentUser.getUserid(), orgi,
-                            new PageRequest(0, 20, Sort.Direction.DESC,
-                                    "updatetime")));
+                                                                     new PageRequest(0, 20, Sort.Direction.DESC,
+                                                                                     "updatetime"
+                                                                     )
+                    )
+            );
             AgentService agentService = null;
             if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
                 agentService = this.agentServiceRes.findOne(agentUser.getAgentserviceid());
@@ -277,10 +314,11 @@ public class AgentAuditController extends Handler {
 
                 view.addObject("serviceCount", Integer
                         .valueOf(this.agentServiceRes
-                                .countByUseridAndOrgiAndStatus(agentUser
-                                                .getUserid(), orgi,
-                                        MainContext.AgentUserStatusEnum.END
-                                                .toString())));
+                                         .countByUseridAndOrgiAndStatus(agentUser
+                                                                                .getUserid(), orgi,
+                                                                        MainContext.AgentUserStatusEnum.END
+                                                                                .toString()
+                                         )));
             }
 
             SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(super.getOrgi(request));
@@ -314,7 +352,8 @@ public class AgentAuditController extends Handler {
             final @Valid String userid,
             final @Valid String agentserviceid,
             final @Valid String agentnoid,
-            final @Valid String agentuserid) {
+            final @Valid String agentuserid
+    ) {
         logger.info("[transfer] userId {}, agentUser {}", userid, agentuserid);
         final String orgi = super.getOrgi(request);
         final User logined = super.getUser(request);
@@ -347,7 +386,7 @@ public class AgentAuditController extends Handler {
             for (final User o : userList) {
                 o.setAgentStatus(agentStatusMap.get(o.getId()));
                 // find user's skills
-                UserProxy.attachOrgansPropertiesForUser(o);
+                userProxy.attachOrgansPropertiesForUser(o);
             }
 
             map.addAttribute("userList", userList);
@@ -378,7 +417,8 @@ public class AgentAuditController extends Handler {
             ModelMap map,
             HttpServletRequest request,
             @Valid String agentnoid,
-            @Valid String organ) {
+            @Valid String organ
+    ) {
         final String orgi = super.getOrgi(request);
         if (StringUtils.isNotBlank(organ)) {
             List<String> usersids = new ArrayList<String>();
@@ -392,7 +432,7 @@ public class AgentAuditController extends Handler {
             }
             List<User> userList = userRes.findAll(usersids);
             for (User user : userList) {
-                UserProxy.attachOrgansPropertiesForUser(user);
+                userProxy.attachOrgansPropertiesForUser(user);
                 for (final AgentStatus as : agentStatusList) {
                     if (StringUtils.equals(as.getAgentno(), user.getId())) {
                         user.setAgentStatus(as);
@@ -428,7 +468,8 @@ public class AgentAuditController extends Handler {
             @Valid final String agentuserid,    // 坐席访客ID
             @Valid final String currentAgentnoid,
             @Valid final String agentno,   // 会话转接给下一个坐席
-            @Valid final String memo) throws CSKefuException {
+            @Valid final String memo
+    ) throws CSKefuException {
         final String currentAgentno = currentAgentnoid; // 当前会话坐席的agentno
 
         final String orgi = super.getOrgi(request);
@@ -488,7 +529,8 @@ public class AgentAuditController extends Handler {
                                 MainContext.MessageType.STATUS,
                                 agentUser.getUserid(),
                                 outMessage,
-                                true);
+                                true
+                        );
                     }
 
                     // 通知转接消息给新坐席
@@ -497,7 +539,8 @@ public class AgentAuditController extends Handler {
                     peerSyncIM.send(
                             MainContext.ReceiverType.AGENT, MainContext.ChannelType.WEBIM,
                             agentUser.getAppid(), MainContext.MessageType.NEW, agentService.getAgentno(),
-                            outMessage, true);
+                            outMessage, true
+                    );
 
                 } catch (Exception ex) {
                     logger.error("[transfersave]", ex);

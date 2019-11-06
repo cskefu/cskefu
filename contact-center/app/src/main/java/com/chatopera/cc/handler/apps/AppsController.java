@@ -70,6 +70,9 @@ public class AppsController extends Handler {
     @Autowired
     private Cache cache;
 
+    @Autowired
+    private UserProxy userProxy;
+
     @RequestMapping({"/apps/content"})
     @Menu(type = "apps", subtype = "content")
     public ModelAndView content(ModelMap map, HttpServletRequest request, @Valid String msg) {
@@ -90,7 +93,7 @@ public class AppsController extends Handler {
                         Sort.Direction.DESC,
                         "createtime"
                 )
-        );
+                                                                                 );
 
         final long msec = System.currentTimeMillis();
         final List<String> contactIds = new ArrayList<String>();
@@ -136,27 +139,59 @@ public class AppsController extends Handler {
 
     private void aggValues(ModelMap map, HttpServletRequest request) {
         map.put("agentReport", AutomaticServiceDist.getAgentReport(super.getOrgi(request)));
-        map.put("webIMReport", MainUtils.getWebIMReport(userEventRes.findByOrgiAndCreatetimeRange(super.getOrgi(request), MainUtils.getStartTime(), MainUtils.getEndTime())));
+        map.put(
+                "webIMReport", MainUtils.getWebIMReport(
+                        userEventRes.findByOrgiAndCreatetimeRange(super.getOrgi(request), MainUtils.getStartTime(),
+                                                                  MainUtils.getEndTime())));
 
         // TODO 此处为什么不用agentReport中的agents？
         map.put("agents", getUsers(request).size());
 
-        map.put("webIMInvite", MainUtils.getWebIMInviteStatus(onlineUserRes.findByOrgiAndStatus(super.getOrgi(request), MainContext.OnlineUserStatusEnum.ONLINE.toString())));
+        map.put(
+                "webIMInvite", MainUtils.getWebIMInviteStatus(onlineUserRes.findByOrgiAndStatus(
+                        super.getOrgi(request),
+                        MainContext.OnlineUserStatusEnum.ONLINE.toString())));
 
-        map.put("inviteResult", MainUtils.getWebIMInviteResult(onlineUserRes.findByOrgiAndAgentnoAndCreatetimeRange(super.getOrgi(request), super.getUser(request).getId(), MainUtils.getStartTime(), MainUtils.getEndTime())));
+        map.put(
+                "inviteResult", MainUtils.getWebIMInviteResult(
+                        onlineUserRes.findByOrgiAndAgentnoAndCreatetimeRange(
+                                super.getOrgi(request),
+                                super.getUser(request).getId(),
+                                MainUtils.getStartTime(),
+                                MainUtils.getEndTime())));
 
-        map.put("agentUserCount", onlineUserRes.countByAgentForAgentUser(super.getOrgi(request), MainContext.AgentUserStatusEnum.INSERVICE.toString(), super.getUser(request).getId(), MainUtils.getStartTime(), MainUtils.getEndTime()));
+        map.put(
+                "agentUserCount", onlineUserRes.countByAgentForAgentUser(
+                        super.getOrgi(request),
+                        MainContext.AgentUserStatusEnum.INSERVICE.toString(),
+                        super.getUser(request).getId(),
+                        MainUtils.getStartTime(),
+                        MainUtils.getEndTime()));
 
-        map.put("agentServicesCount", onlineUserRes.countByAgentForAgentUser(super.getOrgi(request), MainContext.AgentUserStatusEnum.END.toString(), super.getUser(request).getId(), MainUtils.getStartTime(), MainUtils.getEndTime()));
+        map.put(
+                "agentServicesCount", onlineUserRes.countByAgentForAgentUser(
+                        super.getOrgi(request),
+                        MainContext.AgentUserStatusEnum.END.toString(),
+                        super.getUser(request).getId(),
+                        MainUtils.getStartTime(),
+                        MainUtils.getEndTime()));
 
-        map.put("agentServicesAvg", onlineUserRes.countByAgentForAvagTime(super.getOrgi(request), MainContext.AgentUserStatusEnum.END.toString(), super.getUser(request).getId(), MainUtils.getStartTime(), MainUtils.getEndTime()));
+        map.put(
+                "agentServicesAvg", onlineUserRes.countByAgentForAvagTime(
+                        super.getOrgi(request),
+                        MainContext.AgentUserStatusEnum.END.toString(),
+                        super.getUser(request).getId(),
+                        MainUtils.getStartTime(),
+                        MainUtils.getEndTime()));
 
     }
 
     @RequestMapping({"/apps/onlineuser"})
     @Menu(type = "apps", subtype = "onlineuser")
     public ModelAndView onlineuser(ModelMap map, HttpServletRequest request) {
-        Page<OnlineUser> onlineUserList = this.onlineUserRes.findByOrgiAndStatus(super.getOrgi(request), MainContext.OnlineUserStatusEnum.ONLINE.toString(), new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
+        Page<OnlineUser> onlineUserList = this.onlineUserRes.findByOrgiAndStatus(
+                super.getOrgi(request), MainContext.OnlineUserStatusEnum.ONLINE.toString(),
+                new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
         List<String> ids = new ArrayList<String>();
         for (OnlineUser onlineUser : onlineUserList.getContent()) {
             onlineUser.setBetweentime((int) (System.currentTimeMillis() - onlineUser.getLogintime().getTime()));
@@ -194,6 +229,8 @@ public class AppsController extends Handler {
     @Menu(type = "apps", subtype = "content")
     public ModelAndView profile(ModelMap map, HttpServletRequest request, @Valid User user, @Valid String index) {
         User tempUser = userRes.getOne(user.getId());
+        final User logined = super.getUser(request);
+
         if (tempUser != null) {
             String msg = validUserUpdate(user, tempUser);
             if (StringUtils.isNotBlank(msg)) {
@@ -206,8 +243,8 @@ public class AppsController extends Handler {
             tempUser.setEmail(user.getEmail());
             tempUser.setMobile(user.getMobile());
 
-            if (super.getUser(request).isSuperuser()) {
-                // 作为超级管理员，强制设置为坐席
+            if (logined.isAdmin()) {
+                // 作为管理员，强制设置为坐席
                 tempUser.setAgent(true);
             } else {
                 tempUser.setAgent(user.isAgent());
@@ -231,9 +268,11 @@ public class AppsController extends Handler {
             super.setUser(request, u);
             //切换成非坐席 判断是否坐席 以及 是否有对话
             if (!user.isAgent()) {
-                AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig((super.getUser(request)).getId(), super.getOrgi(request));
+                AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
+                        (super.getUser(request)).getId(), super.getOrgi(request));
 
-                if (!(agentStatus == null && cache.getInservAgentUsersSizeByAgentnoAndOrgi(super.getUser(request).getId(), super.getOrgi(request)) == 0)) {
+                if (!(agentStatus == null && cache.getInservAgentUsersSizeByAgentnoAndOrgi(
+                        super.getUser(request).getId(), super.getOrgi(request)) == 0)) {
                     if (StringUtils.isBlank(index)) {
                         return request(super.createRequestPageTempletResponse("redirect:/apps/content.html?msg=t1"));
                     }
@@ -291,7 +330,7 @@ public class AppsController extends Handler {
                     organIdList.add(rel.getSkillid());
                 }
             }
-            userList = UserProxy.findByOrganInAndAgentAndDatastatus(organIdList, true, false);
+            userList = userProxy.findByOrganInAndAgentAndDatastatus(organIdList, true, false);
         } else {
             userList = userRes.findByOrgiAndAgentAndDatastatus(super.getOrgi(request), true, false);
         }

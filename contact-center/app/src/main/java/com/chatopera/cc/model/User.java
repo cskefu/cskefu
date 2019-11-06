@@ -51,9 +51,8 @@ public class User implements java.io.Serializable {
     private String birthday;
     private String nickname;
     private String secureconf = "5";
-    private String usertype; // 0 Admin User  : !0  Other User
-
-    private boolean superuser = false;    //是否是超级管理员
+    private boolean admin;                 // 是否是管理员
+    private boolean superadmin = false;    // 是否是超级管理员
 
     private String orgi;
     private String orgid;
@@ -265,16 +264,6 @@ public class User implements java.io.Serializable {
     }
 
 
-    public String getUsertype() {
-        return usertype;
-    }
-
-
-    public void setUsertype(String usertype) {
-        this.usertype = usertype;
-    }
-
-
     public String getOrgi() {
         return orgi;
     }
@@ -470,8 +459,20 @@ public class User implements java.io.Serializable {
         this.callcenter = callcenter;
     }
 
-    public boolean isSuperuser() {
-        return superuser;
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
+    public boolean isSuperadmin() {
+        return superadmin;
+    }
+
+    public void setSuperadmin(boolean superadmin) {
+        this.superadmin = superadmin;
     }
 
     @Transient
@@ -481,10 +482,6 @@ public class User implements java.io.Serializable {
 
     public void setRoleAuthMap(Map<String, Object> roleAuthMap) {
         this.roleAuthMap = roleAuthMap;
-    }
-
-    public void setSuperuser(boolean superuser) {
-        this.superuser = superuser;
     }
 
     public String getOrgid() {

@@ -19,10 +19,7 @@ package com.chatopera.cc.handler.apps;
 
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.handler.Handler;
-import com.chatopera.cc.model.IMGroup;
-import com.chatopera.cc.model.IMGroupUser;
-import com.chatopera.cc.model.RecentUser;
-import com.chatopera.cc.model.User;
+import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.socketio.client.NettyClients;
@@ -65,6 +62,9 @@ public class EntIMController extends Handler {
     @Autowired
     private RecentUserRepository recentUserRes;
 
+    @Autowired
+    private UserProxy userProxy;
+
     @RequestMapping("/index")
     @Menu(type = "im", subtype = "entim", access = false)
     public ModelAndView index(HttpServletRequest request, HttpServletResponse response) {
@@ -74,7 +74,7 @@ public class EntIMController extends Handler {
 
         // TODO: 优化性能
         for (User u : users) {
-            UserProxy.attachOrgansPropertiesForUser(u);
+            userProxy.attachOrgansPropertiesForUser(u);
         }
 
         view.addObject("userList", users);
@@ -108,7 +108,14 @@ public class EntIMController extends Handler {
     @Menu(type = "im", subtype = "entim", access = false)
     public ModelAndView chat(HttpServletRequest request, HttpServletResponse response, @Valid String userid) {
         ModelAndView view = request(super.createEntIMTempletResponse("/apps/entim/chat"));
-        view.addObject("entimuser", userRes.findByIdAndOrgi(userid, super.getOrgi(request)));
+        User entImUser = userRes.findByIdAndOrgi(userid, super.getOrgi(request));
+
+        if (entImUser != null) {
+            userProxy.attachOrgansPropertiesForUser(entImUser);
+            view.addObject("organs", entImUser.getOrgans().values());
+        }
+
+        view.addObject("entimuser", entImUser);
         view.addObject("contextid", MainUtils.genNewID(super.getUser(request).getId(), userid));
         view.addObject("online", NettyClients.getInstance().getEntIMClientsNum(userid) > 0);
 
@@ -179,13 +186,13 @@ public class EntIMController extends Handler {
     public ModelAndView user(HttpServletRequest request, HttpServletResponse response, @Valid String id) {
         ModelAndView view = request(super.createEntIMTempletResponse("/apps/entim/group/user"));
         User logined = super.getUser(request);
-        UserProxy.attachOrgansPropertiesForUser(logined);
+        userProxy.attachOrgansPropertiesForUser(logined);
 
         // TODO: 优化性能
-        List<String> organIds = UserProxy.findOrgansByUserid(logined.getId());
-        List<User> users = UserProxy.findByOrganInAndDatastatus(organIds, false);
+        List<String> organIds = userProxy.findOrgansByUserid(logined.getId());
+        List<User> users = userProxy.findByOrganInAndDatastatus(organIds, false);
         for (User u : users) {
-            UserProxy.attachOrgansPropertiesForUser(u);
+            userProxy.attachOrgansPropertiesForUser(u);
         }
 
         IMGroup imGroup = imGroupRes.findById(id);

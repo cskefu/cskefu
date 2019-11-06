@@ -69,6 +69,7 @@ public class OnlineUserProxy {
     private static AgentUserProxy agentUserProxy;
     private static AgentUserContactsRepository agentUserContactsRes;
     private static ContactsRepository contactsRes;
+    private static UserProxy userProxy;
 
     // Compare two onlineUser by createtime
     public final static Comparator<OnlineUser> compareByCreateTime = (OnlineUser o1, OnlineUser o2) -> o1.getCreatetime().compareTo(
@@ -362,7 +363,7 @@ public class OnlineUserProxy {
                     for (User user : agentList) {
                         // TODO 此处的查询处理比较多，应使用缓存
                         // 一个用户可隶属于多个组织
-                        UserProxy.attachOrgansPropertiesForUser(user);
+                        getUserProxy().attachOrgansPropertiesForUser(user);
                         for (OrgiSkillRel rel : orgiSkillRelList) {
                             if (user.getOrgans().size() > 0 && user.inAffiliates(rel.getSkillid())) {
                                 agentTempList.add(user);
@@ -1556,5 +1557,12 @@ public class OnlineUserProxy {
             orgiSkillRelRes = MainContext.getContext().getBean(OrgiSkillRelRepository.class);
         }
         return orgiSkillRelRes;
+    }
+
+    public static UserProxy getUserProxy() {
+        if (userProxy == null) {
+            userProxy = MainContext.getContext().getBean(UserProxy.class);
+        }
+        return userProxy;
     }
 }

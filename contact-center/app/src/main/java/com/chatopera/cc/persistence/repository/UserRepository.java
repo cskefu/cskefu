@@ -17,6 +17,7 @@
 package com.chatopera.cc.persistence.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.chatopera.cc.model.User;
 import org.springframework.data.domain.Page;
@@ -28,14 +29,12 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends JpaRepository<User, String> {
     User findByIdAndOrgi(String paramString, String orgi);
-
     User findById(String id);
-
     User findByEmailAndDatastatus(String email, boolean datastatus);
-
     User findByMobileAndDatastatus(String mobile, boolean datastatus);
 
-    List<User> findBySipaccountAndDatastatus(String sipaccount, boolean datastatus);
+    @Query(value = "SELECT * FROM cs_user WHERE sipaccount = ?1 AND DATASTATUS = ?2 LIMIT 1", nativeQuery = true)
+    Optional<User> findOneBySipaccountAndDatastatus(String sipaccount, boolean datastatus);
 
     @Query(value = "SELECT u FROM User u WHERE sipaccount <> '' AND datastatus = 0")
     List<User> findBySipaccountIsNotNullAndDatastatusIsFalse();
@@ -46,31 +45,25 @@ public interface UserRepository extends JpaRepository<User, String> {
     List<User> findAllByCallcenterIsTrueAndDatastatusIsFalseAndIdIn(@Param("users") List<String> users);
 
     User findByUsernameAndDatastatus(String username, boolean datastatus);
-
     User findByUsernameAndPasswordAndDatastatus(String username, String password, boolean datastatus);
-
     User findByMobileAndPasswordAndDatastatus(String mobile, String password, boolean datastatus);
-
     User findByUsernameAndOrgi(String paramString, String orgi);
-
     User findByUsernameAndPassword(String username, String password);
-
     Page<User> findByOrgi(String orgi, Pageable paramPageable);
 
+//    // 查询超级管理员
+//    List<User> findBySuperadminAndOrgi(boolean isSuperadmin, final String orgi);
+
     // 查询所有管理员
-    List<User> findBySuperuserAndOrgi(boolean isSuperuser, final String orgi);
-
+    List<User> findByAdminAndOrgi(boolean admin, final String orgi);
     List<User> findByOrgi(String orgi);
-
     Page<User> findByDatastatusAndOrgi(boolean datastatus, String orgi, Pageable paramPageable);
-
     Page<User> findByDatastatusAndOrgiAndUsernameLike(boolean datastatus, String orgi, String username, Pageable paramPageable);
-
     Page<User> findByIdAndOrgi(String id, String orgi, Pageable paramPageable);
-
-    List<User> findByOrgiAndDatastatusAndIdIn(String orgi,
-                                              boolean datastatus,
-                                              List<String> users);
+    List<User> findByOrgiAndDatastatusAndIdIn(
+            String orgi,
+            boolean datastatus,
+            List<String> users);
 
     @Query(value = "SELECT s.sipaccount from User s " +
             "WHERE " +
@@ -78,9 +71,10 @@ public interface UserRepository extends JpaRepository<User, String> {
             "s.datastatus = :datastatus AND " +
             "s.id IN :users AND " +
             "s.orgi = :orgi")
-    List<String> findSipsByDatastatusAndOrgiAndIdIn(@Param("datastatus") boolean datastatus,
-                                                    @Param("orgi") String orgi,
-                                                    @Param("users") List<String> users);
+    List<String> findSipsByDatastatusAndOrgiAndIdIn(
+            @Param("datastatus") boolean datastatus,
+            @Param("orgi") String orgi,
+            @Param("users") List<String> users);
 
     List<User> findByOrgiAndDatastatus(final String orgi, final boolean datastatus);
 
@@ -88,31 +82,40 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     List<User> findByOrgiAndAgentAndDatastatus(final String orgi, final boolean agent, final boolean status);
 
-    long countByAgentAndDatastatusAndIdIn(final boolean agent,
-                                          final boolean datastatus,
-                                          final List<String> users);
+    long countByAgentAndDatastatusAndIdIn(
+            final boolean agent,
+            final boolean datastatus,
+            final List<String> users);
 
     List<User> findAll(Specification<User> spec);
 
 
-    Page<User> findByDatastatusAndOrgiAndOrgid(boolean b, String orgi, String orgid,
-                                               Pageable pageRequest);
+    Page<User> findByDatastatusAndOrgiAndOrgid(
+            boolean b, String orgi, String orgid,
+            Pageable pageRequest);
+
+    Page<User> findByDatastatusAndOrgiAndOrgidAndSuperadminNot(
+            boolean datastatus, String orgi, String orgid, boolean superadmin,
+            Pageable pageRequest);
+
 
 
     List<User> findByOrgiAndDatastatusAndOrgid(String orgi, boolean b, String orgid);
 
 
-    Page<User> findByDatastatusAndOrgiAndOrgidAndUsernameLike(boolean Datastatus,
-                                                              final String orgi,
-                                                              final String orgid,
-                                                              final String username,
-                                                              Pageable pageRequest);
+    Page<User> findByDatastatusAndOrgiAndOrgidAndUsernameLike(
+            boolean Datastatus,
+            final String orgi,
+            final String orgid,
+            final String username,
+            Pageable pageRequest);
 
 
-    Page<User> findByAgentAndDatastatusAndIdIn(boolean agent,
-                                               boolean datastatus,
-                                               final List<String> users,
-                                               Pageable pageRequest);
+    Page<User> findByAgentAndDatastatusAndIdIn(
+            boolean agent,
+            boolean datastatus,
+            final List<String> users,
+            Pageable pageRequest);
 
     List<User> findByAgentAndDatastatusAndIdIn(boolean agent, boolean datastatus, final List<String> users);
 
@@ -120,9 +123,10 @@ public interface UserRepository extends JpaRepository<User, String> {
     List<User> findByDatastatusAndIdIn(boolean datastatus, List<String> users);
 
 
-    Page<User> findByDatastatusAndUsernameLikeAndIdIn(boolean datastatus,
-                                                      final String username,
-                                                      final List<String> users, Pageable pageRequest);
+    Page<User> findByDatastatusAndUsernameLikeAndIdIn(
+            boolean datastatus,
+            final String username,
+            final List<String> users, Pageable pageRequest);
 
     List<User> findByOrgidAndAgentAndDatastatus(String orgid, boolean agent, boolean datastatus);
 

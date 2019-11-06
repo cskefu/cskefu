@@ -107,16 +107,16 @@ word-break: break-all;"><#if roleData??>${roleData.name!''}<#else>坐席组</#if
 	layui.use('layer', function(){
 		var layer = layui.layer
 	<#if msg?? && msg == 'admin_role_save_success'>
-		layer.msg('添加成功',{icon: 1, offset: 'rb', time: 1000})
+		layer.msg('添加成功',{icon: 1, time: 1000})
 	</#if>
 	<#if msg?? && msg == 'admin_role_save_exist'>
-		layer.msg('角色添加失败，角色已存在',{icon: 2, offset: 'rb', time: 3000})
+		layer.msg('角色添加失败，角色已存在',{icon: 2, time: 3000})
 	</#if>
 	<#if msg?? && msg == 'admin_role_update_success'>
-		layer.msg('角色修改成功',{icon: 1, offset: 'rb', time: 1000})
+		layer.msg('角色修改成功',{icon: 1, time: 1000})
 	</#if>
 	<#if msg?? && msg == 'admin_role_update_not_exist'>
-		layer.msg('角色修改失败',{icon: 2, offset: 'rb', time: 3000})
+		layer.msg('角色修改失败',{icon: 2, time: 3000})
 	</#if>
 	});
 

@@ -43,6 +43,9 @@ import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 public class CallCenterUtils {
 
+
+    private static UserProxy userProxy;
+
     /**
      * @param extno
      * @param sipTrunkRes
@@ -108,7 +111,8 @@ public class CallCenterUtils {
         ArrayList<String> organList = new ArrayList<String>();
         if (userRole.size() > 0) {
             for (UserRole userTemp : userRole) {
-                UKefuCallOutRole roleOrgan = callOutRoleRes.findByOrgiAndRoleid(user.getOrgi(),
+                UKefuCallOutRole roleOrgan = callOutRoleRes.findByOrgiAndRoleid(
+                        user.getOrgi(),
                         userTemp.getRole().getId());
                 if (roleOrgan != null) {
                     if (StringUtils.isNotBlank(roleOrgan.getOrganid())) {
@@ -122,7 +126,7 @@ public class CallCenterUtils {
             }
         }
 
-        UserProxy.attachOrgansPropertiesForUser(user);
+        getUserProxy().attachOrgansPropertiesForUser(user);
         if (user.getAffiliates().size() > 0) {
             for (final String organ : user.getAffiliates()) {
                 organList.add(organ);
@@ -149,8 +153,9 @@ public class CallCenterUtils {
 
         List<JobDetail> batchList = batchRes.findAll(new Specification<JobDetail>() {
             @Override
-            public Predicate toPredicate(Root<JobDetail> root, CriteriaQuery<?> query,
-                                         CriteriaBuilder cb) {
+            public Predicate toPredicate(
+                    Root<JobDetail> root, CriteriaQuery<?> query,
+                    CriteriaBuilder cb) {
                 List<Predicate> list = new ArrayList<Predicate>();
                 In<Object> in = cb.in(root.get("organ"));
 
@@ -192,8 +197,9 @@ public class CallCenterUtils {
 
         List<FormFilter> formFilterList = filterRes.findAll(new Specification<FormFilter>() {
             @Override
-            public Predicate toPredicate(Root<FormFilter> root, CriteriaQuery<?> query,
-                                         CriteriaBuilder cb) {
+            public Predicate toPredicate(
+                    Root<FormFilter> root, CriteriaQuery<?> query,
+                    CriteriaBuilder cb) {
                 List<Predicate> list = new ArrayList<Predicate>();
                 In<Object> in = cb.in(root.get("organ"));
 
@@ -234,8 +240,9 @@ public class CallCenterUtils {
 
         List<JobDetail> activityList = batchRes.findAll(new Specification<JobDetail>() {
             @Override
-            public Predicate toPredicate(Root<JobDetail> root, CriteriaQuery<?> query,
-                                         CriteriaBuilder cb) {
+            public Predicate toPredicate(
+                    Root<JobDetail> root, CriteriaQuery<?> query,
+                    CriteriaBuilder cb) {
                 List<Predicate> list = new ArrayList<Predicate>();
                 In<Object> in = cb.in(root.get("organ"));
 
@@ -278,7 +285,8 @@ public class CallCenterUtils {
         List<JobDetail> activityList = CallCenterUtils.getActivityList(batchRes, userRoleRes, callOutRoleRes, user);
         List<SaleStatus> salestatusList = new ArrayList<>();
         for (JobDetail act : activityList) {
-            List<SaleStatus> salestastus = MainContext.getContext().getBean(SaleStatusRepository.class).findByOrgiAndActivityid(user.getOrgi(), act.getDicid());
+            List<SaleStatus> salestastus = MainContext.getContext().getBean(
+                    SaleStatusRepository.class).findByOrgiAndActivityid(user.getOrgi(), act.getDicid());
             salestatusList.addAll(salestastus);
 
         }
@@ -292,14 +300,24 @@ public class CallCenterUtils {
         map.put("formFilterList", CallCenterUtils.getFormFilterList(filterRes, userRoleRes, callOutRoleRes, user));
         if (StringUtils.isBlank(ownerdept)) {
 
-            map.addAttribute("owneruserList", UserProxy.findByOrganAndOrgiAndDatastatus(Constants.CSKEFU_SYSTEM_NO_DAT, user.getOrgi(), false));
+            map.addAttribute(
+                    "owneruserList",
+                    getUserProxy().findByOrganAndOrgiAndDatastatus(
+                            Constants.CSKEFU_SYSTEM_NO_DAT, user.getOrgi(), false));
         } else {
-            map.addAttribute("owneruserList", UserProxy.findByOrganAndOrgiAndDatastatus(ownerdept, user.getOrgi(), false));
+            map.addAttribute(
+                    "owneruserList", getUserProxy().findByOrganAndOrgiAndDatastatus(ownerdept, user.getOrgi(), false));
 
         }
-        map.addAttribute("skillGroups", organRes.findAll(CallCenterUtils.getAuthOrgan(userRoleRes, callOutRoleRes, user)));
-        map.put("taskList", MainContext.getContext().getBean(UKefuCallOutTaskRepository.class).findByActidAndOrgi(actid, user.getOrgi()));
-        map.put("allUserList", MainContext.getContext().getBean(UserRepository.class).findByOrgiAndDatastatus(user.getOrgi(), false));
+        map.addAttribute(
+                "skillGroups", organRes.findAll(CallCenterUtils.getAuthOrgan(userRoleRes, callOutRoleRes, user)));
+        map.put(
+                "taskList", MainContext.getContext().getBean(UKefuCallOutTaskRepository.class).findByActidAndOrgi(
+                        actid,
+                        user.getOrgi()));
+        map.put(
+                "allUserList",
+                MainContext.getContext().getBean(UserRepository.class).findByOrgiAndDatastatus(user.getOrgi(), false));
         //JobDetail act = batchRes.findByIdAndOrgi(actid, user.getOrgi());
         //if(act != null){
         //	map.put("salestatusList",MainContext.getContext().getBean(SaleStatusRepository.class).findByOrgiAndActivityid(user.getOrgi(), act.getDicid()));
@@ -370,7 +388,8 @@ public class CallCenterUtils {
 
         UKefuCallOutTaskRepository callOutTaskRes = MainContext.getContext().getBean(UKefuCallOutTaskRepository.class);
         JobDetailRepository batchRes = MainContext.getContext().getBean(JobDetailRepository.class);
-        UKefuCallOutFilterRepository callOutFilterRes = MainContext.getContext().getBean(UKefuCallOutFilterRepository.class);
+        UKefuCallOutFilterRepository callOutFilterRes = MainContext.getContext().getBean(
+                UKefuCallOutFilterRepository.class);
 
         //修改，拨打任务
         if (task != null) {
@@ -405,7 +424,8 @@ public class CallCenterUtils {
     public static void getAgentReorgannum(UKefuCallOutTask task, UKefuCallOutFilter ukefuCallOutFilter) {
 
         UKefuCallOutTaskRepository callOutTaskRes = MainContext.getContext().getBean(UKefuCallOutTaskRepository.class);
-        UKefuCallOutFilterRepository callOutFilterRes = MainContext.getContext().getBean(UKefuCallOutFilterRepository.class);
+        UKefuCallOutFilterRepository callOutFilterRes = MainContext.getContext().getBean(
+                UKefuCallOutFilterRepository.class);
 
         //修改，拨打任务
         if (task != null) {
@@ -435,7 +455,8 @@ public class CallCenterUtils {
 
         UKefuCallOutTaskRepository callOutTaskRes = MainContext.getContext().getBean(UKefuCallOutTaskRepository.class);
         JobDetailRepository batchRes = MainContext.getContext().getBean(JobDetailRepository.class);
-        UKefuCallOutFilterRepository callOutFilterRes = MainContext.getContext().getBean(UKefuCallOutFilterRepository.class);
+        UKefuCallOutFilterRepository callOutFilterRes = MainContext.getContext().getBean(
+                UKefuCallOutFilterRepository.class);
 
         //修改，拨打任务
         if (task != null) {
@@ -476,5 +497,10 @@ public class CallCenterUtils {
         return dataList.getContent().size();
     }
 
-
+    public static UserProxy getUserProxy() {
+        if (userProxy == null) {
+            userProxy = MainContext.getContext().getBean(UserProxy.class);
+        }
+        return userProxy;
+    }
 }

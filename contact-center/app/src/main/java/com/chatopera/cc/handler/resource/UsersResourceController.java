@@ -50,6 +50,9 @@ public class UsersResourceController extends Handler {
     @Autowired
     private OrganRepository organRes;
 
+    @Autowired
+    private UserProxy userProxy;
+
     @RequestMapping("/users")
     @Menu(type = "res", subtype = "users")
     public ModelAndView add(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String id) {
@@ -89,7 +92,7 @@ public class UsersResourceController extends Handler {
                     organIdList.add(rel.getSkillid());
                 }
             }
-            list = UserProxy.findByOrganInAndDatastatus(organIdList, false);
+            list = userProxy.findByOrganInAndDatastatus(organIdList, false);
         } else {
             list = userRes.findByOrgiAndDatastatus(super.getOrgi(request), false);
         }
@@ -116,7 +119,7 @@ public class UsersResourceController extends Handler {
                     organIdList.add(rel.getSkillid());
                 }
             }
-            list = UserProxy.findByOrganInAndDatastatusAndUsernameLike(organIdList, false, "%" + q + "%", new PageRequest(0, 10));
+            list = userProxy.findByOrganInAndDatastatusAndUsernameLike(organIdList, false, "%" + q + "%", new PageRequest(0, 10));
         } else {
             list = userRes.findByDatastatusAndOrgiAndOrgidAndUsernameLike(false, super.getOrgi(request), super.getOrgid(request), "%" + q + "%", new PageRequest(0, 10));
         }

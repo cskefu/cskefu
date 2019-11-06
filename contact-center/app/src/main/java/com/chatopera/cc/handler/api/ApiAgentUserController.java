@@ -168,7 +168,7 @@ public class ApiAgentUserController extends Handler {
                 final String userId = agentUser.getUserid();
 
                 // 检查权限
-                if ((!logined.isSuperuser()) && (!StringUtils.equals(
+                if ((!logined.isAdmin()) && (!StringUtils.equals(
                         agentUser.getAgentno(),
                         logined.getId())) && (!isTransPermissionAllowed(
                         agentAudits, logined))) {
@@ -286,7 +286,7 @@ public class ApiAgentUserController extends Handler {
         final AgentUser agentUser = agentUserRes.findByIdAndOrgi(payload.get("id").getAsString(), orgi);
         if (agentUser != null) {
             if ((StringUtils.equals(
-                    logined.getId(), agentUser.getAgentno()) || logined.isSuperuser())) {
+                    logined.getId(), agentUser.getAgentno()) || logined.isAdmin())) {
                 // 删除访客-坐席关联关系，包括缓存
                 try {
                     AutomaticServiceDist.deleteAgentUser(agentUser, orgi);

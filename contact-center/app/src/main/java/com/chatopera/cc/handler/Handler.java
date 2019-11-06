@@ -120,8 +120,8 @@ public class Handler {
         User u = getUser(request);
         if (u == null) {
             throw new CSKefuException("[esOrganFilter] 未能获取到登录用户。");
-        } else if (u.isSuperuser()) {
-            // 超级管理员, 查看任何数据
+        } else if (u.isAdmin()) {
+            // 管理员, 查看任何数据
             return true;
         } else {
             // 用户在部门中，通过部门过滤数据
@@ -145,7 +145,8 @@ public class Handler {
             String q = request.getParameter("q");
             q = q.replaceAll("(OR|AND|NOT|:|\\(|\\))", "");
             if (StringUtils.isNotBlank(q)) {
-                queryBuilder.must(QueryBuilders.boolQuery().must(new QueryStringQueryBuilder(q).defaultOperator(Operator.AND)));
+                queryBuilder.must(
+                        QueryBuilders.boolQuery().must(new QueryStringQueryBuilder(q).defaultOperator(Operator.AND)));
                 map.put("q", q);
             }
         }
@@ -188,12 +189,14 @@ public class Handler {
 
         RangeQueryBuilder rangeQuery = null;
         // 拨打时间区间查询
-        if (StringUtils.isNotBlank(request.getParameter("callbegin")) || StringUtils.isNotBlank(request.getParameter("callend"))) {
+        if (StringUtils.isNotBlank(request.getParameter("callbegin")) || StringUtils.isNotBlank(
+                request.getParameter("callend"))) {
 
             if (StringUtils.isNotBlank(request.getParameter("callbegin"))) {
                 try {
 
-                    rangeQuery = QueryBuilders.rangeQuery("calltime").from(MainUtils.dateFormate.parse(request.getParameter("callbegin")).getTime());
+                    rangeQuery = QueryBuilders.rangeQuery("calltime").from(
+                            MainUtils.dateFormate.parse(request.getParameter("callbegin")).getTime());
                 } catch (ParseException e) {
 
                     e.printStackTrace();
@@ -204,7 +207,8 @@ public class Handler {
                 try {
 
                     if (rangeQuery == null) {
-                        rangeQuery = QueryBuilders.rangeQuery("calltime").to(MainUtils.dateFormate.parse(request.getParameter("callend")).getTime());
+                        rangeQuery = QueryBuilders.rangeQuery("calltime").to(
+                                MainUtils.dateFormate.parse(request.getParameter("callend")).getTime());
                     } else {
                         rangeQuery.to(MainUtils.dateFormate.parse(request.getParameter("callend")).getTime());
                     }
@@ -218,12 +222,14 @@ public class Handler {
             map.put("callend", request.getParameter("callend"));
         }
         // 预约时间区间查询
-        if (StringUtils.isNotBlank(request.getParameter("apbegin")) || StringUtils.isNotBlank(request.getParameter("apend"))) {
+        if (StringUtils.isNotBlank(request.getParameter("apbegin")) || StringUtils.isNotBlank(
+                request.getParameter("apend"))) {
 
             if (StringUtils.isNotBlank(request.getParameter("apbegin"))) {
                 try {
 
-                    rangeQuery = QueryBuilders.rangeQuery("aptime").from(MainUtils.dateFormate.parse(request.getParameter("apbegin")).getTime());
+                    rangeQuery = QueryBuilders.rangeQuery("aptime").from(
+                            MainUtils.dateFormate.parse(request.getParameter("apbegin")).getTime());
                 } catch (ParseException e) {
 
                     e.printStackTrace();
@@ -234,7 +240,8 @@ public class Handler {
                 try {
 
                     if (rangeQuery == null) {
-                        rangeQuery = QueryBuilders.rangeQuery("aptime").to(MainUtils.dateFormate.parse(request.getParameter("apend")).getTime());
+                        rangeQuery = QueryBuilders.rangeQuery("aptime").to(
+                                MainUtils.dateFormate.parse(request.getParameter("apend")).getTime());
                     } else {
                         rangeQuery.to(MainUtils.dateFormate.parse(request.getParameter("apend")).getTime());
                     }
@@ -281,6 +288,7 @@ public class Handler {
      * 创建或从HTTP会话中查找到访客的User对象，该对象不在数据库中，属于临时会话。
      * 这个User很可能是打开一个WebIM访客聊天控件，随机生成用户名，之后和Contact关联
      * 这个用户可能关联一个OnlineUser，如果开始给TA分配坐席
+     *
      * @param request
      * @param userid
      * @param nickname
@@ -298,7 +306,8 @@ public class Handler {
             if (StringUtils.isNotBlank(nickname)) {
                 user.setUsername(nickname);
             } else {
-                Map<String, String> sessionMessage = cache.findOneSystemMapByIdAndOrgi(request.getSession().getId(), MainContext.SYSTEM_ORGI);
+                Map<String, String> sessionMessage = cache.findOneSystemMapByIdAndOrgi(
+                        request.getSession().getId(), MainContext.SYSTEM_ORGI);
                 if (sessionMessage != null) {
                     String struname = sessionMessage.get("username");
                     String strcname = sessionMessage.get("company_name");
@@ -327,7 +336,8 @@ public class Handler {
             if (StringUtils.isNotBlank(nickname)) {
                 user.setUsername(nickname);
             } else {
-                Map<String, String> sessionMessage = cache.findOneSystemMapByIdAndOrgi(sessionid, MainContext.SYSTEM_ORGI);
+                Map<String, String> sessionMessage = cache.findOneSystemMapByIdAndOrgi(
+                        sessionid, MainContext.SYSTEM_ORGI);
                 if (sessionMessage != null) {
                     String struname = sessionMessage.get("username");
                     String strcname = sessionMessage.get("company_name");

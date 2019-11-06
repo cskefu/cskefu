@@ -65,6 +65,7 @@ public class AgentEventHandler {
     private static AgentUserProxy agentUserProxy;
     private static AgentProxy agentProxy;
     private static AgentSessionProxy agentSessionProxy;
+    private static UserProxy userProxy;
 
     @OnConnect
     public void onConnect(SocketIOClient client) {
@@ -93,7 +94,7 @@ public class AgentEventHandler {
                 agentStatus.setConnected(true);
 
                 // 设置agentSkills
-                agentStatus.setSkills(UserProxy.getSkillsMapByAgentno(userid));
+                agentStatus.setSkills(getUserProxy().getSkillsMapByAgentno(userid));
 
                 getAgentStatusRes().save(agentStatus);
                 MainContext.getCache().putAgentStatusByOrgi(agentStatus, orgi);
@@ -199,7 +200,7 @@ public class AgentEventHandler {
                 return;
             }
 
-            final User supervisor = UserProxy.findOne(received.getSupervisorid());
+            final User supervisor = getUserProxy().findOne(received.getSupervisorid());
             final Date now = new Date();
 
             // 创建消息
@@ -355,4 +356,10 @@ public class AgentEventHandler {
         return agentSessionProxy;
     }
 
+    public static UserProxy getUserProxy() {
+        if (userProxy == null) {
+            userProxy = MainContext.getContext().getBean(UserProxy.class);
+        }
+        return userProxy;
+    }
 }

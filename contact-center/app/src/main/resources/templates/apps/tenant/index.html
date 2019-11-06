@@ -57,7 +57,7 @@
 							首页
 						</a>
 					</li>										
-					<#if (user?? && user.roleAuthMap["B02"]??   || user.usertype == "0")>
+					<#if (user?? && user.roleAuthMap["B02"]??   || user.admin)>
 					<li class="layui-nav-item ">
 						<a href="javascript:void(0)" onclick="return false;"  data-title="系统管理" data-href="/admin/content.html" class="iframe_btn" data-id="admin" data-type="tabAdd">
 							<i class="layui-icon" style="position: relative;">&#xe631;</i>
@@ -81,7 +81,7 @@
 		    <div class="content">
 		        <div class="organization-div">
 		            <#if organization??>
-		                <#if user?? && user.usertype == "0">
+		                <#if user?? && user.admin>
 		                	<span id="company-name">${organization.name!''}</span>
 		                	<a href="/apps/organization/edit.html?id=${organization.id!''}"  data-toggle="ajax" data-width="450" data-height="350" data-title="编辑" ><i class="layui-icon" 
 											style="font-size: 24px;float:left;margin-left:5px;color:#2bd99e">&#xe642;</i>
@@ -97,7 +97,7 @@
 			                        <img class="product-img" src="<#if tenant?? && tenant.tenantlogo??>/res/image.html?id=${tenant.tenantlogo?url}</#if>" onerror="javascript:this.src='/images/error.jpg';">  
 			                     <div class="ukefu-tenant-item-div2" 
 									style="font-weight: 400; position: absolute;">${tenant.tenantname!''}
-										<#if user?? && user.usertype == "0">
+										<#if user?? && user.admin>
 											<i class="layui-icon ukefu-bt-text-title" href="/apps/tenant/delete.html?id=${tenant.id!''}"  data-toggle="tip" data-title="删除" 
 											style="font-size: 24px;float:right;">&#xe640;</i>
 											<i class="layui-icon ukefu-bt-text-title"  href="/apps/tenant/edit.html?id=<#if tenant?? && tenant.id??>${tenant.id!''}</#if>" data-toggle="ajax" data-width="550" data-height="400" data-title="${systemConfig.namealias!''}编辑"
@@ -107,7 +107,7 @@
 									</a>
 			                    </div>
 						</#list> </#if>
-						<#if user?? && user.usertype == "0">
+						<#if user?? && user.admin>
 							<a href="/apps/tenant/add.html" data-toggle="ajax"
 									data-width="550" data-height="300"
 									data-title="${systemConfig.namealias!''}创建" class="ukefu-bt">

@@ -70,7 +70,7 @@
 					  </td>
 					  </#if>
 					  <td>
-					  	<#if user.usertype?? && user.usertype =="0">
+					  	<#if user.admin>
 					  		<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
 					  	</#if>
 					  </td>
@@ -79,7 +79,7 @@
 					  			<i class="layui-icon">&#xe642;</i>
 					  			编辑
 					  		</a>
-					  		<#if !(user.usertype?? && user.usertype == "0") && user.datastatus != true >
+					  		<#if !(user.admin) && user.datastatus != true >
 					  		<a href="/admin/user/delete.html?id=${user.id!''}" style="margin-left:10px;" data-toggle="tip" data-title="请确认是否删除记录？">
 					  			<i class="layui-icon" style="color:red;">&#x1006;</i>
 					  			删除
@@ -102,19 +102,19 @@
 	layui.use('layer', function(){
 	  var layer = layui.layer;
 	  <#if msg?? && msg == 'username_exist'>
-		layer.msg('用户名存在，请重新填写',{icon: 2, offset: 'rb', time: 3000})
+		layer.msg('用户名存在，请重新填写',{icon: 2, time: 3000})
 	  <#elseif msg?? && msg == 'email_exist'>
-		layer.msg('邮件存在，请重新填写',{icon: 2, offset: 'rb', time: 3000})
+		layer.msg('邮件存在，请重新填写',{icon: 2, time: 3000})
       <#elseif msg?? && msg == 'mobile_exist'>
-		layer.msg('手机存在，请重新填写',{icon: 2, offset: 'rb', time: 3000})
+		layer.msg('手机存在，请重新填写',{icon: 2, time: 3000})
       <#elseif msg?? && msg == 'sip_account_exist'>
-		layer.msg('SIP地址已经存在，请重新填写',{icon: 2, offset: 'rb', time: 3000})
+		layer.msg('SIP地址已经存在，请重新填写',{icon: 2, time: 3000})
       <#elseif msg?? && msg == 't1'>
-		layer.msg('当前用户坐席就绪或对话未结束，不能切换为非坐席',{icon: 2, offset: 'rb', time: 3000})
+		layer.msg('当前用户坐席就绪或对话未结束，不能切换为非坐席',{icon: 2, time: 3000})
 	  <#elseif msg?? && msg == 'new_user_success'>
-		layer.msg('新用户创建成功',{icon: 1, offset: 'rb', time: 1000})
+		layer.msg('新用户创建成功',{icon: 1, time: 1000})
 		<#elseif msg?? && msg == 'edit_user_success'>
-			layer.msg('用户编辑成功',{icon: 1, offset: 'rb', time: 1000})
+			layer.msg('用户编辑成功',{icon: 1, time: 1000})
 		</#if>
 	});
 	layui.use(['laypage', 'layer'], function(){

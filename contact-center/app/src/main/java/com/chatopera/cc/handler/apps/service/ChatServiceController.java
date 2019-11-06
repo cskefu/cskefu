@@ -91,7 +91,7 @@ public class ChatServiceController extends Handler {
     private OrgiSkillRelRepository orgiSkillRelService;
 
     @Autowired
-    private AgentAuditProxy agentAuditProxy;
+    private UserProxy userProxy;
 
     @Autowired
     private Cache cache;
@@ -191,7 +191,7 @@ public class ChatServiceController extends Handler {
             List<User> userList = userRes.findAll(usersids);
             for (User user : userList) {
                 user.setAgentStatus(cache.findOneAgentStatusByAgentnoAndOrig(user.getId(), super.getOrgi(request)));
-                UserProxy.attachOrgansPropertiesForUser(user);
+                userProxy.attachOrgansPropertiesForUser(user);
             }
             map.addAttribute("userList", userList);
             map.addAttribute("userid", agentService.getUserid());
@@ -463,7 +463,7 @@ public class ChatServiceController extends Handler {
                     organIdList.add(rel.getSkillid());
                 }
             }
-            userList = UserProxy.findByOrganInAndAgentAndDatastatus(
+            userList = userProxy.findByOrganInAndAgentAndDatastatus(
                     organIdList, true, false, new PageRequest(super.getP(request), super.getPs(request), Direction.DESC,
                                                               "createtime"));
         } else {

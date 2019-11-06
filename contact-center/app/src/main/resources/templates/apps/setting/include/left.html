@@ -1,15 +1,15 @@
 <ul class="layui-nav layui-nav-tree" lay-filter="setting">
-<#if user?? && (user.roleAuthMap["A06_A01"]?? || user.usertype == "0") >
+<#if user?? && (user.roleAuthMap["A06_A01"]?? || user.admin) >
 	<li class="layui-nav-item layui-nav-itemed">
 		<a class="layui-nav-title" href="javascript:;">客服设置</a>
 		<dl class="layui-nav-child">
-			<#if user?? && (user.roleAuthMap["A06_A01_A01"]?? || user.usertype == "0") >
+			<#if user?? && (user.roleAuthMap["A06_A01_A01"]?? || user.admin) >
 			<dd <#if subtype?? && subtype == 'sessionconfig'>class="layui-this"</#if>>
 				
 				<a href="/setting/agent/index.html">对话设置</a>
 			</dd>
 			</#if>
-			<#if user?? && (user.roleAuthMap["A06_A01_A02"]?? || user.usertype == "0") >
+			<#if user?? && (user.roleAuthMap["A06_A01_A02"]?? || user.admin) >
 			<dd <#if subtype?? && subtype == 'blacklist'>class="layui-this"</#if>>
 				<a href="/setting/blacklist.html">黑名单</a>
 			</dd>
@@ -22,7 +22,7 @@
 		</dl>
 	</li>
 </#if>
-<#if user?? && (user.roleAuthMap["A06_A02"]?? || user.usertype == "0") >
+<#if user?? && (user.roleAuthMap["A06_A02"]?? || user.admin) >
 	<li class="layui-nav-item layui-nav-itemed">
 		<a class="layui-nav-title" href="javascript:;">广告位管理</a>
 		<dl class="layui-nav-child">
@@ -36,7 +36,7 @@
 		</dl>
 	</li>
 </#if>
-<#if user?? && (user.roleAuthMap["A06_A03"]?? || user.usertype == "0") >
+<#if user?? && (user.roleAuthMap["A06_A03"]?? || user.admin) >
 	<li class="layui-nav-item layui-nav-itemed">
 		<a class="layui-nav-title" href="javascript:;">标签管理</a>
 		<dl class="layui-nav-child">

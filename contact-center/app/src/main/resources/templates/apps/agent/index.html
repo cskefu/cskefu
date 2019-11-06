@@ -187,18 +187,18 @@
 							parent.$('#agentdesktop').click();
 						}
 					} else if(result.rc === 1){
-						top.layer.msg('不合法的请求参数！',{icon: 2, offset: 'b', time: 3000})
+						top.layer.msg('不合法的请求参数！',{icon: 2, time: 3000})
 					} else if(result.rc === 2){
-						top.layer.msg('不合法的操作！',{icon: 2, offset: 'b', time: 3000})
+						top.layer.msg('不合法的操作！',{icon: 2, time: 3000})
 					} else if(result.rc ===3){
-						top.layer.msg('没有权限执行该操作',{icon: 2, offset: 'b', time: 3000})
+						top.layer.msg('没有权限执行该操作',{icon: 2, time: 3000})
 					} else if(result.rc ===4){
-						top.layer.msg('未找到该访客会话',{icon: 2, offset: 'b', time: 3000})
+						top.layer.msg('未找到该访客会话',{icon: 2, time: 3000})
 					}
 				}, function(error){
 					console.log("error", error);
 					// 服务器异常
-					top.layer.msg('服务器抽风，请稍后再试！',{icon: 2, offset: 'b', time: 3000})
+					top.layer.msg('服务器抽风，请稍后再试！',{icon: 2, time: 3000})
 				})
 			},
 			function(index, layro){

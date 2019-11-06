@@ -1,3 +1,6 @@
+# dev profile
+src/main/resources/application-dev.properties
+
 # ignore plugins source code
 src/main/java/com/chatopera/cc/plugins/
 

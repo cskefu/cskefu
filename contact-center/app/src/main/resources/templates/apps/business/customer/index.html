@@ -36,7 +36,7 @@
                             </div>
                         </div>
                         </form>
-                        <#if user?? && (user.roleAuthMap["A03_A01_A02_B06"]?? || user.usertype == "0") >
+                        <#if user?? && (user.roleAuthMap["A03_A01_A02_B06"]?? || user.admin) >
                         <div class="layui-btn-group ukefu-btn-group">
                             <a href="/apps/customer/add.html<#if ekind??>?ekind=${ekind}</#if>" title="新建客户"
                                data-toggle="ajax" data-width="950" data-height="600" class="layui-btn layui-btn-small">
@@ -45,7 +45,7 @@
                             </a>
                         </div>
                     </#if>
-                    <#if user?? && (user.roleAuthMap["A03_A01_A02_B09"]?? || user.usertype == "0") >
+                    <#if user?? && (user.roleAuthMap["A03_A01_A02_B09"]?? || user.admin) >
                     <div class="layui-btn-group ukefu-btn-group">
                         <button class="layui-btn layui-btn-small"
                                 href="/apps/customer/imp.html<#if ekind??>?ekind=${ekind}</#if>" title="导入客户"
@@ -56,7 +56,7 @@
                 </#if>
 
 
-                <#if user?? && (user.roleAuthMap["A03_A01_A02_B010"]?? || user.usertype == "0") >
+                <#if user?? && (user.roleAuthMap["A03_A01_A02_B010"]?? || user.admin) >
                 <div class="layui-btn-group ukefu-btn-group">
                     <button class="layui-btn layui-btn-small dropdown-menu">
                         <i class="kfont">&#xe672;</i> 导出
@@ -144,14 +144,14 @@
                 </#if>
                 </td>
                 <td style="white-space:nowrap;width:1%;" nowrap="nowrap">
-                    <#if user?? && (user.roleAuthMap["A03_A01_A02_B07"]?? || user.usertype == "0") >
+                    <#if user?? && (user.roleAuthMap["A03_A01_A02_B07"]?? || user.admin) >
                     <a href="/apps/customer/edit.html?id=${entCustomer.id!''}" data-toggle="ajax" data-width="950"
                        data-height="600" data-title="编辑用户信息">
                         <i class="layui-icon">&#xe642;</i>
                         编辑
                     </a>
                 </#if>
-                <#if user?? && (user.roleAuthMap["A03_A01_A02_B08"]?? || user.usertype == "0") >
+                <#if user?? && (user.roleAuthMap["A03_A01_A02_B08"]?? || user.admin) >
                 <a href="/apps/customer/delete.html?id=${entCustomer.id!''}" style="margin-left:10px;" data-toggle="tip"
                    data-title="请确认是否删除记录？">
                     <i class="layui-icon" style="color:red;">&#x1006;</i>
@@ -187,13 +187,13 @@
             var layer = layui.layer;
 
         <#if msg?? && msg == 'new_entcustomer_success'>
-            layer.msg('客户新建成功',{icon: 1, offset: 'rb', time: 1000})
+            layer.msg('客户新建成功',{icon: 1, time: 1000})
         <#elseif msg?? && msg == 'edit_entcustomer_success'>
-            layer.msg('客户编辑成功',{icon: 1, offset: 'rb', time: 1000})
+            layer.msg('客户编辑成功',{icon: 1, time: 1000})
          <#elseif msg?? && msg == 'mobile_exist'>
-            layer.msg('手机存在，请重新填写',{icon: 2, offset: 'rb', time: 3000})
+            layer.msg('手机存在，请重新填写',{icon: 2, time: 3000})
          <#elseif msg?? && msg == 'sip_account_exist'>
-            layer.msg('SIP账号已经存在，请重新填写',{icon: 2, offset: 'rb', time: 3000})
+            layer.msg('SIP账号已经存在，请重新填写',{icon: 2, time: 3000})
         </#if>
         });
 

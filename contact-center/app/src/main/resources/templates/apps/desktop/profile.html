@@ -36,14 +36,15 @@
 	      <input type="mobile" name="mobile" value="${userData.mobile!''}" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
 	    </div>
 	  </div>
-	  <#if userData?? && userData.usertype != '0'>
-		  <div class="layui-form-item">
-		    <label class="layui-form-label">启用坐席功能：</label>
-		    <div class="layui-input-block">
-		      <input type="checkbox" name="agent" lay-skin="switch" value="1" <#if userData?? && userData.agent == true>checked</#if>>
-		    </div>
-		  </div>
-	  </#if>
+<!--   admin用户强制作为坐席使用   -->
+<!--	  <#if userData?? && userData.admin>-->
+<!--		  <div class="layui-form-item">-->
+<!--		    <label class="layui-form-label">启用坐席功能：</label>-->
+<!--		    <div class="layui-input-block">-->
+<!--		      <input type="checkbox" name="agent" lay-skin="switch" value="1" <#if userData?? && userData.agent == true>checked</#if>>-->
+<!--		    </div>-->
+<!--		  </div>-->
+<!--	  </#if>-->
 	  <div class="layui-form-button">
 	    <div class="layui-button-block">
 	      <button class="layui-btn" lay-submit lay-filter="profile">立即提交</button>

@@ -90,28 +90,22 @@
 </script>
 
 <#if agentUserList?? && agentUserList?size gt 0>
-
-        <#include "/apps/cca/searchbox.html">
-
-        <div class="layui-side layui-bg-black layui-left-black cskefu-cca-leftside" style="height:calc(100% - 60px)">
+        <div class="layui-side layui-bg-black layui-left-black cskefu-cca-leftside" style="height:100%">
             <div class="layui-side-scroll" id="agentuserscca">
                 <#include "/apps/cca/agentusers.html"/>
             </div>
         </div>
         <#if curagentuser?? && curagentuser.channel == "phone">
-        <div class="layui-body ukefu-chat-agent cskefu-cca-content" id="ukefu-chat-agent"  style="height:calc(100% - 60px)">
+        <div class="layui-body ukefu-chat-agent cskefu-cca-content" id="ukefu-chat-agent"  style="height:100%">
             <#include "/apps/cca/mainagentuser_callout.html">
         </div>
         <#else>
-        <div class="layui-body ukefu-chat-agent cskefu-cca-content" id="ukefu-chat-agent"  style="height:calc(100% - 60px)">
+        <div class="layui-body ukefu-chat-agent cskefu-cca-content" id="ukefu-chat-agent"  style="height:100%">
             <#include "/apps/cca/mainagentuser.html">
         </div>
         </#if>
 <#else>
     <div class="layui-layout layui-layout-content"  style="height: 100%;">
-
-        <#include "/apps/cca/searchbox.html">
-
         <div class="box default-box" style="height: 100%;">
             <div class="box-body ukefu-im-theme">
                 <div class="ukefu-empty" style="background: none">

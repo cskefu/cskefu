@@ -26,9 +26,9 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
                         </span>
                 <span class="user">
                 <#if chatmessage?? && chatmessage.calltype?? && chatmessage.calltype == '呼出'>
-                ${chatmessage.intervented?string(chatmessage.supervisorname,curagentuser.agentname)}
+                ${chatmessage.intervented?string(chatmessage.supervisorname,chatmessage.username)}
                 <#else>
-                ${curagentuser.username!''}
+                ${chatmessage.username!''}
             </#if></span>
                 <span class="time">${chatmessage.createtime?string('yyyy-MM-dd HH:mm:ss')}</span>
                 <span class="<#if (chatmessage.calltype?? && chatmessage.calltype == '呼出')>rateleft<#else>rateright</#if>"  style="cursor: pointer; font-size: 30px">
