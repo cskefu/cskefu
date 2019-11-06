@@ -5,9 +5,9 @@
   <img src="https://user-images.githubusercontent.com/3538629/44917177-432d9700-ad6a-11e8-9420-46b0281073e6.png" width="200">
 </p>
 
-# 春松客服: 全渠道智能客服
+# 春松客服: 多渠道智能客服
 
-春松客服是帮助中小型企业快速而低成本的获得好用的智能客服系统。
+春松客服帮助企业快速而低成本的获得好用的智能客服系统。
 
 <img src="https://user-images.githubusercontent.com/3538629/61031891-fc311900-a3f2-11e9-80cf-c8d0700538a0.png" width="600">
 
@@ -49,7 +49,7 @@
 
 [http://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
 
-## 功能
+## 基础模块
 
 - 账号及组织机构管理：按组织、角色分配账号权限
 
@@ -59,9 +59,19 @@
 
 - 坐席工作台：汇聚多渠道访客请求
 
+## 付费模块
+
+春松客服的开源版供企业免费使用，**同时春松客服从 v5.0.0 版本开始提供如下付费模块：**
+
 - 机器人客服：集成机器人平台服务，完成多轮对话和知识库问答
 
 - 外呼系统：自动外呼，手动外呼，监听和报表等
+
+- Skype 渠道：通过 Skype 账号与用户进行沟通
+
+付费模块代码并不开源，并且使用插件的形式安装在源码中，[请联系“商务洽谈”](https://www.chatopera.com/mail.html)获得插件和商业支持。
+
+## 春松客服产品系列视频
 
 <b> 《春松客服产品系列视频》 </b>
 
@@ -210,7 +220,7 @@ Amazing! 要的就是这个效果。
 
 ## 立即部署
 
-- 企业版
+- 公有云版
 
 通过青云 AppCenter 部署，青云 AppCenter 是开发运维一体化(DevOps)管理企业应用的平台，Chatopera 的春松客服在 2018 年 10 月登录 AppCenter，并借助 PaaS 平台强大的计算能力实现计算节点集群、存储节点 HADR。从而保证了服务高可靠性、高性能、动态伸缩、一键备份和一键回滚等功能。
 
@@ -225,13 +235,11 @@ Amazing! 要的就是这个效果。
 
 更为详细的部署文档见[春松客服上架青云 AppCenter](https://github.com/chatopera/cosin/wiki/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E4%B8%8A%E6%9E%B6%E9%9D%92%E4%BA%91AppCenter)。
 
-- 社区版
+- 私有部署版
 
 参考部署[开源社区版本文档](https://github.com/chatopera/cosin/wiki/%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2)。
 
 ## 鸣谢
-
-[优客服](https://gitee.com/beimigame/ukefu)
 
 [FreeSWITCH 中国社区](http://www.freeswitch.org.cn/)
 
