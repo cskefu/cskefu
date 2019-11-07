@@ -151,7 +151,7 @@ layui.use('form', function(){
                 processUserAddOrUpdateResult(result.data, function () {
                     // close win
                     // 关闭form
-                    $("#layui-layer2 > span.layui-layer-setwin > a.layui-layer-close1").click();
+                    $("span.layui-layer-setwin > a.layui-layer-close1").click();
                     // 刷新页面
                     document.getElementById("admin").contentWindow.location = '/admin/user/index.html';
                 });
