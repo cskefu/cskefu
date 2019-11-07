@@ -1126,7 +1126,7 @@
 
 
              // 选择当前用户的默认技能组
-             Set<String> organs = super.getUser(request).getOrgans().keySet();
+             Set<String> organs = logined.getOrgans().keySet();
              String currentOrgan = organs.size() > 0 ? (new ArrayList<String>(organs)).get(0) : null;
 
              if (StringUtils.isBlank(currentOrgan)) {

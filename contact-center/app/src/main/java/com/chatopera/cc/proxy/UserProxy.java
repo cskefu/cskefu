@@ -14,11 +14,10 @@ package com.chatopera.cc.proxy;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
-import com.chatopera.cc.model.Organ;
-import com.chatopera.cc.model.OrganUser;
-import com.chatopera.cc.model.User;
+import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.repository.OrganRepository;
 import com.chatopera.cc.persistence.repository.OrganUserRepository;
+import com.chatopera.cc.persistence.repository.RoleAuthRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang.StringUtils;
@@ -27,8 +26,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.*;
 
 /**
@@ -46,6 +50,9 @@ public class UserProxy {
 
     @Autowired
     private UserRepository userRes;
+
+    @Autowired
+    private RoleAuthRepository roleAuthRes;
 
     /**
      * 创建新用户
@@ -214,11 +221,58 @@ public class UserProxy {
      * @return
      */
     public boolean validUserCallcenterParams(final User user) {
-        if (user.isCallcenter() && MainContext.hasModule(Constants.CSKEFU_MODULE_CALLOUT)) {
-            return (!userRes.findOneBySipaccountAndDatastatus(
-                    user.getSipaccount(), false).isPresent()) || user.getSipaccount() == "";
-        }
+
         return true;
+    }
+
+
+    /**
+     * 检查用户更新是否合理
+     *
+     * @param user
+     * @param oldUser
+     * @return
+     */
+    public String validUserUpdate(final User user, final User oldUser) {
+        String msg = "edit_user_success";
+        User tempUser = userRes.findByUsernameAndDatastatus(user.getUsername(), false);
+
+        if (!StringUtils.equals(user.getUsername(), oldUser.getUsername()) && tempUser != null && (!StringUtils.equals(
+                oldUser.getId(), tempUser.getId()))) {
+            // 用户名发生变更，并且数据库里有其它用户占用该用户名
+            msg = "username_exist";
+            return msg;
+        }
+
+        if (StringUtils.isNotBlank(user.getEmail())) {
+            tempUser = userRes.findByEmailAndDatastatus(user.getEmail(), false);
+            if (!StringUtils.equals(user.getEmail(), oldUser.getEmail()) && tempUser != null && (!StringUtils.equals(
+                    oldUser.getId(), tempUser.getId()))) {
+                msg = "email_exist";
+                return msg;
+            }
+        }
+
+        if (StringUtils.isNotBlank(user.getMobile())) {
+            tempUser = userRes.findByMobileAndDatastatus(user.getMobile(), false);
+            if (!StringUtils.equals(user.getMobile(), oldUser.getMobile()) && tempUser != null && (!StringUtils.equals(
+                    oldUser.getId(), tempUser.getId()))) {
+                msg = "mobile_exist";
+                return msg;
+            }
+        }
+
+        if (user.isCallcenter() && MainContext.hasModule(Constants.CSKEFU_MODULE_CALLOUT)) {
+            if (StringUtils.isNotBlank(user.getSipaccount())) {
+                Optional<User> opt = userRes.findOneBySipaccountAndDatastatus(
+                        user.getSipaccount(), false);
+                if (opt.isPresent() && (!StringUtils.equals(opt.get().getId(), user.getId()))) {
+                    msg = "sip_account_exist";
+                }
+            }
+        }
+
+        return msg;
     }
 
     /**
@@ -227,9 +281,18 @@ public class UserProxy {
      * @param json
      * @return
      */
-    private User exetractUserFromJson(final JsonObject json) {
+    public User parseUserFromJson(final JsonObject json) {
         User tempUser = new User();
 
+        // 手机号
+        if (json.has("id")) {
+            String val = json.get("id").getAsString();
+            if (StringUtils.isNotBlank(val)) {
+                tempUser.setId(val);
+            }
+        }
+
+        // 用户名，用于登录
         if (json.has("username")) {
             String val = json.get("username").getAsString();
             if (StringUtils.isNotBlank(val)) {
@@ -237,6 +300,7 @@ public class UserProxy {
             }
         }
 
+        // 姓名
         if (json.has("uname")) {
             String val = json.get("uname").getAsString();
             if (StringUtils.isNotBlank(val)) {
@@ -244,6 +308,7 @@ public class UserProxy {
             }
         }
 
+        // 邮件
         if (json.has("email")) {
             String val = json.get("email").getAsString();
             if (StringUtils.isNotBlank(val)) {
@@ -251,6 +316,7 @@ public class UserProxy {
             }
         }
 
+        // 手机号
         if (json.has("mobile")) {
             String val = json.get("mobile").getAsString();
             if (StringUtils.isNotBlank(val)) {
@@ -259,7 +325,61 @@ public class UserProxy {
         }
 
         // 密码
+        if (json.has("password")) {
+            String val = json.get("password").getAsString();
+            if (StringUtils.isNotBlank(val)) {
+                tempUser.setPassword(val);
+            }
+        }
 
+        // 是否是坐席
+        if (json.has("agent")) {
+            String val = json.get("agent").getAsString();
+            if (StringUtils.isNotBlank(val) && StringUtils.equals("1", val)) {
+                tempUser.setAgent(true);
+            } else {
+                tempUser.setAgent(false);
+            }
+        } else {
+            tempUser.setAgent(false);
+        }
+
+        // 是否是管理员
+        if (json.has("admin")) {
+            String val = json.get("admin").getAsString();
+            if (StringUtils.isNotBlank(val) && StringUtils.equals("1", val)) {
+                // 管理员默认就是坐席
+                tempUser.setAdmin(true);
+                tempUser.setAgent(true);
+            } else {
+                tempUser.setAdmin(false);
+            }
+        } else {
+            tempUser.setAdmin(false);
+        }
+
+        // 是否是呼叫中心
+        if (json.has("callcenter")) {
+            String val = json.get("callcenter").getAsString();
+            if (StringUtils.isNotBlank(val) && StringUtils.equals("1", val)) {
+                tempUser.setCallcenter(true);
+            } else {
+                tempUser.setCallcenter(false);
+            }
+        } else {
+            tempUser.setCallcenter(false);
+        }
+
+        // 是否有SIP电话
+        if (json.has("sipAccount")) {
+            String val = json.get("sipAccount").getAsString();
+            if (StringUtils.isNotBlank(val)) {
+                tempUser.setSipaccount(val);
+            }
+        }
+
+        // 不允许创建超级管理员
+        tempUser.setSuperadmin(false);
 
         return tempUser;
     }
@@ -271,7 +391,7 @@ public class UserProxy {
      * @return
      */
     public String validUser(final User user) {
-        String msg = "";
+        String msg = "new_user_success";
         User tempUser = userRes.findByUsernameAndDatastatus(user.getUsername(), false);
         if (tempUser != null) {
             msg = "username_exist";
@@ -294,14 +414,14 @@ public class UserProxy {
             }
         }
 
-        if (!validUserCallcenterParams(user)) {
-            msg = "sip_account_exist";
-            return msg;
-        }
-
-        if (tempUser == null && validUserCallcenterParams(user)) {
-            msg = "new_user_success";
-            return msg;
+        if (user.isCallcenter() && MainContext.hasModule(Constants.CSKEFU_MODULE_CALLOUT)) {
+            if (StringUtils.isNotBlank(user.getSipaccount())) {
+                if (userRes.findOneBySipaccountAndDatastatus(
+                        user.getSipaccount(), false).isPresent()) {
+                    msg = "sip_account_exist";
+                    return msg;
+                }
+            }
         }
 
         return msg;
@@ -356,6 +476,36 @@ public class UserProxy {
 
         return userRes.countByAgentAndDatastatusAndIdIn(agent, datastatus, users);
 
+    }
+
+    /**
+     * 增加用户的角色信息
+     * @param user
+     */
+    public void attachRolesMap(final User user) {
+        // 获取用户的角色权限，进行授权
+        List<RoleAuth> roleAuthList = roleAuthRes.findAll(new Specification<RoleAuth>() {
+            @Override
+            public Predicate toPredicate(
+                    Root<RoleAuth> root, CriteriaQuery<?> query,
+                    CriteriaBuilder cb) {
+                List<Predicate> list = new ArrayList<Predicate>();
+                if (user.getRoleList() != null && user.getRoleList().size() > 0) {
+                    for (Role role : user.getRoleList()) {
+                        list.add(cb.equal(root.get("roleid").as(String.class), role.getId()));
+                    }
+                }
+                Predicate[] p = new Predicate[list.size()];
+                cb.and(cb.equal(root.get("orgi").as(String.class), user.getOrgi()));
+                return cb.or(list.toArray(p));
+            }
+        });
+
+        if (roleAuthList != null) {
+            for (RoleAuth roleAuth : roleAuthList) {
+                user.getRoleAuthMap().put(roleAuth.getDicvalue(), true);
+            }
+        }
     }
 
     /**

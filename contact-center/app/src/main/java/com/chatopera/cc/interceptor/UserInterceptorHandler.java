@@ -24,6 +24,7 @@ import com.chatopera.cc.config.MessagingServerConfigure;
 import com.chatopera.cc.model.Dict;
 import com.chatopera.cc.model.SystemConfig;
 import com.chatopera.cc.model.User;
+import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -37,8 +38,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class UserInterceptorHandler extends HandlerInterceptorAdapter {
-
     private final static Logger logger = LoggerFactory.getLogger(UserInterceptorHandler.class);
+    private static UserProxy userProxy;
 
     private static Integer webimport;
 
@@ -51,6 +52,15 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             Menu menu = handlerMethod.getMethod().getAnnotation(Menu.class);
             if (user != null || (menu != null && menu.access()) || handlerMethod.getBean() instanceof BasicErrorController) {
+                /**
+                 * 每次刷新用户的组织机构、角色和权限
+                 */
+                getUserProxy().attachOrgansPropertiesForUser(user);
+                // 添加角色信息
+                getUserProxy().attachRolesMap(user);
+
+                request.getSession(true).removeAttribute(Constants.USER_SESSION_NAME);
+                request.getSession(true).setAttribute(Constants.USER_SESSION_NAME, user);
                 filter = true;
             }
 
@@ -159,4 +169,11 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
         return webimport;
     }
 
+
+    public static UserProxy getUserProxy() {
+        if (userProxy == null) {
+            userProxy = MainContext.getContext().getBean(UserProxy.class);
+        }
+        return userProxy;
+    }
 }

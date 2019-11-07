@@ -45,7 +45,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/setting")
-public class IMAgentController extends Handler {
+public class AgentSettingsController extends Handler {
 
     @Autowired
     private SessionConfigRepository sessionConfigRes;
@@ -110,6 +110,8 @@ public class IMAgentController extends Handler {
             MainUtils.copyProperties(sessionConfig, tempSessionConfig);
         }
         tempSessionConfig.setOrgi(super.getOrgi(request));
+        // 强制开启满意度问卷
+        tempSessionConfig.setSatisfaction(true);
         sessionConfigRes.save(tempSessionConfig);
 
         cache.putSessionConfigByOrgi(tempSessionConfig, orgi);

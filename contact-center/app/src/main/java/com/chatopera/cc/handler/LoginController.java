@@ -36,7 +36,6 @@ import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,18 +43,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -289,29 +282,8 @@ public class LoginController extends Handler {
             // 获取用户部门以及下级部门
             userProxy.attachOrgansPropertiesForUser(loginUser);
 
-            // 获取用户的角色权限，进行授权
-            List<RoleAuth> roleAuthList = roleAuthRes.findAll(new Specification<RoleAuth>() {
-                @Override
-                public Predicate toPredicate(
-                        Root<RoleAuth> root, CriteriaQuery<?> query,
-                        CriteriaBuilder cb) {
-                    List<Predicate> list = new ArrayList<Predicate>();
-                    if (loginUser.getRoleList() != null && loginUser.getRoleList().size() > 0) {
-                        for (Role role : loginUser.getRoleList()) {
-                            list.add(cb.equal(root.get("roleid").as(String.class), role.getId()));
-                        }
-                    }
-                    Predicate[] p = new Predicate[list.size()];
-                    cb.and(cb.equal(root.get("orgi").as(String.class), loginUser.getOrgi()));
-                    return cb.or(list.toArray(p));
-                }
-            });
-
-            if (roleAuthList != null) {
-                for (RoleAuth roleAuth : roleAuthList) {
-                    loginUser.getRoleAuthMap().put(roleAuth.getDicvalue(), true);
-                }
-            }
+            // 添加角色信息
+            userProxy.attachRolesMap(loginUser);
 
             loginUser.setLastlogintime(new Date());
             if (StringUtils.isNotBlank(loginUser.getId())) {

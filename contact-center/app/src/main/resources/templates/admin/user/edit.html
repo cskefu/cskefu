@@ -41,6 +41,7 @@
 	    <div class="layui-input-inline">
 	      <input type="checkbox" name="admin" lay-skin="switch" value="1" lay-filter="admincheckbox" lay-text="是|否" <#if userData.admin>checked="checked"</#if>>
 	    </div>
+		<div class="layui-form-mid layui-word-aux">管理员具备访问和修改所有系统资源的权限，同时也设定为多媒体坐席</div>
 	  </div>
 	  <div class="layui-form-item" id="agentDiv">
 		  <div class="layui-form-item">
@@ -63,8 +64,7 @@
 	  </#if>
 	  <div class="layui-form-button">
 	    <div class="layui-button-block">
-	      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
-	      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+	      <button class="layui-btn" lay-submit lay-filter="sys-user-update">立即提交</button>
 	    </div>
 	  </div>
 	</form>
@@ -102,6 +102,22 @@ layui.use('form', function(){
         $('#sipAccountDiv').hide();
     }
 
+	// 当账号为管理员类型时，强制设定为坐席！
+	form.on('switch(admincheckbox)', function(data){
+		if(data.elem.checked){
+			// 坐席的按钮
+			if($('#agentDiv > div > div > div > em').text() == "关闭"){
+				// 之前未开启
+				document.querySelector('#agentDiv > div > div > div > i').click();
+			}
+			// 设置为禁用
+			$("#agentDiv > div > div > input[name=agent]").attr('disabled', 'disabled');
+		} else {
+			// 取消禁用
+			$("#agentDiv > div > div > input[name=agent]").removeAttr('disabled');
+		}
+	});
+
 	// 根据“多媒体坐席”显示“呼叫中心坐席”状态
   	form.on('switch(agent)', function(data){
         $("input[name=callcenter]").prop("checked", false);
@@ -124,5 +140,27 @@ layui.use('form', function(){
 			$('#sipAccountDiv').hide();
 		}
 	});
+
+  	// 处理表单提交
+	form.on('submit(sys-user-update)', function (data) {
+		data.field['ops'] = 'update';
+		restApiRequest({
+			silent: true,
+			path: 'user',
+			data: data.field
+		}).then(function(result){
+			if(result.rc == 0){
+				processUserAddOrUpdateResult(result.data, function () {
+					$("span.layui-layer-setwin > a.layui-layer-close1").click();
+					// 关闭并刷新页面
+					document.getElementById("admin").contentWindow.location = '/admin/user/index.html';
+				});
+			}
+		}, function(err){
+			handleRestApiFail(err);
+		});
+		return false;
+	});
+
 });
 </script>

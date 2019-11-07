@@ -34,12 +34,13 @@
 	      <input type="mobile" name="mobile"  placeholder="请输入手机号码" autocomplete="off" class="layui-input">
 	    </div>
 	  </div>
-	  
+
 	  <div class="layui-form-item">
 	    <label class="layui-form-label">管理员：</label>
 	    <div class="layui-input-inline">
 	      <input type="checkbox" name="admin" lay-skin="switch" lay-filter="admincheckbox" value="1" lay-text="是|否">
 	    </div>
+        <div class="layui-form-mid layui-word-aux">管理员具备访问和修改所有系统资源的权限，同时也设定为多媒体坐席</div>
 	  </div>
 	  <div class="layui-form-item"  id="agentDiv">
 	    <label class="layui-form-label">多媒体坐席：</label>
@@ -61,13 +62,13 @@
 	  <div class="layui-form-button">
 	    <div class="layui-button-block">
 	      <button class="layui-btn" lay-submit lay-filter="sys-user-create">提交</button>
-<!--		  <button class="layui-btn" lay-submit lay-filter="sys-user-create-follow">提交并创建下一个</button>-->
+		  <button class="layui-btn" lay-submit lay-filter="sys-user-create-follow">提交并创建下一个</button>
 	      <button type="reset" class="layui-btn layui-btn-warm">重置</button>
 	    </div>
 	  </div>
 	</form>
 </div>
- 
+
 <script>
 
 layui.use('form', function(){
@@ -95,6 +96,22 @@ layui.use('form', function(){
 		  }
 	  }
 	});
+
+    // 当账号为管理员类型时，强制设定为坐席！
+    form.on('switch(admincheckbox)', function(data){
+        if(data.elem.checked){
+            // 坐席的按钮
+            if($('#agentDiv > div > div > em').text() == "关闭"){
+                // 之前未开启
+                document.querySelector('#agentDiv > div > div > i').click();
+            }
+            // 设置为禁用
+            $("#agentDiv > div > input[name=agent]").attr('disabled', 'disabled');
+        } else {
+            // 取消禁用
+            $("#agentDiv > div > input[name=agent]").removeAttr('disabled');
+        }
+    });
 
 	// 默认隐藏“呼叫中心坐席”
 	$('#callcenterDiv').hide();
@@ -124,16 +141,48 @@ layui.use('form', function(){
 	});
 
   	form.on('submit(sys-user-create)', function (data) {
-  		// TODO use RestAPI
-		// console.log(data.field)
-		return true;
-	})
+		data.field['ops'] = 'create';
+		restApiRequest({
+			silent: true,
+			path: 'user',
+			data: data.field
+		}).then(function(result){
+			if(result.rc == 0){
+                processUserAddOrUpdateResult(result.data, function () {
+                    // close win
+                    // 关闭form
+                    $("#layui-layer2 > span.layui-layer-setwin > a.layui-layer-close1").click();
+                    // 刷新页面
+                    document.getElementById("admin").contentWindow.location = '/admin/user/index.html';
+                });
+			}
+		}, function(err){
+            handleRestApiFail(err);
+		});
+		return false;
+	});
 
-	// // 保存成功后，继续留在当前页面，重制并创建下一个
-	// form.on('submit(sys-user-create-follow)', function (data) {
-	// // TODO use RestAPI
-	// 	console.log(data.field)
-	// 	return false;
-	// })
+	// 保存成功后，继续留在当前页面，重制并创建下一个
+	form.on('submit(sys-user-create-follow)', function (data) {
+        data.field['ops'] = 'create';
+        restApiRequest({
+            silent: true,
+            path: 'user',
+            data: data.field
+        }).then(function(result){
+            if(result.rc == 0){
+                processUserAddOrUpdateResult(result.data, function () {
+                    // 清空部分参数
+                    $('input[name="username"]').val("");
+                    $('input[name="uname"]').val("");
+                    $('input[name="mobile"]').val("");
+                    $('input[name="email"]').val("");
+                });
+            }
+        }, function(err){
+            handleRestApiFail(err);
+        });
+		return false;
+	})
 });
 </script>

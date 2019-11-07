@@ -6,6 +6,7 @@
 	<div class="layui-body">
 		<div class="layui-side-scroll">
 			<form method="post" key="set-mine" enctype="multipart/form-data" action="/setting/agent/sessionconfig/save.html" class="layui-form">
+				<input type="hidden" name="satisfaction" value="1">
 				<#if sessionConfig??><input type="hidden" name="id" value="${sessionConfig.id!''}"></#if>
 				<div class="row">
 					<div class="col-lg-12">
@@ -18,7 +19,7 @@
 									<div class="row">
 										<div class="col-lg-8">
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">1、人工坐席接入欢迎消息（非WEBIM渠道适用）</div>
+												<div class="ukefu-webim-tl" style="clear:both;">人工坐席接入欢迎消息（非WEBIM渠道适用）</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-12">
@@ -28,7 +29,7 @@
 												</div>
 											</div>
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">2、无坐席在线提示消息</div>
+												<div class="ukefu-webim-tl" style="clear:both;">无坐席在线提示消息</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-12">
@@ -38,7 +39,7 @@
 												</div>
 											</div>
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">3、坐席忙时提示消息（排队位置请使用{num}替换）</div>
+												<div class="ukefu-webim-tl" style="clear:both;">坐席忙时提示消息（排队位置请使用{num}替换）</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-12">
@@ -48,7 +49,7 @@
 												</div>
 											</div>
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">4、人工坐席分配成功提示消息（坐席使用{agent}替换）</div>
+												<div class="ukefu-webim-tl" style="clear:both;">人工坐席分配成功提示消息（坐席使用{agent}替换）</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-12">
@@ -58,7 +59,7 @@
 												</div>
 											</div>
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">5、坐席服务结束提示消息</div>
+												<div class="ukefu-webim-tl" style="clear:both;">坐席服务结束提示消息</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-12">
@@ -68,7 +69,7 @@
 												</div>
 											</div>
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">6、坐席分配策略</div>
+												<div class="ukefu-webim-tl" style="clear:both;">坐席分配策略</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-8">
@@ -87,7 +88,7 @@
 											</div>
 											
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">7、坐席分配最大访客数量</div>
+												<div class="ukefu-webim-tl" style="clear:both;">坐席分配最大访客数量</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-8">
@@ -113,7 +114,7 @@
 											</div>
 											
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">8、坐席就绪时分配最大访客数量</div>
+												<div class="ukefu-webim-tl" style="clear:both;">坐席就绪时分配最大访客数量</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-8">
@@ -139,7 +140,7 @@
 											</div>
 											
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">9、历史服务坐席优先分配</div>
+												<div class="ukefu-webim-tl" style="clear:both;">历史服务坐席优先分配</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-8">
@@ -154,7 +155,7 @@
 											</div>
 											
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">10、客户超时提醒</div>
+												<div class="ukefu-webim-tl" style="clear:both;">客户超时提醒</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-8">
@@ -190,7 +191,7 @@
 											
 											
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">11、客户超时提醒后再次超时</div>
+												<div class="ukefu-webim-tl" style="clear:both;">客户超时提醒后再次超时</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-8">
@@ -225,7 +226,7 @@
 											</div>
 											
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">12、坐席回复超时</div>
+												<div class="ukefu-webim-tl" style="clear:both;">坐席回复超时</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-8">
@@ -260,7 +261,7 @@
 											</div>
 											
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">13、启用工作时间段设置</div>
+												<div class="ukefu-webim-tl" style="clear:both;">启用工作时间段设置</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-8">
@@ -369,22 +370,7 @@
 											</div>
 											
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">14、启用满意度调查</div>
-												<div class="box-item">
-													<div class="row">
-														<div class="col-lg-8">
-															<p>启用此功能后，客户在结束对话的时候，提示选择满意度</p>
-															<p style="color:#888888;font-size:13px;margin-top:10px;">满意度调查功能，所有实时渠道适用（WebIM，微信）</p>
-														</div>
-														<div class="col-lg-4" style="text-align:right;">
-															<input type="checkbox" title="启用" name="satisfaction" id="satisfaction" <#if sessionConfig?? && sessionConfig.satisfaction == true>checked="checked"</#if>>
-														</div>
-													</div>
-												</div>
-											</div>
-											
-											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">15、排队超时设置</div>
+												<div class="ukefu-webim-tl" style="clear:both;">排队超时设置</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-8">
@@ -427,7 +413,7 @@
 											</div>
 
 <!--											<div class="ukefu-webim-prop">-->
-<!--												<div class="ukefu-webim-tl" style="clear:both;">17、关闭或刷新浏览器坐席自动离线</div>-->
+<!--												<div class="ukefu-webim-tl" style="clear:both;">关闭或刷新浏览器坐席自动离线</div>-->
 <!--												<div class="box-item">-->
 <!--													<div class="row">-->
 <!--														<div class="col-lg-8">-->
@@ -442,7 +428,7 @@
 <!--											</div>-->
 
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">16、启用坐席端使用快捷键输入快捷回复</div>
+												<div class="ukefu-webim-tl" style="clear:both;">启用坐席端使用快捷键输入快捷回复</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-8">
@@ -457,7 +443,7 @@
 											</div>
 											
 											<div class="ukefu-webim-prop">
-												<div class="ukefu-webim-tl" style="clear:both;">17、启用坐席工作台的外部快捷回复</div>
+												<div class="ukefu-webim-tl" style="clear:both;">启用坐席工作台的外部快捷回复</div>
 												<div class="box-item">
 													<div class="row">
 														<div class="col-lg-8">

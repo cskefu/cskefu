@@ -62,12 +62,6 @@ public class UsersController extends Handler {
     @Autowired
     private UserRoleRepository userRoleRes;
 
-    @Autowired
-    private Cache cache;
-
-    @Autowired
-    private UserProxy userProxy;
-
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "user")
     public ModelAndView index(ModelMap map, HttpServletRequest request) throws IOException {
@@ -95,107 +89,12 @@ public class UsersController extends Handler {
         return request(super.createRequestPageTempletResponse("/admin/user/add"));
     }
 
-    @RequestMapping("/save")
-    @Menu(type = "admin", subtype = "user")
-    public ModelAndView save(HttpServletRequest request, @Valid User user) {
-        String msg = userProxy.createNewUser(
-                user, super.getOrgi(request), super.getUser(request).getOrgid(), super.getOrgiByTenantshare(request));
-        return request(super.createRequestPageTempletResponse("redirect:/admin/user/index.html?msg=" + msg));
-    }
-
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "user")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
         ModelAndView view = request(super.createRequestPageTempletResponse("/admin/user/edit"));
         view.addObject("userData", userRepository.findByIdAndOrgi(id, super.getOrgiByTenantshare(request)));
         return view;
-    }
-
-    @RequestMapping("/update")
-    @Menu(type = "admin", subtype = "user", admin = true)
-    public ModelAndView update(HttpServletRequest request, @Valid User user) {
-        User tempUser = userRepository.getOne(user.getId());
-        String msg = validUserUpdate(user, tempUser);
-        if (tempUser != null) {
-            if (StringUtils.isNotBlank(msg) && !msg.equals("edit_user_success")) {
-                return request(super.createRequestPageTempletResponse("redirect:/admin/user/index.html?msg=" + msg));
-            }
-            tempUser.setUname(user.getUname());
-            tempUser.setUsername(user.getUsername());
-            tempUser.setEmail(user.getEmail());
-            tempUser.setMobile(user.getMobile());
-            tempUser.setSipaccount(user.getSipaccount());
-            //切换成非坐席 判断是否坐席 以及 是否有对话
-            if (!user.isAgent()) {
-                AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
-                        (super.getUser(request)).getId(), super.getOrgi(request));
-                if (!(agentStatus == null && cache.getInservAgentUsersSizeByAgentnoAndOrgi(
-                        super.getUser(request).getId(), super.getOrgi(request)) == 0)) {
-                    return request(super.createRequestPageTempletResponse("redirect:/admin/user/index.html?msg=t1"));
-                }
-            }
-            tempUser.setAgent(user.isAgent());
-
-            tempUser.setOrgi(super.getOrgiByTenantshare(request));
-
-            if (StringUtils.isNotBlank(super.getUser(request).getOrgid())) {
-                tempUser.setOrgid(super.getUser(request).getOrgid());
-            } else {
-                tempUser.setOrgid(MainContext.SYSTEM_ORGI);
-            }
-
-            tempUser.setCallcenter(user.isCallcenter());
-            if (StringUtils.isNotBlank(user.getPassword())) {
-                tempUser.setPassword(MainUtils.md5(user.getPassword()));
-            }
-
-            if (tempUser.getCreatetime() == null) {
-                tempUser.setCreatetime(new Date());
-            }
-            tempUser.setUpdatetime(new Date());
-            userRepository.save(tempUser);
-            OnlineUserProxy.clean(super.getOrgi(request));
-        }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/user/index.html?msg=" + msg));
-    }
-
-    private String validUserUpdate(User user, User oldUser) {
-        String msg = "edit_user_success";
-        User tempUser = userRepository.findByUsernameAndDatastatus(user.getUsername(), false);
-        if (tempUser != null && !user.getUsername().equals(oldUser.getUsername())) {
-            msg = "username_exist";
-            return msg;
-        }
-
-        if (StringUtils.isNotBlank(user.getEmail())) {
-            tempUser = userRepository.findByEmailAndDatastatus(user.getEmail(), false);
-            if (tempUser != null && !user.getEmail().equals(oldUser.getEmail())) {
-                msg = "email_exist";
-                return msg;
-            }
-        }
-
-        if (StringUtils.isNotBlank(user.getMobile())) {
-            tempUser = userRepository.findByMobileAndDatastatus(user.getMobile(), false);
-            if (tempUser != null && !user.getMobile().equals(oldUser.getMobile())) {
-                msg = "mobile_exist";
-                return msg;
-            }
-        }
-
-        if (!userProxy.validUserCallcenterParams(user)) {
-            msg = "sip_account_exist";
-            return msg;
-        }
-
-        if (user.getUsername().equals(oldUser.getUsername()) && user.getEmail().equals(
-                oldUser.getEmail()) && user.getMobile().equals(
-                oldUser.getMobile()) && userProxy.validUserCallcenterParams(
-                user)) {
-            return "";
-        }
-
-        return msg;
     }
 
     @RequestMapping("/delete")

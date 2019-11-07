@@ -18,13 +18,18 @@ package com.chatopera.cc.handler.api;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
+import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.handler.Handler;
 import com.chatopera.cc.handler.api.request.RestUtils;
+import com.chatopera.cc.model.AgentStatus;
 import com.chatopera.cc.model.OrganUser;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.OrganUserRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
+import com.chatopera.cc.proxy.OnlineUserProxy;
+import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.RestResult;
 import com.chatopera.cc.util.RestResultType;
@@ -46,6 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,10 +62,16 @@ public class ApiUserController extends Handler {
     private final static Logger logger = LoggerFactory.getLogger(ApiUserController.class);
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository userRes;
 
     @Autowired
     private OrganUserRepository organUserRepository;
+
+    @Autowired
+    private UserProxy userProxy;
+
+    @Autowired
+    private Cache cache;
 
     /**
      * 返回用户列表，支持分页，分页参数为 p=1&ps=50，默认分页尺寸为 20条每页
@@ -73,16 +85,16 @@ public class ApiUserController extends Handler {
     public ResponseEntity<RestResult> list(HttpServletRequest request, @Valid String id, @Valid String username) {
         Page<User> userList = null;
         if (!StringUtils.isBlank(id)) {
-            userList = userRepository.findByIdAndOrgi(
+            userList = userRes.findByIdAndOrgi(
                     id, super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request)));
         } else {
             if (!StringUtils.isBlank(username)) {
-                userList = userRepository.findByDatastatusAndOrgiAndUsernameLike(
+                userList = userRes.findByDatastatusAndOrgiAndUsernameLike(
                         false, super.getOrgi(request), username, new PageRequest(
                                 super.getP(request),
                                 super.getPs(request)));
             } else {
-                userList = userRepository.findByDatastatusAndOrgi(
+                userList = userRes.findByDatastatusAndOrgi(
                         false, super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request)));
             }
         }
@@ -102,11 +114,11 @@ public class ApiUserController extends Handler {
         if (user != null && !StringUtils.isBlank(user.getUsername())) {
             if (!StringUtils.isBlank(user.getPassword())) {
                 user.setPassword(MainUtils.md5(user.getPassword()));
-                userRepository.save(user);
+                userRes.save(user);
             } else if (!StringUtils.isBlank(user.getId())) {
-                User old = userRepository.findByIdAndOrgi(user.getId(), super.getOrgi(request));
+                User old = userRes.findByIdAndOrgi(user.getId(), super.getOrgi(request));
                 user.setPassword(old.getPassword());
-                userRepository.save(user);
+                userRes.save(user);
             }
         }
         return new ResponseEntity<>(new RestResult(RestResultType.OK), HttpStatus.OK);
@@ -125,9 +137,9 @@ public class ApiUserController extends Handler {
         RestResult result = new RestResult(RestResultType.OK);
         User user = null;
         if (!StringUtils.isBlank(id)) {
-            user = userRepository.findByIdAndOrgi(id, super.getOrgi(request));
+            user = userRes.findByIdAndOrgi(id, super.getOrgi(request));
             if (!user.isSuperadmin()) {    //系统管理员， 不允许 使用 接口删除
-                userRepository.delete(user);
+                userRes.delete(user);
             } else {
                 result.setStatus(RestResultType.USER_DELETE);
             }
@@ -140,7 +152,7 @@ public class ApiUserController extends Handler {
     public ResponseEntity<RestResult> findByOrgan(HttpServletRequest request, @Valid String organ) {
         List<OrganUser> organUsers = organUserRepository.findByOrgan(organ);
         List<String> userids = organUsers.stream().map(p -> p.getUserid()).collect(Collectors.toList());
-        List<User> users = userRepository.findAll(userids);
+        List<User> users = userRes.findAll(userids);
         JSONArray json = new JSONArray();
         users.stream().forEach(u -> {
             JSONObject obj = new JSONObject();
@@ -177,6 +189,9 @@ public class ApiUserController extends Handler {
                 case "create":
                     json = create(request, j);
                     break;
+                case "update":
+                    json = update(request, j);
+                    break;
                 default:
                     json.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_2);
                     json.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的操作。");
@@ -188,6 +203,86 @@ public class ApiUserController extends Handler {
     }
 
     /**
+     * 更新用户信息
+     *
+     * @param request
+     * @param payload
+     * @return
+     */
+    private JsonObject update(final HttpServletRequest request, final JsonObject payload) {
+        logger.info("[update] payload {}", payload.toString());
+        final User logined = super.getUser(request);
+        JsonObject resp = new JsonObject();
+        final User updated = userProxy.parseUserFromJson(payload);
+        if (StringUtils.isBlank(updated.getId())) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数。");
+            return resp;
+        }
+
+        final User previous = userRes.getOne(updated.getId());
+        if (previous != null) {
+            String msg = userProxy.validUserUpdate(updated, previous);
+            if (StringUtils.equals(msg, "edit_user_success")) {
+
+                // 由坐席切换成非坐席 判断是否坐席 以及 是否有对话
+                if (!updated.isAgent()) {
+                    AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
+                            logined.getId(), logined.getOrgi());
+                    if (!(agentStatus == null && cache.getInservAgentUsersSizeByAgentnoAndOrgi(
+                            logined.getId(), logined.getOrgi()) == 0)) {
+                        msg = "t1";
+                        resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
+                        resp.addProperty(RestUtils.RESP_KEY_DATA, msg);
+                        return resp;
+                    }
+                }
+
+                // 通过验证，可以更新数据库
+                previous.setUname(updated.getUname());
+                previous.setUsername(updated.getUsername());
+                previous.setEmail(updated.getEmail());
+                previous.setMobile(updated.getMobile());
+                previous.setSipaccount(updated.getSipaccount());
+
+                previous.setAgent(updated.isAgent());
+
+                previous.setOrgi(super.getOrgiByTenantshare(request));
+
+                if (StringUtils.isNotBlank(logined.getOrgid())) {
+                    previous.setOrgid(logined.getOrgid());
+                } else {
+                    previous.setOrgid(MainContext.SYSTEM_ORGI);
+                }
+
+                previous.setCallcenter(updated.isCallcenter());
+                if (StringUtils.isNotBlank(updated.getPassword())) {
+                    previous.setPassword(MainUtils.md5(updated.getPassword()));
+                }
+
+                final Date now = new Date();
+                if (previous.getCreatetime() == null) {
+                    previous.setCreatetime(now);
+                }
+                previous.setUpdatetime(now);
+                previous.setAdmin(updated.isAdmin());
+                previous.setSuperadmin(false);
+                userRes.save(previous);
+                OnlineUserProxy.clean(logined.getOrgi());
+            }
+
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
+            resp.addProperty(RestUtils.RESP_KEY_DATA, msg);
+
+        } else {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "Previous user not exist.");
+        }
+
+        return resp;
+    }
+
+    /**
      * 创建新用户
      *
      * @param request
@@ -195,14 +290,25 @@ public class ApiUserController extends Handler {
      * @return
      */
     private JsonObject create(final HttpServletRequest request, final JsonObject payload) {
+        logger.info("[create] payload {}", payload.toString());
+        final User logined = super.getUser(request);
         JsonObject resp = new JsonObject();
 
         // 从payload中创建User
+        User newUser = null;
+        // 创建新用户时，阻止传入ID
+        payload.remove("id");
+        newUser = userProxy.parseUserFromJson(payload);
+        final String msg = userProxy.createNewUser(
+                newUser, logined.getOrgi(), logined.getOrgid(), super.getOrgiByTenantshare(request));
 
-
-//        if (payload) {
-//            return resp;
-//        }
+        if (StringUtils.isNotBlank(msg)) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
+            resp.addProperty(RestUtils.RESP_KEY_DATA, msg);
+        } else {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "Unexpected response.");
+        }
 
         return resp;
     }

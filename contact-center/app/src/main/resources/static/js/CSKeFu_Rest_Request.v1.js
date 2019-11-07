@@ -40,6 +40,10 @@ function restApiRequest(opts) {
             .done(function (data) {
                 // console.log('Rest api 返回的值：', data);
                 if(!silent) layer.close(popup);
+                if(data.status){
+                    // not reject or resolve, expected user login again.
+                    return handleRestApiFail(data.status);
+                }
                 resolve(data);
             })
             .fail(function (jqXHR, textStatus ) {
