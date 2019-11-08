@@ -5,7 +5,7 @@
 			<form class="layui-form" name="search" method="post" id="searchConversation">
 				<div class="layui-form-item">
 					<div class="layui-inline" style="margin-right:0px;width: 100%">
-						<select name="skill" class="ukefu-input" lay-ignore style="width: 90px" onchange="findAgentByOrgan(this.value)" >
+						<select name="skill" class="ukefu-input" lay-ignore style="width: 90px;display: inline-block" onchange="renderAgentsByOrgan(this.value)" >
 							<option value="">所有技能组</option>
 							<#if skillGroups??>
 							<#list skillGroups as tpskill>
@@ -14,7 +14,7 @@
 							</#if>
 						</select>
 				        <label>~</label>
-						<select id="agent" name="agentno" class="ukefu-input" lay-ignore style="width: 90px">
+						<select id="agent" name="agentno" class="ukefu-input" lay-ignore style="width: 90px;display: inline-block">
 							<option value="">所有坐席</option>
 							<#if agentList??>
 							<#list agentList as useragent>
@@ -86,16 +86,17 @@ word-break: break-all;">${agentuser.username!''}</span>
 </div>
 <script src="/js/CSKeFu_Rest_Request.v1.js"></script>
 <script>
-	function findAgentByOrgan(data){
+	function renderAgentsByOrgan(data){
 		restApiRequest({
 			silent: true,
-			path: 'user/findByOrgan?organ='+data,
+			path: 'user',
+			data: {
+				ops: 'findByOrgan',
+				organ: data
+			}
 		}).then(function(result){
-			if(result.status !== 'OK'){
-				// Token过期
-				handleRestApiFail(result.status);
-			} else{
-                $("#agent").html('<option value="">所有坐席</option>');
+			if(result.rc == 0){
+				$("#agent").html('<option value="">所有坐席</option>');
 				for (var i=0 ; i<result.data.length ; i++) {
 					$("#agent").prepend('<option value="' + result.data[i].id + '"  <#if agentno?? && agentno == result.data[i].id>selected="selected"</#if>>' + result.data[i].uname + '</option>')
 				};
@@ -105,7 +106,6 @@ word-break: break-all;">${agentuser.username!''}</span>
 			top.layer.msg('服务器抽风，请稍后再试！', {icon: 2, offset: 'b', time: 3000})
 		})
 	}
-
 
 	$(function(){
 		$('#searchConversation').on('submit', function(e){

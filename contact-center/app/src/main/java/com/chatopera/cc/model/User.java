@@ -52,7 +52,7 @@ public class User implements java.io.Serializable {
     private String nickname;
     private String secureconf = "5";
     private boolean admin;                 // 是否是管理员
-    private boolean superadmin = false;    // 是否是超级管理员
+    private boolean superadmin = false;    // 是否是系统管理员
 
     private String orgi;
     private String orgid;

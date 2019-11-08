@@ -273,14 +273,6 @@
 									</a>
 								</dd>
 							</#if>
-							<#if user?? && (user.roleAuthMap["A07"]?? || user.admin) >
-								<dd class="ukefu-left-menu" data-tooltip="快捷回复">
-									<a href="javascript:void(0)" data-title="快捷回复" data-href="/setting/quickreply/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange"> 
-										<i class="layui-icon"
-										style="position: relative;">&#xe609;</i>
-									</a>
-								</dd>
-							</#if>
 							<#if user?? &&( user.roleAuthMap["A08"]?? || user.admin) >
 								<dd class="ukefu-left-menu" data-tooltip="会话历史">
 									<a href="javascript:void(0)" data-title="会话历史" data-href="/service/history/index.html" class="iframe_btn" data-id="maincontent" data-type="tabChange"> <i class="kfont"

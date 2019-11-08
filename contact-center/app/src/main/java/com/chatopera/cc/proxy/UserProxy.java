@@ -71,7 +71,7 @@ public class UserProxy {
             return msg;
         } else {
             // 此时 msg 是 new_user_success
-            user.setSuperadmin(false); // 不支持创建第二个超级管理员
+            user.setSuperadmin(false); // 不支持创建第二个系统管理员
 
             if (StringUtils.isNotBlank(user.getPassword())) {
                 user.setPassword(MainUtils.md5(user.getPassword()));
@@ -213,18 +213,6 @@ public class UserProxy {
         return userRes.findByOrgiAndDatastatusAndIdIn(orgi, datastatus, users);
 
     }
-
-    /**
-     * 根据是否开启呼叫中心模块检测账号
-     *
-     * @param user
-     * @return
-     */
-    public boolean validUserCallcenterParams(final User user) {
-
-        return true;
-    }
-
 
     /**
      * 检查用户更新是否合理
@@ -378,7 +366,7 @@ public class UserProxy {
             }
         }
 
-        // 不允许创建超级管理员
+        // 不允许创建系统管理员
         tempUser.setSuperadmin(false);
 
         return tempUser;
@@ -480,6 +468,7 @@ public class UserProxy {
 
     /**
      * 增加用户的角色信息
+     *
      * @param user
      */
     public void attachRolesMap(final User user) {

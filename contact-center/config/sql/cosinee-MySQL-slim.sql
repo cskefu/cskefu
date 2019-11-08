@@ -40,7 +40,7 @@ CREATE TABLE `cs_callout_log_dialplan` (
   `url` longtext COMMENT 'url',
   `createtime` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='拨号计划记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='拨号计划记录';
 
 
 -- ----------------------------
@@ -114,7 +114,7 @@ CREATE TABLE `uk_act_batch` (
   `DICID` varchar(1000) DEFAULT NULL COMMENT '目录id字符串',
   `taskinfo` longtext COMMENT 'taskinfo信息',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='电销活动';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='电销活动';
 
 -- ----------------------------
 -- Table structure for uk_act_callagent
@@ -143,7 +143,7 @@ CREATE TABLE `uk_act_callagent` (
   `disnum` varchar(32) DEFAULT NULL COMMENT '分配数据',
   `ACTID` varchar(32) DEFAULT NULL COMMENT '活动ID',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='电销活动名单分配表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='电销活动名单分配表';
 
 -- ----------------------------
 -- Table structure for uk_act_callnames
@@ -189,7 +189,7 @@ CREATE TABLE `uk_act_callnames` (
   `firstcalltime` datetime DEFAULT NULL COMMENT '首次拨打时间',
   `firstcallstatus` varchar(20) DEFAULT NULL COMMENT '首次拨打状态',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='电销名单表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='电销名单表';
 
 -- ----------------------------
 -- Table structure for uk_act_config
@@ -215,7 +215,7 @@ CREATE TABLE `uk_act_config` (
   `dataid` varchar(32) DEFAULT NULL COMMENT '数据ID',
   `previewautocallout` tinyint(4) DEFAULT '0' COMMENT '启用预览倒计时',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='电销配置表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='电销配置表';
 
 -- ----------------------------
 -- Table structure for uk_act_filter_his
@@ -253,7 +253,7 @@ CREATE TABLE `uk_act_filter_his` (
   `reorgannum` int(11) DEFAULT '0' COMMENT '部门分配数量',
   `assignedai` int(11) DEFAULT '0' COMMENT '分配到AI的名单数量',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='筛选记录表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='筛选记录表';
 
 -- ----------------------------
 -- Table structure for uk_act_formfilter
@@ -281,7 +281,7 @@ CREATE TABLE `uk_act_formfilter` (
   `filternum` int(11) DEFAULT '0' COMMENT '筛选次数',
   `conditional` int(11) DEFAULT '0' COMMENT '条件个数',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='筛选表单';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='筛选表单';
 
 -- ----------------------------
 -- Table structure for uk_act_formfilter_item
@@ -301,7 +301,7 @@ CREATE TABLE `uk_act_formfilter_item` (
   `itemtype` varchar(32) DEFAULT NULL COMMENT '类型',
   `comp` varchar(50) DEFAULT NULL COMMENT '逻辑条件',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='筛选项';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='筛选项';
 
 -- ----------------------------
 -- Table structure for uk_act_role
@@ -318,7 +318,7 @@ CREATE TABLE `uk_act_role` (
   `updatetime` datetime DEFAULT NULL COMMENT '更新时间',
   `orgi` varchar(32) DEFAULT NULL COMMENT '租户ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='电销角色授权表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='电销角色授权表';
 
 -- ----------------------------
 -- Table structure for uk_act_schedule
@@ -348,7 +348,7 @@ CREATE TABLE `uk_act_schedule` (
   `policy` varchar(32) DEFAULT NULL COMMENT '策略',
   `callvalues` text COMMENT '备注内容信息',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='电销日程表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='电销日程表';
 
 -- ----------------------------
 -- Table structure for uk_act_task
@@ -386,7 +386,7 @@ CREATE TABLE `uk_act_task` (
   `reorgannum` int(11) DEFAULT '0' COMMENT '分配到部门数量',
   `assignedai` int(11) DEFAULT '0' COMMENT '分配到AI的名单数量',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='电销任务表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='电销任务表';
 
 -- ----------------------------
 -- Table structure for cs_callout_dialplan
@@ -412,7 +412,7 @@ CREATE TABLE `cs_callout_dialplan` (
   `curconcurrence` int(11) NOT NULL COMMENT '当前并发数',
   `concurrenceratio` float(10,5) NOT NULL COMMENT '坐席并发比',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='外呼计划表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='外呼计划表';
 
 
 -- ----------------------------
@@ -435,7 +435,7 @@ CREATE TABLE `cs_callout_targets` (
   `createtime` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   `updatetime` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='外呼计划目标客户';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='外呼计划目标客户';
 
 -- ----------------------------
 -- Table structure for cs_stream_file
@@ -450,7 +450,7 @@ CREATE TABLE `cs_stream_file` (
   `mime` varchar(200) DEFAULT NULL COMMENT '文件类型 Content Type',
   `cooperation` mediumblob COMMENT '协作文件',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT '文件';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT '文件';
 
 -- ----------------------------
 -- Table structure for uk_ad_position
@@ -478,7 +478,7 @@ CREATE TABLE `uk_ad_position` (
   `STATUS` varchar(32) DEFAULT NULL COMMENT '广告状态',
   `ADPOS` varchar(32) DEFAULT NULL COMMENT '广告位置',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='客服客户端广告位表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='客服客户端广告位表';
 
 -- ----------------------------
 -- Table structure for uk_agentservice
@@ -580,7 +580,7 @@ CREATE TABLE `uk_agentservice` (
   `aiservice` tinyint(4) DEFAULT '0' COMMENT '是否AI服务',
   `foragent` tinyint(4) DEFAULT '0' COMMENT '直接转人工',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='在线客服服务记录表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='在线客服服务记录表';
 
 
 -- ----------------------------
@@ -615,7 +615,7 @@ CREATE TABLE `uk_agentstatus` (
   `busy` tinyint(4) DEFAULT '0' COMMENT '示忙',
   `workstatus` varchar(50) DEFAULT NULL COMMENT '工作状态',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='在线客服坐席状态表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='在线客服坐席状态表';
 
 -- ----------------------------
 -- Table structure for uk_agentuser
@@ -709,7 +709,7 @@ CREATE TABLE `uk_agentuser` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `agentuser_userid` (`userid`) USING BTREE,
   KEY `agentuser_orgi` (`orgi`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='在线客服访客咨询表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='在线客服访客咨询表';
 
 
 -- ----------------------------
@@ -727,7 +727,7 @@ CREATE TABLE `uk_agentuser_contacts` (
   `creater` varchar(32) DEFAULT NULL COMMENT '创建人ID',
   `createtime` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='访客联系人关联表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='访客联系人关联表';
 
 
 -- ----------------------------
@@ -745,7 +745,7 @@ CREATE TABLE `uk_ai` (
   `description` varchar(255) DEFAULT NULL COMMENT '分类描述',
   `code` varchar(32) DEFAULT NULL COMMENT '代码',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='AI机器人表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='AI机器人表';
 
 -- ----------------------------
 -- Table structure for uk_ai_snsaccount
@@ -759,7 +759,7 @@ CREATE TABLE `uk_ai_snsaccount` (
   `createtime` datetime DEFAULT NULL COMMENT '创建时间',
   `orgi` varchar(32) DEFAULT NULL COMMENT '租户ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='AI列表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='AI列表';
 
 -- ----------------------------
 -- Table structure for uk_area_type
@@ -779,7 +779,7 @@ CREATE TABLE `uk_area_type` (
   `ENABLE` tinyint(4) DEFAULT NULL COMMENT '分类状态',
   `AREA` text COMMENT '分类描述',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='区域类型';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='区域类型';
 
 -- ----------------------------
 -- Table structure for uk_attachment_file
@@ -803,7 +803,7 @@ CREATE TABLE `uk_attachment_file` (
   `fileid` varchar(32) DEFAULT NULL COMMENT '文件ID',
   `modelid` varchar(32) DEFAULT NULL COMMENT '所属模块数据ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='附件表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='附件表';
 
 -- ----------------------------
 -- Table structure for uk_blacklist
@@ -829,7 +829,7 @@ CREATE TABLE `uk_blacklist` (
   `endtime` datetime DEFAULT NULL COMMENT '结束时间',
   `agentuser` varchar(255) DEFAULT NULL COMMENT '访客',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='黑名单表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='黑名单表';
 
 -- ----------------------------
 -- Table structure for uk_bpm_process
@@ -851,7 +851,7 @@ CREATE TABLE `uk_bpm_process` (
   `PROCESSID` varchar(50) DEFAULT NULL COMMENT '流程ID',
   `PROCESSTYPE` varchar(50) DEFAULT NULL COMMENT '流程类型',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='业务流程表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='业务流程表';
 
 -- ----------------------------
 -- Table structure for uk_call_monitor
@@ -913,7 +913,7 @@ CREATE TABLE `uk_call_monitor` (
   `DISCALLED` varchar(50) DEFAULT NULL COMMENT '被叫分机号',
   `ORGAN` varchar(50) DEFAULT NULL COMMENT '所属组织机构ID',
   `EVENTID` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='坐席监控表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='坐席监控表';
 
 -- ----------------------------
 -- Table structure for uk_call_performance
@@ -980,7 +980,7 @@ CREATE TABLE `uk_call_performance` (
   `SATISFACTION` varchar(50) DEFAULT NULL COMMENT '服务小结',
   `SATISFDATE` datetime DEFAULT NULL COMMENT '满意度调查提交时间',
   `ORGAN` varchar(50) DEFAULT NULL COMMENT '所属组织机构ID'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='坐席绩效表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='坐席绩效表';
 
 -- ----------------------------
 -- Table structure for uk_callcenter_acl
@@ -998,7 +998,7 @@ CREATE TABLE `uk_callcenter_acl` (
   `strategy` text COMMENT '策略内容',
   `defaultvalue` varchar(50) DEFAULT NULL COMMENT '默认值',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='呼叫中心ACL表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='呼叫中心ACL表';
 
 -- ----------------------------
 -- Table structure for uk_callcenter_event
@@ -1091,7 +1091,7 @@ CREATE TABLE `uk_callcenter_event` (
   `voicechannel` varchar(255) DEFAULT NULL COMMENT '语音渠道标识',
   `recordingfile` varchar(150) DEFAULT NULL COMMENT '录音文件标识',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='通话记录表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='通话记录表';
 
 -- ----------------------------
 -- Table structure for uk_callcenter_extention
@@ -1131,7 +1131,7 @@ CREATE TABLE `uk_callcenter_extention` (
   `queid` varchar(32) DEFAULT NULL COMMENT '（问卷ID）',
   `aitype` varchar(32) DEFAULT NULL COMMENT '机器人类型（smartai/quesurvey）',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='分机信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='分机信息表';
 
 -- ----------------------------
 -- Table structure for uk_callcenter_ivr
@@ -1175,7 +1175,7 @@ CREATE TABLE `uk_callcenter_ivr` (
   `asrrecordpath` varchar(255) DEFAULT NULL COMMENT 'ASR结果路径',
   `ttsrecordpath` varchar(255) DEFAULT NULL COMMENT 'ASR结果路径',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='IVR菜单表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='IVR菜单表';
 
 -- ----------------------------
 -- Table structure for uk_callcenter_media
@@ -1194,7 +1194,7 @@ CREATE TABLE `uk_callcenter_media` (
   `content` varchar(50) DEFAULT NULL COMMENT '文件类型',
   `filelength` int(11) DEFAULT NULL COMMENT '语音文件长度',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='媒体资源表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='媒体资源表';
 
 -- ----------------------------
 -- Table structure for uk_callcenter_pbxhost
@@ -1236,7 +1236,7 @@ CREATE TABLE `uk_callcenter_pbxhost` (
   `webrtcssl` tinyint(4) DEFAULT '0' COMMENT 'WebRTC启用SSL',
   `dissipphone` tinyint(4) DEFAULT '0' COMMENT '外呼隐藏话机上的号码',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='FS服务器信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='FS服务器信息';
 
 -- ----------------------------
 -- Table structure for uk_callcenter_router
@@ -1258,7 +1258,7 @@ CREATE TABLE `uk_callcenter_router` (
   `routercontent` text COMMENT '路由规则',
   `field` varchar(50) DEFAULT NULL COMMENT '字段名称',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='拨号计划表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='拨号计划表';
 
 -- ----------------------------
 -- Table structure for uk_callcenter_siptrunk
@@ -1299,7 +1299,7 @@ CREATE TABLE `uk_callcenter_siptrunk` (
   `noname` varchar(50) DEFAULT NULL COMMENT '未找到名单或未分配的时候转到号码',
   `enablecallagent` tinyint(4) DEFAULT '0' COMMENT '坐席不在线转手机',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='SIP网关信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='SIP网关信息表';
 
 -- ----------------------------
 -- Table structure for uk_callcenter_skill
@@ -1317,7 +1317,7 @@ CREATE TABLE `uk_callcenter_skill` (
   `quene` varchar(100) DEFAULT NULL COMMENT '队列名称',
   `hostid` varchar(32) DEFAULT NULL COMMENT 'PBX服务器ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='电话技能组表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='电话技能组表';
 
 -- ----------------------------
 -- Table structure for uk_callcenter_skillext
@@ -1335,7 +1335,7 @@ CREATE TABLE `uk_callcenter_skillext` (
   `hostid` varchar(32) DEFAULT NULL COMMENT 'PBX服务器ID',
   `type` varchar(32) DEFAULT NULL COMMENT '类型',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='技能组对应表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='技能组对应表';
 
 -- ----------------------------
 -- Table structure for uk_chat_message
@@ -1398,7 +1398,7 @@ CREATE TABLE `uk_chat_message` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `sessionid` (`usession`) USING BTREE,
   KEY `orgi` (`orgi`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='坐席对话表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='坐席对话表';
 
 -- ----------------------------
 -- Table structure for uk_columnproperties
@@ -1429,7 +1429,7 @@ CREATE TABLE `uk_columnproperties` (
   `title` varchar(255) DEFAULT NULL COMMENT '标题',
   `SORTINDEX` int(11) DEFAULT NULL COMMENT '排序位置',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='报表字段映射表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='报表字段映射表';
 
 -- ----------------------------
 -- Table structure for uk_consult_invite
@@ -1538,7 +1538,7 @@ CREATE TABLE `uk_consult_invite` (
   `agentctrlenter` tinyint(4) DEFAULT '0' COMMENT '启用坐席端CTRL+Enter发送消息',
   `ctrlenter` tinyint(4) DEFAULT '0' COMMENT '启用访客端CTRL+Enter发送消息',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='访客网站配置表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='访客网站配置表';
 
 -- ----------------------------
 -- Table structure for uk_contacts
@@ -1619,7 +1619,7 @@ CREATE TABLE `uk_contacts` (
   `wlsid` varchar(100) DEFAULT NULL COMMENT '子系统id',
   `wlsystem_name` varchar(255) DEFAULT NULL COMMENT '子系统名称',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='联系人信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='联系人信息表';
 
 
 -- ----------------------------
@@ -1639,7 +1639,7 @@ CREATE TABLE `cs_contact_notes` (
   `onlineuser` varchar(32) DEFAULT NULL COMMENT '在线访客信息ID',
   `orgi` varchar(60) DEFAULT NULL COMMENT '租客标识',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='联系人笔记表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='联系人笔记表';
 
 
 -- ----------------------------
@@ -1647,7 +1647,7 @@ CREATE TABLE `cs_contact_notes` (
 -- ----------------------------
 DROP TABLE IF EXISTS `uk_cube`;
 CREATE TABLE `uk_cube` (
-  `ID` varchar(255) NOT NULL COMMENT '主键ID',
+  `ID` varchar(32) NOT NULL COMMENT '主键ID',
   `NAME` varchar(255) DEFAULT NULL COMMENT '名称',
   `CREATETIME` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   `DB` varchar(32) DEFAULT NULL COMMENT '数据库',
@@ -1667,7 +1667,7 @@ CREATE TABLE `uk_cube` (
   `UPDATETIME` timestamp NULL DEFAULT NULL COMMENT '更新时间',
   `CUBEFILE` longtext COMMENT '模型文件',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='立方体表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='立方体表';
 
 -- ----------------------------
 -- Table structure for uk_cube_type
@@ -1683,7 +1683,7 @@ CREATE TABLE `uk_cube_type` (
   `inx` int(11) DEFAULT NULL COMMENT '分类排序序号',
   `updatetime` datetime DEFAULT NULL COMMENT '更新时间',
   `description` varchar(255) DEFAULT NULL COMMENT '分类描述'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='立方体分类表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='立方体分类表';
 
 -- ----------------------------
 -- Table structure for uk_cubelevel
@@ -1711,7 +1711,7 @@ CREATE TABLE `uk_cubelevel` (
   `description` text COMMENT '描述信息',
   `creater` varchar(32) DEFAULT NULL COMMENT '创建人信息',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='维度成员表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='维度成员表';
 
 -- ----------------------------
 -- Table structure for uk_cubemeasure
@@ -1741,7 +1741,7 @@ CREATE TABLE `uk_cubemeasure` (
   `description` text COMMENT '指标描述',
   `creater` varchar(32) DEFAULT NULL COMMENT '创建人',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='维度指标表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='维度指标表';
 
 -- ----------------------------
 -- Table structure for uk_cubemetadata
@@ -1764,7 +1764,7 @@ CREATE TABLE `uk_cubemetadata` (
   `ATTRIBUE` longtext COMMENT '扩展属性',
   `creater` varchar(32) DEFAULT NULL COMMENT '创建人',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模型元数据表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='模型元数据表';
 
 -- ----------------------------
 -- Table structure for uk_datadic
@@ -1807,7 +1807,7 @@ CREATE TABLE `uk_datadic` (
   `SPSEARCH` tinyint(4) DEFAULT NULL COMMENT '搜索关键词',
   PRIMARY KEY (`ID`),
   UNIQUE KEY `SQL121227155530400` (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='报表目录表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='报表目录表';
 
 -- ----------------------------
 -- Table structure for uk_dataevent
@@ -1829,7 +1829,7 @@ CREATE TABLE `uk_dataevent` (
   `eventtype` varchar(32) DEFAULT NULL COMMENT '事件类型',
   `content` varchar(255) DEFAULT NULL COMMENT '变更内容',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='工单数据变更记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='工单数据变更记录';
 
 -- ----------------------------
 -- Table structure for uk_dimension
@@ -1857,7 +1857,7 @@ CREATE TABLE `uk_dimension` (
   `FKTABLEID` varchar(255) DEFAULT NULL COMMENT '外键表ID',
   `CREATER` varchar(32) DEFAULT NULL COMMENT '创建人',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='维度表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='维度表';
 
 -- ----------------------------
 -- Table structure for uk_drilldown
@@ -1881,7 +1881,7 @@ CREATE TABLE `uk_drilldown` (
   `paramreport` varchar(255) DEFAULT NULL COMMENT '目标报表',
   `paramvalue` varchar(255) DEFAULT NULL COMMENT '参数值',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='钻取表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='钻取表';
 
 -- ----------------------------
 -- Table structure for uk_entcustomer
@@ -1953,7 +1953,7 @@ CREATE TABLE `uk_entcustomer` (
   `pinyin` varchar(10) DEFAULT NULL COMMENT '首字母缩写拼音',
   `organ` varchar(32) DEFAULT NULL COMMENT '部门',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='企(事)业单位信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='企(事)业单位信息表';
 
 -- ----------------------------
 -- Table structure for uk_fans
@@ -1966,7 +1966,7 @@ CREATE TABLE `uk_fans` (
   `updatetime` date DEFAULT NULL COMMENT '更新时间',
   `suser` varchar(32) DEFAULT NULL COMMENT '用户ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='粉丝表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='粉丝表';
 
 -- ----------------------------
 -- Table structure for uk_favorites
@@ -1985,7 +1985,7 @@ CREATE TABLE `uk_favorites` (
   `TITLE` varchar(255) DEFAULT NULL COMMENT '标题',
   `MODEL` varchar(50) DEFAULT NULL COMMENT '所属组件',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='收藏信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='收藏信息表';
 
 -- ----------------------------
 -- Table structure for uk_fs_event_socket
@@ -2009,7 +2009,7 @@ CREATE TABLE `uk_fs_event_socket` (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `AK_Key_2` (`hostname`) USING BTREE,
   UNIQUE KEY `UK_hu886eh9fs7qysallkl0ub6t7` (`hostname`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='fs服务器监听端口';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='fs服务器监听端口';
 
 -- ----------------------------
 -- Table structure for uk_generation
@@ -2023,7 +2023,7 @@ CREATE TABLE `uk_generation` (
   `creater` varchar(32) DEFAULT NULL COMMENT '创建人',
   `createtime` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='全局ID生成器';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='全局ID生成器';
 
 -- ----------------------------
 -- Table structure for uk_historyreport
@@ -2052,7 +2052,7 @@ CREATE TABLE `uk_historyreport` (
   `title` varchar(100) DEFAULT NULL COMMENT '标题',
   `organ` varchar(50) DEFAULT NULL COMMENT '组织机构',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='数据采集历史表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='数据采集历史表';
 
 -- ----------------------------
 -- Table structure for uk_imgroup
@@ -2068,7 +2068,7 @@ CREATE TABLE `uk_imgroup` (
   `name` varchar(100) DEFAULT NULL COMMENT '分组名称',
   `orgi` varchar(100) DEFAULT NULL COMMENT '租户ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='企业聊天分组表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='企业聊天分组表';
 
 -- ----------------------------
 -- Table structure for uk_imgroup_user
@@ -2085,7 +2085,7 @@ CREATE TABLE `uk_imgroup_user` (
   `imgroup_id` varchar(32) DEFAULT NULL COMMENT '分组ID',
   `admin` tinyint(4) DEFAULT NULL COMMENT '是否管理员',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='企业聊天分组用户';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='企业聊天分组用户';
 
 -- ----------------------------
 -- Table structure for uk_instruction
@@ -2117,7 +2117,7 @@ CREATE TABLE `uk_instruction` (
   `eventype` varchar(32) DEFAULT NULL COMMENT '菜单事件类型',
   `snsid` varchar(32) DEFAULT NULL COMMENT 'SNSID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='微信指令表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='微信指令表';
 
 -- ----------------------------
 -- Table structure for uk_inviterecord
@@ -2137,7 +2137,7 @@ CREATE TABLE `uk_inviterecord` (
   `url` text DEFAULT NULL COMMENT '地址',
   `traceid` varchar(32) DEFAULT NULL COMMENT '跟踪ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='邀请记录表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='邀请记录表';
 
 -- ----------------------------
 -- Table structure for uk_jobdetail
@@ -2234,7 +2234,7 @@ CREATE TABLE `uk_jobdetail` (
   `reportid` varchar(32) DEFAULT NULL COMMENT '数据表ID',
   `mapping` tinyint(4) DEFAULT '0' COMMENT '默认映射结构',
   PRIMARY KEY (`ID`,`ENABLE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='作业调度任务/活动/批次表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='作业调度任务/活动/批次表';
 
 -- ----------------------------
 -- Table structure for uk_jobdetailproduct
@@ -2250,7 +2250,7 @@ CREATE TABLE `uk_jobdetailproduct` (
   `quota` int(11) DEFAULT '0' COMMENT '配额',
   `price` int(11) DEFAULT '0' COMMENT '价格',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='活动产品表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='活动产品表';
 
 -- ----------------------------
 -- Table structure for uk_kbs_expert
@@ -2264,7 +2264,7 @@ CREATE TABLE `uk_kbs_expert` (
   `createtime` datetime DEFAULT NULL COMMENT '创建时间',
   `orgi` varchar(32) DEFAULT NULL COMMENT '租户ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='知识库';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='知识库';
 
 -- ----------------------------
 -- Table structure for uk_kbs_topic
@@ -2308,7 +2308,7 @@ CREATE TABLE `uk_kbs_topic` (
   `tags` text COMMENT '标签',
   `attachment` text COMMENT '附件',
   `approval` tinyint(4) DEFAULT NULL COMMENT '是否审批通过'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='知识库内容表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='知识库内容表';
 
 -- ----------------------------
 -- Table structure for uk_kbs_type
@@ -2334,7 +2334,7 @@ CREATE TABLE `uk_kbs_type` (
   `DESCRIPTION` varchar(255) DEFAULT NULL COMMENT '分类描述',
   `BPM` tinyint(4) DEFAULT NULL COMMENT '是否需要流程审批',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='知识分类表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='知识分类表';
 
 -- ----------------------------
 -- Table structure for uk_leavemsg
@@ -2355,7 +2355,7 @@ CREATE TABLE `uk_leavemsg` (
   `contactsid` varchar(32) DEFAULT NULL COMMENT '匹配联系人ID',
   `userid` varchar(32) DEFAULT NULL COMMENT '用户ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='留言信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='留言信息表';
 
 -- ----------------------------
 -- Records of uk_leavemsg
@@ -2393,7 +2393,7 @@ CREATE TABLE `uk_log` (
   `ipaddr` varchar(255) DEFAULT NULL COMMENT '服务器地址',
   `port` varchar(32) DEFAULT NULL COMMENT '服务器端口',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='日志表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='日志表';
 
 
 -- ----------------------------
@@ -2436,7 +2436,7 @@ CREATE TABLE `uk_log_request` (
   `triggertime` varchar(32) DEFAULT NULL COMMENT '触发时间',
   `createdate` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='请求记录表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='请求记录表';
 
 -- ----------------------------
 -- Records of uk_log_request
@@ -2457,7 +2457,7 @@ CREATE TABLE `uk_message` (
   `fromuser` varchar(32) DEFAULT NULL COMMENT '来源用户',
   `touser` varchar(32) DEFAULT NULL COMMENT '目标用户',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='个人消息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='个人消息表';
 
 -- ----------------------------
 -- Table structure for uk_onlineuser
@@ -2470,7 +2470,7 @@ CREATE TABLE `uk_onlineuser` (
   `id` varchar(32) NOT NULL COMMENT '主键ID',
   `impid` varchar(255) DEFAULT NULL COMMENT '批次ID',
   `ipcode` varchar(255) DEFAULT NULL COMMENT 'IP编码',
-  `orgi` varchar(255) DEFAULT NULL COMMENT '租户ID',
+  `orgi` varchar(191) DEFAULT NULL COMMENT '租户ID',
   `owner` varchar(255) DEFAULT NULL COMMENT '所属用户',
   `processid` varchar(255) DEFAULT NULL COMMENT '流程ID',
   `shares` varchar(255) DEFAULT NULL COMMENT '分享给',
@@ -2514,7 +2514,7 @@ CREATE TABLE `uk_onlineuser` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `onlineuser_userid` (`userid`) USING BTREE,
   KEY `onlineuser_orgi` (`orgi`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='在线访客信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='在线访客信息表';
 
 -- ----------------------------
 -- Records of uk_onlineuser
@@ -2573,7 +2573,7 @@ CREATE TABLE `uk_onlineuser_his` (
   `contactsid` varchar(32) DEFAULT NULL COMMENT '联系人ID',
   `dataid` varchar(32) DEFAULT NULL COMMENT '关联的OnlineUser数据ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='在线访客访问历史表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='在线访客访问历史表';
 
 -- ----------------------------
 -- Records of uk_onlineuser_his
@@ -2613,7 +2613,7 @@ CREATE TABLE `uk_orderscomment` (
   `ACCDEPT` varchar(32) DEFAULT NULL COMMENT '转办部门',
   `ACCUSER` varchar(32) DEFAULT NULL COMMENT '转办用户',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='工单评论/回复表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='工单评论/回复表';
 
 -- ----------------------------
 -- Table structure for uk_organ
@@ -2633,7 +2633,7 @@ CREATE TABLE `uk_organ` (
   `SKILL` tinyint(4) DEFAULT '0' COMMENT '启用技能组',
   `area` text,
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='部门表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='部门表';
 
 
 -- ----------------------------
@@ -2647,7 +2647,7 @@ CREATE TABLE `cs_organ_user` (
   `creator` varchar(32) DEFAULT NULL COMMENT '创建人',
   `updatetime` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `orgi` varchar(32) DEFAULT NULL COMMENT '租户ID'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='部门人员表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='部门人员表';
 
 alter table cs_organ_user add primary key (userid, organ);
 
@@ -2666,7 +2666,7 @@ CREATE TABLE `uk_organization` (
   `logo` varchar(200) DEFAULT NULL COMMENT 'LOGO URL',
   `createtime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='企业信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='企业信息表';
 
 -- ----------------------------
 -- Table structure for uk_organrole
@@ -2682,7 +2682,7 @@ CREATE TABLE `uk_organrole` (
   `dicid` varchar(32) DEFAULT NULL COMMENT '目录ID',
   `dicvalue` varchar(50) DEFAULT NULL COMMENT '目录名称',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='部门授权表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='部门授权表';
 
 -- ----------------------------
 -- Table structure for uk_orgi_skill_rel
@@ -2696,7 +2696,7 @@ CREATE TABLE `uk_orgi_skill_rel` (
   `UPDATETIME` datetime DEFAULT NULL COMMENT '更新时间',
   `ORGI` varchar(32) DEFAULT NULL COMMENT '租户ID',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='租户角色映射表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='租户角色映射表';
 
 -- ----------------------------
 -- Table structure for uk_propertiesevent
@@ -2717,7 +2717,7 @@ CREATE TABLE `uk_propertiesevent` (
   `dataid` varchar(32) DEFAULT NULL COMMENT '数据记录ID',
   `textvalue` varchar(255) DEFAULT NULL COMMENT '文本值',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='字段变更记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='字段变更记录';
 
 -- ----------------------------
 -- Table structure for uk_publishedcube
@@ -2749,7 +2749,7 @@ CREATE TABLE `uk_publishedcube` (
   `DICLOCATION` varchar(255) DEFAULT NULL COMMENT '目录位置',
   `USEREMAIL` varchar(255) DEFAULT NULL COMMENT '用户邮件',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='已发布模型';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='已发布模型';
 
 -- ----------------------------
 -- Table structure for uk_publishedreport
@@ -2771,7 +2771,7 @@ CREATE TABLE `uk_publishedreport` (
   `CREATER` varchar(255) DEFAULT NULL COMMENT '创建人',
   `REPORTCONTENT` longtext COMMENT '报表内容',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='已发布报表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='已发布报表';
 
 -- ----------------------------
 -- Table structure for uk_quality
@@ -2794,7 +2794,7 @@ CREATE TABLE `uk_quality` (
   `DESCRIPTION` varchar(255) DEFAULT NULL COMMENT '分类描述',
   `QUALITYTYPE` varchar(50) DEFAULT NULL COMMENT '质检方式',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='质检表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='质检表';
 
 -- ----------------------------
 -- Table structure for uk_que_survey_answer
@@ -2817,7 +2817,7 @@ CREATE TABLE `uk_que_survey_answer` (
   `hangupmsg` varchar(255) DEFAULT NULL COMMENT '挂断提示语文字',
   `hangupvoice` varchar(32) DEFAULT NULL COMMENT '挂断提示语语音',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='问卷调查-问题答案表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='问卷调查-问题答案表';
 
 -- ----------------------------
 -- Table structure for uk_que_survey_process
@@ -2845,7 +2845,7 @@ CREATE TABLE `uk_que_survey_process` (
   `sumscore` varchar(32) DEFAULT NULL COMMENT '总评分值',
   `description` text COMMENT '描述',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='问卷调查表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='问卷调查表';
 
 -- ----------------------------
 -- Table structure for uk_que_survey_question
@@ -2898,7 +2898,7 @@ CREATE TABLE `uk_que_survey_question` (
   `errorwordup` varchar(255) DEFAULT NULL COMMENT '回答错误语-挂断提示语（文字）',
   `errorvoiceup` varchar(32) DEFAULT NULL COMMENT '回答错误语-挂断提示语（语音ID）',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='问卷调查-问题表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='问卷调查-问题表';
 
 -- ----------------------------
 -- Table structure for uk_quick_type
@@ -2921,7 +2921,7 @@ CREATE TABLE `uk_quick_type` (
   `DESCRIPTION` varchar(255) DEFAULT NULL COMMENT '分类描述',
   `QUICKTYPE` varchar(32) DEFAULT NULL COMMENT '类型（公共/个人）',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='质检项分类';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='质检项分类';
 
 -- ----------------------------
 -- Table structure for uk_quickreply
@@ -2937,7 +2937,7 @@ CREATE TABLE `uk_quickreply` (
   `cate` varchar(32) DEFAULT NULL COMMENT '分类',
   `orgi` varchar(32) DEFAULT NULL COMMENT '租户ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='快捷回复表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='快捷回复表';
 
 -- ----------------------------
 -- Table structure for uk_recentuser
@@ -2954,7 +2954,7 @@ CREATE TABLE `uk_recentuser` (
   `lastmsg` text COMMENT '最后一条消息',
   `newmsg` int(11) DEFAULT NULL COMMENT '未读消息数量',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='公共已读消息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='公共已读消息';
 
 -- ----------------------------
 -- Table structure for uk_report
@@ -2994,7 +2994,7 @@ CREATE TABLE `uk_report` (
   `SOURCE` varchar(50) DEFAULT NULL COMMENT '数据源',
   `VIEWTYPE` varchar(32) DEFAULT NULL COMMENT '视图类型',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='报表数据表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='报表数据表';
 
 -- ----------------------------
 -- Table structure for uk_reportfilter
@@ -3049,7 +3049,7 @@ CREATE TABLE `uk_reportfilter` (
   `valuefield` varchar(32) DEFAULT NULL COMMENT '取值字段',
   `fkfieldid` varchar(32) DEFAULT NULL COMMENT '外键字段ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='报表筛选器';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='报表筛选器';
 
 -- ----------------------------
 -- Table structure for uk_reportmodel
@@ -3144,7 +3144,7 @@ CREATE TABLE `uk_reportmodel` (
   `colindex` int(11) DEFAULT NULL COMMENT '列位置',
   `chartcontent` longtext COMMENT '图标代码',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='报表布局项';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='报表布局项';
 
 -- ----------------------------
 -- Table structure for uk_role
@@ -3161,7 +3161,7 @@ CREATE TABLE `uk_role` (
   `ORGID` varchar(32) DEFAULT NULL COMMENT '企业ID',
   `USERNAME` varchar(50) DEFAULT NULL COMMENT '用户名',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='角色表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='角色表';
 
 -- ----------------------------
 -- Table structure for uk_role_auth
@@ -3180,7 +3180,7 @@ CREATE TABLE `uk_role_auth` (
   `DICID` varchar(32) DEFAULT NULL COMMENT '权限ID',
   `DICVALUE` varchar(30) DEFAULT NULL COMMENT '权限代码',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='角色授权';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='角色授权';
 
 -- ----------------------------
 -- Table structure for uk_sales_product
@@ -3210,7 +3210,7 @@ CREATE TABLE `uk_sales_product` (
   `quota` int(11) DEFAULT '0' COMMENT '配额',
   `provoice` varchar(255) DEFAULT NULL COMMENT '语音介绍',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='电销产品';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='电销产品';
 
 -- ----------------------------
 -- Table structure for uk_sales_product_type
@@ -3227,7 +3227,7 @@ CREATE TABLE `uk_sales_product_type` (
   `USERNAME` varchar(50) DEFAULT NULL COMMENT '用户名',
   `parentid` varchar(32) DEFAULT NULL COMMENT '上级产品分类',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='电销产品类型';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='电销产品类型';
 
 -- ----------------------------
 -- Table structure for uk_sales_status
@@ -3245,7 +3245,7 @@ CREATE TABLE `uk_sales_status` (
   `memo` varchar(32) DEFAULT NULL COMMENT '备注',
   `activityid` varchar(32) DEFAULT NULL COMMENT '活动ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='电销状态';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='电销状态';
 
 -- ----------------------------
 -- Table structure for uk_sales_status_type
@@ -3261,7 +3261,7 @@ CREATE TABLE `uk_sales_status_type` (
   `updatetime` datetime DEFAULT NULL COMMENT '更新时间',
   `activityid` varchar(32) DEFAULT NULL COMMENT '活动ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='电销状态类型';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='电销状态类型';
 
 -- ----------------------------
 -- Table structure for uk_secret
@@ -3276,7 +3276,7 @@ CREATE TABLE `uk_secret` (
   `model` varchar(32) DEFAULT NULL COMMENT '所属组件',
   `enable` tinyint(4) DEFAULT NULL COMMENT '是否启用',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='二次验证信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='二次验证信息表';
 
 -- ----------------------------
 -- Table structure for uk_servicesummary
@@ -3315,7 +3315,7 @@ CREATE TABLE `uk_servicesummary` (
   `updatetime` datetime DEFAULT NULL,
   `processmemo` text,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='服务小结';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='服务小结';
 
 -- ----------------------------
 -- Table structure for uk_sessionconfig
@@ -3372,7 +3372,7 @@ CREATE TABLE `uk_sessionconfig` (
   `enablequick` tinyint(32) DEFAULT '0' COMMENT '启用快捷回复功能',
   `otherssl` tinyint(4) DEFAULT '0' COMMENT '外部知识库启用SSL',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='会话设置';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='会话设置';
 
 -- ----------------------------
 -- Table structure for uk_skill
@@ -3388,7 +3388,7 @@ CREATE TABLE `uk_skill` (
   `ORGI` varchar(32) DEFAULT NULL COMMENT '租户ID',
   `USERNAME` varchar(50) DEFAULT NULL COMMENT '用户名',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='技能组表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='技能组表';
 
 
 -- ----------------------------
@@ -3401,7 +3401,7 @@ CREATE TABLE `cs_chatbot` (
   `client_id` varchar(32) NOT NULL COMMENT 'Client Id',
   `secret` varchar(32) NOT NULL COMMENT 'Client Secret',
   `creater` varchar(32) NOT NULL COMMENT '创建人',
-  `orgi` varchar(255) NOT NULL COMMENT '租户ID',
+  `orgi` varchar(32) NOT NULL COMMENT '租户ID',
   `createtime` datetime NOT NULL COMMENT '创建时间',
   `updatetime` datetime NOT NULL COMMENT '更新时间',
   `name` varchar(255) NOT NULL COMMENT '聊天机器人名字',
@@ -3410,12 +3410,12 @@ CREATE TABLE `cs_chatbot` (
   `fallback` varchar(255) DEFAULT NULL COMMENT '兜底回复',
   `welcome` varchar(255) DEFAULT NULL COMMENT '欢迎语',
   `channel` varchar(32) NOT NULL COMMENT '渠道类型',
-  `sns_account_identifier` varchar(255) NOT NULL COMMENT '渠道标识',
+  `sns_account_identifier` varchar(100) NOT NULL COMMENT '渠道标识',
   `enabled` tinyint(1) DEFAULT '0' COMMENT '是否开启',
   `workmode` varchar(32) NOT NULL COMMENT '工作模式',
   PRIMARY KEY (`ID`) USING BTREE,
   UNIQUE KEY `snsid` (`sns_account_identifier`,`orgi`) USING BTREE COMMENT '按照渠道标识唯一'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='机器人客服表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='机器人客服表';
 
 
 -- ----------------------------
@@ -3484,7 +3484,7 @@ CREATE TABLE `uk_snsaccount` (
   `agent` tinyint(4) DEFAULT NULL COMMENT '坐席',
   PRIMARY KEY (`ID`) USING BTREE,
   UNIQUE KEY `SQL121227155530370` (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='渠道配置表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='渠道配置表';
 
 -- ----------------------------
 -- Table structure for uk_sysdic
@@ -3518,7 +3518,7 @@ CREATE TABLE `uk_sysdic` (
   `MENUTYPE` varchar(32) DEFAULT NULL COMMENT '菜单类型（顶部菜单/左侧菜单）',
   PRIMARY KEY (`ID`) USING BTREE,
   UNIQUE KEY `SQL121227155532210` (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='字典表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='字典表';
 
 -- ----------------------------
 -- Records of uk_sysdic
@@ -7801,7 +7801,7 @@ CREATE TABLE `uk_system_message` (
   `NAME` varchar(50) DEFAULT NULL COMMENT '邮件或短信网关名称',
   `moreparam` text COMMENT '更多参数',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='公告信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='公告信息表';
 
 -- ----------------------------
 -- Table structure for uk_systemconfig
@@ -7870,7 +7870,7 @@ CREATE TABLE `uk_systemconfig` (
   `consolelogo` varchar(255) DEFAULT NULL COMMENT '后台页面Logo',
   `favlogo` varchar(255) DEFAULT NULL COMMENT '系统Fav图标Logo',
   UNIQUE KEY `SQL121227155532210` (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='系统设置表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='系统设置表';
 
 -- ----------------------------
 -- Records of uk_systemconfig
@@ -7892,7 +7892,7 @@ CREATE TABLE `uk_tableproperties` (
   `FIELDNAME` varchar(255) DEFAULT NULL COMMENT '字段名称',
   `DATATYPECODE` int(11) NOT NULL COMMENT '数据类型代码',
   `DATATYPENAME` varchar(255) DEFAULT NULL COMMENT '字段类型名称',
-  `DBTABLEID` varchar(255) DEFAULT NULL COMMENT '数据表ID',
+  `DBTABLEID` varchar(191) DEFAULT NULL COMMENT '数据表ID',
   `INDEXDATATYPE` varchar(255) DEFAULT NULL COMMENT '字段类型',
   `PK` smallint(6) DEFAULT NULL COMMENT '是否外键',
   `MODITS` smallint(6) DEFAULT NULL COMMENT '是否启用多值',
@@ -7943,7 +7943,7 @@ CREATE TABLE `uk_tableproperties` (
   UNIQUE KEY `SQL130112140848940` (`ID`) USING BTREE,
   KEY `FKF8D74787854BC62` (`DBTABLEID`) USING BTREE,
   KEY `FKF8D747811BE44FF` (`FKPROPERTY`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='元数据字段表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='元数据字段表';
 
 -- ----------------------------
 -- Table structure for uk_tabletask
@@ -7990,7 +7990,7 @@ CREATE TABLE `uk_tabletask` (
   `LASTUPDATE` datetime DEFAULT NULL COMMENT '最近更新时间',
   `CREATETIME` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='元数据信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='元数据信息表';
 
 -- ----------------------------
 -- Table structure for uk_tag
@@ -8007,7 +8007,7 @@ CREATE TABLE `uk_tag` (
   `icon` varchar(50) DEFAULT NULL COMMENT '图标',
   `color` varchar(10) DEFAULT NULL COMMENT '颜色',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='标签表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='标签表';
 
 -- ----------------------------
 -- Records of uk_tag
@@ -8034,7 +8034,7 @@ CREATE TABLE `uk_tagrelation` (
   `userid` varchar(32) DEFAULT NULL COMMENT '创建人',
   `dataid` varchar(32) DEFAULT NULL COMMENT '数据ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='标签映射关系表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='标签映射关系表';
 
 -- ----------------------------
 -- Records of uk_tagrelation
@@ -8071,7 +8071,7 @@ CREATE TABLE `uk_templet` (
   `datatype` varchar(32) DEFAULT NULL COMMENT '数据类型',
   `charttype` varchar(32) DEFAULT NULL COMMENT '图表类型',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='模板表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='模板表';
 
 -- ----------------------------
 -- Records of uk_templet
@@ -8133,7 +8133,7 @@ CREATE TABLE `uk_tenant` (
   `createtime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   `sign` text COMMENT '签名',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='租户表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='租户表';
 
 -- ----------------------------
 -- Table structure for cs_user
@@ -8181,18 +8181,18 @@ CREATE TABLE `cs_user` (
   `datastatus` tinyint(4) DEFAULT NULL COMMENT '数据状态',
   `callcenter` tinyint(4) DEFAULT NULL COMMENT '启用呼叫中心坐席',
   `sipaccount` varchar(50) DEFAULT NULL COMMENT 'sip地址',
-  `superadmin` tinyint(4) DEFAULT NULL COMMENT '超级管理员',
+  `superadmin` tinyint(4) DEFAULT NULL COMMENT '系统管理员',
   `admin` tinyint(4) DEFAULT NULL COMMENT '管理员',
   `maxuser` int(11) DEFAULT '0' COMMENT '最大接入访客数量',
   `ordertype` varchar(20) DEFAULT NULL COMMENT '默认排序方式',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='用户表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='用户表';
 
 -- ----------------------------
 -- Records of cs_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `cs_user` VALUES ('4028cac3614cd2f901614cf8be1f0324', NULL, 'admin', '5d80253b1cd5e5d4ca5ed539f4d72052', '5', 'admin@cc.com', NULL, NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, 'cskefu', 'cskefu', NULL, '2017-03-16 13:56:34', '北京', '2018-07-31 08:24:13', '4028811b63b028dc0163b032c3ed0590', '18888888888', NULL, NULL, 0, '超级管理员', 0, 1, '北京', '北京', 2, 1, 0, '2018-08-10 04:38:17', NULL, NULL, NULL, 0, 0, NULL, 1, 1, 0, NULL);
+INSERT INTO `cs_user` VALUES ('4028cac3614cd2f901614cf8be1f0324', NULL, 'admin', '5d80253b1cd5e5d4ca5ed539f4d72052', '5', 'admin@cc.com', NULL, NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, 'cskefu', 'cskefu', NULL, '2017-03-16 13:56:34', '北京', '2018-07-31 08:24:13', '4028811b63b028dc0163b032c3ed0590', '18888888888', NULL, NULL, 0, '系统管理员', 0, 1, '北京', '北京', 2, 1, 0, '2018-08-10 04:38:17', NULL, NULL, NULL, 0, 0, NULL, 1, 1, 0, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -8231,7 +8231,7 @@ CREATE TABLE `uk_userevent` (
   `createdate` varchar(32) DEFAULT NULL COMMENT '创建时间',
   `referer` varchar(255) DEFAULT NULL COMMENT '跳转URL',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='访客浏览记录表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='访客浏览记录表';
 
 -- ----------------------------
 -- Table structure for uk_userrole
@@ -8245,7 +8245,7 @@ CREATE TABLE `uk_userrole` (
   `createtime` datetime DEFAULT NULL COMMENT '创建时间',
   `orgi` varchar(32) DEFAULT NULL COMMENT '租户ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='用户角色';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='用户角色';
 
 -- ----------------------------
 -- Table structure for uk_webim_monitor
@@ -8267,7 +8267,7 @@ CREATE TABLE `uk_webim_monitor` (
   `workresult` varchar(50) DEFAULT NULL COMMENT '操作结果',
   `dataid` varchar(50) DEFAULT NULL COMMENT '数据ID',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='坐席状态表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='坐席状态表';
 
 -- ----------------------------
 -- Records of uk_webim_monitor
@@ -8297,7 +8297,7 @@ CREATE TABLE `uk_weixinuser` (
   `orgi` varchar(32) DEFAULT NULL COMMENT '租户ID',
   `contactsid` varchar(32) DEFAULT NULL COMMENT '联系人ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='微信用户信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='微信用户信息';
 
 -- ----------------------------
 -- Table structure for uk_work_monitor
@@ -8342,7 +8342,7 @@ CREATE TABLE `uk_work_monitor` (
   `firsttime` tinyint(4) DEFAULT '0' COMMENT '是否首次就绪',
   `firsttimes` int(11) DEFAULT '0' COMMENT '首次就绪时长',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='坐席状态表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='坐席状态表';
 
 -- ----------------------------
 -- Table structure for uk_work_session
@@ -8386,7 +8386,7 @@ CREATE TABLE `uk_work_session` (
   `SESSIONID` varchar(50) DEFAULT NULL COMMENT '会话ID',
   `WORKTYPE` varchar(32) DEFAULT NULL COMMENT '业务类型',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='坐席状态表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='坐席状态表';
 
 
 -- ----------------------------
@@ -8408,7 +8408,7 @@ CREATE TABLE `uk_workorder_type` (
   `SLAID` varchar(32) DEFAULT NULL COMMENT 'SLA指标ID',
   `PARENTID` varchar(32) DEFAULT NULL COMMENT '上级分类ID',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='工单类型表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='工单类型表';
 
 -- ----------------------------
 -- Table structure for uk_workorders
@@ -8467,7 +8467,7 @@ CREATE TABLE `uk_workorders` (
   `eventid` varchar(50) DEFAULT NULL COMMENT '通话ID',
   `ani` varchar(50) DEFAULT NULL COMMENT '主叫号码',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='工单表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='工单表';
 
 -- ----------------------------
 -- Table structure for uk_worktime
@@ -8495,7 +8495,7 @@ CREATE TABLE `uk_worktime` (
   `dbegintime` varchar(20) DEFAULT NULL COMMENT '日期开始时间',
   `dendtime` varchar(20) DEFAULT NULL COMMENT '日期结束时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='工作时间';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='工作时间';
 
 -- ----------------------------
 -- Table structure for uk_wxmpevent
@@ -8517,7 +8517,7 @@ CREATE TABLE `uk_wxmpevent` (
   `model` varchar(10) DEFAULT NULL COMMENT '组件',
   `appid` varchar(32) DEFAULT NULL COMMENT 'SNSID',
   `snsid` varchar(32) DEFAULT NULL COMMENT 'SNSID'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='微信事件记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='微信事件记录';
 
 -- ----------------------------
 -- Table structure for uk_xiaoe_config
@@ -8567,7 +8567,7 @@ CREATE TABLE `uk_xiaoe_config` (
   `oqrdetailoutput` varchar(32) DEFAULT NULL COMMENT '外部机器人详情输出参数',
   `othersuggestmsg` text COMMENT '命中结果的推荐的提示信息',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='机器人配置';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='机器人配置';
 
 -- ----------------------------
 -- Table structure for uk_xiaoe_kbs_type
@@ -8586,7 +8586,7 @@ CREATE TABLE `uk_xiaoe_kbs_type` (
   `parentid` varchar(32) DEFAULT '0' COMMENT '上级ID',
   `typeid` varchar(32) DEFAULT NULL COMMENT '类型ID',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='知识库分类';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='知识库分类';
 
 -- ----------------------------
 -- Table structure for uk_xiaoe_scene
@@ -8631,7 +8631,7 @@ CREATE TABLE `uk_xiaoe_scene` (
   `aireply` text COMMENT 'AI回复内容（首条）',
   `frommobile` tinyint(4) DEFAULT '0' COMMENT '移动端接入',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='机器人场景';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='机器人场景';
 
 -- ----------------------------
 -- Table structure for uk_xiaoe_scene_type
@@ -8650,7 +8650,7 @@ CREATE TABLE `uk_xiaoe_scene_type` (
   `parentid` varchar(32) DEFAULT '0' COMMENT '父级ID',
   `typeid` varchar(32) DEFAULT NULL COMMENT '类型ID',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='机器人场景类型';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='机器人场景类型';
 
 -- ----------------------------
 -- Table structure for uk_xiaoe_sceneitem
@@ -8669,7 +8669,7 @@ CREATE TABLE `uk_xiaoe_sceneitem` (
   `replaytype` varchar(32) DEFAULT NULL COMMENT '回复类型',
   `allowask` tinyint(4) DEFAULT NULL COMMENT '允许主动提问',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='机器人场景子项';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='机器人场景子项';
 
 -- ----------------------------
 -- Table structure for uk_xiaoe_topic
@@ -8713,7 +8713,7 @@ CREATE TABLE `uk_xiaoe_topic` (
   `silimar` text COMMENT '类似问题',
   `aiid` varchar(32) DEFAULT NULL COMMENT '机器人ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='知识库';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='知识库';
 
 -- ----------------------------
 -- Table structure for uk_xiaoe_topic_item
@@ -8727,7 +8727,7 @@ CREATE TABLE `uk_xiaoe_topic_item` (
   `creater` varchar(255) DEFAULT NULL COMMENT '创建人',
   `createtime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='知识库类似问题';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='知识库类似问题';
 
 -- ----------------------------
 -- Table structure for uk_xiaoe_words
@@ -8746,7 +8746,7 @@ CREATE TABLE `uk_xiaoe_words` (
   `PARTOFSPEECH` varchar(50) DEFAULT NULL COMMENT '词性',
   `CATE` varchar(32) DEFAULT NULL COMMENT '分类',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='关键词';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='关键词';
 
 -- ----------------------------
 -- Table structure for uk_xiaoe_words_type
@@ -8762,6 +8762,6 @@ CREATE TABLE `uk_xiaoe_words_type` (
   `ORGI` varchar(32) DEFAULT NULL COMMENT '租户ID',
   `USERNAME` varchar(50) DEFAULT NULL COMMENT '用户名',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='词库类型';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='词库类型';
 
 SET FOREIGN_KEY_CHECKS = 1;

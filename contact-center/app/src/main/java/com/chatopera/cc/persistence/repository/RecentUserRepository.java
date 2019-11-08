@@ -17,6 +17,7 @@
 package com.chatopera.cc.persistence.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.chatopera.cc.model.RecentUser;
 import com.chatopera.cc.model.User;
@@ -26,5 +27,5 @@ public interface RecentUserRepository extends JpaRepository<RecentUser, String> 
 	
 	List<RecentUser> findByCreaterAndOrgi(String creater, String orgi);
 	
-	RecentUser findByCreaterAndUserAndOrgi(String creater, User user, String orgi);
+	Optional<RecentUser> findByCreaterAndUserAndOrgi(String creater, User user, String orgi);
 }

@@ -162,8 +162,6 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
             <div class="layui-tab" style="margin-top:0px;">
                 <ul class="layui-tab-title">
                     <li class="layui-this">访客</li>
-
-                    <li>快捷</li>
                     <li>历史</li>
                     <li>搜索历史消息</li>
                     <#if models?seq_contains("workorders")>
@@ -272,46 +270,6 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
 </#if>
 </div>
 
-<div class="layui-tab-item">
-    <div class="box">
-        <div class="box-title">
-            <h1 class="site-h1" style="background-color:#EEEEEE;">
-                快捷回复
-                <span style="float:right;margin-top:-3px;">
-									<div class="layui-btn-group" id="pri_btn_group" style="display:none;">
-									  <a href="/agent/quickreply/addtype.html" id="quick_type_add" style="" data-toggle="ajax" data-width="950" data-height="450">
-									  	<button class="layui-btn layui-btn-primary layui-btn-small" title="新建分类" style="background-color:#ffffff !important;color:#32c24d  !important;padding-left:5px;padding-right:5px;">
-									    	<i class="layui-icon">&#xe61f;</i>
-									  	</button>
-									  </a>
-									  <a href="/agent/quickreply/add.html" id="quick_add" style="" data-toggle="ajax" data-width="950" data-height="450">
-									  	<button class="layui-btn layui-btn-primary layui-btn-small" title="新建回复" style="background-color:#ffffff !important;color:#32c24d  !important;padding-left:5px;padding-right:5px;">
-									  		<i class="layui-icon">&#xe609;</i>
-									  	</button>
-									  </a>
-									  <a href="/agent/quickreply/edittype.html" id="quick_type_edit" style="" data-toggle="ajax" data-width="950" data-height="450">
-									  	<button class="layui-btn layui-btn-primary layui-btn-small" title="编辑分类" style="background-color:#ffffff !important;color:#32c24d  !important;padding-left:5px;padding-right:5px;">
-									  		<i class="layui-icon">&#xe642;</i>
-									  	</button>
-									  </a>
-									  <a href="/agent/quickreply/edit.html" id="quick_edit" style="" data-toggle="ajax" data-width="950" data-height="450">
-									  	<button class="layui-btn layui-btn-primary layui-btn-small" title="编辑回复" style="background-color:#ffffff !important;color:#32c24d  !important;padding-left:5px;padding-right:5px;">
-									  		<i class="layui-icon">&#xe60a;</i>
-									  	</button>
-									  </a>
-									</div>
-									<div class="layui-input-inline">
-										<input type="text" name="q" value="" oninput="search(this.value)" style="height: 30px;width:120px;line-height: 30px;padding-right:30px;border: 1px solid #32c24d;" placeholder="请输入查询条件" autocomplete="off" class="layui-input">
-										<i class="layui-icon" style="position: absolute;cursor: pointer;right: 3px;top: 0px;font-size: 20px;color:#32c24d;"></i>
-									</div>
-								</span>
-            </h1>
-        </div>
-        <div class="box-body" style="padding:0px 10px 0px 0px;" id="quick_reply">
-            <#include "/apps/agent/quicklist.html"/>
-        </div>
-    </div>
-</div>
 <div class="layui-tab-item">
     <div class="box">
         <div class="box-title">

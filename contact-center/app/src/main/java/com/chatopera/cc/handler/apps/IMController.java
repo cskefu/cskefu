@@ -583,6 +583,9 @@ public class IMController extends Handler {
             boolean consult = true;                //是否已收集用户信息
             SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(orgi);
 
+            // 强制开启满意调查问卷
+            sessionConfig.setSatisfaction(true);
+
             map.addAttribute("sessionConfig", sessionConfig);
             map.addAttribute("hostname", request.getServerName());
 

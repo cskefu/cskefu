@@ -539,62 +539,6 @@ public class Cache {
     }
 
 
-    /**********************************
-     *  LOGIN USER API TOKEN 相关
-     *  认证，授权，登录用户
-     **********************************/
-
-    /**
-     * @param auth      授权的KEY
-     * @param loginUser 已经登录的用户
-     * @param orgi      租户ID
-     */
-    public void putLoginUserByAuthAndOrgi(final String auth, final User loginUser, final String orgi) {
-        String serialized = SerializeUtil.serialize(loginUser);
-        if (serialized != null) {
-            redisCommand.setHashKV(RedisKey.getLoginUserHashKeyByOrgi(orgi), auth, serialized);
-        } else {
-            logger.warn("[putLoginUserByAuthAndOrgi] error can not serialize loginUser.");
-        }
-    }
-
-
-    /**
-     * 判断一个Auth是否是有效的
-     *
-     * @param auth
-     * @param orgi
-     * @return
-     */
-    public boolean existLoginUserByAuthAndOrgi(final String auth, final String orgi) {
-        return redisCommand.hasHashKV(RedisKey.getLoginUserHashKeyByOrgi(orgi), auth);
-    }
-
-    /**
-     * 根据租户ID和认证Auth获得一个登录用户
-     *
-     * @param auth
-     * @param orgi
-     * @return
-     */
-    public User findOneLoginUserByAuthAndOrgi(final String auth, final String orgi) {
-        String serialized = redisCommand.getHashKV(RedisKey.getLoginUserHashKeyByOrgi(orgi), auth);
-        if (StringUtils.isNotBlank(serialized)) {
-            return (User) SerializeUtil.deserialize(serialized);
-        }
-        return null;
-    }
-
-    /**
-     * 登出已经登录的系统用户
-     *
-     * @param auth
-     * @param orgi
-     */
-    public void deleteLoginUserByAuthAndOrgi(final String auth, final String orgi) {
-        redisCommand.delHashKV(RedisKey.getLoginUserHashKeyByOrgi(orgi), auth);
-    }
-
 
     /******************************
      * Callcenter Agent 相关

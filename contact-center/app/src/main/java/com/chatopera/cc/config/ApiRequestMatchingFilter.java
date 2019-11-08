@@ -17,7 +17,7 @@
 package com.chatopera.cc.config;
 
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.cache.Cache;
+import com.chatopera.cc.basic.auth.AuthToken;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +33,8 @@ public class ApiRequestMatchingFilter implements Filter {
     private static final Logger logger = LoggerFactory.getLogger(ApiRequestMatchingFilter.class);
 
     private RequestMatcher[] ignoredRequests;
+    private static AuthToken authToken;
 
-    private static Cache cache;
 
     public ApiRequestMatchingFilter(RequestMatcher... matcher) {
         this.ignoredRequests = matcher;
@@ -66,7 +66,7 @@ public class ApiRequestMatchingFilter implements Filter {
                     authorization = request.getParameter("authorization");
                 }
                 if (StringUtils.isNotBlank(authorization) &&
-                        getCache().existLoginUserByAuthAndOrgi(authorization, MainContext.SYSTEM_ORGI)) {
+                        getAuthToken().existUserByAuth(authorization)) {
                     chain.doFilter(req, resp);
                 } else {
                     response.sendRedirect("/tokens/error");
@@ -87,10 +87,11 @@ public class ApiRequestMatchingFilter implements Filter {
 
     }
 
-    private static Cache getCache() {
-        if (cache == null)
-            cache = MainContext.getContext().getBean(Cache.class);
-        return cache;
+    private static AuthToken getAuthToken() {
+        if (authToken == null) {
+            authToken = MainContext.getContext().getBean(AuthToken.class);
+        }
+        return authToken;
     }
 
 }

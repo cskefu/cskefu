@@ -44,7 +44,7 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
     private static Integer webimport;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, Object handler)
             throws Exception {
         boolean filter = false;
         User user = (User) request.getSession(true).getAttribute(Constants.USER_SESSION_NAME);
@@ -52,16 +52,18 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             Menu menu = handlerMethod.getMethod().getAnnotation(Menu.class);
             if (user != null || (menu != null && menu.access()) || handlerMethod.getBean() instanceof BasicErrorController) {
-                /**
-                 * 每次刷新用户的组织机构、角色和权限
-                 */
-                getUserProxy().attachOrgansPropertiesForUser(user);
-                // 添加角色信息
-                getUserProxy().attachRolesMap(user);
-
-                request.getSession(true).removeAttribute(Constants.USER_SESSION_NAME);
-                request.getSession(true).setAttribute(Constants.USER_SESSION_NAME, user);
                 filter = true;
+                if (user != null && StringUtils.isNotBlank(user.getId())) {
+                    /**
+                     * 每次刷新用户的组织机构、角色和权限
+                     * TODO 此处代码执行频率高，但是并不是每次都要执行，存在很多冗余
+                     * 待用更好的方法实现
+                     */
+                    getUserProxy().attachOrgansPropertiesForUser(user);
+                    getUserProxy().attachRolesMap(user);
+
+                    request.getSession(true).setAttribute(Constants.USER_SESSION_NAME, user);
+                }
             }
 
             if (!filter) {

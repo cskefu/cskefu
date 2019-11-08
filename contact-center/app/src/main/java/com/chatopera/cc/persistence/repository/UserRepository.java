@@ -51,7 +51,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     User findByUsernameAndPassword(String username, String password);
     Page<User> findByOrgi(String orgi, Pageable paramPageable);
 
-//    // 查询超级管理员
+//    // 查询系统管理员
 //    List<User> findBySuperadminAndOrgi(boolean isSuperadmin, final String orgi);
 
     // 查询所有管理员

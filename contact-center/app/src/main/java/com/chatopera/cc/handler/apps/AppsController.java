@@ -232,13 +232,16 @@ public class AppsController extends Handler {
         final User logined = super.getUser(request);
 
         if (tempUser != null) {
-            String msg = validUserUpdate(user, tempUser);
-            if (StringUtils.isNotBlank(msg)) {
+            String msg = userProxy.validUserUpdate(user, tempUser);
+            if (StringUtils.isNotBlank(msg) && (!StringUtils.equals(msg, "edit_user_success"))) {
+                // 处理异常返回
                 if (StringUtils.isBlank(index)) {
                     return request(super.createRequestPageTempletResponse("redirect:/apps/content.html?msg=" + msg));
                 }
                 return request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index.html?msg=" + msg));
             }
+
+            // 执行更新
             tempUser.setUname(user.getUname());
             tempUser.setEmail(user.getEmail());
             tempUser.setMobile(user.getMobile());
@@ -251,13 +254,14 @@ public class AppsController extends Handler {
             }
 
             tempUser.setOrgi(super.getOrgiByTenantshare(request));
+            final Date now = new Date();
             if (StringUtils.isNotBlank(user.getPassword())) {
                 tempUser.setPassword(MainUtils.md5(user.getPassword()));
             }
             if (tempUser.getCreatetime() == null) {
-                tempUser.setCreatetime(new Date());
+                tempUser.setCreatetime(now);
             }
-            tempUser.setUpdatetime(new Date());
+            tempUser.setUpdatetime(now);
             userRes.save(tempUser);
             User sessionUser = super.getUser(request);
             tempUser.setRoleList(sessionUser.getRoleList());
@@ -285,33 +289,6 @@ public class AppsController extends Handler {
             return request(super.createRequestPageTempletResponse("redirect:/apps/content.html"));
         }
         return request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index.html"));
-    }
-
-    private String validUserUpdate(User user, User oldUser) {
-        String msg = "";
-        User tempUser = userRes.findByUsernameAndDatastatus(user.getUsername(), false);
-        if (tempUser != null && !user.getUsername().equals(oldUser.getUsername())) {
-            msg = "username_exist";
-            return msg;
-        }
-
-        if (StringUtils.isNotBlank(user.getEmail())) {
-            tempUser = userRes.findByEmailAndDatastatus(user.getEmail(), false);
-            if (tempUser != null && !user.getEmail().equals(oldUser.getEmail())) {
-                msg = "email_exist";
-                return msg;
-            }
-        }
-
-        if (StringUtils.isNotBlank(user.getMobile())) {
-            tempUser = userRes.findByMobileAndDatastatus(user.getMobile(), false);
-            if (tempUser != null && !user.getMobile().equals(oldUser.getMobile())) {
-                msg = "mobile_exist";
-                return msg;
-            }
-        }
-
-        return msg;
     }
 
     /**

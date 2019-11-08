@@ -79,7 +79,7 @@ public class TenantController extends Handler {
             final @Valid String currentorgi,
             final @Valid String currentname) throws IOException {
         if (super.isEnabletneant()) {
-            // 超级管理员开启多租户访问
+            // 系统管理员开启多租户访问
             if (super.getUser(request).isAdmin()) {
                 map.addAttribute("tenantList", tenantRes.findByOrgid(super.getOrgid(request)));
             } else {

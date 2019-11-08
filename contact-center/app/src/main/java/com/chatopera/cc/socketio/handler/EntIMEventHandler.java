@@ -16,28 +16,24 @@
  */
 package com.chatopera.cc.socketio.handler;
 
-import java.util.List;
-
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.basic.MainUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.chatopera.cc.model.IMGroupUser;
+import com.chatopera.cc.model.User;
+import com.chatopera.cc.peer.PeerSyncEntIM;
+import com.chatopera.cc.persistence.repository.IMGroupUserRepository;
+import com.chatopera.cc.socketio.client.NettyClients;
+import com.chatopera.cc.socketio.message.ChatMessage;
+import com.chatopera.cc.socketio.message.Message;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
-import com.chatopera.cc.socketio.client.NettyClients;
-import com.chatopera.cc.persistence.repository.ChatMessageRepository;
-import com.chatopera.cc.persistence.repository.IMGroupUserRepository;
-import com.chatopera.cc.persistence.repository.RecentUserRepository;
-import com.chatopera.cc.socketio.message.ChatMessage;
-import com.chatopera.cc.model.IMGroupUser;
-import com.chatopera.cc.socketio.message.Message;
-import com.chatopera.cc.model.RecentUser;
-import com.chatopera.cc.model.User;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 public class EntIMEventHandler     
 {  
@@ -47,11 +43,22 @@ public class EntIMEventHandler
     public EntIMEventHandler(SocketIOServer server)   
     {  
         this.server = server ;
-    }  
-    
-    @OnConnect  
-    public void onConnect(SocketIOClient client)  
-    {  
+    }
+
+    @Autowired
+    private PeerSyncEntIM peerSyncEntIM;
+
+    public PeerSyncEntIM getPeerSyncEntIM() {
+        if (peerSyncEntIM == null) {
+            peerSyncEntIM = MainContext.getContext().getBean(PeerSyncEntIM.class);
+        }
+
+        return peerSyncEntIM;
+    }
+
+    @OnConnect
+    public void onConnect(SocketIOClient client)
+    {
     	try {
 			String user = client.getHandshakeData().getSingleUrlParam("userid") ;
 			String name = client.getHandshakeData().getSingleUrlParam("name") ;
@@ -130,46 +137,10 @@ public class EntIMEventHandler
     	}
     	String user = client.getHandshakeData().getSingleUrlParam("userid") ;
 //		String name = client.getHandshakeData().getSingleUrlParam("name") ;
-		String group = client.getHandshakeData().getSingleUrlParam("group") ;
-		String orgi = client.getHandshakeData().getSingleUrlParam("orgi") ;
-		
-    	data.setUserid(user);
-//		data.setUsername(name);
-		data.setId(MainUtils.getUUID());
-		data.setUsession(user);	
-		data.setCalltype(MainContext.CallType.OUT.toString());
-		
-		
-		if(MainContext.getContext()!=null){
-			ChatMessageRepository chatMessageRes = MainContext.getContext().getBean(ChatMessageRepository.class) ;
-			RecentUserRepository recentUserRes = MainContext.getContext().getBean(RecentUserRepository.class) ;
-			
-			if(!StringUtils.isBlank(group)){	//如果是群聊
-				data.setContextid(group);
-				chatMessageRes.save(data) ;
-				client.getNamespace().getRoomOperations(group).sendEvent(MainContext.MessageType.MESSAGE.toString(), data);
-			}else{	//单聊
-				data.setContextid(data.getTouser());
-				chatMessageRes.save(data) ;
-				NettyClients.getInstance().sendEntIMEventMessage(data.getUserid(), MainContext.MessageType.MESSAGE.toString(), data);	//同时将消息发送给自己
-				data.setCalltype(MainContext.CallType.IN.toString());
-				data.setContextid(user);
-				data.setUserid(data.getTouser());
-				data.setId(MainUtils.getUUID());
-				chatMessageRes.save(data) ; 	//每条消息存放两条，一个是我的对话记录 ， 另一条是对方的对话历史， 情况当前聊天记录的时候，只清理自己的
-				NettyClients.getInstance().sendEntIMEventMessage(data.getTouser(), MainContext.MessageType.MESSAGE.toString(), data);	//发送消息给目标用户
-				
-				RecentUser recentUser = recentUserRes.findByCreaterAndUserAndOrgi(data.getTouser() , new User(user) , orgi) ;
-				if(recentUser!=null){
-					recentUser.setNewmsg(recentUser.getNewmsg()+1);
-					if(data.getMessage()!=null && data.getMessage().length()>50){
-						recentUser.setLastmsg(data.getMessage().substring(0 , 50));
-					}else{
-						recentUser.setLastmsg(data.getMessage());
-					}
-					recentUserRes.save(recentUser) ;
-				}
-			}
-		}
-    } 
+        String group = client.getHandshakeData().getSingleUrlParam("group");
+        String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
+
+
+        getPeerSyncEntIM().send(user, group, orgi, MainContext.MessageType.MESSAGE, data);
+    }
 }  

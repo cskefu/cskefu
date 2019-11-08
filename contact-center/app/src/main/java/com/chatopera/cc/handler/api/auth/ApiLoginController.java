@@ -16,8 +16,8 @@
  */
 package com.chatopera.cc.handler.api.auth;
 
-import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
+import com.chatopera.cc.basic.auth.AuthToken;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.handler.Handler;
 import com.chatopera.cc.model.User;
@@ -60,6 +60,9 @@ public class ApiLoginController extends Handler {
     @Autowired
     private Cache cache;
 
+    @Autowired
+    private AuthToken authToken;
+
     /**
      * 登录服务，传入登录账号和密码
      *
@@ -88,7 +91,7 @@ public class ApiLoginController extends Handler {
                 userRepository.save(loginUser);
             }
             String auth = MainUtils.getUUID();
-            cache.putLoginUserByAuthAndOrgi(auth, loginUser, MainContext.SYSTEM_ORGI);
+            authToken.putUserByAuth(auth, loginUser);
 
             entity = new ResponseEntity<>(auth, HttpStatus.OK);
             response.addCookie(new Cookie("authorization", auth));
@@ -109,7 +112,7 @@ public class ApiLoginController extends Handler {
     @SuppressWarnings("rawtypes")
     @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity logout(HttpServletRequest request, @RequestHeader(value = "authorization") String authorization) {
-        cache.deleteLoginUserByAuthAndOrgi(authorization, MainContext.SYSTEM_ORGI);
+        authToken.deleteUserByAuth(authorization);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

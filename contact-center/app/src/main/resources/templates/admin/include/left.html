@@ -67,26 +67,6 @@
 		</li>
 	</#if>
 	<#if user.admin>
-	<#if models?seq_contains("report")>
-	<li class="layui-nav-item layui-nav-itemed">
-		<a class="layui-nav-title" href="javascript:;">数据报表</a>
-		<dl class="layui-nav-child">
-			<dd <#if subtype?? && subtype == 'cube'>class="layui-this"</#if>>
-				<a href="/apps/report/cube/index.html">模型设计</a>
-			</dd>
-			<dd <#if subtype?? && subtype == 'pbcube'>class="layui-this"</#if>>
-				<a href="/apps/report/cube/pbcubeindex.html">已发布模型</a>
-			</dd>
-			<dd <#if subtype?? && subtype == 'report'>class="layui-this"</#if>>
-				<a href="/apps/report/index.html">报表设计</a>
-			</dd>
-			<dd <#if subtype?? && subtype == 'pbreport'>class="layui-this"</#if>>
-				<a href="/apps/report/pbreportindex.html">已发布报表</a>
-			</dd>
-		</dl>
-	</li>
-	</#if>
-	
 	<li class="layui-nav-item layui-nav-itemed">
 		<a class="layui-nav-title" href="javascript:;">系统设置</a>
 		<dl class="layui-nav-child">

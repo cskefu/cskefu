@@ -9,39 +9,40 @@
 					</a>
 				</span>
 			</div>
-			<#if chatMessageList?? && chatMessageList.content>
-			<#list chatMessageList.content?reverse as chatMessage>
-				<#if chatMessage.calltype == "呼出">
-					<div class="clearfix chat-block">
-						<div class="chat-right">
-							<img class="user-img" src="/im/img/user.png" alt="">
-							<div class="chat-message">
-								<label class="time">${chatMessage.createtime!''}</label>
-								<label class="user">${user.uname!''}</label>
-							</div>
-							<div class="chatting-right">
-								<i class="arrow"></i>
-								<div class="chat-content">${(chatMessage.message!'')?no_esc}</div>
-							</div>
-						</div>
-					</div>
-				<#else>
-					<div class="clearfix chat-block">
-						<div class="chat-left">
-							<img class="user-img" src="/im/img/user.png" alt="">
-							<div class="chat-message">
-								<label class="user">${entimuser.uname!''}</label>
-								<label class="time">${chatMessage.createtime!''}</label>
-							</div>
-							<div class="chatting-left">
-								<i class="arrow"></i>
-								<div class="chat-content">${(chatMessage.message!'')?no_esc}</div>
-							</div>
-						</div>
-					</div>
-				</#if>
-			</#list>
-			</#if>
+			<#include "/apps/entim/more.html">
+<!--			<#if chatMessageList?? && chatMessageList.content>-->
+<!--			<#list chatMessageList.content?reverse as chatMessage>-->
+<!--				<#if chatMessage.calltype == "呼出">-->
+<!--					<div class="clearfix chat-block">-->
+<!--						<div class="chat-right">-->
+<!--							<img class="user-img" src="/im/img/user.png" alt="">-->
+<!--							<div class="chat-message">-->
+<!--								<label class="time">${chatMessage.createtime!''}</label>-->
+<!--								<label class="user">${user.uname!''}</label>-->
+<!--							</div>-->
+<!--							<div class="chatting-right">-->
+<!--								<i class="arrow"></i>-->
+<!--								<div class="chat-content">${(chatMessage.message!'')?no_esc}</div>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--				<#else>-->
+<!--					<div class="clearfix chat-block">-->
+<!--						<div class="chat-left">-->
+<!--							<img class="user-img" src="/im/img/user.png" alt="">-->
+<!--							<div class="chat-message">-->
+<!--								<label class="user">${entimuser.uname!''}</label>-->
+<!--								<label class="time">${chatMessage.createtime!''}</label>-->
+<!--							</div>-->
+<!--							<div class="chatting-left">-->
+<!--								<i class="arrow"></i>-->
+<!--								<div class="chat-content">${(chatMessage.message!'')?no_esc}</div>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--				</#if>-->
+<!--			</#list>-->
+<!--			</#if>-->
 		</div>
 		<div class="chat-bottom" id="bottom">
 			<textarea id="message" name="content" style="visibility:hidden;"></textarea>
@@ -94,6 +95,13 @@
 		</div>
 	</div>
 </div>
+<style>
+	.ukefu-media-image{
+		max-height:150px;
+		max-width:200px;
+		cursor: pointer;
+	}
+</style>
 <script type="text/javascript">
 	var editor , words;
 	KindEditor.ready(function (K) {
@@ -104,8 +112,13 @@
 			themeType: 'simple',
 			fontsize: 14,
 			newlineTag : "br" ,
-			filterMode:true,
-			items: ['emoticons', 'cut'],
+			filterMode: true,
+			items: ['emoticons', 'image', 'insertfile'],
+			uploadJson:'/ent/im/image/upload.html?userid=${entimuser.id!''}',
+			filePostName: 'imgFile',
+			allowImageRemote: false,
+			allowFileUpload: true,
+			allowInsertUpload: false,
 			afterChange : function() {
 				var count = this.count() ;
 
@@ -229,9 +242,17 @@
 	var hostname = location.hostname ;
 	var socket = io.connect(top.schema+"://"+top.hostname+":"+top.port+"/im/ent?userid=${user.id!''!''}&orgi=${user.orgi!''}&contextid=${contextid!''}",{transports: ['websocket'], upgrade: false});
 	socket.on('message', function(data) {
+		console.log('message', data);
 		data.createtime = formatDate(data.createtime);
 		var chat=document.getElementsByClassName('chatting-left').innerText;
 		chat = data.message;
+
+		if(data.msgtype == 'image'){
+			chat = "<a href='"+data.message+"&original=true' target='_blank'><img src='"+data.message+"' class='ukefu-media-image'/></a>" ;
+		}else if(data.msgtype == 'file'){
+			chat = "<div class='ukefu-message-file'><div class='ukefu-file-icon'><img src='/im/img/file.png'></div><div class='ukefu-file-desc'><a href='"+data.message+"' target='_blank'><div>"+data.filename+"</div><div>"+(data.filesize/1024).toFixed(3)+"Kb</div></a></div></div>" ;
+		}
+
 		if(data.calltype == "呼出"){
 			output('<div class="chat-right"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label class="time">'+data.createtime+'</label><label  class="user">${user.uname!''}</label> </div><div class="chatting-right"><i class="arrow"></i><div class="chat-content">'+chat+'</div></div>' , "chat-block");
 		}else if(data.calltype == "呼入"){
@@ -284,7 +305,7 @@
 	</#if>
 
 	function getMoreMessage(){
-		let firstCreateTime=$('.time').first().text();
+		var firstCreateTime=$('.time').first().text();
 		R3Ajax.get("/ent/im/chat/more.html?userid=${entimuser.id!''}&createtime="+firstCreateTime,function (html) {
 			$('.connect-message').after(html);
 		});

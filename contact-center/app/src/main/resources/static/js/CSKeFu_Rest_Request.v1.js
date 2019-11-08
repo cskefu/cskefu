@@ -63,7 +63,11 @@ function handleRestApiSucc(msg) {
 // 操作失败的
 function handleRestApiFail(status, reason) {
     if(status && status === 'AUTH_ERROR'){
-        layer.msg('会话过期，请重新登录！',{icon: 2, offset: 'b', time: 3000})
+        layer.msg('会话过期，请重新登录！',{icon: 2, offset: 'b', time: 3000});
+        setTimeout(function(){
+            // 执行登出
+            window.location.href = "/logout.html";
+        }, 3000);
     } else  {
         layer.open({
             content: reason || '操作失败',

@@ -110,10 +110,7 @@
 				memo: memo
 			}
 		}).then(function(result){
-			if(result.status){
-				// Token过期
-				handleRestApiFail(result.status);
-			} else if(result.rc === 0){
+			if(result.rc === 0){
 				// 转接成功
 				top.layer.msg('转接已完成',{icon: 1, time: 1000})
 				//  进行显示调整！

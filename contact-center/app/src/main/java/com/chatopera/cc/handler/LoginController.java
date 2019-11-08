@@ -20,10 +20,10 @@ import com.chatopera.cc.acd.AutomaticServiceDist;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
+import com.chatopera.cc.basic.auth.AuthToken;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.repository.AgentStatusRepository;
-import com.chatopera.cc.persistence.repository.RoleAuthRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.persistence.repository.UserRoleRepository;
 import com.chatopera.cc.proxy.AgentProxy;
@@ -67,7 +67,7 @@ public class LoginController extends Handler {
     private UserRoleRepository userRoleRes;
 
     @Autowired
-    private RoleAuthRepository roleAuthRes;
+    private AuthToken authToken;
 
     @Autowired
     private AgentStatusRepository agentStatusRes;
@@ -184,7 +184,7 @@ public class LoginController extends Handler {
                     // add authorization code for rest api
                     final String orgi = loginUser.getOrgi();
                     String auth = MainUtils.getUUID();
-                    cache.putLoginUserByAuthAndOrgi(auth, loginUser, orgi);
+                    authToken.putUserByAuth(auth, loginUser);
                     userRepository.save(loginUser); // 更新登录状态到数据库
                     response.addCookie((new Cookie("authorization", auth)));
 

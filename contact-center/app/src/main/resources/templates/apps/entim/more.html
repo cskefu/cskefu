@@ -10,7 +10,25 @@
 				</div>
 				<div class="chatting-right">
 					<i class="arrow"></i>
-					<div class="chat-content">${(chatMessage.message!'')?no_esc}</div>
+					<div class="chat-content">
+						<#if chatMessage.msgtype?? && chatMessage.msgtype == "image">
+							<a href="${(chatMessage.message!'')?no_esc}&original=true" target="_blank"><img src="${(chatMessage.message!'')?no_esc}" class="ukefu-media-image"></a>
+						<#elseif chatMessage.msgtype?? && chatMessage.msgtype == "file">
+							<div class="ukefu-message-file">
+								<div class="ukefu-file-icon">
+									<img src="/im/img/file.png">
+								</div>
+								<div class="ukefu-file-desc">
+									<a href="${chatMessage.message!''}" target="_blank">
+										<div>${chatMessage.filename!''}</div>
+										<div>${(chatMessage.filesize/1024!0)?string("###,###.###")}Kb</div>
+									</a>
+								</div>
+							</div>
+						<#else>
+							${(chatMessage.message!'')?no_esc}
+						</#if>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -24,7 +42,25 @@
 				</div>
 				<div class="chatting-left">
 					<i class="arrow"></i>
-					<div class="chat-content">${(chatMessage.message!'')?no_esc}</div>
+					<div class="chat-content">
+						<#if chatMessage.msgtype?? && chatMessage.msgtype == "image">
+							<a href="${(chatMessage.message!'')?no_esc}&original=true" target="_blank"><img src="${(chatMessage.message!'')?no_esc}" class="ukefu-media-image"></a>
+						<#elseif chatMessage.msgtype?? && chatMessage.msgtype == "file">
+							<div class="ukefu-message-file">
+								<div class="ukefu-file-icon">
+									<img src="/im/img/file.png">
+								</div>
+								<div class="ukefu-file-desc">
+									<a href="${chatMessage.message!''}" target="_blank">
+										<div>${chatMessage.filename!''}</div>
+										<div>${(chatMessage.filesize/1024!0)?string("###,###.###")}Kb</div>
+									</a>
+								</div>
+							</div>
+						<#else>
+							${(chatMessage.message!'')?no_esc}
+						</#if>
+					</div>
 				</div>
 			</div>
 		</div>

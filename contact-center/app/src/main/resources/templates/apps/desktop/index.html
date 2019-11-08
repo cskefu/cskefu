@@ -167,10 +167,10 @@
 		   });
 		  <#if msg?? && msg == 'username_exist'>
 			layer.msg('用户名存在，请重新填写',{icon: 2, time: 3000})
-		<#elseif msg?? && msg == 'email_exist'>
+		  <#elseif msg?? && msg == 'email_exist'>
 			layer.msg('邮件存在，请重新填写',{icon: 2, time: 3000})
-		<#elseif msg?? && msg == 'mobile_exist'>
+		  <#elseif msg?? && msg == 'mobile_exist'>
 			layer.msg('手机存在，请重新填写',{icon: 2, time: 3000})
-		</#if>
+		  </#if>
 		});
 </script>

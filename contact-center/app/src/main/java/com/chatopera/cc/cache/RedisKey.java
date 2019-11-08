@@ -165,10 +165,10 @@ public class RedisKey {
      * @param orgi
      * @return
      */
-    public static String getLoginUserHashKeyByOrgi(final String orgi) {
+    public static String getLoginUserKey(final String auth) {
         StringBuffer sb = new StringBuffer();
-        sb.append(orgi);
-        sb.append(":user:api:authorized");
+        sb.append("token:");
+        sb.append(auth);
         return sb.toString();
     }
 

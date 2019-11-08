@@ -1030,17 +1030,6 @@ public class MainUtils {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> T decode(String str, Class<T> clazz) {
-        Base64 base64 = new Base64();
-        try {
-            return (T) MainUtils.toObject(base64.decode(str));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public static String processContentEncode(String str) throws Exception {
         return Base64.encodeBase64String(str.getBytes(StandardCharsets.UTF_8)).replaceAll("\\+", "-");
     }

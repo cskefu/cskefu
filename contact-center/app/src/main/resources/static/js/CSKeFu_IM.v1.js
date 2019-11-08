@@ -19,6 +19,23 @@ $(document).ready(function(){
     }).on('task', function(data) {
 		
     }).on('new', function(data) {
+		if($('#customerChatAudit').length > 0){
+			if(customerChatAudit.$('#agentuser_' + data.userid).length > 0 && customerChatAudit.$("#chat_users li").length>1){
+				customerChatAudit.$('#agentuser_' + data.userid).remove();
+				customerChatAudit.$("#chat_users li:first-child a").click();
+			}else{
+				customerChatAudit.$('#ccaIndex').html("<div class=\"layui-layout layui-layout-content\"  style=\"height: 100%;\">\n" +
+					"    <div class=\"box default-box\" style=\"height: 100%;\">\n" +
+					"        <div class=\"box-body ukefu-im-theme\">\n" +
+					"            <div class=\"ukefu-empty\" style=\"background: none\">\n" +
+					"                <i class=\"layui-icon\">&#xe63a;</i>\n" +
+					"                <div style=\"\">还没有任何对话</div>\n" +
+					"            </div>\n" +
+					"        </div>\n" +
+					"    </div>\n" +
+					"</div>");
+			}
+		}
     	if($('#multiMediaDialogWin').length > 0 && multiMediaDialogWin != null && multiMediaDialogWin.$ &&multiMediaDialogWin.$('#agentusers').length > 0){
     		multiMediaDialogWin.Proxy.newAgentUserService(data,"agent");
     	}else{
@@ -61,7 +78,7 @@ $(document).ready(function(){
 		}
 	}).on('audit_new', function(data){
 		// 会话监控：新建
-		if($('#customerChatAudit').length > 0 && customerChatAudit != null && customerChatAudit.$ && customerChatAudit.$('#agentuserscca').length > 0){
+		if($('#customerChatAudit').length > 0 && customerChatAudit != null && customerChatAudit.$){
 			customerChatAudit.Proxy.newAgentUserService(data,"cca");
 			if(data.type == 'message'){
 				WebIM.audioplayer('audioplane', newmessage, false); // 播放

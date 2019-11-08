@@ -23,11 +23,13 @@
 	<script src="/im/js/dayjs.min.js"></script>
     <script type="text/javascript">
 		var editor , words;
+		var isAgentEnds = false;
 		var newmessage = [] , ring = [];
 		newmessage['mp3'] = '/images/message.mp3';
 		ring['mp3'] = '/images/ring.mp3';
 		KindEditor.lang({
-			html2canvas : '截图'
+			html2canvas : '截图',
+		    evaluation  :'满意度评价'
 		});
         KindEditor.ready(function (K) {
             editor = K.create('textarea[name="content"]', {
@@ -42,7 +44,7 @@
                 allowInsertUpload:false,		//增加的参数，上传图片后是否插入到当前区域
                 allowImageRemote:false,
 				filterMode:true,
-				items: ['emoticons', 'image', 'insertfile','html2canvas'],
+				items: ['emoticons', 'image', 'insertfile','html2canvas','evaluation'],
 				// items: ['emoticons', 'image', 'html2canvas'],		//w4l客户需求，访客不允许上传文件
 				htmlTags: {img : ['src', 'width', 'height', 'border', 'alt', 'title', 'align', '.width', '.height', '.border'] , br:[]}  ,
 				afterChange : function() {
@@ -143,6 +145,14 @@
 			}
 		};
 
+		KindEditor.plugin('evaluation', function(K) {
+			var editor = this, name = 'evaluation';
+			editor.clickToolbar(name, function() {
+				$("#diaShade").css("display","block");
+				$("#dialogWrap").css("display","block");
+			});
+		});
+
 		KindEditor.plugin('html2canvas', function(K) {
 			var editor = this, name = 'html2canvas';
 			editor.clickToolbar(name, function() {
@@ -150,7 +160,7 @@
 					window.opener.postMessage('screenshots', "*");
 				}else {
 					alert('无法截图，请打开页面')
-			     }
+				}
 			});
 		});
 		KindEditor.options.cssData = "body { font-size: 15px; font-family:'Microsoft Yahei', 'Helvetica', 'Simsun', 'Arial';}";
@@ -292,19 +302,13 @@
 			R3Ajax.post("/im/satis.html?orgi=${orgi!''}" , function(){
 				document.getElementById("diaShade").style.display = "none" ;
 				document.getElementById("dialogWrap").style.display = "none" ;
-				alert("服务评价已提交，请关闭浏览器！");
-				service_end = true;
+				if(isAgentEnds){
+					alert("服务评价已提交，请关闭浏览器！");
+					isAgentEnds = false ;
+					service_end = true;
+				}
 			} , "id="+form.id.value+"&satislevel="+document.getElementById("satislevel_input").value +"&satiscomment="+encodeURIComponent(satisComment));
 			return false ;
-		}
-		window.onbeforeunload = function(){
-			if(service_end == false){
-				<#if sessionConfig?? && sessionConfig.satisfaction?? && sessionConfig.satisfaction>
-				document.getElementById("diaShade").style.display = "block" ;
-				document.getElementById("dialogWrap").style.display = "block" ;
-				</#if>
-				return "您确定断开对话？" ;
-			}
 		}
 
 		window.addEventListener(
@@ -332,6 +336,12 @@
 			background-image: url(img/cutimage.png);
 			background-position: 0px 0px;
 			width: 16px;
+			height: 16px;
+		}
+		.ke-icon-evaluation {
+			background-image: url(img/evaluationa.png);
+			background-position: 0px 0px;
+			width: 20px;
 			height: 16px;
 		}
 	</style>
@@ -582,6 +592,7 @@
 			<#if sessionConfig?? && sessionConfig.satisfaction?? && sessionConfig.satisfaction>
 			document.getElementById("diaShade").style.display = "block";
 			document.getElementById("dialogWrap").style.display = "block";
+			isAgentEnds = true;
 			</#if>
 		} else if(data.messageType == "text"){
 			service_end = false;

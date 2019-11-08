@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 
 public class NettyClients {
@@ -211,9 +212,12 @@ public class NettyClients {
 
     public void sendEntIMEventMessage(String id, String event, Object data) {
         List<SocketIOClient> entims = entIMClients.getClients(id);
-        for (SocketIOClient userClient : entims) {
-            userClient.sendEvent(event, data);
-        }
+        entims.stream().forEach(c -> c.sendEvent(event, data));
+    }
+
+    public void sendEntIMGroupEventMessage(String id, String group, String event, Object data) {
+        List<SocketIOClient> entims = entIMClients.getClients(id);
+        entims.stream().findAny().ifPresent(c -> c.getNamespace().getRoomOperations(group).sendEvent(event, data));
     }
 
     public int getEntIMClientsNum(String user) {

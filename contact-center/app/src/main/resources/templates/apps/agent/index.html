@@ -173,10 +173,7 @@
 						id: agentUserId
 					}
 				}).then(function(result){
-					if(result.status){
-						handleRestApiFail(result.status)
-						// token过期
-					} else if(result.rc === 0){
+					if(result.rc === 0){
 						// 会话关闭成功
 						top.layer.msg('会话已关闭',{icon: 1, time: 1000})
 						//  进行显示调整！

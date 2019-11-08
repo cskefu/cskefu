@@ -16,10 +16,13 @@
  */
 package com.chatopera.cc.handler;
 
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.basic.Viewport;
+import com.chatopera.cc.basic.auth.AuthToken;
 import com.chatopera.cc.cache.Cache;
+import com.chatopera.cc.exception.CSKefuException;
 import com.chatopera.cc.handler.api.QueryParams;
 import com.chatopera.cc.model.StreamingFile;
 import com.chatopera.cc.model.SystemConfig;
@@ -28,8 +31,6 @@ import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.blob.JpaBlobHelper;
 import com.chatopera.cc.persistence.repository.StreamingFileRepository;
 import com.chatopera.cc.persistence.repository.TenantRepository;
-import com.chatopera.cc.exception.CSKefuException;
-import com.chatopera.cc.basic.Constants;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -52,7 +53,6 @@ import java.text.ParseException;
 import java.util.Map;
 
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
 
 @Controller
@@ -71,6 +71,9 @@ public class Handler {
 
     @Autowired
     private Cache cache;
+
+    @Autowired
+    private AuthToken authToken;
 
     public final static int PAGE_SIZE_BG = 1;
     public final static int PAGE_SIZE_TW = 20;
@@ -92,7 +95,7 @@ public class Handler {
                 }
             }
             if (StringUtils.isNotBlank(authorization)) {
-                user = cache.findOneLoginUserByAuthAndOrgi(authorization, MainContext.SYSTEM_ORGI);
+                user = authToken.findUserByAuth(authorization);
             }
             if (user == null) {
                 user = new User();

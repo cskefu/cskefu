@@ -16,8 +16,6 @@
  */
 package com.chatopera.cc.handler.api;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
@@ -33,6 +31,7 @@ import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.RestResult;
 import com.chatopera.cc.util.RestResultType;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
@@ -147,23 +146,6 @@ public class ApiUserController extends Handler {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/findByOrgan", method = RequestMethod.POST)
-    @Menu(type = "apps", subtype = "user", access = true)
-    public ResponseEntity<RestResult> findByOrgan(HttpServletRequest request, @Valid String organ) {
-        List<OrganUser> organUsers = organUserRepository.findByOrgan(organ);
-        List<String> userids = organUsers.stream().map(p -> p.getUserid()).collect(Collectors.toList());
-        List<User> users = userRes.findAll(userids);
-        JSONArray json = new JSONArray();
-        users.stream().forEach(u -> {
-            JSONObject obj = new JSONObject();
-            obj.put("id", u.getId());
-            obj.put("uname", u.getUname());
-            json.add(obj);
-        });
-
-        return new ResponseEntity<>(new RestResult(RestResultType.OK, json), HttpStatus.OK);
-    }
-
     /**
      * 用户管理
      *
@@ -192,6 +174,9 @@ public class ApiUserController extends Handler {
                 case "update":
                     json = update(request, j);
                     break;
+                case "findByOrgan":
+                    json = findByOrgan(j);
+                    break;
                 default:
                     json.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_2);
                     json.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的操作。");
@@ -200,6 +185,37 @@ public class ApiUserController extends Handler {
 
         return new ResponseEntity<String>(json.toString(), headers, HttpStatus.OK);
 
+    }
+
+    /**
+     * 根据组织查找用户
+     *
+     * @param payload
+     * @return
+     */
+    private JsonObject findByOrgan(final JsonObject payload) {
+        final JsonObject resp = new JsonObject();
+        if (payload.has("organ")) {
+            List<OrganUser> organUsers = organUserRepository.findByOrgan(payload.get("organ").getAsString());
+            List<String> userids = organUsers.stream().map(p -> p.getUserid()).collect(Collectors.toList());
+            List<User> users = userRes.findAll(userids);
+
+            JsonArray data = new JsonArray();
+            users.stream().forEach(u -> {
+                JsonObject obj = new JsonObject();
+                obj.addProperty("id", u.getId());
+                obj.addProperty("uname", u.getUname());
+                data.add(obj);
+            });
+
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
+            resp.add(RestUtils.RESP_KEY_DATA, data);
+        } else {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "Invalid params.");
+        }
+
+        return resp;
     }
 
     /**

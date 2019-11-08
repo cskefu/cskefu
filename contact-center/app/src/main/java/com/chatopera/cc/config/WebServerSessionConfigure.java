@@ -15,6 +15,7 @@
  */
 package com.chatopera.cc.config;
 
+import com.chatopera.cc.basic.auth.AuthRedisTemplate;
 import com.chatopera.cc.cache.RedisKey;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.session.data.redis.RedisFlushMode;
 import org.springframework.session.data.redis.RedisOperationsSessionRepository;
@@ -57,7 +59,13 @@ public class WebServerSessionConfigure {
     private String pass;
 
     @Value("${spring.redis.session.db}")
-    private int db;
+    private int sessionDb;
+
+    @Value("${spring.redis.token.db}")
+    private int tokenDb;
+
+    @Value("${spring.redis.timeout}")
+    private int timeout;
 
     @Primary
     @Bean
@@ -74,10 +82,11 @@ public class WebServerSessionConfigure {
         JedisConnectionFactory factory = new JedisConnectionFactory();
         factory.setHostName(host);
         factory.setPort(port);
-        factory.setDatabase(db);
+        factory.setDatabase(sessionDb);
         if (StringUtils.isNotBlank(pass)) {
             factory.setPassword(pass);
         }
+        factory.setTimeout(timeout);
         factory.afterPropertiesSet();
         RedisTemplate<Object, Object> template = new RedisTemplate<Object, Object>();
         template.setKeySerializer(new StringRedisSerializer());
@@ -85,4 +94,29 @@ public class WebServerSessionConfigure {
         template.setConnectionFactory(factory);
         return template;
     }
+
+
+    /**
+     * 存储AuthToken
+     * @return
+     */
+    @Bean
+    public AuthRedisTemplate authRedisTemplate() {
+        JedisConnectionFactory factory = new JedisConnectionFactory();
+        factory.setHostName(host);
+        factory.setPort(port);
+        factory.setDatabase(tokenDb);
+        if (StringUtils.isNotBlank(pass)) {
+            factory.setPassword(pass);
+        }
+        factory.setTimeout(timeout);
+        factory.afterPropertiesSet();
+
+        AuthRedisTemplate template = new AuthRedisTemplate();
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setConnectionFactory(factory);
+        return template;
+    }
+
 }
