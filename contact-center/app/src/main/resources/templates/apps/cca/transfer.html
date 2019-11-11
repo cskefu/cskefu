@@ -17,8 +17,8 @@
 						<#list skillGroups as skill>
 						<#if user.affiliates?seq_contains(skill.id)>
 						<#assign agentNum = 0 >
-						<#if userList??><#list userList as agent><#if agent.affiliates?seq_contains(skill.id)><#assign agentNum = agentNum + 1 ></#if></#list></#if>
-						<li title="${skill.name!''}(${agentNum!''})" class="uk_role <#if skill.id == currentorgan>this</#if>" style="margin:0px;padding:7px 0 7px 20px;display: inline-block;max-width: 100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" onclick="$('.uk_role.this').removeClass('this');$(this).addClass('this');"><a
+						<#if userList??><#list userList as agent><#if agent.skills[skill.id]??><#assign agentNum = agentNum + 1 ></#if></#list></#if>
+						<li title="${skill.name!''}(${agentNum!''})" class="uk_role <#if skill.id == currentorgan>this</#if>" style="margin:0px;padding:7px 0 7px 20px;max-width: 100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" onclick="$('.uk_role.this').removeClass('this');$(this).addClass('this');"><a
 							href="/apps/cca/transfer/agent.html?organ=${skill.id!''}&agentnoid=${agentnoid!''}" data-toggle="load" data-target="#skillAgentList">
 								<i class="kfont" style="margin-top: 3px;float: left"></i>
 							    <span style="max-width: 120px;text-overflow: ellipsis;white-space: nowrap; overflow: hidden;float: left;margin: 0 3px">${skill.name!''}</span>(${agentNum!''})
@@ -31,7 +31,7 @@
 						<#list skillGroups as skill>
 						<#if !user.affiliates?seq_contains(skill.id)>
 						<#assign agentNum = 0 >
-						<#if userList??><#list userList as agent><#if agent.affiliates?seq_contains(skill.id)><#assign agentNum = agentNum + 1 ></#if></#list></#if>
+						<#if userList??><#list userList as agent><#if agent.skills[skill.id]??><#assign agentNum = agentNum + 1 ></#if></#list></#if>
 						<li title="${skill.name!''}(${agentNum!''})" class="uk_role <#if skill.id == currentorgan>this</#if>" style="margin:0px;padding:7px 0 7px 20px;"  onclick="$('.uk_role.this').removeClass('this');$(this).addClass('this');"><a
 							href="/apps/cca/transfer/agent.html?organ=${skill.id!''}&agentnoid=${agentnoid!''}" data-toggle="load" data-target="#skillAgentList">
 							<i style="margin-top: 3px;float: left" class="kfont"></i><span style="max-width: 120px;text-overflow: ellipsis;white-space: nowrap; overflow: hidden;float: left;margin: 0 3px">${skill.name!''}</span>(${agentNum!''})

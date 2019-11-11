@@ -277,15 +277,11 @@ public class AgentEventHandler {
         AgentUser agentUser = MainContext.getCache().findOneAgentUserByUserIdAndOrgi(
                 received.getTouser(), received.getOrgi()).orElseGet(null);
 
-        AgentStatus agentStatus = MainContext.getCache().findOneAgentStatusByAgentnoAndOrig(
-                agentno, received.getOrgi());
-
         /**
          * 判断用户在线状态，如果用户在线则通过webim发送
          * 检查收发双方的信息匹配
          */
-        if (agentStatus != null &&
-                agentUser != null &&
+        if (agentUser != null &&
                 agentno != null &&
                 StringUtils.equals(agentno, agentUser.getAgentno()) &&
                 !StringUtils.equals(agentUser.getStatus(), MainContext.AgentUserStatusEnum.END.toString())) {

@@ -14,13 +14,8 @@
 							</#if>
 						</select>
 				        <label>~</label>
-						<select id="agent" name="agentno" class="ukefu-input" lay-ignore style="width: 90px;display: inline-block">
-							<option value="">所有坐席</option>
-							<#if agentList??>
-							<#list agentList as useragent>
-							<option value="${useragent.id}" <#if agentno?? && agentno == useragent.id>selected="selected"</#if>>${useragent.uname!''}</option>
-							</#list>
-							</#if>
+						<select id="agent" name="agentno" class="ukefu-input" lay-ignore style="width: 100px;display: inline-block">
+							<option value="">请选择技能组</option>
 						</select>
 						<div class="layui-input-inline" style="float: right;width: auto">
 							<button class="layui-btn layui-btn-small layui-btn-primary" style="color:#ffffff;">
@@ -86,25 +81,30 @@ word-break: break-all;">${agentuser.username!''}</span>
 </div>
 <script src="/js/CSKeFu_Rest_Request.v1.js"></script>
 <script>
-	function renderAgentsByOrgan(data){
-		restApiRequest({
-			silent: true,
-			path: 'user',
-			data: {
-				ops: 'findByOrgan',
-				organ: data
-			}
-		}).then(function(result){
-			if(result.rc == 0){
-				$("#agent").html('<option value="">所有坐席</option>');
-				for (var i=0 ; i<result.data.length ; i++) {
-					$("#agent").prepend('<option value="' + result.data[i].id + '"  <#if agentno?? && agentno == result.data[i].id>selected="selected"</#if>>' + result.data[i].uname + '</option>')
-				};
-			}
-		}, function(error){
-			// 服务器异常
-			top.layer.msg('服务器抽风，请稍后再试！', {icon: 2, offset: 'b', time: 3000})
-		})
+	function renderAgentsByOrgan(organid){
+		if(organid.length>0){
+			restApiRequest({
+				silent: true,
+				path: 'user',
+				data: {
+					ops: 'findByOrgan',
+					organ: organid
+				}
+			}).then(function(result){
+				if(result.rc == 0){
+					$("#agent").html('<option value="">所有坐席</option>');
+					for (var i=0 ; i<result.data.length ; i++) {
+						$("#agent").prepend('<option value="' + result.data[i].id + '">' + result.data[i].uname + '</option>')
+					};
+				}
+			}, function(error){
+				// 服务器异常
+				top.layer.msg('服务器抽风，请稍后再试！', {icon: 2, offset: 'b', time: 3000})
+			})
+		}else{
+			$("#agent").html("<option value=\"\">请选择技能组</option>");
+		}
+
 	}
 
 	$(function(){

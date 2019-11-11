@@ -32,6 +32,11 @@
 		    evaluation  :'满意度评价'
 		});
         KindEditor.ready(function (K) {
+        	var items =['emoticons', 'image', 'insertfile','html2canvas','evaluation'];
+			if(window.opener == null){
+				items =['emoticons', 'image', 'insertfile','evaluation'];
+			}
+
             editor = K.create('textarea[name="content"]', {
                 autoHeightMode: false,
                 width: "100%",
@@ -44,7 +49,8 @@
                 allowInsertUpload:false,		//增加的参数，上传图片后是否插入到当前区域
                 allowImageRemote:false,
 				filterMode:true,
-				items: ['emoticons', 'image', 'insertfile','html2canvas','evaluation'],
+
+				items: items,
 				// items: ['emoticons', 'image', 'html2canvas'],		//w4l客户需求，访客不允许上传文件
 				htmlTags: {img : ['src', 'width', 'height', 'border', 'alt', 'title', 'align', '.width', '.height', '.border'] , br:[]}  ,
 				afterChange : function() {

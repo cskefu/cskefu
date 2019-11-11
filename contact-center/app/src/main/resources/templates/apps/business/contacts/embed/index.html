@@ -119,10 +119,11 @@
 		var form = layui.form();
 	  	form.on('submit(contactsForm)', function(data){
 	  		var targetIFrame = eval(iframe);
-	  		if($(":checked").val()){
-	  			targetIFrame.Proxy.execLinkContactsFunction($(":checked").val()) ;
+	  		var selectedContactId = $("input:checked.ctxid").val();
+	  		if(selectedContactId){
+	  			targetIFrame.Proxy.execLinkContactsFunction(selectedContactId) ;
 	  		}else {
-				const currentAgentUserContactsId = $("#currentContacsId").val();
+				var currentAgentUserContactsId = $("#currentContacsId").val();
 				targetIFrame.Proxy.execCancelContactsFunction(currentAgentUserContactsId) ;
 			}
 

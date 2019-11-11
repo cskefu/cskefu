@@ -19,8 +19,8 @@
 						<#list skillGroups as skill>
 						<#if user.affiliates?seq_contains(skill.id)>
 						<#assign agentNum = 0 >
-						<#if userList??><#list userList as agent><#if agent.affiliates?seq_contains(skill.id)><#assign agentNum = agentNum + 1 ></#if></#list></#if>
-						<li title="${skill.name!''}(${agentNum!''})" class="uk_role <#if skill.id == currentorgan>this</#if>" style="margin:0px;padding:7px 0 7px 20px;display: inline-block;max-width: 100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" onclick="$('.uk_role.this').removeClass('this');$(this).addClass('this');"><a
+						<#if userList??><#list userList as agent><#if agent.skills[skill.id]??><#assign agentNum = agentNum + 1 ></#if></#list></#if>
+						<li title="${skill.name!''}(${agentNum!''})" class="uk_role <#if skill.id == currentorgan>this</#if>" style="margin:0px;padding:7px 0 7px 20px;max-width: 100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" onclick="$('.uk_role.this').removeClass('this');$(this).addClass('this');"><a
 							href="/agent/transfer/agent.html?organ=${skill.id!''}" data-toggle="load" data-target="#skillAgentList">
 								<i class="kfont" style="margin-top: 3px;float: left"></i>
 							    <span style="max-width: 120px;text-overflow: ellipsis;white-space: nowrap; overflow: hidden;float: left;margin: 0 3px">${skill.name!''}</span>(${agentNum!''})
@@ -33,7 +33,7 @@
 						<#list skillGroups as skill>
 						<#if !user.affiliates?seq_contains(skill.id)>
 						<#assign agentNum = 0 >
-						<#if userList??><#list userList as agent><#if agent.affiliates?seq_contains(skill.id)><#assign agentNum = agentNum + 1 ></#if></#list></#if>
+						<#if userList??><#list userList as agent><#if agent.skills[skill.id]??><#assign agentNum = agentNum + 1 ></#if></#list></#if>
 						<li title="${skill.name!''}(${agentNum!''})" class="uk_role <#if skill.id == currentorgan>this</#if>" style="margin:0px;padding:7px 0 7px 20px;"  onclick="$('.uk_role.this').removeClass('this');$(this).addClass('this');"><a
 							href="/agent/transfer/agent.html?organ=${skill.id!''}" data-toggle="load" data-target="#skillAgentList">
 							<i style="margin-top: 3px;float: left" class="kfont"></i><span style="max-width: 120px;text-overflow: ellipsis;white-space: nowrap; overflow: hidden;float: left;margin: 0 3px">${skill.name!''}</span>(${agentNum!''})
@@ -71,26 +71,12 @@
 	<div class="layui-form-button">
 		<div class="layui-button-block">
 			<button class="layui-btn" lay-submit lay-filter="contactsForm">转接</button>
-			<button type="button" class="layui-btn layui-btn-primary" onclick="closedPage()">关闭</button>
+			<button type="button" class="layui-btn layui-btn-primary" onclick="closeTransferOutDialogue()">关闭</button>
 		</div>
 	</div>
 </form>
 
 <script>
-
-	function closedPage(){
-		layer.closeAll("page")
-	}
-
-	$('.ukefu-agentstatus td:not(:last-child)').on("click" , function(){
-		$('.ctxid').prop("checked" , false);
-		if($(this).parent().find("input").prop("checked")){
-			$(this).parent().find("input").prop("checked" , false);
-		}else{
-			$(this).parent().find("input").prop("checked" , true);
-		}
-	});
-
 	/**
 	 * 转接访客坐席
 	 * @param agentUserId
@@ -98,7 +84,7 @@
 	 * @param agentUserServiceId
 	 * @param memo
 	 */
-	function submitTransAgentUserOut(agentUserId, targetAgentno, agentUserServiceId, memo) {
+	function submitTransAgentUserOutByAgent(agentUserId, targetAgentno, agentUserServiceId, memo) {
 		restApiRequest({
 			silent: true,
 			path: 'agentuser',
@@ -113,6 +99,7 @@
 			if(result.rc === 0){
 				// 转接成功
 				top.layer.msg('转接已完成',{icon: 1, time: 1000})
+				closeTransferOutDialogue();
 				//  进行显示调整！
 				if(multiMediaDialogWin.$("#chat_users li").length>1){
 					multiMediaDialogWin.$("li[remove-id="+agentUserId+"]").remove();
@@ -138,22 +125,31 @@
 		})
 	}
 
-	$(function(){
-		$('#selfTransAgentUserForm').on('submit', function(e){
-			e.preventDefault();  //prevent form from submitting
-			var data = $("#selfTransAgentUserForm :input").serializeArray();
-			var params = {};
-			for(var index = 0; index < data.length; index++){
-				params[data[index]['name']] = data[index]["value"];
-			}
+	function closeTransferOutDialogue(){
+		layer.closeAll("page")
+	}
+
+	$('.ukefu-agentstatus td:not(:last-child)').on("click" , function(){
+		$('.ctxid').prop("checked" , false);
+		if($(this).parent().find("input").prop("checked")){
+			$(this).parent().find("input").prop("checked" , false);
+		}else{
+			$(this).parent().find("input").prop("checked" , true);
+		}
+	});
+
+	layui.use('form', function() {
+		var form = layui.form();
+		// form.render(); //更新全部
+		form.on('submit(contactsForm)', function(data){
+			console.log("contactForm", data.field)
 			// 验证数据的完整，以下为必填
-			if(params["userid"] && params["agentuserid"] && params["agentserviceid"] && params["agentno"]){
-				submitTransAgentUserOut(params["agentuserid"], params["agentno"], params["agentserviceid"], params["memo"]);
+			if(data.field["userid"] && data.field["agentuserid"] && data.field["agentserviceid"] && data.field["agentno"]){
+				submitTransAgentUserOutByAgent(data.field["agentuserid"], data.field["agentno"], data.field["agentserviceid"], data.field["memo"]);
 			} else {
 				top.layer.msg('未选择合理的转接信息！',{icon: 2, time: 3000});
 			}
+			return false;
 		});
-	});
-
-
+	})
 </script>

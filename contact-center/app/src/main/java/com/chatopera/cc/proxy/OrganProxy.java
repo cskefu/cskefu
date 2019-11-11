@@ -1,6 +1,6 @@
 package com.chatopera.cc.proxy;
 
-import com.chatopera.cc.handler.admin.OrganController;
+import com.chatopera.cc.controller.admin.OrganController;
 import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.OrganRepository;

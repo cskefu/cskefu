@@ -296,19 +296,30 @@
             },
             silent: true
         }).then(function (data) {
-            // TODO 调试信息，查看网络请求次数
-            // https://gitlab.chatopera.com/chatopera/cosinee/issues/596
             if (data.rc == 0){
                 // 返回可用的触达渠道列表 data.data
-                if(multiMediaDialogWin.length>0){
-                    // TODO https://gitlab.chatopera.com/chatopera/cosinee/issues/619
-                    // 此处使用 attr(src, "url") 造成了刷屏，应该调整openDialogWinByContactid的返回结果
-                    // 然后异步加载新的对话数据，最后使用 tabChange 跳转到该页面
-                    parent.$('#multiMediaDialogWin').load(function(){
+                if(multiMediaDialogWin.length > 0){
+                    multiMediaDialogWin.load(function(){
                         parent.layui.element().tabChange('ukefutab','multiMediaDialogWin');
                     }).attr('src' , '/agent/proactive.html?contactid='+id+'&channels='+data.data);
                 } else {
-                    parent.$('#agentdesktop').attr('data-href' , '/agent/proactive.html?contactid='+id+'&channels='+data.data).click();
+                    // 使用API调用，由SocketIO传达弹屏通知，跳转到该访客页面
+                    restApiRequest({
+                        path: 'contacts',
+                        silent: true,
+                        data: {
+                            ops: 'proactive',
+                            channels: data.data,
+                            contactid: id
+                        }
+                    }).then(function(result){
+                        if(result.rc == 0){
+                            // 操作成功，等待弹屏
+                        } else {
+                            // 操作未成功，进行提示
+                            top.layer.msg('未能成功发起会话，请稍后再试！',{icon: 2, time: 3000})
+                        }
+                    }, handleRestApiFail);
                 }
             } else if(data.status) {
                 handleRestApiFail(data.status, data.data);

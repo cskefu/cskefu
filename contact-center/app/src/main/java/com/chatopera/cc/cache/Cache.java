@@ -15,7 +15,7 @@
  */
 package com.chatopera.cc.cache;
 
-import com.chatopera.cc.aop.AgentUserAspect;
+import com.chatopera.cc.aspect.AgentUserAspect;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.exception.CSKefuCacheException;
 import com.chatopera.cc.model.*;
