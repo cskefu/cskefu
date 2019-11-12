@@ -38,40 +38,20 @@ public class NettyAgentClient implements NettyClient {
     public void putClient(String key, SocketIOClient client) {
 //        logger.info("[putClient] userId {}", key);
         agentClientsMap.put(key, client);
-        // 更新缓存
-        MainContext.getCache().putWebIMAgentSocketioSessionId(key, MainContext.SYSTEM_ORGI,
-                MainUtils.getContextID(client.getSessionId().toString()));
+//        // 更新缓存
+//        MainContext.getCache().putWebIMAgentSocketioSessionId(key, MainContext.SYSTEM_ORGI,
+//                                                              MainUtils.getContextID(client.getSessionId().toString()));
     }
 
+    @Deprecated
     public int removeClient(String key, String id) {
-        List<SocketIOClient> keyClients = this.getClients(key);
-        logger.debug("[removeClient] userId {}, sessionId {}, client size {}", key, id, keyClients.size());
+        logger.warn("[removeClient] should not happen, call NettClients.removeClient instead.");
+        return 0;
+    }
 
-        for (SocketIOClient client : keyClients) {
-            if (MainUtils.getContextID(client.getSessionId().toString()).equals(id)) {
-                keyClients.remove(client);
-                // 更新缓存
-                MainContext.getCache().deleteWebIMAgentSocketioSessionId(key, MainContext.SYSTEM_ORGI, id);
-                logger.info("[removeClient] socketClient userid {} sessionId {} is removed.", key, id);
 
-                break;
-            }
-        }
-        if (keyClients.size() == 0) {
-            logger.debug("[removeClient] 0 clients for userId {} after remove, remove all keys from NettyClientMap", key);
-            agentClientsMap.removeAll(key);
-
-//  以下代码打印剩余的SocketIO的连接的信息
-//        } else {
-//            StringBuffer sb = new StringBuffer();
-//            for (SocketIOClient client : keyClients) {
-//                sb.append(MainUtils.getContextID(client.getSessionId().toString()));
-//                sb.append(", ");
-//            }
-//
-//            logger.debug("[removeClient] still get userId {} remaining clients: {}", key, sb.toString());
-        }
-        return keyClients.size();
+    public void removeAll(final String key) {
+        agentClientsMap.removeAll(key);
     }
 
 }

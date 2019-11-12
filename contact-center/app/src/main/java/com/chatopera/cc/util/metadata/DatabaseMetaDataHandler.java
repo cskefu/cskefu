@@ -23,11 +23,11 @@ import java.util.List;
 
 /**
  * @author jaddy0302 Rivulet DatabaseMetaDataHandler.java 2010-3-21
- * 
+ *
  */
 public class DatabaseMetaDataHandler{
 	/**
-	 * 
+	 *
 	 * @param database
 	 * @return
 	 * @throws Exception
@@ -36,20 +36,14 @@ public class DatabaseMetaDataHandler{
 		List<UKTableMetaData> tables = null ;
 		{
 			UKDatabaseMetadata rivuDatabase  = null ;
-			
-			try{
-				rivuDatabase = new UKDatabaseMetadata(conn) ;
-				tables = rivuDatabase.loadTables(null, null, null, true) ;
-			}finally{
-				if(conn!=null)
-					conn.close() ;
-			}
+			rivuDatabase = new UKDatabaseMetadata(conn) ;
+			tables = rivuDatabase.loadTables(null, null, null, true) ;
 		}
-		
+
 		return tables;
 	}
 	/**
-	 * 
+	 *
 	 * @param database
 	 * @return
 	 * @throws Exception
@@ -57,21 +51,14 @@ public class DatabaseMetaDataHandler{
 	public static List<UKTableMetaData> getTables(Connection conn , String tabltableNamePattern) throws Exception{
 		List<UKTableMetaData> tables = null ;
 		{
-			UKDatabaseMetadata rivuDatabase  = null ;
-			
-			try{
-				rivuDatabase = new UKDatabaseMetadata(conn) ;
-				tables = rivuDatabase.loadTables(tabltableNamePattern, null, null, true) ;
-			}finally{
-				if(conn!=null)
-					conn.close() ;
-			}
+			UKDatabaseMetadata rivuDatabase = new UKDatabaseMetadata(conn) ;
+			tables = rivuDatabase.loadTables(tabltableNamePattern, null, null, true) ;
 		}
-		
+
 		return tables;
 	}
 	/**
-	 * 
+	 *
 	 * @param database
 	 * @return
 	 * @throws Exception
@@ -79,12 +66,11 @@ public class DatabaseMetaDataHandler{
 	public static UKTableMetaData getTable(Connection conn , String tablename) throws Exception{
 		UKTableMetaData rivuTableMetaData = null ;
 		{
-			UKDatabaseMetadata rivuDatabase  = null ;
-			rivuDatabase = new UKDatabaseMetadata(conn) ;
+			UKDatabaseMetadata rivuDatabase = new UKDatabaseMetadata(conn) ;
 			rivuTableMetaData = rivuDatabase.loadTable(tablename, null, null, true) ;
 		}
-			
+
 		return rivuTableMetaData;
 	}
-	
+
 }

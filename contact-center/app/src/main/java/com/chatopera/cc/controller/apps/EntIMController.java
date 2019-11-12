@@ -125,7 +125,6 @@ public class EntIMController extends Handler {
         ModelAndView view = request(super.createEntIMTempletResponse("/apps/entim/index"));
 
         User logined = super.getUser(request);
-        userProxy.attachOrgansPropertiesForUser(logined);
 
         Map<String, Organ> targetOrgans = getChatOrgans(logined, super.getOrgi(request));
 

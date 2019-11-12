@@ -129,8 +129,38 @@ public class NettyClients {
         agentClients.putClient(id, agentClient);
     }
 
-    public int removeAgentEventClient(final String id, final String sessionid) {
-        return agentClients.removeClient(id, sessionid);
+    public int removeAgentEventClient(final String id, final String sessionid, final String connectid) {
+        List<SocketIOClient> keyClients = agentClients.getClients(id);
+        logger.debug(
+                "[removeAgentEventClient] userId {}, sessionId {}, client size {}, connectid {}", id, sessionid,
+                keyClients.size(), connectid);
+
+        for (final SocketIOClient client : keyClients) {
+            if (StringUtils.equals(client.get("connectid"), connectid)) {
+                keyClients.remove(client);
+                logger.info("[removeAgentEventClient] socketClient userid {} connectid {} is removed.", id, connectid);
+                break;
+            }
+        }
+
+        if (keyClients.size() == 0) {
+            logger.info(
+                    "[removeAgentEventClient] 0 clients for userId {} after remove, remove all keys from NettyClientMap",
+                    id);
+            agentClients.removeAll(id);
+        } else {
+            //  以下代码打印剩余的SocketIO的连接的信息
+            StringBuffer sb = new StringBuffer();
+            for (SocketIOClient client : keyClients) {
+                sb.append(MainUtils.getContextID(client.getSessionId().toString()));
+                sb.append(", ");
+            }
+
+            logger.info(
+                    "[removeAgentEventClient] still get userId {} remaining clients[{}]: {}", id, keyClients.size(),
+                    sb.toString());
+        }
+        return keyClients.size();
     }
 
     /**

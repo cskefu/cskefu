@@ -104,14 +104,14 @@ public class OrganController extends Handler {
             if (organData != null) {
                 map.addAttribute(
                         "userList", userProxy.findByOrganAndOrgiAndDatastatus(organData.getId(),
-                                                                              super.getOrgiByTenantshare(request),
-                                                                              false));
+                                super.getOrgiByTenantshare(request),
+                                false));
             }
         }
         map.addAttribute("areaList", areaRepository.findByOrgi(super.getOrgiByTenantshare(request)));
         map.addAttribute(
                 "roleList", roleRepository.findByOrgiAndOrgid(super.getOrgiByTenantshare(request),
-                                                              super.getOrgid(request)));
+                        super.getOrgid(request)));
         map.put("msg", msg);
         return request(super.createAdminTempletResponse("/admin/organ/index"));
     }
@@ -129,7 +129,7 @@ public class OrganController extends Handler {
 
         map.addAttribute(
                 "organList", organRepository.findByOrgiAndOrgid(super.getOrgiByTenantshare(request),
-                                                                super.getOrgid(request)));
+                        super.getOrgid(request)));
 
         return request(super.createRequestPageTempletResponse("/admin/organ/add"));
     }
@@ -174,7 +174,7 @@ public class OrganController extends Handler {
     public ModelAndView seluser(ModelMap map, HttpServletRequest request, @Valid String organ) {
         map.addAttribute(
                 "userList", userRepository.findByOrgiAndDatastatusAndOrgid(super.getOrgiByTenantshare(request), false,
-                                                                           super.getOrgid(request)));
+                        super.getOrgid(request)));
         Organ organData = organRepository.findByIdAndOrgi(organ, super.getOrgiByTenantshare(request));
         map.addAttribute("userOrganList", userProxy
                 .findByOrganAndOrgiAndDatastatus(organ, super.getOrgiByTenantshare(request), false));
@@ -197,7 +197,7 @@ public class OrganController extends Handler {
             HttpServletRequest request,
             final @Valid String[] users,
             final @Valid String organ
-                                ) {
+    ) {
         logger.info("[saveuser] save users {} into organ {}", StringUtils.join(users, ","), organ);
         final User loginUser = super.getUser(request);
 
@@ -245,7 +245,7 @@ public class OrganController extends Handler {
             final HttpServletRequest request,
             final @Valid String id,
             final @Valid String organ
-                                      ) {
+    ) {
         logger.info("[userroledelete] user id {}, organ {}", id, organ);
         if (id != null) {
             organUserRes.deleteOrganUserByUseridAndOrgan(id, organ);
@@ -263,7 +263,7 @@ public class OrganController extends Handler {
 
         map.addAttribute(
                 "organList", organRepository.findByOrgiAndOrgid(super.getOrgiByTenantshare(request),
-                                                                super.getOrgid(request)));
+                        super.getOrgid(request)));
         return view;
     }
 
@@ -317,6 +317,8 @@ public class OrganController extends Handler {
         if (organ != null && organParentAre != null && organParentAre.size() > 0) {
             msg = "admin_oran_not_delete";
         } else if (organ != null) {
+            List<OrganUser> organUsers = organUserRes.findByOrgan(organ.getId());
+            organUserRes.deleteInBatch(organUsers);
             organRepository.delete(organ);
             OnlineUserProxy.clean(super.getOrgi(request));
         } else {

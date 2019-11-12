@@ -827,30 +827,6 @@ public class Cache {
     }
 
     /******************************************
-     * WebIM Agent SocketIO 相关
-     ******************************************/
-    // 存储一个坐席的SocketIO SessionId
-    public void putWebIMAgentSocketioSessionId(final String agentno, final String orgi, final String sessioId) {
-        redisCommand.insertSetVal(RedisKey.getWebIMAgentSocketIOByAgentnoAndOrgi(agentno, orgi), sessioId);
-    }
-
-    // 删除一个坐席的执行的SocketIO SessionId
-    public void deleteWebIMAgentSocketioSessionId(final String agentno, final String orgi, final String sessionId) {
-        redisCommand.removeSetVal(RedisKey.getWebIMAgentSocketIOByAgentnoAndOrgi(agentno, orgi), sessionId);
-    }
-
-    // 获得一个坐席SocketIO连接的列表
-    public List<String> getWebIMAgentSocketioSessionIds(final String agentno, final String orgi) {
-        return redisCommand.getSet(RedisKey.getWebIMAgentSocketIOByAgentnoAndOrgi(agentno, orgi));
-    }
-
-    // 获得一个坐席SocketIO的连接数目
-    public int getWebIMAgentSocketioSessionSize(final String agentno, final String orgi) {
-        return redisCommand.getSetSize(RedisKey.getWebIMAgentSocketIOByAgentnoAndOrgi(agentno, orgi));
-    }
-
-
-    /******************************************
      * Customer Chats Audit 相关
      ******************************************/
     public void putAgentUserAuditByOrgi(final String orgi, final AgentUserAudit audit) throws CSKefuCacheException {

@@ -73,18 +73,23 @@ public class AgentEventHandler {
         final String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
         final String session = client.getHandshakeData().getSingleUrlParam("session");
         final String admin = client.getHandshakeData().getSingleUrlParam("admin");
-        logger.info("[onConnect] user: {}, orgi: {}, session: {}, admin: {}", userid, orgi, session, admin);
+        final String connectid = MainUtils.getUUID();
+        logger.info(
+                "[onConnect] user: {}, orgi: {}, session: {}, admin: {}, connectid {}", userid, orgi, session, admin,
+                connectid);
 
         if (StringUtils.isNotBlank(userid) && StringUtils.isNotBlank(session)) {
 
             // 验证当前的SSO中的session是否和传入的session匹配
             if (getAgentSessionProxy().isInvalidSessionId(userid, session, orgi)) {
                 // 该session信息不合法
+                logger.info("[onConnect] invalid sessionId {}", session);
                 return;
             }
 
             client.set("agentno", userid);
             client.set("session", session);
+            client.set("connectid", connectid);
 
             // 更新AgentStatus到数据库
             List<AgentStatus> agentStatusList = getAgentStatusRes().findByAgentnoAndOrgi(userid, orgi);
@@ -123,21 +128,16 @@ public class AgentEventHandler {
         String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
         String admin = client.getHandshakeData().getSingleUrlParam("admin");
         String session = client.getHandshakeData().getSingleUrlParam("session");
-        logger.info("[onDisconnect] userId {}, orgi {}, admin {}, session {}", userid, orgi, admin, session);
-
+        String connectid = client.get("connectid");
+        logger.info(
+                "[onDisconnect] userId {}, orgi {}, admin {}, session {}, connectid {}", userid, orgi, admin, session,
+                connectid);
 
         /**
          * 连接断开
          */
         if (NettyClients.getInstance().removeAgentEventClient(
-                userid, MainUtils.getContextID(client.getSessionId().toString())) == 0) {
-
-            // 验证当前的SSO中的session是否和传入的session匹配
-            if (getAgentSessionProxy().isInvalidSessionId(userid, session, orgi)) {
-                // 该session信息不合法
-                return;
-            }
-
+                userid, MainUtils.getContextID(client.getSessionId().toString()), connectid) == 0) {
             // 该坐席和服务器没有连接了，但是也不能保证该坐席是停止办公了，可能稍后TA又打开网页
             // 所以，此处做一个30秒的延迟，如果该坐席30秒内没重新建立连接，则撤退该坐席
             // 更新该坐席状态，设置为"无连接"，不会分配新访客
@@ -197,6 +197,7 @@ public class AgentEventHandler {
             if (getAgentSessionProxy().isInvalidSessionId(
                     received.getSupervisorid(), received.getSession(), agentUser.getOrgi())) {
                 // 该session信息不合法
+                logger.info("[onConnect] invalid sessionId {}", received.getSession());
                 return;
             }
 
