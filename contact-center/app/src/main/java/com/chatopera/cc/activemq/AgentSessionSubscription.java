@@ -42,7 +42,7 @@ public class AgentSessionSubscription {
             // 把登出消息通知给浏览器
             NettyClients.getInstance().publishLeaveEventMessage(
                     json.get("agentno").getAsString(),
-                    json.get("post").getAsString());
+                    json.get("expired").getAsString());
         } catch (Exception e) {
             logger.warn("[onMessage] error", e);
         }

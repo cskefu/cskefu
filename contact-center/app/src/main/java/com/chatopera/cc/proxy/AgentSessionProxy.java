@@ -48,30 +48,41 @@ public class AgentSessionProxy {
      * @param orgi
      */
     public void updateUserSession(final String agentno, final String sessionId, final String orgi) {
-//        logger.info("[updateUserSession] agentno {}, sessionId {}, orgi {}", agentno, sessionId, orgi);
+        logger.info("[updateUserSession] agentno {}, sessionId {}, orgi {}", agentno, sessionId, orgi);
         if (cache.existUserSessionByAgentnoAndOrgi(agentno, orgi)) {
             final String preSessionId = cache.findOneSessionIdByAgentnoAndOrgi(agentno, orgi);
             if (StringUtils.equals(preSessionId, sessionId)) {
                 // 现在的session和之前的是一样的，忽略更新
-//                logger.info(
-//                        "[updateUserSession] agentno {}, sessionId {} is synchronized, skip update.", agentno,
-//                        sessionId);
+                logger.info(
+                        "[updateUserSession] agentno {}, sessionId {} is synchronized, skip update.", agentno,
+                        sessionId);
                 return;
             }
 
             if (StringUtils.isNotBlank(preSessionId)) {
-                // 通知浏览器登出
-//                logger.info("[updateUserSession] notify logut browser");
-                JsonObject payload = new JsonObject();
-                payload.addProperty("agentno", agentno);   // 坐席ID
-                payload.addProperty("pre", preSessionId);  // 之前的Session
-                payload.addProperty("orgi", orgi);         // 租户Id
-                payload.addProperty("post", sessionId);    // 之后的Id
-                brokerPublisher.send(Constants.MQ_TOPIC_WEB_SESSION_SSO, payload.toString(), true);
+                publishAgentLeaveEvent(agentno, sessionId, orgi);
             }
         }
         cache.putUserSessionByAgentnoAndSessionIdAndOrgi(agentno, sessionId, orgi);
     }
+
+    /**
+     * 通知浏览器登出
+     *
+     * @param agentno
+     * @param expired 过期的SessionID
+     * @param orgi
+     */
+    public void publishAgentLeaveEvent(final String agentno, final String expired, final String orgi) {
+        //
+        logger.info("[publishAgentLeaveEvent] notify logut browser, expired session {}", expired);
+        JsonObject payload = new JsonObject();
+        payload.addProperty("agentno", agentno);   // 坐席ID
+        payload.addProperty("orgi", orgi);         // 租户Id
+        payload.addProperty("expired", expired);    // 之后的Id
+        brokerPublisher.send(Constants.MQ_TOPIC_WEB_SESSION_SSO, payload.toString(), true);
+    }
+
 
     /**
      * 是否是"不合法"的Session信息

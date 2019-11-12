@@ -57,13 +57,13 @@ function restApiRequest(opts) {
 
 // 操作成功的
 function handleRestApiSucc(msg) {
-    layer.msg( msg || '操作成功',{icon: 1, offset: 'b', time: 1000})
+    layer.msg( msg || '操作成功',{icon: 1, time: 1000})
 }
 
 // 操作失败的
 function handleRestApiFail(status, reason) {
     if(status && status === 'AUTH_ERROR'){
-        layer.msg('会话过期，请重新登录！',{icon: 2, offset: 'b', time: 3000});
+        layer.msg('会话过期，请重新登录！',{icon: 2, time: 3000});
         setTimeout(function(){
             // 执行登出
             window.location.href = "/logout.html";

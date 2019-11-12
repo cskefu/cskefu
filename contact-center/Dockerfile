@@ -14,7 +14,7 @@ RUN chmod +x /opt/install-corretto-8.sh && /opt/install-corretto-8.sh
 
 # install other lib and configure timezone
 RUN apt-get update && \
-   apt-get install --no-install-recommends -y tzdata mysql-client-5.7 zip unzip vim-tiny && \ 
+   apt-get install --no-install-recommends -y tzdata mysql-client-5.7 zip unzip vim-tiny libfontconfig1 libfreetype6 && \ 
    ln -sf /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime && \
    DEBIAN_FRONTEND=noninteractive dpkg-reconfigure --frontend noninteractive tzdata && \
    rm -rf /var/lib/apt/lists/*

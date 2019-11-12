@@ -101,8 +101,11 @@ $(document).ready(function(){
     		$('#agentdesktop').attr('data-href', '/agent/index.html?userid='+data.userid).click();
     	}
     }).on('leave', function(data){
-		// 执行登出
-		window.location.href = "/logout.html?code=2";
+		top.layer.msg('当前会话已经过期，稍后将自动登出！',{icon: 1, time: 2000}); 
+		setTimeout(function(){
+			// 执行登出
+			window.location.href = "/logout.html?code=2";
+		}, 2000);
 	});
 	/****每分钟执行一次，与服务器交互，保持会话****/
 	setInterval(function(){

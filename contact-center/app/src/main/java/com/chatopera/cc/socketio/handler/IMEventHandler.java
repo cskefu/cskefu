@@ -70,7 +70,7 @@ public class IMEventHandler {
         try {
             final String user = client.getHandshakeData().getSingleUrlParam("userid");
             final String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
-            final String session = client.getHandshakeData().getSingleUrlParam("session");
+            final String session = MainUtils.getContextID(client.getHandshakeData().getSingleUrlParam("session"));
             final String appid = client.getHandshakeData().getSingleUrlParam("appid");
             final String agent = client.getHandshakeData().getSingleUrlParam("agent");
             final String skill = client.getHandshakeData().getSingleUrlParam("skill");
@@ -87,6 +87,11 @@ public class IMEventHandler {
             logger.info(
                     "[onConnect] user {}, orgi {}, session {}, appid {}, agent {}, skill {}, title {}, url {}, traceid {}, nickname {}",
                     user, orgi, session, appid, agent, skill, title, url, traceid, nickname);
+
+            // save connection info
+            client.set("session", session);
+            client.set("userid", user);
+            client.set("appid", appid);
 
             if (StringUtils.isNotBlank(user)) {
                 InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress();
@@ -189,7 +194,7 @@ public class IMEventHandler {
                             , orgi);
                 });
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.warn("[onDisconnect] error", e);
             }
             NettyClients.getInstance().removeIMEventClient(
                     user, MainUtils.getContextID(client.getSessionId().toString()));

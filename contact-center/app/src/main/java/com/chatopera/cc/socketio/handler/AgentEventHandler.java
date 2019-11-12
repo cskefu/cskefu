@@ -186,8 +186,13 @@ public class AgentEventHandler {
             final SocketIOClient client,
             final AckRequest request,
             final InterventMessage received) throws JsonProcessingException {
+        final String agentno = client.get("agentno");
+        final String session = client.get("session");
+        final String connectid = client.get("connectid");
         logger.info(
-                "[onEvent] intervention: {}", received.toJsonObject());
+                "[onIntervetionEvent] intervention: agentno {}, session {}, connectid {}, payload {}", agentno, session, connectid,
+                received.toJsonObject());
+
         if (received.valid()) {
 
             // 获得AgentUser
@@ -195,9 +200,11 @@ public class AgentEventHandler {
 
             // 验证当前的SSO中的session是否和传入的session匹配
             if (getAgentSessionProxy().isInvalidSessionId(
-                    received.getSupervisorid(), received.getSession(), agentUser.getOrgi())) {
+                    agentno, session, agentUser.getOrgi())) {
                 // 该session信息不合法
-                logger.info("[onConnect] invalid sessionId {}", received.getSession());
+                logger.info("[onIntervetionEvent] invalid sessionId {}", session);
+                // 强制退出
+                client.sendEvent(MainContext.MessageType.LEAVE.toString());
                 return;
             }
 
@@ -265,18 +272,34 @@ public class AgentEventHandler {
             final SocketIOClient client,
             final AckRequest request,
             final ChatMessage received) throws IOException {
+        final String agentno = client.get("agentno");
+        final String session = client.get("session");
+        final String connectid = client.get("connectid");
+        received.setSessionid(session);
 
         // 此处user代表坐席的ID
-        String agentno = client.getHandshakeData().getSingleUrlParam("userid");
+//        String agentno = client.getHandshakeData().getSingleUrlParam("userid");
 
         logger.info(
-                "[onEvent] message: agentUserId {}, agentno {}, toUser {}, channel {}, orgi {}, appId {}, userId {}, sessionId {}",
+                "[onMessageEvent] message: agentUserId {}, agentno {}, toUser {}, channel {}, orgi {}, appId {}, userId {}, sessionId {}, connectid {}",
                 received.getAgentuser(), agentno, received.getTouser(),
                 received.getChannel(), received.getOrgi(), received.getAppid(), received.getUserid(),
-                received.getSessionid());
+                session, connectid);
+
+
+        // 验证当前的SSO中的session是否和传入的session匹配
+        if (getAgentSessionProxy().isInvalidSessionId(
+                agentno, session, received.getOrgi())) {
+            // 该session信息不合法
+            logger.info("[onMessageEvent] invalid sessionId {}", session);
+            // 强制退出
+            client.sendEvent(MainContext.MessageType.LEAVE.toString());
+            return;
+        }
 
         AgentUser agentUser = MainContext.getCache().findOneAgentUserByUserIdAndOrgi(
                 received.getTouser(), received.getOrgi()).orElseGet(null);
+
 
         /**
          * 判断用户在线状态，如果用户在线则通过webim发送

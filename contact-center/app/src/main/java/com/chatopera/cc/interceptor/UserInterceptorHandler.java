@@ -24,6 +24,7 @@ import com.chatopera.cc.config.MessagingServerConfigure;
 import com.chatopera.cc.model.Dict;
 import com.chatopera.cc.model.SystemConfig;
 import com.chatopera.cc.model.User;
+import com.chatopera.cc.proxy.AgentSessionProxy;
 import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang.StringUtils;
@@ -40,7 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 public class UserInterceptorHandler extends HandlerInterceptorAdapter {
     private final static Logger logger = LoggerFactory.getLogger(UserInterceptorHandler.class);
     private static UserProxy userProxy;
-
+    private static AgentSessionProxy agentSessionProxy;
     private static Integer webimport;
 
     @Override
@@ -48,12 +49,14 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
             throws Exception {
         boolean filter = false;
         User user = (User) request.getSession(true).getAttribute(Constants.USER_SESSION_NAME);
+
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             Menu menu = handlerMethod.getMethod().getAnnotation(Menu.class);
             if (user != null || (menu != null && menu.access()) || handlerMethod.getBean() instanceof BasicErrorController) {
                 filter = true;
                 if (user != null && StringUtils.isNotBlank(user.getId())) {
+
                     /**
                      * 每次刷新用户的组织机构、角色和权限
                      * TODO 此处代码执行频率高，但是并不是每次都要执行，存在很多冗余
@@ -164,7 +167,7 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
     }
 
 
-    public static Integer getWebimport() {
+    private static Integer getWebimport() {
         if (webimport == null) {
             webimport = MainContext.getContext().getBean(MessagingServerConfigure.class).getWebIMPort();
         }
@@ -172,10 +175,18 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
     }
 
 
-    public static UserProxy getUserProxy() {
+    private static UserProxy getUserProxy() {
         if (userProxy == null) {
             userProxy = MainContext.getContext().getBean(UserProxy.class);
         }
         return userProxy;
     }
+
+    private static AgentSessionProxy getAgentSessionProxy() {
+        if (agentSessionProxy == null) {
+            agentSessionProxy = MainContext.getContext().getBean(AgentSessionProxy.class);
+        }
+        return agentSessionProxy;
+    }
+
 }

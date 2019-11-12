@@ -25,7 +25,7 @@
 		<#elseif msg?? && msg == '1'>
 		layer.msg('用户注册成功，请通过用户名和密码登陆',{icon: 2, time: 3000})
 		<#elseif msg?? && msg == '2'>
-		layer.msg('您的账号已经在其它浏览器登录，请确认是您本人的操作，保证安全。',{icon: 2, offset: 't', time: 0})
+		layer.msg('您的账号已经在其它浏览器登录，请确认是您本人的操作，保证安全。',{icon: 4, offset: 't', time: 0})
 		</#if>
 	});   
 	layui.use('form', function(){
