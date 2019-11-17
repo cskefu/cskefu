@@ -179,14 +179,14 @@ public class EntIMController extends Handler {
         view.addObject("online", NettyClients.getInstance().getEntIMClientsNum(userid) > 0);
 
         Page<ChatMessage> chatMessageList = chatMessageRes.findByContextidAndUseridAndOrgi(userid,
-                                                                                           super.getUser(request).getId(), super.getOrgi(request),
-                                                                                           new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
+                super.getUser(request).getId(), super.getOrgi(request),
+                new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
         );
 
         view.addObject("chatMessageList", chatMessageList);
 
         RecentUser recentUser = recentUserRes.findByCreaterAndUserAndOrgi(super.getUser(request).getId(),
-                                                                          new User(userid), super.getOrgi(request)
+                new User(userid), super.getOrgi(request)
         ).orElseGet(() -> {
             RecentUser u = new RecentUser();
             u.setOrgi(super.getOrgi(request));
@@ -224,8 +224,8 @@ public class EntIMController extends Handler {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/entim/more"));
 
         Page<ChatMessage> chatMessageList = chatMessageRes.findByContextidAndUseridAndOrgiAndCreatetimeLessThan(userid,
-                                                                                                                super.getUser(request).getId(), super.getOrgi(request), createtime,
-                                                                                                                new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
+                super.getUser(request).getId(), super.getOrgi(request), createtime,
+                new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
         );
         view.addObject("chatMessageList", chatMessageList);
 
@@ -241,7 +241,7 @@ public class EntIMController extends Handler {
         view.addObject("imGroupUserList", imGroupUserRes.findByImgroupAndOrgi(imGroup, super.getOrgi(request)));
         view.addObject("contextid", id);
         view.addObject("chatMessageList", chatMessageRes.findByContextidAndOrgi(id, super.getOrgi(request),
-                                                                                new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
+                new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
         ));
         return view;
     }
@@ -254,7 +254,7 @@ public class EntIMController extends Handler {
     ) {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/entim/group/more"));
         view.addObject("chatMessageList", chatMessageRes.findByContextidAndOrgiAndCreatetimeLessThan(id,
-                                                                                                     super.getOrgi(request), createtime, new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
+                super.getOrgi(request), createtime, new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
         ));
         return view;
     }
@@ -264,20 +264,17 @@ public class EntIMController extends Handler {
     public ModelAndView user(HttpServletRequest request, HttpServletResponse response, @Valid String id) {
         ModelAndView view = request(super.createEntIMTempletResponse("/apps/entim/group/user"));
         User logined = super.getUser(request);
-        userProxy.attachOrgansPropertiesForUser(logined);
+        HashSet<String> affiliates = logined.getAffiliates();
 
-        // TODO: 优化性能
-        List<String> organIds = userProxy.findOrgansByUserid(logined.getId());
-        if (organIds != null) {
-            List<User> users = userProxy.findByOrganInAndDatastatus(organIds, false);
-            users.stream().forEach(u -> userProxy.attachOrgansPropertiesForUser(u));
-            view.addObject("userList", users);
-        }
+        List<User> users = userProxy.findByOrganInAndDatastatus(new ArrayList<>(affiliates), false);
+        users.stream().forEach(u -> userProxy.attachOrgansPropertiesForUser(u));
+        view.addObject("userList", users);
 
         IMGroup imGroup = imGroupRes.findById(id);
+        List<Organ> organs = organRes.findAll(affiliates);
 
         view.addObject("imGroup", imGroup);
-        view.addObject("organList", logined.getOrgans().values());
+        view.addObject("organList", organs);
         view.addObject("imGroupUserList", imGroupUserRes.findByImgroupAndOrgi(imGroup, super.getOrgi(request)));
 
         return view;
@@ -440,7 +437,7 @@ public class EntIMController extends Handler {
                     streamingFileRepository.save(sf);
 
                     String id = attachmentProxy.processAttachmentFile(multipart,
-                                                                      fileid, logined.getOrgi(), logined.getId()
+                            fileid, logined.getOrgi(), logined.getId()
                     );
                     upload = new UploadStatus("0", "/res/file.html?id=" + id);
                     String file = "/res/file.html?id=" + id;

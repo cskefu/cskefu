@@ -248,10 +248,12 @@
         }
         window.onbeforeunload = function(){
             if(service_end == false){
-            <#if sessionConfig?? && sessionConfig.satisfaction?? && sessionConfig.satisfaction>
-                document.getElementById("diaShade").style.display = "block" ;
-                document.getElementById("dialogWrap").style.display = "block" ;
-            </#if>
+                // 因为满意度问卷在访客切换机器人坐席时也会弹出，但是服务并未结束，目前先去掉END事件时弹出满意度
+                // TODO #744 优化方案见 https://gitlab.chatopera.com/chatopera/cosinee/issues/744
+                // <#if sessionConfig?? && sessionConfig.satisfaction?? && sessionConfig.satisfaction>
+                //     document.getElementById("diaShade").style.display = "block" ;
+                //     document.getElementById("dialogWrap").style.display = "block" ;
+                // </#if>
                 return "您确定断开对话？" ;
             }
         }
@@ -492,7 +494,7 @@
     var hostname = location.hostname ;
     var protocol = window.location.protocol.replace(/:/g,'');
     var username = encodeURIComponent("${username}");
-    var socket = io(protocol + '://'+hostname+':${port}/im/user?userid=${userid!''}&orgi=${orgi!''}&session=${sessionid!''}&appid=${appid!''}&osname=${(osname!'')?url}&browser=${(browser!'')?url}<#if skill??>&skill=${skill}</#if><#if username??>&nickname='+username+'</#if><#if agent??>&agent=${agent}</#if><#if title??>&title=${title?url}</#if><#if traceid??>&url=${url?url}</#if><#if traceid??>&traceid=${traceid}</#if>', {transports: ['websocket', 'polling']});
+    var socket = io(protocol + '://'+hostname+':${port}/im/chatbot?userid=${userid!''}&orgi=${orgi!''}&session=${sessionid!''}&appid=${appid!''}&osname=${(osname!'')?url}&browser=${(browser!'')?url}<#if skill??>&skill=${skill}</#if><#if username??>&nickname='+username+'</#if><#if agent??>&agent=${agent}</#if><#if title??>&title=${title?url}</#if><#if traceid??>&url=${url?url}</#if><#if traceid??>&traceid=${traceid}</#if><#if aiid??>&aiid=${aiid}</#if>', {transports: ['websocket', 'polling']});
     socket.on('connect',function(){
         <#if contacts?? && contacts.name??>
         socket.emit('new', {
@@ -517,11 +519,12 @@
         if(data.messageType == "end"){
             service_end = true ;
             editor.readonly();
-        <#if sessionConfig?? && sessionConfig.satisfaction?? && sessionConfig.satisfaction>
-
-            document.getElementById("diaShade").style.display = "block" ;
-            document.getElementById("dialogWrap").style.display = "block";
-        </#if>
+            // 因为满意度问卷在访客切换机器人坐席时也会弹出，但是服务并未结束，目前先去掉END事件时弹出满意度
+            // TODO #744 优化方案见 https://gitlab.chatopera.com/chatopera/cosinee/issues/744
+            // <#if sessionConfig?? && sessionConfig.satisfaction?? && sessionConfig.satisfaction>
+            //     document.getElementById("diaShade").style.display = "block" ;
+            //     document.getElementById("dialogWrap").style.display = "block";
+            // </#if>
         }
         if(document.getElementById("agentserviceid")){
             document.getElementById("agentserviceid").value = data.agentserviceid ;

@@ -495,8 +495,8 @@ public class MainUtils {
                 Object[] value = (Object[]) values.get(i);
                 WebIMReport report = new WebIMReport();
                 if (value.length == 2) {
-                    if (value[0] == null || value[0].toString().equalsIgnoreCase("null")) {
-                        report.setData("未知");
+                    if (value[0] == null || value[0].toString().equalsIgnoreCase("null") || StringUtils.isBlank(value[0].toString())) {
+                        report.setData("其他");
                     } else {
                         report.setData((String) value[0]);
                     }
@@ -1238,7 +1238,7 @@ public class MainUtils {
                 final String accessKeySecret = systemMessage.getAppsec();//你的accessKeySecret，参考本文档步骤2
                 //初始化ascClient,暂时不支持多region（请勿修改）
                 IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId,
-                                                                   accessKeySecret);
+                        accessKeySecret);
                 DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product, domain);
                 IAcsClient acsClient = new DefaultAcsClient(profile);
                 //组装请求对象

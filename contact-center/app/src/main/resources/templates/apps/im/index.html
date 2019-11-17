@@ -593,13 +593,15 @@
 		console.log("[status] data", data);
 
 		if(data.messageType == "end"){
-			service_end = true ;
+			service_end = true;
 			editor.readonly();
-			<#if sessionConfig?? && sessionConfig.satisfaction?? && sessionConfig.satisfaction>
-			document.getElementById("diaShade").style.display = "block";
-			document.getElementById("dialogWrap").style.display = "block";
-			isAgentEnds = true;
-			</#if>
+			// 因为满意度问卷在访客切换机器人坐席时也会弹出，但是服务并未结束，目前先去掉END事件时弹出满意度
+			// TODO 优化方案见 https://gitlab.chatopera.com/chatopera/cosinee/issues/744
+			// <#if sessionConfig?? && sessionConfig.satisfaction?? && sessionConfig.satisfaction>
+			// document.getElementById("diaShade").style.display = "block";
+			// document.getElementById("dialogWrap").style.display = "block";
+			// isAgentEnds = true;
+			// </#if>
 		} else if(data.messageType == "text"){
 			service_end = false;
 			editor.readonly(false);

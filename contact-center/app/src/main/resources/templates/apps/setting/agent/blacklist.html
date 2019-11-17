@@ -33,7 +33,7 @@
 								  </td>
 								  
 								  <td>${black.agentuser!''}（${black.userid!''}）</td>
-								  <td>${black.createtime!''}</td>
+								  <td>${black.createtime?string("yyyy-MM-dd HH:mm:ss")}</td>
 								  <td><#if black.endtime??>${black.endtime?string("yyyy-MM-dd HH:mm:ss")}<#else>永久</#if></td>
 								  <td>
 								  	${(black.chattime/(1000*60*60))?string('00')}:${((black.chattime%(1000*60*60))/(1000*60))?string('00')}:${((black.chattime%(1000*60))/(1000))?string('00')}
