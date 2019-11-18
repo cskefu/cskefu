@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -34,6 +35,18 @@ import java.util.TimeZone;
 @Controller
 public class ApplicationController extends Handler {
     private final static Logger logger = LoggerFactory.getLogger(ApplicationController.class);
+
+    @Value("${git.build.version}")
+    private String appVersionNumber;
+
+    @Value("${git.commit.id.abbrev}")
+    private String appVersionAbbrev;
+
+    @Value("${application.build.datestr}")
+    private String appBuildDate;
+
+    @Value("${application.customer.entity}")
+    private String appCustomerEntity;
 
     @Autowired
     private Cache cache;
@@ -49,6 +62,13 @@ public class ApplicationController extends Handler {
         view.addObject("tenant", super.getTenant(request));
         view.addObject("istenantshare", super.isEnabletneant());
         view.addObject("timeDifference", timezone.getRawOffset());
+
+
+        // 增加版本信息
+        view.addObject("appBuildDate", appBuildDate);
+        view.addObject("appVersionAbbrev", appVersionAbbrev);
+        view.addObject("appVersionNumber", appVersionNumber);
+        view.addObject("appCustomerEntity", appCustomerEntity);
 
         if (super.isEnabletneant()) {
             // 多租户启用 非管理员 一定要选择租户才能进入界面

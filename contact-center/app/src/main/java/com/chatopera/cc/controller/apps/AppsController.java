@@ -33,6 +33,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -49,7 +50,6 @@ import java.util.List;
 
 @Controller
 public class AppsController extends Handler {
-
     private final static Logger logger = LoggerFactory.getLogger(AppsController.class);
 
     @Autowired
@@ -133,7 +133,6 @@ public class AppsController extends Handler {
 
         // 获取agentStatus
         map.put("agentStatus", cache.findOneAgentStatusByAgentnoAndOrig(user.getId(), orgi));
-
         return request(super.createAppsTempletResponse("/apps/desktop/index"));
     }
 

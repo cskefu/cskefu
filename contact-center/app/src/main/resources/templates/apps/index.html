@@ -175,8 +175,9 @@
 						<span style="display: inline-block;max-width: 90px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;float: left">
 							<#if user??>${user.uname!''}<#if tenant??&&tenant.tenantname??>（${tenant.tenantname!''}）</#if></#if></span></a>
 						<dl class="layui-nav-child">
-					      <dd><a href="/apps/profile.html" data-toggle="ajax" data-width="750" data-title="修改资料">个人资料</a></dd>
-					      <dd><a href="javascript:void(0)" onclick="quitSystem()" >退出系统</a></dd>
+					      	<dd><a href="/apps/profile.html" data-toggle="ajax" data-width="750" data-title="修改资料">个人资料</a></dd>
+					      	<dd><a href="javascript:void(0)" onclick="quitSystem()" >退出系统</a></dd>
+							<dd><a href="javascript:void(0)" onclick="showSystemBuildInfo()">关于产品</a></dd>
 					    </dl>
 					</li>
 				</ul>
@@ -370,6 +371,16 @@
 	</div>
 
 	<script>
+		// 展示系统构建信息
+		function showSystemBuildInfo(){
+			console.log("showSystemBuildInfo")
+			layer.confirm('<div style="text-align:center;"> <img src="/images/favicon.ico" width="50px" height="50px"><p>春松客服<span>&#174;</span></p></div> Release: ${appVersionNumber} <br> Build: ${appBuildDate}.${appVersionAbbrev} <br> Copyright (2018-2019) <a href="https://www.chatopera.com" target="_blank">北京华夏春松科技有限公司</a> <br> Business License applied to ${appCustomerEntity}',
+					{icon: -1, title:'关于产品', btn:["关闭"]}, function(index, layero){
+				//do something
+				console.log("close showSystemBuildInfo");
+				layer.close(index);
+			});
+		}
 
 		// 登出系统
 		// https://gitlab.chatopera.com/chatopera/cosinee.w4l/issues/291

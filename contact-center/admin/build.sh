@@ -8,6 +8,8 @@ baseDir=$(cd `dirname "$0"`;pwd)
 appHome=$baseDir/..
 registryName=dockerhub.qingcloud.com
 imagename=chatopera/contact-center
+TIMESTAMP=`date "+%Y%m%d.%H%M%S"`
+
 # functions
 
 # main 
@@ -24,5 +26,7 @@ if [ ! $? -eq 0 ]; then
 fi
 
 docker build --build-arg VCS_REF=$PACKAGE_VERSION \
+    --build-arg APPLICATION_BUILD_DATESTR=$TIMESTAMP \
+    --build-arg APPLICATION_CUSTOMER_ENTITY=$APPLICATION_CUSTOMER_ENTITY \
     --no-cache \
     --force-rm=true --tag $registryName/$imagename:$PACKAGE_VERSION .
