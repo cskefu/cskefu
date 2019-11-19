@@ -15,7 +15,6 @@
  */
 package com.chatopera.cc.plugins.chatbot;
 
-import com.chatopera.cc.acd.AutomaticServiceDist;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
@@ -209,7 +208,7 @@ public class ChatbotEventHandler {
                 agentUser.setCity(onlineUser.getCity());
                 agentUser.setProvince(onlineUser.getProvince());
                 agentUser.setCountry(onlineUser.getCountry());
-                AgentService agentService = AutomaticServiceDist.processChatbotService(
+                AgentService agentService = MainContext.getACDServiceRouter().getAcdChatbotService().processChatbotService(
                         invite != null ? invite.getAiname() : "机器人客服", agentUser, orgi);
                 agentUser.setAgentserviceid(agentService.getId());
 
@@ -236,7 +235,7 @@ public class ChatbotEventHandler {
             OnlineUser onlineUser = MainContext.getCache().findOneOnlineUserByUserIdAndOrgi(user, orgi);
 
             MainContext.getCache().findOneAgentUserByUserIdAndOrgi(user, orgi).ifPresent(p -> {
-                AutomaticServiceDist.processChatbotService(null, p, orgi);
+                MainContext.getACDServiceRouter().getAcdChatbotService().processChatbotService(null, p, orgi);
 
                 MainContext.getCache().deleteAgentUserByUserIdAndOrgi(user, orgi);
                 MainContext.getCache().deleteOnlineUserByIdAndOrgi(user, orgi);
@@ -271,7 +270,9 @@ public class ChatbotEventHandler {
         String user = client.get("userid");
         String sessionid = client.get("session");
         String appid = client.get("appid");
-        logger.info("[onEvent]  message: session {}, aiid {}, userid {}, dataType {}, appid {}, orgi {}", sessionid, aiid, user, data.getType(), appid, orgi);
+        logger.info(
+                "[onEvent]  message: session {}, aiid {}, userid {}, dataType {}, appid {}, orgi {}", sessionid, aiid,
+                user, data.getType(), appid, orgi);
 
         // ignore event if dataType is not message.
         if (!StringUtils.equals(data.getType(), Constants.IM_MESSAGE_TYPE_MESSAGE)) {

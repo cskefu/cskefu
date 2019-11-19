@@ -43,9 +43,9 @@ public class OnlineUserAspect {
     @Before("execution(* com.chatopera.cc.persistence.repository.OnlineUserRepository.save(..))")
     public void save(final JoinPoint joinPoint) {
         final OnlineUser onlineUser = (OnlineUser) joinPoint.getArgs()[0];
-        logger.info(
-                "[save] put onlineUser id {}, status {}, invite status {}", onlineUser.getId(), onlineUser.getStatus(),
-                onlineUser.getInvitestatus());
+//        logger.info(
+//                "[save] put onlineUser id {}, status {}, invite status {}", onlineUser.getId(), onlineUser.getStatus(),
+//                onlineUser.getInvitestatus());
         if (StringUtils.isNotBlank(onlineUser.getStatus())) {
             switch (MainContext.OnlineUserStatusEnum.toValue(onlineUser.getStatus())) {
                 case OFFLINE:

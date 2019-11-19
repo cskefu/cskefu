@@ -16,13 +16,14 @@
  */
 package com.chatopera.cc.controller.api;
 
-import com.chatopera.cc.acd.AutomaticServiceDist;
+import com.chatopera.cc.acd.ACDMessageHelper;
+import com.chatopera.cc.acd.ACDServiceRouter;
 import com.chatopera.cc.basic.MainContext.*;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
-import com.chatopera.cc.exception.CSKefuException;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.controller.api.request.RestUtils;
+import com.chatopera.cc.exception.CSKefuException;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.peer.PeerSyncIM;
 import com.chatopera.cc.persistence.repository.AgentServiceRepository;
@@ -60,6 +61,12 @@ import java.util.List;
 public class ApiAgentUserController extends Handler {
 
     private final static Logger logger = LoggerFactory.getLogger(ApiAgentUserController.class);
+
+    @Autowired
+    private ACDMessageHelper acdMessageHelper;
+
+    @Autowired
+    private ACDServiceRouter acdServiceRouter;
 
     @Autowired
     private Cache cache;
@@ -201,7 +208,7 @@ public class ApiAgentUserController extends Handler {
                     // 更新当前坐席的服务访客列表
                     if (currentAgentStatus != null) {
                         cache.deleteOnlineUserIdFromAgentStatusByUseridAndAgentnoAndOrgi(userId, currentAgentno, orgi);
-                        AutomaticServiceDist.updateAgentStatus(currentAgentStatus, orgi);
+                        agentUserProxy.updateAgentStatus(currentAgentStatus, orgi);
                     }
 
                     if (transAgentStatus != null) {
@@ -212,7 +219,7 @@ public class ApiAgentUserController extends Handler {
                     // 转接坐席提示消息
                     Message outMessage = new Message();
                     outMessage.setMessage(
-                            AutomaticServiceDist.getSuccessMessage(agentService, agentUser.getChannel(), orgi));
+                            acdMessageHelper.getSuccessMessage(agentService, agentUser.getChannel(), orgi));
                     outMessage.setMessageType(MediaType.TEXT.toString());
                     outMessage.setCalltype(CallType.IN.toString());
                     outMessage.setCreatetime(MainUtils.dateFormate.format(new Date()));
@@ -292,7 +299,7 @@ public class ApiAgentUserController extends Handler {
                     logined.getId(), agentUser.getAgentno()) || logined.isAdmin())) {
                 // 删除访客-坐席关联关系，包括缓存
                 try {
-                    AutomaticServiceDist.deleteAgentUser(agentUser, orgi);
+                    acdServiceRouter.deleteAgentUser(agentUser, orgi);
                 } catch (CSKefuException e) {
                     // 未能删除成功
                     logger.error("[end]", e);
@@ -322,7 +329,7 @@ public class ApiAgentUserController extends Handler {
      */
     private JsonObject withdraw(final HttpServletRequest request, final JsonObject j) {
         JsonObject resp = new JsonObject();
-        AutomaticServiceDist.withdrawAgent(super.getOrgi(request), super.getUser(request).getId());
+        acdServiceRouter.withdrawAgent(super.getOrgi(request), super.getUser(request).getId());
         resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
         return resp;
     }

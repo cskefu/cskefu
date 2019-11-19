@@ -17,7 +17,10 @@
  package com.chatopera.cc.controller.apps;
 
  import com.alibaba.fastjson.JSONObject;
- import com.chatopera.cc.acd.AutomaticServiceDist;
+ import com.chatopera.cc.acd.ACDAgentService;
+ import com.chatopera.cc.acd.ACDPolicyService;
+ import com.chatopera.cc.acd.ACDWorkMonitor;
+ import com.chatopera.cc.acd.ACDServiceRouter;
  import com.chatopera.cc.activemq.BrokerPublisher;
  import com.chatopera.cc.basic.Constants;
  import com.chatopera.cc.basic.MainContext;
@@ -71,6 +74,18 @@
  public class AgentController extends Handler {
 
      static final Logger logger = LoggerFactory.getLogger(AgentController.class);
+
+     @Autowired
+     private ACDWorkMonitor acdWorkMonitor;
+
+     @Autowired
+     private ACDPolicyService acdPolicyService;
+
+     @Autowired
+     private ACDAgentService acdAgentService;
+
+     @Autowired
+     private ACDServiceRouter acdServiceRouter;
 
      @Autowired
      private ContactsRepository contactsRes;
@@ -448,7 +463,7 @@
              view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid()));
          }
 
-         SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(super.getOrgi(request));
+         SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
 
          view.addObject("sessionConfig", sessionConfig);
          if (sessionConfig.isOtherquickplay()) {
@@ -472,7 +487,7 @@
      @RequestMapping("/other/topic")
      @Menu(type = "apps", subtype = "othertopic")
      public ModelAndView othertopic(ModelMap map, HttpServletRequest request, String q) throws IOException, TemplateException {
-         SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(super.getOrgi(request));
+         SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
 
          map.put("sessionConfig", sessionConfig);
          if (sessionConfig.isOtherquickplay()) {
@@ -485,7 +500,7 @@
      @RequestMapping("/other/topic/detail")
      @Menu(type = "apps", subtype = "othertopicdetail")
      public ModelAndView othertopicdetail(ModelMap map, HttpServletRequest request, String id) throws IOException, TemplateException {
-         SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(super.getOrgi(request));
+         SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
 
          map.put("sessionConfig", sessionConfig);
          if (sessionConfig.isOtherquickplay()) {
@@ -538,8 +553,8 @@
          agentStatusRes.save(agentStatus);
 
          // 为该坐席分配访客
-         AutomaticServiceDist.allotAgent(agentStatus.getAgentno(), orgi);
-         AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(),
+         acdServiceRouter.allotVisitors(agentStatus.getAgentno(), orgi);
+         acdWorkMonitor.recordAgentStatus(agentStatus.getAgentno(),
                                                 agentStatus.getUsername(),
                                                 agentStatus.getAgentno(),
                                                 logined.isAdmin(), // 0代表admin
@@ -575,7 +590,7 @@
          cache.putAgentStatusByOrgi(agentStatus, orgi);
          agentStatusRes.save(agentStatus);
 
-         AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(),
+         acdWorkMonitor.recordAgentStatus(agentStatus.getAgentno(),
                                                 agentStatus.getUsername(),
                                                 agentStatus.getAgentno(),
                                                 logined.isAdmin(), // 0代表admin
@@ -603,7 +618,7 @@
                  logined.getId(), logined.getOrgi(), logined.getSkills());
 
          agentStatus.setBusy(true);
-         AutomaticServiceDist.recordAgentStatus(
+         acdWorkMonitor.recordAgentStatus(
                  agentStatus.getAgentno(),
                  agentStatus.getUsername(),
                  agentStatus.getAgentno(),
@@ -618,7 +633,7 @@
          cache.putAgentStatusByOrgi(agentStatus, super.getOrgi(request));
          agentStatusRes.save(agentStatus);
 
-         AutomaticServiceDist.broadcastAgentsStatus(super.getOrgi(request), "agent", "busy", logined.getId());
+         agentUserProxy.broadcastAgentsStatus(super.getOrgi(request), "agent", "busy", logined.getId());
 
          return request(super.createRequestPageTempletResponse("/public/success"));
      }
@@ -644,7 +659,7 @@
          agentStatus.setStatus(MainContext.AgentStatusEnum.READY.toString());
 
          // 更新工作记录
-         AutomaticServiceDist.recordAgentStatus(
+         acdWorkMonitor.recordAgentStatus(
                  agentStatus.getAgentno(),
                  agentStatus.getUsername(),
                  agentStatus.getAgentno(),
@@ -661,7 +676,7 @@
          agentStatusRes.save(agentStatus);
 
          // 重新分配访客给坐席
-         AutomaticServiceDist.allotAgent(agentStatus.getAgentno(), super.getOrgi(request));
+         acdServiceRouter.allotVisitors(agentStatus.getAgentno(), super.getOrgi(request));
 
          return request(super.createRequestPageTempletResponse("/public/success"));
      }
@@ -676,7 +691,7 @@
          List<AgentService> agentServiceList = new ArrayList<AgentService>();
          for (AgentUser agentUser : agentUserList) {
              if (agentUser != null && super.getUser(request).getId().equals(agentUser.getAgentno())) {
-                 AutomaticServiceDist.deleteAgentUser(agentUser, orgi);
+                 acdServiceRouter.deleteAgentUser(agentUser, orgi);
                  AgentService agentService = agentServiceRes.findByIdAndOrgi(agentUser.getAgentserviceid(), orgi);
                  if (agentService != null) {
                      agentService.setStatus(MainContext.AgentUserStatusEnum.END.toString());
@@ -712,7 +727,7 @@
                      logined.getId(), agentUser.getAgentno()) || logined.isAdmin())) {
                  // 删除访客-坐席关联关系，包括缓存
                  try {
-                     AutomaticServiceDist.deleteAgentUser(agentUser, orgi);
+                     acdServiceRouter.deleteAgentUser(agentUser, orgi);
                  } catch (CSKefuException e) {
                      // 未能删除成功
                      logger.error("[end]", e);

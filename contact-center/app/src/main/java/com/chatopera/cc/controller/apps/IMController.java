@@ -17,18 +17,20 @@
 
 package com.chatopera.cc.controller.apps;
 
-import com.chatopera.cc.proxy.OnlineUserProxy;
-import com.chatopera.cc.acd.AutomaticServiceDist;
+import com.chatopera.cc.acd.ACDAgentService;
+import com.chatopera.cc.acd.ACDPolicyService;
+import com.chatopera.cc.acd.ACDWorkMonitor;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
-import com.chatopera.cc.socketio.util.RichMediaUtils;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.blob.JpaBlobHelper;
 import com.chatopera.cc.persistence.es.ContactsRepository;
 import com.chatopera.cc.persistence.repository.*;
+import com.chatopera.cc.proxy.OnlineUserProxy;
+import com.chatopera.cc.socketio.util.RichMediaUtils;
 import com.chatopera.cc.util.*;
 import freemarker.template.TemplateException;
 import org.apache.commons.io.FileUtils;
@@ -67,6 +69,12 @@ import java.util.*;
 @EnableAsync
 public class IMController extends Handler {
     private final static Logger logger = LoggerFactory.getLogger(IMController.class);
+
+    @Autowired
+    private ACDWorkMonitor acdWorkMonitor;
+
+    @Autowired
+    private ACDPolicyService acdPolicyService;
 
     @Autowired
     private OnlineUserRepository onlineUserRes;
@@ -539,8 +547,9 @@ public class IMController extends Handler {
             @Valid final String description,
             @Valid final String imgurl,
             @Valid final String pid,
-            @Valid final String purl) throws Exception {
-        logger.info("[index] orgi {}, skill {}, agent {}, traceid {}", orgi, skill, agent, traceid);
+            @Valid final String purl,
+            @Valid final boolean isInvite) throws Exception {
+        logger.info("[index] orgi {}, skill {}, agent {}, traceid {}, isInvite {}", orgi, skill, agent, traceid, isInvite);
         Map<String, String> sessionMessageObj = cache.findOneSystemMapByIdAndOrgi(sessionid, orgi);
 
         if (sessionMessageObj != null) {
@@ -581,7 +590,7 @@ public class IMController extends Handler {
             view.addObject("nickname", nickname);
 
             boolean consult = true;                //是否已收集用户信息
-            SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(orgi);
+            SessionConfig sessionConfig = acdPolicyService.initSessionConfig(orgi);
 
             // 强制开启满意调查问卷
             sessionConfig.setSatisfaction(true);
@@ -599,6 +608,8 @@ public class IMController extends Handler {
             map.addAttribute("userid", userid);
             map.addAttribute("schema", request.getScheme());
             map.addAttribute("sessionid", sessionid);
+            map.addAttribute("isInvite", isInvite);
+
 
             view.addObject("product", product);
             view.addObject("description", description);
@@ -640,9 +651,9 @@ public class IMController extends Handler {
                 AgentReport report;
 
                 if (invite.isSkill() && invite.isConsult_skill_fixed()) { // 绑定技能组
-                    report = AutomaticServiceDist.getAgentReport(invite.getConsult_skill_fixed_id(), invite.getOrgi());
+                    report = acdWorkMonitor.getAgentReport(invite.getConsult_skill_fixed_id(), invite.getOrgi());
                 } else {
-                    report = AutomaticServiceDist.getAgentReport(invite.getOrgi());
+                    report = acdWorkMonitor.getAgentReport(invite.getOrgi());
                 }
 
                 if (report.getAgents() == 0 ||

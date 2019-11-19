@@ -18,7 +18,7 @@ services:
     restart: always
     ports:
       - "${CC_WEB_PORT:-8035}:8035"
-      - "${CC_SOCKET_PORT:-8036}:8036"
+      - "8036:8036"
     volumes:
       - ./contact-center/data:/data
       - ./contact-center/logs:/logs

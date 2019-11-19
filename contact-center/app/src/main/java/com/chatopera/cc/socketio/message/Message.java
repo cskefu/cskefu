@@ -18,6 +18,7 @@
 package com.chatopera.cc.socketio.message;
 
 import com.chatopera.cc.model.*;
+import com.chatopera.compose4j.AbstractContext;
 
 import java.io.Serializable;
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.List;
 /**
  * 发送消息的高级封装
  */
-public class Message implements java.io.Serializable {
+public class Message extends AbstractContext {
 
     public String id;
     private String orgi;                   // 租户

@@ -10,12 +10,13 @@
  */
 package com.chatopera.cc.activemq;
 
-import com.chatopera.cc.acd.AutomaticServiceDist;
+import com.chatopera.cc.acd.ACDWorkMonitor;
+import com.chatopera.cc.acd.ACDServiceRouter;
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.AgentStatus;
 import com.chatopera.cc.persistence.repository.AgentStatusRepository;
-import com.chatopera.cc.basic.Constants;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.slf4j.Logger;
@@ -35,6 +36,12 @@ import java.util.Date;
 public class SocketioConnEventSubscription {
 
     private final static Logger logger = LoggerFactory.getLogger(SocketioConnEventSubscription.class);
+
+    @Autowired
+    private ACDServiceRouter acdServiceRouter;
+
+    @Autowired
+    private ACDWorkMonitor acdWorkMonitor;
 
     @Autowired
     private AgentStatusRepository agentStatusRes;
@@ -58,14 +65,15 @@ public class SocketioConnEventSubscription {
             JsonParser parser = new JsonParser();
             JsonObject j = parser.parse(payload).getAsJsonObject();
             if (j.has("userId") && j.has("orgi") && j.has("isAdmin")) {
-                final AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(j.get("userId").getAsString(),
+                final AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
+                        j.get("userId").getAsString(),
                         j.get("orgi").getAsString());
                 if (agentStatus != null && (!agentStatus.isConnected())) {
                     /**
                      * 处理该坐席为离线
                      */
                     // 重分配坐席
-                    if (AutomaticServiceDist.withdrawAgent(agentStatus.getOrgi(), agentStatus.getAgentno())) {
+                    if (acdServiceRouter.withdrawAgent(agentStatus.getOrgi(), agentStatus.getAgentno())) {
                         logger.info("[onMessage] re-allotAgent for user's visitors successfully.");
                     } else {
                         logger.info("[onMessage] re-allotAgent, error happens.");
@@ -81,15 +89,15 @@ public class SocketioConnEventSubscription {
                     agentStatusRes.save(agentStatus);
 
                     // 记录坐席工作日志
-                    AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(),
-                            agentStatus.getUsername(),
-                            agentStatus.getAgentno(),
-                            j.get("isAdmin").getAsBoolean(),
-                            agentStatus.getAgentno(),
-                            agentStatus.getStatus(),
-                            MainContext.AgentStatusEnum.OFFLINE.toString(),
-                            MainContext.AgentWorkType.MEIDIACHAT.toString(),
-                            agentStatus.getOrgi(), null);
+                    acdWorkMonitor.recordAgentStatus(agentStatus.getAgentno(),
+                                                     agentStatus.getUsername(),
+                                                     agentStatus.getAgentno(),
+                                                     j.get("isAdmin").getAsBoolean(),
+                                                     agentStatus.getAgentno(),
+                                                     agentStatus.getStatus(),
+                                                     MainContext.AgentStatusEnum.OFFLINE.toString(),
+                                                     MainContext.AgentWorkType.MEIDIACHAT.toString(),
+                                                     agentStatus.getOrgi(), null);
                 } else if (agentStatus == null) {
                     // 该坐席已经完成离线设置
                     logger.info("[onMessage] agent is already offline, skip any further operations");

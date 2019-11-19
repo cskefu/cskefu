@@ -16,14 +16,12 @@
  */
 package com.chatopera.cc.socketio.handler;
 
-import com.chatopera.cc.acd.AutomaticServiceDist;
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.basic.MainContext.ReceiverType;
-import com.chatopera.cc.basic.MainContext.MessageType;
-import com.chatopera.cc.basic.MainContext.ChannelType;
 import com.chatopera.cc.basic.MainContext.CallType;
+import com.chatopera.cc.basic.MainContext.ChannelType;
+import com.chatopera.cc.basic.MainContext.MessageType;
+import com.chatopera.cc.basic.MainContext.ReceiverType;
 import com.chatopera.cc.basic.MainUtils;
-import com.chatopera.cc.model.AgentService;
 import com.chatopera.cc.model.Contacts;
 import com.chatopera.cc.model.CousultInvite;
 import com.chatopera.cc.persistence.repository.AgentServiceRepository;
@@ -35,6 +33,8 @@ import com.chatopera.cc.socketio.message.ChatMessage;
 import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.socketio.util.HumanUtils;
 import com.chatopera.cc.socketio.util.IMServiceUtils;
+import com.chatopera.cc.util.IP;
+import com.chatopera.cc.util.IPTools;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.Date;
-import java.util.List;
 
 public class IMEventHandler {
     private final static Logger logger = LoggerFactory.getLogger(IMEventHandler.class);
@@ -71,27 +70,40 @@ public class IMEventHandler {
             final String user = client.getHandshakeData().getSingleUrlParam("userid");
             final String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
             final String session = MainUtils.getContextID(client.getHandshakeData().getSingleUrlParam("session"));
+            // 渠道标识
             final String appid = client.getHandshakeData().getSingleUrlParam("appid");
+            // 要求目标坐席服务
             final String agent = client.getHandshakeData().getSingleUrlParam("agent");
+            // 要求目标技能组服务
             final String skill = client.getHandshakeData().getSingleUrlParam("skill");
+            // 是否是邀请后加入会话
+            final boolean isInvite = StringUtils.equalsIgnoreCase(
+                    client.getHandshakeData().getSingleUrlParam("isInvite"), "true");
 
             final String title = client.getHandshakeData().getSingleUrlParam("title");
             final String url = client.getHandshakeData().getSingleUrlParam("url");
             final String traceid = client.getHandshakeData().getSingleUrlParam("traceid");
 
-            final String nickname = client.getHandshakeData().getSingleUrlParam("nickname");
+            String nickname = client.getHandshakeData().getSingleUrlParam("nickname");
 
             final String osname = client.getHandshakeData().getSingleUrlParam("osname");
             final String browser = client.getHandshakeData().getSingleUrlParam("browser");
 
             logger.info(
-                    "[onConnect] user {}, orgi {}, session {}, appid {}, agent {}, skill {}, title {}, url {}, traceid {}, nickname {}",
-                    user, orgi, session, appid, agent, skill, title, url, traceid, nickname);
+                    "[onConnect] user {}, orgi {}, session {}, appid {}, agent {}, skill {}, title {}, url {}, traceid {}, nickname {}, isInvite {}",
+                    user, orgi, session, appid, agent, skill, title, url, traceid, nickname, isInvite);
 
             // save connection info
             client.set("session", session);
             client.set("userid", user);
             client.set("appid", appid);
+            client.set("isInvite", isInvite);
+
+            // 保证传入的Nickname不是null
+            if (StringUtils.isBlank(nickname)) {
+                logger.info("[onConnect] reset nickname as it does not present.");
+                nickname = "Guest_" + user;
+            }
 
             if (StringUtils.isNotBlank(user)) {
                 InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress();
@@ -107,26 +119,35 @@ public class IMEventHandler {
                  */
                 IMServiceUtils.shiftOpsType(user, orgi, MainContext.OptType.HUMAN);
 
+                IP ipdata = null;
+                if ((StringUtils.isNotBlank(ip))) {
+                    ipdata = IPTools.getInstance().findGeography(ip);
+                }
+
                 /**
                  * 用户进入到对话连接 ， 排队用户请求 , 如果返回失败，
                  * 表示当前坐席全忙，用户进入排队状态，当前提示信息 显示 当前排队的队列位置，
                  * 不可进行对话，用户发送的消息作为留言处理
                  */
-                Message agentServiceMessage = OnlineUserProxy.allocateAgentService(
+                Message agentServiceMessage = MainContext.getACDServiceRouter().allocateAgentService(
                         user,
+                        nickname,
                         orgi,
                         session,
                         appid,
                         ip,
                         osname,
                         browser,
+                        "",
+                        ipdata,
                         MainContext.ChannelType.WEBIM.toString(),
                         skill,
                         agent,
-                        nickname,
                         title,
                         url,
                         traceid,
+                        user,
+                        isInvite,
                         MainContext.ChatInitiatorType.USER.toString());
 
                 if (agentServiceMessage != null && StringUtils.isNotBlank(
@@ -190,7 +211,7 @@ public class IMEventHandler {
                  * 用户主动断开服务
                  */
                 MainContext.getCache().findOneAgentUserByUserIdAndOrgi(user, orgi).ifPresent(p -> {
-                    AutomaticServiceDist.serviceFinish(p
+                    MainContext.getACDServiceRouter().serviceFinish(p
                             , orgi);
                 });
             } catch (Exception e) {

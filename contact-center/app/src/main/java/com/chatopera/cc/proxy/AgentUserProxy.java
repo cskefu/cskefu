@@ -15,7 +15,8 @@
  */
 package com.chatopera.cc.proxy;
 
-import com.chatopera.cc.acd.AutomaticServiceDist;
+import com.chatopera.cc.acd.ACDPolicyService;
+import com.chatopera.cc.acd.ACDWorkMonitor;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
@@ -25,6 +26,7 @@ import com.chatopera.cc.peer.PeerSyncIM;
 import com.chatopera.cc.persistence.es.ContactsRepository;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.socketio.message.Message;
+import com.corundumstudio.socketio.SocketIONamespace;
 import freemarker.template.TemplateException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -59,6 +61,16 @@ public class AgentUserProxy {
 
     // 转接聊天
     private final static String AUTH_KEY_AUDIT_TRANS = "A13_A01_A03";
+
+
+    @Autowired
+    private ACDWorkMonitor acdWorkMonitor;
+
+    @Autowired
+    private AgentReportRepository agentReportRes;
+
+    @Autowired
+    private ACDPolicyService acdPolicyService;
 
     @Autowired
     private AgentUserRepository agentUserRes;
@@ -246,7 +258,7 @@ public class AgentUserProxy {
             agentUserList.add(agentUser);
         }
 
-        SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(logined.getOrgi());
+        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(logined.getOrgi());
 
         view.addObject("sessionConfig", sessionConfig);
         if (sessionConfig.isOtherquickplay()) {
@@ -369,14 +381,18 @@ public class AgentUserProxy {
 
     }
 
+
     /**
      * 创建AgentUser
      *
-     * @param contact 联系人
-     * @param agent   坐席
+     * @param onlineUser
+     * @param contact
+     * @param agent
      * @param channel
-     * @param logined
+     * @param status
+     * @param creator
      * @return
+     * @throws CSKefuException
      */
     public AgentUser createAgentUserWithContactAndAgentAndChannelAndStatus(
             final OnlineUser onlineUser,
@@ -459,6 +475,42 @@ public class AgentUserProxy {
 
         }
         return opt.get();
+    }
+
+    /**
+     * 更新坐席当前服务中的用户状态
+     * #TODO 需要分布式锁
+     *
+     * @param agentStatus
+     * @param orgi
+     */
+    public synchronized void updateAgentStatus(AgentStatus agentStatus, String orgi) {
+        int users = cache.getInservAgentUsersSizeByAgentnoAndOrgi(agentStatus.getAgentno(), orgi);
+        agentStatus.setUsers(users);
+        agentStatus.setUpdatetime(new Date());
+        cache.putAgentStatusByOrgi(agentStatus, orgi);
+    }
+
+    /**
+     * 向所有坐席client通知坐席状态变化
+     *
+     * @param orgi
+     * @param worktype
+     * @param workresult
+     * @param dataid
+     */
+    public void broadcastAgentsStatus(final String orgi, final String worktype, final String workresult, final String dataid) {
+        /**
+         * 坐席状态改变，通知监测服务
+         */
+        AgentReport agentReport = acdWorkMonitor.getAgentReport(orgi);
+        agentReport.setOrgi(orgi);
+        agentReport.setWorktype(worktype);
+        agentReport.setWorkresult(workresult);
+        agentReport.setDataid(dataid);
+        agentReportRes.save(agentReport);
+        MainContext.getContext().getBean("agentNamespace", SocketIONamespace.class).getBroadcastOperations().sendEvent(
+                "status", agentReport);
     }
 
     /**

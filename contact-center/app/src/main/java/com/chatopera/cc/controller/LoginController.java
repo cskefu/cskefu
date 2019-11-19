@@ -16,13 +16,16 @@
  */
 package com.chatopera.cc.controller;
 
-import com.chatopera.cc.acd.AutomaticServiceDist;
+import com.chatopera.cc.acd.ACDWorkMonitor;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.basic.auth.AuthToken;
 import com.chatopera.cc.cache.Cache;
-import com.chatopera.cc.model.*;
+import com.chatopera.cc.model.AgentStatus;
+import com.chatopera.cc.model.SystemConfig;
+import com.chatopera.cc.model.User;
+import com.chatopera.cc.model.UserRole;
 import com.chatopera.cc.persistence.repository.AgentStatusRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.persistence.repository.UserRoleRepository;
@@ -83,6 +86,9 @@ public class LoginController extends Handler {
 
     @Autowired
     private UserProxy userProxy;
+
+    @Autowired
+    private ACDWorkMonitor acdWorkMonitor;
 
     /**
      * 登录页面
@@ -208,7 +214,7 @@ public class LoginController extends Handler {
                             agentStatusRes.save(agentStatus);
 
                             // 工作状态记录
-                            AutomaticServiceDist.recordAgentStatus(agentStatus.getAgentno(),
+                            acdWorkMonitor.recordAgentStatus(agentStatus.getAgentno(),
                                                                    agentStatus.getUsername(),
                                                                    agentStatus.getAgentno(),
                                                                    user.isAdmin(), // 0代表admin

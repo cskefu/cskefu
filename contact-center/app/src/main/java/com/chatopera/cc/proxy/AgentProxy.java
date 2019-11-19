@@ -1,6 +1,6 @@
 package com.chatopera.cc.proxy;
 
-import com.chatopera.cc.acd.AutomaticServiceDist;
+import com.chatopera.cc.acd.ACDPolicyService;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
@@ -33,11 +33,13 @@ import java.util.List;
 
 @Component
 public class AgentProxy {
-
     private final static Logger logger = LoggerFactory.getLogger(AgentProxy.class);
 
     @Value("${web.upload-path}")
     private String webUploadPath;
+
+    @Autowired
+    private ACDPolicyService acdPolicyService;
 
     @Autowired
     private AttachmentRepository attachementRes;
@@ -77,7 +79,7 @@ public class AgentProxy {
         agentStatus.setOrgi(agentStatus.getOrgi());
         agentStatus.setUpdatetime(new Date());
         agentStatus.setSkills(user.getSkills());
-        SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(agentStatus.getOrgi());
+        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(agentStatus.getOrgi());
         agentStatus.setMaxusers(sessionConfig.getMaxuser());
 
         /**

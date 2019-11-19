@@ -16,7 +16,7 @@
  */
 package com.chatopera.cc.controller.apps;
 
-import com.chatopera.cc.acd.AutomaticServiceDist;
+import com.chatopera.cc.acd.ACDWorkMonitor;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
@@ -33,7 +33,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -51,6 +50,9 @@ import java.util.List;
 @Controller
 public class AppsController extends Handler {
     private final static Logger logger = LoggerFactory.getLogger(AppsController.class);
+
+    @Autowired
+    private ACDWorkMonitor acdWorkMonitor;
 
     @Autowired
     private UserRepository userRes;
@@ -137,7 +139,7 @@ public class AppsController extends Handler {
     }
 
     private void aggValues(ModelMap map, HttpServletRequest request) {
-        map.put("agentReport", AutomaticServiceDist.getAgentReport(super.getOrgi(request)));
+        map.put("agentReport", acdWorkMonitor.getAgentReport(super.getOrgi(request)));
         map.put(
                 "webIMReport", MainUtils.getWebIMReport(
                         userEventRes.findByOrgiAndCreatetimeRange(super.getOrgi(request), MainUtils.getStartTime(),

@@ -17,7 +17,7 @@
 
 package com.chatopera.cc.controller.apps;
 
-import com.chatopera.cc.acd.AutomaticServiceDist;
+import com.chatopera.cc.acd.ACDPolicyService;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
@@ -44,6 +44,8 @@ import java.util.List;
 @RequestMapping("/apps/quality")
 public class AgentQualityController extends Handler {
 
+    @Autowired
+    private ACDPolicyService acdPolicyService;
 
     @Autowired
     private QualityRepository qualityRes;
@@ -60,7 +62,7 @@ public class AgentQualityController extends Handler {
     @RequestMapping(value = "/index")
     @Menu(type = "agent", subtype = "quality", access = false)
     public ModelAndView index(ModelMap map, HttpServletRequest request) {
-        map.addAttribute("sessionConfig", AutomaticServiceDist.initSessionConfig(super.getOrgi(request)));
+        map.addAttribute("sessionConfig", acdPolicyService.initSessionConfig(super.getOrgi(request)));
         map.addAttribute("qualityList", qualityRes.findByQualitytypeAndOrgi(MainContext.QualityType.CHAT.toString(), super.getOrgi(request)));
         map.addAttribute("tagList", tagRes.findByOrgiAndTagtype(super.getOrgi(request), MainContext.TagType.QUALITY.toString()));
         return request(super.createAppsTempletResponse("/apps/quality/index"));
@@ -92,7 +94,7 @@ public class AgentQualityController extends Handler {
             if (tempList.size() > 0) {
                 qualityRes.save(tempList);
             }
-            SessionConfig config = AutomaticServiceDist.initSessionConfig(super.getOrgi(request));
+            SessionConfig config = acdPolicyService.initSessionConfig(super.getOrgi(request));
             if (config != null) {
                 if ("points".equals(request.getParameter("qualityscore"))) {
                     config.setQualityscore("points");

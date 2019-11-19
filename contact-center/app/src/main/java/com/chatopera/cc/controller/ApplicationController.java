@@ -16,7 +16,9 @@
  */
 package com.chatopera.cc.controller;
 
-import com.chatopera.cc.acd.AutomaticServiceDist;
+import com.chatopera.cc.acd.ACDAgentService;
+import com.chatopera.cc.acd.ACDPolicyService;
+import com.chatopera.cc.acd.ACDWorkMonitor;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.User;
@@ -35,6 +37,9 @@ import java.util.TimeZone;
 @Controller
 public class ApplicationController extends Handler {
     private final static Logger logger = LoggerFactory.getLogger(ApplicationController.class);
+
+    @Autowired
+    private ACDWorkMonitor acdWorkMonitor;
 
     @Value("${git.build.version}")
     private String appVersionNumber;
@@ -58,7 +63,7 @@ public class ApplicationController extends Handler {
         User logined = super.getUser(request);
         TimeZone timezone = TimeZone.getDefault();
 
-        view.addObject("agentStatusReport", AutomaticServiceDist.getAgentReport(logined.getOrgi()));
+        view.addObject("agentStatusReport", acdWorkMonitor.getAgentReport(logined.getOrgi()));
         view.addObject("tenant", super.getTenant(request));
         view.addObject("istenantshare", super.isEnabletneant());
         view.addObject("timeDifference", timezone.getRawOffset());

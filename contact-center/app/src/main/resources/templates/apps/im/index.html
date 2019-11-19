@@ -563,7 +563,7 @@
 	var hostname = location.hostname ;
     var protocol = window.location.protocol.replace(/:/g,'');
 	var username = encodeURIComponent("${username}");
-	var socket = io(protocol + '://'+hostname+':${port}/im/user?userid=${userid!''}&orgi=${orgi!''}&session=${sessionid!''}&appid=${appid!''}&osname=${(osname!'')?url}&browser=${(browser!'')?url}<#if skill??>&skill=${skill}</#if><#if username??>&nickname='+username+'</#if><#if agent??>&agent=${agent}</#if><#if title??>&title=${title?url}</#if><#if traceid??>&url=${url?url}</#if><#if traceid??>&traceid=${traceid}</#if>', {transports: ['websocket', 'polling']});
+	var socket = io(protocol + '://'+hostname+':${port}/im/user?userid=${userid!''}&orgi=${orgi!''}&session=${sessionid!''}&appid=${appid!''}&osname=${(osname!'')?url}&browser=${(browser!'')?url}<#if skill??>&skill=${skill}</#if><#if username??>&nickname='+username+'</#if><#if agent??>&agent=${agent}</#if><#if title??>&title=${title?url}</#if><#if traceid??>&url=${url?url}</#if><#if traceid??>&traceid=${traceid}</#if><#if isInvite??>&isInvite=${isInvite}</#if>', {transports: ['websocket', 'polling']});
 	
 	console.log('connect debug', protocol, hostname);
 

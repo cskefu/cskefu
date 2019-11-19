@@ -43,4 +43,5 @@ public class MainContextTest extends TestCase {
         assertEquals(MainContext.ChannelType.WEBIM.toString(), "webim");
         assertEquals(MainContext.ChannelType.toValue("webim"), MainContext.ChannelType.WEBIM);
     }
+
 }

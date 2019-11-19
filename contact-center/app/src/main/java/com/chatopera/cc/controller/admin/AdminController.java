@@ -16,21 +16,23 @@
  */
 package com.chatopera.cc.controller.admin;
 
-import com.chatopera.cc.acd.AutomaticServiceDist;
+import com.chatopera.cc.acd.ACDAgentService;
+import com.chatopera.cc.acd.ACDPolicyService;
+import com.chatopera.cc.acd.ACDWorkMonitor;
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
-import com.chatopera.cc.socketio.client.NettyClients;
 import com.chatopera.cc.model.SysDic;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.OnlineUserRepository;
 import com.chatopera.cc.persistence.repository.SysDicRepository;
 import com.chatopera.cc.persistence.repository.UserEventRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
-import com.chatopera.cc.basic.Constants;
-import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.proxy.OnlineUserProxy;
+import com.chatopera.cc.socketio.client.NettyClients;
+import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,6 +48,9 @@ import java.util.List;
 
 @Controller
 public class AdminController extends Handler {
+
+    @Autowired
+    private ACDWorkMonitor acdWorkMonitor;
 
     @Autowired
     private UserRepository userRes;
@@ -66,7 +71,7 @@ public class AdminController extends Handler {
     public ModelAndView index(ModelMap map, HttpServletRequest request) {
         ModelAndView view = request(super.createRequestPageTempletResponse("redirect:/"));
         User user = super.getUser(request);
-        view.addObject("agentStatusReport", AutomaticServiceDist.getAgentReport(user.getOrgi()));
+        view.addObject("agentStatusReport", acdWorkMonitor.getAgentReport(user.getOrgi()));
         view.addObject("agentStatus", cache.findOneAgentStatusByAgentnoAndOrig(user.getId(), user.getOrgi()));
         return view;
     }
@@ -78,7 +83,7 @@ public class AdminController extends Handler {
         map.put("chatClients", NettyClients.getInstance().size());
         map.put("systemCaches", cache.getSystemSizeByOrgi(MainContext.SYSTEM_ORGI));
 
-        map.put("agentReport", AutomaticServiceDist.getAgentReport(orgi));
+        map.put("agentReport", acdWorkMonitor.getAgentReport(orgi));
         map.put("webIMReport", MainUtils.getWebIMReport(userEventRes.findByOrgiAndCreatetimeRange(super.getOrgi(request), MainUtils.getStartTime(), MainUtils.getEndTime())));
 
         map.put("agents", getAgent(request).size());

@@ -15,7 +15,8 @@
  */
 package com.chatopera.cc.schedule;
 
-import com.chatopera.cc.acd.AutomaticServiceDist;
+import com.chatopera.cc.acd.ACDPolicyService;
+import com.chatopera.cc.acd.ACDServiceRouter;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
@@ -42,13 +43,18 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Configuration
 @EnableScheduling
 public class WebIMTask {
 
     private final static Logger logger = LoggerFactory.getLogger(WebIMTask.class);
+
+    @Autowired
+    private ACDPolicyService acdPolicyService;
+
+    @Autowired
+    private ACDServiceRouter acdServiceRouter;
 
     @Autowired
     private AgentUserTaskRepository agentUserTaskRes;
@@ -70,7 +76,7 @@ public class WebIMTask {
 
     @Scheduled(fixedDelay = 5000, initialDelay = 20000) // 处理超时消息，每5秒执行一次
     public void task() {
-        final List<SessionConfig> sessionConfigList = AutomaticServiceDist.initSessionConfigList();
+        final List<SessionConfig> sessionConfigList = acdPolicyService.initSessionConfigList();
         if (sessionConfigList != null && sessionConfigList.size() > 0 && MainContext.getContext() != null) {
             for (final SessionConfig sessionConfig : sessionConfigList) {
                 if (sessionConfig.isSessiontimeout()) {        //设置了启用 超时提醒
@@ -104,7 +110,7 @@ public class WebIMTask {
                                             sessionConfig.getServicename(),
                                             p, agentStatus, task);
                                     try {
-                                        AutomaticServiceDist.serviceFinish(p, task.getOrgi());
+                                        acdServiceRouter.serviceFinish(p, task.getOrgi());
                                     } catch (Exception e) {
                                         logger.warn("[task] exception: ", e);
                                     }
@@ -130,7 +136,7 @@ public class WebIMTask {
                                         sessionConfig, sessionConfig.getRetimeoutmsg(), agentStatus.getUsername(),
                                         p, agentStatus, task);
                                 try {
-                                    AutomaticServiceDist.serviceFinish(p, task.getOrgi());
+                                    acdServiceRouter.serviceFinish(p, task.getOrgi());
                                 } catch (Exception e) {
                                     logger.warn("[task] exception: ", e);
                                 }
@@ -152,7 +158,7 @@ public class WebIMTask {
                                     sessionConfig, sessionConfig.getQuenetimeoutmsg(), sessionConfig.getServicename(),
                                     p, null, task);
                             try {
-                                AutomaticServiceDist.serviceFinish(p, task.getOrgi());
+                                acdServiceRouter.serviceFinish(p, task.getOrgi());
                             } catch (Exception e) {
                                 logger.warn("[task] exception: ", e);
                             }
@@ -165,11 +171,11 @@ public class WebIMTask {
 
     @Scheduled(fixedDelay = 5000, initialDelay = 20000) // 每5秒执行一次
     public void agent() {
-        List<SessionConfig> sessionConfigList = AutomaticServiceDist.initSessionConfigList();
+        List<SessionConfig> sessionConfigList = acdPolicyService.initSessionConfigList();
         if (sessionConfigList != null && sessionConfigList.size() > 0) {
             for (final SessionConfig sessionConfig : sessionConfigList) {
                 // ? 为什么还要重新取一次？
-//                sessionConfig = AutomaticServiceDist.initSessionConfig(sessionConfig.getOrgi());
+//                sessionConfig = automaticServiceDist.initSessionConfig(sessionConfig.getOrgi());
                 if (sessionConfig != null && MainContext.getContext() != null && sessionConfig.isAgentreplaytimeout()) {
                     List<AgentUserTask> agentUserTask = agentUserTaskRes.findByLastgetmessageLessThanAndStatusAndOrgi(
                             MainUtils.getLastTime(sessionConfig.getAgenttimeout()),

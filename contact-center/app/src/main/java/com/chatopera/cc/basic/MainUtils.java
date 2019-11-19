@@ -1396,4 +1396,34 @@ public class MainUtils {
         }
         return strb.toString();
     }
+
+    public static void putMapEntry(
+            Map<String, String[]> map, String name,
+            String value) {
+        String[] newValues = null;
+        String[] oldValues = (String[]) (String[]) map.get(name);
+        if (oldValues == null) {
+            newValues = new String[1];
+            newValues[0] = value;
+        } else {
+            newValues = new String[oldValues.length + 1];
+            System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
+            newValues[oldValues.length] = value;
+        }
+        map.put(name, newValues);
+    }
+
+    public static byte convertHexDigit(byte b) {
+        if ((b >= 48) && (b <= 57)) {
+            return (byte) (b - 48);
+        }
+        if ((b >= 97) && (b <= 102)) {
+            return (byte) (b - 97 + 10);
+        }
+        if ((b >= 65) && (b <= 70)) {
+            return (byte) (b - 65 + 10);
+        }
+        return 0;
+    }
+
 }

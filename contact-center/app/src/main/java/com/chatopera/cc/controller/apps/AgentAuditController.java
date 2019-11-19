@@ -17,7 +17,10 @@
 package com.chatopera.cc.controller.apps;
 
 import com.alibaba.fastjson.JSONObject;
-import com.chatopera.cc.acd.AutomaticServiceDist;
+import com.chatopera.cc.acd.ACDAgentService;
+import com.chatopera.cc.acd.ACDMessageHelper;
+import com.chatopera.cc.acd.ACDPolicyService;
+import com.chatopera.cc.acd.ACDServiceRouter;
 import com.chatopera.cc.activemq.BrokerPublisher;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainUtils;
@@ -56,6 +59,18 @@ import java.util.*;
 @RequestMapping(value = "/apps/cca")
 public class AgentAuditController extends Handler {
     private final static Logger logger = LoggerFactory.getLogger(AgentAuditController.class);
+
+    @Autowired
+    private ACDAgentService acdAgentService;
+
+    @Autowired
+    private ACDPolicyService acdPolicyService;
+
+    @Autowired
+    private ACDMessageHelper acdMessageHelper;
+
+    @Autowired
+    private ACDServiceRouter acdServiceRouter;
 
     @Autowired
     private AgentUserRepository agentUserRes;
@@ -128,7 +143,7 @@ public class AgentAuditController extends Handler {
             @Valid final String skill,
             @Valid final String agentno,
             @Valid String sort
-    ) {
+                             ) {
         final String orgi = super.getOrgi(request);
         final User logined = super.getUser(request);
         logger.info("[index] skill {}, agentno {}, logined {}", skill, agentno, logined.getId());
@@ -256,7 +271,7 @@ public class AgentAuditController extends Handler {
             HttpServletRequest request,
             String id,
             String channel
-    ) throws IOException, TemplateException {
+                                 ) throws IOException, TemplateException {
         String mainagentuser = "/apps/cca/mainagentuser";
         if (channel.equals("phone")) {
             mainagentuser = "/apps/cca/mainagentuser_callout";
@@ -287,11 +302,11 @@ public class AgentAuditController extends Handler {
             view.addObject(
                     "agentUserMessageList",
                     this.chatMessageRepository.findByUsessionAndOrgi(agentUser.getUserid(), orgi,
-                            new PageRequest(0, 20, Sort.Direction.DESC,
-                                    "updatetime"
-                            )
-                    )
-            );
+                                                                     new PageRequest(0, 20, Sort.Direction.DESC,
+                                                                                     "updatetime"
+                                                                     )
+                                                                    )
+                          );
             AgentService agentService = null;
             if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
                 agentService = this.agentServiceRes.findOne(agentUser.getAgentserviceid());
@@ -320,20 +335,20 @@ public class AgentAuditController extends Handler {
             }
             view.addObject("serviceCount", Integer
                     .valueOf(this.agentServiceRes
-                            .countByUseridAndOrgiAndStatus(agentUser
-                                            .getUserid(), orgi,
-                                    MainContext.AgentUserStatusEnum.END
-                                            .toString())));
+                                     .countByUseridAndOrgiAndStatus(agentUser
+                                                                            .getUserid(), orgi,
+                                                                    MainContext.AgentUserStatusEnum.END
+                                                                            .toString())));
             view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid()));
         }
-            SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(super.getOrgi(request));
+        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
 
-            view.addObject("sessionConfig", sessionConfig);
-            if (sessionConfig.isOtherquickplay()) {
-                view.addObject("topicList", OnlineUserProxy.search(null, orgi, super.getUser(request)));
-            }
+        view.addObject("sessionConfig", sessionConfig);
+        if (sessionConfig.isOtherquickplay()) {
+            view.addObject("topicList", OnlineUserProxy.search(null, orgi, super.getUser(request)));
+        }
 
-            view.addObject("tags", tagRes.findByOrgiAndTagtype(orgi, MainContext.ModelType.USER.toString()));
+        view.addObject("tags", tagRes.findByOrgiAndTagtype(orgi, MainContext.ModelType.USER.toString()));
         return view;
     }
 
@@ -357,7 +372,7 @@ public class AgentAuditController extends Handler {
             final @Valid String agentserviceid,
             final @Valid String agentnoid,
             final @Valid String agentuserid
-    ) {
+                                ) {
         logger.info("[transfer] userId {}, agentUser {}", userid, agentuserid);
         final String orgi = super.getOrgi(request);
         final User logined = super.getUser(request);
@@ -422,7 +437,7 @@ public class AgentAuditController extends Handler {
             HttpServletRequest request,
             @Valid String agentnoid,
             @Valid String organ
-    ) {
+                                     ) {
         final String orgi = super.getOrgi(request);
         if (StringUtils.isNotBlank(organ)) {
             List<String> usersids = new ArrayList<String>();
@@ -473,7 +488,7 @@ public class AgentAuditController extends Handler {
             @Valid final String currentAgentnoid,
             @Valid final String agentno,   // 会话转接给下一个坐席
             @Valid final String memo
-    ) throws CSKefuException {
+                                    ) throws CSKefuException {
         final String currentAgentno = currentAgentnoid; // 当前会话坐席的agentno
 
         final String orgi = super.getOrgi(request);
@@ -506,7 +521,7 @@ public class AgentAuditController extends Handler {
                 // 更新当前坐席的服务访客列表
                 if (currentAgentStatus != null) {
                     cache.deleteOnlineUserIdFromAgentStatusByUseridAndAgentnoAndOrgi(userid, currentAgentno, orgi);
-                    AutomaticServiceDist.updateAgentStatus(currentAgentStatus, super.getOrgi(request));
+                    agentUserProxy.updateAgentStatus(currentAgentStatus, super.getOrgi(request));
                 }
 
                 if (transAgentStatus != null) {
@@ -518,7 +533,7 @@ public class AgentAuditController extends Handler {
                 try {
                     Message outMessage = new Message();
                     outMessage.setMessage(
-                            AutomaticServiceDist.getSuccessMessage(agentService, agentUser.getChannel(), orgi));
+                            acdMessageHelper.getSuccessMessage(agentService, agentUser.getChannel(), orgi));
                     outMessage.setMessageType(MainContext.MediaType.TEXT.toString());
                     outMessage.setCalltype(MainContext.CallType.IN.toString());
                     outMessage.setCreatetime(MainUtils.dateFormate.format(new Date()));
@@ -534,7 +549,7 @@ public class AgentAuditController extends Handler {
                                 agentUser.getUserid(),
                                 outMessage,
                                 true
-                        );
+                                       );
                     }
 
                     // 通知转接消息给新坐席
@@ -544,7 +559,7 @@ public class AgentAuditController extends Handler {
                             MainContext.ReceiverType.AGENT, MainContext.ChannelType.WEBIM,
                             agentUser.getAppid(), MainContext.MessageType.NEW, agentService.getAgentno(),
                             outMessage, true
-                    );
+                                   );
 
                 } catch (Exception ex) {
                     logger.error("[transfersave]", ex);
@@ -588,7 +603,7 @@ public class AgentAuditController extends Handler {
                     logined.getId(), agentUser.getAgentno()) || logined.isAdmin())) {
                 // 删除访客-坐席关联关系，包括缓存
                 try {
-                    AutomaticServiceDist.deleteAgentUser(agentUser, orgi);
+                    acdServiceRouter.deleteAgentUser(agentUser, orgi);
                 } catch (CSKefuException e) {
                     // 未能删除成功
                     logger.error("[end]", e);

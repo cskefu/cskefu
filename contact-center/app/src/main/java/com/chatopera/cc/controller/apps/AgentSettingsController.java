@@ -16,14 +16,14 @@
  */
 package com.chatopera.cc.controller.apps;
 
-import com.chatopera.cc.acd.AutomaticServiceDist;
+import com.chatopera.cc.acd.ACDPolicyService;
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.repository.*;
-import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +46,9 @@ import java.util.List;
 @Controller
 @RequestMapping("/setting")
 public class AgentSettingsController extends Handler {
+
+    @Autowired
+    private ACDPolicyService acdPolicyService;
 
     @Autowired
     private SessionConfigRepository sessionConfigRes;
@@ -117,7 +120,7 @@ public class AgentSettingsController extends Handler {
         cache.putSessionConfigByOrgi(tempSessionConfig, orgi);
         cache.deleteSessionConfigListByOrgi(orgi);
 
-        AutomaticServiceDist.initSessionConfigList();
+        acdPolicyService.initSessionConfigList();
         map.put("sessionConfig", tempSessionConfig);
 
         return request(super.createRequestPageTempletResponse("redirect:/setting/agent/index.html"));

@@ -16,19 +16,14 @@
  */
 package com.chatopera.cc.proxy;
 
-import com.chatopera.cc.acd.AutomaticServiceDist;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.basic.MainContext.ChannelType;
-import com.chatopera.cc.basic.MainContext.MessageType;
-import com.chatopera.cc.basic.MainContext.ReceiverType;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.es.ContactsRepository;
 import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
 import com.chatopera.cc.persistence.repository.*;
-import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.socketio.message.OtherMessageItem;
 import com.chatopera.cc.util.*;
 import com.fasterxml.jackson.databind.JavaType;
@@ -39,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.servlet.http.Cookie;
@@ -62,18 +56,12 @@ public class OnlineUserProxy {
     private static UserRepository userRes;
     private static Cache cache;
     private static ConsultInviteRepository consultInviteRes;
-    private static InviteRecordRepository inviteRecordRes;
     private static OnlineUserHisRepository onlineUserHisRes;
     private static UserTraceRepository userTraceRes;
     private static OrgiSkillRelRepository orgiSkillRelRes;
-    private static AgentUserProxy agentUserProxy;
     private static AgentUserContactsRepository agentUserContactsRes;
     private static ContactsRepository contactsRes;
     private static UserProxy userProxy;
-
-    // Compare two onlineUser by createtime
-    public final static Comparator<OnlineUser> compareByCreateTime = (OnlineUser o1, OnlineUser o2) -> o1.getCreatetime().compareTo(
-            o2.getCreatetime());
 
     /**
      * @param id
@@ -725,7 +713,7 @@ public class OnlineUserProxy {
     public static String getKeyword(String url) {
         Map<String, String[]> values = new HashMap<String, String[]>();
         try {
-            parseParameters(values, url, "UTF-8");
+            OnlineUserUtils.parseParameters(values, url, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -748,505 +736,6 @@ public class OnlineUserProxy {
             e.printStackTrace();
         }
         return source;
-    }
-
-    /**
-     * 在访客启动聊天窗口后，建立访客和坐席的连接关系
-     * 1）在inMessage中如果绑定了坐席，就联系该坐席服务这个访客
-     * 2）在inMessage中如果没有绑定坐席，就寻找一个符合要求的坐席（比如技能组）
-     * 找不到坐席时进入排队，找到坐席通知双方加入会话
-     *
-     * @param agentUser 预连接的坐席人员
-     * @return
-     */
-    private static Optional<Message> dispatchAgentService(final AgentUser agentUser) {
-        Message result = new Message();
-        AgentService agentService = null;
-        result.setOrgi(agentUser.getOrgi());
-        result.setMessageType(MainContext.MessageType.STATUS.toString());
-        result.setAgentUser(agentUser);
-
-        /**
-         * 首先交由 IMR处理 MESSAGE指令 ， 如果当前用户是在 坐席对话列表中， 则直接推送给坐席，如果不在，则执行 IMR
-         */
-        if (agentUser != null && StringUtils.isNotBlank(agentUser.getStatus())) {
-            switch (MainContext.AgentUserStatusEnum.toValue(agentUser.getStatus())) {
-                case INQUENE:
-                    int queueIndex = AutomaticServiceDist.getQueueIndex(
-                            agentUser.getAgentno(), agentUser.getOrgi(),
-                            agentUser.getSkill());
-                    result.setMessage(
-                            AutomaticServiceDist.getQueneMessage(queueIndex, agentUser.getChannel(),
-                                                                 agentUser.getOrgi()));
-                    break;
-                case INSERVICE:
-                    // 该访客与坐席正在服务中，忽略新的连接
-                    logger.info(
-                            "[handler] agent user {} is in service, userid {}, agentno {}", agentUser.getId(),
-                            agentUser.getUserid(), agentUser.getAgentno());
-                    break;
-            }
-        } else if ((agentService = AutomaticServiceDist.allotAgent(
-                agentUser, agentUser.getOrgi())) != null) {
-            /**
-             * 找到空闲坐席，如果未找到坐席，则将该用户放入到 排队队列
-             */
-            switch (MainContext.AgentUserStatusEnum.toValue(agentService.getStatus())) {
-                case INSERVICE:
-                    result.setMessage(
-                            AutomaticServiceDist.getSuccessMessage(agentService, agentUser.getChannel(),
-                                                                   agentUser.getOrgi()));
-
-                    // TODO 判断 INSERVICE 时，agentService 对应的  agentUser
-                    logger.info("[handle] agent service: agentno {}", agentService.getAgentno());
-                    logger.info("[handle] agent service: agentuser id {}", agentService.getAgentuserid());
-                    logger.info(
-                            "[handle] agent service: user {}, channle {}", agentService.getUserid(),
-                            agentService.getChannel());
-                    logger.info("[handle] agent service: status {}, queue index {}", agentService.getStatus(),
-                                agentService.getQueneindex());
-
-                    if (StringUtils.isNotBlank(agentService.getAgentuserid())) {
-                        getAgentUserProxy().findOne(agentService.getAgentuserid()).ifPresent(p -> {
-                            result.setAgentUser(p);
-                        });
-                    }
-
-                    // TODO 如果是 INSERVICE 那么  agentService.getAgentuserid 就一定不能为空？
-//                            // TODO 此处需要考虑 agentService.getAgentuserid 为空的情况
-//                            // 那么什么情况下，agentService.getAgentuserid为空？
-//                            if (StringUtils.isNotBlank(agentService.getAgentuserid())) {
-//                                logger.info("[handle] set Agent User with agentUser Id {}", agentService.getAgentuserid());
-//                                getAgentUserProxy().findOne(agentService.getAgentuserid()).ifPresent(p -> {
-//                                    outMessage.setChannelMessage(p);
-//                                });
-//                            } else {
-//                                logger.info("[handle] agent user id is null.");
-//                            }
-                    break;
-                case INQUENE:
-                    if (agentService.getQueneindex() > 0) {
-                        // 当前有坐席，要排队
-                        result.setMessage(AutomaticServiceDist.getQueneMessage(
-                                agentService.getQueneindex(),
-                                agentUser.getChannel(),
-                                agentUser.getOrgi()));
-                    } else {
-                        // TODO 什么是否返回 noAgentMessage, 是否在是 INQUENE 时 getQueneindex == 0
-                        // 当前没有坐席，要留言
-                        result.setMessage(AutomaticServiceDist.getNoAgentMessage(
-                                agentService.getQueneindex(),
-                                agentUser.getChannel(),
-                                agentUser.getOrgi()));
-                    }
-                    break;
-                case END:
-                    logger.info("[handler] should not happen for new onlineUser service request.");
-                default:
-            }
-
-            result.setAgentService(agentService);
-        }
-
-        return Optional.ofNullable(result);
-    }
-
-    /**
-     * 为新增加的访客会话分配坐席和开启访客与坐席的对话
-     *
-     * @param onlineUserId
-     * @param nickname
-     * @param orgi
-     * @param session
-     * @param appid
-     * @param ip
-     * @param osname
-     * @param browser
-     * @param headimg
-     * @param ipdata
-     * @param channel
-     * @param skill
-     * @param agent
-     * @param title
-     * @param url
-     * @param traceid
-     * @param eventid
-     * @return
-     * @throws Exception
-     */
-    public static Message allocateAgentService(
-            final String onlineUserId,
-            final String nickname,
-            final String orgi,
-            final String session,
-            final String appid,
-            final String ip,
-            final String osname,
-            final String browser,
-            final String headimg,
-            final IP ipdata,
-            final String channel,
-            final String skill,
-            final String agent,
-            final String title,
-            final String url,
-            final String traceid,
-            final String eventid) {
-        logger.info(
-                "[allocateAgentService] user {}, appid {}, agent {}, skill {}, nickname {}", onlineUserId, appid,
-                agent,
-                skill,
-                nickname);
-        // 坐席服务请求，分配 坐席
-        final Message result = new Message();
-
-        /**
-         * NOTE AgentUser代表一次会话记录，在上一个会话结束，并且由坐席人员点击"清除"后，会从数据库中删除
-         * 此处查询到的，可能是之前的会话。其状态需要验证，所以不一定是由TA来服务本次会话。
-         */
-        AgentUser agentUser = getCache().findOneAgentUserByUserIdAndOrgi(onlineUserId, orgi).orElseGet(() -> {
-            /**
-             * NOTE 新创建的AgentUser不需要设置Status和Agentno
-             * 因为两个值在后面会检查，如果存在则不会申请新的Agent
-             */
-            AgentUser p = new AgentUser(
-                    onlineUserId,
-                    channel,
-                    onlineUserId,
-                    nickname,
-                    orgi,
-                    appid);
-            logger.info("[allocateAgentService] create new agent user id {}", p.getId());
-            return p;
-        });
-
-        logger.info("[allocateAgentService] resolve agent user id {}", agentUser.getId());
-
-        agentUser.setUsername(resolveAgentUsername(agentUser, nickname));
-
-        agentUser.setOsname(osname);
-        agentUser.setBrowser(browser);
-        agentUser.setAppid(appid);
-        agentUser.setSessionid(session);
-
-        if (ipdata != null) {
-            logger.info("[allocateAgentService] set IP data for agentUser {}", agentUser.getId());
-            agentUser.setCountry(ipdata.getCountry());
-            agentUser.setProvince(ipdata.getProvince());
-            agentUser.setCity(ipdata.getCity());
-            if (StringUtils.isNotBlank(ip)) {
-                agentUser.setRegion(ipdata.toString() + "[" + ip + "]");
-            } else {
-                agentUser.setRegion(ipdata.toString());
-            }
-        }
-
-        agentUser.setOwner(eventid);        // 智能IVR的 EventID
-        agentUser.setHeadimgurl(headimg);
-        agentUser.setStatus(null);          // 修改状态
-        agentUser.setTitle(title);
-        agentUser.setUrl(url);
-        agentUser.setTraceid(traceid);
-
-        /**
-         * 访客新上线的请求
-         */
-        /**
-         * 技能组 和 坐席
-         */
-        if (StringUtils.isNotBlank(skill)) {
-            // 绑定技能组
-            agentUser.setSkill(skill);
-        } else if (StringUtils.isNotBlank(agent)) {
-            // 绑定坐席
-            agentUser.setAgentno(agent);
-            agentUser.setAgentname(getUserRes().findOne(agent).getUname());
-        } else {
-            /**
-             * NOTE 处理和"邀请"的关联
-             * 要关联访客与发出邀请的坐席
-             * 当访客接受邀请后，让该坐席与之对话
-             * 方案是从数据库InviteRecord查询最近10条，然后时间降序匹配在线客服进行发送
-             */
-            // 根据邀请信息锁定目标坐席
-            // 从邀请信息中查看，是否有Agent
-            // 增加时间校验，如果这个邀请是很久之前的，就忽略
-            logger.info("[allocateAgentService] process invite events");
-            final Date threshold = new Date(System.currentTimeMillis() - Constants.WEBIM_AGENT_INVITE_TIMEOUT);
-            Page<InviteRecord> inviteRecords = getInviteRecordRes().findByUseridAndOrgiAndResultAndCreatetimeGreaterThan(
-                    onlineUserId,
-                    orgi,
-                    MainContext.OnlineUserInviteStatus.ACCEPT.toString(),
-                    threshold,
-                    new PageRequest(0, 10, Sort.Direction.DESC, "createtime"));
-            logger.info("[allocateAgentService] get inviteRecords size {}", inviteRecords.getContent().size());
-
-            for (final InviteRecord inviteRecord : inviteRecords.getContent()) {
-                // most recent invite
-                // 判断该坐席是否在线，就绪
-                // TODO 此处还需要限制技能组，即在有请求技能组的前提下，确认该坐席属于这个技能组
-                final AgentStatus as = cache.findOneAgentStatusByAgentnoAndOrig(
-                        inviteRecord.getAgentno(), inviteRecord.getOrgi());
-                if (as != null &&
-                        StringUtils.equals(MainContext.AgentStatusEnum.READY.toString(), as.getStatus()) &&
-                        (!as.isBusy())) { // 该坐席就绪且置闲
-                    logger.info(
-                            "[allocateAgentService] find an agent {} for user {} with InviteRecord {}",
-                            inviteRecord.getAgentno(), inviteRecord.getUserid(), inviteRecord.getId());
-                    agentUser.setAgentno(inviteRecord.getAgentno());
-                    agentUser.setAgentname(getUserRes().findOne(inviteRecord.getAgentno()).getUname());
-                    break;
-                }
-            }
-        }
-
-        SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(orgi);
-        AgentReport report;
-        if (StringUtils.isNotBlank(skill)) {
-            report = AutomaticServiceDist.getAgentReport(skill, orgi);
-        } else {
-            report = AutomaticServiceDist.getAgentReport(orgi);
-        }
-
-        if (sessionConfig.isHourcheck() && !MainUtils.isInWorkingHours(sessionConfig.getWorkinghours())) {
-            result.setMessage(sessionConfig.getNotinwhmsg());
-        } else {
-            if (report.getAgents() == 0) {
-                result.setNoagent(true);
-            }
-            // 寻找或为绑定服务访客的坐席，建立双方通话
-            dispatchAgentService(agentUser).ifPresent(p -> {
-                result.setMessage(p.getMessage());
-                // 为新访客找到了服务坐席
-                result.setAgentService(p.getAgentService());
-                result.setChannelMessage(p.getAgentUser());
-                result.setAgentUser(p.getAgentUser());
-            });
-        }
-
-        return result;
-    }
-
-    /**
-     * 确定该访客的名字，优先级
-     * 1. 如果AgentUser username 与 nickName 不一致，则用 agentUser username
-     * 2. 如果AgentUser username 与 nickName 一致，则查找 AgentUserContact对应的联系人
-     * 2.1 如果联系人存在，则用联系人的名字
-     * 2.2 如果联系人不存在，则使用 nickName
-     *
-     * TODO 此处有一些问题：如果联系人更新了名字，那么么后面TA的会话用的还是旧的名字，
-     * 所以，在更新联系人名字的时候，也应更新其对应的AgentUser里面的名字
-     * @param agentUser
-     * @param nickname
-     * @return
-     */
-    private static String resolveAgentUsername(final AgentUser agentUser, final String nickname) {
-        if (!StringUtils.equals(agentUser.getUsername(), nickname)) {
-            return agentUser.getUsername();
-        }
-
-        // 查找会话联系人关联表
-        AgentUserContacts agentUserContact = getAgentUserContactsRes().findOneByUseridAndOrgi(
-                agentUser.getUserid(), agentUser.getOrgi()).orElse(null);
-        if (agentUserContact != null) {
-            Contacts contact = getContactsRes().findOneById(agentUserContact.getContactsid()).orElseGet(null);
-            if (contact != null) {
-                return contact.getName();
-            }
-        }
-
-        return nickname;
-    }
-
-    /**
-     * @param userid
-     * @param orgi
-     * @param session
-     * @param appid
-     * @param ip
-     * @param osname
-     * @param browser
-     * @param channel
-     * @param skill
-     * @param agent
-     * @param nickname
-     * @param title
-     * @param url
-     * @param traceid
-     * @param initiator
-     * @return
-     * @throws Exception
-     */
-
-    public static Message allocateAgentService(
-            String userid,
-            String orgi,
-            String session,
-            String appid,
-            String ip,
-            String osname,
-            String browser,
-            String channel,
-            String skill,
-            String agent,
-            String nickname,
-            String title,
-            String url,
-            String traceid,
-            String initiator) {
-        IP ipdata = null;
-        if (StringUtils.isNotBlank(ip)) {
-            ipdata = IPTools.getInstance().findGeography(ip);
-            logger.info("[allocateAgentService] find ipdata {}", ipdata.toString());
-        } else {
-            logger.info("[allocateAgentService] no IP present");
-        }
-
-        if (StringUtils.isBlank(nickname)) {
-            logger.info("[allocateAgentService] reset nickname as it does not present.");
-            nickname = "Guest_" + userid;
-        }
-
-        return allocateAgentService(
-                userid, nickname, orgi, session, appid, ip, osname, browser, "", ipdata, channel, skill, agent, title,
-                url, traceid, session);
-    }
-
-    /**
-     * Create agentuser object for Wechat Channel
-     *
-     * @param openid
-     * @param nickname
-     * @param orgi
-     * @param session
-     * @param appid
-     * @param headimg
-     * @param country
-     * @param province
-     * @param city
-     * @param channel
-     * @param skill
-     * @param agent
-     * @param initiator
-     * @return
-     * @throws Exception
-     */
-    public static Message allocateAgentService(
-            String openid,
-            String nickname,
-            String orgi,
-            String session,
-            String appid,
-            String headimg,
-            String country,
-            String province,
-            String city,
-            String channel,
-            String skill,
-            String agent,
-            String initiator) throws Exception {
-        IP ipdata = new IP();
-        ipdata.setCountry(country);
-        ipdata.setProvince(province);
-        ipdata.setCity(city);
-        return allocateAgentService(
-                openid, nickname, orgi, session, appid, null, null, null, headimg, ipdata, channel, skill, agent, null,
-                null, null, session);
-    }
-
-    public static void parseParameters(
-            Map<String, String[]> map, String data,
-            String encoding) throws UnsupportedEncodingException {
-        if ((data == null) || (data.length() <= 0)) {
-            return;
-        }
-
-        byte[] bytes = null;
-        try {
-            if (encoding == null) {
-                bytes = data.getBytes();
-            } else {
-                bytes = data.getBytes(encoding);
-            }
-
-        } catch (UnsupportedEncodingException uee) {
-        }
-        parseParameters(map, bytes, encoding);
-    }
-
-    public static void parseParameters(
-            Map<String, String[]> map, byte[] data,
-            String encoding) throws UnsupportedEncodingException {
-        if ((data != null) && (data.length > 0)) {
-            int ix = 0;
-            int ox = 0;
-            String key = null;
-            String value = null;
-            while (ix < data.length) {
-                byte c = data[(ix++)];
-                switch ((char) c) {
-                    case '&':
-                        value = new String(data, 0, ox, encoding);
-                        if (key != null) {
-                            putMapEntry(map, key, value);
-                            key = null;
-                        }
-                        ox = 0;
-                        break;
-                    case '=':
-                        if (key == null) {
-                            key = new String(data, 0, ox, encoding);
-                            ox = 0;
-                        } else {
-                            data[(ox++)] = c;
-                        }
-                        break;
-                    case '+':
-                        data[(ox++)] = 32;
-                        break;
-                    case '%':
-                        data[(ox++)] = (byte) ((convertHexDigit(data[(ix++)]) << 4) + convertHexDigit(data[(ix++)]));
-
-                        break;
-                    default:
-                        data[(ox++)] = c;
-                }
-            }
-
-            if (key != null) {
-                value = new String(data, 0, ox, encoding);
-                putMapEntry(map, key, value);
-            }
-        }
-    }
-
-    private static void putMapEntry(
-            Map<String, String[]> map, String name,
-            String value) {
-        String[] newValues = null;
-        String[] oldValues = (String[]) (String[]) map.get(name);
-        if (oldValues == null) {
-            newValues = new String[1];
-            newValues[0] = value;
-        } else {
-            newValues = new String[oldValues.length + 1];
-            System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
-            newValues[oldValues.length] = value;
-        }
-        map.put(name, newValues);
-    }
-
-    private static byte convertHexDigit(byte b) {
-        if ((b >= 48) && (b <= 57)) {
-            return (byte) (b - 48);
-        }
-        if ((b >= 97) && (b <= 102)) {
-            return (byte) (b - 97 + 10);
-        }
-        if ((b >= 65) && (b <= 70)) {
-            return (byte) (b - 65 + 10);
-        }
-        return 0;
     }
 
     /**
@@ -1357,7 +846,8 @@ public class OnlineUserProxy {
     public static List<OtherMessageItem> search(String q, String orgi, User user) throws IOException, TemplateException {
         List<OtherMessageItem> otherMessageItemList = null;
         String param = "";
-        SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(orgi);
+        SessionConfig sessionConfig = MainContext.getACDServiceRouter().getAcdPolicyService().initSessionConfig(
+                orgi);
         if (StringUtils.isNotBlank(sessionConfig.getOqrsearchurl())) {
             Template templet = MainUtils.getTemplate(sessionConfig.getOqrsearchinput());
             Map<String, Object> values = new HashMap<String, Object>();
@@ -1416,7 +906,8 @@ public class OnlineUserProxy {
     public static OtherMessageItem detail(String id, String orgi, User user) throws IOException, TemplateException {
         OtherMessageItem otherMessageItem = null;
         String param = "";
-        SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(orgi);
+        SessionConfig sessionConfig = MainContext.getACDServiceRouter().getAcdPolicyService().initSessionConfig(
+                orgi);
         if (StringUtils.isNotBlank(sessionConfig.getOqrdetailinput())) {
             Template templet = MainUtils.getTemplate(sessionConfig.getOqrdetailinput());
             Map<String, Object> values = new HashMap<String, Object>();
@@ -1510,25 +1001,11 @@ public class OnlineUserProxy {
         return cache;
     }
 
-    private static AgentUserProxy getAgentUserProxy() {
-        if (agentUserProxy == null) {
-            agentUserProxy = MainContext.getContext().getBean(AgentUserProxy.class);
-        }
-        return agentUserProxy;
-    }
-
     private static ConsultInviteRepository getConsultInviteRes() {
         if (consultInviteRes == null) {
             consultInviteRes = MainContext.getContext().getBean(ConsultInviteRepository.class);
         }
         return consultInviteRes;
-    }
-
-    private static InviteRecordRepository getInviteRecordRes() {
-        if (inviteRecordRes == null) {
-            inviteRecordRes = MainContext.getContext().getBean(InviteRecordRepository.class);
-        }
-        return inviteRecordRes;
     }
 
     private static OnlineUserHisRepository getOnlineUserHisRes() {

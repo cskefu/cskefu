@@ -146,6 +146,7 @@ location.reload();
 var protocol = window.location.protocol.replace(/:/g,'');
 <!--var protocol = "$!''}"-->
 var cskefu = {
+	service: {agentno: null},
 	time : new Date().getTime(),
 	in: protocol + "://${hostname!''}<#if port?? && port != 80>:${port!''}</#if>/im/${appid!''}/userlist.html?appid=${appid!''}<#if aiid??>&aiid=${aiid}</#if>&orgi=${orgi!''}&client=${client}" ,
 	url: protocol + "://${hostname!''}<#if port?? && port != 80>:${port!''}</#if>/im/online?appid=${appid!''}&orgi=${orgi!''}<#if aiid??>&aiid=${aiid}</#if>&client=${client}" ,
@@ -176,13 +177,15 @@ var cskefu = {
 			if (xhr.readyState == 4) {
 				var status = xhr.status;
 				if (status >= 200 && status < 300) {
-					var event = xhr.responseText ;
+					var event = xhr.responseText;
 					if(event && event.indexOf('invite') >= 0){
-						cskefu.writeinvite() ;
+						var agentno = event.substring(event.lastIndexOf(":") + 1).trim();
+						cskefu.service.agentno = agentno;
+						cskefu.writeinvite();
 					}else if(event && event.indexOf('refuse') >= 0){
 						cskefu.refuseInvite() ;
 					}else if(event && event.indexOf('accept') >= 0){
-						cskefu.acceptInvite() ;
+						cskefu.acceptInvite();
 					}
 					if(success){
 						success(event);
@@ -281,7 +284,7 @@ var cskefu = {
 						"</div></div></#if>" ;
 <#if webimexist == true >
 		append(document.body, '<div class="ukefu-im-point" id="ukefu-point" style="display:none;z-index:100000;font-family:14px \5FAE\8F6F\96C5\9ED1,Helvetica Neue,Helvetica,PingFang SC,Tahoma,Arial,sans-serif;position: fixed;${position};<#if inviteData?? && inviteData.skill == true && inviteData.consult_skill_fixed == false>cursor:default;<#else>cursor: pointer;</#if>">	<div class="ukefu-point-theme${inviteData.consult_vsitorbtn_model!'1'} ukefu-theme-color theme1" style="${style}${theme}" id="ukefu-point-theme"><div class="ukefu-im-point-text" id="ukefu-im-point-text" style="cursor: pointer;${text};line-height: 23px;font-size: 15px;text-align: center;margin: 0 auto;"><i style="width:24px;height:24px;display: inline-block;font: normal normal normal 14px/1 FontAwesome;font-size: inherit;text-rendering: auto;-webkit-font-smoothing: antialiased;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAB60lEQVRIS7WV4TVsQRCEqyJABkSACBABLwJE8IjAigARIAMieCsCREAGjwja+eb03TO7O9ddrPm1Z29PV3dXdY31y8eL5I+ILUmbktYz/lXSs+2nofu9ABFBsjNJB5JWJT3MJNuR9CbpTtK5bUDnThMgIkaZnKSXtkkydyIC8BNJgI1sn88GzQFExI2kXUlHtsdDI+B7RBDPvUfbf+o7UwCZnHnv2qb9hU9EMEYKAuS4uzgByHapYqtvnkNoyRvE030Zaw0AScz7cijRZ9+Tv33b2xOAlOGjpLWvjmYWLEf1X9I2Mi4dRMRRtgVZ5WTgtaRX26cVmUj3lMtVzEPdeUTARVFfB4AsIbYG4Pe/0qbdxXERSaL7UapnKiYLIW5MTG8HGYjG6aAQlqNE+1RXVBYRUzH5H0SzF5MO2NqXJXHQ5dpAjbWKQL2jrSWo6MA2+zQlU2bOKOBi0MRaRVRq3OtcYHaT2YFDSQR8CSSTQ/itbXgpp+VFgCDbi5Z59ej+L6RKuqqTNwEqvWMbK2li97XxpSXwPhRTlPSOq7Zc99MHJxeQdt+6HcklYhdICmfonWKaZwgAh8RC8HmSXUjCjtcXtZQhAKrHGqiQUTynpTRfr1YLQwBomcq7HekdxbdG9JOF65XpMpLWOT4AygTtGd0Q7EsAAAAASUVORK5CYII=);"></i><br>${(inviteData.consult_vsitorbtn_content!'在线客服')?no_esc}</div></div><#if inviteData?? && inviteData.skill == true && inviteData.consult_skill_fixed == false>'+skillHtml+'</#if></div>');
-		append(document.body, "<div class='ukefu-im-preview' id='ukefu-invite-dialog' style='z-index: 2147483648;display:none;height:177px;position: fixed;z-index:10000;<#if phone?? && phone == true>bottom:0px;width:100%;<#else>top:"+top+";width: 420px;left:"+left+";</#if>border-radius: 2px;padding: 0px;overflow: hidden;margin: 0px;${invitetheme!''}'>	<div id='ukefu-cousult-invite-dialog' class='ukefu-im-preview-bar ukefu-cousult-invite-dialog ukefu-theme-color theme1' style='padding:0px;height:100%;width:100%;background-size: cover;background:url(${schema!'http'}://${hostname!''}<#if port?? && port != 80>:${port!''}</#if>/res/image.html?id=${inviteData.consult_invite_bg}) no-repeat'><a href='javascript:void(0)' onclick='cskefu.refuseInvite();'><span style='float: right;width: 20px;height: 20px;color: #ffffff;font-size: 20px;' >×</span></a><div class='ukefu-consult-body' id='ukefu_consult_body' style='width:100%;height:100%;'><div class='ukefu-cousult-invite-content' id='ukefu-cousult-invite-content' style='color: #FFFFFF;width: 70%;height: 70px;line-height: 35px;font-size: 13pt;font-weight: 200;word-wrap: break-word;word-break: break-all;position: absolute;top: 30px;left: 25%;'>${inviteData.consult_invite_content!'欢迎来到本网站，请问有什么可以帮您？'}</div></div><div class='ukefu-cousult-invite-btn' style='position: absolute;bottom: 0px;right: 0px;margin: 0px 10px 10px 0px;'><button class='theme1' id='invite-btn' style='border-color:#FFFFFF !important;color:#FFFFFF;display: inline-block;height: 38px;line-height: 38px;padding: 0 18px;background-color: #009688;color: #fff;white-space: nowrap;text-align: center;font-size: 14px;margin-right:10px;border: none;border-radius: 2px;cursor: pointer;opacity: .9;filter: alpha(opacity=90);${invitetheme!''}border:1px solid #FFFFFF;' onclick='cskefu.refuseInvite();' ><#if inviteData.consult_invite_later?? && inviteData.consult_invite_later != ''>${inviteData.consult_invite_later}<#else>稍后再说</#if></button><button class='' style='display: inline-block;height: 38px;line-height: 38px;padding: 0 18px;background-color: #009688;color: #fff;white-space: nowrap;text-align: center;font-size: 14px;border: none;border-radius: 2px;cursor: pointer;opacity: .9;filter: alpha(opacity=90);background-color:#FFFFFF;color:#333333;' onclick='cskefu.openChatDialog();'><#if inviteData.consult_invite_accept?? && inviteData.consult_invite_accept!=''>${inviteData.consult_invite_accept}<#else>现在咨询</#if></button></div></div></div>");
+		append(document.body, "<div class='ukefu-im-preview' id='ukefu-invite-dialog' style='z-index: 2147483648;display:none;height:177px;position: fixed;z-index:10000;<#if phone?? && phone == true>bottom:0px;width:100%;<#else>top:"+top+";width: 420px;left:"+left+";</#if>border-radius: 2px;padding: 0px;overflow: hidden;margin: 0px;${invitetheme!''}'>	<div id='ukefu-cousult-invite-dialog' class='ukefu-im-preview-bar ukefu-cousult-invite-dialog ukefu-theme-color theme1' style='padding:0px;height:100%;width:100%;background-size: cover;background:url(${schema!'http'}://${hostname!''}<#if port?? && port != 80>:${port!''}</#if>/res/image.html?id=${inviteData.consult_invite_bg}) no-repeat'><a href='javascript:void(0)' onclick='cskefu.refuseInvite();'><span style='float: right;width: 20px;height: 20px;color: #ffffff;font-size: 20px;' >×</span></a><div class='ukefu-consult-body' id='ukefu_consult_body' style='width:100%;height:100%;'><div class='ukefu-cousult-invite-content' id='ukefu-cousult-invite-content' style='color: #FFFFFF;width: 70%;height: 70px;line-height: 35px;font-size: 13pt;font-weight: 200;word-wrap: break-word;word-break: break-all;position: absolute;top: 30px;left: 25%;'>${inviteData.consult_invite_content!'欢迎来到本网站，请问有什么可以帮您？'}</div></div><div class='ukefu-cousult-invite-btn' style='position: absolute;bottom: 0px;right: 0px;margin: 0px 10px 10px 0px;'><button class='theme1' id='invite-btn' style='border-color:#FFFFFF !important;color:#FFFFFF;display: inline-block;height: 38px;line-height: 38px;padding: 0 18px;background-color: #009688;color: #fff;white-space: nowrap;text-align: center;font-size: 14px;margin-right:10px;border: none;border-radius: 2px;cursor: pointer;opacity: .9;filter: alpha(opacity=90);${invitetheme!''}border:1px solid #FFFFFF;' onclick='cskefu.refuseInvite();' ><#if inviteData.consult_invite_later?? && inviteData.consult_invite_later != ''>${inviteData.consult_invite_later}<#else>稍后再说</#if></button><button class='' style='display: inline-block;height: 38px;line-height: 38px;padding: 0 18px;background-color: #009688;color: #fff;white-space: nowrap;text-align: center;font-size: 14px;border: none;border-radius: 2px;cursor: pointer;opacity: .9;filter: alpha(opacity=90);background-color:#FFFFFF;color:#333333;' onclick='openInviteChatDialog();'><#if inviteData.consult_invite_accept?? && inviteData.consult_invite_accept!=''>${inviteData.consult_invite_accept}<#else>现在咨询</#if></button></div></div></div>");
 </#if>
 		<#if inviteData?? && inviteData.skill == true && inviteData.consult_skill_fixed == false>
 			document.getElementById("ukefu-im-point-text").onclick=function(){
@@ -419,9 +422,17 @@ document.getElementById("ukefu-point").style.display = "block" ;
 
 }
 
-function openAgentChatDialog(url){
-	return cskefu.openChatDialogWithURL(url) ;
+// 邀请聊天
+function openInviteChatDialog(){
+    var url = cskefu.chat + "&agent=" + cskefu.service.agentno + "&isInvite=true";
+	return cskefu.openChatDialogWithURL(url);
 }
+
+// 技能组或坐席聊天
+function openAgentChatDialog(url){
+	return cskefu.openChatDialogWithURL(url);
+}
+
 Fingerprint2.get({}, function(components){
     var glue = components.map(function (component) { return component.value })
 	cskefuOnlineUserId =  Fingerprint2.x64hash128(glue.join(''), 31)

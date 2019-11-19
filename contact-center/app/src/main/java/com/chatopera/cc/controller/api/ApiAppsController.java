@@ -55,7 +55,8 @@ public class ApiAppsController extends Handler {
     @Menu(type = "apps", subtype = "apps", access = true)
     public ResponseEntity<String> operations(HttpServletRequest request, @RequestBody final String body, @Valid String q) {
         logger.info("[operations] body {}, q {}", body, q);
-        final JsonObject j = StringUtils.isBlank(body) ? (new JsonObject()) : (new JsonParser()).parse(body).getAsJsonObject();
+        final JsonObject j = StringUtils.isBlank(body) ? (new JsonObject()) : (new JsonParser()).parse(
+                body).getAsJsonObject();
 
         JsonObject json = new JsonObject();
         HttpHeaders headers = RestUtils.header();
@@ -111,7 +112,7 @@ public class ApiAppsController extends Handler {
             logger.info("[invite] new invite record {} of onlineUser id {} saved.", record.getId(), onlineUser.getId());
 
             try {
-                OnlineUserProxy.sendWebIMClients(onlineUser.getUserid(), "invite");
+                OnlineUserProxy.sendWebIMClients(onlineUser.getUserid(), "invite:" + agentno);
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
             } catch (Exception e) {
                 logger.error("[invite] error", e);

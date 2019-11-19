@@ -16,7 +16,9 @@
  */
 package com.chatopera.cc.controller.api;
 
-import com.chatopera.cc.acd.AutomaticServiceDist;
+import com.chatopera.cc.acd.ACDPolicyService;
+import com.chatopera.cc.acd.ACDServiceRouter;
+import com.chatopera.cc.acd.ACDWorkMonitor;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
@@ -25,7 +27,7 @@ import com.chatopera.cc.model.SessionConfig;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.AgentStatusRepository;
 import com.chatopera.cc.persistence.repository.AgentUserRepository;
-import com.chatopera.cc.persistence.repository.OrganRepository;
+import com.chatopera.cc.proxy.AgentUserProxy;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.RestResult;
 import com.chatopera.cc.util.RestResultType;
@@ -52,15 +54,22 @@ import java.util.List;
 public class ApiServiceQueneController extends Handler {
 
     @Autowired
+    private AgentUserProxy agentUserProxy;
+
+    @Autowired
+    private ACDWorkMonitor acdWorkMonitor;
+
+    @Autowired
+    private ACDPolicyService acdPolicyService;
+
+    @Autowired
     private AgentStatusRepository agentStatusRepository;
 
+    @Autowired
+    private ACDServiceRouter acdServiceRouter;
 
     @Autowired
     private AgentUserRepository agentUserRepository;
-
-    @Autowired
-    private OrganRepository organRes;
-
 
     @Autowired
     private Cache cache;
@@ -75,7 +84,7 @@ public class ApiServiceQueneController extends Handler {
     @Menu(type = "apps", subtype = "user", access = true)
     public ResponseEntity<RestResult> list(HttpServletRequest request) {
         return new ResponseEntity<>(
-                new RestResult(RestResultType.OK, AutomaticServiceDist.getAgentReport(super.getOrgi(request))),
+                new RestResult(RestResultType.OK, acdWorkMonitor.getAgentReport(super.getOrgi(request))),
                 HttpStatus.OK);
     }
 
@@ -106,7 +115,7 @@ public class ApiServiceQueneController extends Handler {
                 agentStatus.setLogindate(new Date());
                 agentStatus.setSkills(logined.getSkills());
 
-                SessionConfig sessionConfig = AutomaticServiceDist.initSessionConfig(super.getOrgi(request));
+                SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
 
                 agentStatus.setUsers(agentUserRepository.countByAgentnoAndStatusAndOrgi(
                         logined.getId(),
@@ -130,19 +139,19 @@ public class ApiServiceQueneController extends Handler {
                 agentStatus.setStatus(MainContext.AgentStatusEnum.READY.toString());
                 cache.putAgentStatusByOrgi(agentStatus, super.getOrgi(request));
 
-                AutomaticServiceDist.recordAgentStatus(
+                acdWorkMonitor.recordAgentStatus(
                         agentStatus.getAgentno(), agentStatus.getUsername(), agentStatus.getAgentno(),
                         logined.isAdmin(), agentStatus.getAgentno(),
                         MainContext.AgentStatusEnum.OFFLINE.toString(), MainContext.AgentStatusEnum.READY.toString(),
                         MainContext.AgentWorkType.MEIDIACHAT.toString(), agentStatus.getOrgi(), null);
-                AutomaticServiceDist.allotAgent(agentStatus.getAgentno(), super.getOrgi(request));
+                acdServiceRouter.allotVisitors(agentStatus.getAgentno(), super.getOrgi(request));
             }
         } else if (StringUtils.isNotBlank(status)) {
             if (status.equals(MainContext.AgentStatusEnum.NOTREADY.toString())) {
                 List<AgentStatus> agentStatusList = agentStatusRepository.findByAgentnoAndOrgi(
                         logined.getId(), super.getOrgi(request));
                 for (AgentStatus temp : agentStatusList) {
-                    AutomaticServiceDist.recordAgentStatus(
+                    acdWorkMonitor.recordAgentStatus(
                             temp.getAgentno(), temp.getUsername(), temp.getAgentno(),
                             logined.isAdmin(),
                             temp.getAgentno(),
@@ -158,7 +167,7 @@ public class ApiServiceQueneController extends Handler {
                 if (agentStatusList.size() > 0) {
                     agentStatus = agentStatusList.get(0);
                     agentStatus.setBusy(true);
-                    AutomaticServiceDist.recordAgentStatus(
+                    acdWorkMonitor.recordAgentStatus(
                             agentStatus.getAgentno(), agentStatus.getUsername(), agentStatus.getAgentno(),
                             logined.isAdmin(), agentStatus.getAgentno(),
                             MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentStatusEnum.BUSY.toString(),
@@ -176,7 +185,7 @@ public class ApiServiceQueneController extends Handler {
                 if (agentStatusList.size() > 0) {
                     agentStatus = agentStatusList.get(0);
                     agentStatus.setBusy(false);
-                    AutomaticServiceDist.recordAgentStatus(
+                    acdWorkMonitor.recordAgentStatus(
                             agentStatus.getAgentno(), agentStatus.getUsername(), agentStatus.getAgentno(),
                             logined.isAdmin(), agentStatus.getAgentno(),
                             MainContext.AgentStatusEnum.BUSY.toString(), MainContext.AgentStatusEnum.READY.toString(),
@@ -187,9 +196,9 @@ public class ApiServiceQueneController extends Handler {
                     agentStatusRepository.save(agentStatus);
                     cache.putAgentStatusByOrgi(agentStatus, super.getOrgi(request));
                 }
-                AutomaticServiceDist.allotAgent(agentStatus.getAgentno(), super.getOrgi(request));
+                acdServiceRouter.allotVisitors(agentStatus.getAgentno(), super.getOrgi(request));
             }
-            AutomaticServiceDist.broadcastAgentsStatus(
+            agentUserProxy.broadcastAgentsStatus(
                     super.getOrgi(request), "agent", "api", super.getUser(request).getId());
         }
         return new ResponseEntity<>(new RestResult(RestResultType.OK, agentStatus), HttpStatus.OK);
