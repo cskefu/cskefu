@@ -160,16 +160,24 @@ public class AgentStatus implements java.io.Serializable, Comparable<AgentStatus
         this.createtime = createtime;
     }
 
+    /**
+     * 同时服务最多的访客数
+     * @return
+     */
     @Transient
     public int getMaxusers() {
         SessionConfig sessionConfig = MainContext.getACDServiceRouter().getAcdPolicyService().initSessionConfig(this.orgi);
-        return sessionConfig != null ? sessionConfig.getMaxuser() : Constants.AGENT_STATUS_MAX_USER;
+        return sessionConfig.getMaxuser();
     }
 
     public void setMaxusers(int maxusers) {
         this.maxusers = maxusers;
     }
 
+    /**
+     * 单次批量分配最大访客数目
+     * @return
+     */
     @Transient
     public int getInitmaxusers() {
         SessionConfig sessionConfig = MainContext.getACDServiceRouter().getAcdPolicyService().initSessionConfig(this.orgi);

@@ -67,6 +67,7 @@ public class ACDWorkMonitor {
         AgentReport report = new AgentReport();
 
         Map<String, AgentStatus> readys = cache.getAgentStatusReadyByOrig(orgi);
+
         int readyNum = 0;
         int busyNum = 0;
 
@@ -101,10 +102,10 @@ public class ACDWorkMonitor {
         report.setInquene(cache.getInqueAgentUsersSizeByOrgi(orgi));
 
         // DEBUG
-//        logger.info(
-//                "[getAgentReport] orgi {}, organ {}, agents {}, busy {}, users {}, inqueue {}", orgi, organ,
-//                report.getAgents(), report.getBusy(), report.getUsers(), report.getInquene()
-//                   );
+        logger.info(
+                "[getAgentReport] orgi {}, organ {}, agents {}, busy {}, users {}, inqueue {}", orgi, organ,
+                report.getAgents(), report.getBusy(), report.getUsers(), report.getInquene()
+                   );
         return report;
     }
 

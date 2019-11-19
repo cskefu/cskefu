@@ -182,6 +182,7 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
                     } else {
                         // TODO 什么是否返回 noAgentMessage, 是否在是 INQUENE 时 getQueneindex == 0
                         // 当前没有坐席，要留言
+                        ctx.setNoagent(true);
                         ctx.setMessage(acdMessageHelper.getNoAgentMessage(
                                 ctx.getAgentService().getQueneindex(),
                                 ctx.getChannel(),

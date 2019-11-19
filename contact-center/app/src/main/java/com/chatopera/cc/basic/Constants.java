@@ -65,8 +65,6 @@ public class Constants {
 
     public static final String CSKEFU_SYSTEM_ADV = "cskefu_system_adv";   // 系统广告位
 
-    public static final int AGENT_STATUS_MAX_USER = 20;                   // 每个坐席 最大接待的 咨询数量
-
     public static final String SYSTEM_CACHE_CALLOUT_CONFIG = "callout_config";
 
     /**

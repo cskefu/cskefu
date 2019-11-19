@@ -105,6 +105,8 @@ public class AgentUserProxy {
     @Autowired
     private Cache cache;
 
+    @Autowired
+    private AgentStatusRepository agentStatusRes;
 
     @Autowired
     private PeerSyncIM peerSyncIM;
@@ -488,7 +490,7 @@ public class AgentUserProxy {
         int users = cache.getInservAgentUsersSizeByAgentnoAndOrgi(agentStatus.getAgentno(), orgi);
         agentStatus.setUsers(users);
         agentStatus.setUpdatetime(new Date());
-        cache.putAgentStatusByOrgi(agentStatus, orgi);
+        agentStatusRes.save(agentStatus);
     }
 
     /**

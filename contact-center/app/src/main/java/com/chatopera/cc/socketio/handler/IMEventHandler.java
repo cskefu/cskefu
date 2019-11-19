@@ -156,8 +156,11 @@ public class IMEventHandler {
 
                     /**
                      * 发送消息给坐席
+                     * 如果没有AgentService或该AgentService没有坐席或AgentService在排队中，则不发送
                      */
-                    if (agentServiceMessage.getAgentService() != null) {
+                    if (agentServiceMessage.getAgentService() != null && (!agentServiceMessage.isNoagent()) && !StringUtils.equals(
+                            MainContext.AgentUserStatusEnum.INQUENE.toString(),
+                            agentServiceMessage.getAgentService().getStatus())) {
                         // 通知消息到坐席
                         MainContext.getPeerSyncIM().send(ReceiverType.AGENT,
                                                          ChannelType.WEBIM,

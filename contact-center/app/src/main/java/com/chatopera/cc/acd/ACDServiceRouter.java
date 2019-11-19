@@ -30,6 +30,7 @@ import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.proxy.AgentUserProxy;
 import com.chatopera.cc.socketio.client.NettyClients;
 import com.chatopera.cc.socketio.message.Message;
+import com.chatopera.cc.util.HashMapUtils;
 import com.chatopera.cc.util.IP;
 import com.chatopera.cc.util.SerializeUtil;
 import com.chatopera.compose4j.Composer;
@@ -197,17 +198,31 @@ public class ACDServiceRouter {
      */
     @SuppressWarnings("unchecked")
     public void allotVisitors(String agentno, String orgi) {
+        logger.info("[allotVisitors] agentno {}, orgi {}", agentno, orgi);
         // 获得目标坐席的状态
         AgentStatus agentStatus = SerializeUtil.deserialize(
                 redisCommand.getHashKV(RedisKey.getAgentStatusReadyHashKey(orgi), agentno));
 
         if (agentStatus == null) {
-            logger.warn("[allotAgent] can not find AgentStatus for agentno {}", agentno);
+            logger.warn("[allotVisitors] can not find AgentStatus for agentno {}", agentno);
+            return;
+        }
+        logger.info("[allotVisitors] agentStatus id {}, status {}, service {}/{}, skills {}, busy {}",
+                    agentStatus.getId(), agentStatus.getStatus(), agentStatus.getUsers(), agentStatus.getMaxusers(),
+                    HashMapUtils.concatKeys(agentStatus.getSkills(), "|"), agentStatus.isBusy());
+
+        if ((!StringUtils.equals(
+                MainContext.AgentStatusEnum.READY.toString(), agentStatus.getStatus())) || agentStatus.isBusy()) {
+            // 该坐席处于非就绪状态，或该坐席处于置忙
+            // 不分配坐席
             return;
         }
 
         // 获得所有待服务访客的列表
         Map<String, AgentUser> pendingAgentUsers = cache.getAgentUsersInQueByOrgi(orgi);
+        final SessionConfig sessionConfig = acdPolicyService.initSessionConfig(orgi);
+        // 本次批量分配访客数目
+        int assigned = 0;
 
         for (Map.Entry<String, AgentUser> entry : pendingAgentUsers.entrySet()) {
             AgentUser agentUser = entry.getValue();
@@ -216,29 +231,27 @@ public class ACDServiceRouter {
             if ((StringUtils.equals(agentUser.getAgentno(), agentno))) {
                 // 待服务的访客指定了该坐席
                 process = true;
-            } else {
-                if (agentStatus != null &&
-                        agentStatus.getSkills() != null &&
-                        agentStatus.getSkills().size() > 0) {
-                    // 目标坐席有状态，并且坐席属于某技能组
-                    if ((StringUtils.isBlank(agentUser.getAgentno()) &&
-                            StringUtils.isBlank(agentUser.getSkill()))) {
-                        // 待服务的访客还没有指定坐席，并且也没有绑定技能组
-                        process = true;
-                    } else {
-                        if (StringUtils.isBlank(agentUser.getAgentno()) &&
-                                agentStatus.getSkills().containsKey(agentUser.getSkill())) {
-                            // 待服务的访客还没有指定坐席，并且指定的技能组和该坐席的技能组一致
-                            process = true;
-                        }
-                    }
+            } else if (agentStatus != null &&
+                    agentStatus.getSkills() != null &&
+                    agentStatus.getSkills().size() > 0) {
+                // 目标坐席有状态，并且坐席属于某技能组
+                if ((StringUtils.isBlank(agentUser.getAgentno()) &&
+                        StringUtils.isBlank(agentUser.getSkill()))) {
+                    // 待服务的访客还没有指定坐席，并且也没有绑定技能组
+                    process = true;
                 } else {
-                    // 目标坐席没有状态，或该目标坐席有状态但是没有属于任何一个技能组
                     if (StringUtils.isBlank(agentUser.getAgentno()) &&
-                            StringUtils.isBlank(agentUser.getSkill())) {
-                        // 待服务访客没有指定坐席，并且没有指定技能组
+                            agentStatus.getSkills().containsKey(agentUser.getSkill())) {
+                        // 待服务的访客还没有指定坐席，并且指定的技能组和该坐席的技能组一致
                         process = true;
                     }
+                }
+            } else {
+                // 目标坐席没有状态，或该目标坐席有状态但是没有属于任何一个技能组
+                if (StringUtils.isBlank(agentUser.getAgentno()) &&
+                        StringUtils.isBlank(agentUser.getSkill())) {
+                    // 待服务访客没有指定坐席，并且没有指定技能组
+                    process = true;
                 }
             }
 
@@ -246,9 +259,9 @@ public class ACDServiceRouter {
                 continue;
             }
 
-            SessionConfig sessionConfig = acdPolicyService.initSessionConfig(orgi);
-            long maxusers = sessionConfig == null ? Constants.AGENT_STATUS_MAX_USER : sessionConfig.getMaxuser();
-            if (agentStatus.getUsers() < maxusers) {   //坐席未达到最大咨询访客数量
+            // 坐席未达到最大咨询访客数量，并且单次批量分配小于坐席就绪时分配最大访客数量(initMaxuser)
+            if (((agentStatus.getUsers() + assigned) < sessionConfig.getMaxuser()) && (assigned < sessionConfig.getInitmaxuser())) {
+                assigned++;
                 // 从排队队列移除
                 cache.deleteAgentUserInqueByAgentUserIdAndOrgi(agentUser.getUserid(), orgi);
 
@@ -284,10 +297,13 @@ public class ACDServiceRouter {
                                         MainContext.MessageType.NEW, agentUser.getAgentno(), outMessage, true);
                     }
                 } catch (Exception ex) {
-                    logger.warn("[allotAgent] fail to process service", ex);
+                    logger.warn("[allotVisitors] fail to process service", ex);
                 }
             } else {
-                logger.info("[allotAgent] agentno {} reach the max users limit", agentno);
+                logger.info(
+                        "[allotVisitors] agentno {} reach the max users limit {}/{} or batch assign limit {}/{}", agentno,
+                        (agentStatus.getUsers() + assigned),
+                        sessionConfig.getMaxuser(), assigned, sessionConfig.getInitmaxuser());
                 break;
             }
         }
@@ -303,6 +319,9 @@ public class ACDServiceRouter {
      */
     public void serviceFinish(final AgentUser agentUser, final String orgi) {
         if (agentUser != null) {
+            /**
+             * 设置AgentUser
+             */
             // 获得坐席状态
             AgentStatus agentStatus = null;
             if (StringUtils.equals(MainContext.AgentUserStatusEnum.INSERVICE.toString(), agentUser.getStatus()) &&
@@ -321,7 +340,9 @@ public class ACDServiceRouter {
 
             final SessionConfig sessionConfig = acdPolicyService.initSessionConfig(orgi);
 
-            // 坐席服务
+            /**
+             * 坐席服务
+             */
             AgentService service = null;
             if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
                 service = agentServiceRes.findByIdAndOrgi(agentUser.getAgentserviceid(), agentUser.getOrgi());
@@ -338,10 +359,9 @@ public class ACDServiceRouter {
                     service.setSessiontimes(System.currentTimeMillis() - service.getServicetime().getTime());
                 }
 
-                final List<AgentUserTask> agentUserTaskList = agentUserTaskRes.findByIdAndOrgi(
-                        agentUser.getId(), agentUser.getOrgi());
-                if (agentUserTaskList.size() > 0) {
-                    final AgentUserTask agentUserTask = agentUserTaskList.get(0);
+                final AgentUserTask agentUserTask = agentUserTaskRes.findOne(
+                        agentUser.getId());
+                if (agentUserTask != null) {
                     service.setAgentreplyinterval(agentUserTask.getAgentreplyinterval());
                     service.setAgentreplytime(agentUserTask.getAgentreplytime());
                     service.setAvgreplyinterval(agentUserTask.getAvgreplyinterval());
@@ -365,6 +385,15 @@ public class ACDServiceRouter {
                     service.setQualitystatus(MainContext.QualityStatusEnum.NO.toString());
                 }
                 agentServiceRes.save(service);
+            }
+
+            /**
+             * 更新AgentStatus
+             */
+            if (agentStatus != null) {
+                agentStatus.setUsers(
+                        cache.getInservAgentUsersSizeByAgentnoAndOrgi(agentStatus.getAgentno(), agentStatus.getOrgi()));
+                agentStatusRes.save(agentStatus);
             }
 
             /**
@@ -423,8 +452,7 @@ public class ACDServiceRouter {
 
             // 当前访客服务已经结束，为坐席寻找新访客
             if (agentStatus != null) {
-                long maxusers = sessionConfig != null ? sessionConfig.getMaxuser() : Constants.AGENT_STATUS_MAX_USER;
-                if ((agentStatus.getUsers() - 1) < maxusers) {
+                if ((agentStatus.getUsers() - 1) < sessionConfig.getMaxuser()) {
                     allotVisitors(agentStatus.getAgentno(), orgi);
                 }
             }
@@ -513,6 +541,8 @@ public class ACDServiceRouter {
             Message outMessage = new Message();
             outMessage.setAgentUser(agentUser);
             outMessage.setChannelMessage(agentUser);
+
+            logger.info("[allotAgentForInvite] agentno {}, agentuser agentno {}", agentno, agentUser.getAgentno());
             peerSyncIM.send(MainContext.ReceiverType.AGENT, MainContext.ChannelType.WEBIM,
                             agentUser.getAppid(),
                             MainContext.MessageType.NEW, agentUser.getAgentno(), outMessage, true);

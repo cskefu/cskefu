@@ -39,7 +39,7 @@ public class ACDQueueService {
         int queneUsers = 0;
         Map<String, AgentUser> map = cache.getAgentUsersInQueByOrgi(orgi);
 
-        for (Map.Entry<String, AgentUser> entry : map.entrySet()) {
+        for (final Map.Entry<String, AgentUser> entry : map.entrySet()) {
             if (StringUtils.isNotBlank(skill)) {
                 if (StringUtils.equals(entry.getValue().getSkill(), skill)) {
                     queneUsers++;

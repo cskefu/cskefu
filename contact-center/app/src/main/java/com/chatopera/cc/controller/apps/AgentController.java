@@ -17,17 +17,16 @@
  package com.chatopera.cc.controller.apps;
 
  import com.alibaba.fastjson.JSONObject;
- import com.chatopera.cc.acd.ACDAgentService;
  import com.chatopera.cc.acd.ACDPolicyService;
- import com.chatopera.cc.acd.ACDWorkMonitor;
  import com.chatopera.cc.acd.ACDServiceRouter;
+ import com.chatopera.cc.acd.ACDWorkMonitor;
  import com.chatopera.cc.activemq.BrokerPublisher;
  import com.chatopera.cc.basic.Constants;
  import com.chatopera.cc.basic.MainContext;
  import com.chatopera.cc.basic.MainUtils;
  import com.chatopera.cc.cache.Cache;
- import com.chatopera.cc.exception.CSKefuException;
  import com.chatopera.cc.controller.Handler;
+ import com.chatopera.cc.exception.CSKefuException;
  import com.chatopera.cc.model.*;
  import com.chatopera.cc.peer.PeerSyncIM;
  import com.chatopera.cc.persistence.blob.JpaBlobHelper;
@@ -80,9 +79,6 @@
 
      @Autowired
      private ACDPolicyService acdPolicyService;
-
-     @Autowired
-     private ACDAgentService acdAgentService;
 
      @Autowired
      private ACDServiceRouter acdServiceRouter;
@@ -543,14 +539,7 @@
                  logined.getId(), orgi, logined.getSkills());
 
          // 缓存就绪状态
-         agentProxy.ready(logined, agentStatus);
-         // TODO 对于busy的判断，其实可以和AgentStatus maxuser以及users结合
-         // 现在为了配合前端的行为：从未就绪到就绪设置为置闲
-         agentStatus.setBusy(false);
-
-         // 更新数据库
-         cache.putAgentStatusByOrgi(agentStatus, agentStatus.getOrgi());
-         agentStatusRes.save(agentStatus);
+         agentProxy.ready(logined, agentStatus, false);
 
          // 为该坐席分配访客
          acdServiceRouter.allotVisitors(agentStatus.getAgentno(), orgi);
@@ -648,6 +637,7 @@
      @Menu(type = "apps", subtype = "agent")
      public ModelAndView notbusy(HttpServletRequest request) {
          final User logined = super.getUser(request);
+         // 组织结构和权限数据
          logger.info("[notbusy] set user {} as not busy", logined.getId());
 
          AgentStatus agentStatus = agentProxy.resolveAgentStatusByAgentnoAndOrgi(
@@ -717,6 +707,7 @@
      @RequestMapping({"/end"})
      @Menu(type = "apps", subtype = "agent")
      public ModelAndView end(HttpServletRequest request, @Valid String id) {
+         logger.info("[end] end id {}", id);
          final String orgi = super.getOrgi(request);
          final User logined = super.getUser(request);
 

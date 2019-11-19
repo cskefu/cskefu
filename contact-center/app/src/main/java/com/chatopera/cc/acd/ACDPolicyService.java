@@ -16,6 +16,7 @@
 
 package com.chatopera.cc.acd;
 
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.AgentStatus;
@@ -74,6 +75,7 @@ public class ACDPolicyService {
                 cache.putSessionConfigByOrgi(sessionConfig, orgi);
             }
         }
+
         return sessionConfig;
     }
 
@@ -104,7 +106,7 @@ public class ACDPolicyService {
         AgentStatus x = null;
         int min = 0;
         for (final AgentStatus o : agentStatuses) {
-            if (o.getUsers() <= min) {
+            if ((x == null) || (o.getUsers() < min)) {
                 x = o;
                 min = o.getUsers();
             }

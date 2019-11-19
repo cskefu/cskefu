@@ -237,7 +237,7 @@ public class ChatbotEventHandler {
             MainContext.getCache().findOneAgentUserByUserIdAndOrgi(user, orgi).ifPresent(p -> {
                 MainContext.getACDServiceRouter().getAcdChatbotService().processChatbotService(null, p, orgi);
 
-                MainContext.getCache().deleteAgentUserByUserIdAndOrgi(user, orgi);
+                MainContext.getCache().deleteAgentUserByUserIdAndOrgi(p, orgi);
                 MainContext.getCache().deleteOnlineUserByIdAndOrgi(user, orgi);
 
                 p.setStatus(MainContext.OnlineUserStatusEnum.OFFLINE.toString());

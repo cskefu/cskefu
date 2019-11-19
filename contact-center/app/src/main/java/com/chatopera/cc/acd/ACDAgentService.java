@@ -56,14 +56,15 @@ public class ACDAgentService {
         /**
          * 查询条件，当前在线的 坐席，并且 未达到最大 服务人数的坐席
          */
-        List<AgentStatus> agentStatusList = acdAgentAllocatorMw.filterOutAvailableAgentStatus(agentUser, orgi);
+        final SessionConfig sessionConfig = acdPolicyService.initSessionConfig(orgi);
+        List<AgentStatus> agentStatusList = acdAgentAllocatorMw.filterOutAvailableAgentStatus(
+                agentUser, orgi, sessionConfig);
 
         /**
          * 处理ACD 的 技能组请求和 坐席请求
          */
         AgentStatus agentStatus = null;
         AgentService agentService = null;    //放入缓存的对象
-        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(orgi);
         if (agentStatusList.size() > 0) {
             agentStatus = agentStatusList.get(0);
             if (agentStatus.getUsers() >= sessionConfig.getMaxuser()) {

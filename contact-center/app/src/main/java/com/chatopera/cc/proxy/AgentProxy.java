@@ -15,6 +15,7 @@ import com.chatopera.cc.persistence.repository.SNSAccountRepository;
 import com.chatopera.cc.persistence.repository.StreamingFileRepository;
 import com.chatopera.cc.socketio.message.ChatMessage;
 import com.chatopera.cc.socketio.message.Message;
+import com.chatopera.cc.util.HashMapUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -70,7 +71,7 @@ public class AgentProxy {
      * @param user
      * @param agentStatus
      */
-    public void ready(final User user, final AgentStatus agentStatus) {
+    public void ready(final User user, final AgentStatus agentStatus, final boolean busy) {
         agentStatus.setOrgi(user.getOrgi());
         agentStatus.setUserid(user.getId());
         agentStatus.setUsername(user.getUname());
@@ -79,6 +80,9 @@ public class AgentProxy {
         agentStatus.setOrgi(agentStatus.getOrgi());
         agentStatus.setUpdatetime(new Date());
         agentStatus.setSkills(user.getSkills());
+        // TODO 对于busy的判断，其实可以和AgentStatus maxuser以及users结合
+        // 现在为了配合前端的行为：从未就绪到就绪设置为置闲
+        agentStatus.setBusy(busy);
         SessionConfig sessionConfig = acdPolicyService.initSessionConfig(agentStatus.getOrgi());
         agentStatus.setMaxusers(sessionConfig.getMaxuser());
 
@@ -92,6 +96,9 @@ public class AgentProxy {
         logger.info(
                 "[ready] set agent {}, status {}", agentStatus.getAgentno(),
                 MainContext.AgentStatusEnum.READY.toString());
+
+        // 更新数据库
+        agentStatusRes.save(agentStatus);
     }
 
 
@@ -325,15 +332,13 @@ public class AgentProxy {
      * @return
      */
     public AgentStatus resolveAgentStatusByAgentnoAndOrgi(final String agentno, final String orgi, final HashMap<String, String> skills) {
+        logger.info(
+                "[resolveAgentStatusByAgentnoAndOrgi] agentno {}, skills {}", agentno,
+                HashMapUtils.concatKeys(skills, "|"));
         AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(agentno, orgi);
 
         if (agentStatus == null) {
-            final List<AgentStatus> ass = agentStatusRes.findByAgentnoAndOrgi(agentno, orgi);
-            if (ass.size() > 0) {
-                agentStatus = ass.get(0);
-            } else {
-                agentStatus = new AgentStatus();
-            }
+            agentStatus = agentStatusRes.findOneByAgentnoAndOrgi(agentno, orgi).orElseGet(AgentStatus::new);
         }
 
         if (skills != null) {

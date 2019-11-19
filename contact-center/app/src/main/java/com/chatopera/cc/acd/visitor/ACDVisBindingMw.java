@@ -17,7 +17,6 @@
 package com.chatopera.cc.acd.visitor;
 
 import com.chatopera.cc.acd.ACDComposeContext;
-import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.OrganRepository;
@@ -40,9 +39,6 @@ public class ACDVisBindingMw implements Middleware<ACDComposeContext> {
 
     @Autowired
     private OrganRepository organRes;
-
-    @Autowired
-    private Cache cache;
 
     /**
      * 绑定技能组或坐席
@@ -72,7 +68,7 @@ public class ACDVisBindingMw implements Middleware<ACDComposeContext> {
         }
 
         if (StringUtils.isNotBlank(ctx.getAgentno())) {
-            logger.info("[apply] bind agentno {}", ctx.getAgentno());
+            logger.info("[apply] bind agentno {}, isInvite {}", ctx.getAgentno(), ctx.isInvite());
             // 绑定坐席
             // 绑定坐席有可能是因为前端展示了技能组和坐席
             // 也有可能是坐席发送了邀请，该访客接收邀请

@@ -26,7 +26,6 @@ import com.chatopera.cc.model.AgentStatus;
 import com.chatopera.cc.model.SessionConfig;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.AgentStatusRepository;
-import com.chatopera.cc.persistence.repository.AgentUserRepository;
 import com.chatopera.cc.proxy.AgentUserProxy;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.RestResult;
@@ -41,7 +40,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.nio.charset.CharacterCodingException;
 import java.util.Date;
 import java.util.List;
 
@@ -63,13 +61,10 @@ public class ApiServiceQueneController extends Handler {
     private ACDPolicyService acdPolicyService;
 
     @Autowired
-    private AgentStatusRepository agentStatusRepository;
+    private AgentStatusRepository agentStatusRes;
 
     @Autowired
     private ACDServiceRouter acdServiceRouter;
-
-    @Autowired
-    private AgentUserRepository agentUserRepository;
 
     @Autowired
     private Cache cache;
@@ -98,104 +93,86 @@ public class ApiServiceQueneController extends Handler {
     @Menu(type = "apps", subtype = "user", access = true)
     public ResponseEntity<RestResult> agentStatus(
             HttpServletRequest request,
-            @Valid String status) throws CharacterCodingException {
+            @Valid String status) {
         User logined = super.getUser(request);
         AgentStatus agentStatus = null;
         if (StringUtils.isNotBlank(status) && status.equals(MainContext.AgentStatusEnum.READY.toString())) {
-            List<AgentStatus> agentStatusList = agentStatusRepository.findByAgentnoAndOrgi(
-                    logined.getId(), super.getOrgi(request));
-            if (agentStatusList.size() > 0) {
-                agentStatus = agentStatusList.get(0);
-                agentStatus.setSkills(logined.getSkills());
-            } else {
-                agentStatus = new AgentStatus();
-                agentStatus.setUserid(logined.getId());
-                agentStatus.setUsername(logined.getUname());
-                agentStatus.setAgentno(logined.getId());
-                agentStatus.setLogindate(new Date());
-                agentStatus.setSkills(logined.getSkills());
 
-                SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
+            agentStatus = agentStatusRes.findOneByAgentnoAndOrgi(logined.getId(), logined.getOrgi()).orElseGet(() -> {
+                AgentStatus p = new AgentStatus();
+                p.setUserid(logined.getId());
+                p.setUsername(logined.getUname());
+                p.setAgentno(logined.getId());
+                p.setLogindate(new Date());
 
-                agentStatus.setUsers(agentUserRepository.countByAgentnoAndStatusAndOrgi(
-                        logined.getId(),
-                        MainContext.AgentUserStatusEnum.INSERVICE.toString(),
-                        super.getOrgi(request)));
+                SessionConfig sessionConfig = acdPolicyService.initSessionConfig(logined.getOrgi());
+                p.setUpdatetime(new Date());
+                p.setOrgi(super.getOrgi(request));
+                p.setMaxusers(sessionConfig.getMaxuser());
+                return p;
+            });
 
-                agentStatus.setUpdatetime(new Date());
+            /**
+             * 设置技能组
+             */
+            agentStatus.setSkills(logined.getSkills());
 
-                agentStatus.setOrgi(super.getOrgi(request));
-                agentStatus.setMaxusers(sessionConfig.getMaxuser());
-                agentStatusRepository.save(agentStatus);
+            /**
+             * 更新当前用户状态
+             */
+            agentStatus.setUsers(cache.getInservAgentUsersSizeByAgentnoAndOrgi(
+                    agentStatus.getAgentno(),
+                    super.getOrgi(request)));
+            agentStatus.setStatus(MainContext.AgentStatusEnum.READY.toString());
+            agentStatusRes.save(agentStatus);
 
-            }
-            if (agentStatus != null) {
-                /**
-                 * 更新当前用户状态
-                 */
-                agentStatus.setUsers(cache.getInservAgentUsersSizeByAgentnoAndOrgi(
-                        agentStatus.getAgentno(),
-                        super.getOrgi(request)));
-                agentStatus.setStatus(MainContext.AgentStatusEnum.READY.toString());
-                cache.putAgentStatusByOrgi(agentStatus, super.getOrgi(request));
-
-                acdWorkMonitor.recordAgentStatus(
-                        agentStatus.getAgentno(), agentStatus.getUsername(), agentStatus.getAgentno(),
-                        logined.isAdmin(), agentStatus.getAgentno(),
-                        MainContext.AgentStatusEnum.OFFLINE.toString(), MainContext.AgentStatusEnum.READY.toString(),
-                        MainContext.AgentWorkType.MEIDIACHAT.toString(), agentStatus.getOrgi(), null);
-                acdServiceRouter.allotVisitors(agentStatus.getAgentno(), super.getOrgi(request));
-            }
+            acdWorkMonitor.recordAgentStatus(
+                    agentStatus.getAgentno(), agentStatus.getUsername(), agentStatus.getAgentno(),
+                    logined.isAdmin(), agentStatus.getAgentno(),
+                    MainContext.AgentStatusEnum.OFFLINE.toString(), MainContext.AgentStatusEnum.READY.toString(),
+                    MainContext.AgentWorkType.MEIDIACHAT.toString(), agentStatus.getOrgi(), null);
+            acdServiceRouter.allotVisitors(agentStatus.getAgentno(), super.getOrgi(request));
         } else if (StringUtils.isNotBlank(status)) {
             if (status.equals(MainContext.AgentStatusEnum.NOTREADY.toString())) {
-                List<AgentStatus> agentStatusList = agentStatusRepository.findByAgentnoAndOrgi(
-                        logined.getId(), super.getOrgi(request));
-                for (AgentStatus temp : agentStatusList) {
+                agentStatusRes.findOneByAgentnoAndOrgi(
+                        logined.getId(), super.getOrgi(request)).ifPresent(p -> {
                     acdWorkMonitor.recordAgentStatus(
-                            temp.getAgentno(), temp.getUsername(), temp.getAgentno(),
+                            p.getAgentno(), p.getUsername(), p.getAgentno(),
                             logined.isAdmin(),
-                            temp.getAgentno(),
-                            temp.isBusy() ? MainContext.AgentStatusEnum.BUSY.toString() : MainContext.AgentStatusEnum.READY.toString(),
+                            p.getAgentno(),
+                            p.isBusy() ? MainContext.AgentStatusEnum.BUSY.toString() : MainContext.AgentStatusEnum.READY.toString(),
                             MainContext.AgentStatusEnum.NOTREADY.toString(),
-                            MainContext.AgentWorkType.MEIDIACHAT.toString(), temp.getOrgi(), temp.getUpdatetime());
-                    agentStatusRepository.delete(temp);
-                }
-                cache.deleteAgentStatusByAgentnoAndOrgi(super.getUser(request).getId(), super.getOrgi(request));
+                            MainContext.AgentWorkType.MEIDIACHAT.toString(), p.getOrgi(), p.getUpdatetime());
+                    agentStatusRes.delete(p);
+                });
             } else if (StringUtils.isNotBlank(status) && status.equals(MainContext.AgentStatusEnum.BUSY.toString())) {
-                List<AgentStatus> agentStatusList = agentStatusRepository.findByAgentnoAndOrgi(
-                        logined.getId(), super.getOrgi(request));
-                if (agentStatusList.size() > 0) {
-                    agentStatus = agentStatusList.get(0);
-                    agentStatus.setBusy(true);
+                agentStatusRes.findOneByAgentnoAndOrgi(
+                        logined.getId(), logined.getOrgi()).ifPresent(p -> {
+                    p.setBusy(true);
                     acdWorkMonitor.recordAgentStatus(
-                            agentStatus.getAgentno(), agentStatus.getUsername(), agentStatus.getAgentno(),
-                            logined.isAdmin(), agentStatus.getAgentno(),
+                            p.getAgentno(), p.getUsername(), p.getAgentno(),
+                            logined.isAdmin(), p.getAgentno(),
                             MainContext.AgentStatusEnum.READY.toString(), MainContext.AgentStatusEnum.BUSY.toString(),
-                            MainContext.AgentWorkType.MEIDIACHAT.toString(), agentStatus.getOrgi(),
-                            agentStatus.getUpdatetime());
-                    agentStatus.setUpdatetime(new Date());
-
-                    agentStatusRepository.save(agentStatus);
-                    cache.putAgentStatusByOrgi(agentStatus, super.getOrgi(request));
-                }
+                            MainContext.AgentWorkType.MEIDIACHAT.toString(), p.getOrgi(),
+                            p.getUpdatetime());
+                    p.setUpdatetime(new Date());
+                    agentStatusRes.save(p);
+                });
             } else if (StringUtils.isNotBlank(status) && status.equals(
                     MainContext.AgentStatusEnum.NOTBUSY.toString())) {
-                List<AgentStatus> agentStatusList = agentStatusRepository.findByAgentnoAndOrgi(
-                        logined.getId(), super.getOrgi(request));
-                if (agentStatusList.size() > 0) {
-                    agentStatus = agentStatusList.get(0);
-                    agentStatus.setBusy(false);
+                agentStatusRes.findOneByAgentnoAndOrgi(
+                        logined.getId(), logined.getOrgi()).ifPresent(p -> {
+                    p.setBusy(false);
                     acdWorkMonitor.recordAgentStatus(
-                            agentStatus.getAgentno(), agentStatus.getUsername(), agentStatus.getAgentno(),
-                            logined.isAdmin(), agentStatus.getAgentno(),
+                            p.getAgentno(), p.getUsername(), p.getAgentno(),
+                            logined.isAdmin(), p.getAgentno(),
                             MainContext.AgentStatusEnum.BUSY.toString(), MainContext.AgentStatusEnum.READY.toString(),
-                            MainContext.AgentWorkType.MEIDIACHAT.toString(), agentStatus.getOrgi(),
-                            agentStatus.getUpdatetime());
+                            MainContext.AgentWorkType.MEIDIACHAT.toString(), p.getOrgi(),
+                            p.getUpdatetime());
 
-                    agentStatus.setUpdatetime(new Date());
-                    agentStatusRepository.save(agentStatus);
-                    cache.putAgentStatusByOrgi(agentStatus, super.getOrgi(request));
-                }
+                    p.setUpdatetime(new Date());
+                    agentStatusRes.save(p);
+                });
                 acdServiceRouter.allotVisitors(agentStatus.getAgentno(), super.getOrgi(request));
             }
             agentUserProxy.broadcastAgentsStatus(

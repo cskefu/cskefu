@@ -536,6 +536,8 @@ public class UserProxy {
     public void attachOrgansPropertiesForUser(final User user) {
         List<OrganUser> organs = organUserRes.findByUserid(user.getId());
         user.setOrgans(new HashMap<>());
+        user.setAffiliates(new HashSet<>());
+
         final HashMap<String, String> skills = new HashMap<>();
 
         for (final OrganUser organ : organs) {

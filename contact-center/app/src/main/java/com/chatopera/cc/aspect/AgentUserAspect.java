@@ -59,12 +59,11 @@ public class AgentUserAspect {
     public void save(final JoinPoint joinPoint) {
         final AgentUser agentUser = (AgentUser) joinPoint.getArgs()[0];
         logger.info(
-                "[save] agentUser id {}, agentno {}, userId {}", agentUser.getId(), agentUser.getAgentno(),
-                agentUser.getUserid());
+                "[save] agentUser id {}, agentno {}, userId {}, status {}", agentUser.getId(), agentUser.getAgentno(),
+                agentUser.getUserid(), agentUser.getStatus());
 
         if (StringUtils.isBlank(agentUser.getId())
-                || StringUtils.isBlank(agentUser.getUserid())
-                || StringUtils.isBlank(agentUser.getAgentno())) {
+                || StringUtils.isBlank(agentUser.getUserid())) {
             return;
         }
 
@@ -82,7 +81,7 @@ public class AgentUserAspect {
                 "[delete] agentUser id {}, agentno {}, userId {}", agentUser.getId(), agentUser.getAgentno(),
                 agentUser.getUserid());
         cache.deleteAgentUserAuditByOrgiAndId(agentUser.getOrgi(), agentUser.getId());
-        cache.deleteAgentUserByUserIdAndOrgi(agentUser.getUserid(), agentUser.getOrgi());
+        cache.deleteAgentUserByUserIdAndOrgi(agentUser, agentUser.getOrgi());
     }
 
     /**

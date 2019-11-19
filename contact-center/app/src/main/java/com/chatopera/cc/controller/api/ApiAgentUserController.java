@@ -174,7 +174,9 @@ public class ApiAgentUserController extends Handler {
                 // 当前访客的ID
                 final String userId = agentUser.getUserid();
 
-                logger.info("[transout] agentuserid {} \n target agent id {}, \n current agent id {}, onlineuserid {}", agentUserId, transAgentId, currentAgentno, userId);
+                logger.info(
+                        "[transout] agentuserid {} \n target agent id {}, \n current agent id {}, onlineuserid {}",
+                        agentUserId, transAgentId, currentAgentno, userId);
 
 
                 // 检查权限
@@ -281,14 +283,15 @@ public class ApiAgentUserController extends Handler {
     }
 
     /**
-     * 结束坐席会话
+     * 结束对话
+     * 如果当前对话属于登录用户或登录用户为超级用户，则可以结束这个对话
      *
      * @param request
      * @param payload
      * @return
      */
     private JsonObject end(final HttpServletRequest request, final JsonObject payload) {
-        logger.info("[end] payload ", payload.toString());
+        logger.info("[end] payload {}", payload.toString());
         final String orgi = super.getOrgi(request);
         final User logined = super.getUser(request);
         JsonObject resp = new JsonObject();

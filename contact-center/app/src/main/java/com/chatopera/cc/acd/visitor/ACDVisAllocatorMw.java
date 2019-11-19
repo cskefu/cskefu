@@ -74,7 +74,7 @@ public class ACDVisAllocatorMw implements Middleware<ACDComposeContext> {
          * 查询条件，当前在线的 坐席，并且 未达到最大 服务人数的坐席
          */
         final List<AgentStatus> agentStatuses = filterOutAvailableAgentStatus(
-                ctx.getAgentUser(), ctx.getOrgi());
+                ctx.getAgentUser(), ctx.getOrgi(), ctx.getSessionConfig());
 
         /**
          * 处理ACD 的 技能组请求和 坐席请求
@@ -108,6 +108,11 @@ public class ACDVisAllocatorMw implements Middleware<ACDComposeContext> {
             final boolean isInvite) {
         AgentStatus agentStatus = null;
 
+        // 过滤后没有就绪的满足条件的坐席
+        if (agentStatuses.size() == 0) {
+            return agentStatus;
+        }
+
         // 邀请功能
         if (isInvite) {
             logger.info("[filterOutAgentStatusWithPolicies] is invited onlineUser.");
@@ -131,10 +136,10 @@ public class ACDVisAllocatorMw implements Middleware<ACDComposeContext> {
                 for (final AgentStatus o : agentStatuses) {
                     if (StringUtils.equals(
                             o.getAgentno(), report.getData()) && o.getUsers() < sessionConfig.getMaxuser()) {
+                        agentStatus = o;
                         logger.info(
                                 "[filterOutAgentStatusWithPolicies] choose agentno {} by chat history.",
                                 agentStatus.getAgentno());
-                        agentStatus = o;
                         break;
                     }
                 }
@@ -193,8 +198,8 @@ public class ACDVisAllocatorMw implements Middleware<ACDComposeContext> {
      */
     public List<AgentStatus> filterOutAvailableAgentStatus(
             final AgentUser agentUser,
-            final String orgi
-                                                          ) {
+            final String orgi,
+            final SessionConfig sessionConfig) {
         logger.info(
                 "[filterOutAvailableAgentStatus] pre-conditions: agentUser.agentno {}, orgi {}, skill {}, onlineUser {}",
                 agentUser.getAgentno(), orgi, agentUser.getSkill(), agentUser.getUserid()
@@ -222,6 +227,7 @@ public class ACDVisAllocatorMw implements Middleware<ACDComposeContext> {
         if (agentUser != null && StringUtils.isNotBlank(agentUser.getAgentno())) {
             // 指定坐席
             for (final Map.Entry<String, AgentStatus> entry : map.entrySet()) {
+                // 被指定的坐席，不检查是否忙，是否达到最大接待数量
                 if (StringUtils.equals(
                         entry.getValue().getAgentno(), agentUser.getAgentno())) {
                     agentStatuses.add(entry.getValue());
@@ -251,6 +257,7 @@ public class ACDVisAllocatorMw implements Middleware<ACDComposeContext> {
             // 指定技能组
             for (final Map.Entry<String, AgentStatus> entry : map.entrySet()) {
                 if ((!entry.getValue().isBusy()) &&
+                        (entry.getValue().getUsers() < sessionConfig.getMaxuser()) &&
                         (entry.getValue().getSkills() != null &&
                                 entry.getValue().getSkills().containsKey(agentUser.getSkill()))) {
                     logger.info(
@@ -282,13 +289,21 @@ public class ACDVisAllocatorMw implements Middleware<ACDComposeContext> {
              */
             // 对于该租户的所有客服
             for (final Map.Entry<String, AgentStatus> entry : map.entrySet()) {
-                if (!entry.getValue().isBusy()) {
+                if ((!entry.getValue().isBusy()) && (entry.getValue().getUsers() < sessionConfig.getMaxuser())) {
                     agentStatuses.add(entry.getValue());
                     logger.info(
-                            "[filterOutAvailableAgentStatus] <Redundance> find ready agent {}, agentname {}, status {}, service {}/{}",
+                            "[filterOutAvailableAgentStatus] <Redundance> find ready agent {}, agentname {}, status {}, service {}/{}, skills {}",
                             entry.getValue().getAgentno(), entry.getValue().getUsername(), entry.getValue().getStatus(),
                             entry.getValue().getUsers(),
-                            entry.getValue().getMaxusers());
+                            entry.getValue().getMaxusers(),
+                            HashMapUtils.concatKeys(entry.getValue().getSkills(), "|"));
+                } else {
+                    logger.info(
+                            "[filterOutAvailableAgentStatus] <Redundance> skip ready agent {}, name {}, status {}, service {}/{}, skills {}",
+                            entry.getValue().getAgentno(), entry.getValue().getUsername(), entry.getValue().getStatus(),
+                            entry.getValue().getUsers(),
+                            entry.getValue().getMaxusers(),
+                            HashMapUtils.concatKeys(entry.getValue().getSkills(), "|"));
                 }
             }
         }
@@ -303,11 +318,10 @@ public class ACDVisAllocatorMw implements Middleware<ACDComposeContext> {
      * 1. 在AgentUser服务结束并且还没有对应的AgentService
      * 2. 在新服务开始，安排坐席
      *
-     * @param agentStatus   坐席状态
-     * @param agentUser     坐席访客会话
-     * @param orgi          租户ID
-     * @param finished      结束服务
-     * @param sessionConfig 坐席配置
+     * @param agentStatus 坐席状态
+     * @param agentUser   坐席访客会话
+     * @param orgi        租户ID
+     * @param finished    结束服务
      * @return
      */
     public AgentService processAgentService(

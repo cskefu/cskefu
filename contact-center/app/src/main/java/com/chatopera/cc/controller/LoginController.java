@@ -207,11 +207,7 @@ public class LoginController extends Handler {
                             final AgentStatus agentStatus = agentProxy.resolveAgentStatusByAgentnoAndOrgi(
                                     loginUser.getId(), orgi, loginUser.getSkills());
                             agentStatus.setBusy(false);
-                            agentProxy.ready(loginUser, agentStatus);
-
-                            // 更新缓存和数据库
-                            cache.putAgentStatusByOrgi(agentStatus, loginUser.getOrgi());
-                            agentStatusRes.save(agentStatus);
+                            agentProxy.ready(loginUser, agentStatus, false);
 
                             // 工作状态记录
                             acdWorkMonitor.recordAgentStatus(agentStatus.getAgentno(),

@@ -17,6 +17,7 @@
 package com.chatopera.cc.persistence.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.chatopera.cc.model.AgentStatus;
 import org.springframework.data.domain.Page;
@@ -28,10 +29,8 @@ public interface AgentStatusRepository extends
         JpaRepository<AgentStatus, String> {
     AgentStatus findByIdAndOrgi(String paramString, String orgi);
 
-    List<AgentStatus> findByAgentnoAndOrgi(String agentid, String orgi);
-
     @Query(value = "SELECT * FROM uk_agentstatus WHERE agentno = ?1 AND orgi = ?2 ORDER BY createtime DESC LIMIT 1", nativeQuery = true)
-    AgentStatus findOneByAgentnoAndOrgi(final String agentid, final String orgi);
+    Optional<AgentStatus> findOneByAgentnoAndOrgi(final String agentid, final String orgi);
 
     AgentStatus findByAgentno(String agentid);
 

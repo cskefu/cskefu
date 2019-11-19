@@ -92,18 +92,13 @@ public class AgentEventHandler {
             client.set("connectid", connectid);
 
             // 更新AgentStatus到数据库
-            List<AgentStatus> agentStatusList = getAgentStatusRes().findByAgentnoAndOrgi(userid, orgi);
-            if (agentStatusList.size() > 0) {
-                AgentStatus agentStatus = agentStatusList.get(0);
-                agentStatus.setUpdatetime(new Date());
-                agentStatus.setConnected(true);
-
+            getAgentStatusRes().findOneByAgentnoAndOrgi(userid, orgi).ifPresent(p -> {
+                p.setUpdatetime(new Date());
+                p.setConnected(true);
                 // 设置agentSkills
-                agentStatus.setSkills(getUserProxy().getSkillsMapByAgentno(userid));
-
-                getAgentStatusRes().save(agentStatus);
-                MainContext.getCache().putAgentStatusByOrgi(agentStatus, orgi);
-            }
+                p.setSkills(getUserProxy().getSkillsMapByAgentno(userid));
+                getAgentStatusRes().save(p);
+            });
 
             // 工作工作效率
             InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress();
@@ -190,7 +185,8 @@ public class AgentEventHandler {
         final String session = client.get("session");
         final String connectid = client.get("connectid");
         logger.info(
-                "[onIntervetionEvent] intervention: agentno {}, session {}, connectid {}, payload {}", agentno, session, connectid,
+                "[onIntervetionEvent] intervention: agentno {}, session {}, connectid {}, payload {}", agentno, session,
+                connectid,
                 received.toJsonObject());
 
         if (received.valid()) {
