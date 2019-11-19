@@ -76,7 +76,7 @@ public class ACDAgentService {
         }
 
         try {
-            agentService = acdAgentAllocatorMw.processAgentService(agentStatus, agentUser, orgi, false, sessionConfig);
+            agentService = acdAgentAllocatorMw.processAgentService(agentStatus, agentUser, orgi, false);
             // 处理结果：进入排队队列
             if (StringUtils.equals(MainContext.AgentUserStatusEnum.INQUENE.toString(), agentService.getStatus())) {
                 agentService.setQueneindex(

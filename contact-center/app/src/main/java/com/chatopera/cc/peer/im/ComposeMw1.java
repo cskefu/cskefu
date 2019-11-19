@@ -127,7 +127,10 @@ public class ComposeMw1 implements Middleware<PeerContext> {
                     received.getMessage().length() > 100 ? received.getMessage().substring(
                             0,
                             100) : received.getMessage());
-            agentUserTask.setTokenum(agentUserTask.getTokenum() + 1);
+
+            if (StringUtils.equals(received.getType(), MainContext.MessageType.MESSAGE.toString())) {
+                agentUserTask.setTokenum(agentUserTask.getTokenum() + 1);
+            }
             received.setTokenum(agentUserTask.getTokenum());
 
             agentUserTaskRes.save(agentUserTask);

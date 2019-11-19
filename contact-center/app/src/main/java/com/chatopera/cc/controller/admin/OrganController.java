@@ -103,14 +103,16 @@ public class OrganController extends Handler {
             }
             if (organData != null) {
                 map.addAttribute(
-                        "userList", userProxy.findByOrganAndOrgiAndDatastatus(organData.getId(),
+                        "userList", userProxy.findByOrganAndOrgiAndDatastatus(
+                                organData.getId(),
                                 super.getOrgiByTenantshare(request),
                                 false));
             }
         }
         map.addAttribute("areaList", areaRepository.findByOrgi(super.getOrgiByTenantshare(request)));
         map.addAttribute(
-                "roleList", roleRepository.findByOrgiAndOrgid(super.getOrgiByTenantshare(request),
+                "roleList", roleRepository.findByOrgiAndOrgid(
+                        super.getOrgiByTenantshare(request),
                         super.getOrgid(request)));
         map.put("msg", msg);
         return request(super.createAdminTempletResponse("/admin/organ/index"));
@@ -128,7 +130,8 @@ public class OrganController extends Handler {
         }
 
         map.addAttribute(
-                "organList", organRepository.findByOrgiAndOrgid(super.getOrgiByTenantshare(request),
+                "organList", organRepository.findByOrgiAndOrgid(
+                        super.getOrgiByTenantshare(request),
                         super.getOrgid(request)));
 
         return request(super.createRequestPageTempletResponse("/admin/organ/add"));
@@ -142,7 +145,7 @@ public class OrganController extends Handler {
         String msg = "admin_organ_new_success";
         String firstId = null;
         if (tempOrgan != null) {
-            msg = "admin_organ_update_name_not";//分类名字重复
+            msg = "admin_organ_update_name_not"; //分类名字重复
         } else {
             organ.setOrgi(super.getOrgiByTenantshare(request));
 
@@ -174,7 +177,7 @@ public class OrganController extends Handler {
     public ModelAndView seluser(ModelMap map, HttpServletRequest request, @Valid String organ) {
         map.addAttribute(
                 "userList", userRepository.findByOrgiAndDatastatusAndOrgid(super.getOrgiByTenantshare(request), false,
-                        super.getOrgid(request)));
+                                                                           super.getOrgid(request)));
         Organ organData = organRepository.findByIdAndOrgi(organ, super.getOrgiByTenantshare(request));
         map.addAttribute("userOrganList", userProxy
                 .findByOrganAndOrgiAndDatastatus(organ, super.getOrgiByTenantshare(request), false));
@@ -197,7 +200,7 @@ public class OrganController extends Handler {
             HttpServletRequest request,
             final @Valid String[] users,
             final @Valid String organ
-    ) {
+                                ) {
         logger.info("[saveuser] save users {} into organ {}", StringUtils.join(users, ","), organ);
         final User loginUser = super.getUser(request);
 
@@ -207,6 +210,20 @@ public class OrganController extends Handler {
             List<User> organUserList = userRepository.findAll(chosen);
             for (final User user : organUserList) {
                 OrganUser ou = organUserRes.findByUseridAndOrgan(user.getId(), organ);
+
+                /**
+                 * 检查人员和技能组关系
+                 */
+                if (organData.isSkill()) {
+                    // 该组织机构是技能组
+                    if (!user.isAgent()) {
+                        // 该人员不是坐席
+                        if (ou != null) {
+                            organUserRes.delete(ou);
+                        }
+                        continue;
+                    }
+                }
 
                 if (ou == null) {
                     ou = new OrganUser();
@@ -218,18 +235,20 @@ public class OrganController extends Handler {
 
                 organUserRes.save(ou);
 
-                /**
-                 * 以下更新技能组状态
-                 */
-                AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
-                        user.getId(), super.getOrgiByTenantshare(request));
+                if (user.isAgent()) {
+                    /**
+                     * 以下更新技能组状态
+                     */
+                    AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
+                            user.getId(), super.getOrgiByTenantshare(request));
 
-                // TODO 因为一个用户可以包含在多个技能组中，所以，skill应该对应
-                // 一个List列表，此处需要重构Skill为列表
-                if (agentStatus != null) {
-                    userProxy.attachOrgansPropertiesForUser(user);
-                    agentStatus.setSkills(user.getSkills());
-                    cache.putAgentStatusByOrgi(agentStatus, super.getOrgiByTenantshare(request));
+                    // TODO 因为一个用户可以包含在多个技能组中，所以，skill应该对应
+                    // 一个List列表，此处需要重构Skill为列表
+                    if (agentStatus != null) {
+                        userProxy.attachOrgansPropertiesForUser(user);
+                        agentStatus.setSkills(user.getSkills());
+                        cache.putAgentStatusByOrgi(agentStatus, super.getOrgiByTenantshare(request));
+                    }
                 }
             }
             userRepository.save(organUserList);
@@ -245,7 +264,7 @@ public class OrganController extends Handler {
             final HttpServletRequest request,
             final @Valid String id,
             final @Valid String organ
-    ) {
+                                      ) {
         logger.info("[userroledelete] user id {}, organ {}", id, organ);
         if (id != null) {
             organUserRes.deleteOrganUserByUseridAndOrgan(id, organ);
@@ -262,7 +281,8 @@ public class OrganController extends Handler {
         view.addObject("organData", organRepository.findByIdAndOrgi(id, super.getOrgiByTenantshare(request)));
 
         map.addAttribute(
-                "organList", organRepository.findByOrgiAndOrgid(super.getOrgiByTenantshare(request),
+                "organList", organRepository.findByOrgiAndOrgid(
+                        super.getOrgiByTenantshare(request),
                         super.getOrgid(request)));
         return view;
     }

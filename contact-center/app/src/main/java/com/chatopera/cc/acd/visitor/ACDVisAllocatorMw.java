@@ -17,7 +17,7 @@
 package com.chatopera.cc.acd.visitor;
 
 import com.chatopera.cc.acd.ACDComposeContext;
-import com.chatopera.cc.acd.ACDQueueService;
+import com.chatopera.cc.acd.ACDPolicyService;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
@@ -27,6 +27,7 @@ import com.chatopera.cc.persistence.repository.AgentUserRepository;
 import com.chatopera.cc.persistence.repository.OnlineUserRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.proxy.AgentUserProxy;
+import com.chatopera.cc.util.HashMapUtils;
 import com.chatopera.cc.util.WebIMReport;
 import com.chatopera.compose4j.Functional;
 import com.chatopera.compose4j.Middleware;
@@ -49,9 +50,6 @@ public class ACDVisAllocatorMw implements Middleware<ACDComposeContext> {
     private Cache cache;
 
     @Autowired
-    private ACDQueueService acdQueueService;
-
-    @Autowired
     private AgentServiceRepository agentServiceRes;
 
     @Autowired
@@ -66,54 +64,127 @@ public class ACDVisAllocatorMw implements Middleware<ACDComposeContext> {
     @Autowired
     private AgentUserProxy agentUserProxy;
 
+    @Autowired
+    private ACDPolicyService acdPolicyService;
+
     @Override
     public void apply(final ACDComposeContext ctx, final Functional next) {
 
         /**
          * 查询条件，当前在线的 坐席，并且 未达到最大 服务人数的坐席
          */
-        List<AgentStatus> agentStatuses = filterOutAvailableAgentStatus(
+        final List<AgentStatus> agentStatuses = filterOutAvailableAgentStatus(
                 ctx.getAgentUser(), ctx.getOrgi());
+
         /**
          * 处理ACD 的 技能组请求和 坐席请求
          */
-        AgentStatus agentStatus = null;
-        AgentService agentService = null;    //放入缓存的对象
-
-        if (agentStatuses.size() > 0) {
-            agentStatus = agentStatuses.get(0);
-            if (agentStatus.getUsers() >= ctx.getSessionConfig().getMaxuser()) {
-                agentStatus = null;
-                /**
-                 * 判断当前有多少人排队中 ， 分三种情况：1、请求技能组的，2、请求坐席的，3，默认请求的
-                 *
-                 */
-            }
-        }
+        AgentStatus agentStatus = filterOutAgentStatusWithPolicies(
+                ctx.getSessionConfig(), agentStatuses, ctx.getOrgi(), ctx.getOnlineUserId(), ctx.isInvite());
+        AgentService agentService = null;
 
         try {
             agentService = processAgentService(
-                    agentStatus, ctx.getAgentUser(), ctx.getOrgi(), false, ctx.getSessionConfig());
-            // 处理结果：进入排队队列
-            if (StringUtils.equals(MainContext.AgentUserStatusEnum.INQUENE.toString(), agentService.getStatus())) {
-                agentService.setQueneindex(
-                        acdQueueService.getQueueIndex(
-                                ctx.getAgentUser().getAgentno(), ctx.getOrgi(), ctx.getAgentUser().getSkill()));
-            }
+                    agentStatus, ctx.getAgentUser(), ctx.getOrgi(), false);
         } catch (Exception ex) {
             logger.warn("[allotAgent] exception: ", ex);
         }
 
-        agentUserProxy.broadcastAgentsStatus(
-                ctx.getOrgi(), "user", agentService != null && agentService.getStatus().equals(
-                        MainContext.AgentUserStatusEnum.INSERVICE.toString()) ? "inservice" : "inquene",
-                ctx.getAgentUser().getId());
         ctx.setAgentService(agentService);
-
     }
 
     /**
-     * 过滤在线客服
+     * 根据坐席配置的策略输出符合要求的AgentStatus，确定最终的坐席
+     *
+     * @param sessionConfig
+     * @param agentStatuses
+     * @return
+     */
+    private AgentStatus filterOutAgentStatusWithPolicies(
+            final SessionConfig sessionConfig,
+            final List<AgentStatus> agentStatuses,
+            final String orgi,
+            final String onlineUserId,
+            final boolean isInvite) {
+        AgentStatus agentStatus = null;
+
+        // 邀请功能
+        if (isInvite) {
+            logger.info("[filterOutAgentStatusWithPolicies] is invited onlineUser.");
+            if (agentStatuses.size() == 1) {
+                agentStatus = agentStatuses.get(0);
+                // Note: 如何该邀请人离线了，恰巧只有一个其它就绪坐席，也会进入这种条件。
+                logger.info(
+                        "[filterOutAgentStatusWithPolicies] resolve agent as the invitee {}.",
+                        agentStatus.getAgentno());
+            }
+            // 邀请功能，但是agentStatuses大小不是1，则进入后续决策
+        }
+
+        // 启用历史坐席优先
+        if ((agentStatus == null) && sessionConfig.isLastagent()) {
+            logger.info("[filterOutAgentStatusWithPolicies] check agent against chat history.");
+            // 启用了历史坐席优先 ， 查找 历史服务坐席
+            List<com.chatopera.cc.util.WebIMReport> webIMaggs = MainUtils.getWebIMDataAgg(
+                    onlineUserRes.findByOrgiForDistinctAgent(orgi, onlineUserId));
+            for (WebIMReport report : webIMaggs) {
+                for (final AgentStatus o : agentStatuses) {
+                    if (StringUtils.equals(
+                            o.getAgentno(), report.getData()) && o.getUsers() < sessionConfig.getMaxuser()) {
+                        logger.info(
+                                "[filterOutAgentStatusWithPolicies] choose agentno {} by chat history.",
+                                agentStatus.getAgentno());
+                        agentStatus = o;
+                        break;
+                    }
+                }
+
+                if (agentStatus != null) {
+                    break;
+                }
+            }
+        }
+
+        // 新客服接入人工坐席分配策略
+        if (agentStatus == null) {
+            // 设置默认为空闲坐席优先
+            if (StringUtils.isBlank(sessionConfig.getDistribution())) {
+                sessionConfig.setDistribution("0");
+            }
+
+            switch (sessionConfig.getDistribution()) {
+                case "0":
+                    // 空闲坐席优先
+                    agentStatus = acdPolicyService.decideAgentStatusWithIdleAgent(agentStatuses);
+                    if (agentStatus == null) {
+                        // 如果没有空闲坐席，则按照平均分配
+                        agentStatus = acdPolicyService.decideAgentStatusInAverage(agentStatuses);
+                    }
+                    break;
+                case "1":
+                    // 坐席平均分配
+                    agentStatus = acdPolicyService.decideAgentStatusInAverage(agentStatuses);
+                    break;
+                default:
+                    logger.warn(
+                            "[filterOutAgentStatusWithPolicies] unexpected Distribution Strategy 【{}】",
+                            sessionConfig.getDistribution());
+            }
+        }
+
+        if (agentStatus != null) {
+            logger.info(
+                    "[filterOutAgentStatusWithPolicies] final agentStatus {}, agentno {}", agentStatus.getId(),
+                    agentStatus.getAgentno());
+        } else {
+            logger.info("[filterOutAgentStatusWithPolicies] oops, no agent satisfy rules.");
+        }
+
+        return agentStatus;
+    }
+
+    /**
+     * 过滤就绪坐席
      * 优先级: 1. 指定坐席;2. 指定技能组; 3. 租户所有的坐席
      *
      * @param agentUser
@@ -125,47 +196,99 @@ public class ACDVisAllocatorMw implements Middleware<ACDComposeContext> {
             final String orgi
                                                           ) {
         logger.info(
-                "[filterOutAvailableAgentStatus] agentUser {}, orgi {}, skill {}, onlineUser {}",
+                "[filterOutAvailableAgentStatus] pre-conditions: agentUser.agentno {}, orgi {}, skill {}, onlineUser {}",
                 agentUser.getAgentno(), orgi, agentUser.getSkill(), agentUser.getUserid()
                    );
         List<AgentStatus> agentStatuses = new ArrayList<>();
         Map<String, AgentStatus> map = cache.findAllReadyAgentStatusByOrgi(orgi);
 
+        // DEBUG
+        if (map.size() > 0) {
+            StringBuffer sb = new StringBuffer();
+            sb.append("[filterOutAvailableAgentStatus] ready agents online: \n");
+            for (final Map.Entry<String, AgentStatus> f : map.entrySet()) {
+                sb.append(
+                        String.format("   name %s, agentno %s, service %d/%d, status %s, busy %s, skills %s \n",
+                                      f.getValue().getUsername(),
+                                      f.getValue().getAgentno(), f.getValue().getUsers(), f.getValue().getMaxusers(),
+                                      f.getValue().getStatus(), f.getValue().isBusy(),
+                                      HashMapUtils.concatKeys(f.getValue().getSkills(), "|")));
+            }
+            logger.info(sb.toString());
+        } else {
+            logger.info("[filterOutAvailableAgentStatus] None ready agent found.");
+        }
+
         if (agentUser != null && StringUtils.isNotBlank(agentUser.getAgentno())) {
             // 指定坐席
-            for (Map.Entry<String, AgentStatus> entry : map.entrySet()) {
-                if ((!entry.getValue().isBusy()) && (StringUtils.equals(
-                        entry.getValue().getAgentno(), agentUser.getAgentno()))) {
+            for (final Map.Entry<String, AgentStatus> entry : map.entrySet()) {
+                if (StringUtils.equals(
+                        entry.getValue().getAgentno(), agentUser.getAgentno())) {
                     agentStatuses.add(entry.getValue());
+                    logger.info(
+                            "[filterOutAvailableAgentStatus] <Agent> find ready agent {}, name {}, status {}, service {}/{}",
+                            entry.getValue().getAgentno(), entry.getValue().getUsername(), entry.getValue().getStatus(),
+                            entry.getValue().getUsers(),
+                            entry.getValue().getMaxusers());
+                    break;
                 }
             }
         }
+
+        // 此处size是1或0
+        if (agentStatuses.size() == 1) {
+            logger.info("[filterOutAvailableAgentStatus] agent status list size: {}", agentStatuses.size());
+            // 得到指定的坐席
+            return agentStatuses;
+        }
+
+        // Note 如果指定了坐席，但是该坐席却不是就绪的，那么就根据技能组或其它条件查找
 
         /**
          * 指定坐席未查询到就绪的
          */
-        if (agentStatuses.size() == 0) {
-            if (StringUtils.isNotBlank(agentUser.getSkill())) {
-                // 指定技能组
-                for (Map.Entry<String, AgentStatus> entry : map.entrySet()) {
-                    if ((!entry.getValue().isBusy()) &&
-                            (entry.getValue().getSkills() != null &&
-                                    entry.getValue().getSkills().containsKey(agentUser.getSkill()))) {
-                        agentStatuses.add(entry.getValue());
-                    }
+        if (StringUtils.isNotBlank(agentUser.getSkill())) {
+            // 指定技能组
+            for (final Map.Entry<String, AgentStatus> entry : map.entrySet()) {
+                if ((!entry.getValue().isBusy()) &&
+                        (entry.getValue().getSkills() != null &&
+                                entry.getValue().getSkills().containsKey(agentUser.getSkill()))) {
+                    logger.info(
+                            "[filterOutAvailableAgentStatus] <Skill#{}> find ready agent {}, name {}, status {}, service {}/{}, skills {}",
+                            agentUser.getSkill(),
+                            entry.getValue().getAgentno(), entry.getValue().getUsername(), entry.getValue().getStatus(),
+                            entry.getValue().getUsers(),
+                            entry.getValue().getMaxusers(),
+                            HashMapUtils.concatKeys(entry.getValue().getSkills(), "|"));
+                    agentStatuses.add(entry.getValue());
+                } else {
+                    logger.info(
+                            "[filterOutAvailableAgentStatus] <Skill#{}> skip ready agent {}, name {}, status {}, service {}/{}, skills {}",
+                            agentUser.getSkill(),
+                            entry.getValue().getAgentno(), entry.getValue().getUsername(), entry.getValue().getStatus(),
+                            entry.getValue().getUsers(),
+                            entry.getValue().getMaxusers(),
+                            HashMapUtils.concatKeys(entry.getValue().getSkills(), "|"));
                 }
             }
-        }
-
-        /**
-         * 在指定的坐席和技能组中未查到坐席
-         * 接下来进行无差别查询
-         */
-        if (agentStatuses.size() == 0) {
+            // 如果绑定了技能组，立即返回该技能组的人
+            // 这时候，如果该技能组没有人，也不按照其它条件查找
+            logger.info("[filterOutAvailableAgentStatus] agent status list size: {}", agentStatuses.size());
+            return agentStatuses;
+        } else {
+            /**
+             * 在指定的坐席和技能组中未查到坐席
+             * 接下来进行无差别查询
+             */
             // 对于该租户的所有客服
-            for (Map.Entry<String, AgentStatus> entry : map.entrySet()) {
+            for (final Map.Entry<String, AgentStatus> entry : map.entrySet()) {
                 if (!entry.getValue().isBusy()) {
                     agentStatuses.add(entry.getValue());
+                    logger.info(
+                            "[filterOutAvailableAgentStatus] <Redundance> find ready agent {}, agentname {}, status {}, service {}/{}",
+                            entry.getValue().getAgentno(), entry.getValue().getUsername(), entry.getValue().getStatus(),
+                            entry.getValue().getUsers(),
+                            entry.getValue().getMaxusers());
                 }
             }
         }
@@ -173,7 +296,6 @@ public class ACDVisAllocatorMw implements Middleware<ACDComposeContext> {
         logger.info("[filterOutAvailableAgentStatus] agent status list size: {}", agentStatuses.size());
         return agentStatuses;
     }
-
 
     /**
      * 为agentUser生成对应的AgentService
@@ -192,8 +314,7 @@ public class ACDVisAllocatorMw implements Middleware<ACDComposeContext> {
             AgentStatus agentStatus,
             final AgentUser agentUser,
             final String orgi,
-            final boolean finished,
-            final SessionConfig sessionConfig) {
+            final boolean finished) {
         AgentService agentService = new AgentService();
         if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
             agentService.setId(agentUser.getAgentserviceid());
@@ -228,33 +349,9 @@ public class ACDVisAllocatorMw implements Middleware<ACDComposeContext> {
         } else if (agentStatus != null) {
             agentService.setAgent(agentStatus.getAgentno());
             agentService.setSkill(agentUser.getSkill());
-
-            if (sessionConfig.isLastagent()) {
-                // 启用了历史坐席优先 ， 查找 历史服务坐席
-                List<com.chatopera.cc.util.WebIMReport> webIMaggList = MainUtils.getWebIMDataAgg(
-                        onlineUserRes.findByOrgiForDistinctAgent(orgi, agentUser.getUserid()));
-                if (webIMaggList.size() > 0) {
-                    for (WebIMReport report : webIMaggList) {
-                        if (report.getData().equals(agentStatus.getAgentno())) {
-                            break;
-                        } else {
-                            AgentStatus hisAgentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
-                                    report.getData(), orgi);
-                            if (hisAgentStatus != null && hisAgentStatus.getUsers() < hisAgentStatus.getMaxusers()) {
-                                // 变更为 历史服务坐席
-                                agentStatus = hisAgentStatus;
-                                break;
-                            }
-                        }
-
-                    }
-                }
-            }
-
             agentUser.setStatus(MainContext.AgentUserStatusEnum.INSERVICE.toString());
             agentService.setStatus(MainContext.AgentUserStatusEnum.INSERVICE.toString());
             agentService.setSessiontype(MainContext.AgentUserStatusEnum.INSERVICE.toString());
-
             // 设置坐席名字
             agentService.setAgentno(agentStatus.getUserid());
             agentService.setAgentusername(agentStatus.getUsername());

@@ -42,9 +42,6 @@ public class ACDVisServiceMw implements Middleware<ACDComposeContext> {
     @Autowired
     private ACDMessageHelper acdMessageHelper;
 
-    @Autowired
-    private AgentUserProxy agentUserProxy;
-
     @Override
     public void apply(final ACDComposeContext ctx, final Functional next) {
         ctx.setMessageType(MainContext.MessageType.STATUS.toString());
@@ -75,88 +72,11 @@ public class ACDVisServiceMw implements Middleware<ACDComposeContext> {
                     logger.info("[apply] agent user is null or END");
                     // 过滤坐席，获得 Agent Service
                     next.apply();
-                    if (ctx.getAgentService() != null) {
-                        // 没有得到agent service
-                        postResolveAgentService(ctx);
-                    }
             }
         } else {
             // 该AgentUser为新建
             // 过滤坐席，获得 Agent Service
             next.apply();
-            if (ctx.getAgentService() != null) {
-                // 没有得到agent service
-                postResolveAgentService(ctx);
-            }
         }
     }
-
-    /**
-     * 根据AgentService，按照逻辑继续执行
-     *
-     * @param ctx
-     */
-    private void postResolveAgentService(final ACDComposeContext ctx) {
-        /**
-         * 找到空闲坐席，如果未找到坐席，则将该用户放入到 排队队列
-         */
-        switch (MainContext.AgentUserStatusEnum.toValue(ctx.getAgentService().getStatus())) {
-            case INSERVICE:
-                ctx.setMessage(
-                        acdMessageHelper.getSuccessMessage(
-                                ctx.getAgentService(),
-                                ctx.getChannel(),
-                                ctx.getOrgi()));
-
-                // TODO 判断 INSERVICE 时，agentService 对应的  agentUser
-                logger.info(
-                        "[apply] agent service: agentno {}, \n agentuser id {} \n user {} \n channel {} \n status {} \n queue index {}",
-                        ctx.getAgentService().getAgentno(), ctx.getAgentService().getAgentuserid(),
-                        ctx.getAgentService().getUserid(),
-                        ctx.getAgentService().getChannel(),
-                        ctx.getAgentService().getStatus(),
-                        ctx.getAgentService().getQueneindex());
-
-                if (StringUtils.isNotBlank(ctx.getAgentService().getAgentuserid())) {
-                    agentUserProxy.findOne(ctx.getAgentService().getAgentuserid()).ifPresent(p -> {
-                        ctx.setAgentUser(p);
-                    });
-                }
-
-                // TODO 如果是 INSERVICE 那么  agentService.getAgentuserid 就一定不能为空？
-//                            // TODO 此处需要考虑 agentService.getAgentuserid 为空的情况
-//                            // 那么什么情况下，agentService.getAgentuserid为空？
-//                            if (StringUtils.isNotBlank(agentService.getAgentuserid())) {
-//                                logger.info("[handle] set Agent User with agentUser Id {}", agentService.getAgentuserid());
-//                                getAgentUserProxy().findOne(agentService.getAgentuserid()).ifPresent(p -> {
-//                                    outMessage.setChannelMessage(p);
-//                                });
-//                            } else {
-//                                logger.info("[handle] agent user id is null.");
-//                            }
-                break;
-            case INQUENE:
-                if (ctx.getAgentService().getQueneindex() > 0) {
-                    // 当前有坐席，要排队
-                    ctx.setMessage(acdMessageHelper.getQueneMessage(
-                            ctx.getAgentService().getQueneindex(),
-                            ctx.getAgentUser().getChannel(),
-                            ctx.getOrgi()));
-                } else {
-                    // TODO 什么是否返回 noAgentMessage, 是否在是 INQUENE 时 getQueneindex == 0
-                    // 当前没有坐席，要留言
-                    ctx.setMessage(acdMessageHelper.getNoAgentMessage(
-                            ctx.getAgentService().getQueneindex(),
-                            ctx.getChannel(),
-                            ctx.getOrgi()));
-                }
-                break;
-            case END:
-                logger.info("[handler] should not happen for new onlineUser service request.");
-            default:
-        }
-        ctx.setChannelMessage(ctx.getAgentUser());
-    }
-
-
 }

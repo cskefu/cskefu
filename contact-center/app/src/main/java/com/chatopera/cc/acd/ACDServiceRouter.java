@@ -255,7 +255,7 @@ public class ACDServiceRouter {
                 // 下面开始处理其加入到服务中的队列
                 try {
                     AgentService agentService = acdVisAllocatorMw.processAgentService(
-                            agentStatus, agentUser, orgi, false, sessionConfig);
+                            agentStatus, agentUser, orgi, false);
 
                     // 处理完成得到 agentService
                     Message outMessage = new Message();
@@ -328,7 +328,7 @@ public class ACDServiceRouter {
             } else if (agentStatus != null) {
                 // 该访客没有和坐席对话，因此没有 AgentService
                 // 当做留言处理，创建一个新的 AgentService
-                service = acdVisAllocatorMw.processAgentService(agentStatus, agentUser, orgi, true, sessionConfig);
+                service = acdVisAllocatorMw.processAgentService(agentStatus, agentUser, orgi, true);
             }
 
             if (service != null) {
@@ -504,8 +504,7 @@ public class ACDServiceRouter {
         AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(agentno, orgi);
         AgentService agentService;
         if (agentStatus != null) {
-            SessionConfig sessionConfig = acdPolicyService.initSessionConfig(orgi);
-            agentService = acdVisAllocatorMw.processAgentService(agentStatus, agentUser, orgi, false, sessionConfig);
+            agentService = acdVisAllocatorMw.processAgentService(agentStatus, agentUser, orgi, false);
             agentUserProxy.broadcastAgentsStatus(orgi, "invite", "success", agentno);
 
             /**

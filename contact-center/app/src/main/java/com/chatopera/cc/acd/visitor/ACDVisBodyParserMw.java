@@ -17,12 +17,16 @@
 package com.chatopera.cc.acd.visitor;
 
 import com.chatopera.cc.acd.ACDComposeContext;
+import com.chatopera.cc.acd.ACDMessageHelper;
+import com.chatopera.cc.acd.ACDQueueService;
+import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.AgentUser;
 import com.chatopera.cc.model.AgentUserContacts;
 import com.chatopera.cc.model.Contacts;
 import com.chatopera.cc.persistence.es.ContactsRepository;
 import com.chatopera.cc.persistence.repository.AgentUserContactsRepository;
+import com.chatopera.cc.proxy.AgentUserProxy;
 import com.chatopera.compose4j.Functional;
 import com.chatopera.compose4j.Middleware;
 import org.apache.commons.lang.StringUtils;
@@ -46,6 +50,15 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
 
     @Autowired
     private Cache cache;
+
+    @Autowired
+    private AgentUserProxy agentUserProxy;
+
+    @Autowired
+    private ACDQueueService acdQueueService;
+
+    @Autowired
+    private ACDMessageHelper acdMessageHelper;
 
     /**
      * 设置AgentUser基本信息
@@ -104,13 +117,91 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
         agentUser.setTitle(ctx.getTitle());
         agentUser.setUrl(ctx.getUrl());
         agentUser.setTraceid(ctx.getTraceid());
-
         ctx.setAgentUser(agentUser);
+
         next.apply();
+
+        /**
+         * 发送通知
+         */
+        if (ctx.getAgentService() != null && StringUtils.isNotBlank(ctx.getAgentService().getStatus())) {
+            /**
+             * 找到空闲坐席，如果未找到坐席，则将该用户放入到 排队队列
+             */
+            switch (MainContext.AgentUserStatusEnum.toValue(ctx.getAgentService().getStatus())) {
+                case INSERVICE:
+                    ctx.setMessage(
+                            acdMessageHelper.getSuccessMessage(
+                                    ctx.getAgentService(),
+                                    ctx.getChannel(),
+                                    ctx.getOrgi()));
+
+                    // TODO 判断 INSERVICE 时，agentService 对应的  agentUser
+                    logger.info(
+                            "[apply] agent service: agentno {}, \n agentuser id {} \n user {} \n channel {} \n status {} \n queue index {}",
+                            ctx.getAgentService().getAgentno(), ctx.getAgentService().getAgentuserid(),
+                            ctx.getAgentService().getUserid(),
+                            ctx.getAgentService().getChannel(),
+                            ctx.getAgentService().getStatus(),
+                            ctx.getAgentService().getQueneindex());
+
+                    if (StringUtils.isNotBlank(ctx.getAgentService().getAgentuserid())) {
+                        agentUserProxy.findOne(ctx.getAgentService().getAgentuserid()).ifPresent(p -> {
+                            ctx.setAgentUser(p);
+                        });
+                    }
+
+                    // TODO 如果是 INSERVICE 那么  agentService.getAgentuserid 就一定不能为空？
+//                            // TODO 此处需要考虑 agentService.getAgentuserid 为空的情况
+//                            // 那么什么情况下，agentService.getAgentuserid为空？
+//                            if (StringUtils.isNotBlank(agentService.getAgentuserid())) {
+//                                logger.info("[handle] set Agent User with agentUser Id {}", agentService.getAgentuserid());
+//                                getAgentUserProxy().findOne(agentService.getAgentuserid()).ifPresent(p -> {
+//                                    outMessage.setChannelMessage(p);
+//                                });
+//                            } else {
+//                                logger.info("[handle] agent user id is null.");
+//                            }
+
+                    agentUserProxy.broadcastAgentsStatus(
+                            ctx.getOrgi(), "user", MainContext.AgentUserStatusEnum.INSERVICE.toString(),
+                            ctx.getAgentUser().getId());
+                    break;
+                case INQUENE:
+                    // 处理结果：进入排队队列
+                    ctx.getAgentService().setQueneindex(
+                            acdQueueService.getQueueIndex(
+                                    ctx.getAgentUser().getAgentno(), ctx.getOrgi(), ctx.getAgentUser().getSkill()));
+
+                    if (ctx.getAgentService().getQueneindex() > 0) {
+                        // 当前有坐席，要排队
+                        ctx.setMessage(acdMessageHelper.getQueneMessage(
+                                ctx.getAgentService().getQueneindex(),
+                                ctx.getAgentUser().getChannel(),
+                                ctx.getOrgi()));
+                    } else {
+                        // TODO 什么是否返回 noAgentMessage, 是否在是 INQUENE 时 getQueneindex == 0
+                        // 当前没有坐席，要留言
+                        ctx.setMessage(acdMessageHelper.getNoAgentMessage(
+                                ctx.getAgentService().getQueneindex(),
+                                ctx.getChannel(),
+                                ctx.getOrgi()));
+                    }
+
+                    agentUserProxy.broadcastAgentsStatus(
+                            ctx.getOrgi(), "user", MainContext.AgentUserStatusEnum.INQUENE.toString(),
+                            ctx.getAgentUser().getId());
+
+                    break;
+                case END:
+                    logger.info("[handler] should not happen for new onlineUser service request.");
+                default:
+            }
+            ctx.setChannelMessage(ctx.getAgentUser());
+        }
 
         logger.info(
                 "[apply] message text: {}, noagent {}", ctx.getMessage(), ctx.isNoagent());
-
     }
 
 
@@ -145,5 +236,4 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
 
         return nickname;
     }
-
 }

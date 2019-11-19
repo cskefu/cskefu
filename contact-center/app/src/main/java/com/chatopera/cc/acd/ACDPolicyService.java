@@ -18,6 +18,7 @@ package com.chatopera.cc.acd;
 
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.cache.Cache;
+import com.chatopera.cc.model.AgentStatus;
 import com.chatopera.cc.model.SessionConfig;
 import com.chatopera.cc.persistence.repository.SessionConfigRepository;
 import org.slf4j.Logger;
@@ -74,5 +75,45 @@ public class ACDPolicyService {
             }
         }
         return sessionConfig;
+    }
+
+    /**
+     * 确定AgentStatus：空闲坐席优先
+     *
+     * @param agentStatuses
+     * @return
+     */
+    public AgentStatus decideAgentStatusWithIdleAgent(final List<AgentStatus> agentStatuses) {
+        for (final AgentStatus o : agentStatuses) {
+            if (o.getUsers() == 0) {
+                logger.info("[decideAgentStatusWithIdleAgent] choose agentno {} by idle status.", o.getAgentno());
+                return o;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 确定AgentStatus：坐席平均分配
+     *
+     * @param agentStatuses
+     * @return
+     */
+    public AgentStatus decideAgentStatusInAverage(final List<AgentStatus> agentStatuses) {
+        // 查找最少人数的AgentStatus
+        AgentStatus x = null;
+        int min = 0;
+        for (final AgentStatus o : agentStatuses) {
+            if (o.getUsers() <= min) {
+                x = o;
+                min = o.getUsers();
+            }
+        }
+
+        if (x != null) {
+            logger.info("[decideAgentStatusWithIdleAgent] choose agentno {} in average.", x.getAgentno());
+        }
+
+        return x;
     }
 }

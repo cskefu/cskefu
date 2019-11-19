@@ -227,7 +227,6 @@ public class ApiUserController extends Handler {
      */
     private JsonObject update(final HttpServletRequest request, final JsonObject payload) {
         logger.info("[update] payload {}", payload.toString());
-        final User logined = super.getUser(request);
         JsonObject resp = new JsonObject();
         final User updated = userProxy.parseUserFromJson(payload);
         if (StringUtils.isBlank(updated.getId())) {
@@ -244,14 +243,16 @@ public class ApiUserController extends Handler {
                 // 由坐席切换成非坐席 判断是否坐席 以及 是否有对话
                 if (!updated.isAgent()) {
                     AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
-                            logined.getId(), logined.getOrgi());
-                    if (!(agentStatus == null && cache.getInservAgentUsersSizeByAgentnoAndOrgi(
-                            logined.getId(), logined.getOrgi()) == 0)) {
-                        msg = "t1";
+                            previous.getId(), previous.getOrgi());
+                    if (agentStatus != null && agentStatus.getUsers() > 0) {
                         resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
-                        resp.addProperty(RestUtils.RESP_KEY_DATA, msg);
+                        resp.addProperty(RestUtils.RESP_KEY_DATA, "t1");
                         return resp;
                     }
+
+                    // TODO 检查该用户是否在其它技能组
+                    // https://gitlab.chatopera.com/chatopera/cosinee/issues/751
+                    // 如果在其它技能组，禁止修改，返回提示："该用户在其它技能组中，不支持取消坐席。取消坐席设置前需要不包括在任何技能组中。"
                 }
 
                 // 通过验证，可以更新数据库
@@ -260,13 +261,11 @@ public class ApiUserController extends Handler {
                 previous.setEmail(updated.getEmail());
                 previous.setMobile(updated.getMobile());
                 previous.setSipaccount(updated.getSipaccount());
-
                 previous.setAgent(updated.isAgent());
-
                 previous.setOrgi(super.getOrgiByTenantshare(request));
 
-                if (StringUtils.isNotBlank(logined.getOrgid())) {
-                    previous.setOrgid(logined.getOrgid());
+                if (StringUtils.isNotBlank(previous.getOrgid())) {
+                    previous.setOrgid(previous.getOrgid());
                 } else {
                     previous.setOrgid(MainContext.SYSTEM_ORGI);
                 }
@@ -284,7 +283,7 @@ public class ApiUserController extends Handler {
                 previous.setAdmin(updated.isAdmin());
                 previous.setSuperadmin(false);
                 userRes.save(previous);
-                OnlineUserProxy.clean(logined.getOrgi());
+                OnlineUserProxy.clean(previous.getOrgi());
             }
 
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
