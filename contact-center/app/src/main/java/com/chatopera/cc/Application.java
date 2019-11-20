@@ -16,10 +16,10 @@
  */
 package com.chatopera.cc;
 
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.plugins.PluginRegistry;
 import com.chatopera.cc.config.AppCtxRefreshEventListener;
-import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.util.SystemEnvHelper;
 import com.chatopera.cc.util.mobile.MobileNumberUtils;
 import org.slf4j.Logger;

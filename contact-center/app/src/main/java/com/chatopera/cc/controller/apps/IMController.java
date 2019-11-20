@@ -17,7 +17,6 @@
 
 package com.chatopera.cc.controller.apps;
 
-import com.chatopera.cc.acd.ACDAgentService;
 import com.chatopera.cc.acd.ACDPolicyService;
 import com.chatopera.cc.acd.ACDWorkMonitor;
 import com.chatopera.cc.basic.Constants;
@@ -306,8 +305,8 @@ public class IMController extends Handler {
             final String username,
             final String company_name,
             final String system_name) {
-        if (uid != null && sid != null) {
-            Contacts data = contactsRes.findOneByWluidAndWlsid(uid, sid);
+        if (StringUtils.isNotBlank(uid) && StringUtils.isNotBlank(sid) && StringUtils.isNotBlank(cid)) {
+            Contacts data = contactsRes.findOneByWluidAndWlsidAndWlcid(uid, sid, cid);
             if (data == null) {
                 data = new Contacts();
                 data.setCreater(gid);
@@ -366,9 +365,9 @@ public class IMController extends Handler {
         }
 
         createContacts(userid,
-                       request,
-                       logined.getId(),
-                       uid, cid, sid, username, company_name, system_name);
+                request,
+                logined.getId(),
+                uid, cid, sid, username, company_name, system_name);
         return view;
     }
 
@@ -753,8 +752,10 @@ public class IMController extends Handler {
 //                    contacts = OnlineUserProxy.processContacts(invite.getOrgi(), contacts, appid, userid);
                     String uid = (String) request.getSession().getAttribute("Sessionuid");
                     String sid = (String) request.getSession().getAttribute("Sessionsid");
-                    if (uid != null && sid != null) {
-                        Contacts contacts1 = contactsRes.findOneByWluidAndWlsid(uid, sid);
+                    String cid = (String) request.getSession().getAttribute("Sessioncid");
+
+                    if (StringUtils.isNotBlank(uid) && StringUtils.isNotBlank(sid) && StringUtils.isNotBlank(cid)) {
+                        Contacts contacts1 = contactsRes.findOneByWluidAndWlsidAndWlcid(uid, sid, cid);
                         if (contacts1 != null) {
                             agentUserRepository.findOneByUseridAndOrgi(userid, orgi).ifPresent(p -> {
                                 // 关联AgentService的联系人
@@ -841,8 +842,8 @@ public class IMController extends Handler {
                     }
                     map.addAttribute(
                             "chatMessageList", chatMessageRes.findByUsessionAndOrgi(userid, orgi, new PageRequest(0, 20,
-                                                                                                                  Direction.DESC,
-                                                                                                                  "updatetime")));
+                                    Direction.DESC,
+                                    "updatetime")));
                 }
                 view.addObject("commentList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_COMMENT_DIC));
                 view.addObject("commentItemList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_COMMENT_ITEM_DIC));
@@ -1119,7 +1120,7 @@ public class IMController extends Handler {
 
                     // 存储到本地硬盘
                     String id = processAttachmentFile(multipart,
-                                                      fileid, logined.getOrgi(), logined.getId());
+                            fileid, logined.getOrgi(), logined.getId());
                     upload = new UploadStatus("0", "/res/file.html?id=" + id);
                     String file = "/res/file.html?id=" + id;
 

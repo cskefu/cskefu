@@ -16,13 +16,12 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.Date;
-import java.util.List;
-
+import com.chatopera.cc.model.WxMpEvent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.chatopera.cc.model.WxMpEvent;
+import java.util.Date;
+import java.util.List;
 
 public interface WxMpEventRepository extends JpaRepository<WxMpEvent, String>{
 	

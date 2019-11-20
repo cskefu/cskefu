@@ -16,11 +16,11 @@
  */
 package com.chatopera.cc.basic.resource;
 
+import com.chatopera.cc.model.JobDetail;
+import com.chatopera.cc.util.es.UKDataBean;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.chatopera.cc.util.es.UKDataBean;
-import com.chatopera.cc.model.JobDetail;
 
 public class OutputTextFormat {
 	private String id ;

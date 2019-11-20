@@ -16,9 +16,6 @@
  */
 package com.chatopera.cc.config;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.Http11NioProtocol;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +24,9 @@ import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomize
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 @Configuration
 public class WebServerContainerConfigure {

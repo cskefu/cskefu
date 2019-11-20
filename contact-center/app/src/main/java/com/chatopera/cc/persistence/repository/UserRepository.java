@@ -16,9 +16,6 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.chatopera.cc.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +23,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, String> {
     User findByIdAndOrgi(String paramString, String orgi);

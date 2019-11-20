@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.chatopera.cc.acd;
+package com.chatopera.cc.acd.basic;
 
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.socketio.message.Message;

@@ -1,10 +1,10 @@
 package com.chatopera.cc.peer.im;
 
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.socketio.message.ChatMessage;
 import com.chatopera.cc.peer.PeerContext;
 import com.chatopera.cc.peer.PeerUtils;
 import com.chatopera.cc.proxy.AgentAuditProxy;
+import com.chatopera.cc.socketio.message.ChatMessage;
 import com.chatopera.compose4j.Functional;
 import com.chatopera.compose4j.Middleware;
 import org.slf4j.Logger;

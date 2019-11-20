@@ -16,14 +16,13 @@
  */
 package com.chatopera.cc.persistence.impl;
 
-import java.util.List;
-
 import com.chatopera.cc.model.KnowledgeType;
+import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
+import com.chatopera.cc.persistence.repository.KnowledgeTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
-import com.chatopera.cc.persistence.repository.KnowledgeTypeRepository;
+import java.util.List;
 
 @Service("topictype")
 public class TopicTypeDataExchangeImpl implements DataExchangeInterface{

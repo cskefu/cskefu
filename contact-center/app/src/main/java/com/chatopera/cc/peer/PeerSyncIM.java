@@ -19,16 +19,15 @@ package com.chatopera.cc.peer;
 
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
+import com.chatopera.cc.basic.MainContext.ChannelType;
 import com.chatopera.cc.basic.MainContext.MessageType;
 import com.chatopera.cc.basic.MainContext.ReceiverType;
-import com.chatopera.cc.basic.MainContext.ChannelType;
 import com.chatopera.cc.basic.plugins.PluginRegistry;
 import com.chatopera.cc.basic.plugins.PluginsLoader;
-import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.peer.im.ComposeMw1;
 import com.chatopera.cc.peer.im.ComposeMw2;
 import com.chatopera.cc.peer.im.ComposeMw3;
-import com.chatopera.cc.basic.plugins.IPluginDescriptor;
+import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.compose4j.Composer;
 import com.chatopera.compose4j.Middleware;
 import com.chatopera.compose4j.exception.Compose4jRuntimeException;
@@ -41,8 +40,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * 客服与访客间消息处理类

@@ -16,14 +16,14 @@
  */
 package com.chatopera.cc.util;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.math.NumberUtils;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.slf4j.LoggerFactory;
 
 
 public class FFmpegCmdExecuter {

@@ -16,8 +16,10 @@
  */
 package com.chatopera.cc.controller.api;
 
-import com.chatopera.cc.acd.ACDMessageHelper;
-import com.chatopera.cc.acd.ACDServiceRouter;
+import com.chatopera.cc.acd.ACDAgentDispatcher;
+import com.chatopera.cc.acd.ACDAgentService;
+import com.chatopera.cc.acd.basic.ACDComposeContext;
+import com.chatopera.cc.acd.basic.ACDMessageHelper;
 import com.chatopera.cc.basic.MainContext.*;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
@@ -29,7 +31,6 @@ import com.chatopera.cc.peer.PeerSyncIM;
 import com.chatopera.cc.persistence.repository.AgentServiceRepository;
 import com.chatopera.cc.persistence.repository.AgentUserRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
-import com.chatopera.cc.proxy.AgentAuditProxy;
 import com.chatopera.cc.proxy.AgentUserProxy;
 import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.util.Menu;
@@ -66,7 +67,10 @@ public class ApiAgentUserController extends Handler {
     private ACDMessageHelper acdMessageHelper;
 
     @Autowired
-    private ACDServiceRouter acdServiceRouter;
+    private AgentUserProxy agentUserProxy;
+
+    @Autowired
+    private ACDAgentService acdAgentService;
 
     @Autowired
     private Cache cache;
@@ -84,10 +88,7 @@ public class ApiAgentUserController extends Handler {
     private AgentServiceRepository agentServiceRes;
 
     @Autowired
-    private AgentUserProxy agentUserProxy;
-
-    @Autowired
-    private AgentAuditProxy agentAuditProxy;
+    private ACDAgentDispatcher acdAgentDispatcher;
 
     /**
      * 获取当前对话中的访客
@@ -302,7 +303,7 @@ public class ApiAgentUserController extends Handler {
                     logined.getId(), agentUser.getAgentno()) || logined.isAdmin())) {
                 // 删除访客-坐席关联关系，包括缓存
                 try {
-                    acdServiceRouter.deleteAgentUser(agentUser, orgi);
+                    acdAgentService.finishAgentUser(agentUser, orgi);
                 } catch (CSKefuException e) {
                     // 未能删除成功
                     logger.error("[end]", e);
@@ -332,7 +333,10 @@ public class ApiAgentUserController extends Handler {
      */
     private JsonObject withdraw(final HttpServletRequest request, final JsonObject j) {
         JsonObject resp = new JsonObject();
-        acdServiceRouter.withdrawAgent(super.getOrgi(request), super.getUser(request).getId());
+        ACDComposeContext ctx = new ACDComposeContext();
+        ctx.setAgentno(super.getUser(request).getId());
+        ctx.setOrgi(super.getOrgi(request));
+        acdAgentDispatcher.dequeue(ctx);
         resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
         return resp;
     }

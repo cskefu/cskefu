@@ -16,11 +16,10 @@
  */
 package com.chatopera.cc.controller.apps.service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
-import com.chatopera.cc.util.Menu;
+import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.model.AgentService;
 import com.chatopera.cc.persistence.repository.AgentServiceRepository;
+import com.chatopera.cc.util.Menu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,8 +28,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.controller.Handler;
-import com.chatopera.cc.model.AgentService;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/service")

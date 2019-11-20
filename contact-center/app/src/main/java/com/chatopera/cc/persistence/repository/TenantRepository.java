@@ -16,11 +16,10 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
+import com.chatopera.cc.model.Tenant;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.chatopera.cc.model.Tenant;
+import java.util.List;
 
 
 public interface TenantRepository extends JpaRepository<Tenant, String> {

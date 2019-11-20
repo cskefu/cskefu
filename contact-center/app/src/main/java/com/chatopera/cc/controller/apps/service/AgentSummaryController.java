@@ -16,32 +16,20 @@
  */
 package com.chatopera.cc.controller.apps.service;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
-import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.dsdata.export.ExcelExporterProcess;
+import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.model.AgentService;
+import com.chatopera.cc.model.AgentServiceSummary;
+import com.chatopera.cc.model.Contacts;
+import com.chatopera.cc.model.MetadataTable;
 import com.chatopera.cc.persistence.es.ContactsRepository;
 import com.chatopera.cc.persistence.repository.AgentServiceRepository;
+import com.chatopera.cc.persistence.repository.MetadataRepository;
 import com.chatopera.cc.persistence.repository.ServiceSummaryRepository;
 import com.chatopera.cc.persistence.repository.TagRepository;
-import com.chatopera.cc.model.AgentServiceSummary;
+import com.chatopera.cc.util.Menu;
+import com.chatopera.cc.util.dsdata.export.ExcelExporterProcess;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -53,11 +41,17 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.persistence.repository.MetadataRepository;
-import com.chatopera.cc.controller.Handler;
-import com.chatopera.cc.model.AgentService;
-import com.chatopera.cc.model.Contacts;
-import com.chatopera.cc.model.MetadataTable;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 @RequestMapping("/apps/agent/summary")

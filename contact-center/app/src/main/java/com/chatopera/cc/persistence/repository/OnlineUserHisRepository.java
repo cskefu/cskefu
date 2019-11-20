@@ -16,13 +16,12 @@
  */
 package com.chatopera.cc.persistence.repository;
 
+import com.chatopera.cc.model.OnlineUserHis;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.chatopera.cc.model.OnlineUserHis;
-import org.springframework.data.jpa.repository.Query;
 
 public interface OnlineUserHisRepository extends JpaRepository<OnlineUserHis, String> {
     OnlineUserHis findByIdAndOrgi(String paramString, String orgi);

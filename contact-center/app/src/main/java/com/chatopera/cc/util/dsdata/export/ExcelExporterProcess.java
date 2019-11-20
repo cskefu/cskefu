@@ -16,30 +16,25 @@
  */
 package com.chatopera.cc.util.dsdata.export;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.chatopera.cc.basic.MainContext;
+import com.chatopera.cc.model.Dict;
+import com.chatopera.cc.model.MetadataTable;
 import com.chatopera.cc.model.SysDic;
 import com.chatopera.cc.model.TableProperties;
+import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.*;
 
-import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
-import com.chatopera.cc.model.MetadataTable;
-import com.chatopera.cc.model.Dict;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("deprecation")
 public class ExcelExporterProcess {

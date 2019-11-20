@@ -16,14 +16,14 @@
  */
 package com.chatopera.cc.util.dsdata.process;
 
-import java.util.Date;
-import java.util.List;
-
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.persistence.es.TopicRepository;
-import com.chatopera.cc.persistence.repository.TopicItemRepository;
 import com.chatopera.cc.model.Topic;
 import com.chatopera.cc.model.TopicItem;
+import com.chatopera.cc.persistence.es.TopicRepository;
+import com.chatopera.cc.persistence.repository.TopicItemRepository;
+
+import java.util.Date;
+import java.util.List;
 
 public class TopicProcess implements JPAProcess{
 	

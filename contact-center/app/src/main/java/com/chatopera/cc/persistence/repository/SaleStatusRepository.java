@@ -16,11 +16,10 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
+import com.chatopera.cc.model.SaleStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.chatopera.cc.model.SaleStatus;
+import java.util.List;
 
 public interface SaleStatusRepository extends JpaRepository<SaleStatus, String> {
 	

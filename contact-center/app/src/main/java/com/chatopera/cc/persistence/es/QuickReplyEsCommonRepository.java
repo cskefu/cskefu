@@ -16,13 +16,12 @@
  */
 package com.chatopera.cc.persistence.es;
 
-import java.util.List;
-
+import com.chatopera.cc.model.QuickReply;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.chatopera.cc.model.QuickReply;
+import java.util.List;
 
 public interface QuickReplyEsCommonRepository {
 	

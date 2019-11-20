@@ -16,10 +16,10 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
 import com.chatopera.cc.model.QuickType;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 public interface QuickTypeRepository extends JpaRepository<QuickType, String> {
 	

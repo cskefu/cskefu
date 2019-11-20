@@ -16,25 +16,24 @@
  */
 package com.chatopera.cc.basic.resource;
 
+import com.chatopera.cc.basic.MainContext;
+import com.chatopera.cc.basic.MainUtils;
+import com.chatopera.cc.model.JobDetail;
+import com.chatopera.cc.model.MetadataTable;
+import com.chatopera.cc.persistence.impl.BatchDataProcess;
+import com.chatopera.cc.persistence.impl.ESDataExchangeImpl;
+import com.chatopera.cc.persistence.repository.MetadataRepository;
+import com.chatopera.cc.persistence.repository.ReporterRepository;
+import com.chatopera.cc.util.dsdata.DSData;
+import com.chatopera.cc.util.dsdata.DSDataEvent;
+import com.chatopera.cc.util.dsdata.ExcelImportProecess;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
-
-import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.persistence.impl.BatchDataProcess;
-import com.chatopera.cc.model.JobDetail;
-import com.chatopera.cc.basic.MainUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import com.chatopera.cc.util.dsdata.DSData;
-import com.chatopera.cc.util.dsdata.DSDataEvent;
-import com.chatopera.cc.util.dsdata.ExcelImportProecess;
-import com.chatopera.cc.persistence.impl.ESDataExchangeImpl;
-import com.chatopera.cc.persistence.repository.MetadataRepository;
-import com.chatopera.cc.persistence.repository.ReporterRepository;
-import com.chatopera.cc.model.MetadataTable;
 
 public class BatchResource extends Resource{
 

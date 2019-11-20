@@ -1,17 +1,12 @@
 package com.chatopera.cc.peer.im;
 
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.basic.MainUtils;
-import com.chatopera.cc.socketio.client.NettyClients;
 import com.chatopera.cc.peer.PeerContext;
-import com.chatopera.cc.persistence.es.ContactsRepository;
-import com.chatopera.cc.socketio.message.ChatMessage;
+import com.chatopera.cc.socketio.client.NettyClients;
 import com.chatopera.compose4j.Functional;
 import com.chatopera.compose4j.Middleware;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**

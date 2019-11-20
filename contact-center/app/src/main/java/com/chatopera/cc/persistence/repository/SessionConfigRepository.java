@@ -16,9 +16,8 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.chatopera.cc.model.SessionConfig;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SessionConfigRepository  extends JpaRepository<SessionConfig, String>
 {

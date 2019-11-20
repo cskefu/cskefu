@@ -16,14 +16,14 @@
  */
 package com.chatopera.cc.persistence.impl;
 
-import java.io.Serializable;
-import java.util.List;
-
+import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
 import com.chatopera.cc.persistence.repository.UserRepository;
-import com.chatopera.cc.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.Serializable;
+import java.util.List;
 
 @Service("userdata")
 public class UserDataExchangeImpl implements DataExchangeInterface {

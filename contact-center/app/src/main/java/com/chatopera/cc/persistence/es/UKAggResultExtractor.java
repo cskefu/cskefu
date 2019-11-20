@@ -16,9 +16,8 @@
  */
 package com.chatopera.cc.persistence.es;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.chatopera.cc.model.KbsTopic;
+import com.chatopera.cc.model.KbsTopicComment;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.histogram.InternalDateHistogram;
@@ -27,8 +26,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 
-import com.chatopera.cc.model.KbsTopic;
-import com.chatopera.cc.model.KbsTopicComment;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class UKAggResultExtractor extends UKResultMapper{

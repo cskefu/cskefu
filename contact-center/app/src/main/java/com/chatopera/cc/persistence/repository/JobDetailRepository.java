@@ -16,14 +16,14 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.Date;
-import java.util.List;
-
 import com.chatopera.cc.model.JobDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Date;
+import java.util.List;
 
 public interface JobDetailRepository extends JpaRepository<JobDetail, String> {
 	

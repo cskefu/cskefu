@@ -17,8 +17,8 @@
 package com.chatopera.cc.controller.apps;
 
 import com.chatopera.cc.basic.MainUtils;
-import com.chatopera.cc.exception.CSKefuException;
 import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.exception.CSKefuException;
 import com.chatopera.cc.model.Contacts;
 import com.chatopera.cc.model.MetadataTable;
 import com.chatopera.cc.model.PropertiesEvent;

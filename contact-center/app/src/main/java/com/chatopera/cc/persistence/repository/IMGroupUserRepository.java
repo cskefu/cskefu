@@ -16,13 +16,12 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
+import com.chatopera.cc.model.IMGroup;
 import com.chatopera.cc.model.IMGroupUser;
 import com.chatopera.cc.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.chatopera.cc.model.IMGroup;
+import java.util.List;
 
 public interface IMGroupUserRepository extends
 		JpaRepository<IMGroupUser, String> {

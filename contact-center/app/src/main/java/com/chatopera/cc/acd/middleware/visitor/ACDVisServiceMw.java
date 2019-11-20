@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package com.chatopera.cc.acd.visitor;
+package com.chatopera.cc.acd.middleware.visitor;
 
-import com.chatopera.cc.acd.ACDComposeContext;
-import com.chatopera.cc.acd.ACDMessageHelper;
 import com.chatopera.cc.acd.ACDQueueService;
+import com.chatopera.cc.acd.basic.ACDComposeContext;
+import com.chatopera.cc.acd.basic.ACDMessageHelper;
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.proxy.AgentUserProxy;
 import com.chatopera.compose4j.Functional;
 import com.chatopera.compose4j.Middleware;
 import org.apache.commons.lang.StringUtils;

@@ -23,17 +23,12 @@ import com.chatopera.cc.basic.MainContext.MessageType;
 import com.chatopera.cc.basic.MainContext.ReceiverType;
 import com.chatopera.cc.model.AgentService;
 import com.chatopera.cc.model.AgentUser;
-import com.chatopera.cc.model.AgentUserTask;
-import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.persistence.repository.AgentServiceRepository;
-import com.chatopera.cc.persistence.repository.AgentUserTaskRepository;
 import com.chatopera.cc.socketio.message.ChatMessage;
+import com.chatopera.cc.socketio.message.Message;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Date;
-import java.util.Optional;
 
 public class HumanUtils {
     private final static Logger logger = LoggerFactory.getLogger(HumanUtils.class);

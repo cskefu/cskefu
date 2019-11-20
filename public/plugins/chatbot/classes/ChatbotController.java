@@ -19,12 +19,10 @@ package com.chatopera.cc.plugins.chatbot;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.exception.CSKefuException;
 import com.chatopera.cc.model.Chatbot;
-import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.model.SNSAccount;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.ChatbotRepository;
 import com.chatopera.cc.persistence.repository.SNSAccountRepository;
-import com.chatopera.cc.proxy.OrganProxy;
 import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.SystemEnvHelper;
@@ -32,7 +30,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +38,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/apps/chatbot")

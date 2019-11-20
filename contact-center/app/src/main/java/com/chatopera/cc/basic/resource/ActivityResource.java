@@ -16,34 +16,21 @@
  */
 package com.chatopera.cc.basic.resource;
 
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.model.JobDetail;
-import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.basic.Constants;
+import com.chatopera.cc.basic.MainContext;
+import com.chatopera.cc.basic.MainUtils;
+import com.chatopera.cc.model.*;
+import com.chatopera.cc.persistence.impl.BatchDataProcess;
+import com.chatopera.cc.persistence.impl.ESDataExchangeImpl;
+import com.chatopera.cc.persistence.repository.*;
+import com.chatopera.cc.util.es.SearchTools;
+import com.chatopera.cc.util.es.UKDataBean;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageImpl;
 
-import com.chatopera.cc.util.es.SearchTools;
-import com.chatopera.cc.util.es.UKDataBean;
-import com.chatopera.cc.persistence.impl.BatchDataProcess;
-import com.chatopera.cc.persistence.impl.ESDataExchangeImpl;
-import com.chatopera.cc.persistence.repository.CallAgentRepository;
-import com.chatopera.cc.persistence.repository.UKefuCallOutFilterRepository;
-import com.chatopera.cc.persistence.repository.UKefuCallOutTaskRepository;
-import com.chatopera.cc.persistence.repository.FormFilterItemRepository;
-import com.chatopera.cc.persistence.repository.FormFilterRepository;
-import com.chatopera.cc.persistence.repository.JobDetailRepository;
-import com.chatopera.cc.persistence.repository.MetadataRepository;
-import com.chatopera.cc.model.CallAgent;
-import com.chatopera.cc.model.UKefuCallOutFilter;
-import com.chatopera.cc.model.UKefuCallOutTask;
-import com.chatopera.cc.model.FormFilter;
-import com.chatopera.cc.model.FormFilterItem;
-import com.chatopera.cc.model.MetadataTable;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ActivityResource extends Resource{
 

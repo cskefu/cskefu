@@ -16,9 +16,9 @@
  */
 package com.chatopera.cc.util;
 
-import java.util.Date;  
+import org.apache.commons.beanutils.converters.DateTimeConverter;
 
-import org.apache.commons.beanutils.converters.DateTimeConverter;  
+import java.util.Date;
   
 public class DateConverter extends DateTimeConverter {  
   

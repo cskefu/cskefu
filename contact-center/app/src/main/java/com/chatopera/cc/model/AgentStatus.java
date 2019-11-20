@@ -16,12 +16,10 @@
  */
 package com.chatopera.cc.model;
 
-import com.chatopera.cc.acd.ACDPolicyService;
+import com.chatopera.cc.acd.ACDServiceRouter;
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.basic.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -162,11 +160,12 @@ public class AgentStatus implements java.io.Serializable, Comparable<AgentStatus
 
     /**
      * 同时服务最多的访客数
+     *
      * @return
      */
     @Transient
     public int getMaxusers() {
-        SessionConfig sessionConfig = MainContext.getACDServiceRouter().getAcdPolicyService().initSessionConfig(this.orgi);
+        SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(this.orgi);
         return sessionConfig.getMaxuser();
     }
 
@@ -176,11 +175,13 @@ public class AgentStatus implements java.io.Serializable, Comparable<AgentStatus
 
     /**
      * 单次批量分配最大访客数目
+     *
      * @return
      */
     @Transient
     public int getInitmaxusers() {
-        SessionConfig sessionConfig = MainContext.getACDServiceRouter().getAcdPolicyService().initSessionConfig(this.orgi);
+        SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(
+                this.orgi);
         return sessionConfig != null ? sessionConfig.getInitmaxuser() : getMaxusers();
     }
 
@@ -223,8 +224,10 @@ public class AgentStatus implements java.io.Serializable, Comparable<AgentStatus
     @Override
     public int compareTo(AgentStatus o) {
         int retValue = 0;
-        SessionConfig sessionConfig = MainContext.getACDServiceRouter().getAcdPolicyService().initSessionConfig(this.orgi);
-        if (sessionConfig != null && !StringUtils.isBlank(sessionConfig.getDistribution()) && sessionConfig.getDistribution().equals("0")) {
+        SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(
+                this.orgi);
+        if (sessionConfig != null && !StringUtils.isBlank(
+                sessionConfig.getDistribution()) && sessionConfig.getDistribution().equals("0")) {
             if (this.getUpdatetime() != null && o.getUpdatetime() != null) {
                 retValue = (int) (this.getUpdatetime().getTime() - o.getUpdatetime().getTime());
             } else if (o.getUpdatetime() != null) {

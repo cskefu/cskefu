@@ -14,7 +14,10 @@ package com.chatopera.cc.model;
 
 import com.chatopera.cc.model.keys.OrganUserId;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**

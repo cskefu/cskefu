@@ -16,19 +16,10 @@
  */
 package com.chatopera.cc.util.dsdata;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-
+import com.chatopera.cc.basic.Constants;
+import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.model.MetadataTable;
 import com.chatopera.cc.model.TableProperties;
-import com.chatopera.cc.basic.MainUtils;
-import com.chatopera.cc.basic.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -39,6 +30,15 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class ExcelImportUtils{
 	private DecimalFormat format = new DecimalFormat("###");

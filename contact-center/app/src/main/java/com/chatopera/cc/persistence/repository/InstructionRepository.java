@@ -16,12 +16,12 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
 import com.chatopera.cc.model.Instruction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 public interface InstructionRepository  extends JpaRepository<Instruction, String>
 {

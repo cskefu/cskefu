@@ -16,9 +16,8 @@
  */
 package com.chatopera.cc.persistence.es;
 
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
-
 import com.chatopera.cc.model.Contacts;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public interface ContactsRepository extends ElasticsearchRepository<Contacts, St
 
     List<Contacts> findOneByDatastatusIsFalseAndPhoneAndOrgi(String phone, String orgi);
 
-    Contacts findOneByWluidAndWlsid(String wluid, String wlsid);
+    Contacts findOneByWluidAndWlsidAndWlcid(String wluid, String wlsid, String wlcid);
 
     List<Contacts> findByskypeidAndDatastatus(String skypeid, Boolean datastatus);
 

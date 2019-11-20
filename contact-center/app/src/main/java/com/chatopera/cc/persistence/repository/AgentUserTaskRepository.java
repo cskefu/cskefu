@@ -16,12 +16,11 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.Date;
-import java.util.List;
-
+import com.chatopera.cc.model.AgentUserTask;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.chatopera.cc.model.AgentUserTask;
+import java.util.Date;
+import java.util.List;
 
 public interface AgentUserTaskRepository  extends JpaRepository<AgentUserTask, String>{
 	

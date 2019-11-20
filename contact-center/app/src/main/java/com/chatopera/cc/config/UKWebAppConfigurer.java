@@ -16,13 +16,12 @@
  */
 package com.chatopera.cc.config;
 
+import com.chatopera.cc.interceptor.CrossInterceptorHandler;
 import com.chatopera.cc.interceptor.LogIntercreptorHandler;
 import com.chatopera.cc.interceptor.UserInterceptorHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-
-import com.chatopera.cc.interceptor.CrossInterceptorHandler;
 
 @Configuration
 public class UKWebAppConfigurer 

@@ -2,7 +2,6 @@ package com.chatopera.cc.socketio.util;
 
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.cache.Cache;
-import com.chatopera.cc.model.AgentUser;
 import com.chatopera.cc.proxy.AgentUserProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

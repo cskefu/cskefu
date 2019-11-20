@@ -16,14 +16,9 @@
  */
 package com.chatopera.cc.persistence.es;
 
-import static org.elasticsearch.index.query.QueryBuilders.termQuery;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.chatopera.cc.model.EntCustomer;
 import com.chatopera.cc.model.User;
+import com.chatopera.cc.persistence.repository.UserRepository;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -39,8 +34,12 @@ import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Repository;
 
-import com.chatopera.cc.persistence.repository.UserRepository;
-import com.chatopera.cc.model.EntCustomer;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 @Repository
 public class EntCustomerRepositoryImpl implements EntCustomerEsCommonRepository{

@@ -16,29 +16,19 @@
  */
 package com.chatopera.cc.controller.admin.system;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
 import com.chatopera.cc.basic.MainContext;
+import com.chatopera.cc.basic.MainUtils;
+import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.model.*;
+import com.chatopera.cc.persistence.hibernate.BaseService;
+import com.chatopera.cc.persistence.repository.MetadataRepository;
+import com.chatopera.cc.persistence.repository.SysDicRepository;
+import com.chatopera.cc.persistence.repository.TablePropertiesRepository;
+import com.chatopera.cc.util.CskefuList;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.metadata.DatabaseMetaDataHandler;
 import com.chatopera.cc.util.metadata.UKColumnMetadata;
 import com.chatopera.cc.util.metadata.UKTableMetaData;
-import com.chatopera.cc.persistence.hibernate.BaseService;
-import com.chatopera.cc.persistence.repository.SysDicRepository;
-import com.chatopera.cc.persistence.repository.TablePropertiesRepository;
-import com.chatopera.cc.model.SysDic;
-import com.chatopera.cc.model.TableProperties;
-import com.chatopera.cc.model.User;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
@@ -53,12 +43,16 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.basic.MainUtils;
-import com.chatopera.cc.util.CskefuList;
-import com.chatopera.cc.persistence.repository.MetadataRepository;
-import com.chatopera.cc.controller.Handler;
-import com.chatopera.cc.model.MetadataTable;
-import com.chatopera.cc.model.Dict;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/metadata")

@@ -16,9 +16,9 @@
  */
 package com.chatopera.cc.util.freeswitch.model;
 
-import java.util.Date;
-
 import com.chatopera.cc.model.Extention;
+
+import java.util.Date;
 
 public class CallCenterAgent implements java.io.Serializable{
 	/**

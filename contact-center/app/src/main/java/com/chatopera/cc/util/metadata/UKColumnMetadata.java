@@ -16,11 +16,11 @@
  */
 package com.chatopera.cc.util.metadata;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.StringTokenizer;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * @author iceworld

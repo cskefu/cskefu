@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.chatopera.cc.acd.visitor;
+package com.chatopera.cc.acd.middleware.visitor;
 
-import com.chatopera.cc.acd.ACDComposeContext;
+import com.chatopera.cc.acd.basic.ACDComposeContext;
 import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.OrganRepository;

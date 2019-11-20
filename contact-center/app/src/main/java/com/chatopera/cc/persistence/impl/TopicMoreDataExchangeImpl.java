@@ -16,15 +16,14 @@
  */
 package com.chatopera.cc.persistence.impl;
 
-import java.util.List;
-
+import com.chatopera.cc.model.TopicItem;
+import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
 import com.chatopera.cc.persistence.repository.TopicItemRepository;
+import com.chatopera.cc.util.dsdata.process.TopicProcess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
-import com.chatopera.cc.util.dsdata.process.TopicProcess;
-import com.chatopera.cc.model.TopicItem;
+import java.util.List;
 
 @Service("topicmore")
 public class TopicMoreDataExchangeImpl implements DataExchangeInterface{

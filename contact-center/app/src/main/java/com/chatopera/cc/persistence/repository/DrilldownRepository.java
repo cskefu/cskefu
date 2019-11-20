@@ -16,9 +16,8 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.chatopera.cc.model.DrillDown;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DrilldownRepository extends JpaRepository<DrillDown, String> {
 

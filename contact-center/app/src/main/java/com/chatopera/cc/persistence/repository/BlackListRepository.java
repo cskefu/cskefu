@@ -16,13 +16,13 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.chatopera.cc.model.BlackEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface BlackListRepository  extends JpaRepository<BlackEntity, String>{
 	

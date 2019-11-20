@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-package com.chatopera.cc.acd;
+package com.chatopera.cc.acd.basic;
 
+import com.chatopera.cc.acd.ACDPolicyService;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.model.AgentService;
+import com.chatopera.cc.model.AgentUser;
 import com.chatopera.cc.model.SessionConfig;
+import com.chatopera.cc.util.IP;
+import com.chatopera.cc.util.IPTools;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +35,43 @@ public class ACDMessageHelper {
 
     @Autowired
     private ACDPolicyService acdPolicyService;
+
+
+    /**
+     * 通过 AgentUser获得ComposeContext
+     *
+     * @param agentUser
+     * @param isInvite
+     * @param initiator
+     * @return
+     */
+    public static ACDComposeContext getComposeContextWithAgentUser(final AgentUser agentUser, final boolean isInvite, final String initiator) {
+        ACDComposeContext ctx = new ACDComposeContext();
+        ctx.setOnlineUserId(agentUser.getUserid());
+        ctx.setOnlineUserNickname(agentUser.getNickname());
+        ctx.setOrganid(agentUser.getSkill());
+        ctx.setOrgi(agentUser.getOrgi());
+        ctx.setChannel(agentUser.getChannel());
+        ctx.setAgentno(agentUser.getAgentno());
+        ctx.setBrowser(agentUser.getBrowser());
+        ctx.setOsname(agentUser.getOsname());
+        ctx.setAppid(agentUser.getAppid());
+        ctx.setTitle(agentUser.getTitle());
+        ctx.setSessionid(agentUser.getSessionid());
+        ctx.setUrl(agentUser.getUrl());
+        ctx.setOwnerid(agentUser.getOwner());
+
+        if (StringUtils.isNotBlank(agentUser.getIpaddr())) {
+            ctx.setIp(agentUser.getIpaddr());
+            // TODO set IP Data
+            ctx.setIpdata(IPTools.getInstance().findGeography(agentUser.getIpaddr()));
+        }
+
+        ctx.setInvite(isInvite);
+        ctx.setInitiator(initiator);
+
+        return ctx;
+    }
 
     /**
      * 通知消息内容：分配到坐席
@@ -114,6 +155,83 @@ public class ACDMessageHelper {
             agentBusyTipMsg = sessionConfig.getAgentbusymsg().replaceAll("\\{num\\}", queneTip);
         }
         return agentBusyTipMsg;
+    }
+
+
+    /**
+     * 构建WebIM分发的Context
+     *
+     * @param onlineUserId
+     * @param nickname
+     * @param orgi
+     * @param session
+     * @param appid
+     * @param ip
+     * @param osname
+     * @param browser
+     * @param headimg
+     * @param ipdata
+     * @param channel
+     * @param skill
+     * @param agent
+     * @param title
+     * @param url
+     * @param traceid
+     * @param ownerid
+     * @param isInvite
+     * @param initiator
+     * @return
+     */
+    public static ACDComposeContext getWebIMComposeContext(
+            final String onlineUserId,
+            final String nickname,
+            final String orgi,
+            final String session,
+            final String appid,
+            final String ip,
+            final String osname,
+            final String browser,
+            final String headimg,
+            final IP ipdata,
+            final String channel,
+            final String skill,
+            final String agent,
+            final String title,
+            final String url,
+            final String traceid,
+            final String ownerid,
+            final boolean isInvite,
+            final String initiator) {
+        logger.info(
+                "[enqueueVisitor] user {}, appid {}, agent {}, skill {}, nickname {}, initiator {}, isInvite {}",
+                onlineUserId,
+                appid,
+                agent,
+                skill,
+                nickname, initiator, isInvite);
+
+        // 坐席服务请求，分配 坐席
+        final ACDComposeContext ctx = new ACDComposeContext();
+        ctx.setOnlineUserId(onlineUserId);
+        ctx.setOnlineUserNickname(nickname);
+        ctx.setOrganid(skill);
+        ctx.setOrgi(orgi);
+        ctx.setChannel(channel);
+        ctx.setAgentno(agent);
+        ctx.setBrowser(browser);
+        ctx.setOsname(osname);
+        ctx.setAppid(appid);
+        ctx.setTitle(title);
+        ctx.setSessionid(session);
+        ctx.setUrl(url);
+        ctx.setOnlineUserHeadimgUrl(headimg);
+        ctx.setTraceid(traceid);
+        ctx.setOwnerid(ownerid);
+        ctx.setInitiator(initiator);
+        ctx.setIpdata(ipdata);
+        ctx.setIp(ip);
+        ctx.setInvite(isInvite);
+        return ctx;
     }
 
 }

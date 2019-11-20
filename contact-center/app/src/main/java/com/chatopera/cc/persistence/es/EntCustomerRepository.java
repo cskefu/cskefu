@@ -16,9 +16,8 @@
  */
 package com.chatopera.cc.persistence.es;
 
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
-
 import com.chatopera.cc.model.EntCustomer;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 public interface EntCustomerRepository extends  ElasticsearchRepository<EntCustomer, String> , EntCustomerEsCommonRepository {
 }

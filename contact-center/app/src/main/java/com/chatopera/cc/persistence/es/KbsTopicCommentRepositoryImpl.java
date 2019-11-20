@@ -16,10 +16,7 @@
  */
 package com.chatopera.cc.persistence.es;
 
-import static org.elasticsearch.index.query.QueryBuilders.termQuery;
-
-import java.util.List;
-
+import com.chatopera.cc.model.KbsTopicComment;
 import com.chatopera.cc.model.Topic;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
@@ -35,7 +32,9 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Component;
 
-import com.chatopera.cc.model.KbsTopicComment;
+import java.util.List;
+
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 @Component
 public class KbsTopicCommentRepositoryImpl implements KbsTopicCommentEsCommonRepository{

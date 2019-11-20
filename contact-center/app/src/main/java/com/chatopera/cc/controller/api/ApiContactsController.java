@@ -17,12 +17,13 @@
 package com.chatopera.cc.controller.api;
 
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.exception.CSKefuException;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.controller.api.request.RestUtils;
-import com.chatopera.cc.model.*;
+import com.chatopera.cc.exception.CSKefuException;
+import com.chatopera.cc.model.AgentUser;
+import com.chatopera.cc.model.Contacts;
+import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.es.ContactsRepository;
-import com.chatopera.cc.persistence.repository.SNSAccountRepository;
 import com.chatopera.cc.proxy.AgentUserProxy;
 import com.chatopera.cc.proxy.ContactsProxy;
 import com.chatopera.cc.util.Menu;

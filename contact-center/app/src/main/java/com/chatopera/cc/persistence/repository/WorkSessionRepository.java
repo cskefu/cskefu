@@ -16,14 +16,13 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
+import com.chatopera.cc.model.WorkSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.chatopera.cc.model.WorkSession;
+import java.util.List;
 
 public interface WorkSessionRepository extends JpaRepository<WorkSession, String> {
 	

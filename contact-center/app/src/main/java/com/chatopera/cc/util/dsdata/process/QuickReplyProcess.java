@@ -16,8 +16,8 @@
  */
 package com.chatopera.cc.util.dsdata.process;
 
-import com.chatopera.cc.persistence.es.QuickReplyRepository;
 import com.chatopera.cc.model.QuickReply;
+import com.chatopera.cc.persistence.es.QuickReplyRepository;
 
 public class QuickReplyProcess implements JPAProcess{
 	

@@ -15,8 +15,8 @@
  */
 package com.chatopera.cc.schedule;
 
+import com.chatopera.cc.acd.ACDAgentService;
 import com.chatopera.cc.acd.ACDPolicyService;
-import com.chatopera.cc.acd.ACDServiceRouter;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
@@ -54,7 +54,7 @@ public class WebIMTask {
     private ACDPolicyService acdPolicyService;
 
     @Autowired
-    private ACDServiceRouter acdServiceRouter;
+    private ACDAgentService acdAgentService;
 
     @Autowired
     private AgentUserTaskRepository agentUserTaskRes;
@@ -110,7 +110,7 @@ public class WebIMTask {
                                             sessionConfig.getServicename(),
                                             p, agentStatus, task);
                                     try {
-                                        acdServiceRouter.serviceFinish(p, task.getOrgi());
+                                        acdAgentService.finishAgentService(p, task.getOrgi());
                                     } catch (Exception e) {
                                         logger.warn("[task] exception: ", e);
                                     }
@@ -136,7 +136,7 @@ public class WebIMTask {
                                         sessionConfig, sessionConfig.getRetimeoutmsg(), agentStatus.getUsername(),
                                         p, agentStatus, task);
                                 try {
-                                    acdServiceRouter.serviceFinish(p, task.getOrgi());
+                                    acdAgentService.finishAgentService(p, task.getOrgi());
                                 } catch (Exception e) {
                                     logger.warn("[task] exception: ", e);
                                 }
@@ -158,7 +158,7 @@ public class WebIMTask {
                                     sessionConfig, sessionConfig.getQuenetimeoutmsg(), sessionConfig.getServicename(),
                                     p, null, task);
                             try {
-                                acdServiceRouter.serviceFinish(p, task.getOrgi());
+                                acdAgentService.finishAgentService(p, task.getOrgi());
                             } catch (Exception e) {
                                 logger.warn("[task] exception: ", e);
                             }

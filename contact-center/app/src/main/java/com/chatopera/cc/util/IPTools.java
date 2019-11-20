@@ -16,9 +16,7 @@
  */
 package com.chatopera.cc.util;
 
-import java.io.File;
-import java.io.IOException;
-
+import com.chatopera.cc.basic.MainContext;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lionsoul.ip2region.DataBlock;
@@ -26,7 +24,8 @@ import org.lionsoul.ip2region.DbConfig;
 import org.lionsoul.ip2region.DbMakerConfigException;
 import org.lionsoul.ip2region.DbSearcher;
 
-import com.chatopera.cc.basic.MainContext;
+import java.io.File;
+import java.io.IOException;
 
 public class IPTools {
 	private String IP_DATA_PATH = "WEB-INF/data/ip/ip2region.db";

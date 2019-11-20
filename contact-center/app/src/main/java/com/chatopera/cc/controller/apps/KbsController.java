@@ -17,23 +17,17 @@
 
 package com.chatopera.cc.controller.apps;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.persistence.es.KbsTopicRepository;
-import com.chatopera.cc.persistence.repository.AttachmentRepository;
-import com.chatopera.cc.persistence.repository.KbsTypeRepository;
-import com.chatopera.cc.persistence.repository.TagRepository;
+import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.AttachmentFile;
 import com.chatopera.cc.model.KbsTopic;
 import com.chatopera.cc.model.KbsType;
+import com.chatopera.cc.persistence.es.KbsTopicRepository;
+import com.chatopera.cc.persistence.repository.AttachmentRepository;
+import com.chatopera.cc.persistence.repository.KbsTypeRepository;
+import com.chatopera.cc.persistence.repository.TagRepository;
+import com.chatopera.cc.util.Menu;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +39,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.basic.MainUtils;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 
 @Controller
 @RequestMapping({"/apps/kbs"})

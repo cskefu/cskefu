@@ -16,6 +16,7 @@
  */
 package com.chatopera.cc.config;
 
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
@@ -26,7 +27,6 @@ import com.chatopera.cc.persistence.repository.BlackListRepository;
 import com.chatopera.cc.persistence.repository.SysDicRepository;
 import com.chatopera.cc.persistence.repository.SystemConfigRepository;
 import com.chatopera.cc.persistence.repository.TablePropertiesRepository;
-import com.chatopera.cc.basic.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

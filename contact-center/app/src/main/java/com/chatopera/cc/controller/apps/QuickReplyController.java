@@ -16,35 +16,22 @@
  */
 package com.chatopera.cc.controller.apps;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
-import com.chatopera.cc.basic.Constants;
+import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.model.MetadataTable;
+import com.chatopera.cc.model.QuickReply;
+import com.chatopera.cc.persistence.es.QuickReplyRepository;
+import com.chatopera.cc.persistence.repository.MetadataRepository;
+import com.chatopera.cc.persistence.repository.QuickTypeRepository;
+import com.chatopera.cc.persistence.repository.ReporterRepository;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.dsdata.DSData;
 import com.chatopera.cc.util.dsdata.DSDataEvent;
 import com.chatopera.cc.util.dsdata.ExcelImportProecess;
 import com.chatopera.cc.util.dsdata.export.ExcelExporterProcess;
 import com.chatopera.cc.util.dsdata.process.QuickReplyProcess;
-import com.chatopera.cc.persistence.es.QuickReplyRepository;
-import com.chatopera.cc.persistence.repository.MetadataRepository;
-import com.chatopera.cc.persistence.repository.QuickTypeRepository;
-import com.chatopera.cc.persistence.repository.ReporterRepository;
-import com.chatopera.cc.controller.Handler;
-import com.chatopera.cc.model.MetadataTable;
-import com.chatopera.cc.model.QuickReply;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +44,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 @RequestMapping("/setting/quickreply")

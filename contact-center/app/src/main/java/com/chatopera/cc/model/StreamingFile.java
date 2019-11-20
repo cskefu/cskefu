@@ -19,9 +19,9 @@ package com.chatopera.cc.model;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Proxy;
 
-import java.sql.Blob;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.sql.Blob;
 
 @Entity
 @Table(name = "cs_stream_file")

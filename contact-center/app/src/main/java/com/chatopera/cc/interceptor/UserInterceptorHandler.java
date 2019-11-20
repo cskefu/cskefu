@@ -16,6 +16,7 @@
  */
 package com.chatopera.cc.interceptor;
 
+import com.chatopera.cc.acd.ACDServiceRouter;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
@@ -126,7 +127,7 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
             if (user != null) {
                 view.addObject(
                         "agentStatusReport",
-                        MainContext.getACDServiceRouter().getAcdWorkMonitor().getAgentReport(user.getOrgi()));
+                        ACDServiceRouter.getAcdWorkMonitor().getAgentReport(user.getOrgi()));
             }
             /**
              * WebIM共享用户

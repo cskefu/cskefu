@@ -16,11 +16,10 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
+import com.chatopera.cc.model.Secret;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.chatopera.cc.model.Secret;
+import java.util.List;
 
 public interface SecretRepository  extends JpaRepository<Secret, String>{
 	List<Secret> findByOrgi(String orgi);

@@ -16,9 +16,8 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.chatopera.cc.model.CallMonitorPerformance;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 
 /*

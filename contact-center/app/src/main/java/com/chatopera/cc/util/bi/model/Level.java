@@ -17,12 +17,11 @@
 
 package com.chatopera.cc.util.bi.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.chatopera.cc.basic.MainUtils;
 import org.apache.commons.lang.StringUtils;
 
-import com.chatopera.cc.basic.MainUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Level implements java.io.Serializable{
 	/**

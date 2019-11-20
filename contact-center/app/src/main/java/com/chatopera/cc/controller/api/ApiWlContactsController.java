@@ -76,8 +76,8 @@ public class ApiWlContactsController extends Handler {
             User user = super.getUser(request);
             contactsList = contactsRes.findByCreaterAndSharesAndOrgi(
                     user.getId(), user.getId(), super.getOrgi(request), false, q, new PageRequest(super.getP(request),
-                                                                                                  super.getPs(
-                                                                                                          request)));
+                            super.getPs(
+                                    request)));
         } else {
             contactsList = contactsRes.findByOrgi(
                     super.getOrgi(request), false, q, new PageRequest(super.getP(request), super.getPs(request)));
@@ -119,7 +119,7 @@ public class ApiWlContactsController extends Handler {
 
     /**
      * 创建/更新联系人
-     * 通过UID和SID唯一确定一个联系人
+     * 通过UID和SID和CID唯一确定一个联系人
      *
      * @param creator
      * @param orgi
@@ -135,7 +135,8 @@ public class ApiWlContactsController extends Handler {
         if (j.has("uid") && j.has("sid")) {
             final String uid = j.get("uid").getAsString();
             final String sid = j.get("sid").getAsString();
-            Contacts record = contactsRes.findOneByWluidAndWlsid(uid, sid);
+            final String cid = j.get("cid").getAsString();
+            Contacts record = contactsRes.findOneByWluidAndWlsidAndWlcid(uid, sid, cid);
             boolean isNew = false;
             if (record == null) {
                 // create new obj

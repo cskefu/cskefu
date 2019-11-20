@@ -17,11 +17,10 @@
 package com.chatopera.cc.persistence.repository;
 
 
-import java.util.List;
-
+import com.chatopera.cc.model.DataDic;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.chatopera.cc.model.DataDic;
+import java.util.List;
 
 public interface DataDicRepository extends JpaRepository<DataDic, String>{
 

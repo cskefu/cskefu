@@ -16,36 +16,24 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.chatopera.cc.basic.Constants;
-import com.chatopera.cc.util.bi.model.ValueData;
-import com.chatopera.cc.model.ColumnProperties;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
 import com.chatopera.cc.basic.MainUtils;
+import com.chatopera.cc.model.ColumnProperties;
 import com.chatopera.cc.util.bi.CubeReportData;
 import com.chatopera.cc.util.bi.model.FirstTitle;
 import com.chatopera.cc.util.bi.model.Level;
-
+import com.chatopera.cc.util.bi.model.ValueData;
 import freemarker.template.TemplateException;
-import mondrian.olap.Axis;
-import mondrian.olap.Cell;
-import mondrian.olap.Connection;
-import mondrian.olap.Member;
-import mondrian.olap.Position;
-import mondrian.olap.Query;
-import mondrian.olap.Result;
+import mondrian.olap.*;
 import mondrian.rolap.RolapCubeLevel;
 import mondrian.rolap.RolapLevel;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.*;
 
 public class CubeService {
 	private DataSourceService dataSource ;

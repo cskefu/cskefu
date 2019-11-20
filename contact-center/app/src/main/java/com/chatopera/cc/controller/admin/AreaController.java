@@ -16,27 +16,25 @@
  */
 package com.chatopera.cc.controller.admin;
 
-import java.io.IOException;
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
-import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.basic.Constants;
+import com.chatopera.cc.basic.MainUtils;
+import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.model.AreaType;
+import com.chatopera.cc.model.Dict;
+import com.chatopera.cc.model.SysDic;
+import com.chatopera.cc.persistence.repository.AreaTypeRepository;
+import com.chatopera.cc.persistence.repository.SysDicRepository;
+import com.chatopera.cc.util.Menu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.persistence.repository.AreaTypeRepository;
-import com.chatopera.cc.persistence.repository.SysDicRepository;
-import com.chatopera.cc.controller.Handler;
-import com.chatopera.cc.model.AreaType;
-import com.chatopera.cc.model.SysDic;
-import com.chatopera.cc.model.Dict;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.Date;
 
 /**
  *

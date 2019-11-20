@@ -16,11 +16,10 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
+import com.chatopera.cc.model.TopicItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.chatopera.cc.model.TopicItem;
+import java.util.List;
 
 public interface TopicItemRepository extends JpaRepository<TopicItem, String> {
 	List<TopicItem> findByTopicid(String topicid);

@@ -16,13 +16,13 @@
  */
 package com.chatopera.cc.util.dsdata;
 
-import java.io.File;
-
 import com.chatopera.cc.model.JobDetail;
-import com.chatopera.cc.model.User;
-import com.chatopera.cc.util.dsdata.process.JPAProcess;
 import com.chatopera.cc.model.MetadataTable;
 import com.chatopera.cc.model.Reporter;
+import com.chatopera.cc.model.User;
+import com.chatopera.cc.util.dsdata.process.JPAProcess;
+
+import java.io.File;
 
 public class DSData {
 	/**

@@ -16,10 +16,10 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
 import com.chatopera.cc.model.ReportModel;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 public interface ReportModelRepository extends JpaRepository<ReportModel, String> {
 	ReportModel findByIdAndOrgi(String id, String orgi);

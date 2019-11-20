@@ -15,6 +15,7 @@
  */
 package com.chatopera.cc.plugins.chatbot;
 
+import com.chatopera.cc.acd.ACDServiceRouter;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
@@ -208,7 +209,7 @@ public class ChatbotEventHandler {
                 agentUser.setCity(onlineUser.getCity());
                 agentUser.setProvince(onlineUser.getProvince());
                 agentUser.setCountry(onlineUser.getCountry());
-                AgentService agentService = MainContext.getACDServiceRouter().getAcdChatbotService().processChatbotService(
+                AgentService agentService = ACDServiceRouter.getAcdChatbotService().processChatbotService(
                         invite != null ? invite.getAiname() : "机器人客服", agentUser, orgi);
                 agentUser.setAgentserviceid(agentService.getId());
 
@@ -235,7 +236,7 @@ public class ChatbotEventHandler {
             OnlineUser onlineUser = MainContext.getCache().findOneOnlineUserByUserIdAndOrgi(user, orgi);
 
             MainContext.getCache().findOneAgentUserByUserIdAndOrgi(user, orgi).ifPresent(p -> {
-                MainContext.getACDServiceRouter().getAcdChatbotService().processChatbotService(null, p, orgi);
+                ACDServiceRouter.getAcdChatbotService().processChatbotService(null, p, orgi);
 
                 MainContext.getCache().deleteAgentUserByUserIdAndOrgi(p, orgi);
                 MainContext.getCache().deleteOnlineUserByIdAndOrgi(user, orgi);

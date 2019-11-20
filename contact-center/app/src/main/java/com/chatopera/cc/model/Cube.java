@@ -16,20 +16,13 @@
  */
 package com.chatopera.cc.model;
 
+import com.chatopera.cc.basic.MainUtils;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.hibernate.annotations.GenericGenerator;
-
-import com.chatopera.cc.basic.MainUtils;
 @Entity
 @Table(name = "uk_cube")
 @org.hibernate.annotations.Proxy(lazy = false)

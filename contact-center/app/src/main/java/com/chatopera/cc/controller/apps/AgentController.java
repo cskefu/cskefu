@@ -17,8 +17,8 @@
  package com.chatopera.cc.controller.apps;
 
  import com.alibaba.fastjson.JSONObject;
+ import com.chatopera.cc.acd.ACDAgentService;
  import com.chatopera.cc.acd.ACDPolicyService;
- import com.chatopera.cc.acd.ACDServiceRouter;
  import com.chatopera.cc.acd.ACDWorkMonitor;
  import com.chatopera.cc.activemq.BrokerPublisher;
  import com.chatopera.cc.basic.Constants;
@@ -81,7 +81,7 @@
      private ACDPolicyService acdPolicyService;
 
      @Autowired
-     private ACDServiceRouter acdServiceRouter;
+     private ACDAgentService acdAgentService;
 
      @Autowired
      private ContactsRepository contactsRes;
@@ -170,6 +170,8 @@
      @Autowired
      private BrokerPublisher brokerPublisher;
 
+     @Autowired
+     private AgentStatusProxy agentStatusProxy;
 
      @Autowired
      private UserProxy userProxy;
@@ -542,16 +544,16 @@
          agentProxy.ready(logined, agentStatus, false);
 
          // 为该坐席分配访客
-         acdServiceRouter.allotVisitors(agentStatus.getAgentno(), orgi);
+         acdAgentService.assignVisitors(agentStatus.getAgentno(), orgi);
          acdWorkMonitor.recordAgentStatus(agentStatus.getAgentno(),
-                                                agentStatus.getUsername(),
-                                                agentStatus.getAgentno(),
-                                                logined.isAdmin(), // 0代表admin
-                                                agentStatus.getAgentno(),
-                                                MainContext.AgentStatusEnum.NOTREADY.toString(),
-                                                MainContext.AgentStatusEnum.READY.toString(),
-                                                MainContext.AgentWorkType.MEIDIACHAT.toString(),
-                                                orgi, null);
+                                          agentStatus.getUsername(),
+                                          agentStatus.getAgentno(),
+                                          logined.isAdmin(), // 0代表admin
+                                          agentStatus.getAgentno(),
+                                          MainContext.AgentStatusEnum.NOTREADY.toString(),
+                                          MainContext.AgentStatusEnum.READY.toString(),
+                                          MainContext.AgentWorkType.MEIDIACHAT.toString(),
+                                          orgi, null);
 
          return request(super.createRequestPageTempletResponse("/public/success"));
      }
@@ -580,14 +582,14 @@
          agentStatusRes.save(agentStatus);
 
          acdWorkMonitor.recordAgentStatus(agentStatus.getAgentno(),
-                                                agentStatus.getUsername(),
-                                                agentStatus.getAgentno(),
-                                                logined.isAdmin(), // 0代表admin
-                                                agentStatus.getAgentno(),
-                                                MainContext.AgentStatusEnum.READY.toString(),
-                                                MainContext.AgentStatusEnum.NOTREADY.toString(),
-                                                MainContext.AgentWorkType.MEIDIACHAT.toString(),
-                                                orgi, null);
+                                          agentStatus.getUsername(),
+                                          agentStatus.getAgentno(),
+                                          logined.isAdmin(), // 0代表admin
+                                          agentStatus.getAgentno(),
+                                          MainContext.AgentStatusEnum.READY.toString(),
+                                          MainContext.AgentStatusEnum.NOTREADY.toString(),
+                                          MainContext.AgentWorkType.MEIDIACHAT.toString(),
+                                          orgi, null);
 
          return request(super.createRequestPageTempletResponse("/public/success"));
      }
@@ -622,7 +624,7 @@
          cache.putAgentStatusByOrgi(agentStatus, super.getOrgi(request));
          agentStatusRes.save(agentStatus);
 
-         agentUserProxy.broadcastAgentsStatus(super.getOrgi(request), "agent", "busy", logined.getId());
+         agentStatusProxy.broadcastAgentsStatus(super.getOrgi(request), "agent", "busy", logined.getId());
 
          return request(super.createRequestPageTempletResponse("/public/success"));
      }
@@ -666,7 +668,7 @@
          agentStatusRes.save(agentStatus);
 
          // 重新分配访客给坐席
-         acdServiceRouter.allotVisitors(agentStatus.getAgentno(), super.getOrgi(request));
+         acdAgentService.assignVisitors(agentStatus.getAgentno(), super.getOrgi(request));
 
          return request(super.createRequestPageTempletResponse("/public/success"));
      }
@@ -681,7 +683,7 @@
          List<AgentService> agentServiceList = new ArrayList<AgentService>();
          for (AgentUser agentUser : agentUserList) {
              if (agentUser != null && super.getUser(request).getId().equals(agentUser.getAgentno())) {
-                 acdServiceRouter.deleteAgentUser(agentUser, orgi);
+                 acdAgentService.finishAgentUser(agentUser, orgi);
                  AgentService agentService = agentServiceRes.findByIdAndOrgi(agentUser.getAgentserviceid(), orgi);
                  if (agentService != null) {
                      agentService.setStatus(MainContext.AgentUserStatusEnum.END.toString());
@@ -718,7 +720,7 @@
                      logined.getId(), agentUser.getAgentno()) || logined.isAdmin())) {
                  // 删除访客-坐席关联关系，包括缓存
                  try {
-                     acdServiceRouter.deleteAgentUser(agentUser, orgi);
+                     acdAgentService.finishAgentUser(agentUser, orgi);
                  } catch (CSKefuException e) {
                      // 未能删除成功
                      logger.error("[end]", e);

@@ -16,18 +16,13 @@
  */
 package com.chatopera.cc.controller.admin.config;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.persistence.repository.SystemMessageRepository;
+import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.controller.Handler;
-import com.chatopera.cc.model.SystemMessage;
 import com.chatopera.cc.model.Dict;
+import com.chatopera.cc.model.SystemMessage;
+import com.chatopera.cc.persistence.repository.SystemMessageRepository;
+import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -36,7 +31,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.basic.MainUtils;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 @Controller
 @RequestMapping("/admin")

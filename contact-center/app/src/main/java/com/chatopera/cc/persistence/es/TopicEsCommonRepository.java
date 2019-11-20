@@ -16,11 +16,11 @@
  */
 package com.chatopera.cc.persistence.es;
 
-import java.util.List;
-
 import com.chatopera.cc.model.Topic;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface TopicEsCommonRepository {
 	Page<Topic> getTopicByCateAndOrgi(String cate, String orgi, String q, int p, int ps) ;

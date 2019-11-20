@@ -17,10 +17,10 @@
 package com.chatopera.cc.util.es;
 
 
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.model.MetadataTable;
 import com.chatopera.cc.model.TableProperties;
-import com.chatopera.cc.basic.Constants;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.slf4j.Logger;

@@ -16,7 +16,6 @@
 package com.chatopera.cc.proxy;
 
 import com.chatopera.cc.acd.ACDPolicyService;
-import com.chatopera.cc.acd.ACDWorkMonitor;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
@@ -26,7 +25,6 @@ import com.chatopera.cc.peer.PeerSyncIM;
 import com.chatopera.cc.persistence.es.ContactsRepository;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.socketio.message.Message;
-import com.corundumstudio.socketio.SocketIONamespace;
 import freemarker.template.TemplateException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -61,13 +59,6 @@ public class AgentUserProxy {
 
     // 转接聊天
     private final static String AUTH_KEY_AUDIT_TRANS = "A13_A01_A03";
-
-
-    @Autowired
-    private ACDWorkMonitor acdWorkMonitor;
-
-    @Autowired
-    private AgentReportRepository agentReportRes;
 
     @Autowired
     private ACDPolicyService acdPolicyService;
@@ -110,6 +101,7 @@ public class AgentUserProxy {
 
     @Autowired
     private PeerSyncIM peerSyncIM;
+
 
     /**
      * 与联系人主动聊天前查找获取AgentUser
@@ -491,28 +483,6 @@ public class AgentUserProxy {
         agentStatus.setUsers(users);
         agentStatus.setUpdatetime(new Date());
         agentStatusRes.save(agentStatus);
-    }
-
-    /**
-     * 向所有坐席client通知坐席状态变化
-     *
-     * @param orgi
-     * @param worktype
-     * @param workresult
-     * @param dataid
-     */
-    public void broadcastAgentsStatus(final String orgi, final String worktype, final String workresult, final String dataid) {
-        /**
-         * 坐席状态改变，通知监测服务
-         */
-        AgentReport agentReport = acdWorkMonitor.getAgentReport(orgi);
-        agentReport.setOrgi(orgi);
-        agentReport.setWorktype(worktype);
-        agentReport.setWorkresult(workresult);
-        agentReport.setDataid(dataid);
-        agentReportRes.save(agentReport);
-        MainContext.getContext().getBean("agentNamespace", SocketIONamespace.class).getBroadcastOperations().sendEvent(
-                "status", agentReport);
     }
 
     /**

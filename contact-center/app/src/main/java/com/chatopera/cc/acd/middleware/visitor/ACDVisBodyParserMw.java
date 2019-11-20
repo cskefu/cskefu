@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.chatopera.cc.acd.visitor;
+package com.chatopera.cc.acd.middleware.visitor;
 
-import com.chatopera.cc.acd.ACDComposeContext;
-import com.chatopera.cc.acd.ACDMessageHelper;
 import com.chatopera.cc.acd.ACDQueueService;
+import com.chatopera.cc.acd.basic.ACDComposeContext;
+import com.chatopera.cc.acd.basic.ACDMessageHelper;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.AgentUser;
@@ -26,6 +26,7 @@ import com.chatopera.cc.model.AgentUserContacts;
 import com.chatopera.cc.model.Contacts;
 import com.chatopera.cc.persistence.es.ContactsRepository;
 import com.chatopera.cc.persistence.repository.AgentUserContactsRepository;
+import com.chatopera.cc.proxy.AgentStatusProxy;
 import com.chatopera.cc.proxy.AgentUserProxy;
 import com.chatopera.compose4j.Functional;
 import com.chatopera.compose4j.Middleware;
@@ -53,6 +54,9 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
 
     @Autowired
     private AgentUserProxy agentUserProxy;
+
+    @Autowired
+    private AgentStatusProxy agentStatusProxy;
 
     @Autowired
     private ACDQueueService acdQueueService;
@@ -163,7 +167,7 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
 //                                logger.info("[handle] agent user id is null.");
 //                            }
 
-                    agentUserProxy.broadcastAgentsStatus(
+                    agentStatusProxy.broadcastAgentsStatus(
                             ctx.getOrgi(), "user", MainContext.AgentUserStatusEnum.INSERVICE.toString(),
                             ctx.getAgentUser().getId());
                     break;
@@ -189,7 +193,7 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
                                 ctx.getOrgi()));
                     }
 
-                    agentUserProxy.broadcastAgentsStatus(
+                    agentStatusProxy.broadcastAgentsStatus(
                             ctx.getOrgi(), "user", MainContext.AgentUserStatusEnum.INQUENE.toString(),
                             ctx.getAgentUser().getId());
 

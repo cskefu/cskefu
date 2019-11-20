@@ -16,16 +16,15 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
+import com.chatopera.cc.model.OnlineUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.chatopera.cc.model.OnlineUser;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 public interface OnlineUserRepository extends JpaRepository<OnlineUser, String> {
     OnlineUser findBySessionidAndOrgi(String paramString, String orgi);

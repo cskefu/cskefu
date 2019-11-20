@@ -16,15 +16,14 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
 import com.chatopera.cc.model.UKefuCallOutNames;
+import com.chatopera.cc.model.UKefuCallOutTask;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.chatopera.cc.model.UKefuCallOutTask;
+import java.util.List;
 
 public interface UKefuCallOutNamesRepository extends JpaRepository<UKefuCallOutNames, String> {
 	

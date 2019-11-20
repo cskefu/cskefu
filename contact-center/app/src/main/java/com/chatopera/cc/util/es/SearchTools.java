@@ -16,13 +16,12 @@
  */
 package com.chatopera.cc.util.es;
 
-import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termQuery;
-
-import java.util.List;
-
-import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.Constants;
+import com.chatopera.cc.basic.MainContext;
+import com.chatopera.cc.model.FormFilter;
+import com.chatopera.cc.model.FormFilterItem;
+import com.chatopera.cc.model.MetadataTable;
+import com.chatopera.cc.persistence.impl.ESDataExchangeImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -32,10 +31,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import com.chatopera.cc.persistence.impl.ESDataExchangeImpl;
-import com.chatopera.cc.model.FormFilter;
-import com.chatopera.cc.model.FormFilterItem;
-import com.chatopera.cc.model.MetadataTable;
+import java.util.List;
+
+import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 public class SearchTools {
 	

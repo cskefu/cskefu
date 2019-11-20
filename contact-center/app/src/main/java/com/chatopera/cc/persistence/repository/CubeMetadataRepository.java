@@ -16,12 +16,11 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.chatopera.cc.model.CubeMetadata;
 import com.chatopera.cc.model.MetadataTable;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 public interface CubeMetadataRepository extends JpaRepository<CubeMetadata, String> {
 

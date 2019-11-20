@@ -17,14 +17,14 @@
 package com.chatopera.cc.plugins.chatbot;
 
 import com.chatopera.bot.exception.ChatbotException;
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.api.request.RestUtils;
-import com.chatopera.cc.socketio.message.ChatMessage;
 import com.chatopera.cc.model.Chatbot;
 import com.chatopera.cc.persistence.repository.AgentUserRepository;
 import com.chatopera.cc.persistence.repository.ChatbotRepository;
-import com.chatopera.cc.basic.Constants;
+import com.chatopera.cc.socketio.message.ChatMessage;
 import com.chatopera.cc.util.SerializeUtil;
 import com.chatopera.cc.util.SystemEnvHelper;
 import org.json.JSONException;
@@ -32,7 +32,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 

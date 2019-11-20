@@ -16,13 +16,13 @@
  */
 package com.chatopera.cc.controller.apps.service;
 
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.Dict;
 import com.chatopera.cc.model.SysDic;
 import com.chatopera.cc.persistence.repository.CubeService;
 import com.chatopera.cc.persistence.repository.DataSourceService;
-import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.proxy.OnlineUserProxy;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.bi.ReportData;

@@ -16,11 +16,10 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
+import com.chatopera.cc.model.Template;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.chatopera.cc.model.Template;
+import java.util.List;
 
 public interface TemplateRepository extends JpaRepository<Template, String> {
 	

@@ -17,25 +17,23 @@
 
 package com.chatopera.cc.controller.apps;
 
-import java.text.ParseException;
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
 import com.chatopera.cc.basic.MainUtils;
-import com.chatopera.cc.util.Menu;
+import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.JobDetail;
 import com.chatopera.cc.model.JobTask;
+import com.chatopera.cc.persistence.repository.JobDetailRepository;
+import com.chatopera.cc.util.Menu;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.chatopera.cc.persistence.repository.JobDetailRepository;
-import com.chatopera.cc.controller.Handler;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.text.ParseException;
+import java.util.Date;
 
 
 @Controller

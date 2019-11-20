@@ -16,9 +16,8 @@
  */
 package com.chatopera.cc.persistence.es;
 
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
-
 import com.chatopera.cc.model.KbsTopicComment;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 public interface KbsTopicCommentRepository extends  ElasticsearchRepository<KbsTopicComment, String> , KbsTopicCommentEsCommonRepository {
 }

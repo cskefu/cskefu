@@ -70,6 +70,9 @@ public class Message extends AbstractContext {
     private String filename;             // 文件名
     private int filesize;                // 文件大小
 
+    // boolean 处理结果
+    private boolean isResolved;          // 该请求是否被正常处理
+
     private List<OtherMessageItem> suggest;
 
     public String getId() {
@@ -286,5 +289,13 @@ public class Message extends AbstractContext {
 
     public void setAgentserviceid(String agentserviceid) {
         this.agentserviceid = agentserviceid;
+    }
+
+    public boolean isResolved() {
+        return isResolved;
+    }
+
+    public void setResolved(boolean resolved) {
+        isResolved = resolved;
     }
 }

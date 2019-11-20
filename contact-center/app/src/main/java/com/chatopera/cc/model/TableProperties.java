@@ -17,14 +17,9 @@
 package com.chatopera.cc.model;
 
 
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 
 /**
  * @author jaddy0302 Rivulet TableProperties.java 2010-3-22

@@ -16,15 +16,15 @@
  */
 package com.chatopera.cc.controller.admin.system;
 
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.model.Dict;
 import com.chatopera.cc.model.SysDic;
 import com.chatopera.cc.model.Template;
-import com.chatopera.cc.model.Dict;
 import com.chatopera.cc.persistence.repository.SysDicRepository;
 import com.chatopera.cc.persistence.repository.TemplateRepository;
-import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -16,16 +16,12 @@
  */
 package com.chatopera.cc.util.metadata;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import org.hibernate.annotations.common.util.StringHelper;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
-import org.hibernate.annotations.common.util.StringHelper;
 
 public class UKDatabaseMetadata{
 	private Connection connection ;

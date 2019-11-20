@@ -16,11 +16,11 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
 import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.model.OrganRole;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 public interface OrganRoleRepository  extends JpaRepository<OrganRole, String>
 {

@@ -16,15 +16,14 @@
  */
 package com.chatopera.cc.persistence.impl;
 
-import java.io.Serializable;
-import java.util.List;
-
-import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
 import com.chatopera.cc.model.QuickType;
+import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
+import com.chatopera.cc.persistence.repository.QuickTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.chatopera.cc.persistence.repository.QuickTypeRepository;
+import java.io.Serializable;
+import java.util.List;
 
 @Service("quicktypedata")
 public class QuickTypeDataExchangeImpl implements DataExchangeInterface {

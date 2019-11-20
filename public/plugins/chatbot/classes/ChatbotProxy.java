@@ -16,22 +16,21 @@
 package com.chatopera.cc.plugins.chatbot;
 
 import com.chatopera.cc.activemq.BrokerPublisher;
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.cache.Cache;
-import com.chatopera.cc.socketio.client.NettyClients;
-import com.chatopera.cc.socketio.message.ChatMessage;
 import com.chatopera.cc.model.Chatbot;
-import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.persistence.repository.ChatMessageRepository;
 import com.chatopera.cc.persistence.repository.ChatbotRepository;
-import com.chatopera.cc.basic.Constants;
+import com.chatopera.cc.socketio.client.NettyClients;
+import com.chatopera.cc.socketio.message.ChatMessage;
+import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.util.SerializeUtil;
 import com.chatopera.cc.util.SystemEnvHelper;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component

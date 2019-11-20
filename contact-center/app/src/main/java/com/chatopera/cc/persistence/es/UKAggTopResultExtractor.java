@@ -16,9 +16,7 @@
  */
 package com.chatopera.cc.persistence.es;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.chatopera.cc.model.UKAgg;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
@@ -29,7 +27,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 
-import com.chatopera.cc.model.UKAgg;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class UKAggTopResultExtractor extends UKResultMapper{

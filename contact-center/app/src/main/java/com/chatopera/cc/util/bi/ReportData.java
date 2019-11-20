@@ -16,16 +16,15 @@
  */
 package com.chatopera.cc.util.bi;
 
+import com.chatopera.cc.util.bi.model.Level;
+import com.chatopera.cc.util.bi.model.RequestData;
+import com.chatopera.cc.util.bi.model.ValueData;
+import org.apache.lucene.queryparser.flexible.core.nodes.PathQueryNode.QueryText;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.lucene.queryparser.flexible.core.nodes.PathQueryNode.QueryText;
-
-import com.chatopera.cc.util.bi.model.Level;
-import com.chatopera.cc.util.bi.model.RequestData;
-import com.chatopera.cc.util.bi.model.ValueData;
 
 
 public interface ReportData extends Serializable{

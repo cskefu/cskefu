@@ -16,11 +16,10 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
+import com.chatopera.cc.model.AiSNSAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.chatopera.cc.model.AiSNSAccount;
+import java.util.List;
 
 public interface AiSNSAccountRepository  extends JpaRepository<AiSNSAccount, String>
 {

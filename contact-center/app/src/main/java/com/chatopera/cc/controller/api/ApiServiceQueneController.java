@@ -16,8 +16,8 @@
  */
 package com.chatopera.cc.controller.api;
 
+import com.chatopera.cc.acd.ACDAgentService;
 import com.chatopera.cc.acd.ACDPolicyService;
-import com.chatopera.cc.acd.ACDServiceRouter;
 import com.chatopera.cc.acd.ACDWorkMonitor;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.cache.Cache;
@@ -26,7 +26,7 @@ import com.chatopera.cc.model.AgentStatus;
 import com.chatopera.cc.model.SessionConfig;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.AgentStatusRepository;
-import com.chatopera.cc.proxy.AgentUserProxy;
+import com.chatopera.cc.proxy.AgentStatusProxy;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.RestResult;
 import com.chatopera.cc.util.RestResultType;
@@ -41,7 +41,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Date;
-import java.util.List;
 
 /**
  * ACD服务
@@ -52,7 +51,7 @@ import java.util.List;
 public class ApiServiceQueneController extends Handler {
 
     @Autowired
-    private AgentUserProxy agentUserProxy;
+    private AgentStatusProxy agentStatusProxy;
 
     @Autowired
     private ACDWorkMonitor acdWorkMonitor;
@@ -64,7 +63,7 @@ public class ApiServiceQueneController extends Handler {
     private AgentStatusRepository agentStatusRes;
 
     @Autowired
-    private ACDServiceRouter acdServiceRouter;
+    private ACDAgentService acdAgentService;
 
     @Autowired
     private Cache cache;
@@ -131,7 +130,7 @@ public class ApiServiceQueneController extends Handler {
                     logined.isAdmin(), agentStatus.getAgentno(),
                     MainContext.AgentStatusEnum.OFFLINE.toString(), MainContext.AgentStatusEnum.READY.toString(),
                     MainContext.AgentWorkType.MEIDIACHAT.toString(), agentStatus.getOrgi(), null);
-            acdServiceRouter.allotVisitors(agentStatus.getAgentno(), super.getOrgi(request));
+            acdAgentService.assignVisitors(agentStatus.getAgentno(), super.getOrgi(request));
         } else if (StringUtils.isNotBlank(status)) {
             if (status.equals(MainContext.AgentStatusEnum.NOTREADY.toString())) {
                 agentStatusRes.findOneByAgentnoAndOrgi(
@@ -173,9 +172,9 @@ public class ApiServiceQueneController extends Handler {
                     p.setUpdatetime(new Date());
                     agentStatusRes.save(p);
                 });
-                acdServiceRouter.allotVisitors(agentStatus.getAgentno(), super.getOrgi(request));
+                acdAgentService.assignVisitors(agentStatus.getAgentno(), super.getOrgi(request));
             }
-            agentUserProxy.broadcastAgentsStatus(
+            agentStatusProxy.broadcastAgentsStatus(
                     super.getOrgi(request), "agent", "api", super.getUser(request).getId());
         }
         return new ResponseEntity<>(new RestResult(RestResultType.OK, agentStatus), HttpStatus.OK);

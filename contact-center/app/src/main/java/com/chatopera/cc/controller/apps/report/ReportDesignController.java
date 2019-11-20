@@ -16,18 +16,12 @@
  */
 package com.chatopera.cc.controller.apps.report;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
-import com.chatopera.cc.basic.Constants;
+import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.model.*;
+import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.bi.ReportData;
 import org.apache.commons.codec.binary.Base64;
@@ -40,36 +34,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.persistence.repository.ColumnPropertiesRepository;
-import com.chatopera.cc.persistence.repository.MetadataRepository;
-import com.chatopera.cc.persistence.repository.PublishedCubeRepository;
-import com.chatopera.cc.persistence.repository.PublishedReportRepository;
-import com.chatopera.cc.persistence.repository.ReportCubeService;
-import com.chatopera.cc.persistence.repository.ReportFilterRepository;
-import com.chatopera.cc.persistence.repository.ReportModelRepository;
-import com.chatopera.cc.persistence.repository.ReportRepository;
-import com.chatopera.cc.persistence.repository.SysDicRepository;
-import com.chatopera.cc.persistence.repository.TablePropertiesRepository;
-import com.chatopera.cc.persistence.repository.TemplateRepository;
-import com.chatopera.cc.controller.Handler;
-import com.chatopera.cc.model.ChartProperties;
-import com.chatopera.cc.model.ColumnProperties;
-import com.chatopera.cc.model.Cube;
-import com.chatopera.cc.model.CubeLevel;
-import com.chatopera.cc.model.CubeMeasure;
-import com.chatopera.cc.model.CubeMetadata;
-import com.chatopera.cc.model.Dimension;
-import com.chatopera.cc.model.MetadataTable;
-import com.chatopera.cc.model.PublishedCube;
-import com.chatopera.cc.model.PublishedReport;
-import com.chatopera.cc.model.Report;
-import com.chatopera.cc.model.ReportFilter;
-import com.chatopera.cc.model.ReportModel;
-import com.chatopera.cc.model.SysDic;
-import com.chatopera.cc.model.TableProperties;
-import com.chatopera.cc.model.Template;
-import com.chatopera.cc.model.Dict;
-import com.chatopera.cc.model.User;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.*;
 
 @Controller
 @RequestMapping("/apps/report/design")

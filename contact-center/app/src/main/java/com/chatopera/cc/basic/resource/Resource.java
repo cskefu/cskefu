@@ -16,11 +16,11 @@
  */
 package com.chatopera.cc.basic.resource;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Logger;
-
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.model.JobDetail;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Logger;
 
 /**
  * @author jaddy0302 Rivulet Resource.java 2010-3-6

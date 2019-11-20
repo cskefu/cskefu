@@ -16,7 +16,7 @@
  */
 package com.chatopera.cc.util;
 
-import java.util.regex.Matcher;  
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;  
   
 /** 

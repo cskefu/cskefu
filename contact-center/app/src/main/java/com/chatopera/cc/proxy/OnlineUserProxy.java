@@ -16,6 +16,7 @@
  */
 package com.chatopera.cc.proxy;
 
+import com.chatopera.cc.acd.ACDServiceRouter;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
@@ -846,7 +847,7 @@ public class OnlineUserProxy {
     public static List<OtherMessageItem> search(String q, String orgi, User user) throws IOException, TemplateException {
         List<OtherMessageItem> otherMessageItemList = null;
         String param = "";
-        SessionConfig sessionConfig = MainContext.getACDServiceRouter().getAcdPolicyService().initSessionConfig(
+        SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(
                 orgi);
         if (StringUtils.isNotBlank(sessionConfig.getOqrsearchurl())) {
             Template templet = MainUtils.getTemplate(sessionConfig.getOqrsearchinput());
@@ -906,7 +907,7 @@ public class OnlineUserProxy {
     public static OtherMessageItem detail(String id, String orgi, User user) throws IOException, TemplateException {
         OtherMessageItem otherMessageItem = null;
         String param = "";
-        SessionConfig sessionConfig = MainContext.getACDServiceRouter().getAcdPolicyService().initSessionConfig(
+        SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(
                 orgi);
         if (StringUtils.isNotBlank(sessionConfig.getOqrdetailinput())) {
             Template templet = MainUtils.getTemplate(sessionConfig.getOqrdetailinput());

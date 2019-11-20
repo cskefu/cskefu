@@ -16,14 +16,14 @@
  */
 package com.chatopera.cc.persistence.impl;
 
-import java.io.Serializable;
-import java.util.List;
-
+import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
 import com.chatopera.cc.persistence.repository.OrganRepository;
-import com.chatopera.cc.model.Organ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.Serializable;
+import java.util.List;
 
 @Service("organdata")
 public class OrganDataExchangeImpl implements DataExchangeInterface {

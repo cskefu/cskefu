@@ -16,14 +16,13 @@
  */
 package com.chatopera.cc.persistence.hibernate;
 
-import java.util.List;
-
-import javax.persistence.EntityManagerFactory;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.persistence.EntityManagerFactory;
+import java.util.List;
 
 @Component
 public class BaseService<T> {

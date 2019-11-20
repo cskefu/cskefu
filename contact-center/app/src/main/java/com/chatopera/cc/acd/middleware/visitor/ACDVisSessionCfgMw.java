@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.chatopera.cc.acd.visitor;
+package com.chatopera.cc.acd.middleware.visitor;
 
-import com.chatopera.cc.acd.ACDComposeContext;
 import com.chatopera.cc.acd.ACDPolicyService;
 import com.chatopera.cc.acd.ACDWorkMonitor;
+import com.chatopera.cc.acd.basic.ACDComposeContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.model.AgentReport;
 import com.chatopera.cc.model.SessionConfig;
@@ -42,7 +42,6 @@ public class ACDVisSessionCfgMw implements Middleware<ACDComposeContext> {
 
     @Autowired
     private ACDWorkMonitor acdWorkMonitor;
-
 
     @Override
     public void apply(final ACDComposeContext ctx, final Functional next) {

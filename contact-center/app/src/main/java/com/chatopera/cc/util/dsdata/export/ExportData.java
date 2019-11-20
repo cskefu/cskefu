@@ -16,9 +16,9 @@
  */
 package com.chatopera.cc.util.dsdata.export;
 
-import java.util.List;
-
 import com.chatopera.cc.model.TableProperties;
+
+import java.util.List;
 
 public class ExportData {
 	private TableProperties tp ;

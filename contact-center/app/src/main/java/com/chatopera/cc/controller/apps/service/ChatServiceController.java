@@ -17,7 +17,9 @@
 package com.chatopera.cc.controller.apps.service;
 
 import com.chatopera.cc.acd.ACDAgentService;
-import com.chatopera.cc.acd.ACDServiceRouter;
+import com.chatopera.cc.acd.ACDVisitorDispatcher;
+import com.chatopera.cc.acd.basic.ACDComposeContext;
+import com.chatopera.cc.acd.basic.ACDMessageHelper;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
@@ -25,6 +27,7 @@ import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.peer.PeerSyncIM;
 import com.chatopera.cc.persistence.repository.*;
+import com.chatopera.cc.proxy.AgentStatusProxy;
 import com.chatopera.cc.proxy.AgentUserProxy;
 import com.chatopera.cc.proxy.OnlineUserProxy;
 import com.chatopera.cc.proxy.UserProxy;
@@ -65,10 +68,13 @@ public class ChatServiceController extends Handler {
     private AgentUserProxy agentUserProxy;
 
     @Autowired
+    private AgentStatusProxy agentStatusProxy;
+
+    @Autowired
     private ACDAgentService acdAgentService;
 
     @Autowired
-    private ACDServiceRouter acdServiceRouter;
+    private ACDVisitorDispatcher acdVisitorDispatcher;
 
     @Autowired
     private AgentServiceRepository agentServiceRes;
@@ -108,6 +114,9 @@ public class ChatServiceController extends Handler {
 
     @Autowired
     private PeerSyncIM peerSyncIM;
+
+    @Autowired
+    private ACDMessageHelper acdMessageHelper;
 
     @RequestMapping("/history/index")
     @Menu(type = "service", subtype = "history", admin = true)
@@ -290,7 +299,7 @@ public class ChatServiceController extends Handler {
                 AgentUser agentUser = agentUserRepository.findByIdAndOrgi(
                         agentService.getAgentuserid(), super.getOrgi(request));
                 if (agentUser != null) {
-                    acdServiceRouter.deleteAgentUser(agentUser, user.getOrgi());
+                    acdAgentService.finishAgentUser(agentUser, user.getOrgi());
                 }
                 agentService.setStatus(MainContext.AgentUserStatusEnum.END.toString());
                 agentServiceRes.save(agentService);
@@ -331,7 +340,7 @@ public class ChatServiceController extends Handler {
 
                     if (onlineUser != null) {
                         IP ipdata = IPTools.getInstance().findGeography(onlineUser.getIp());
-                        acdServiceRouter.allocateAgentService(
+                        acdVisitorDispatcher.enqueue(ACDMessageHelper.getWebIMComposeContext(
                                 onlineUser.getUserid(),
                                 onlineUser.getUsername(),
                                 user.getOrgi(),
@@ -350,7 +359,7 @@ public class ChatServiceController extends Handler {
                                 agentService.getContactsid(),
                                 onlineUser.getOwner(),
                                 true,
-                                MainContext.ChatInitiatorType.AGENT.toString());
+                                MainContext.ChatInitiatorType.AGENT.toString()));
                     }
                 }
             }
@@ -397,7 +406,9 @@ public class ChatServiceController extends Handler {
             agentUser.setAgentno(null);
             agentUser.setSkill(null);
             agentUserRes.save(agentUser);
-            acdAgentService.allotAgent(agentUser, super.getOrgi(request));
+            ACDComposeContext ctx = acdMessageHelper.getComposeContextWithAgentUser(
+                    agentUser, false, MainContext.ChatInitiatorType.USER.toString());
+            acdVisitorDispatcher.enqueue(ctx);
         }
         return request(super.createRequestPageTempletResponse("redirect:/service/quene/index.html"));
     }
@@ -405,9 +416,11 @@ public class ChatServiceController extends Handler {
     @RequestMapping("/quene/invite")
     @Menu(type = "service", subtype = "invite", admin = true)
     public ModelAndView invite(ModelMap map, HttpServletRequest request, @Valid String id) throws Exception {
+        final User logined = super.getUser(request);
+        final String orgi = logined.getOrgi();
         AgentUser agentUser = agentUserRes.findByIdAndOrgi(id, super.getOrgi(request));
         if (agentUser != null && agentUser.getStatus().equals(MainContext.AgentUserStatusEnum.INQUENE.toString())) {
-            acdServiceRouter.allotAgentForInvite(super.getUser(request).getId(), agentUser, super.getOrgi(request));
+            acdAgentService.assignVisitorAsInvite(logined.getId(), agentUser, orgi);
         }
         return request(super.createRequestPageTempletResponse("redirect:/service/quene/index.html"));
     }
@@ -451,7 +464,7 @@ public class ChatServiceController extends Handler {
         }
         cache.deleteAgentStatusByAgentnoAndOrgi(agentStatus.getAgentno(), super.getOrgi(request));
 
-        agentUserProxy.broadcastAgentsStatus(
+        agentStatusProxy.broadcastAgentsStatus(
                 super.getOrgi(request), "agent", "offline", super.getUser(request).getId());
 
         return request(super.createRequestPageTempletResponse("redirect:/service/agent/index.html"));

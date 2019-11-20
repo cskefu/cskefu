@@ -16,16 +16,14 @@
  */
 package com.chatopera.cc.exception;
 
+import com.corundumstudio.socketio.SocketIOClient;
+import com.corundumstudio.socketio.listener.ExceptionListenerAdapter;
 import io.netty.channel.ChannelHandlerContext;
-
-import java.io.IOException;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.corundumstudio.socketio.SocketIOClient;
-import com.corundumstudio.socketio.listener.ExceptionListenerAdapter;
+import java.io.IOException;
+import java.util.List;
 
 public class InstantMessagingExceptionListener extends ExceptionListenerAdapter {
 	private static final Logger logger = LoggerFactory.getLogger(InstantMessagingExceptionListener.class);

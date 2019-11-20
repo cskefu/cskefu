@@ -17,18 +17,14 @@
 
 package com.chatopera.cc.controller.apps;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
 import com.chatopera.cc.basic.MainUtils;
-import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.persistence.repository.OrganizationRepository;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.Organization;
+import com.chatopera.cc.model.SystemConfig;
 import com.chatopera.cc.model.User;
+import com.chatopera.cc.persistence.repository.OrganizationRepository;
+import com.chatopera.cc.persistence.repository.UserRepository;
+import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,8 +32,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.persistence.repository.UserRepository;
-import com.chatopera.cc.model.SystemConfig;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 @Controller
 @RequestMapping("/apps/organization")

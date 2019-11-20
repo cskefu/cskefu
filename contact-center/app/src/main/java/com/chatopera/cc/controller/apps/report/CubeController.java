@@ -16,13 +16,10 @@
  */
 package com.chatopera.cc.controller.apps.report;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
 import com.chatopera.cc.basic.MainUtils;
+import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.model.*;
+import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
@@ -33,23 +30,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.persistence.repository.CubeLevelRepository;
-import com.chatopera.cc.persistence.repository.CubeMeasureRepository;
-import com.chatopera.cc.persistence.repository.CubeMetadataRepository;
-import com.chatopera.cc.persistence.repository.CubeRepository;
-import com.chatopera.cc.persistence.repository.CubeTypeRepository;
-import com.chatopera.cc.persistence.repository.DimensionRepository;
-import com.chatopera.cc.persistence.repository.MetadataRepository;
-import com.chatopera.cc.persistence.repository.PublishedCubeRepository;
-import com.chatopera.cc.controller.Handler;
-import com.chatopera.cc.model.Cube;
-import com.chatopera.cc.model.CubeMeasure;
-import com.chatopera.cc.model.CubeMetadata;
-import com.chatopera.cc.model.CubeType;
-import com.chatopera.cc.model.Dimension;
-import com.chatopera.cc.model.MetadataTable;
-import com.chatopera.cc.model.PublishedCube;
-import com.chatopera.cc.model.User;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/apps/report/cube")

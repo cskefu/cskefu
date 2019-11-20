@@ -16,10 +16,10 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
 import com.chatopera.cc.model.FormFilterItem;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 public interface FormFilterItemRepository extends JpaRepository<FormFilterItem, String> {
 	

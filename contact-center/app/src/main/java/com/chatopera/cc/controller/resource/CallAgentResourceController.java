@@ -16,8 +16,18 @@
  */
 package com.chatopera.cc.controller.resource;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.chatopera.cc.basic.Constants;
+import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.model.User;
+import com.chatopera.cc.persistence.repository.UserRepository;
+import com.chatopera.cc.util.CallCenterUtils;
+import com.chatopera.cc.util.Menu;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaBuilder.In;
@@ -26,19 +36,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
-import com.chatopera.cc.basic.Constants;
-import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.persistence.repository.UserRepository;
-import com.chatopera.cc.util.CallCenterUtils;
-import com.chatopera.cc.controller.Handler;
-import com.chatopera.cc.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class CallAgentResourceController extends Handler {

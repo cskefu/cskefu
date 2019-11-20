@@ -16,13 +16,13 @@
  */
 package com.chatopera.cc.util;
 
+import freemarker.cache.TemplateLoader;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
-
-import freemarker.cache.TemplateLoader;
 
 public class TempletLoader implements TemplateLoader {
 	private static final String DEFAULT_TEMPLATE_KEY = "_default_template_key";

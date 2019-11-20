@@ -16,21 +16,18 @@
  */
 package com.chatopera.cc.controller.resource;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
-import com.chatopera.cc.util.Menu;
+import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.proxy.OnlineUserProxy;
+import com.chatopera.cc.util.Menu;
+import freemarker.template.TemplateException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.controller.Handler;
-
-import freemarker.template.TemplateException;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.IOException;
 
 @Controller
 public class QuickReplyResourceController extends Handler{

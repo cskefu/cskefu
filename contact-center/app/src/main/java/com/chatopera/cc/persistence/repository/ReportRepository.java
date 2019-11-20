@@ -16,13 +16,12 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
+import com.chatopera.cc.model.Report;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.chatopera.cc.model.Report;
+import java.util.List;
 
 public interface ReportRepository extends JpaRepository<Report, String> {
 	Report findByIdAndOrgi(String id, String orgi);

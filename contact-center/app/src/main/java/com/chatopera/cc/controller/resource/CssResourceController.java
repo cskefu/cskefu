@@ -16,17 +16,15 @@
  */
 package com.chatopera.cc.controller.resource;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
+import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.util.Menu;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.controller.Handler;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.IOException;
 
 @Controller
 public class CssResourceController extends Handler{

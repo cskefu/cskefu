@@ -16,18 +16,18 @@
  */
 package com.chatopera.cc.controller.admin.config;
 
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.model.Dict;
 import com.chatopera.cc.model.Secret;
 import com.chatopera.cc.model.SysDic;
 import com.chatopera.cc.model.SystemConfig;
-import com.chatopera.cc.model.Dict;
 import com.chatopera.cc.persistence.repository.SecretRepository;
 import com.chatopera.cc.persistence.repository.SystemConfigRepository;
 import com.chatopera.cc.persistence.repository.SystemMessageRepository;
 import com.chatopera.cc.persistence.repository.TemplateRepository;
-import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.util.Menu;
 import com.corundumstudio.socketio.SocketIOServer;
 import org.apache.commons.io.FileUtils;

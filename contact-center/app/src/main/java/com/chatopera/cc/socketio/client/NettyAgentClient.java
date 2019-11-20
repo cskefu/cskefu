@@ -16,8 +16,6 @@
  */
 package com.chatopera.cc.socketio.client;
 
-import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.basic.MainUtils;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.google.common.collect.ArrayListMultimap;
 import org.slf4j.Logger;

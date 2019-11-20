@@ -16,11 +16,6 @@
  */
 package com.chatopera.cc.persistence.es;
 
-import static org.elasticsearch.index.query.QueryBuilders.termQuery;
-
-import java.util.Date;
-import java.util.List;
-
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.model.QuickReply;
 import org.apache.commons.lang.StringUtils;
@@ -41,6 +36,11 @@ import org.springframework.data.elasticsearch.core.query.DeleteQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 @Component
 public class QuickReplyRepositoryImpl implements QuickReplyEsCommonRepository{

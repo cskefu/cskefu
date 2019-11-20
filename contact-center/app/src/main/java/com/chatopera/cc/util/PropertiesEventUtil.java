@@ -16,20 +16,18 @@
  */
 package com.chatopera.cc.util;
 
+import com.chatopera.cc.model.PropertiesEvent;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.FatalBeanException;
+
+import javax.servlet.http.HttpServletRequest;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.FatalBeanException;
-
-import com.chatopera.cc.model.PropertiesEvent;
 
 public class PropertiesEventUtil {
 	public static List<PropertiesEvent> processPropertiesModify(HttpServletRequest request , Object newobj , Object oldobj,String... ignoreProperties){

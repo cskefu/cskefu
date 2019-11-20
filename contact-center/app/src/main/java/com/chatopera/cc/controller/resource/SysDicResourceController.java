@@ -16,22 +16,20 @@
  */
 package com.chatopera.cc.controller.resource;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
-import com.chatopera.cc.util.Menu;
+import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.model.Dict;
 import com.chatopera.cc.model.SysDic;
+import com.chatopera.cc.util.Menu;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.controller.Handler;
-import com.chatopera.cc.model.Dict;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/res")

@@ -16,11 +16,10 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
+import com.chatopera.cc.model.AgentReport;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.chatopera.cc.model.AgentReport;
+import java.util.List;
 
 public interface AgentReportRepository  extends JpaRepository<AgentReport, String>
 {

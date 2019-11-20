@@ -16,13 +16,12 @@
  */
 package com.chatopera.cc.persistence.es;
 
-import java.util.Date;
-
+import com.chatopera.cc.model.Contacts;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.chatopera.cc.model.Contacts;
+import java.util.Date;
 
 public interface ContactsEsCommonRepository {
 	

@@ -16,25 +16,17 @@
  */
 package com.chatopera.cc.controller.apps.report;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
-import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.persistence.repository.PublishedReportRepository;
-import com.chatopera.cc.model.ReportFilter;
-import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.basic.Constants;
+import com.chatopera.cc.basic.MainContext;
+import com.chatopera.cc.basic.MainUtils;
+import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.model.*;
+import com.chatopera.cc.persistence.repository.*;
+import com.chatopera.cc.util.Menu;
+import com.chatopera.cc.util.dsdata.DSData;
+import com.chatopera.cc.util.dsdata.DSDataEvent;
+import com.chatopera.cc.util.dsdata.ExcelImportProecess;
+import com.chatopera.cc.util.dsdata.export.ExcelExporterProcess;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,20 +39,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.dsdata.DSData;
-import com.chatopera.cc.util.dsdata.DSDataEvent;
-import com.chatopera.cc.util.dsdata.ExcelImportProecess;
-import com.chatopera.cc.util.dsdata.export.ExcelExporterProcess;
-import com.chatopera.cc.persistence.repository.DataDicRepository;
-import com.chatopera.cc.persistence.repository.MetadataRepository;
-import com.chatopera.cc.persistence.repository.ReportCubeService;
-import com.chatopera.cc.persistence.repository.ReportRepository;
-import com.chatopera.cc.controller.Handler;
-import com.chatopera.cc.model.DataDic;
-import com.chatopera.cc.model.MetadataTable;
-import com.chatopera.cc.model.PublishedReport;
-import com.chatopera.cc.model.Report;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 @RequestMapping("/apps/report")

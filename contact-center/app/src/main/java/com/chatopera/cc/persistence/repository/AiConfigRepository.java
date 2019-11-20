@@ -16,11 +16,10 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
+import com.chatopera.cc.model.AiConfig;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.chatopera.cc.model.AiConfig;
+import java.util.List;
 
 public interface AiConfigRepository  extends JpaRepository<AiConfig, String>{
 	List<AiConfig> findByOrgi(String orgi);

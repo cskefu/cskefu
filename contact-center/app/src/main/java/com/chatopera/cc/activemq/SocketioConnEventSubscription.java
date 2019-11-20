@@ -10,8 +10,9 @@
  */
 package com.chatopera.cc.activemq;
 
+import com.chatopera.cc.acd.ACDAgentDispatcher;
 import com.chatopera.cc.acd.ACDWorkMonitor;
-import com.chatopera.cc.acd.ACDServiceRouter;
+import com.chatopera.cc.acd.basic.ACDComposeContext;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.cache.Cache;
@@ -38,7 +39,7 @@ public class SocketioConnEventSubscription {
     private final static Logger logger = LoggerFactory.getLogger(SocketioConnEventSubscription.class);
 
     @Autowired
-    private ACDServiceRouter acdServiceRouter;
+    private ACDAgentDispatcher acdAgentDispatcher;
 
     @Autowired
     private ACDWorkMonitor acdWorkMonitor;
@@ -73,7 +74,11 @@ public class SocketioConnEventSubscription {
                      * 处理该坐席为离线
                      */
                     // 重分配坐席
-                    if (acdServiceRouter.withdrawAgent(agentStatus.getOrgi(), agentStatus.getAgentno())) {
+                    ACDComposeContext ctx = new ACDComposeContext();
+                    ctx.setAgentno(agentStatus.getAgentno());
+                    ctx.setOrgi(agentStatus.getOrgi());
+                    acdAgentDispatcher.dequeue(ctx);
+                    if (ctx.isResolved()) {
                         logger.info("[onMessage] re-allotAgent for user's visitors successfully.");
                     } else {
                         logger.info("[onMessage] re-allotAgent, error happens.");

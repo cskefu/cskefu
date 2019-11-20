@@ -16,6 +16,10 @@
  */
 package com.chatopera.cc.socketio.handler;
 
+import com.chatopera.cc.acd.ACDServiceRouter;
+import com.chatopera.cc.acd.ACDVisitorDispatcher;
+import com.chatopera.cc.acd.basic.ACDComposeContext;
+import com.chatopera.cc.acd.basic.ACDMessageHelper;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainContext.CallType;
 import com.chatopera.cc.basic.MainContext.ChannelType;
@@ -58,6 +62,7 @@ public class IMEventHandler {
 
     static private AgentUserProxy agentUserProxy;
     static private AgentServiceRepository agentServiceRepository;
+    static private ACDVisitorDispatcher acdVisitorDispatcher;
 
     /**
      * 接入访客并未访客寻找坐席服务人员
@@ -129,7 +134,7 @@ public class IMEventHandler {
                  * 表示当前坐席全忙，用户进入排队状态，当前提示信息 显示 当前排队的队列位置，
                  * 不可进行对话，用户发送的消息作为留言处理
                  */
-                Message agentServiceMessage = MainContext.getACDServiceRouter().allocateAgentService(
+                final ACDComposeContext ctx = ACDMessageHelper.getWebIMComposeContext(
                         user,
                         nickname,
                         orgi,
@@ -149,48 +154,8 @@ public class IMEventHandler {
                         user,
                         isInvite,
                         MainContext.ChatInitiatorType.USER.toString());
-
-                if (agentServiceMessage != null && StringUtils.isNotBlank(
-                        agentServiceMessage.getMessage())) {
-                    logger.info("[onConnect] find available agent for onlineUser id {}", user);
-
-                    /**
-                     * 发送消息给坐席
-                     * 如果没有AgentService或该AgentService没有坐席或AgentService在排队中，则不发送
-                     */
-                    if (agentServiceMessage.getAgentService() != null && (!agentServiceMessage.isNoagent()) && !StringUtils.equals(
-                            MainContext.AgentUserStatusEnum.INQUENE.toString(),
-                            agentServiceMessage.getAgentService().getStatus())) {
-                        // 通知消息到坐席
-                        MainContext.getPeerSyncIM().send(ReceiverType.AGENT,
-                                                         ChannelType.WEBIM,
-                                                         appid,
-                                                         MessageType.NEW,
-                                                         agentServiceMessage.getAgentService().getAgentno(),
-                                                         agentServiceMessage, true);
-                    }
-
-                    /**
-                     * 发送消息给访客
-                     */
-                    Message outMessage = new Message();
-                    outMessage.setMessage(agentServiceMessage.getMessage());
-                    outMessage.setMessageType(MessageType.MESSAGE.toString());
-                    outMessage.setCalltype(CallType.IN.toString());
-                    outMessage.setCreatetime(MainUtils.dateFormate.format(new Date()));
-                    outMessage.setNoagent(agentServiceMessage.isNoagent());
-                    if (agentServiceMessage.getAgentService() != null) {
-                        outMessage.setAgentserviceid(agentServiceMessage.getAgentService().getId());
-                    }
-
-                    MainContext.getPeerSyncIM().send(ReceiverType.VISITOR,
-                                                     ChannelType.WEBIM, appid,
-                                                     MessageType.NEW, user, outMessage, true);
-
-
-                } else {
-                    logger.info("[onConnect] can not find available agent for user {}", user);
-                }
+                getAcdVisitorDispatcher().enqueue(ctx);
+                ACDServiceRouter.getAcdAgentService().notifyAgentUserProcessResult(ctx);
             } else {
                 logger.warn("[onConnect] invalid connection, no user present.");
                 //非法链接
@@ -214,7 +179,7 @@ public class IMEventHandler {
                  * 用户主动断开服务
                  */
                 MainContext.getCache().findOneAgentUserByUserIdAndOrgi(user, orgi).ifPresent(p -> {
-                    MainContext.getACDServiceRouter().serviceFinish(p
+                    ACDServiceRouter.getAcdAgentService().finishAgentService(p
                             , orgi);
                 });
             } catch (Exception e) {
@@ -294,6 +259,13 @@ public class IMEventHandler {
             agentServiceRepository = MainContext.getContext().getBean(AgentServiceRepository.class);
         }
         return agentServiceRepository;
+    }
+
+    private static ACDVisitorDispatcher getAcdVisitorDispatcher() {
+        if (acdVisitorDispatcher == null) {
+            acdVisitorDispatcher = MainContext.getContext().getBean(ACDVisitorDispatcher.class);
+        }
+        return acdVisitorDispatcher;
     }
 
 }

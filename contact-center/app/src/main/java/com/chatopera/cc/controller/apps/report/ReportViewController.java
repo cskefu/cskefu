@@ -16,14 +16,13 @@
  */
 package com.chatopera.cc.controller.apps.report;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
+import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.model.PublishedReport;
+import com.chatopera.cc.model.ReportFilter;
+import com.chatopera.cc.persistence.repository.DataDicRepository;
 import com.chatopera.cc.persistence.repository.PublishedReportRepository;
+import com.chatopera.cc.persistence.repository.ReportCubeService;
+import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,12 +33,11 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.persistence.repository.DataDicRepository;
-import com.chatopera.cc.persistence.repository.ReportCubeService;
-import com.chatopera.cc.controller.Handler;
-import com.chatopera.cc.model.PublishedReport;
-import com.chatopera.cc.model.ReportFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/apps/view")

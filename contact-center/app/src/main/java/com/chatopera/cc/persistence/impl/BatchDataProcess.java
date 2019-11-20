@@ -16,14 +16,13 @@
  */
 package com.chatopera.cc.persistence.impl;
 
-import java.util.Map;
-
 import com.chatopera.cc.basic.MainContext;
+import com.chatopera.cc.model.MetadataTable;
+import com.chatopera.cc.util.dsdata.process.JPAProcess;
 import com.chatopera.cc.util.es.UKDataBean;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 
-import com.chatopera.cc.util.dsdata.process.JPAProcess;
-import com.chatopera.cc.model.MetadataTable;
+import java.util.Map;
 
 public class BatchDataProcess implements JPAProcess{
 	

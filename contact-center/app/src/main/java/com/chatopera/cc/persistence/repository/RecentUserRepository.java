@@ -16,12 +16,12 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.chatopera.cc.model.RecentUser;
 import com.chatopera.cc.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface RecentUserRepository extends JpaRepository<RecentUser, String> {
 	

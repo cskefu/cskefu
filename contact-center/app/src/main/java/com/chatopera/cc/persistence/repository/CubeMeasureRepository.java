@@ -16,11 +16,10 @@
  */
 package com.chatopera.cc.persistence.repository;
 
-import java.util.List;
-
+import com.chatopera.cc.model.CubeMeasure;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.chatopera.cc.model.CubeMeasure;
+import java.util.List;
 
 public interface CubeMeasureRepository extends JpaRepository<CubeMeasure, String> {
 

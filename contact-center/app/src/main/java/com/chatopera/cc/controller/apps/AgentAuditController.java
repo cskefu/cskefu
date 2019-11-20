@@ -18,35 +18,31 @@ package com.chatopera.cc.controller.apps;
 
 import com.alibaba.fastjson.JSONObject;
 import com.chatopera.cc.acd.ACDAgentService;
-import com.chatopera.cc.acd.ACDMessageHelper;
 import com.chatopera.cc.acd.ACDPolicyService;
-import com.chatopera.cc.acd.ACDServiceRouter;
+import com.chatopera.cc.acd.basic.ACDMessageHelper;
 import com.chatopera.cc.activemq.BrokerPublisher;
 import com.chatopera.cc.basic.Constants;
+import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
+import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.exception.CSKefuException;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.peer.PeerSyncIM;
-import com.chatopera.cc.proxy.*;
-import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.controller.Handler;
-import com.chatopera.cc.model.AgentUser;
-import com.chatopera.cc.model.Organ;
-import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.es.QuickReplyRepository;
 import com.chatopera.cc.persistence.repository.*;
+import com.chatopera.cc.proxy.*;
 import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.util.Menu;
 import freemarker.template.TemplateException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.ui.ModelMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -61,16 +57,13 @@ public class AgentAuditController extends Handler {
     private final static Logger logger = LoggerFactory.getLogger(AgentAuditController.class);
 
     @Autowired
-    private ACDAgentService acdAgentService;
+    private AgentUserProxy agentUserProxy;
 
     @Autowired
     private ACDPolicyService acdPolicyService;
 
     @Autowired
     private ACDMessageHelper acdMessageHelper;
-
-    @Autowired
-    private ACDServiceRouter acdServiceRouter;
 
     @Autowired
     private AgentUserRepository agentUserRes;
@@ -89,9 +82,6 @@ public class AgentAuditController extends Handler {
 
     @Autowired
     private AgentServiceRepository agentServiceRes;
-
-    @Autowired
-    private AgentUserProxy agentUserProxy;
 
     @Autowired
     private AgentUserTaskRepository agentUserTaskRes;
@@ -134,6 +124,9 @@ public class AgentAuditController extends Handler {
 
     @Autowired
     private AgentServiceProxy agentServiceProxy;
+
+    @Autowired
+    private ACDAgentService acdAgentService;
 
     @RequestMapping(value = "/index")
     @Menu(type = "cca", subtype = "cca", access = true)
@@ -603,7 +596,7 @@ public class AgentAuditController extends Handler {
                     logined.getId(), agentUser.getAgentno()) || logined.isAdmin())) {
                 // 删除访客-坐席关联关系，包括缓存
                 try {
-                    acdServiceRouter.deleteAgentUser(agentUser, orgi);
+                    acdAgentService.finishAgentUser(agentUser, orgi);
                 } catch (CSKefuException e) {
                     // 未能删除成功
                     logger.error("[end]", e);

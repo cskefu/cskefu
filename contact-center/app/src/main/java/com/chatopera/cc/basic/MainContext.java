@@ -17,7 +17,6 @@
 
 package com.chatopera.cc.basic;
 
-import com.chatopera.cc.acd.ACDServiceRouter;
 import com.chatopera.cc.basic.resource.ActivityResource;
 import com.chatopera.cc.basic.resource.BatchResource;
 import com.chatopera.cc.cache.Cache;
@@ -59,8 +58,6 @@ public class MainContext {
     private static Cache cache;
 
     private static PeerSyncIM peerSyncIM;
-
-    private static ACDServiceRouter acdServiceRouter;
 
     static {
         ConvertUtils.register(new DateConverter(), java.util.Date.class);
@@ -1088,14 +1085,4 @@ public class MainContext {
     public static Set<String> getModules() {
         return modules;
     }
-
-    public static ACDServiceRouter getACDServiceRouter() {
-        if (acdServiceRouter == null) {
-            acdServiceRouter = getContext().getBean(ACDServiceRouter.class);
-        }
-        return acdServiceRouter;
-    }
-
-
-
 }

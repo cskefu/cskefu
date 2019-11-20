@@ -16,17 +16,12 @@
  */
 package com.chatopera.cc.util;
 
-import it.sauronsoftware.jave.AudioAttributes;
-import it.sauronsoftware.jave.Encoder;
-import it.sauronsoftware.jave.EncoderException;
-import it.sauronsoftware.jave.EncodingAttributes;
-import it.sauronsoftware.jave.InputFormatException;
-
-import java.io.File;
-
+import it.sauronsoftware.jave.*;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.mp3.MP3AudioHeader;
 import org.jaudiotagger.audio.mp3.MP3File;
+
+import java.io.File;
 
 public class AMRConvert {
 

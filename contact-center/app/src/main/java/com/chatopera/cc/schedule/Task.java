@@ -17,7 +17,6 @@
 package com.chatopera.cc.schedule;
 
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.JobDetail;
 import com.chatopera.cc.model.Reporter;
 import com.chatopera.cc.persistence.repository.JobDetailRepository;

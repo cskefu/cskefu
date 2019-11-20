@@ -16,6 +16,8 @@
  */
 package com.chatopera.cc.util.metadata;
 
+import org.hibernate.annotations.common.util.StringHelper;
+
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -24,8 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.hibernate.annotations.common.util.StringHelper;
 
 /**
  * JDBC table metadata

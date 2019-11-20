@@ -16,24 +16,13 @@
  */
 package com.chatopera.cc.util.dsdata;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.model.JobDetail;
-import com.chatopera.cc.model.SysDic;
-import com.chatopera.cc.model.TableProperties;
 import com.chatopera.cc.basic.MainUtils;
+import com.chatopera.cc.model.*;
+import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
+import com.chatopera.cc.persistence.repository.JobDetailRepository;
+import com.chatopera.cc.persistence.repository.ReporterRepository;
+import com.google.common.collect.ArrayListMultimap;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
@@ -47,12 +36,18 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
-import com.chatopera.cc.persistence.repository.JobDetailRepository;
-import com.chatopera.cc.persistence.repository.ReporterRepository;
-import com.chatopera.cc.model.MetadataTable;
-import com.chatopera.cc.model.Dict;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExcelImportProecess extends DataProcess{
 	private DecimalFormat format = new DecimalFormat("###");
