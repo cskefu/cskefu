@@ -39,6 +39,7 @@ RUN /bin/bash -c "mkdir -p /{data,logs}"
 # build WAR
 RUN mkdir -p /opt/chatopera
 COPY ./app/target/contact-center-*.war /opt/chatopera/contact-center.war
+COPY ./assets/mysql.setup.db.sh /opt/chatopera
 COPY ./assets/mysql.upgrade.db.sh /opt/chatopera
 RUN chmod +x /opt/chatopera/*.sh
 
