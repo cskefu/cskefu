@@ -158,6 +158,16 @@
 													<i class="layui-icon">&#xe605;</i>
 												</div>
 											</div>
+											<div class="ukefu-im-point <#if inviteData?? && inviteData.consult_vsitorbtn_model?? && inviteData.consult_vsitorbtn_model == '9'>ukefu-point-checked</#if>" data-class="ukefu-point-theme9" data-value="9">
+												<div class="ukefu-point-theme9">
+													<div class="ukefu-im-point-text">
+														<br>无
+													</div>
+												</div>
+												<div class="ok">
+													<i class="layui-icon">&#xe605;</i>
+												</div>
+											</div>
 										</div>
 										<div class="ukefu-webim-tl" style="clear:both;">2、选择入口颜色</div>
 										<div class="box-item">
@@ -474,7 +484,7 @@
 										function() {
 											$("#ukefu-point-theme")
 													.removeClass(
-															"ukefu-point-theme1 ukefu-point-theme2 ukefu-point-theme3")
+															"ukefu-point-theme1 ukefu-point-theme2 ukefu-point-theme3 ukefu-point-theme9")
 													.addClass(
 															$(this)
 																	.attr(

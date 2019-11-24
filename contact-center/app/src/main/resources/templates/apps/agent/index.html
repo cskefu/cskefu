@@ -153,6 +153,14 @@
 		}
 	}
 
+	function cleanTopMsgTip(tip){
+		var lastMsgNum = $(tip).find('.last-msg').text();
+		if(lastMsgNum){
+			var num = Number.parseInt(lastMsgNum);
+			Proxy.cleanTopMsgTip(num)
+		}
+	}
+
 	/**
 	 * 结束会话，RestAPI请求
 	 * @param agentUserId

@@ -48,6 +48,8 @@ services:
       - CSKEFU_MODULE_CONTACTS=true
       - CSKEFU_MODULE_CHATBOT=true
       - SKYPE_CHANNEL_CRM=${SKYPE_CHANNEL_CRM:-placeholder}
+      - BOT_THRESHOLD_FAQ_BEST_REPLY=${BOT_THRESHOLD_FAQ_BEST_REPLY:-0.8}
+      - BOT_THRESHOLD_FAQ_SUGG_REPLY=${BOT_THRESHOLD_FAQ_SUGG_REPLY:-0.6}
     depends_on:
       - mysql
       - redis

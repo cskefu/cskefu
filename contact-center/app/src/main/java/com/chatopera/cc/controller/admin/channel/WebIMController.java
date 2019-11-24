@@ -222,6 +222,7 @@ public class WebIMController extends Handler {
 
                 tempInviteData.setMaxwordsnum(inviteData.getMaxwordsnum());
                 tempInviteData.setCtrlenter(inviteData.isCtrlenter());
+                tempInviteData.setWhitelist_mode(inviteData.isWhitelist_mode());
 
                 if (dialogad != null && StringUtils.isNotBlank(dialogad.getName()) && dialogad.getBytes() != null && dialogad.getBytes().length > 0) {
                     tempInviteData.setDialog_ad(super.saveImageFileWithMultipart(dialogad));

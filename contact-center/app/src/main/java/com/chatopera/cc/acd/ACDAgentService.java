@@ -182,10 +182,17 @@ public class ACDAgentService {
         }
 
         // 获得所有待服务访客的列表
-        Map<String, AgentUser> pendingAgentUsers = cache.getAgentUsersInQueByOrgi(orgi);
+        final Map<String, AgentUser> pendingAgentUsers = cache.getAgentUsersInQueByOrgi(orgi);
         final SessionConfig sessionConfig = acdPolicyService.initSessionConfig(orgi);
         // 本次批量分配访客数目
         int assigned = 0;
+        int currentAssigned = cache.getInservAgentUsersSizeByAgentnoAndOrgi(
+                agentStatus.getAgentno(), agentStatus.getOrgi());
+
+        logger.info(
+                "[assignVisitors] agentno {}, name {}, current assigned {}, batch size in queue {}",
+                agentStatus.getAgentno(),
+                agentStatus.getUsername(), currentAssigned, pendingAgentUsers.size());
 
         for (Map.Entry<String, AgentUser> entry : pendingAgentUsers.entrySet()) {
             AgentUser agentUser = entry.getValue();
@@ -202,20 +209,16 @@ public class ACDAgentService {
                         StringUtils.isBlank(agentUser.getSkill()))) {
                     // 待服务的访客还没有指定坐席，并且也没有绑定技能组
                     process = true;
-                } else {
-                    if (StringUtils.isBlank(agentUser.getAgentno()) &&
-                            agentStatus.getSkills().containsKey(agentUser.getSkill())) {
-                        // 待服务的访客还没有指定坐席，并且指定的技能组和该坐席的技能组一致
-                        process = true;
-                    }
-                }
-            } else {
-                // 目标坐席没有状态，或该目标坐席有状态但是没有属于任何一个技能组
-                if (StringUtils.isBlank(agentUser.getAgentno()) &&
-                        StringUtils.isBlank(agentUser.getSkill())) {
-                    // 待服务访客没有指定坐席，并且没有指定技能组
+                } else if (StringUtils.isBlank(agentUser.getAgentno()) &&
+                        agentStatus.getSkills().containsKey(agentUser.getSkill())) {
+                    // 待服务的访客还没有指定坐席，并且指定的技能组和该坐席的技能组一致
                     process = true;
                 }
+            } else if (StringUtils.isBlank(agentUser.getAgentno()) &&
+                    StringUtils.isBlank(agentUser.getSkill())) {
+                // 目标坐席没有状态，或该目标坐席有状态但是没有属于任何一个技能组
+                // 待服务访客没有指定坐席，并且没有指定技能组
+                process = true;
             }
 
             if (!process) {
@@ -223,14 +226,14 @@ public class ACDAgentService {
             }
 
             // 坐席未达到最大咨询访客数量，并且单次批量分配小于坐席就绪时分配最大访客数量(initMaxuser)
-            if (((agentStatus.getUsers() + assigned) < sessionConfig.getMaxuser()) && (assigned < sessionConfig.getInitmaxuser())) {
+            if (((currentAssigned + assigned) < sessionConfig.getMaxuser()) && (assigned < sessionConfig.getInitmaxuser())) {
                 assigned++;
                 pickupAgentUserInQueue(agentUser, agentStatus);
             } else {
                 logger.info(
                         "[assignVisitors] agentno {} reach the max users limit {}/{} or batch assign limit {}/{}",
                         agentno,
-                        (agentStatus.getUsers() + assigned),
+                        (currentAssigned + assigned),
                         sessionConfig.getMaxuser(), assigned, sessionConfig.getInitmaxuser());
                 break;
             }

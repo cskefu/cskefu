@@ -17,5 +17,7 @@ package com.chatopera.cc.plugins.chatbot;
 
 public class ChatbotConstants {
     public static final String BOT_PROVIDER = "BOT_PROVIDER";
+    public static final String THRESHOLD_FAQ_BEST_REPLY = "BOT_THRESHOLD_FAQ_BEST_REPLY";
+    public static final String THRESHOLD_FAQ_SUGG_REPLY = "BOT_THRESHOLD_FAQ_SUGG_REPLY";
     public static final String DEFAULT_BOT_PROVIDER = "https://bot.chatopera.com";
 }

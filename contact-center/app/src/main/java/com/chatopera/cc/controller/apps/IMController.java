@@ -48,6 +48,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -325,9 +326,10 @@ public class IMController extends Handler {
         }
     }
 
-    @RequestMapping("/userinformation")
-    @Menu(type = "im", subtype = "userinformation")
-    public ModelAndView userinformation(
+    @ResponseBody
+    @RequestMapping("/chatoperainit")
+    @Menu(type = "im", subtype = "chatoperainit")
+    public String chatoperaInit(
             ModelMap map,
             HttpServletRequest request,
             HttpServletResponse response,
@@ -338,6 +340,7 @@ public class IMController extends Handler {
             String company_name,
             String sid,
             String system_name,
+            Boolean whitelist_mode,
             @RequestParam String sessionid) throws IOException, TemplateException {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/im/point"));
         final User logined = super.getUser(request);
@@ -364,11 +367,19 @@ public class IMController extends Handler {
             onlineUserRes.save(onlineUser);
         }
 
-        createContacts(userid,
-                request,
-                logined.getId(),
-                uid, cid, sid, username, company_name, system_name);
-        return view;
+        Contacts usc = contactsRes.findOneByWluidAndWlsidAndWlcid(uid, sid, cid);
+        if (usc != null) {
+            return "usc";
+        } else {
+            if (!whitelist_mode) {
+                createContacts(userid,
+                        request,
+                        logined.getId(),
+                        uid, cid, sid, username, company_name, system_name);
+            }
+        }
+
+        return "ok";
     }
 
 

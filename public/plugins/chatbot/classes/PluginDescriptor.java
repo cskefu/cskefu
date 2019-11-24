@@ -51,6 +51,8 @@ public class PluginDescriptor implements IPluginDescriptor {
     public Map<String, String> getEnvironmentVariables() {
         Map<String, String> env = new HashMap<>();
         env.put(ChatbotConstants.BOT_PROVIDER, "https://bot.chatopera.com");
+        env.put(ChatbotConstants.THRESHOLD_FAQ_BEST_REPLY, "0.8");
+        env.put(ChatbotConstants.THRESHOLD_FAQ_SUGG_REPLY, "0.6");
         return env;
     }
 }

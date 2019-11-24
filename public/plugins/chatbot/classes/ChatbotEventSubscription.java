@@ -27,6 +27,7 @@ import com.chatopera.cc.persistence.repository.ChatbotRepository;
 import com.chatopera.cc.socketio.message.ChatMessage;
 import com.chatopera.cc.util.SerializeUtil;
 import com.chatopera.cc.util.SystemEnvHelper;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -53,8 +54,16 @@ public class ChatbotEventSubscription {
     @Autowired
     private ChatbotRepository chatbotRes;
 
+    // 机器人服务提供地址
     private final static String botServiecProvider = SystemEnvHelper.getenv(
             ChatbotConstants.BOT_PROVIDER, ChatbotConstants.DEFAULT_BOT_PROVIDER);
+
+    // FAQ最佳回复阀值
+    private final static double thresholdFaqBestReply = Double.parseDouble(SystemEnvHelper.getenv(
+            ChatbotConstants.THRESHOLD_FAQ_BEST_REPLY, "0.8"));
+    // FAQ建议回复阀值
+    private final static double thresholdFaqSuggReply = Double.parseDouble(SystemEnvHelper.getenv(
+            ChatbotConstants.THRESHOLD_FAQ_SUGG_REPLY, "0.6"));
 
     @Autowired
     private ChatbotProxy chatbotProxy;
@@ -82,12 +91,14 @@ public class ChatbotEventSubscription {
                 .findOne(request.getAiid());
 
         logger.info(
-                "[chat] chat request baseUrl {}, chatbot {}, fromUserId {}, textMessage {}", botServiecProvider, c.getName(),
+                "[chat] chat request baseUrl {}, chatbot {}, fromUserId {}, textMessage {}", botServiecProvider,
+                c.getName(),
                 request.getUserid(), request.getMessage());
         // Get response from Conversational Engine.
         com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
                 c.getClientId(), c.getSecret(), botServiecProvider);
-        JSONObject result = bot.conversation(request.getUserid(), request.getMessage());
+        JSONObject result = bot.conversation(
+                request.getUserid(), request.getMessage(), thresholdFaqBestReply, thresholdFaqSuggReply);
 
         // parse response
         if (result != null) {
@@ -95,31 +106,53 @@ public class ChatbotEventSubscription {
             if (result.getInt(RestUtils.RESP_KEY_RC) == 0) {
                 // reply
                 JSONObject data = result.getJSONObject("data");
-                ChatMessage resp = new ChatMessage();
-                resp.setCalltype(MainContext.CallType.OUT.toString());
-                resp.setAppid(resp.getAppid());
-                resp.setOrgi(request.getOrgi());
-                resp.setAiid(request.getAiid());
-                resp.setMessage(data.getString("string"));
-                resp.setTouser(request.getUserid());
-                resp.setAgentserviceid(request.getAgentserviceid());
-                resp.setMsgtype(request.getMsgtype());
-                resp.setUserid(request.getUserid());
-                resp.setType(request.getType());
-                resp.setChannel(request.getChannel());
-                if (data.has("params")) {
-                    resp.setExpmsg(data.get("params").toString());
-                }
-                resp.setContextid(request.getContextid());
-                resp.setSessionid(request.getSessionid());
-                resp.setUsession(request.getUsession());
-                resp.setUsername(c.getName());
-                resp.setUpdatetime(System.currentTimeMillis());
+                if (data.has("logic_is_fallback")) {
+                    ChatMessage resp = new ChatMessage();
+                    resp.setCalltype(MainContext.CallType.OUT.toString());
+                    resp.setAppid(resp.getAppid());
+                    resp.setOrgi(request.getOrgi());
+                    resp.setAiid(request.getAiid());
+                    resp.setMessage(data.getString("string"));
 
-                // 更新聊天机器人累计值
-                updateAgentUserWithRespData(request.getUserid(), request.getOrgi(), data);
-                // 保存并发送
-                chatbotProxy.saveAndPublish(resp);
+                    if (data.getBoolean("logic_is_fallback")) {
+                        // 兜底回复，检查FAQ
+                        JSONArray faqReplies = data.getJSONArray("faq");
+                        JSONArray suggs = new JSONArray();
+                        for (int i = 0; i < faqReplies.length(); i++) {
+                            JSONObject sugg = new JSONObject();
+                            JSONObject faqReply = faqReplies.getJSONObject(i);
+                            sugg.put("label", Integer.toString(i + 1) + ". " + faqReply.getString("post"));
+                            sugg.put("text", faqReply.getString("post"));
+                            sugg.put("type", "qlist");
+                            suggs.put(sugg);
+                        }
+                        if (suggs.length() > 0) {
+                            // TODO set help message on View Page
+                            resp.setMessage("为您找到如下信息：");
+                            resp.setExpmsg(suggs.toString());
+                        }
+                    } else if (data.has("params")) {
+                        resp.setExpmsg(data.get("params").toString());
+                    }
+
+                    resp.setTouser(request.getUserid());
+                    resp.setAgentserviceid(request.getAgentserviceid());
+                    resp.setMsgtype(request.getMsgtype());
+                    resp.setUserid(request.getUserid());
+                    resp.setType(request.getType());
+                    resp.setChannel(request.getChannel());
+
+                    resp.setContextid(request.getContextid());
+                    resp.setSessionid(request.getSessionid());
+                    resp.setUsession(request.getUsession());
+                    resp.setUsername(c.getName());
+                    resp.setUpdatetime(System.currentTimeMillis());
+
+                    // 更新聊天机器人累计值
+                    updateAgentUserWithRespData(request.getUserid(), request.getOrgi(), data);
+                    // 保存并发送
+                    chatbotProxy.saveAndPublish(resp);
+                }
             } else {
                 logger.warn("[chat] can not get expected response {}", result.toString());
             }
