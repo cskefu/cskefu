@@ -10,14 +10,14 @@ MYSQL_WRITEMODE_IP=`parse_host ${SPRING_DATASOURCE_URL}`
 MYSQL_WRITEMODE_PORT=`parse_port ${SPRING_DATASOURCE_URL}`
 CONTACT_CENTER_DB=`parse_dbname ${SPRING_DATASOURCE_URL}`
 CONTACT_CENTER_WAR=/opt/chatopera/contact-center.war
-MYSQL_SCRIPT_NAME=cosinee-MySQL-slim.sql
+UPGRADE_DB_SCRIPT_DIR=/tmp/ROOT/upgrade
 
-println "connecting to $MYSQL_WRITEMODE_IP:$MYSQL_WRITEMODE_PORT/$CONTACT_CENTER_DB with $SPRING_DATASOURCE_USERNAME/****"
+println "[upgrade] connecting to $MYSQL_WRITEMODE_IP:$MYSQL_WRITEMODE_PORT/$CONTACT_CENTER_DB with $SPRING_DATASOURCE_USERNAME/****"
 
 # functions
-function import_db(){
+function upgrade_db(){
     if [ ! -f $1 ]; then exit 1; fi
-    println "run MySQL DB initialize script ..."
+    println "run MySQL DB upgrade script" $1 "..."
     mysql -u ${SPRING_DATASOURCE_USERNAME} \
         -h ${MYSQL_WRITEMODE_IP} \
         -P ${MYSQL_WRITEMODE_PORT} -p${SPRING_DATASOURCE_PASSWORD} \
@@ -29,7 +29,7 @@ function import_db(){
     fi
 }
 
-function init_db(){
+function extract_war(){
     println "extract SQL script ..."
     if [ -f $CONTACT_CENTER_WAR ]; then
         cd /tmp
@@ -57,18 +57,21 @@ function init_db(){
 
 # main 
 [ -z "${BASH_SOURCE[0]}" -o "${BASH_SOURCE[0]}" = "$0" ] || return
-# check if database exist, if not, create it.
-mysqlshow -h ${MYSQL_WRITEMODE_IP} \
-    -P ${MYSQL_WRITEMODE_PORT} \
-    --user=${SPRING_DATASOURCE_USERNAME} \
-    --password=${SPRING_DATASOURCE_PASSWORD} \
-    ${CONTACT_CENTER_DB} > /dev/null 2>&1 && exit 0;
 
-# not exist
-init_db
+## check root dir
+if [ ! -d /tmp/ROOT ]; then
+    extract_war
+fi
 
-# verify status
-if [ ! $? -eq 0 ]; then
-    println "DB status check failed."
-    exit 1
+## run scripts
+if [ -d $UPGRADE_DB_SCRIPT_DIR ]; then
+    cd $UPGRADE_DB_SCRIPT_DIR
+    for x in `find . -name "*.sql"|sort`; do
+        echo "[run] " $x " ..."
+        upgrade_db $x
+        if [ ! $? -eq 0 ]; then
+            echo "Failed result with" $x 
+            exit 1
+        fi
+    done
 fi

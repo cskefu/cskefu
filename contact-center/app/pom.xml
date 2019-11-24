@@ -434,7 +434,7 @@
                         <resource>
                             <directory>../config/sql/</directory>
                             <includes>
-                                <include>cosinee-MySQL-slim.sql</include>
+                                <include>**/*.sql</include>
                             </includes>
                         </resource>
                     </webResources>

@@ -11,7 +11,8 @@ baseDir=$(cd `dirname "$0"`;pwd)
 # main 
 [ -z "${BASH_SOURCE[0]}" -o "${BASH_SOURCE[0]}" = "$0" ] || return
 cd $baseDir
-./setup-mysql-db.sh
+./mysql.setup.db.sh
+./mysql.upgrade.db.sh
 
 if [ $? -eq 0 ]; then
     java -jar contact-center.war
