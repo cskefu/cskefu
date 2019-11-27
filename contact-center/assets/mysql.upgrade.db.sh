@@ -13,8 +13,6 @@ CONTACT_CENTER_WAR=/opt/chatopera/contact-center.war
 APP_WAR_EXTRACTED=/tmp/ROOT
 UPGRADE_DB_SCRIPT_DIR=$APP_WAR_EXTRACTED/upgrade
 
-println "[upgrade] connecting to $MYSQL_WRITEMODE_IP:$MYSQL_WRITEMODE_PORT/$CONTACT_CENTER_DB with $SPRING_DATASOURCE_USERNAME/****"
-
 # functions
 function upgrade_db(){
     if [ ! -f $1 ]; then exit 1; fi
@@ -46,11 +44,18 @@ function extract_war(){
 
 # main 
 [ -z "${BASH_SOURCE[0]}" -o "${BASH_SOURCE[0]}" = "$0" ] || return
+println "[upgrade] connecting to $MYSQL_WRITEMODE_IP:$MYSQL_WRITEMODE_PORT/$CONTACT_CENTER_DB with $SPRING_DATASOURCE_USERNAME/****"
 ## check upgrade footprint
 if [ -f /opt/chatopera/upgrade.his ]; then
     echo "[upgrade] upgrade has been done with previous start."
     exit 0
 fi
+
+## wait for database connection ...
+while ! mysqladmin --user=${SPRING_DATASOURCE_USERNAME} --password=${SPRING_DATASOURCE_PASSWORD} --host=${MYSQL_WRITEMODE_IP} --port=${MYSQL_WRITEMODE_PORT} ping --silent &> /dev/null ; do
+    echo "Waiting for database connection..."
+    sleep 2
+done
 
 ## check root dir
 if [ ! -d $APP_WAR_EXTRACTED ]; then

@@ -29,7 +29,7 @@ public interface ContactsRepository extends ElasticsearchRepository<Contacts, St
 
     List<Contacts> findOneByDatastatusIsFalseAndPhoneAndOrgi(String phone, String orgi);
 
-    Contacts findOneByWluidAndWlsidAndWlcid(String wluid, String wlsid, String wlcid);
+    Contacts findOneByWluidAndWlsidAndWlcidAndDatastatus(String wluid, String wlsid, String wlcid, Boolean datastatus);
 
     List<Contacts> findByskypeidAndDatastatus(String skypeid, Boolean datastatus);
 

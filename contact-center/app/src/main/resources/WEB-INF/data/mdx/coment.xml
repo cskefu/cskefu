@@ -4,7 +4,7 @@
 		<View alias="agentservice">
 			<SQL>
 			<![CDATA[
-				select * from uk_agentservice where satisfaction = 1 <#if skill?? && skill!=""> AND agentskill = '${skill!''}'</#if> <#if agent?? && agent!=""> AND agentno = '${agent!''}'</#if> <#if orgi?? && orgi!=""> AND orgi = '${orgi!''}'</#if> <#if begin?? && begin!=""> AND satistime >= str_to_date('${begin!''}', '%Y-%m-%d %H:%i:%s')</#if> <#if end?? && end!=""> AND satistime <= str_to_date('${end!''} 23:59:59', '%Y-%m-%d %H:%i:%s')</#if>
+				select * from uk_agentservice where 1 = 1 <#if skill?? && skill!=""> AND agentskill = '${skill!''}'</#if> <#if agent?? && agent!=""> AND agentno = '${agent!''}'</#if> <#if orgi?? && orgi!=""> AND orgi = '${orgi!''}'</#if> <#if begin?? && begin!=""> AND satistime >= str_to_date('${begin!''}', '%Y-%m-%d %H:%i:%s')</#if> <#if end?? && end!=""> AND satistime <= str_to_date('${end!''} 23:59:59', '%Y-%m-%d %H:%i:%s')</#if>
 				]]>
 			</SQL>
 		</View>
@@ -25,9 +25,9 @@
 			<Hierarchy hasAll='true' allMemberName='合计' >
 				<Level name='日期'  column='satistime' uniqueMembers='false'>
 					<KeyExpression>
-						<SQL dialect="generic">date_format(agentservice.createtime,'%Y-%m-%d')</SQL>
-						<SQL dialect="mysql">date_format(agentservice.createtime,'%Y-%m-%d')</SQL>
-						<SQL dialect="oracle">TO_DATE(agentservice.createtime,'YYYY-MM-DD')</SQL>
+						<SQL dialect="generic">date_format(agentservice.satistime,'%Y-%m-%d')</SQL>
+						<SQL dialect="mysql">date_format(agentservice.satistime,'%Y-%m-%d')</SQL>
+						<SQL dialect="oracle">TO_DATE(agentservice.satistime,'YYYY-MM-DD')</SQL>
 					</KeyExpression>
 				</Level>
 			</Hierarchy>

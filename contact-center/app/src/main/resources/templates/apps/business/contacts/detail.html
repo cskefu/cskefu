@@ -84,7 +84,7 @@
                         <div class="uk-layui-form">
                             <input hidden value="${contacts.id!''}" id="contactsId"/>
                             <input hidden value="${contacts.creater!''}" id="creater"/>
-                            <div class="layui-collapse">
+                            <div class="layui-collapse" id="basic">
                                 <div class="layui-colla-item">
                                     <h2 class="layui-colla-title">基本信息</h2>
                                     <div class="layui-colla-content layui-show">
@@ -192,11 +192,44 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <#if contacts.wlusername?? || contacts.wluid??>
+                                        <div class="layui-form-item">
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label">用户名(id)：</label>
+                                                <div class="layui-input-inline" style="margin-left:5px;line-height: 2.5em;">
+                                                    ${contacts.wlusername!''}
+                                                    <span>(${contacts.wluid!''})</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </#if>
+                                        <#if contacts.wlcompany_name?? || contacts.wlcid??>
+                                        <div class="layui-form-item">
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label">公司名称(id)：</label>
+                                                <div class="layui-input-inline" style="margin-left:5px;line-height: 2.5em;">
+                                                    ${contacts.wlcompany_name!''}
+                                                    <span>(${contacts.wlcid!''})</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </#if>
+                                        <#if contacts.wlsystem_name?? || contacts.wlsid??>
+                                        <div class="layui-form-item">
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label">子系统名称(id)：</label>
+                                                <div class="layui-input-inline" style="margin-left:5px;line-height: 2.5em;">
+                                                    ${contacts.wlsystem_name!''}
+                                                    <span>(${contacts.wlsid!''})</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </#if>
                                         <div class="layui-form-item">
                                             <div class="layui-inline">
                                                 <label class="layui-form-label">联系人地址：</label>
                                                 <div class="layui-input-inline" style="width: 159%;">
-                                                    <input type="text" name="address" readonly value="${contacts.address!''}" class="layui-input">
+                                                    <input type="text" name="address" readonly value="${contacts.address!''}" class="layui-input" style="width: 425px;">
                                                 </div>
                                             </div>
                                         </div>
@@ -204,7 +237,7 @@
                                             <div class="layui-inline">
                                                 <label class="layui-form-label">联系人说明：</label>
                                                 <div class="layui-input-inline" style="width: 149%;">
-                                                    <textarea name="memo" class="layui-textarea" readonly>${contacts.memo!''}</textarea>
+                                                    <textarea name="memo" class="layui-textarea" readonly style="width: 425px;">${contacts.memo!''}</textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -254,6 +287,13 @@
     .container {
         width: 100%;
         word-break: break-all;
+    }
+
+    #basic .layui-form-label{
+        width: 115px;
+    }
+    #basic .layui-input-inline{
+        width: 270px;
     }
 </style>
 <script>
