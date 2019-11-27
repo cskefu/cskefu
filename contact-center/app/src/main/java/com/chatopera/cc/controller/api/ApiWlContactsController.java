@@ -136,7 +136,7 @@ public class ApiWlContactsController extends Handler {
             final String uid = j.get("uid").getAsString();
             final String sid = j.get("sid").getAsString();
             final String cid = j.get("cid").getAsString();
-            Contacts record = contactsRes.findOneByWluidAndWlsidAndWlcid(uid, sid, cid);
+            Contacts record = contactsRes.findOneByWluidAndWlsidAndWlcidAndDatastatus(uid, sid, cid, false);
             boolean isNew = false;
             if (record == null) {
                 // create new obj

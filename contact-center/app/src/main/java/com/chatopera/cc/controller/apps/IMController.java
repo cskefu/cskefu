@@ -307,7 +307,7 @@ public class IMController extends Handler {
             final String company_name,
             final String system_name) {
         if (StringUtils.isNotBlank(uid) && StringUtils.isNotBlank(sid) && StringUtils.isNotBlank(cid)) {
-            Contacts data = contactsRes.findOneByWluidAndWlsidAndWlcid(uid, sid, cid);
+            Contacts data = contactsRes.findOneByWluidAndWlsidAndWlcidAndDatastatus(uid, sid, cid, false);
             if (data == null) {
                 data = new Contacts();
                 data.setCreater(gid);
@@ -367,7 +367,7 @@ public class IMController extends Handler {
             onlineUserRes.save(onlineUser);
         }
 
-        Contacts usc = contactsRes.findOneByWluidAndWlsidAndWlcid(uid, sid, cid);
+        Contacts usc = contactsRes.findOneByWluidAndWlsidAndWlcidAndDatastatus(uid, sid, cid, false);
         if (usc != null) {
             return "usc";
         } else {
@@ -766,7 +766,7 @@ public class IMController extends Handler {
                     String cid = (String) request.getSession().getAttribute("Sessioncid");
 
                     if (StringUtils.isNotBlank(uid) && StringUtils.isNotBlank(sid) && StringUtils.isNotBlank(cid)) {
-                        Contacts contacts1 = contactsRes.findOneByWluidAndWlsidAndWlcid(uid, sid, cid);
+                        Contacts contacts1 = contactsRes.findOneByWluidAndWlsidAndWlcidAndDatastatus(uid, sid, cid, false);
                         if (contacts1 != null) {
                             agentUserRepository.findOneByUseridAndOrgi(userid, orgi).ifPresent(p -> {
                                 // 关联AgentService的联系人
