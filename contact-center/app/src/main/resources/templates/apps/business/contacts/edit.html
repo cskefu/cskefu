@@ -2,6 +2,12 @@
 <div class="uk-layui-form">
 	<form class="layui-form" action="/apps/contacts/update.html" method="post">
 		<input type="hidden" name="id" value="${contacts.id!''}">
+		<input type="hidden" name="wluid" value="${contacts.wluid!''}">
+		<input type="hidden" name="wlusername" value="${contacts.wlusername!''}">
+		<input type="hidden" name="wlcid" value="${contacts.wlcid!''}">
+		<input type="hidden" name="wlcompany_name" value="${contacts.wlcompany_name!''}">
+		<input type="hidden" name="wlsid" value="${contacts.wlsid!''}">
+		<input type="hidden" name="wlsystem_name" value="${contacts.wlsystem_name!''}">
 		<div class="layui-collapse">
 			<div class="layui-colla-item">
 				<h2 class="layui-colla-title">基本信息</h2>

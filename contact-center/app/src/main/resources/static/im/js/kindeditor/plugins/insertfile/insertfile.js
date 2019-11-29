@@ -21,14 +21,16 @@ KindEditor.plugin('insertfile', function(K) {
 			fileTitle = K.undef(options.fileTitle, ''),
 			clickFn = options.clickFn;
 		var html = [
-			'<div style="padding:20px;">',
+			'<div style="padding: 20px 20px 0 20px;">',
 			'<div class="ke-dialog-row">',
-			'<label for="keUrl" style="width:60px;">' + lang.url + '</label>',
+			'<label for="keUrl" style="width:52px;">' + lang.url + '</label>',
 			'<input type="text" id="keUrl" name="url" class="ke-input-text" style="width:160px;" /> &nbsp;',
 			'<input type="button" class="ke-upload-button" value="' + lang.upload + '" /> &nbsp;',
 			'<span class="ke-button-common ke-button-outer">',
 			'<input type="button" class="ke-button-common ke-button" name="viewServer" value="' + lang.viewServer + '" />',
 			'</span>',
+			'<div style="margin: 10px 0">文档支持：doc/docx、xls/xlsx、pdf</div>',
+			'<div>文档上限：20MB</div>',
 			'</div>',
 			//title
 

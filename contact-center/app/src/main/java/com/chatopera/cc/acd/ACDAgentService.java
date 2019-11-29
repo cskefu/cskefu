@@ -105,11 +105,11 @@ public class ACDAgentService {
                     ctx.getAgentService().getStatus())) {
                 // 通知消息到坐席
                 MainContext.getPeerSyncIM().send(MainContext.ReceiverType.AGENT,
-                                                 MainContext.ChannelType.WEBIM,
-                                                 ctx.getAppid(),
-                                                 MainContext.MessageType.NEW,
-                                                 ctx.getAgentService().getAgentno(),
-                                                 ctx, true);
+                        MainContext.ChannelType.WEBIM,
+                        ctx.getAppid(),
+                        MainContext.MessageType.NEW,
+                        ctx.getAgentService().getAgentno(),
+                        ctx, true);
             }
 
             /**
@@ -126,8 +126,8 @@ public class ACDAgentService {
             }
 
             MainContext.getPeerSyncIM().send(MainContext.ReceiverType.VISITOR,
-                                             MainContext.ChannelType.WEBIM, ctx.getAppid(),
-                                             MainContext.MessageType.NEW, ctx.getOnlineUserId(), outMessage, true);
+                    MainContext.ChannelType.WEBIM, ctx.getAppid(),
+                    MainContext.MessageType.NEW, ctx.getOnlineUserId(), outMessage, true);
 
 
         } else {
@@ -149,7 +149,7 @@ public class ACDAgentService {
             final String agentno,
             final AgentUser agentUser,
             final String orgi
-                                             ) throws Exception {
+    ) throws Exception {
         final AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(agentno, orgi);
         return pickupAgentUserInQueue(agentUser, agentStatus);
     }
@@ -171,8 +171,8 @@ public class ACDAgentService {
             return;
         }
         logger.info("[assignVisitors] agentStatus id {}, status {}, service {}/{}, skills {}, busy {}",
-                    agentStatus.getId(), agentStatus.getStatus(), agentStatus.getUsers(), agentStatus.getMaxusers(),
-                    HashMapUtils.concatKeys(agentStatus.getSkills(), "|"), agentStatus.isBusy());
+                agentStatus.getId(), agentStatus.getStatus(), agentStatus.getUsers(), agentStatus.getMaxusers(),
+                HashMapUtils.concatKeys(agentStatus.getSkills(), "|"), agentStatus.isBusy());
 
         if ((!StringUtils.equals(
                 MainContext.AgentStatusEnum.READY.toString(), agentStatus.getStatus())) || agentStatus.isBusy()) {
@@ -276,12 +276,12 @@ public class ACDAgentService {
                         MainContext.ReceiverType.VISITOR,
                         MainContext.ChannelType.toValue(agentUser.getChannel()), agentUser.getAppid(),
                         MainContext.MessageType.STATUS, agentUser.getUserid(), outMessage, true
-                               );
+                );
 
                 // 向坐席推送消息
                 peerSyncIM.send(MainContext.ReceiverType.AGENT, MainContext.ChannelType.WEBIM,
-                                agentUser.getAppid(),
-                                MainContext.MessageType.NEW, agentUser.getAgentno(), outMessage, true);
+                        agentUser.getAppid(),
+                        MainContext.MessageType.NEW, agentUser.getAgentno(), outMessage, true);
             }
         } catch (Exception ex) {
             logger.warn("[assignVisitors] fail to process service", ex);
@@ -395,15 +395,15 @@ public class ACDAgentService {
                             MainContext.ReceiverType.VISITOR,
                             MainContext.ChannelType.toValue(agentUser.getChannel()), agentUser.getAppid(),
                             MainContext.MessageType.STATUS, agentUser.getUserid(), outMessage, true
-                                   );
+                    );
 
                     if (agentStatus != null) {
                         // 坐席在线，通知结束会话
                         outMessage.setChannelMessage(agentUser);
                         outMessage.setAgentUser(agentUser);
                         peerSyncIM.send(MainContext.ReceiverType.AGENT, MainContext.ChannelType.WEBIM,
-                                        agentUser.getAppid(),
-                                        MainContext.MessageType.END, agentUser.getAgentno(), outMessage, true);
+                                agentUser.getAppid(),
+                                MainContext.MessageType.END, agentUser.getAgentno(), outMessage, true);
                     }
                     break;
                 case PHONE:
@@ -488,9 +488,15 @@ public class ACDAgentService {
             final AgentUser agentUser,
             final String orgi,
             final boolean finished) {
+
         AgentService agentService = new AgentService();
         if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-            agentService.setId(agentUser.getAgentserviceid());
+            AgentService existAgentService = agentServiceRes.findByIdAndOrgi(agentUser.getAgentserviceid(), orgi);
+            if (existAgentService != null) {
+                agentService = existAgentService;
+            } else {
+                agentService.setId(agentUser.getAgentserviceid());
+            }
         }
         agentService.setOrgi(orgi);
 

@@ -665,12 +665,13 @@ public class IMController extends Handler {
                 } else {
                     report = acdWorkMonitor.getAgentReport(invite.getOrgi());
                 }
-
+                boolean isLeavemsg = false;
                 if (report.getAgents() == 0 ||
                         (sessionConfig.isHourcheck() &&
                                 !MainUtils.isInWorkingHours(sessionConfig.getWorkinghours()) &&
                                 invite.isLeavemessage())) {
                     // 没有坐席在线，进入留言
+                    isLeavemsg = true;
                     boolean isInWorkingHours = MainUtils.isInWorkingHours(sessionConfig.getWorkinghours());
                     map.addAttribute("isInWorkingHours", isInWorkingHours);
                     view = request(super.createRequestPageTempletResponse("/apps/im/leavemsg"));
@@ -846,7 +847,7 @@ public class IMController extends Handler {
                                     "/apps/im/chatbot/mobile"));        // 智能机器人 移动端
                         }
                     } else {
-                        if (MobileDevice.isMobile(request.getHeader("User-Agent")) || StringUtils.isNotBlank(mobile)) {
+                        if (!isLeavemsg && (MobileDevice.isMobile(request.getHeader("User-Agent")) || StringUtils.isNotBlank(mobile))) {
                             view = request(
                                     super.createRequestPageTempletResponse("/apps/im/mobile"));    // WebIM移动端。再次点选技能组？
                         }

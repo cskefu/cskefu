@@ -536,6 +536,8 @@ input,textarea{
 	border: 1px solid #b2e5f9;
     float: right;
     min-width: 25px;
+    max-width: 400px;
+    word-break: break-all;
 }
 .chatting-right div.chat-content a{
     color:#4665d4;

@@ -237,7 +237,7 @@
 	  ,element = layui.element(); //Tab的切换功能，切换事件监听等，需要依赖element模块
 	});
 	var hostname = location.hostname ;
-	var socket = io.connect(top.schema+"://"+top.hostname+":"+top.port+"/im/ent?userid=${user.id!''!''}&orgi=${user.orgi!''}&contextid=${contextid!''}&group=${contextid!''}",{transports: ['websocket'], upgrade: false});
+	var socket = io.connect(location.protocol+"//"+top.hostname+":"+top.port+"/im/ent?userid=${user.id!''!''}&orgi=${user.orgi!''}&contextid=${contextid!''}&group=${contextid!''}",{transports: ['websocket'], upgrade: false});
 
 	socket.on('message', function(data) {
 		data.createtime = formatDate(data.createtime);
