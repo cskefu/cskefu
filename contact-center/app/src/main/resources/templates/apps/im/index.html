@@ -311,8 +311,10 @@
 				if(isAgentEnds){
 					alert("服务评价已提交，请关闭浏览器！");
 					isAgentEnds = false ;
+
 					service_end = true;
 				}
+				alert("服务评价已提交");
 			} , "id="+form.id.value+"&satislevel="+document.getElementById("satislevel_input").value +"&satiscomment="+encodeURIComponent(satisComment));
 			return false ;
 		}

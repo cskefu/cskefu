@@ -262,25 +262,26 @@ public class CustomerController extends Handler {
 
     @RequestMapping("/delete")
     @Menu(type = "customer", subtype = "customer")
-    public ModelAndView delete(HttpServletRequest request, @Valid EntCustomer entCustomer, @Valid String p) {
+    public ModelAndView delete(HttpServletRequest request, @Valid EntCustomer entCustomer, @Valid String p, @Valid String ekind) {
         if (entCustomer != null) {
             entCustomer = entCustomerRes.findOne(entCustomer.getId());
             entCustomer.setDatastatus(true);                            //客户和联系人都是 逻辑删除
             entCustomerRes.save(entCustomer);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/apps/customer/index.html?p=" + p + "&ekind=" + entCustomer.getEkind()));
+        return request(super.createRequestPageTempletResponse("redirect:/apps/customer/index.html?p=" + p + "&ekind=" + ekind));
     }
 
     @RequestMapping("/edit")
     @Menu(type = "customer", subtype = "customer")
-    public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
+    public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String ekind) {
         map.addAttribute("entCustomer", entCustomerRes.findOne(id));
+        map.addAttribute("ekindId", ekind);
         return request(super.createRequestPageTempletResponse("/apps/business/customer/edit"));
     }
 
     @RequestMapping("/update")
     @Menu(type = "customer", subtype = "customer")
-    public ModelAndView update(HttpServletRequest request, @Valid CustomerGroupForm customerGroupForm) {
+    public ModelAndView update(HttpServletRequest request, @Valid CustomerGroupForm customerGroupForm, @Valid String ekindId) {
         final User logined = super.getUser(request);
         EntCustomer customer = entCustomerRes.findOne(customerGroupForm.getEntcustomer().getId());
         String msg = "";
@@ -306,7 +307,7 @@ public class CustomerController extends Handler {
         customerGroupForm.getEntcustomer().setPinyin(PinYinTools.getInstance().getFirstPinYin(customerGroupForm.getEntcustomer().getName()));
         entCustomerRes.save(customerGroupForm.getEntcustomer());
 
-        return request(super.createRequestPageTempletResponse("redirect:/apps/customer/index.html?ekind=" + customerGroupForm.getEntcustomer().getEkind() + "&msg=" + msg));
+        return request(super.createRequestPageTempletResponse("redirect:/apps/customer/index.html?ekind=" + ekindId + "&msg=" + msg));
     }
 
     @RequestMapping("/imp")

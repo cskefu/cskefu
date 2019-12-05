@@ -418,7 +418,7 @@ input,textarea{
 	position: absolute;
     right: 5px;
     width:70px;
-    top:5px;
+    top:9px;
 }
 .mobile-chat-bottom .send-btn{
 	width: 96px;
@@ -467,8 +467,8 @@ input,textarea{
 }
 .mobile-chat-bottom #message {
     position: absolute;
-    left: 45px;
-    width: calc(100% - 130px);
+    left: 80px;
+    width: calc(100% - 160px);
     border:1px solid #cccccc;
     font-size:16px;
     height:40px;

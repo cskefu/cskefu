@@ -185,6 +185,7 @@
 			  shade: 0,
 			  content: url
 		  });
+		top.$('#'+id).next().find("a.layui-layer-maxmin").click();
 		if($('#msgbox').data("msgbox") - $('.cont_'+id).data("newmsg") > 0){
 			$('#msgbox').data("newmsg" , $('#msgbox').data("msgbox") - $('.cont_'+id).data("newmsg")) ;
 		}else{

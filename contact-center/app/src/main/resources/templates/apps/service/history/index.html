@@ -11,7 +11,7 @@
 					历史会话<#if agentServiceList??>（${agentServiceList.totalElements}）</#if>
 				</h1>
 					<span>
-						<form class="layui-form" name="search"	action="/service/history/index.html" method="get" style="float: left;margin-right:5px">
+						<form class="layui-form" name="search" id="search"	action="/service/history/index.html" method="get" style="float: left;margin-right:5px">
 							<div class="layui-form-item" style="width: 700px;padding-left: 5px">
 								<div class="layui-inline">
 									<div class="layui-input-inline" style="width: auto;margin-right:0px;">
@@ -74,39 +74,30 @@
 												</#if>
 										    </select>
 										    <label  >~</label>
-<!--										    <select name="allocation" id="allocation" class="layui-input ukefu-input" lay-ignore>-->
-<!--										    		<option value="">请选择坐席</option>-->
-<!--										    	<#if agentList??>-->
-<!--										    		<#list agentList as useragent>-->
-<!--														<option value="${useragent.id}" <#if agent?? && agent == useragent.id>selected="selected"</#if>>${useragent.uname!''}</option>-->
-<!--										    		</#list>-->
-<!--										    		</#if>-->
-<!--											</select>-->
-
-									<select name="allocation"  id="allocation" class="layui-input ukefu-input" lay-ignore>
-										<option value="">请先选择分类</option>
-										<#if servicetype=="agentno">
-										  <#if userlist?? >
-										    <#list userlist as user >
-										      <#if allocation??>
-										        <option value="${user.id}" <#if allocation?? && allocation == user.id>selected="selected"</#if>>${user.uname}</option>
-										      <#else>
-										        <option value="${user.id}">${user.uname}</option>
-									           </#if>
-										    </#list>
-									      </#if>
-									    <#else>
-									      <#if deptlist?? >
-									        <#list deptlist as dept >
-									          <#if allocation??>
-									             <option value="${dept.id}" <#if allocation?? && allocation == dept.id>selected="selected"</#if>>${dept.name}</option>
-									          <#else>
-									             <option value="${dept.id}">${dept.name}</option>
-								              </#if>
-							                </#list>
-						                  </#if>
-										</#if>
-							</select>
+											<select name="allocation"  id="allocation" class="layui-input ukefu-input" lay-ignore>
+												<option value="">请先选择分类</option>
+													<#if servicetype=="agentno">
+													  <#if userlist?? >
+														<#list userlist as user >
+														  <#if allocation??>
+															<option value="${user.id}" <#if allocation?? && allocation == user.id>selected="selected"</#if>>${user.uname}</option>
+															<#else>
+															<option value="${user.id}">${user.uname}</option>
+														   </#if>
+														</#list>
+													  </#if>
+													<#elseif servicetype=="skill">
+													  <#if deptlist?? >
+														<#list deptlist as dept >
+														  <#if allocation??>
+															 <option value="${dept.id}" <#if allocation?? && allocation == dept.id>selected="selected"</#if>>${dept.name}</option>
+														  <#else>
+															 <option value="${dept.id}">${dept.name}</option>
+														  </#if>
+														</#list>
+													</#if>
+												</#if>
+											</select>
 										</div>
 									</div>
 								</div>
@@ -193,6 +184,11 @@
 		var form = layui.form();
 		form.render(); //更新全部
 	});
+	var searchData = $("#search :input").serializeArray()
+	var searchCondition = "";
+	$.each(searchData, function() {
+		searchCondition += '&'+this.name+'='+this.value
+	});
 	layui.use(['laypage', 'layer'], function(){
 		  var laypage = layui.laypage
 		  ,layer = layui.layer;
@@ -203,7 +199,7 @@
 				,groups: 5 //连续显示分页数
 				,jump:function(data , first){
 					if(!first){
-						location.href = "/service/history/index.html?p="+data.curr ;
+						location.href = "/service/history/index.html?p="+data.curr+searchCondition;
 					}
 				}
 		   });
@@ -227,8 +223,6 @@
 		var currentdate = year + seperator + month + seperator + strDate;
 		return currentdate;
 	}
-
-
 	var start = {
 		format: 'YYYY-MM-DD',
 		max:getNowFormatDate(),//默认最大值为当前日期
@@ -237,7 +231,6 @@
 			end.min = datas; //开始日选好后，重置结束日的最小日期
 		}
 	};
-
 	var end = {
 		format: 'YYYY-MM-DD',
 		max:getNowFormatDate(),//默认最大值为当前日期
@@ -246,7 +239,6 @@
 			start.max = datas; //结束日选好后，重置开始日的最大日期
 		}
 	};
-
 	document.getElementById('begin').onclick = function () {
 		start.elem = this;
 		laydate(start);
@@ -255,7 +247,7 @@
 		end.elem = this;
 		laydate(end);
 	};
-
+	
 	function deptorservice(data){
 		$('#allocation').html("");
 		if(data=="agentno"){

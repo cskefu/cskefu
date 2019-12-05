@@ -319,6 +319,7 @@ public class IMController extends Handler {
                 data.setWlsid(sid);
                 data.setWlsystem_name(system_name);
                 data.setName(username + '@' + company_name);
+                data.setShares("all");
 
                 data.setPinyin(PinYinTools.getInstance().getFirstPinYin(username));
                 contactsRes.save(data);

@@ -12,7 +12,7 @@
 					服务小结列表<#if summaryList??>（${summaryList.totalElements}）</#if>
 					<span style="float:right;">
 						<div class="ukefu-bt-text-content" style="position: absolute;right: 5px;top: 0px;">
-							<form class="layui-form" name="search"	action="/apps/agent/processed/index.html" method="get" style="float: left;margin-right:5px;">
+							<form class="layui-form" name="search" id="search"action="/apps/agent/processed/index.html" method="get" style="float: left;margin-right:5px;">
 								<div class="layui-form-item">
 									<div class="layui-inline" style="margin-right:0px;">
 										<div class="layui-input-inline" style="width: auto;margin-right:0px;">
@@ -173,65 +173,74 @@
 		});
 		
 	});
-	layui.use(['laypage', 'layer' , 'laydate'], function(){
+	var searchData = $("#search :input").serializeArray()
+	var searchCondition = "";
+	$.each(searchData, function() {
+		searchCondition += '&'+this.name+'='+this.value
+	});
+	layui.use(['laypage', 'layer'], function(){
 		  var laypage = layui.laypage
 		  ,layer = layui.layer;
 		  var laydate = layui.laydate;
-
-		function getNowFormatDate() {
-			var date = new Date();
-			var seperator = "-";
-			var year = date.getFullYear();
-			var month = date.getMonth() + 1;
-			var strDate = date.getDate();
-			if (month >= 1 && month <= 9) {
-				month = "0" + month;
-			}
-			if (strDate >= 0 && strDate <= 9) {
-				strDate = "0" + strDate;
-			}
-			var currentdate = year + seperator + month + seperator + strDate;
-			return currentdate;
-		}
-
-		var start = {
-			format: 'YYYY-MM-DD',
-			max:getNowFormatDate(),//默认最大值为当前日期
-			istoday: true,
-			choose: function (datas) {
-				end.min = datas; //开始日选好后，重置结束日的最小日期
-			}
-		};
-
-		var end = {
-			format: 'YYYY-MM-DD',
-			max:getNowFormatDate(),//默认最大值为当前日期
-			istoday: true,
-			choose: function (datas) {
-				start.max = datas; //结束日选好后，重置开始日的最大日期
-			}
-		};
-
-		document.getElementById('begin').onclick = function () {
-			start.elem = this;
-			laydate(start);
-		};
-		document.getElementById('end').onclick = function () {
-			end.elem = this;
-			laydate(end);
-		};
-		  
-		  laypage({
+		laypage({
 				cont: 'page'
 				,pages: <#if summaryList??>${summaryList.totalPages}<#else>0</#if> //总页数
 				,curr:<#if summaryList??>${summaryList.number+1}<#else>0</#if>
 				,groups: 5 //连续显示分页数
 				,jump:function(data , first){
 					if(!first){
-						location.href = "/apps/agent/processed/index.html?p="+data.curr ;
+						location.href = "/apps/agent/processed/index.html?p="+data.curr + searchCondition;
 					}
 				}
 		   });
-		});
+	});
+
+	layui.use('laydate', function() {
+		var laydate = layui.laydate;
+	});
+
+	function getNowFormatDate() {
+		var date = new Date();
+		var seperator = "-";
+		var year = date.getFullYear();
+		var month = date.getMonth() + 1;
+		var strDate = date.getDate();
+		if (month >= 1 && month <= 9) {
+			month = "0" + month;
+		}
+		if (strDate >= 0 && strDate <= 9) {
+			strDate = "0" + strDate;
+		}
+		var currentdate = year + seperator + month + seperator + strDate;
+		return currentdate;
+	}
+
+	var start = {
+		format: 'YYYY-MM-DD',
+		max:getNowFormatDate(),//默认最大值为当前日期
+		istoday: true,
+		choose: function (datas) {
+			end.min = datas; //开始日选好后，重置结束日的最小日期
+		}
+	};
+
+	var end = {
+		format: 'YYYY-MM-DD',
+		max:getNowFormatDate(),//默认最大值为当前日期
+		istoday: true,
+		choose: function (datas) {
+			start.max = datas; //结束日选好后，重置开始日的最大日期
+		}
+	};
+
+	document.getElementById('begin').onclick = function () {
+		start.elem = this;
+		laydate(start);
+	};
+	document.getElementById('end').onclick = function () {
+		end.elem = this;
+		laydate(end);
+	};
+
 </script>
 

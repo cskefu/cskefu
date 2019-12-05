@@ -239,7 +239,7 @@ public class SystemConfigController extends Handler {
             systemConfig.setConsolelogo(super.saveImageFileWithMultipart(consolelogo));
         }
         if (favlogo != null && StringUtils.isNotBlank(
-                favlogo.getOriginalFilename()) && consolelogo.getOriginalFilename().lastIndexOf(".") > 0) {
+                favlogo.getOriginalFilename()) && favlogo.getOriginalFilename().lastIndexOf(".") > 0) {
             systemConfig.setFavlogo(super.saveImageFileWithMultipart(favlogo));
         }
 

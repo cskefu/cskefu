@@ -242,14 +242,14 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/delete")
     @Menu(type = "contacts", subtype = "contacts")
-    public ModelAndView delete(HttpServletRequest request, @Valid Contacts contacts, @Valid String p) {
+    public ModelAndView delete(HttpServletRequest request, @Valid Contacts contacts, @Valid String p, @Valid String ckind) {
         if (contacts != null) {
             contacts = contactsRes.findOne(contacts.getId());
             contacts.setDatastatus(true);                            //客户和联系人都是 逻辑删除
             contactsRes.save(contacts);
         }
         return request(super.createRequestPageTempletResponse(
-                "redirect:/apps/contacts/index.html?p=" + p + "&ckind=" + contacts.getCkind()));
+                "redirect:/apps/contacts/index.html?p=" + p + "&ckind=" + ckind));
     }
 
     @RequestMapping("/add")
@@ -296,8 +296,9 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/edit")
     @Menu(type = "contacts", subtype = "contacts")
-    public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
+    public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String ckind) {
         map.addAttribute("contacts", contactsRes.findOne(id));
+        map.addAttribute("ckindId", ckind);
         return request(super.createRequestPageTempletResponse("/apps/business/contacts/edit"));
     }
 
@@ -350,7 +351,7 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/update")
     @Menu(type = "contacts", subtype = "contacts")
-    public ModelAndView update(HttpServletRequest request, @Valid Contacts contacts) {
+    public ModelAndView update(HttpServletRequest request, @Valid Contacts contacts , @Valid String ckindId) {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         Contacts data = contactsRes.findOne(contacts.getId());
@@ -372,13 +373,13 @@ public class ContactsController extends Handler {
             } else {
                 //无修改，直接点击确定
                 return request(super.createRequestPageTempletResponse(
-                        "redirect:/apps/contacts/index.html?ckind=" + contacts.getCkind()));
+                        "redirect:/apps/contacts/index.html?ckind=" + ckindId));
             }
         } else {
             logger.info("[contacts edit] errer :The same skypeid exists");
             msg = "edit_contacts_fail";
             return request(super.createRequestPageTempletResponse(
-                    "redirect:/apps/contacts/index.html?ckind=" + contacts.getCkind() + "&msg=" + msg));
+                    "redirect:/apps/contacts/index.html?ckind=" + ckindId + "&msg=" + msg));
         }
 
 
@@ -411,7 +412,7 @@ public class ContactsController extends Handler {
             contactsRes.save(contacts);
         }
         return request(super.createRequestPageTempletResponse(
-                "redirect:/apps/contacts/index.html?ckind=" + contacts.getCkind() + "&msg=" + msg));
+                "redirect:/apps/contacts/index.html?ckind=" + ckindId + "&msg=" + msg));
     }
 
 

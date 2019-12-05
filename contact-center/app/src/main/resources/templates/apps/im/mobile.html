@@ -245,12 +245,12 @@
 				<input type="file" name="imgFile" id="imgFile" accept="image/*" onChange="$('#imgForm').submit();$(this).val('');">
 			</a>
 		</form>
+		<img id="evaluation" onclick="popup('block')" src="/im/img/evaluationm.png" style="width:32px;height:32px;    margin-left: 40px;margin-top: 5px;"></a>
 		<textarea id="message" name="content" maxlength="<#if inviteData.maxwordsnum gt 0>${inviteData.maxwordsnum}<#else>300</#if>"></textarea>
 		<div class="btn-push clearfix" class="tools">
 			<img id="facedialog" onclick="return openFaceDialog()" src="/im/img/face.png" style="width:32px;height:32px;"></a>
 			<a href="javascript:void(0)" onClick="sendMessage();return false;"><img src="/im/img/send.png" style="width:32px;height:32px;"></a>
 		</div>
-		
 		<div id="faceindex" style="display:none;height:200px;position: absolute;bottom: 0px;width:100%;overflow-x:auto;">
 			<table class="ke-table" cellpadding="0" cellspacing="0" border="0" style="min-width:100%;">
 				<tbody>
@@ -268,15 +268,198 @@
 		</div>
 	</div>
 </div>
-
+<#if sessionConfig?? && sessionConfig.satisfaction?? && sessionConfig.satisfaction>
+<!--调查问卷弹框-->
+<div class="dialogWrap" id="dialogWrap" style="display: none;height: auto;margin:0px;top:0;left: 0;border:none;width: 100%;height: 100%;background-color:#fff;overflow: auto">
+	<div class="dialogCon">
+		<form id="commentContent" onSubmit="return submitForm(this)">
+			<input type="hidden" name="id" id="agentserviceid" name="agentserviceid">
+			<div style="width: 100%;height: 100%;overflow:auto;">
+				<h2 class="diaHeader clearfix" style="width: 90%;margin: 0 auto;">
+					<span>评价</span>
+					<hr style="width: 100%;">
+				</h2>
+				<p class="title" style="width: 90%;margin: 10px auto 0;">您是否对此次服务满意?</p>
+				<!--评价-->
+				<div style="width: 90%;margin: 20px auto">
+					<span style="font-weight: 600;font-size: 16px;">评价：</span>
+					<span style="position: relative;top: 10px">
+					  <div style="width: 100%;height: auto;margin-bottom: 15px">
+						<#assign defaultvalue = "">
+						<#if commentList??>
+						<#list commentList as comment>
+						<div style="margin-bottom:15px;width: 188px">
+						<input type="radio" name="satislevel" value="${comment.code!''}" <#if comment_index == 0>checked="checked"</#if> id="dic_${comment.id!''}" onclick="document.getElementById('satislevel_input').value = this.value">
+						<label for="dic_${comment.id!''}" class="radio">${comment.name!''}</label>
+						</div>
+						<#if defaultvalue == "">
+						<#assign defaultvalue = comment.code>
+						</#if>
+						</#list>
+						</#if>
+						<input type="hidden" id="satislevel_input" name="t" value="${defaultvalue}">
+					  </div>
+					</span>
+				</div>
+				<div style="width: 90%;margin: 20px auto">
+					<span style="font-weight: 600;font-size: 16px;">意见：</span>
+					<input type="hidden" id="comment_input" name="t">
+					<span style="position: relative;top: 10px">
+					  <div style="width: 100%;height: auto;margin-bottom: 15px">
+						<#if commentItemList??>
+							<#list commentItemList as item>
+							<div style="margin-bottom:15px;width: 188px">
+								<input type="radio" name="comment" id="item_${item.id!''}" value="${item.id!''}" contentname="${item.name!''}"  onclick="selectOther(this.getAttribute('contentname'),this.value)">
+								<label for="item_${item.id!''}" class="radio" style="margin-right: 0px">
+									${item.name!''}
+								</label>
+							</div>
+							</#list>
+							<textarea name="comment" id="othertxt" placeholder="请输入意见(最大长度为200个字符)" class="layui-textarea" style="resize:none;display: none;height: 85px; width:100%;background: #f7f7f7;border-color: #ccc;font-size: 14px;outline: none;padding-left: 10px;border-radius: 2px;" maxlength="200"></textarea>
+						</#if>
+					  </div>
+					</span>
+				</div>
+				<div style="width: 100%;height: 85px"></div>
+				<!--按钮-->
+				<p class="submitBtnWrap" style="background:#fff;position: fixed;bottom: 0px;left:0px;width: 100%;height:100px;padding-right: 0px;margin-bottom: 0px;z-index: 10">
+					<input type="submit" class="btn submitBtn" id="submitBtn" style="width: 85% !important;display: block;margin: 0 auto;" value="提 交">
+				</p>
+            </div>
+		</form>
+	</div>
+</div>
+</#if>
 <script>
 	var service_end = false;
 	// 调查问卷
-	var diaShade = document.getElementById('diaShade');
 	var dialogWrap = document.getElementById('dialogWrap');
 	function popup(para) {
-		diaShade.style.display = para;
 		dialogWrap.style.display = para;
+	}
+	function selectOther(name,value){
+		var otherTxt = document.getElementById('othertxt');
+		if (name == "其他"){
+			otherTxt.style.display="block"
+		}else{
+			otherTxt.style.display="none";
+		}
+		document.getElementById("comment_input").value = value;
+	}
+
+	var R3Ajax = {
+		ajax:function(opt){
+			var xhr = this.createXhrObject();
+			xhr.onreadystatechange = function(){
+				if(xhr.readyState!=4) return ;
+				(xhr.status===200 ?
+						opt.success(xhr.responseText,xhr.responseXML):
+						opt.error(xhr.responseText,xhr.status));
+			}
+			xhr.open(opt.type,opt.url,true);
+			if(opt.type!=='post')
+				opt.data=null;
+			else
+				xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+			opt.data = this.parseQuery(opt.data);
+			xhr.send(opt.data);
+		},
+		post:function(url,success,data){
+			var popt = {
+				url:url,
+				type:'post',
+				data:data,
+				success:success,
+				error:function(data){}
+			}
+			this.ajax(popt);
+		},
+		get:function(url,success){
+			var gopt = {
+				url:url,
+				type:'get',
+				success:success,
+				error:function(){}
+			}
+			this.ajax(gopt);
+		},
+		createXhrObject:function(){
+			var methods = [
+				function(){ return new XMLHttpRequest();},
+				function(){ return new ActiveXObject('Msxml2.XMLHTTP');},
+				function(){ return new ActiveXObject('Microsoft.XMLHTTP');}
+			];
+			for(var i=0;len=methods.length,i<len;i++){
+				try{
+					methods[i]();
+				}catch(e){
+					continue;
+				}
+				this.createXhrObject = methods[i];
+				return methods[i]();
+			}
+			throw new Error('Could not create an XHR object.');
+		},
+		parseQuery:function(json){
+			if(typeof json == 'object'){
+				var str = '';
+				for(var i in json){
+					str += "&"+i+"="+encodeURIComponent(json[i]);
+				}
+				return str.length==0 ? str : str.substring(1);
+			}else{
+				return json;
+			}
+		},
+		audioplayer:function(id, file, loop) {
+			var audioplayer = document.getElementById(id);
+			if (audioplayer != null) {
+				document.body.removeChild(audioplayer);
+			}
+
+			if (typeof(file) != 'undefined') {
+				if (navigator.userAgent.indexOf("MSIE") > 0) { // IE
+					var player = document.createElement('bgsound');
+					player.id = id;
+					player.src = file['mp3'];
+					player.setAttribute('autostart', 'true');
+					if (loop) {
+						player.setAttribute('loop', 'infinite');
+					}
+					document.body.appendChild(player);
+
+				} else { // Other FF Chome Safari Opera
+					var player = document.createElement('audio');
+					player.id = id;
+					player.setAttribute('autoplay', 'autoplay');
+					if (loop) {
+						player.setAttribute('loop', 'loop');
+					}
+					document.body.appendChild(player);
+
+					var mp3 = document.createElement('source');
+					mp3.src = file['mp3'];
+					mp3.type = 'audio/mpeg';
+					player.appendChild(mp3);
+				}
+			}
+		}
+	};
+
+	function submitForm(form){
+		var satisComment = "";
+		var otherVal = document.getElementById('othertxt').value;
+		var comInputVal = document.getElementById("comment_input").value;
+		if(otherVal.length>0){
+			satisComment = otherVal;
+		}else{
+			satisComment = comInputVal;
+		}
+		R3Ajax.post("/im/satis.html?orgi=${orgi!''}" , function(){
+			document.getElementById("dialogWrap").style.display = "none" ;
+			alert("服务评价已提交");
+		} , "id="+form.id.value+"&satislevel="+document.getElementById("satislevel_input").value +"&satiscomment="+encodeURIComponent(satisComment));
+		return false ;
 	}
 	document.getElementById('above').scrollTop = document
 			.getElementById('above').scrollHeight; //滚动到 对话内容的 底部
@@ -298,6 +481,9 @@
 		if(data.messageType == "end"){
 			service_end = true ;
 			//editor.readonly();
+		}
+		if(document.getElementById("agentserviceid")){
+			document.getElementById("agentserviceid").value = data.agentserviceid;
 		}
     })
     socket.on('message', function(data) {

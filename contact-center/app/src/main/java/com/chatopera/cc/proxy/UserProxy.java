@@ -502,7 +502,7 @@ public class UserProxy {
      *
      * @param user
      */
-    public void processAffiliates(final User user, final Map<String, String> skills, final Organ organ) {
+    public void processAffiliates(final User user, final Organ organ) {
         if (organ == null) {
             return;
         }
@@ -513,15 +513,13 @@ public class UserProxy {
 
         user.getAffiliates().add(organ.getId());
 
-        if (organ.isSkill()) skills.put(organ.getId(), organ.getName());
-
         // 获得子部门
         List<Organ> y = organRes.findByOrgiAndParent(user.getOrgi(), organ.getId());
 
         for (Organ x : y) {
             try {
                 // 递归调用
-                processAffiliates(user, skills, x);
+                processAffiliates(user, x);
             } catch (Exception e) {
                 logger.error("processAffiliates", e);
             }
@@ -544,9 +542,12 @@ public class UserProxy {
             // 添加直属部门到organs
             final Organ o = organRes.findOne(organ.getOrgan());
             user.getOrgans().put(organ.getOrgan(), o);
+            if (o.isSkill()) {
+                skills.put(o.getId(), o.getName());
+            }
 
             // 添加部门及附属部门
-            processAffiliates(user, skills, o);
+            processAffiliates(user, o);
         }
 
         user.setSkills(skills);

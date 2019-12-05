@@ -512,6 +512,8 @@ input,textarea{
     border: 1px solid #DDDDDD;
     float: left;
     min-width: 25px;
+    max-width: 400px;
+    word-break: break-all;
 }
 .chatting-left div.chat-content *{
 	background-color: #EDEDED !important;

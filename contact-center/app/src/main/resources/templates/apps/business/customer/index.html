@@ -145,14 +145,14 @@
                 </td>
                 <td style="white-space:nowrap;width:1%;" nowrap="nowrap">
                     <#if user?? && (user.roleAuthMap["A03_A01_A02_B07"]?? || user.admin) >
-                    <a href="/apps/customer/edit.html?id=${entCustomer.id!''}" data-toggle="ajax" data-width="950"
+                    <a href="/apps/customer/edit.html?id=${entCustomer.id!''}&ekind=${ekind!''}" data-toggle="ajax" data-width="950"
                        data-height="600" data-title="编辑用户信息">
                         <i class="layui-icon">&#xe642;</i>
                         编辑
                     </a>
                 </#if>
                 <#if user?? && (user.roleAuthMap["A03_A01_A02_B08"]?? || user.admin) >
-                <a href="/apps/customer/delete.html?id=${entCustomer.id!''}" style="margin-left:10px;" data-toggle="tip"
+                <a href="/apps/customer/delete.html?id=${entCustomer.id!''}&ekind=${ekind!''}" style="margin-left:10px;" data-toggle="tip"
                    data-title="请确认是否删除记录？">
                     <i class="layui-icon" style="color:red;">&#x1006;</i>
                     删除
@@ -235,7 +235,7 @@
             ,groups: 5 //连续显示分页数
             ,jump:function(data , first){
             if(!first){
-                location.href = "/apps/customer/${subtype!'index'}.html?p="+data.curr ;
+                location.href = "/apps/customer/${subtype!'index'}.html?p="+data.curr + "&ekind=${ekind!''}";
             }
         }
     });

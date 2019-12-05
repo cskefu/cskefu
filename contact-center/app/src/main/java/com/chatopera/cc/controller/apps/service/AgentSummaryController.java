@@ -96,11 +96,11 @@ public class AgentSummaryController extends Handler{
 				list.add(cb.equal(root.get("process").as(boolean.class), 0)) ;
 				list.add(cb.notEqual(root.get("channel").as(String.class), MainContext.ChannelType.PHONE.toString())) ;
 				try {
-					if(!StringUtils.isBlank(begin) && begin.matches("[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}")){
-						list.add(cb.greaterThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.dateFormate.parse(begin))) ;
+					if(!StringUtils.isBlank(begin) && begin.matches("[\\d]{4}-[\\d]{2}-[\\d]{2}")){
+						list.add(cb.greaterThanOrEqualTo(root.get("createtime").as(Date.class),MainUtils.simpleDateFormat.parse(begin)));
 					}
-					if(!StringUtils.isBlank(end) && end.matches("[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}")){
-						list.add(cb.lessThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.dateFormate.parse(end))) ;
+					if(!StringUtils.isBlank(end) && end.matches("[\\d]{4}-[\\d]{2}-[\\d]{2}")){
+						list.add(cb.lessThanOrEqualTo(root.get("createtime").as(Date.class),MainUtils.dateFormate.parse(end + " 23:59:59")));
 					}
 				} catch (ParseException e) {
 					e.printStackTrace();
