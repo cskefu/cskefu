@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.6.RELEASE</version>
+        <version>1.5.10.RELEASE</version>
         <relativePath/>
     </parent>
     <properties>
@@ -148,6 +148,24 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!-- Hypermedia for actuator MVC endpoints -->
+        <!-- https://docs.spring.io/spring-boot/docs/1.5.6.RELEASE/reference/html/production-ready-endpoints.html#production-ready-endpoint-hypermedia -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-hateoas</artifactId>
+        </dependency>
+        <!-- Micrometer Prometheus registry  -->
+        <!-- https://www.callicoder.com/spring-boot-actuator-metrics-monitoring-dashboard-prometheus-grafana/ -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-spring-legacy</artifactId>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>

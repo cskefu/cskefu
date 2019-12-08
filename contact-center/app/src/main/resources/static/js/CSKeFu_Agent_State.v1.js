@@ -2,7 +2,7 @@
 function checkAgentStatusData() {
     var payload = {
         silent: true,
-        path: '/agentuser',
+        path: 'agentuser',
         data: { ops: "inserv" },
     };
     return restApiRequest(payload);
@@ -32,7 +32,7 @@ function handleAgentStatusData(data){
 function reAllotOnlineUsers(){
     var payload = {
         silent: true,
-        path: '/agentuser',
+        path: 'agentuser',
         data: { ops: "withdraw" },
     };
     return restApiRequest(payload);

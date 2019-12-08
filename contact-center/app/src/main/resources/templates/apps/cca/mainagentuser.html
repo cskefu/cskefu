@@ -170,7 +170,9 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
                             <h1 class="site-h1" style="background-color:#EEEEEE;">
                                 访问信息
                                 <div style="float:right;">
+                                    <#if user?? && user.admin?? && user.admin == true>
                                     <button class="layui-btn layui-btn-small layui-btn-radius layui-btn-danger" href="/apps/cca/blacklist/add.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}&times=${serviceCount!0}&chattime=<#if onlineUser?? && onlineUser.betweentime??>${onlineUser.betweentime}<#else>0</#if>" data-toggle="ajax" data-title="拉黑访客" data-width="900">拉黑访客</button>
+                                   </#if>
                                 </div>
                             </h1>
                         </div>

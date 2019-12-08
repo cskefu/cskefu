@@ -492,7 +492,9 @@
         chat = data.message;
         if(data.msgtype == "image"){
         	chat = "<a href='"+data.message+"&original=true' target='_blank'><img src='"+data.message+"' class='ukefu-media-image'/></a>" ;
-        }else if(data.msgtype == "cooperation"){
+        }else if(data.msgtype == "file"){
+			chat = "<div class='ukefu-message-file'><div class='ukefu-file-icon'><img src='/im/img/file.png'></div><div class='ukefu-file-desc'><a href='"+data.message+"' target='_blank'><div>"+data.filename+"</div><div>"+(data.filesize/1024).toFixed(3)+"Kb</div></a></div></div>" ;
+		}else if(data.msgtype == "cooperation"){
         	chat = "<a href='javascript:void(0)' onclick='acceptInvite(\""+data.message+"\", \""+data.attachmentid+"\")'>您收到一个协作邀请，点击进入协作</a>" ;
         }else if(data.msgtype == "action"){
         	//检查访客是否在协作页面上，如果在协作页面上，就开始执行重绘，否则不做处理

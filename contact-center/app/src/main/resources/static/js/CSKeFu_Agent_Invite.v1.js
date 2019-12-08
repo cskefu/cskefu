@@ -6,7 +6,7 @@ function sendInvitationToOnlineUser(onlineUserId, isFirstInvite){
         if ($("#agentstatus", parent.document).hasClass('layui-form-onswitch') && $("#agentstatus_busy", parent.document).hasClass('layui-form-onswitch-notbusy') && !$("#agentstatus_busy", parent.document).hasClass('layui-form-onswitch-busy') ){
             // 就绪状态
             restApiRequest({
-                path: "/apps",
+                path: "apps",
                 silent: true,
                 data: {
                     ops: "invite",

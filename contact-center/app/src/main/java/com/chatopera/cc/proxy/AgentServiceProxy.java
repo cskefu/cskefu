@@ -227,7 +227,9 @@ public class AgentServiceProxy {
                 /**
                  * 获取关联数据
                  */
-                processRelaData(logined.getId(), orgi, agentService, map);
+                if(agentService != null){
+                    processRelaData(logined.getId(), orgi, agentService, map);
+                }
             }
 
 

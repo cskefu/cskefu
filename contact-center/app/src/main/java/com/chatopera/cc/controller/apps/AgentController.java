@@ -581,6 +581,8 @@
          cache.putAgentStatusByOrgi(agentStatus, orgi);
          agentStatusRes.save(agentStatus);
 
+         agentStatusProxy.broadcastAgentsStatus(orgi, "agent", "notready", agentStatus.getAgentno());
+
          acdWorkMonitor.recordAgentStatus(agentStatus.getAgentno(),
                                           agentStatus.getUsername(),
                                           agentStatus.getAgentno(),
