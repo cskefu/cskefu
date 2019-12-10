@@ -136,6 +136,8 @@ public class IMController extends Handler {
     @Autowired
     private UserHistoryRepository userHistoryRes;
 
+    @Autowired
+    private ChatbotRepository chatbotRes;
 
     @Autowired
     private Cache cache;
@@ -374,9 +376,9 @@ public class IMController extends Handler {
         } else {
             if (!whitelist_mode) {
                 createContacts(userid,
-                        request,
-                        logined.getId(),
-                        uid, cid, sid, username, company_name, system_name);
+                               request,
+                               logined.getId(),
+                               uid, cid, sid, username, company_name, system_name);
             }
         }
 
@@ -560,7 +562,9 @@ public class IMController extends Handler {
             @Valid final String pid,
             @Valid final String purl,
             @Valid final boolean isInvite) throws Exception {
-        logger.info("[index] orgi {}, skill {}, agent {}, traceid {}, isInvite {}", orgi, skill, agent, traceid, isInvite);
+        logger.info(
+                "[index] orgi {}, skill {}, agent {}, traceid {}, isInvite {}, exchange {}", orgi, skill, agent,
+                traceid, isInvite, exchange);
         Map<String, String> sessionMessageObj = cache.findOneSystemMapByIdAndOrgi(sessionid, orgi);
 
         if (sessionMessageObj != null) {
@@ -660,12 +664,12 @@ public class IMController extends Handler {
                 }
 
                 AgentReport report;
-
                 if (invite.isSkill() && invite.isConsult_skill_fixed()) { // 绑定技能组
                     report = acdWorkMonitor.getAgentReport(invite.getConsult_skill_fixed_id(), invite.getOrgi());
                 } else {
                     report = acdWorkMonitor.getAgentReport(invite.getOrgi());
                 }
+
                 boolean isLeavemsg = false;
                 if (report.getAgents() == 0 ||
                         (sessionConfig.isHourcheck() &&
@@ -768,7 +772,8 @@ public class IMController extends Handler {
                     String cid = (String) request.getSession().getAttribute("Sessioncid");
 
                     if (StringUtils.isNotBlank(uid) && StringUtils.isNotBlank(sid) && StringUtils.isNotBlank(cid)) {
-                        Contacts contacts1 = contactsRes.findOneByWluidAndWlsidAndWlcidAndDatastatus(uid, sid, cid, false);
+                        Contacts contacts1 = contactsRes.findOneByWluidAndWlsidAndWlcidAndDatastatus(
+                                uid, sid, cid, false);
                         if (contacts1 != null) {
                             agentUserRepository.findOneByUseridAndOrgi(userid, orgi).ifPresent(p -> {
                                 // 关联AgentService的联系人
@@ -828,17 +833,23 @@ public class IMController extends Handler {
                     map.addAttribute("username", nickname);
 
                     // 是否使用机器人客服
+                    Chatbot bot = null;
                     if (MainContext.hasModule(Constants.CSKEFU_MODULE_CHATBOT) &&
                             StringUtils.isNotBlank(invite.getAiid()) &&
                             invite.isAi() &&
+                            ((bot = chatbotRes.findOne(invite.getAiid())) != null) &&
                             ((StringUtils.equals(
                                     ai, "true")) || (invite.isAifirst() && ai == null))) {   //启用 AI ， 并且 AI优先 接待
+
                         HashMap<String, String> chatbotConfig = new HashMap<String, String>();
                         chatbotConfig.put("botname", invite.getAiname());
                         chatbotConfig.put("botid", invite.getAiid());
                         chatbotConfig.put("botwelcome", invite.getAimsg());
                         chatbotConfig.put("botfirst", Boolean.toString(invite.isAifirst()));
                         chatbotConfig.put("isai", Boolean.toString(invite.isAi()));
+                        map.addAttribute(
+                                "exchange", !StringUtils.equals(bot.getWorkmode(), Constants.CHATBOT_CHATBOT_ONLY));
+
                         if (chatbotConfig != null) {
                             map.addAttribute("chatbotConfig", chatbotConfig);
                         }
@@ -848,15 +859,16 @@ public class IMController extends Handler {
                                     "/apps/im/chatbot/mobile"));        // 智能机器人 移动端
                         }
                     } else {
-                        if (!isLeavemsg && (MobileDevice.isMobile(request.getHeader("User-Agent")) || StringUtils.isNotBlank(mobile))) {
+                        if (!isLeavemsg && (MobileDevice.isMobile(
+                                request.getHeader("User-Agent")) || StringUtils.isNotBlank(mobile))) {
                             view = request(
                                     super.createRequestPageTempletResponse("/apps/im/mobile"));    // WebIM移动端。再次点选技能组？
                         }
                     }
                     map.addAttribute(
                             "chatMessageList", chatMessageRes.findByUsessionAndOrgi(userid, orgi, new PageRequest(0, 20,
-                                    Direction.DESC,
-                                    "updatetime")));
+                                                                                                                  Direction.DESC,
+                                                                                                                  "updatetime")));
                 }
                 view.addObject("commentList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_COMMENT_DIC));
                 view.addObject("commentItemList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_COMMENT_ITEM_DIC));
@@ -1133,7 +1145,7 @@ public class IMController extends Handler {
 
                     // 存储到本地硬盘
                     String id = processAttachmentFile(multipart,
-                            fileid, logined.getOrgi(), logined.getId());
+                                                      fileid, logined.getOrgi(), logined.getId());
                     upload = new UploadStatus("0", "/res/file.html?id=" + id);
                     String file = "/res/file.html?id=" + id;
 

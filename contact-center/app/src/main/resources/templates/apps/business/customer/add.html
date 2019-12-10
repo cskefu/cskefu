@@ -62,7 +62,7 @@
 						<div class="layui-inline">
 							<label class="layui-form-label">联系电话：</label>
 							<div class="layui-input-inline">
-								<input type="text" name="entcustomer.phone"  lay-verify="entphone" autocomplete="off"
+								<input type="text" name="entcustomer.phone" autocomplete="off"
 									class="layui-input">
 							</div>
 						</div>
@@ -187,7 +187,7 @@
 							<label class="layui-form-label">座机电话：</label>
 							<div class="layui-input-inline" style="width:auto;">
 								<div class="layui-input-block">
-									<input type="text" name="contacts.phone" autocomplete="off" class="layui-input" lay-verify="landlinephone">
+									<input type="text" name="contacts.phone" autocomplete="off" class="layui-input">
 								</div>
 							</div>
 						</div>
@@ -204,12 +204,12 @@
 							<label class="layui-form-label">手机号：</label>
 							<div class="layui-input-inline" style="width:auto;">
 								<div class="layui-input-block">
-									<input type="text" name="contacts.mobile" autocomplete="off" class="layui-input" lay-verify="entphone">
+									<input type="text" name="contacts.mobile" autocomplete="off" class="layui-input">
 								</div>
 							</div>
 						</div>
 					</div>
-					
+
 					<div class="layui-form-item">
 						<div class="layui-inline">
 							<label class="layui-form-label">联系人地址：</label>
@@ -233,37 +233,24 @@
 
 <script>
 	//Demo
-	$('#entcustomer_province').change(function(){
-		loadURL('/res/dic.html?id='+$(this).val()+"&name=entcustomer.city&attr=lay-ignore&style=width:85px;" , '#entcustomer_city');
-	})
 	layui.use('form', function() {
 		var form = layui.form();
 		form.render(); //更新全部
 		form.verify({
-			entphone: function(value){
-			    if(value!="" && !new RegExp(/^(0\d{2,3}-{0,1}\d{5,8}(-{0,1}\d{3,5}){0,1})|(((13[0-9])|(15([0-3]|[5-9]))|(18[0,5-9]))\d{8})$/).test(value)){
-			      return '请输入正确的电话号码';
-			    }
-			},
 			entemail: function(value){
 			    if(value!="" && !new RegExp(/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/).test(value)){
 			      return '请输入正确的电子邮箱地址';
 			    }
-			},
-			landlinephone: function(value){
-				if(value!="" && !new RegExp(/^((0\d{2,3}-\d{7,8})|(1[3584]\d{9}))$/).test(value)){
-					return '请输入正确的电话号码';
-				}
 			},
 			customer_username: function (value) {
 				if (value.length > 100){
 					return "用户姓名不能超过100字";
 				}
 			}
-		});  
+		});
 		form.on("radio(etype)" , function(data){
 			if(data.value == "enterprise"){
-				$('#contacts_info').show();		
+				$('#contacts_info').show();
 				$('#cusname').text("客户名称：");
 			}else{
 				$('#contacts_info').hide();
@@ -294,4 +281,7 @@
 		}
 
 	});
+	$('#entcustomer_province').change(function(){
+		loadURL('/res/dic.html?id='+$(this).val()+"&name=entcustomer.city&attr=lay-ignore&style=width:85px;" , '#entcustomer_city');
+	})
 </script>

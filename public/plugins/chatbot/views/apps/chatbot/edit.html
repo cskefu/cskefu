@@ -52,6 +52,7 @@
                         <select name="workmode" lay-verify="required">
                             <option <#if bot.workmode=="机器人客服优先">selected="selected"</#if>>机器人客服优先</option>
                             <option <#if bot.workmode=="人工客服优先">selected="selected"</#if>>人工客服优先</option>
+                            <option <#if bot.workmode=="仅机器人客服">selected="selected"</#if>>仅机器人客服</option>
                         </select>
                     </div>
                     <div class="layui-form-mid layui-word-aux">来自访客的会话默认以什么方式接待</div>

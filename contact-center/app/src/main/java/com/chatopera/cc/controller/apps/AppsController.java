@@ -95,7 +95,7 @@ public class AppsController extends Handler {
                         Sort.Direction.DESC,
                         "createtime"
                 )
-                                                                                 );
+        );
 
         final long msec = System.currentTimeMillis();
         final List<String> contactIds = new ArrayList<String>();
@@ -143,7 +143,7 @@ public class AppsController extends Handler {
         map.put(
                 "webIMReport", MainUtils.getWebIMReport(
                         userEventRes.findByOrgiAndCreatetimeRange(super.getOrgi(request), MainUtils.getStartTime(),
-                                                                  MainUtils.getEndTime())));
+                                MainUtils.getEndTime())));
 
         // TODO 此处为什么不用agentReport中的agents？
         map.put("agents", getUsers(request).size());
@@ -252,8 +252,6 @@ public class AppsController extends Handler {
             if (logined.isAdmin()) {
                 // 作为管理员，强制设置为坐席
                 tempUser.setAgent(true);
-            } else {
-                tempUser.setAgent(user.isAgent());
             }
 
             tempUser.setOrgi(super.getOrgiByTenantshare(request));

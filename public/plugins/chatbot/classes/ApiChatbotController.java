@@ -267,7 +267,7 @@ public class ApiChatbotController extends Handler {
 
         if (j.has("workmode") && Constants.CHATBOT_VALID_WORKMODELS.contains(j.get("workmode").getAsString())) {
             c.setWorkmode(j.get("workmode").getAsString());
-            invite.setAifirst(StringUtils.equals(Constants.CHATBOT_CHATBOT_FIRST, c.getWorkmode()));
+            invite.setAifirst(!StringUtils.equals(Constants.CHATBOT_HUMAN_FIRST, c.getWorkmode()));
         }
 
         if (j.has("enabled")) {

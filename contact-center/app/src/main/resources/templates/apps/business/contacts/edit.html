@@ -93,14 +93,14 @@
 						<div class="layui-inline">
 							<label class="layui-form-label">联系电话：</label>
 							<div class="layui-input-inline">
-								<input type="text" name="phone"  lay-verify="entphone" value="${contacts.phone!''}" autocomplete="off"
+								<input type="text" name="phone" value="${contacts.phone!''}" autocomplete="off"
 									class="layui-input">
 							</div>
 						</div>
 						<div class="layui-inline uckefu-inline">
 							<label class="layui-form-label">手机号：</label>
 							<div class="layui-input-inline">
-								<input type="text" name="mobileno" id="getdate" lay-verify="entphone" value="${contacts.mobileno!''}" autocomplete="off" class="layui-input">
+								<input type="text" name="mobileno" value="${contacts.mobileno!''}" autocomplete="off" class="layui-input">
 							</div>
 						</div>
 					</div>
@@ -172,11 +172,6 @@
 		var form = layui.form();
 		form.render(); //更新全部
 		form.verify({
-			entphone: function(value){
-			    if(value!="" && !new RegExp(/^(0\d{2,3}-{0,1}\d{5,8}(-{0,1}\d{3,5}){0,1})|(((13[0-9])|(15([0-3]|[5-9]))|(18[0-9]))\d{8})$/).test(value)){
-			      return '请输入正确的电话号码';
-			    }
-			},
 			entemail: function(value){
 			    if(value!="" && !new RegExp(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/).test(value)){
 			      return '请输入正确的电子邮箱地址';
