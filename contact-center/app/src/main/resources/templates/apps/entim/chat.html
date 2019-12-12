@@ -242,6 +242,10 @@
 	var hostname = location.hostname ;
 	var socket = io.connect(location.protocol+"//"+top.hostname+":"+top.port+"/im/ent?userid=${user.id!''!''}&orgi=${user.orgi!''}&contextid=${contextid!''}",{transports: ['websocket'], upgrade: false});
 	socket.on('message', function(data) {
+		if(data.contextid != "${entimuser.id!''}"){
+			return;
+		}
+
 		console.log('message', data);
 		data.createtime = formatDate(data.createtime);
 		var chat=document.getElementsByClassName('chatting-left').innerText;

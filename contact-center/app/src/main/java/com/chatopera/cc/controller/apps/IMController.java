@@ -831,40 +831,58 @@ public class IMController extends Handler {
                     }
 
                     map.addAttribute("username", nickname);
+                    boolean isChatbotAgentFirst = false;
+                    boolean isEnableExchangeAgentType = false;
+                    Chatbot bot = null;
 
                     // 是否使用机器人客服
-                    Chatbot bot = null;
-                    if (MainContext.hasModule(Constants.CSKEFU_MODULE_CHATBOT) &&
-                            StringUtils.isNotBlank(invite.getAiid()) &&
-                            invite.isAi() &&
-                            ((bot = chatbotRes.findOne(invite.getAiid())) != null) &&
-                            ((StringUtils.equals(
-                                    ai, "true")) || (invite.isAifirst() && ai == null))) {   //启用 AI ， 并且 AI优先 接待
+                    if (invite.isAi() && MainContext.hasModule(Constants.CSKEFU_MODULE_CHATBOT)) {
+                        // 查找机器人
+                        bot = chatbotRes.findOne(invite.getAiid());
+                        if (bot != null) {
+                            // 判断是否接受访客切换坐席类型
+                            isEnableExchangeAgentType = !StringUtils.equals(
+                                    bot.getWorkmode(), Constants.CHATBOT_CHATBOT_ONLY);
 
+                            // 判断是否机器人客服优先
+                            if (((StringUtils.equals(
+                                    ai, "true")) || (invite.isAifirst() && ai == null))) {
+                                isChatbotAgentFirst = true;
+                            }
+                        }
+                    }
+
+                    map.addAttribute(
+                            "exchange", isEnableExchangeAgentType);
+
+                    if (isChatbotAgentFirst) {
+                        // 机器人坐席
                         HashMap<String, String> chatbotConfig = new HashMap<String, String>();
                         chatbotConfig.put("botname", invite.getAiname());
                         chatbotConfig.put("botid", invite.getAiid());
                         chatbotConfig.put("botwelcome", invite.getAimsg());
                         chatbotConfig.put("botfirst", Boolean.toString(invite.isAifirst()));
                         chatbotConfig.put("isai", Boolean.toString(invite.isAi()));
-                        map.addAttribute(
-                                "exchange", !StringUtils.equals(bot.getWorkmode(), Constants.CHATBOT_CHATBOT_ONLY));
+
 
                         if (chatbotConfig != null) {
                             map.addAttribute("chatbotConfig", chatbotConfig);
                         }
                         view = request(super.createRequestPageTempletResponse("/apps/im/chatbot/index"));
-                        if (MobileDevice.isMobile(request.getHeader("User-Agent")) || StringUtils.isNotBlank(mobile)) {
+                        if (MobileDevice.isMobile(request.getHeader("User-Agent")) || StringUtils.isNotBlank(
+                                mobile)) {
                             view = request(super.createRequestPageTempletResponse(
                                     "/apps/im/chatbot/mobile"));        // 智能机器人 移动端
                         }
                     } else {
+                        // 维持人工坐席的设定，检查是否进入留言
                         if (!isLeavemsg && (MobileDevice.isMobile(
                                 request.getHeader("User-Agent")) || StringUtils.isNotBlank(mobile))) {
                             view = request(
                                     super.createRequestPageTempletResponse("/apps/im/mobile"));    // WebIM移动端。再次点选技能组？
                         }
                     }
+
                     map.addAttribute(
                             "chatMessageList", chatMessageRes.findByUsessionAndOrgi(userid, orgi, new PageRequest(0, 20,
                                                                                                                   Direction.DESC,

@@ -27,20 +27,20 @@ import java.util.List;
 
 @Service("userdata")
 public class UserDataExchangeImpl implements DataExchangeInterface {
-	@Autowired
-	private UserRepository userRes ;
-	
-	public String getDataByIdAndOrgi(String id, String orgi){
-		User user = userRes.findById(id);
-		return user!=null ? user.getUsername() : id;
-	}
+    @Autowired
+    private UserRepository userRes;
 
-	@Override
-	public List<Serializable> getListDataByIdAndOrgi(String id , String creater, String orgi) {
-		return null ;
-	}
-	
-	public void process(Object data , String orgi) {
-		
-	}
+    public String getDataByIdAndOrgi(String id, String orgi) {
+        User user = userRes.findById(id);
+        return user != null ? user.getUsername() : id;
+    }
+
+    @Override
+    public List<Serializable> getListDataByIdAndOrgi(String id, String creater, String orgi) {
+        return null;
+    }
+
+    public void process(Object data, String orgi) {
+
+    }
 }

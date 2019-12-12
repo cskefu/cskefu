@@ -362,7 +362,7 @@
 	   		<div class="ukefu-func-tab">
 		   		<ul>
 		   			<#if models?seq_contains("chatbot") && inviteData.ai && aiid??>
-		   				<#if !exchange?? || exchange == "true">
+		   				<#if exchange == "true">
 		   				<li><a href="/im/index.html?appid=${appid!''}&orgi=${orgi!''}<#if aiid??>&aiid=${aiid}</#if>&ai=true<#if client??>&client=${client!''}</#if><#if type??>&type=text</#if><#if skill??>&skill=${skill!''}</#if><#if agent??>&agent=${agent!''}</#if><#if title??>&title=${title?url}</#if><#if url??>&url=${url?url}</#if><#if traceid??>&traceid=${traceid}</#if>&userid=${userid!''}&sessionid=${sessionid!''}&t=${.now?long}">智能客服</a></li>
 		   				</#if>
 		   				<li class="cur"><a href="javascript:void(0)">人工坐席</a></li>
