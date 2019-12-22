@@ -105,8 +105,8 @@ public class AgentServiceProxy {
                         orgi,
                         MainContext.AgentUserStatusEnum.END.toString(),
                         defaultSort
-                                                            )
-                        );
+                )
+        );
 
         if (StringUtils.isNotBlank(agentService.getAppid())) {
             map.addAttribute("snsAccount", snsAccountRes.findBySnsidAndOrgi(agentService.getAppid(), orgi));
@@ -200,6 +200,12 @@ public class AgentServiceProxy {
             final User logined) {
         view.addObject("curagentuser", agentUser);
 
+        CousultInvite invite = OnlineUserProxy.consult(agentUser.getAppid(), agentUser.getOrgi());
+        if (invite != null) {
+            view.addObject("aisuggest", invite.isAisuggest());
+            view.addObject("ccaAisuggest", invite.isAisuggest());
+        }
+
         // 客服设置
         if (agentUser != null && StringUtils.isNotBlank(agentUser.getAppid())) {
             view.addObject("inviteData", OnlineUserProxy.consult(agentUser.getAppid(), orgi));
@@ -216,8 +222,8 @@ public class AgentServiceProxy {
             view.addObject(
                     "agentUserMessageList",
                     chatMessageRepository.findByUsessionAndOrgi(agentUser.getUserid(), logined.getOrgi(),
-                                                                new PageRequest(0, 20, Sort.Direction.DESC,
-                                                                                "updatetime")));
+                            new PageRequest(0, 20, Sort.Direction.DESC,
+                                    "updatetime")));
 
             // 坐席服务记录
             AgentService agentService = null;
@@ -227,7 +233,7 @@ public class AgentServiceProxy {
                 /**
                  * 获取关联数据
                  */
-                if(agentService != null){
+                if (agentService != null) {
                     processRelaData(logined.getId(), orgi, agentService, map);
                 }
             }
@@ -239,9 +245,9 @@ public class AgentServiceProxy {
             // 标签，快捷回复等
             view.addObject("serviceCount", Integer
                     .valueOf(agentServiceRes
-                                     .countByUseridAndOrgiAndStatus(agentUser
-                                                                            .getUserid(), logined.getOrgi(),
-                                                                    MainContext.AgentUserStatusEnum.END.toString())));
+                            .countByUseridAndOrgiAndStatus(agentUser
+                                            .getUserid(), logined.getOrgi(),
+                                    MainContext.AgentUserStatusEnum.END.toString())));
             view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid()));
         }
 

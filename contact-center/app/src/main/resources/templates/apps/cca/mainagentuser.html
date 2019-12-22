@@ -1,6 +1,6 @@
 <script language="javascript">
     cursession = "<#if curagentuser??>${curagentuser.userid!''}</#if>";
-    var userid = "${curagentuser.userid!''}", agentserviceid = "${curagentuser.agentserviceid!''}", agentuserid = "${curagentuser.id}";
+    var userid = "${curagentuser.userid!''}", agentserviceid = "${curagentuser.agentserviceid!''}", agentuserid = "${curagentuser.id}" ,isCcaAisuggest = "${ccaAisuggest}";
 </script>
 
 <div class="main-agentuser">
@@ -56,6 +56,15 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
 </div>
 </div>
 <div class="chat-bottom">
+    <div id="ccaAgentAnswer" style="width: 50%;min-width:310px;height: 180px;border: 1px solid #eee;position: absolute;top: -180px;right:0px;background: #ffffff;display: none">
+        <h1  class="site-h1" style="background-color:#EEEEEE;padding: 0px 10px" >知识库联想
+            <i class="layui-icon" style="position: absolute;top: 0px;right: 5px;font-size:16px;z-index: 10" onclick="showOrHide('none')">&#x1006;</i>
+        </h1>
+        <div style="width: calc(100% - 19px);height: 129px;position: absolute;top: 31px;overflow-y: scroll;padding: 10px 10px">
+            <ul class="info-list ukefu-quick-reply" style="width: 100%;height: auto" id="ccaQuickReplyAgentBox">
+            </ul>
+        </div>
+    </div>
     <div class="row">
         <div class="col-lg-12">
             <textarea id="message" name="message"></textarea>
@@ -142,6 +151,53 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
                     });
                     // });
                     KindEditor.options.cssData = "body { font-size: 15px; font-family:'Microsoft Yahei', 'Helvetica', 'Simsun', 'Arial';}";
+                    var agentEnterInput = $("iframe").contents().find("body");
+                    agentEnterInput.keyup(function(event){
+                        if(isCcaAisuggest && isCcaAisuggest == "true"){
+                            debouncefun();
+                        }
+                    })
+                    var debouncefun = _.debounce(agentQuickReply,500)
+                    function agentQuickReply() {
+                        restApiRequest({
+                            silent: true,
+                            path: 'chatbot',
+                            data: {
+                                ops: 'faq',
+                                snsaccountid: "<#if curagentuser??>${curagentuser.appid!''}</#if>",
+                                userId:"<#if curagentuser??>${curagentuser.userid!''}</#if>",
+                                textMessage:editor.html()
+                            }
+                        }).then(function(result){
+                            if(result.rc === 0){
+                                if(result.data.length > 0){
+                                    $("#ccaQuickReplyAgentBox").html("");
+                                    $.each(sortByKey(result.data,'score'),function(i,n){
+                                        var li = ' <li class="ukefu-agentservice-list" style="font-size: 14px;line-height:22px" onclick="chooseAnswer(\''+result.data[i].reply_plain_text+'\')">\n' +
+                                            '                  <div class="nowrap" title="'+result.data[i].post+'">问题：'+result.data[i].post+'</div>\n' +
+                                            '                  <div style="color: #333">\n' +
+                                            '                       <p title="'+result.data[i].reply_plain_text+'" class="nowrap" style="float: left ">答案：'+result.data[i].reply_plain_text+'</p>\n' +
+                                            '                       <button style="float: right" class="layui-btn layui-btn-mini" onclick="chooseAnswer(\''+result.data[i].reply_plain_text+'\')">选择</button>\n' +
+                                            '                   </div>\n' +
+                                            '      </li>'
+                                        $("#ccaQuickReplyAgentBox").append(li);
+                                        if(i>4){
+                                            return false;
+                                        }
+                                    });
+                                    showOrHide('block')
+                                }else{
+                                    showOrHide('none')
+                                }
+                            }else{
+                                showOrHide('none')
+                            }
+                        }, function(error){
+                            console.log("error", error);
+                            // 服务器异常
+                            top.layer.msg('服务器抽风，请稍后再试！',{icon: 2, time: 3000})
+                        })
+                    }
                 });
             </script>
         </div>
@@ -154,6 +210,12 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
             <div class="layui-tab" style="margin-top:0px;">
                 <ul class="layui-tab-title">
                     <li class="layui-this">访客</li>
+                    <#if ccaAisuggest?? && ccaAisuggest == true>
+                    <li id="robot" onclick="$('#dot').css('display','none')">
+                        <span>智能机器人</span>
+                        <span id="dot" style=" width: 7px;height: 7px;background: red;-moz-border-radius: 50%;-webkit-border-radius: 50%;border-radius: 50%;position: absolute;top: 5px;display: none"></span>
+                    </li>
+                    </#if>
                     <li>历史</li>
                     <li>搜索历史消息</li>
                     <#if models?seq_contains("workorders")>
@@ -263,6 +325,28 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
 </div>
 </#if>
 </div>
+
+<#if ccaAisuggest?? && ccaAisuggest == true>
+<div class="layui-tab-item">
+    <div class="box">
+        <div class="box-title">
+            <h1 class="site-h1" style="background-color:#EEEEEE;">
+                知识库快捷
+            </h1>
+        </div>
+        <div class="box-body" style="padding:0px 10px;">
+            <ul class="info-list ukefu-quick-reply" id="ccaQuickReplyBox">
+                <li style="list-style: none;background-image: url();padding: 50px 0 50px;">
+                    <div class="ukefu-empty"  style="background: none">
+                        <i class="layui-icon"></i>
+                        <div style="">未触发知识库查询</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</#if>
 
 <div class="layui-tab-item">
     <div class="box">
@@ -422,12 +506,19 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
         color: #00a65a;
         font-weight: bold;
     }
-
-
+    .nowrap{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: calc(100% - 40px);
+    }
 </style>
 <script>
     $(document).ready(function() {
         var test = window.location.search;
+        if(isCcaAisuggest && isCcaAisuggest == "true"){
+            switchQuickReply();
+        }
     })
     document.getElementById('chat_msg_list_cca').scrollTop = document.getElementById('chat_msg_list_cca').scrollHeight;
     layui.use('element', function(){
@@ -486,9 +577,76 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
             top.WebIM.sendIntervention("${user.id!''}","${curagentuser.id!''}", "${user.sessionid!''}", "text", message);
         }
         editor.html('');
+        showOrHide('none');
     };
 
-    $(document).keyup(function(event){
+    function chooseAnswer(data){
+        editor.html(data)
+    }
+
+    function showOrHide(data){
+        $("#ccaAgentAnswer").css("display",data)
+    }
+
+    // 排序
+    function sortByKey(array, key) {
+        return array.sort(function(a, b) {
+            var x = a[key]; var y = b[key];
+            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+        });
+    }
+
+    function switchQuickReply(){
+        var hatContentHtml = $("#chat_msg_list_cca .chat-block").last().find(".chatting-left .chat-content").html();
+        if($.trim(hatContentHtml)){
+            restApiRequest({
+                silent: true,
+                path: 'chatbot',
+                data: {
+                    ops: 'faq',
+                    snsaccountid: "<#if curagentuser??>${curagentuser.appid!''}</#if>",
+                    userId:"<#if curagentuser??>${curagentuser.userid!''}</#if>",
+                    textMessage:hatContentHtml
+                }
+            }).then(function(result){
+                if(result.rc === 0){
+                    if(result.data.length>0){
+                        $("#ccaQuickReplyBox").html("");
+                        $.each(sortByKey(result.data,'score'),function(i,n){
+                            var li = ' <li class="ukefu-agentservice-list" onclick="chooseAnswer(\''+result.data[i].reply_plain_text+'\')">\n' +
+                                '                   <div class="nowrap" title="'+result.data[i].post+'">问题：'+result.data[i].post+'</div>\n' +
+                                '                   <div style="color: #333">\n' +
+                                '                       <p class="nowrap" title="'+result.data[i].reply_plain_text+'"  style="float: left ">答案：'+result.data[i].reply_plain_text+'</p>\n' +
+                                '                       <button style="float: right" class="layui-btn layui-btn-mini" onclick="chooseAnswer(\''+result.data[i].reply_plain_text+'\')">选择</button>\n' +
+                                '                   </div>\n' +
+                                '      </li>'
+                            $("#ccaQuickReplyBox").append(li);
+                            if (i>4){
+                                return false;
+                            }
+                        });
+                        if(!$("#robot").hasClass('layui-this')){
+                            $("#dot").css("display","inline-block")
+                        }
+                    }else{
+                        $("#dot").css("display","none")
+                        $("#ccaQuickReplyBox").html(' <li style="list-style: none;background-image: url();padding: 50px 0 50px;">\n' +
+                            '                    <div class="ukefu-empty"  style="background: none">\n' +
+                            '                        <i class="layui-icon"></i>\n' +
+                            '                        <div style="">在知识库中未得到相关问题</div>\n' +
+                            '                    </div>\n' +
+                            '                </li>');
+                    }
+                }
+            }, function(error){
+                console.log("error", error);
+                // 服务器异常
+                top.layer.msg('服务器抽风，请稍后再试！',{icon: 2, time: 3000})
+            })
+        }
+    }
+
+    $("#searchconter").keyup(function(event){
         if(event.keyCode ==13){
             $("#search").click();
         }
@@ -595,7 +753,6 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
             ,done: function(page, next){ //执行下一页的回调
                 //模拟数据插入
                 current += 20;
-                console.log(current);
                 setTimeout(function(){
                     var lis = [];
                     var pages = 0;

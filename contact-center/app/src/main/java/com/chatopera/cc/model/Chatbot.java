@@ -40,6 +40,7 @@ public class Chatbot {
     @Column(unique = true)
     private String snsAccountIdentifier; // 渠道唯一标识
     private boolean enabled; // 当前是否被启用
+    private boolean aisuggest; // 智能回复是否被启用
     private String workmode; // 工作模式, 机器人优先还是人工客服优先
 
     private Date createtime;
@@ -82,6 +83,14 @@ public class Chatbot {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isAisuggest() {
+        return aisuggest;
+    }
+
+    public void setAisuggest(boolean botAutocomplete) {
+        this.aisuggest = botAutocomplete;
     }
 
     public String getPrimaryLanguage() {

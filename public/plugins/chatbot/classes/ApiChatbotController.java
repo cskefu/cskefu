@@ -32,6 +32,7 @@ import com.chatopera.cc.proxy.OnlineUserProxy;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.SystemEnvHelper;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
@@ -124,8 +125,17 @@ public class ApiChatbotController extends Handler {
                 case "disable":
                     json = enable(j, false);
                     break;
+                case "enableaisuggest":
+                    json = enableAiSuggest(j, true);
+                    break;
+                case "disableaisuggest":
+                    json = enableAiSuggest(j, false);
+                    break;
                 case "vacant":
                     json = vacant(j, orgi, logined.isAdmin());
+                    break;
+                case "faq":
+                    json = faq(j, orgi);
                     break;
                 default:
                     json.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_2);
@@ -219,6 +229,44 @@ public class ApiChatbotController extends Handler {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
             resp.addProperty(RestUtils.RESP_KEY_DATA, "设置不成功，智能问答引擎服务异常。");
         }
+        return resp;
+    }
+
+    /**
+     * Enable Chatbot 智能回复
+     *
+     * @param j
+     * @return
+     */
+    private JsonObject enableAiSuggest(JsonObject j, boolean isEnabled) {
+        JsonObject resp = new JsonObject();
+        if ((!j.has("id")) || StringUtils.isBlank(j.get("id").getAsString())) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的操作，id不能为空。");
+            return resp;
+        }
+
+        final String id = j.get("id").getAsString();
+        Chatbot c = chatbotRes.findOne(id);
+
+        if (c == null) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "该聊天机器人不存在。");
+            return resp;
+        }
+
+        c.setAisuggest(isEnabled);
+        chatbotRes.save(c);
+
+        // 更新访客网站配置
+        CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
+        invite.setAisuggest(isEnabled);
+        consultInviteRes.save(invite);
+        OnlineUserProxy.cacheConsult(invite);
+
+        resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
+        resp.addProperty(RestUtils.RESP_KEY_DATA, "完成。");
+
         return resp;
     }
 
@@ -417,6 +465,7 @@ public class ApiChatbotController extends Handler {
             invite.setAisuccesstip(null);
             invite.setAifirst(false);
             invite.setAiid(null);
+            invite.setAisuggest(false);
             consultInviteRes.save(invite);
             OnlineUserProxy.cacheConsult(invite);
         }
@@ -557,5 +606,58 @@ public class ApiChatbotController extends Handler {
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera云服务：不合法的聊天机器人服务URL。");
             return resp;
         }
+    }
+
+    private JsonObject faq(final JsonObject j, String orgi) {
+        JsonObject resp = new JsonObject();
+        if ((!j.has("snsaccountid")) || StringUtils.isBlank(j.get("snsaccountid").getAsString())) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的操作，snsaccountid不能为空。");
+            return resp;
+        }
+
+        final String snsaccountid = j.get("snsaccountid").getAsString();
+        Chatbot c = chatbotRes.findBySnsAccountIdentifierAndOrgi(snsaccountid, orgi);
+
+        if (c == null) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "该聊天机器人不存在。");
+            return resp;
+        }
+
+        String userId = j.get("userId").getAsString();
+        String textMessage = j.get("textMessage").getAsString();
+
+        try {
+            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
+                    c.getClientId(), c.getSecret(), botServiecProvider);
+
+            JSONObject result = bot.faq(
+                    userId,
+                    textMessage,
+                    Double.parseDouble(SystemEnvHelper.getenv(ChatbotConstants.THRESHOLD_FAQ_BEST_REPLY, "0.8")),
+                    Double.parseDouble(SystemEnvHelper.getenv(ChatbotConstants.THRESHOLD_FAQ_SUGG_REPLY, "0.6"))
+            );
+            if (result.getInt("rc") == 0) {
+                JsonParser jsonParser = new JsonParser();
+                JsonElement data = jsonParser.parse(result.getJSONArray("data").toString());
+
+                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
+                resp.add(RestUtils.RESP_KEY_DATA, data);
+            } else {
+                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
+                resp.addProperty(RestUtils.RESP_KEY_DATA, "查询不成功，智能问答引擎服务异常。");
+            }
+        } catch (
+                MalformedURLException e) {
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
+            resp.addProperty(RestUtils.RESP_KEY_DATA, "查询不成功，智能问答引擎地址不合法。");
+        } catch (
+                ChatbotException e) {
+
+            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
+            resp.addProperty(RestUtils.RESP_KEY_DATA, "查询不成功，智能问答引擎服务异常。");
+        }
+        return resp;
     }
 }

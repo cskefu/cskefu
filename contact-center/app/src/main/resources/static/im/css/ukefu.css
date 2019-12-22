@@ -352,10 +352,10 @@ input,textarea{
 	background-color: #c7dcfa !important;
 }
 .chatting-left div.chat-content img{
-	max-width:460px;
+	max-width:100%;
 }
 .chatting-right div.chat-content img{
-	max-width:460px;
+	max-width:100%;
 }
 .chatting-left div.chat-content a{
     color:#4665d4;

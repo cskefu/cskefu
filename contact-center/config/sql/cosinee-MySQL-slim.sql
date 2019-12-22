@@ -1538,6 +1538,7 @@ CREATE TABLE `uk_consult_invite` (
   `agentctrlenter` tinyint(4) DEFAULT '0' COMMENT '启用坐席端CTRL+Enter发送消息',
   `ctrlenter` tinyint(4) DEFAULT '0' COMMENT '启用访客端CTRL+Enter发送消息',
   `whitelist_mode` tinyint(4) DEFAULT '0' COMMENT '启用白名单',
+  `aisuggest` tinyint(4) DEFAULT '0' COMMENT '启用智能建议',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='访客网站配置表';
 
@@ -3414,6 +3415,7 @@ CREATE TABLE `cs_chatbot` (
   `sns_account_identifier` varchar(100) NOT NULL COMMENT '渠道标识',
   `enabled` tinyint(1) DEFAULT '0' COMMENT '是否开启',
   `workmode` varchar(32) NOT NULL COMMENT '工作模式',
+  `aisuggest` tinyint(1) DEFAULT '0' COMMENT '启用智能建议',
   PRIMARY KEY (`ID`) USING BTREE,
   UNIQUE KEY `snsid` (`sns_account_identifier`,`orgi`) USING BTREE COMMENT '按照渠道标识唯一'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='机器人客服表';

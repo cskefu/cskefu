@@ -91,6 +91,9 @@ public class IMController extends Handler {
     @Value("${web.upload-path}")
     private String path;
 
+    @Value("${cskefu.settings.webim.visitor-separate}")
+    private Boolean channelWebIMVisitorSeparate;
+
     @Autowired
     private StreamingFileRepository streamingFileRepository;
 
@@ -166,6 +169,8 @@ public class IMController extends Handler {
             @Valid String title,
             @Valid String aiid) {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/im/point"));
+        view.addObject("channelVisitorSeparate", channelWebIMVisitorSeparate);
+
         final String sessionid = MainUtils.getContextID(request.getSession().getId());
         logger.info("[point] session snsid {}, session {}", id, sessionid);
 
@@ -957,7 +962,7 @@ public class IMController extends Handler {
         view.addObject("port", request.getServerPort());
         view.addObject("schema", request.getScheme());
         view.addObject("appid", appid);
-
+        view.addObject("channelVisitorSeparate", channelWebIMVisitorSeparate);
         view.addObject("ip", MainUtils.md5(request.getRemoteAddr()));
 
         if (invite.isSkill() && invite.isConsult_skill_fixed()) { // 添加技能组ID

@@ -1,4 +1,4 @@
-var layer , iframe , layerwin , cursession ;
+var layer , iframe , layerwin , cursession  ;
 $(document).ready(function(){
 	var hide ;
 	$('.dropdown-menu').on("click" , function(){
@@ -333,7 +333,6 @@ var Proxy = {
 				var newlist = template($('#message_tpl').html(), {data: data})
 				var nodeMeassage = $(newlist);
 				nodeMeassage.find(".iconclick").click(function () {
-					console.log("点击标注")
 					if($(this).attr('name') == 'nolabe'){
 						$(this).html('&#xe616;')
 						$(this).css('color','#46cad4')
@@ -365,6 +364,62 @@ var Proxy = {
 				}
 			}
 		}
+	},
+	quickReply:function(data,type){
+		if(data.usession == cursession){
+				if(data.message!=""){
+					restApiRequest({
+						silent: true,
+						path: 'chatbot',
+						data: {
+							ops: 'faq',
+							snsaccountid: data.appid ,
+							userId:data.userid,
+							textMessage:data.message
+						}
+					}).then(function(result){
+						if(result.rc === 0){
+							if(result.data.length>0){
+								type == "agent" ? $("#quickReplyBox").html("") : $("#ccaQuickReplyBox").html("") ;
+								$.each(sortByKey(result.data,'score'),function(i,n){
+									var li = ' <li class="ukefu-agentservice-list" onclick="chooseAnswer(\''+result.data[i].reply_plain_text+'\')">\n' +
+										'                  <div class="nowrap" title="'+result.data[i].post+'">问题：'+result.data[i].post+'</div>\n' +
+										'                    <div style="color: #333">\n' +
+										'                       <p class="nowrap" title="'+result.data[i].reply_plain_text+'"  style="float: left ">答案：'+result.data[i].reply_plain_text+'</p>\n' +
+										'                       <button style="float: right" class="layui-btn layui-btn-mini" onclick="chooseAnswer(\''+result.data[i].reply_plain_text+'\')">选择</button>\n' +
+										'                   </div>\n' +
+										'      </li>'
+									type == "agent" ? $("#quickReplyBox").append(li) : $("#ccaQuickReplyBox").append(li) ;
+									if(i>4){
+										return false;
+									}
+								});
+								if(!$("#robot").hasClass('layui-this')){
+									$("#dot").css("display","inline-block")
+								}
+							}else{
+								type == "agent" ? $("#quickReplyBox").html("") : $("#ccaQuickReplyBox").html("") ;
+								$("#dot").css("display","none")
+								var liNone = ' <li style="list-style: none;background-image: url();padding: 50px 0 50px;">\n' +
+									'                    <div class="ukefu-empty"  style="background: none">\n' +
+									'                        <i class="layui-icon"></i>\n' +
+									'                        <div style="">在知识库中未得到相关问题</div>\n' +
+									'                    </div>\n' +
+									'                </li>'
+								type == "agent" ? $("#quickReplyBox").html(liNone) : $("#ccaQuickReplyBox").html(liNone) ;
+							}
+						}else{
+							type == "agent" ? $("#quickReplyBox").html("") : $("#ccaQuickReplyBox").html("") ;
+							$("#dot").css("display","none")
+						}
+					}, function(error){
+						console.log("error", error);
+						// 服务器异常
+						top.layer.msg('服务器抽风，请稍后再试！',{icon: 2, time: 3000})
+					})
+
+				}
+			}
 	},
 	endAgentUserService:function(data){
 		if($('#tip_message_'+data.userid).length >0){

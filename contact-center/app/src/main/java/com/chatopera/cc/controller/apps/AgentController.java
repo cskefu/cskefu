@@ -262,7 +262,7 @@
          User logined = super.getUser(request);
          view.addObject(
                  "agentUserList", agentUserRes.findByAgentnoAndOrgi(logined.getId(), logined.getOrgi(),
-                                                                    new Sort(Direction.DESC, "status")));
+                         new Sort(Direction.DESC, "status")));
          List<AgentUser> agentUserList = agentUserRes.findByUseridAndOrgi(userid, logined.getOrgi());
          view.addObject(
                  "curagentuser", agentUserList != null && agentUserList.size() > 0 ? agentUserList.get(0) : null);
@@ -317,7 +317,7 @@
              String id,
              String search,
              String condition
-                                        ) throws IOException, TemplateException {
+     ) throws IOException, TemplateException {
          String mainagentuserconter = "/apps/agent/mainagentusersearch";
          ModelAndView view = request(super.createRequestPageTempletResponse(mainagentuserconter));
          AgentUser agentUser = agentUserRes.findByIdAndOrgi(id, super.getOrgi(request));
@@ -386,6 +386,11 @@
 
          if (agentUser != null) {
              view.addObject("curagentuser", agentUser);
+
+             CousultInvite invite = OnlineUserProxy.consult(agentUser.getAppid(), agentUser.getOrgi());
+             if (invite != null) {
+                 view.addObject("aisuggest", invite.isAisuggest());
+             }
              view.addObject("inviteData", OnlineUserProxy.consult(agentUser.getAppid(), agentUser.getOrgi()));
              List<AgentUserTask> agentUserTaskList = agentUserTaskRes.findByIdAndOrgi(id, orgi);
              if (agentUserTaskList.size() > 0) {
@@ -405,8 +410,8 @@
              view.addObject(
                      "agentUserMessageList",
                      this.chatMessageRes.findByUsessionAndOrgi(agentUser.getUserid(), orgi,
-                                                               new PageRequest(0, 20, Direction.DESC,
-                                                                               "updatetime")));
+                             new PageRequest(0, 20, Direction.DESC,
+                                     "updatetime")));
              AgentService agentService = null;
              if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
                  agentService = this.agentServiceRes.findOne(agentUser.getAgentserviceid());
@@ -454,10 +459,10 @@
 
              view.addObject("serviceCount", Integer
                      .valueOf(this.agentServiceRes
-                                      .countByUseridAndOrgiAndStatus(agentUser
-                                                                             .getUserid(), orgi,
-                                                                     MainContext.AgentUserStatusEnum.END
-                                                                             .toString())));
+                             .countByUseridAndOrgiAndStatus(agentUser
+                                             .getUserid(), orgi,
+                                     MainContext.AgentUserStatusEnum.END
+                                             .toString())));
              view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid()));
          }
 
@@ -519,7 +524,7 @@
                  map.addAttribute(
                          "workOrdersList",
                          dataExchange.getListDataByIdAndOrgi(contactsid, super.getUser(request).getId(),
-                                                             super.getOrgi(request)));
+                                 super.getOrgi(request)));
              }
              map.addAttribute("contactsid", contactsid);
          }
@@ -546,14 +551,14 @@
          // 为该坐席分配访客
          acdAgentService.assignVisitors(agentStatus.getAgentno(), orgi);
          acdWorkMonitor.recordAgentStatus(agentStatus.getAgentno(),
-                                          agentStatus.getUsername(),
-                                          agentStatus.getAgentno(),
-                                          logined.isAdmin(), // 0代表admin
-                                          agentStatus.getAgentno(),
-                                          MainContext.AgentStatusEnum.NOTREADY.toString(),
-                                          MainContext.AgentStatusEnum.READY.toString(),
-                                          MainContext.AgentWorkType.MEIDIACHAT.toString(),
-                                          orgi, null);
+                 agentStatus.getUsername(),
+                 agentStatus.getAgentno(),
+                 logined.isAdmin(), // 0代表admin
+                 agentStatus.getAgentno(),
+                 MainContext.AgentStatusEnum.NOTREADY.toString(),
+                 MainContext.AgentStatusEnum.READY.toString(),
+                 MainContext.AgentWorkType.MEIDIACHAT.toString(),
+                 orgi, null);
 
          return request(super.createRequestPageTempletResponse("/public/success"));
      }
@@ -584,14 +589,14 @@
          agentStatusProxy.broadcastAgentsStatus(orgi, "agent", "notready", agentStatus.getAgentno());
 
          acdWorkMonitor.recordAgentStatus(agentStatus.getAgentno(),
-                                          agentStatus.getUsername(),
-                                          agentStatus.getAgentno(),
-                                          logined.isAdmin(), // 0代表admin
-                                          agentStatus.getAgentno(),
-                                          MainContext.AgentStatusEnum.READY.toString(),
-                                          MainContext.AgentStatusEnum.NOTREADY.toString(),
-                                          MainContext.AgentWorkType.MEIDIACHAT.toString(),
-                                          orgi, null);
+                 agentStatus.getUsername(),
+                 agentStatus.getAgentno(),
+                 logined.isAdmin(), // 0代表admin
+                 agentStatus.getAgentno(),
+                 MainContext.AgentStatusEnum.READY.toString(),
+                 MainContext.AgentStatusEnum.NOTREADY.toString(),
+                 MainContext.AgentWorkType.MEIDIACHAT.toString(),
+                 orgi, null);
 
          return request(super.createRequestPageTempletResponse("/public/success"));
      }
@@ -695,7 +700,7 @@
          }
          agentServiceRes.save(agentServiceList);
          return request(super
-                                .createRequestPageTempletResponse("redirect:/agent/index.html"));
+                 .createRequestPageTempletResponse("redirect:/agent/index.html"));
      }
 
 
@@ -733,7 +738,7 @@
          }
 
          return request(super
-                                .createRequestPageTempletResponse("redirect:/agent/index.html"));
+                 .createRequestPageTempletResponse("redirect:/agent/index.html"));
      }
 
      @RequestMapping({"/readmsg"})

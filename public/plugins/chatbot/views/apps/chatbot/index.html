@@ -54,17 +54,29 @@
     <div class="row" style="padding:5px;">
         <div class="col-lg-12">
             <fieldset class="layui-elem-field layui-field-title">
-                <legend>工作状态</legend>
+                <legend>智能客服</legend>
                 <div class="layui-field-box">
                     <blockquote class="layui-elem-quote layui-quote-nm">
-                        <p>在开启状态下，在访客端可以看到【智能坐席】对话窗口并与机器人客服对话。</p>
+                        <p>在开启状态下，在访客端可以看到<b>智能客服</b>对话窗口并与机器人客服对话。</p>
                     </blockquote>
                     <form class="layui-form" action="">
                         <div class="layui-form-item">
                             <div class="layui-input-block">
                                 <input type="checkbox" lay-filter="bot-workstatus" name="switch" lay-skin="switch" lay-text="启用|禁用" <#if currentbot.enabled>checked</#if>>
                             </div>
-<!--                            <div class="layui-form-mid layui-word-aux">在开启状态下，在访客端可以看到【智能坐席】对话窗口并与机器人客服对话。</div>-->
+                        </div>
+                    </form>
+                </div>
+                <legend>知识库建议</legend>
+                <div class="layui-field-box">
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        <p>知识库建议包括<b>知识库联想</b>和<b>知识库快捷</b>。<b>知识库联想</b>：当坐席与访客进行对话过程中，坐席输入消息时是否得到机器人的建议回复；<b>知识库快捷</b>：当坐席与访客进行对话过程中，坐席收到访客的消息时是否得到机器人的建议回复。</p>
+                    </blockquote>
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <input type="checkbox" lay-filter="bot-aisuggest" name="bot-aisuggest" lay-skin="switch" lay-text="启用|禁用" <#if currentbot.aisuggest>checked</#if>>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -269,8 +281,20 @@
     function setChatbotWorkstatus(id, workstatus){
         restApiRequest({
             path: "chatbot",
+            silent: true,
             data: {
                 ops: workstatus?"enable":"disable",
+                id: id
+            }
+        });
+    }
+
+    function setChatbotAiSuggest(id, aisuggest){
+        restApiRequest({
+            path: "chatbot",
+            silent: true,
+            data: {
+                ops: aisuggest?"enableAiSuggest":"disableAiSuggest",
                 id: id
             }
         });
@@ -282,6 +306,10 @@
 
         form.on('switch(bot-workstatus)', function (data) {
             setChatbotWorkstatus('${currentbotid}', data.elem.checked);
+        });
+
+        form.on('switch(bot-aisuggest)', function (data) {
+            setChatbotAiSuggest('${currentbotid}', data.elem.checked);
         });
     });
 </script>

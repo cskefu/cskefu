@@ -33,7 +33,7 @@ var ukefu = {
 			window.location.replace(url+"&t="+new Date().getTime());	
 		}
 }
-Fingerprint2.get({}, function(components){
+Fingerprint2.get({extraComponents: [<#if channelVisitorSeparate?? && channelVisitorSeparate == true>{key: "cskefuAppId", getData: function(done, options){done("${appid!''}")}}</#if>]}, function(components){
     var glue = components.map(function (component) { return component.value })
     cskefuOnlineUserId =  Fingerprint2.x64hash128(glue.join(''), 31)
     ukefu.chat = ukefu.chat + "<#if userid??>&userid=${userid}<#else>&userid="+cskefuOnlineUserId+"</#if>&sessionid=${sessionid!''}<#if ai??>&ai=${ai}</#if><#if title??>&title=${title?url}</#if><#if traceid??>&url=${url?url}</#if><#if traceid??>&traceid=${traceid}</#if>";

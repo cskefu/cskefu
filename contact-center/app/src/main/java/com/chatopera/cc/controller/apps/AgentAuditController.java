@@ -276,6 +276,11 @@ public class AgentAuditController extends Handler {
 
         if (agentUser != null) {
             view.addObject("curagentuser", agentUser);
+
+            CousultInvite invite = OnlineUserProxy.consult(agentUser.getAppid(), agentUser.getOrgi());
+            if (invite != null) {
+                view.addObject("ccaAisuggest", invite.isAisuggest());
+            }
             view.addObject("inviteData", OnlineUserProxy.consult(agentUser.getAppid(), agentUser.getOrgi()));
             List<AgentUserTask> agentUserTaskList = agentUserTaskRes.findByIdAndOrgi(id, orgi);
             if (agentUserTaskList.size() > 0) {

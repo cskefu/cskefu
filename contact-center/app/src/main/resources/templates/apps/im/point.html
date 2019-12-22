@@ -454,9 +454,9 @@ function openAgentChatDialog(url){
 }
 
 <#if webimexist == true >
-	Fingerprint2.get({}, function(components){
+	Fingerprint2.get({extraComponents: [<#if channelVisitorSeparate?? && channelVisitorSeparate == true>{key: "cskefuAppId", getData: function(done, options){done("${appid!''}")}}</#if>]}, function(components){
 	    var glue = components.map(function (component) { return component.value })
-		cskefuOnlineUserId =  Fingerprint2.x64hash128(glue.join(''), 31)
+		cskefuOnlineUserId =  Fingerprint2.x64hash128(glue.join(''), 31);
 	    cskefu.ajax(cskefu.in+"&userid="+cskefuOnlineUserId+"&t="+new Date().getTime() , function(data){
 			if(data == "in"){}else{
 				cskefu.display();

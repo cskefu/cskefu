@@ -52,6 +52,9 @@ $(document).ready(function(){
 			multiMediaDialogWin.Proxy.newAgentUserMessage(data,"agent");
 			if(data.type == 'message'){
 				WebIM.audioplayer('audioplane', newmessage, false); // 播放
+				if(multiMediaDialogWin.isAisuggest && multiMediaDialogWin.isAisuggest == "true"){
+					multiMediaDialogWin.Proxy.quickReply(data,"agent");
+				}
 			}
 		}else{
 			//来电弹屏
@@ -74,6 +77,9 @@ $(document).ready(function(){
 			customerChatAudit.Proxy.newAgentUserMessage(data,"cca");
 			if(data.type == 'message'){
 				WebIM.audioplayer('audioplane', newmessage, false); // 播放
+				if(customerChatAudit.isCcaAisuggest && customerChatAudit.isCcaAisuggest == "true"){
+					customerChatAudit.Proxy.quickReply(data,"cca");
+				}
 			}
 		}
 	}).on('audit_new', function(data){

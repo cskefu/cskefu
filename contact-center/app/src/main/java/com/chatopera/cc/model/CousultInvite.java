@@ -142,6 +142,7 @@ public class CousultInvite implements java.io.Serializable {
     private String aimsg;        //AI欢迎信息，可以使用 HTML
     private String aisuccesstip;//AI服务连接成功的消息提示
     private String ainame;        //AI服务 昵称
+    private boolean aisuggest;
 
     private String aiid;        //默认的机器人
 
@@ -927,6 +928,14 @@ public class CousultInvite implements java.io.Serializable {
 
     public void setConsult_skill_fixed_id(String consult_skill_fixed_id) {
         this.consult_skill_fixed_id = consult_skill_fixed_id;
+    }
+
+    public boolean isAisuggest() {
+        return aisuggest;
+    }
+
+    public void setAisuggest(boolean aisuggest) {
+        this.aisuggest = aisuggest;
     }
 
     public boolean isWhitelist_mode() {
