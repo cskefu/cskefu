@@ -65,6 +65,8 @@
 <script language="javascript">
 	var hostname = "${hostname!''}" , adminuser = "<#if user.admin?? && user.admin>true<#else>false</#if>" , schema = "${schema!'http'}", port = "${webimport!''}" , userid = "${user.id!''}" , session = "${sessionid!''}" , orgi = "${orgi!''}";
 	var layinx , layerhelper ;
+	var isImIndex = false;
+
 	$(document).ready(function(){
 		layui.use('layer', function(){
 			layerhelper = layer ;
@@ -83,29 +85,48 @@
 						  title: false,
 						  closeBtn: 0, //不显示关闭按钮
 						  shade: [0],
-						  area: ["200px", "50px"],
+						  area: ["120px", "50px"],
 						  offset: "rb", //右下角弹出
 						  anim: 2,
 						  shade: 0,
 						  content: "/ent/im/point.html",
 						  end:function(){
-							  layinx = layer.open({
+							  if(isImIndex == true){
+								  layinx = layer.open({
 								  type: 2,
-								  title: false,
-								  closeBtn: 0, //不显示关闭按钮
-								  shade: [0],
-								  area: ["260px", "520px"],
-								  offset: "rb", //右下角弹出
-								  anim: 2,
-								  shade: 0,
-								  content: ["/ent/im/index.html", "no"], //iframe的url，no代表不显示滚动条
-								  end: function(){ //此处用于演示
-									  imDialogHelper.open();	  
-								  }
-							  });
+										  title: false,
+										  closeBtn: 0, //不显示关闭按钮
+										  shade: [0],
+										  area: ["30px", "50px"],
+										  offset: "rb", //右下角弹出
+										  anim: 2,
+										  shade: 0,
+										  content: "/ent/im/expand.html",
+										  end: function(){ //此处用于演示
+											  imDialogHelper.open();
+											  isImIndex = false;
+										  }
+									  })
+								  isImIndex = false;
+							  }else{
+								  layinx = layer.open({
+									  type: 2,
+									  title: false,
+									  closeBtn: 0, //不显示关闭按钮
+									  shade: [0],
+									  area: ["260px", "520px"],
+									  offset: "rb", //右下角弹出
+									  anim: 2,
+									  shade: 0,
+									  content: ["/ent/im/index.html", "no"], //iframe的url，no代表不显示滚动条
+									  end: function(){ //此处用于演示
+										  imDialogHelper.open();
+									  }
+								  });
+							  }
 						  }
 					});
-				}		
+				}
 			}
 			imDialogHelper.open();
 			</#if>
@@ -121,6 +142,7 @@
 			layerhelper.close(layinx);
 		}	
 	}
+
 </script>
 
 </head>
@@ -169,7 +191,6 @@
 						</a>
 					</li>
 					</#if>
-					
 					<li class="layui-nav-item"><a href="javascript:void(0)">
 						<i class="layui-icon" style="position: relative;float:left;">&#xe612;</i>
 						<span style="display: inline-block;max-width: 90px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;float: left">

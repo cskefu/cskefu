@@ -161,6 +161,13 @@ public class EntIMController extends Handler {
         return view;
     }
 
+    @RequestMapping("/expand")
+    @Menu(type = "im", subtype = "entim", access = false)
+    public ModelAndView expand(HttpServletRequest request, HttpServletResponse response) {
+        ModelAndView view = request(super.createEntIMTempletResponse("/apps/entim/expand"));
+        return view;
+    }
+
     @RequestMapping("/chat")
     @Menu(type = "im", subtype = "entim", access = false)
     public ModelAndView chat(HttpServletRequest request, HttpServletResponse response, @Valid String userid) {

@@ -57,9 +57,8 @@ arr.push(('randomNumber=' + Math.random()).replace('.'));
 return arr.join('&');
 }
 
-var protocol = window.location.protocol.replace(/:/g,'');
-<!--var protocol = "${schema!''}"-->
-<!--console.log('protocol',protocol)-->
+var protocol = "${schema!''}"
+
 document.cookie=""
 
 function chatoperaInit(info) {
@@ -164,8 +163,6 @@ function closerefresh(){
 location.reload();
 }
 
-var protocol = window.location.protocol.replace(/:/g,'');
-<!--var protocol = "$!''}"-->
 var cskefu = {
 	service: {agentno: null},
 	time : new Date().getTime(),

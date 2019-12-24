@@ -17,15 +17,18 @@
 package com.chatopera.cc.proxy;
 
 import com.chatopera.cc.cache.Cache;
+import com.chatopera.cc.model.AgentService;
 import com.chatopera.cc.model.AgentUser;
 import com.chatopera.cc.model.BlackEntity;
 import com.chatopera.cc.model.User;
+import com.chatopera.cc.persistence.repository.AgentServiceRepository;
 import com.chatopera.cc.persistence.repository.AgentUserRepository;
 import com.chatopera.cc.persistence.repository.BlackListRepository;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @Component
@@ -39,6 +42,10 @@ public class BlackEntityProxy {
 
     @Autowired
     private AgentUserRepository agentUserRepository;
+
+    @Autowired
+    private AgentServiceRepository agentServiceRes;
+
 
     /**
      * 更新或创建黑名单记录
@@ -89,7 +96,11 @@ public class BlackEntityProxy {
             blackEntityUpdated.setAgentuser(agentUser.getUsername());
         }
 
-        blackEntityUpdated.setAgentserviceid(agentserviceid);
+        AgentService agentService = agentServiceRes.findByIdAndOrgi(agentserviceid, orgi);
+        if (agentService != null) {
+            blackEntityUpdated.setChattime((int) agentService.getSessiontimes());
+        }
+
         blackListRes.save(blackEntityUpdated);
 
         return blackEntityUpdated;

@@ -49,7 +49,7 @@ public class BlackEntity implements java.io.Serializable{
 	private String agentserviceid ;	//agent service id		
 	private String description ;	//备注黑名单原因
 	private int times ;				//对话次数
-	private int chattime ;			//最后一次对话时长
+	private int chattime ;     //最后一次对话时长
 	
 	@Id
 	@Column(length = 32)

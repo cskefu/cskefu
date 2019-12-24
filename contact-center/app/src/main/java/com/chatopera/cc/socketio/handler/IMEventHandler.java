@@ -200,6 +200,7 @@ public class IMEventHandler {
             p.setName(contacts.getName());
             p.setPhone(contacts.getPhone());
             p.setEmail(contacts.getEmail());
+            p.setResion(contacts.getMemo());
             p.setChatbotops(false); // 非机器人客服
             p.setOpttype(MainContext.OptType.HUMAN.toString());
             getAgentUserProxy().save(p);
@@ -210,6 +211,7 @@ public class IMEventHandler {
             p.setName(contacts.getName());
             p.setPhone(contacts.getPhone());
             p.setEmail(contacts.getEmail());
+            p.setResion(contacts.getMemo());
             agentServiceRepository.save(p);
         });
     }

@@ -53,5 +53,4 @@ public interface AgentServiceRepository
   
   Page<AgentService> findAll(Specification<AgentService> spec, Pageable pageable);  //分页按条件查询
 
-
 }
