@@ -790,6 +790,7 @@ public class MainContext {
         SERVICE,
         WRITING,
         LEAVE,         // 浏览器端执行退出
+        SATISFACTION,
         AUDIT_MESSAGE, // 会话监控消息类型
         AUDIT_NEW,
         AUDIT_END,

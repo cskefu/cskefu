@@ -67,7 +67,7 @@ public class ACDVisBindingMw implements Middleware<ACDComposeContext> {
             ctx.getAgentUser().setSkill(null);
         }
 
-        if (StringUtils.isNotBlank(ctx.getAgentno())) {
+        if (StringUtils.isNotBlank(ctx.getAgentno()) && (!StringUtils.equalsIgnoreCase(ctx.getAgentno(), "null"))) {
             logger.info("[apply] bind agentno {}, isInvite {}", ctx.getAgentno(), ctx.isInvite());
             // 绑定坐席
             // 绑定坐席有可能是因为前端展示了技能组和坐席

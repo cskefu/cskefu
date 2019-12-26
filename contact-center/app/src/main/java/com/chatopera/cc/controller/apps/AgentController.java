@@ -56,6 +56,7 @@
  import org.springframework.util.FileCopyUtils;
  import org.springframework.web.bind.annotation.RequestMapping;
  import org.springframework.web.bind.annotation.RequestParam;
+ import org.springframework.web.bind.annotation.ResponseBody;
  import org.springframework.web.multipart.MultipartFile;
  import org.springframework.web.servlet.ModelAndView;
 
@@ -1039,6 +1040,27 @@
          return request(super.createRequestPageTempletResponse("/apps/agent/contacts"));
      }
 
+     @ResponseBody
+     @RequestMapping(value = "/evaluation")
+     @Menu(type = "apps", subtype = "evaluation")
+     public String evaluation(HttpServletRequest request, @Valid String agentuserid) {
+         AgentUser agentUser = agentUserRes.findByIdAndOrgi(agentuserid, super.getOrgi(request));
+
+         Message outMessage = new Message();
+         outMessage.setChannelMessage(agentUser);
+         outMessage.setAgentUser(agentUser);
+
+         peerSyncIM.send(
+                 MainContext.ReceiverType.VISITOR,
+                 MainContext.ChannelType.toValue(agentUser.getChannel()),
+                 agentUser.getAppid(),
+                 MainContext.MessageType.SATISFACTION,
+                 agentUser.getUserid(),
+                 outMessage,
+                 true);
+
+         return "ok";
+     }
 
      @RequestMapping(value = "/summary")
      @Menu(type = "apps", subtype = "summary")

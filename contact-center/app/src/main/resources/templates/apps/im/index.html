@@ -638,7 +638,16 @@
     socket.on('disconnect',function() {
         output('<span id="connect-message">连接坐席失败，在线咨询服务不可用</span>' , 'message connect-message');
         editor.readonly();
-    });
+	});
+	
+	socket.on('satisfaction', function() {
+	<#if sessionConfig?? && sessionConfig.satisfaction?? && sessionConfig.satisfaction>
+		document.getElementById("diaShade").style.display = "block";
+		document.getElementById("dialogWrap").style.display = "block";
+		isAgentEnds = true;
+	</#if>
+	});
+
     function sendDisconnect(){
         socket.disconnect();
     }

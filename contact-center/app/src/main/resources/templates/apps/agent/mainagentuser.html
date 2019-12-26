@@ -81,14 +81,26 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
             </style>
             <script language="javascript">
                 var  editor , layer;
-                $(document).ready(function(){
-                    // KindEditor.ready(function(K) {
-                    var K = KindEditor;
+
+                KindEditor.plugin('evaluation', function(K) {
+			        var editor = this, name = 'evaluation';
+			        editor.clickToolbar(name, function() {
+                        $.post('/agent/evaluation',{agentuserid:agentuserid}).success(function(){
+                            top.layer.msg('发送满意度调研成功！',{icon: 1, time: 3000})
+                        });
+			        });
+                });
+                
+                KindEditor.lang({
+		            evaluation  :'满意度评价'
+		        });
+                
+                KindEditor.ready(function(K) {
                     editor = K.create('#message', {
                         height:"160px",
                         themeType : 'simple',
                         width:"100%",
-                        items:['emoticons', 'image','insertfile'],
+                        items:['emoticons', 'image','insertfile','evaluation'],
                         resizeType:0,
                         uploadJson : "/agent/image/upload.html?id=${curagentuser.id!''}",
                         allowFileManager : false,
@@ -449,6 +461,13 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
 </div>
 </div>
 <style>
+	.ke-icon-evaluation {
+		background-image: url(/im/img/evaluationa.png);
+		background-position: 0px 0px;
+		width: 20px;
+		height: 16px;
+	}
+
     .layui-flow-more{
         position: absolute;
         top: 0;

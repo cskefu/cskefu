@@ -527,7 +527,13 @@
 		}else if(data.calltype == "呼出"){
 			output('<div class="chat-left"> <img class="user-img" src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" alt=""><div class="chat-message"><label  class="user">'+data.username+'</label><label class="time">'+data.createtime+'</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content">'+chat+'</div></div>' , "chat-block");
 		}
-    });
+	});
+	
+	socket.on('satisfaction', function() {
+	<#if sessionConfig?? && sessionConfig.satisfaction?? && sessionConfig.satisfaction>
+		popup('block');
+	</#if>
+	});
     
     socket.on('disconnect',function() {
         output('<span id="connect-message">连接坐席失败，在线咨询服务不可用</span>' , 'message connect-message');

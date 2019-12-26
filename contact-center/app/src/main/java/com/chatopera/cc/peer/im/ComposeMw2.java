@@ -78,6 +78,13 @@ public class ComposeMw2 implements Middleware<PeerContext> {
                         ctx.getMessage().getChannelMessage(),
                         true);
                 return true;
+            case SATISFACTION:
+                NettyClients.getInstance().publishIMEventMessage(
+                        ctx.getTouser(),
+                        MainContext.MessageType.SATISFACTION.toString(),
+                        ctx.getMessage(),
+                        true);
+                return true;
         }
         return false;
     }
