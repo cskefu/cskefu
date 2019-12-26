@@ -14,54 +14,54 @@
 		</div>	 
 	</div>
 	<div class="group-rig">
-		<div class="layui-tab layui-tab-brief" style="margin:0px;">
+		<div class="layui-tab layui-tab-brief" style="margin:0px;height: 100%">
 		  <ul class="layui-tab-title">
 			<li class="layui-this">群成员</li>
 		  </ul>
-		  <div class="layui-tab-content">
-			<div class="layui-tab-item layui-show">
+		  <div class="layui-tab-content" style="height: calc(100% - 60px)">
+			<div class="layui-tab-item layui-show" style="height: 100%;width: 100%;overflow-y: auto">
 				<form class="layui-form" action="">
-				<ul>
-					<#if organList??>
-					<#list organList as organ>
-					<li class="ukefu-entim-organ-open">
-						<h5 class="ukefu-entim-organ" lay-filter="spread" lay-type="true">
-							<i class="layui-icon"></i>
-							<span>${organ.name!''}</span>
-							<#assign curusers = 0 >
-							<#if userList??>
-							<#list userList as entimuser>
-								<#if entimuser.organs?? && entimuser.id != user.id && entimuser.organs[organ.id]??>
-								<#assign curusers = curusers+1 >
+						<ul>
+							<#if organList??>
+							<#list organList as organ>
+							<li class="ukefu-entim-organ-open">
+								<h5 class="ukefu-entim-organ" lay-filter="spread" lay-type="true">
+									<i class="layui-icon"></i>
+									<span>${organ.name!''}</span>
+									<#assign curusers = 0 >
+									<#if userList??>
+									<#list userList as entimuser>
+									<#if entimuser.organs?? && entimuser.id != user.id && entimuser.organs[organ.id]??>
+									<#assign curusers = curusers+1 >
 								</#if>
 							</#list>
-							</#if>
-							<em>(<cite class="layim-count"> ${curusers} </cite>)</em>
+						</#if>
+						<em>(<cite class="layim-count"> ${curusers} </cite>)</em>
 						</h5>
 						<ul class="ukefu-user-list">
 							<#if userList??>
 							<#list userList as entimuser>
-								<#if entimuser.organs?? && entimuser.id != user.id && entimuser.organs[organ.id]??>
-								<li id="user_${entimuser.id}">
-									<img src="/images/user-pc.png">
-									<span>${entimuser.uname!''}</span>
-									<p>最近登陆:${entimuser.lastlogintime?string('yyyy-MM-dd HH:mm:ss')}</p>
-									<#if user.id = imGroup.creater>
-									<div class="ukefu-group-join">
-										<#assign useringroup = false >
-										<#if imGroupUserList??><#list imGroupUserList as imGroupUser><#if imGroupUser.user?? && imGroupUser.user.id == entimuser.id><#assign useringroup = true ><#break/></#if></#list></#if>
-										<input type="checkbox" name="user" title="加入" value="${entimuser.id!''}" lay-filter="save" <#if useringroup == true>checked="checked"</#if>>
+							<#if entimuser.organs?? && entimuser.id != user.id && entimuser.organs[organ.id]??>
+							<li id="user_${entimuser.id}">
+								<img src="/images/user-pc.png">
+								<span>${entimuser.uname!''}</span>
+								<p>最近登陆:${entimuser.lastlogintime?string('yyyy-MM-dd HH:mm:ss')}</p>
+								<#if user.id = imGroup.creater>
+								<div class="ukefu-group-join">
+									<#assign useringroup = false >
+									<#if imGroupUserList??><#list imGroupUserList as imGroupUser><#if imGroupUser.user?? && imGroupUser.user.id == entimuser.id><#assign useringroup = true ><#break/></#if></#list></#if>
+						        <input type="checkbox" name="user" title="加入" value="${entimuser.id!''}" lay-filter="save" <#if useringroup == true>checked="checked"</#if>>
 									</div>
-									</#if>
-								</li>
+								  </#if>
+									</li>
 								</#if>
 							</#list>
-							</#if>  
+						</#if>
 						</ul>
-					</li>
-					</#list>
-					</#if>
-				</ul>
+						</li>
+						</#list>
+						</#if>
+						</ul>
 				</form>
 			</div>
 		  </div>

@@ -1994,11 +1994,11 @@ public class Util extends XOMUtil {
      */
     public static <T> List<T> sort(
         Collection<T> collection,
-        Comparator<T> comparator)
+        Comparator<? super Object> comparator)
     {
         Object[] a = collection.toArray(new Object[collection.size()]);
         //noinspection unchecked
-        Arrays.sort(a, (Comparator<? super Object>) comparator);
+        Arrays.sort(a, comparator);
         return cast(Arrays.asList(a));
     }
 

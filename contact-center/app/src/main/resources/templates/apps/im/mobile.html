@@ -197,6 +197,19 @@
 		</div>
 	</div>
 	<div class="chat-above" id="above" style="height:calc(100% - 60px);padding-bottom:100px;">
+		<#if welcomeAd>
+		<div class="clearfix message  welcome">
+            		<span id="welcome-message">
+            			<#if welcomeAd.adtype =="image">
+						<div style="text-align: center">
+							<a href='${welcomeAd.url!''}' title='${welcomeAd.tiptext!''}' target='_blank'><img src='${welcomeAd.imgurl!''}' style='max-width:420px;max-height:178px;margin:0px;vertical-align: middle;'/></a>
+						</div>
+						<#else>
+						<div style='padding:0px 5px 10px 5px;border-bottom:1px solid #dedede;'><a href='${welcomeAd.url!''}' title='${welcomeAd.tiptext!''}' target='_blank' id='point_ad_text'>${(welcomeAd.content!'')?no_esc}</a></div>
+						</#if>
+			</span>
+		</div>
+	</#if>
 		<div class="clearfix message  welcome">
 			<span id="welcome-message">${(inviteData.dialog_message!'欢迎您来咨询！欢迎使用春松客服！如需帮助请联系 info@chatopera.com')?no_esc}</span>
 		</div>
@@ -469,6 +482,16 @@
 	var username = encodeURIComponent("${username}");
 	var socket = io(protocol + '://'+hostname+':${port}/im/user?userid=${userid!''}&orgi=${orgi!''}&session=${sessionid!''}&appid=${appid!''}&osname=${(osname!'')?url}&browser=${(browser!'')?url}<#if skill??>&skill=${skill}</#if><#if username??>&nickname='+username+'</#if><#if agent??>&agent=${agent}</#if><#if title??>&title=${title?url}</#if><#if traceid??>&url=${url?url}</#if><#if traceid??>&traceid=${traceid}</#if>', {transports: ['websocket', 'polling']});
 	socket.on('connect',function(){
+	<#if contacts?? && contacts.name??>
+		socket.emit('new', {
+			name : "${contacts.name!''}",
+			phone:"${contacts.phone!''}",
+			email:"${contacts.email}",
+			memo:"${contacts.memo!''}",
+			orgi:"${inviteData.orgi!''}",
+			appid : "${appid!''}"
+		});
+	</#if>
         //service.sendRequestMessage(); 
 		//output('<span id="callOutConnect-message">'+ new Date().format("yyyy-MM-dd hh:mm:ss") + ' 开始沟通' +'</span>' , 'message callOutConnect-message');
     })

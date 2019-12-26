@@ -25,23 +25,22 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DataSourceService {
-	
-	@Autowired
+    @Autowired
     private DruidDataSource dataSource;
-	/**
-	 * 
-	 * @param cube
-	 * @throws Exception
-	 */
-	public Connection service(String xml) throws Exception {
-		Connection dataSourceObject = null ;
-		StringBuffer strb = new StringBuffer();
-		Util.PropertyList properties = Util.parseConnectString(strb.append("Provider=mondrian;")
-					.append(
-				       "Catalog=").append(xml).append(";").toString());
-		if(properties!=null){
-			dataSourceObject = DriverManager.getConnection(properties,null , dataSource) ;
-		}
-		return dataSourceObject ;
-	}
+
+    /**
+     * @param xml
+     * @throws Exception
+     */
+    public Connection service(String xml) {
+        Connection dataSourceObject = null;
+        StringBuffer strb = new StringBuffer();
+        Util.PropertyList properties = Util.parseConnectString(strb.append("Provider=mondrian;")
+                .append(
+                        "Catalog=").append(xml).append(";").toString());
+        if (properties != null) {
+            dataSourceObject = DriverManager.getConnection(properties, null, dataSource);
+        }
+        return dataSourceObject;
+    }
 }

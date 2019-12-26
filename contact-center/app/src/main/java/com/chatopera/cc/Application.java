@@ -46,8 +46,6 @@ import java.io.IOException;
 @SpringBootApplication
 @EnableJpaRepositories("com.chatopera.cc.persistence.repository")
 @EnableElasticsearchRepositories("com.chatopera.cc.persistence.es")
-@EnableAsync
-@EnableJms
 @EnableTransactionManagement
 public class Application {
 

@@ -650,7 +650,7 @@ public class AgentAuditController extends Handler {
         int timeSeconds = blackEntity.getControltime() * 3600;
         payload.put("userId", userid);
         payload.put("orgi", orgi);
-
+        ModelAndView view = end(request, agentuserid);
         // 更新或创建黑名单
         blackEntityProxy.updateOrCreateBlackEntity(blackEntity, logined, userid, orgi, agentserviceid, agentuserid);
 
@@ -658,7 +658,7 @@ public class AgentAuditController extends Handler {
         brokerPublisher.send(
                 Constants.WEBIM_SOCKETIO_ONLINE_USER_BLACKLIST, payload.toJSONString(), false, timeSeconds);
 
-        return end(request, agentuserid);
+        return view;
     }
 
 }

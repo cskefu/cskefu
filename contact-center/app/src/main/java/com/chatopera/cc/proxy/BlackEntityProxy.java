@@ -88,17 +88,16 @@ public class BlackEntityProxy {
                     new Date(System.currentTimeMillis() + pre.getControltime() * 3600 * 1000L));
         }
 
-        AgentUser agentUser = agentUserRepository.findByIdAndOrgi(agentuserid, orgi);
-        if (agentUser != null) {
-            blackEntityUpdated.setChannel(agentUser.getChannel());
-            blackEntityUpdated.setAgentuser(agentUser.getUsername());
-            blackEntityUpdated.setSessionid(agentUser.getSessionid());
-            blackEntityUpdated.setAgentuser(agentUser.getUsername());
-        }
-
         AgentService agentService = agentServiceRes.findByIdAndOrgi(agentserviceid, orgi);
         if (agentService != null) {
-            blackEntityUpdated.setChattime((int) agentService.getSessiontimes());
+            blackEntityUpdated.setChannel(agentService.getChannel());
+            blackEntityUpdated.setAgentuser(agentService.getUsername());
+            blackEntityUpdated.setSessionid(agentService.getSessionid());
+            if (agentService.getSessiontimes() != 0) {
+                blackEntityUpdated.setChattime((int) agentService.getSessiontimes());
+            } else {
+                blackEntityUpdated.setChattime((int) (System.currentTimeMillis() - agentService.getServicetime().getTime()));
+            }
         }
 
         blackListRes.save(blackEntityUpdated);

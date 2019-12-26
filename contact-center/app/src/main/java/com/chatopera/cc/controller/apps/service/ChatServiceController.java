@@ -258,13 +258,41 @@ public class ChatServiceController extends Handler {
                         agentService.setAgentno(agentno);
                         agentService.setAgentusername(transAgentStatus.getUsername());
                     }
-                    // 通知转接消息
-                    Message outMessage = new Message();
-                    outMessage.setAgentUser(agentUser);
-                    outMessage.setChannelMessage(agentUser);
-                    peerSyncIM.send(MainContext.ReceiverType.AGENT, MainContext.ChannelType.WEBIM,
+                    // 转接坐席提示消息
+                    try {
+                        Message outMessage = new Message();
+                        outMessage.setMessage(
+                                acdMessageHelper.getSuccessMessage(agentService, agentUser.getChannel(), super.getOrgi(request)));
+                        outMessage.setMessageType(MainContext.MediaType.TEXT.toString());
+                        outMessage.setCalltype(MainContext.CallType.IN.toString());
+                        outMessage.setCreatetime(MainUtils.dateFormate.format(new Date()));
+                        outMessage.setAgentUser(agentUser);
+                        outMessage.setAgentService(agentService);
+
+                        if (org.apache.commons.lang.StringUtils.isNotBlank(agentUser.getUserid())) {
+                            peerSyncIM.send(
+                                    MainContext.ReceiverType.VISITOR,
+                                    MainContext.ChannelType.toValue(agentUser.getChannel()),
                                     agentUser.getAppid(),
-                                    MainContext.MessageType.NEW, agentno, outMessage, true);
+                                    MainContext.MessageType.STATUS,
+                                    agentUser.getUserid(),
+                                    outMessage,
+                                    true
+                            );
+                        }
+
+                        // 通知转接消息给新坐席
+                        outMessage.setChannelMessage(agentUser);
+                        outMessage.setAgentUser(agentUser);
+                        peerSyncIM.send(
+                                MainContext.ReceiverType.AGENT, MainContext.ChannelType.WEBIM,
+                                agentUser.getAppid(), MainContext.MessageType.NEW, agentService.getAgentno(),
+                                outMessage, true
+                        );
+
+                    } catch (Exception ex) {
+                        logger.error("[transfersave]", ex);
+                    }
                 }
             } else {
                 agentUser = agentUserRepository.findByIdAndOrgi(agentService.getAgentuserid(), super.getOrgi(request));

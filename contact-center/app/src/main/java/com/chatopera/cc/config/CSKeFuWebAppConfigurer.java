@@ -24,7 +24,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
-public class UKWebAppConfigurer 
+public class CSKeFuWebAppConfigurer
         extends WebMvcConfigurerAdapter {
 
     @Override
