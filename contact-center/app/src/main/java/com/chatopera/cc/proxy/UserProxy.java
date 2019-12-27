@@ -478,18 +478,20 @@ public class UserProxy {
             public Predicate toPredicate(
                     Root<RoleAuth> root, CriteriaQuery<?> query,
                     CriteriaBuilder cb) {
-                List<Predicate> list = new ArrayList<Predicate>();
+                List<Predicate> criteria = new ArrayList<Predicate>();
                 if (user.getRoleList() != null && user.getRoleList().size() > 0) {
                     for (Role role : user.getRoleList()) {
-                        list.add(cb.equal(root.get("roleid").as(String.class), role.getId()));
+                        criteria.add(cb.equal(root.get("roleid").as(String.class), role.getId()));
                     }
                 }
-                Predicate[] p = new Predicate[list.size()];
+                Predicate[] p = new Predicate[criteria.size()];
                 cb.and(cb.equal(root.get("orgi").as(String.class), user.getOrgi()));
-                return cb.or(list.toArray(p));
+                return cb.or(criteria.toArray(p));
             }
         });
 
+        // clear previous auth map values, ensure the changes are token effect in real time.
+        user.getRoleAuthMap().clear();
         if (roleAuthList != null) {
             for (RoleAuth roleAuth : roleAuthList) {
                 user.getRoleAuthMap().put(roleAuth.getDicvalue(), true);
