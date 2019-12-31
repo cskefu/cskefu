@@ -5,6 +5,9 @@
 ###########################################
 
 # constants
+## for windows platform
+export MSYS=winsymlinks:nativestrict
+
 baseDir=$(cd `dirname "$0"`;pwd)
 rootDir=$(cd -P $baseDir/..;pwd)
 upperDir=$(cd -P $rootDir/..;pwd)

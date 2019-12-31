@@ -5,16 +5,22 @@
 [春松客服机器人客服文档](https://docs.chatopera.com/products/cskefu/work-chatbot.html)
 
 ## 安装插件
+安装脚本为Bash Shell脚本，需要在命令行控制台执行。
 
 ```
 ./scripts/install.sh
 ```
 
+**提示**: Windows环境使用Git Bash 命令行终端执行该命令，也可以完成安装。
+
 ## 卸载插件
+卸载脚本为Bash Shell脚本，需要在命令行控制台执行。
 
 ```
 ./scripts/uninstall.sh
 ```
+
+**提示**: Windows环境使用Git Bash 命令行终端执行该命令，也可以完成安装。
 
 ## 开源许可协议
 
