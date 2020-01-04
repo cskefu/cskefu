@@ -31,19 +31,19 @@ public class LeaveMsg {
 	private String orgi ;
 	private Date createtime = new Date() ;
 	private String creater ;
-	
 	private String name ;
 	private String mobile ;
 	private String address ;
 	private String email ;
 	private String content ;
-	
 	private String msgstatus ;
 	private String qq ;
-	
 	private String userid ;
-	
-	
+	private String snsId;
+
+	@Transient
+    private SNSAccount channel;
+
 	@Id
 	@Column(length = 32)
 	@GeneratedValue(generator = "system-uuid")
@@ -143,4 +143,22 @@ public class LeaveMsg {
 	public void setUserid(String userid) {
 		this.userid = userid;
 	}
+
+    @Column(name = "snsid")
+    public String getSnsId() {
+        return snsId;
+    }
+
+    public void setSnsId(String snsId) {
+        this.snsId = snsId;
+    }
+
+    @Transient
+    public SNSAccount getChannel() {
+        return channel;
+    }
+
+    public void setChannel(SNSAccount channel) {
+        this.channel = channel;
+    }
 }

@@ -1023,20 +1023,22 @@ public class IMController extends Handler {
         return view;
     }
 
-
     @RequestMapping("/leavemsg/save")
     @Menu(type = "admin", subtype = "user")
     public ModelAndView leavemsgsave(HttpServletRequest request, @Valid String appid, @Valid LeaveMsg msg) {
         if (StringUtils.isNotBlank(appid)) {
-            SNSAccount snsAccount = snsAccountRepository.findBySnsid(appid);
-            String orgi = snsAccount.getOrgi();
-            CousultInvite invite = inviteRepository.findBySnsaccountidAndOrgi(appid, orgi);
-            List<LeaveMsg> msgList = leaveMsgRes.findByOrgiAndUserid(invite.getOrgi(), msg.getUserid());
-            // if(msg!=null && msgList.size() == 0){
-            if (msg != null) {
-                msg.setOrgi(invite.getOrgi());
-                leaveMsgRes.save(msg);
-            }
+           snsAccountRepository.findBySnsid(appid).ifPresent(p -> {
+                CousultInvite invite = inviteRepository.findBySnsaccountidAndOrgi(appid, MainContext.SYSTEM_ORGI);
+                // TODO 增加策略防止恶意刷消息
+                //  List<LeaveMsg> msgList = leaveMsgRes.findByOrgiAndUserid(invite.getOrgi(), msg.getUserid());
+                // if(msg!=null && msgList.size() == 0){
+                if (msg != null) {
+                    msg.setOrgi(invite.getOrgi());
+                    msg.setChannel(p);
+                    msg.setSnsId(appid);
+                    leaveMsgRes.save(msg);
+                }
+            });
         }
         return request(super.createRequestPageTempletResponse("/apps/im/leavemsgsave"));
     }

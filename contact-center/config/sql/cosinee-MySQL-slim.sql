@@ -2356,6 +2356,7 @@ CREATE TABLE `uk_leavemsg` (
   `msgstatus` varchar(20) DEFAULT NULL COMMENT '消息状态',
   `contactsid` varchar(32) DEFAULT NULL COMMENT '匹配联系人ID',
   `userid` varchar(32) DEFAULT NULL COMMENT '用户ID',
+  `snsid` varchar(32) DEFAULT NULL COMMENT '渠道snsid',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='留言信息表';
 
@@ -3483,10 +3484,11 @@ CREATE TABLE `uk_snsaccount` (
   `qrcode` varchar(100) DEFAULT NULL COMMENT '二维码',
   `refreshtoken` varchar(255) DEFAULT NULL COMMENT '刷新token',
   `verify` varchar(255) DEFAULT NULL COMMENT '验证代码',
-  `snsid` varchar(32) DEFAULT NULL COMMENT 'SNSID',
+  `snsid` varchar(32) NOT NULL COMMENT 'SNSID',
   `agent` tinyint(4) DEFAULT NULL COMMENT '坐席',
   PRIMARY KEY (`ID`) USING BTREE,
-  UNIQUE KEY `SQL121227155530370` (`ID`) USING BTREE
+  UNIQUE KEY `SQL121227155530370` (`ID`) USING BTREE,
+  UNIQUE KEY (`snsid`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='渠道配置表';
 
 -- ----------------------------

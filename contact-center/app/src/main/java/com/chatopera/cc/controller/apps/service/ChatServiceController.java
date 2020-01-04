@@ -27,10 +27,7 @@ import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.peer.PeerSyncIM;
 import com.chatopera.cc.persistence.repository.*;
-import com.chatopera.cc.proxy.AgentStatusProxy;
-import com.chatopera.cc.proxy.AgentUserProxy;
-import com.chatopera.cc.proxy.OnlineUserProxy;
-import com.chatopera.cc.proxy.UserProxy;
+import com.chatopera.cc.proxy.*;
 import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.util.IP;
 import com.chatopera.cc.util.IPTools;
@@ -90,6 +87,9 @@ public class ChatServiceController extends Handler {
 
     @Autowired
     private LeaveMsgRepository leaveMsgRes;
+
+    @Autowired
+    private LeaveMsgProxy leaveMsgProxy;
 
     @Autowired
     private OrganRepository organRes;
@@ -543,10 +543,14 @@ public class ChatServiceController extends Handler {
     @RequestMapping("/leavemsg/index")
     @Menu(type = "service", subtype = "leavemsg", admin = true)
     public ModelAndView leavemsg(ModelMap map, HttpServletRequest request) {
-        Page<LeaveMsg> leaveMsgList = leaveMsgRes.findByOrgi(
+        Page<LeaveMsg> leaveMsgs = leaveMsgRes.findByOrgi(
                 super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request), Direction.DESC,
                                                         "createtime"));
-        map.put("leaveMsgList", leaveMsgList);
+        for (final LeaveMsg l : leaveMsgs) {
+            leaveMsgProxy.resolveChannelBySnsid(l);
+        }
+
+        map.put("leaveMsgList", leaveMsgs);
         return request(super.createAppsTempletResponse("/apps/service/leavemsg/index"));
     }
 

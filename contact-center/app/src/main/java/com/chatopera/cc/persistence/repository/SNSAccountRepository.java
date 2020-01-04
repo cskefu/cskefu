@@ -34,7 +34,8 @@ public interface SNSAccountRepository
 
   boolean existsBySnsidAndSnstypeAndOrgi(String snsid, String snsType, String orgi);
 
-  SNSAccount findBySnsid(String snsid);
+  @Query(value = "SELECT * FROM `uk_snsaccount` WHERE snsid = ?1 LIMIT 1", nativeQuery = true)
+  Optional<SNSAccount> findBySnsid(String snsid);
 
   SNSAccount findBySnsidAndOrgi(String snsid, String orgi);
 
