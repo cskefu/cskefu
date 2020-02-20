@@ -1,6 +1,13 @@
 Copyright 2018-2020 Chatopera Inc. <https://www.chatopera.com>. All rights reserved.
 This software and related documentation are provided under a license agreement containing 
 restrictions on use and disclosure and are protected by intellectual property laws. 
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
 Except as expressly permitted in your license agreement or allowed by law, you may not use, 
 copy, reproduce, translate, broadcast, modify, license, transmit, distribute, exhibit, perform, 
 publish, or display any part, in any form, or by any means. Reverse engineering, disassembly, 
