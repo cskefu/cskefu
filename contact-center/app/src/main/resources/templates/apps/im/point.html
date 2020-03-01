@@ -451,7 +451,23 @@ function openAgentChatDialog(url){
 }
 
 <#if webimexist == true >
-	Fingerprint2.get({extraComponents: [<#if channelVisitorSeparate?? && channelVisitorSeparate == true>{key: "cskefuAppId", getData: function(done, options){done("${appid!''}")}}</#if>]}, function(components){
+	Fingerprint2.get({extraComponents: [<#if channelVisitorSeparate?? && channelVisitorSeparate == true>{key: "cskefuAppId", getData: function(done, options){done("${appid!''}")}},</#if>
+	{
+		key: "rndId",
+		getData(done, options){
+			var rnd = '';
+			if(localStorage){
+				rnd = localStorage.finger;
+				if(!rnd){
+					rnd = Math.random();
+					localStorage.finger = rnd;
+				}
+			}
+
+			done(rnd);
+		}
+	}
+	]}, function(components){
 	    var glue = components.map(function (component) { return component.value })
 		cskefuOnlineUserId =  Fingerprint2.x64hash128(glue.join(''), 31);
 	    cskefu.ajax(cskefu.in+"&userid="+cskefuOnlineUserId+"&t="+new Date().getTime() , function(data){
