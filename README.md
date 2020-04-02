@@ -177,20 +177,6 @@
 
 ## 立即部署
 
-- 公有云版
-
-通过青云 AppCenter 部署，青云 AppCenter 是开发运维一体化(DevOps)管理企业应用的平台，Chatopera 的春松客服在 2018 年 10 月登录 AppCenter，并借助 PaaS 平台强大的计算能力实现计算节点集群、存储节点 HADR。从而保证了服务高可靠性、高性能、动态伸缩、一键备份和一键回滚等功能。
-
-青云 AppCenter 以其提供的资源秒级计算特点，企业使用 AppCenter 中的春松客服应用，可以按需付费，灵活升配和降配，Chatopera 也非常推荐客户使用青云服务。
-
-<p align="center">
-  <b>春松客服 on QingCloud</b><br>
-  <a href="https://appcenter.qingcloud.com/apps/app-zdh88kz7/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D" target="_blank">
-      <img src="https://user-images.githubusercontent.com/3538629/47984143-a17f4900-e110-11e8-95c9-d8302e000c34.png" width="900">
-  </a>
-</p>
-
-更为详细的部署文档见[春松客服上架青云 AppCenter](https://github.com/chatopera/cosin/wiki/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E4%B8%8A%E6%9E%B6%E9%9D%92%E4%BA%91AppCenter)。
 
 - 私有部署版
 
