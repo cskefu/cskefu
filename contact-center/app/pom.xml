@@ -469,6 +469,11 @@
     </build>
     <repositories>
         <repository>
+            <id>central</id>
+            <url>https://maven.aliyun.com/repository/central</url>
+        </repository>
+
+        <repository>
             <id>chatopera</id>
             <name>Chatopera Inc.</name>
             <url>https://nexus.chatopera.com/repository/maven-public</url>
@@ -480,6 +485,14 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central</id>
+            <url>https://maven.aliyun.com/repository/central</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <developers>
         <developer>
             <id>hain</id>
