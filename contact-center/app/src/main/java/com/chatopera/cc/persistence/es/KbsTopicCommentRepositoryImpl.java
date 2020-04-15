@@ -19,8 +19,8 @@ package com.chatopera.cc.persistence.es;
 import com.chatopera.cc.model.KbsTopicComment;
 import com.chatopera.cc.model.Topic;
 import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
-import org.elasticsearch.index.query.QueryStringQueryBuilder.Operator;
 import org.elasticsearch.search.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -39,21 +39,21 @@ import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 @Component
 public class KbsTopicCommentRepositoryImpl implements KbsTopicCommentEsCommonRepository{
 	private ElasticsearchTemplate elasticsearchTemplate;
-	
+
 	@Autowired
 	public void setElasticsearchTemplate(ElasticsearchTemplate elasticsearchTemplate) {
 		this.elasticsearchTemplate = elasticsearchTemplate;
     }
 	@Override
 	public Page<KbsTopicComment> findByDataid(String id , int p , int ps) {
-		Page<KbsTopicComment> pages  = null ;
-	    SearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(termQuery("dataid" , id)).withSort(new FieldSortBuilder("optimal").unmappedType("boolean").order(SortOrder.DESC)).withSort(new FieldSortBuilder("updatetime").unmappedType("date").order(SortOrder.DESC)).build().setPageable(new PageRequest(p, ps)) ;
-	    if(elasticsearchTemplate.indexExists(KbsTopicComment.class)){
-	    	pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopicComment.class);
-	    }
-	    return pages ; 
+		Page<KbsTopicComment> pages = null;
+		SearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(termQuery("dataid", id)).withSort(new FieldSortBuilder("optimal").unmappedType("boolean").order(SortOrder.DESC)).withSort(new FieldSortBuilder("updatetime").unmappedType("date").order(SortOrder.DESC)).build().setPageable(new PageRequest(p, ps));
+		if (elasticsearchTemplate.indexExists(KbsTopicComment.class)) {
+			pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopicComment.class);
+		}
+		return pages;
 	}
-	
+
 	@Override
 	public List<KbsTopicComment> findByOptimal(String dataid) {
 		List<KbsTopicComment> commentList  = null ;
@@ -63,22 +63,22 @@ public class KbsTopicCommentRepositoryImpl implements KbsTopicCommentEsCommonRep
 	    }
 	    return commentList ;
 	}
-	
+
 	@Override
 	public Page<KbsTopicComment> findByCon(NativeSearchQueryBuilder searchQueryBuilder , String field , String aggname,  String q , final int p , final int ps) {
 		Page<KbsTopicComment> pages  = null ;
 		if(!StringUtils.isBlank(q)){
-		   	searchQueryBuilder.withQuery(new QueryStringQueryBuilder(q).defaultOperator(Operator.AND)) ;
+			searchQueryBuilder.withQuery(new QueryStringQueryBuilder(q).defaultOperator(Operator.AND));
 		}
-    	SearchQuery searchQuery = searchQueryBuilder.build();
-	    if(elasticsearchTemplate.indexExists(KbsTopicComment.class)){
-	    	if(!StringUtils.isBlank(q)){
-	    		pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopicComment.class  , new UKResultMapper());
-	    	}else{
-	    		pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopicComment.class , new UKAggTopResultExtractor(field , aggname));
-	    	}
-	    }
-	    return pages ; 
+		SearchQuery searchQuery = searchQueryBuilder.build();
+		if (elasticsearchTemplate.indexExists(KbsTopicComment.class)) {
+			if (!StringUtils.isBlank(q)) {
+				pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopicComment.class, new UKResultMapper());
+			} else {
+				pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopicComment.class, new UKAggTopResultExtractor(field, aggname));
+			}
+		}
+		return pages;
 	}
 	@Override
 	public Page<KbsTopicComment> findByCon(
@@ -90,18 +90,18 @@ public class KbsTopicCommentRepositoryImpl implements KbsTopicCommentEsCommonRep
 		}
 	    return elasticsearchTemplate.queryForPage(searchQueryBuilder.build(), KbsTopicComment.class  , new UKResultMapper()) ;
 	}
-	
+
 	@Override
 	public Page<KbsTopicComment> countByCon(
 			NativeSearchQueryBuilder searchQueryBuilder, String q, int p, int ps) {
-		Page<KbsTopicComment> pages  = null ;
-		if(!StringUtils.isBlank(q)){
-		   	searchQueryBuilder.withQuery(new QueryStringQueryBuilder(q).defaultOperator(Operator.AND)) ;
+		Page<KbsTopicComment> pages = null;
+		if (!StringUtils.isBlank(q)) {
+			searchQueryBuilder.withQuery(new QueryStringQueryBuilder(q).defaultOperator(Operator.AND));
 		}
-    	SearchQuery searchQuery = searchQueryBuilder.build().setPageable(new PageRequest(p, ps));
-	    if(elasticsearchTemplate.indexExists(Topic.class)){
-	    	pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopicComment.class  , new UKAggResultExtractor("creater") );
-	    }
-	    return pages ; 
+		SearchQuery searchQuery = searchQueryBuilder.build().setPageable(new PageRequest(p, ps));
+		if (elasticsearchTemplate.indexExists(Topic.class)) {
+			pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopicComment.class, new UKAggResultExtractor("creater"));
+		}
+		return pages;
 	}
 }

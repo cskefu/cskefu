@@ -20,11 +20,7 @@ import com.chatopera.cc.model.EntCustomer;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import org.apache.commons.lang.StringUtils;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.QueryStringQueryBuilder;
-import org.elasticsearch.index.query.QueryStringQueryBuilder.Operator;
-import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,23 +38,23 @@ import java.util.List;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 @Repository
-public class EntCustomerRepositoryImpl implements EntCustomerEsCommonRepository{
-	
-	private SimpleDateFormat dateFromate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;
-	
+public class EntCustomerRepositoryImpl implements EntCustomerEsCommonRepository {
+
+	private final SimpleDateFormat dateFromate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 	@Autowired
-	private UserRepository userRes ;
-	
+	private UserRepository userRes;
+
 	private ElasticsearchTemplate elasticsearchTemplate;
 
 	@Autowired
 	public void setElasticsearchTemplate(ElasticsearchTemplate elasticsearchTemplate) {
 		this.elasticsearchTemplate = elasticsearchTemplate;
-    }
+	}
 
 	@Override
 	public Page<EntCustomer> findByCreaterAndSharesAndOrgi(String creater, String shares ,String orgi, boolean includeDeleteData ,String q , Pageable page) {
-		
+
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		BoolQueryBuilder boolQueryBuilder1 = new BoolQueryBuilder();
 		boolQueryBuilder1.should(termQuery("creater" , creater)) ;
@@ -76,7 +72,7 @@ public class EntCustomerRepositoryImpl implements EntCustomerEsCommonRepository{
 	    }
 		return processQuery(boolQueryBuilder , page);
 	}
-	
+
 	@Override
 	public Page<EntCustomer> findByCreaterAndSharesAndOrgi(String creater,
 			String shares,String orgi, Date begin, Date end, boolean includeDeleteData,
@@ -141,13 +137,13 @@ public class EntCustomerRepositoryImpl implements EntCustomerEsCommonRepository{
 	    }
 		return processQuery(boolQueryBuilder , page);
 	}
-	
-	
+
+
 	private Page<EntCustomer> processQuery(BoolQueryBuilder boolQueryBuilder , Pageable page){
 		NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).withSort(new FieldSortBuilder("creater").unmappedType("boolean").order(SortOrder.DESC)).withSort(new FieldSortBuilder("name").unmappedType("string").order(SortOrder.DESC));
-		
+
 		searchQueryBuilder.withPageable(page);
-		
+
 		Page<EntCustomer> entCustomerList = null ;
 		if(elasticsearchTemplate.indexExists(EntCustomer.class)){
 			entCustomerList = elasticsearchTemplate.queryForPage(searchQueryBuilder.build() , EntCustomer.class ) ;
@@ -162,9 +158,9 @@ public class EntCustomerRepositoryImpl implements EntCustomerEsCommonRepository{
 			List<User> users = userRes.findAll(ids) ;
 			for(EntCustomer entCustomer : entCustomerList.getContent()){
 				for(User user : users){
-					if(user.getId().equals(entCustomer.getCreater())){
-						entCustomer.setUser(user); 
-						break ;
+					if(user.getId().equals(entCustomer.getCreater())) {
+						entCustomer.setUser(user);
+						break;
 					}
 				}
 			}
