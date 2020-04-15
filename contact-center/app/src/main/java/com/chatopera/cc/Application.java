@@ -37,6 +37,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.util.unit.DataSize;
 
 import javax.servlet.MultipartConfigElement;
 import java.io.IOException;
@@ -86,9 +87,9 @@ public class Application {
     @Value("${web.upload-path}")
     private String uploaddir;
     @Value("${spring.servlet.multipart.max-file-size}")
-    private String multipartMaxUpload;
+    private DataSize multipartMaxUpload;
     @Value("${spring.servlet.multipart.max-request-size}")
-    private String multipartMaxRequest;
+    private DataSize multipartMaxRequest;
 
     /**
      * Init local resources
