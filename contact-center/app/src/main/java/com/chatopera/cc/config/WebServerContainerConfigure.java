@@ -16,52 +16,43 @@
  */
 package com.chatopera.cc.config;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.Http11NioProtocol;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
-import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomizer;
-import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
+import org.springframework.boot.web.embedded.tomcat.ConfigurableTomcatWebServerFactory;
+import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 
 @Configuration
 public class WebServerContainerConfigure {
 
     @Value("${server.threads.max}")
-    private Integer maxthread;
+    private Integer maxThread;
 
     @Value("${server.connection.max}")
-    private Integer maxconnections;
-
-    @Value("${web.upload-path}")
-    private String path;
+    private Integer maxConnections;
 
     @Bean
-    public EmbeddedServletContainerFactory createEmbeddedServletContainerFactory() throws IOException, NoSuchAlgorithmException {
-        TomcatEmbeddedServletContainerFactory tomcatFactory = new TomcatEmbeddedServletContainerFactory();
-        tomcatFactory.addConnectorCustomizers(new CSKeFuTomcatConnectorCustomizer(maxthread, maxconnections));
+    public ConfigurableTomcatWebServerFactory createEmbeddedServletContainerFactory() {
+        ConfigurableTomcatWebServerFactory tomcatFactory = new TomcatServletWebServerFactory();
+        tomcatFactory.addConnectorCustomizers(new CSKeFuTomcatConnectorCustomizer(maxThread, maxConnections));
         return tomcatFactory;
     }
 
-    class CSKeFuTomcatConnectorCustomizer implements TomcatConnectorCustomizer {
-        private Integer maxthread;
-        private Integer maxconnection;
-
-        CSKeFuTomcatConnectorCustomizer(Integer maxthread, Integer maxconnection) {
-            this.maxthread = maxthread;
-            this.maxconnection = maxconnection;
-        }
+    @RequiredArgsConstructor
+    private static class CSKeFuTomcatConnectorCustomizer implements TomcatConnectorCustomizer {
+        private final Integer maxThread;
+        private final Integer maxConnection;
 
         public void customize(Connector connector) {
             Http11NioProtocol protocol = (Http11NioProtocol) connector.getProtocolHandler();
             //设置最大连接数
-            protocol.setMaxConnections(maxthread != null ? maxthread : 2000);
+            protocol.setMaxConnections(maxThread != null ? maxThread : 2000);
             //设置最大线程数
-            protocol.setMaxThreads(maxconnection != null ? maxconnection : 2000);
+            protocol.setMaxThreads(maxConnection != null ? maxConnection : 2000);
             protocol.setConnectionTimeout(30000);
         }
     }
