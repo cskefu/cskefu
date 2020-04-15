@@ -85,7 +85,7 @@ public class Application {
     }
 
     @Value("${web.upload-path}")
-    private String uploaddir;
+    private String uploadDir;
     @Value("${spring.servlet.multipart.max-file-size}")
     private DataSize multipartMaxUpload;
     @Value("${spring.servlet.multipart.max-request-size}")
@@ -125,7 +125,7 @@ public class Application {
         MultipartConfigFactory factory = new MultipartConfigFactory();
         factory.setMaxFileSize(multipartMaxUpload); //KB,MB
         factory.setMaxRequestSize(multipartMaxRequest);
-        factory.setLocation(uploaddir);
+        factory.setLocation(uploadDir);
         return factory.createMultipartConfig();
     }
 
