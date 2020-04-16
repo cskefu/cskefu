@@ -63,7 +63,7 @@ public class MediaController extends Handler {
     @Autowired
     private JpaBlobHelper jpaBlobHelper;
 
-    private String TEMPLATE_DATA_PATH = "WEB-INF/data/templates/";
+    private final String TEMPLATE_DATA_PATH = "WEB-INF/data/templates/";
 
     @Autowired
     private AttachmentRepository attachementRes;
@@ -117,7 +117,7 @@ public class MediaController extends Handler {
     }
 
     @RequestMapping("/image/upload")
-    @Menu(type = "resouce", subtype = "imageupload", access = false)
+    @Menu(type = "resouce", subtype = "imageupload")
     public ModelAndView upload(ModelMap map,
                                HttpServletRequest request,
                                @RequestParam(value = "imgFile", required = false) MultipartFile multipart) throws IOException {
@@ -145,7 +145,7 @@ public class MediaController extends Handler {
     }
 
     @RequestMapping("/file")
-    @Menu(type = "resouce", subtype = "file", access = false)
+    @Menu(type = "resouce", subtype = "file")
     public void file(HttpServletResponse response, HttpServletRequest request, @Valid String id) throws IOException, SQLException {
         if (StringUtils.isNotBlank(id)) {
             AttachmentFile attachmentFile = attachementRes.findByIdAndOrgi(id, super.getOrgi(request));
@@ -165,7 +165,7 @@ public class MediaController extends Handler {
     }
 
     @RequestMapping("/template")
-    @Menu(type = "resouce", subtype = "template", access = false)
+    @Menu(type = "resouce", subtype = "template")
     public void template(HttpServletResponse response, HttpServletRequest request, @Valid String filename) throws IOException {
         if (StringUtils.isNotBlank(filename)) {
             InputStream is = MediaController.class.getClassLoader().getResourceAsStream(TEMPLATE_DATA_PATH + filename);

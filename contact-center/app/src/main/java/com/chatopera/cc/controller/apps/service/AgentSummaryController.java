@@ -74,7 +74,7 @@ public class AgentSummaryController extends Handler {
      * 按条件查询
      */
     @RequestMapping(value = "/index")
-    @Menu(type = "agent", subtype = "agentsummary", access = false)
+    @Menu(type = "agent", subtype = "agentsummary")
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid final String begin, @Valid final String end) {
         final String orgi = super.getOrgi(request);
         Page<AgentServiceSummary> page = serviceSummaryRes.findAll((Specification<AgentServiceSummary>) (root, query, cb) -> {
@@ -105,7 +105,7 @@ public class AgentSummaryController extends Handler {
     }
 
     @RequestMapping(value = "/process")
-    @Menu(type = "agent", subtype = "agentsummary", access = false)
+    @Menu(type = "agent", subtype = "agentsummary")
     public ModelAndView process(ModelMap map, HttpServletRequest request, @Valid final String id) {
         AgentServiceSummary summary = serviceSummaryRes.findByIdAndOrgi(id, super.getOrgi(request));
         map.addAttribute("summary", summary);
@@ -123,7 +123,7 @@ public class AgentSummaryController extends Handler {
     }
 
     @RequestMapping(value = "/save")
-    @Menu(type = "agent", subtype = "agentsummary", access = false)
+    @Menu(type = "agent", subtype = "agentsummary")
     public ModelAndView save(HttpServletRequest request, @Valid final AgentServiceSummary summary) {
         AgentServiceSummary oldSummary = serviceSummaryRes.findByIdAndOrgi(summary.getId(), super.getOrgi(request));
         if (oldSummary != null) {
@@ -138,7 +138,7 @@ public class AgentSummaryController extends Handler {
     }
 
     @RequestMapping("/expids")
-    @Menu(type = "agent", subtype = "agentsummary", access = false)
+    @Menu(type = "agent", subtype = "agentsummary")
     public void expids(HttpServletResponse response, @Valid String[] ids) throws IOException {
         if (ids != null && ids.length > 0) {
             Iterable<AgentServiceSummary> statusEventList = serviceSummaryRes.findAllById(Arrays.asList(ids));
@@ -156,7 +156,7 @@ public class AgentSummaryController extends Handler {
     }
 
     @RequestMapping("/expall")
-    @Menu(type = "agent", subtype = "agentsummary", access = false)
+    @Menu(type = "agent", subtype = "agentsummary")
     public void expall(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Iterable<AgentServiceSummary> statusEventList = serviceSummaryRes.findByChannelNotAndOrgi(
                 MainContext.ChannelType.PHONE.toString(), super.getOrgi(request), PageRequest.of(0, 10000));
@@ -174,7 +174,7 @@ public class AgentSummaryController extends Handler {
     }
 
     @RequestMapping("/expsearch")
-    @Menu(type = "agent", subtype = "agentsummary", access = false)
+    @Menu(type = "agent", subtype = "agentsummary")
     public void expall(HttpServletRequest request, HttpServletResponse response, @Valid final String begin, @Valid final String end) throws IOException {
         final String orgi = super.getOrgi(request);
         Page<AgentServiceSummary> page = serviceSummaryRes.findAll((Specification<AgentServiceSummary>) (root, query, cb) -> {

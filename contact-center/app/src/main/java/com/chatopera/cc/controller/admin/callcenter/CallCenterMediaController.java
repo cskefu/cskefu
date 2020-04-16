@@ -158,7 +158,7 @@ public class CallCenterMediaController extends Handler {
     }
 
     @RequestMapping(value = "/play")
-    @Menu(type = "callcenter", subtype = "play", access = false)
+    @Menu(type = "callcenter", subtype = "play")
     public ModelAndView play(ModelMap map, HttpServletRequest request, @Valid final String id) {
         map.addAttribute("media", mediaRes.findByIdAndOrgi(id, super.getOrgi(request)));
         return request(super.createRequestPageTempletResponse("/admin/callcenter/media/play"));

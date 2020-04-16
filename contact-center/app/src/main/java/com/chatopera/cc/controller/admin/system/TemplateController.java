@@ -58,31 +58,30 @@ public class TemplateController extends Handler {
     private final Cache cache;
 
     @RequestMapping("/index")
-    @Menu(type = "admin", subtype = "template", access = false, admin = true)
-    public ModelAndView index(ModelMap map, HttpServletRequest request) {
+    @Menu(type = "admin", subtype = "template", admin = true)
+    public ModelAndView index(ModelMap map) {
         map.addAttribute("sysDicList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_DIC));
         return request(super.createAdminTempletResponse("/admin/system/template/index"));
     }
 
     @RequestMapping("/expall")
-    @Menu(type = "admin", subtype = "template", access = false, admin = true)
-    public void expall(ModelMap map, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @Menu(type = "admin", subtype = "template", admin = true)
+    public void expall(HttpServletRequest request, HttpServletResponse response) throws Exception {
         List<Template> templateList = templateRes.findByOrgi(super.getOrgi(request));
         response.setHeader("content-disposition", "attachment;filename=UCKeFu-Template-Export-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".data");
         response.getOutputStream().write(MainUtils.toBytes(templateList));
-        return;
     }
 
     @RequestMapping("/imp")
-    @Menu(type = "admin", subtype = "template", access = false, admin = true)
-    public ModelAndView imp(ModelMap map, HttpServletRequest request) {
+    @Menu(type = "admin", subtype = "template", admin = true)
+    public ModelAndView imp() {
         return request(super.createRequestPageTempletResponse("/admin/system/template/imp"));
     }
 
     @SuppressWarnings("unchecked")
     @RequestMapping("/impsave")
-    @Menu(type = "admin", subtype = "template", access = false, admin = true)
-    public ModelAndView impsave(ModelMap map, HttpServletRequest request, @RequestParam(value = "dataFile", required = false) MultipartFile dataFile) throws Exception {
+    @Menu(type = "admin", subtype = "template", admin = true)
+    public ModelAndView impsave(@RequestParam(value = "dataFile", required = false) MultipartFile dataFile) throws Exception {
         if (dataFile != null && dataFile.getSize() > 0) {
             List<Template> templateList = (List<Template>) MainUtils.toObject(dataFile.getBytes());
             if (templateList != null && templateList.size() > 0) {
@@ -96,7 +95,7 @@ public class TemplateController extends Handler {
     }
 
     @RequestMapping("/list")
-    @Menu(type = "admin", subtype = "template", access = false, admin = true)
+    @Menu(type = "admin", subtype = "template", admin = true)
     public ModelAndView list(ModelMap map, HttpServletRequest request, @Valid String type) {
         map.addAttribute("sysDic", dicRes.findById(type));
         map.addAttribute("templateList", templateRes.findByTemplettypeAndOrgi(type, super.getOrgi(request)));
@@ -104,14 +103,14 @@ public class TemplateController extends Handler {
     }
 
     @RequestMapping("/add")
-    @Menu(type = "admin", subtype = "template", access = false, admin = true)
-    public ModelAndView add(ModelMap map, HttpServletRequest request, @Valid String type) {
+    @Menu(type = "admin", subtype = "template", admin = true)
+    public ModelAndView add(ModelMap map, @Valid String type) {
         map.addAttribute("sysDic", dicRes.findById(type));
         return request(super.createRequestPageTempletResponse("/admin/system/template/add"));
     }
 
     @RequestMapping("/save")
-    @Menu(type = "admin", subtype = "template", access = false, admin = true)
+    @Menu(type = "admin", subtype = "template", admin = true)
     public ModelAndView save(HttpServletRequest request, @Valid Template template) {
         template.setOrgi(super.getOrgi(request));
         template.setCreatetime(new Date());
@@ -127,7 +126,7 @@ public class TemplateController extends Handler {
     }
 
     @RequestMapping("/edit")
-    @Menu(type = "admin", subtype = "template", access = false, admin = true)
+    @Menu(type = "admin", subtype = "template", admin = true)
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String type) {
         map.addAttribute("sysDic", dicRes.findById(type));
         map.addAttribute("template", templateRes.findByIdAndOrgi(id, super.getOrgi(request)));
@@ -135,7 +134,7 @@ public class TemplateController extends Handler {
     }
 
     @RequestMapping("/update")
-    @Menu(type = "admin", subtype = "template", access = false, admin = true)
+    @Menu(type = "admin", subtype = "template", admin = true)
     public ModelAndView update(HttpServletRequest request, @Valid Template template) {
         Template oldTemplate = templateRes.findByIdAndOrgi(template.getId(), super.getOrgi(request));
         if (oldTemplate != null) {
@@ -157,7 +156,7 @@ public class TemplateController extends Handler {
     }
 
     @RequestMapping("/code")
-    @Menu(type = "admin", subtype = "template", access = false, admin = true)
+    @Menu(type = "admin", subtype = "template", admin = true)
     public ModelAndView code(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String type) {
         map.addAttribute("sysDic", dicRes.findById(type));
         map.addAttribute("template", templateRes.findByIdAndOrgi(id, super.getOrgi(request)));
@@ -165,7 +164,7 @@ public class TemplateController extends Handler {
     }
 
     @RequestMapping("/codesave")
-    @Menu(type = "admin", subtype = "template", access = false, admin = true)
+    @Menu(type = "admin", subtype = "template", admin = true)
     public ModelAndView codesave(HttpServletRequest request, @Valid Template template) {
         Template oldTemplate = templateRes.findByIdAndOrgi(template.getId(), super.getOrgi(request));
         if (oldTemplate != null) {
@@ -179,7 +178,7 @@ public class TemplateController extends Handler {
     }
 
     @RequestMapping("/delete")
-    @Menu(type = "admin", subtype = "template", access = false, admin = true)
+    @Menu(type = "admin", subtype = "template", admin = true)
     public ModelAndView delete(HttpServletRequest request, @Valid Template template) {
         templateRes.delete(template);
         cache.deleteSystembyIdAndOrgi(template.getId(), super.getOrgi(request));

@@ -60,7 +60,7 @@ public class AgentQualityController extends Handler {
     private Cache cache;
 
     @RequestMapping(value = "/index")
-    @Menu(type = "agent", subtype = "quality", access = false)
+    @Menu(type = "agent", subtype = "quality")
     public ModelAndView index(ModelMap map, HttpServletRequest request) {
         map.addAttribute("sessionConfig", acdPolicyService.initSessionConfig(super.getOrgi(request)));
         map.addAttribute("qualityList", qualityRes.findByQualitytypeAndOrgi(MainContext.QualityType.CHAT.toString(), super.getOrgi(request)));
@@ -70,7 +70,7 @@ public class AgentQualityController extends Handler {
 
 
     @RequestMapping(value = "/save")
-    @Menu(type = "agent", subtype = "quality", access = false)
+    @Menu(type = "agent", subtype = "quality")
     public ModelAndView save(ModelMap map, HttpServletRequest request, @Valid QualityRequest qualityArray) {
        String orgi = super.getOrgi(request);
 
