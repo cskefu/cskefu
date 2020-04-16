@@ -49,42 +49,42 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/apps/report")
-public class ReportController extends Handler{
-	
-	@Value("${web.upload-path}")
+public class ReportController extends Handler {
+
+    @Value("${web.upload-path}")
     private String path;
-	
-	@Value("${uk.im.server.port}")  
-    private Integer port; 
-	
-	@Autowired
-	private DataDicRepository dataDicRes;
-	
-	@Autowired
-	private ReportRepository reportRes;
-	
-	@Autowired
-	private PublishedReportRepository publishedReportRes;
-	
+
+    @Value("${uk.im.server.port}")
+    private Integer port;
+
+    @Autowired
+    private DataDicRepository dataDicRes;
+
+    @Autowired
+    private ReportRepository reportRes;
+
+    @Autowired
+    private PublishedReportRepository publishedReportRes;
+
 	@Autowired
 	private MetadataRepository metadataRes ;
-	
+
 	@Autowired
 	private ReportCubeService reportCubeService;
-	
+
     @RequestMapping("/index")
     @Menu(type = "setting" , subtype = "report" , admin= true)
     public ModelAndView index(ModelMap map , HttpServletRequest request , @Valid String dicid) {
-    	if(!StringUtils.isBlank(dicid) && !"0".equals(dicid)){
-        	map.put("dataDic", dataDicRes.findByIdAndOrgi(dicid, super.getOrgi(request))) ;
-    		map.put("reportList", reportRes.findByOrgiAndDicid(super.getOrgi(request) , dicid , new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}else{
-    		map.put("reportList", reportRes.findByOrgi(super.getOrgi(request) , new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}
+    	if(!StringUtils.isBlank(dicid) && !"0".equals(dicid)) {
+            map.put("dataDic", dataDicRes.findByIdAndOrgi(dicid, super.getOrgi(request)));
+            map.put("reportList", reportRes.findByOrgiAndDicid(super.getOrgi(request), dicid, PageRequest.of(super.getP(request), super.getPs(request))));
+        }else {
+            map.put("reportList", reportRes.findByOrgi(super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request))));
+        }
     	map.put("dataDicList", dataDicRes.findByOrgi(super.getOrgi(request))) ;
     	return request(super.createAppsTempletResponse("/apps/business/report/index"));
     }
-    
+
     @RequestMapping("/add")
     @Menu(type = "setting" , subtype = "reportadd" , admin= true)
     public ModelAndView quickreplyadd(ModelMap map , HttpServletRequest request , @Valid String dicid) {
@@ -94,7 +94,7 @@ public class ReportController extends Handler{
     	map.addAttribute("dataDicList", dataDicRes.findByOrgi(super.getOrgi(request))) ;
         return request(super.createRequestPageTempletResponse("/apps/business/report/add"));
     }
-    
+
     @RequestMapping("/save")
     @Menu(type = "setting" , subtype = "report" , admin= true)
     public ModelAndView quickreplysave(ModelMap map , HttpServletRequest request , @Valid Report report) {
@@ -113,7 +113,7 @@ public class ReportController extends Handler{
     	}
         return view ;
     }
-    
+
     @RequestMapping("/delete")
     @Menu(type = "setting" , subtype = "report" , admin= true)
     public ModelAndView quickreplydelete(ModelMap map , HttpServletRequest request , @Valid String id) {
@@ -126,15 +126,15 @@ public class ReportController extends Handler{
     @RequestMapping("/edit")
     @Menu(type = "setting" , subtype = "report" , admin= true)
     public ModelAndView quickreplyedit(ModelMap map , HttpServletRequest request , @Valid String id) {
-    	Report report = reportRes.findOne(id) ; 
-    	map.put("report", report) ;
-    	if(report!=null){
-    		map.put("dataDic", dataDicRes.findByIdAndOrgi(report.getDicid(), super.getOrgi(request))) ;
-    	}
-    	map.addAttribute("dataDicList", dataDicRes.findByOrgi(super.getOrgi(request))) ;
+        Report report = reportRes.findOne(id);
+        map.put("report", report);
+        if (report != null) {
+            map.put("dataDic", dataDicRes.findByIdAndOrgi(report.getDicid(), super.getOrgi(request)));
+        }
+        map.addAttribute("dataDicList", dataDicRes.findByOrgi(super.getOrgi(request)));
         return request(super.createRequestPageTempletResponse("/apps/business/report/edit"));
     }
-    
+
     @RequestMapping("/update")
     @Menu(type = "setting" , subtype = "report" , admin= true)
     public ModelAndView quickreplyupdate(ModelMap map , HttpServletRequest request , @Valid Report report) {
@@ -151,7 +151,7 @@ public class ReportController extends Handler{
     	}
     	return request(super.createRequestPageTempletResponse("redirect:/apps/report/index.html?dicid="+report.getDicid()));
     }
-    
+
     @RequestMapping({"/addtype"})
 	@Menu(type="apps", subtype="kbs")
 	public ModelAndView addtype(ModelMap map , HttpServletRequest request , @Valid String dicid){
@@ -177,7 +177,7 @@ public class ReportController extends Handler{
     	}
     	return request(super.createRequestPageTempletResponse("redirect:/apps/report/index.html?dicid="+dataDic.getId()));
     }
-    
+
     @RequestMapping({"/edittype"})
 	@Menu(type="apps", subtype="kbs")
 	public ModelAndView edittype(ModelMap map , HttpServletRequest request , String id){
@@ -189,7 +189,7 @@ public class ReportController extends Handler{
 		map.addAttribute("dataDicList", dataDicRes.findByOrgi(super.getOrgi(request))) ;
 		return request(super.createRequestPageTempletResponse("/apps/business/report/edittype"));
 	}
-	 
+
     @RequestMapping("/type/update")
     @Menu(type = "apps" , subtype = "report")
     public ModelAndView typeupdate(HttpServletRequest request ,@Valid DataDic dataDic) {
@@ -209,31 +209,31 @@ public class ReportController extends Handler{
     	}
     	return view ;
     }
-    
+
     @RequestMapping({"/deletetype"})
 	@Menu(type="apps", subtype="kbs")
-	public ModelAndView deletetype(ModelMap map , HttpServletRequest request , @Valid String id){
-    	ModelAndView view = request(super.createRequestPageTempletResponse("redirect:/apps/report/index.html?dicid="+id)); 
-    	if(!StringUtils.isBlank(id)){
-    		DataDic tempDataDic = dataDicRes.findByIdAndOrgi(id, super.getOrgi(request)) ;
-    		int count = reportRes.countByOrgiAndDicid(super.getOrgi(request), id) ;
-    		if(count == 0) {
-    			dataDicRes.delete(tempDataDic);
-    			view = request(super.createRequestPageTempletResponse("redirect:/apps/report/index.html?dicid="+tempDataDic.getParentid())); 
-    		}else {
-    			view = request(super.createRequestPageTempletResponse("redirect:/apps/report/index.html?msg=report_exist&dicid="+id)); 
-    		}
-    	}
+	public ModelAndView deletetype(ModelMap map , HttpServletRequest request , @Valid String id) {
+        ModelAndView view = request(super.createRequestPageTempletResponse("redirect:/apps/report/index.html?dicid=" + id));
+        if (!StringUtils.isBlank(id)) {
+            DataDic tempDataDic = dataDicRes.findByIdAndOrgi(id, super.getOrgi(request));
+            int count = reportRes.countByOrgiAndDicid(super.getOrgi(request), id);
+            if (count == 0) {
+                dataDicRes.delete(tempDataDic);
+                view = request(super.createRequestPageTempletResponse("redirect:/apps/report/index.html?dicid=" + tempDataDic.getParentid()));
+            } else {
+                view = request(super.createRequestPageTempletResponse("redirect:/apps/report/index.html?msg=report_exist&dicid=" + id));
+            }
+        }
     	return view ;
 	}
-    
+
     @RequestMapping("/imp")
     @Menu(type = "setting" , subtype = "reportimp")
     public ModelAndView imp(ModelMap map , HttpServletRequest request , @Valid String type) {
     	map.addAttribute("type", type) ;
         return request(super.createRequestPageTempletResponse("/apps/business/report/imp"));
     }
-    
+
     @RequestMapping("/impsave")
     @Menu(type = "setting" , subtype = "reportimpsave")
     public ModelAndView impsave(ModelMap map , HttpServletRequest request , @RequestParam(value = "cusfile", required = false) MultipartFile cusfile , @Valid String type) throws IOException {
@@ -260,10 +260,10 @@ public class ReportController extends Handler{
 //	    	reporterRes.save(exchange.getDSData().getReport()) ;
 	    	new ExcelImportProecess(event).process() ;		//启动导入任务
     	}
-    	
-    	return request(super.createRequestPageTempletResponse("redirect:/apps/report/index.html"+(!StringUtils.isBlank(type)? "?dicid="+type:"")));
+
+        return request(super.createRequestPageTempletResponse("redirect:/apps/report/index.html"+(!StringUtils.isBlank(type)? "?dicid="+type:"")));
     }
-    
+
     @RequestMapping("/batdelete")
     @Menu(type = "setting" , subtype = "reportbatdelete")
     public ModelAndView batdelete(ModelMap map , HttpServletRequest request , HttpServletResponse response , @Valid String[] ids ,@Valid String type) throws IOException {
@@ -271,76 +271,76 @@ public class ReportController extends Handler{
     		Iterable<Report> topicList = reportRes.findAll(Arrays.asList(ids)) ;
     		reportRes.delete(topicList);
     	}
-    	
-    	return request(super.createRequestPageTempletResponse("redirect:/apps/report/index.html"+(!StringUtils.isBlank(type) ? "?dicid="+type:"")));
+
+        return request(super.createRequestPageTempletResponse("redirect:/apps/report/index.html"+(!StringUtils.isBlank(type) ? "?dicid="+type:"")));
     }
-    
+
     @RequestMapping("/expids")
     @Menu(type = "setting" , subtype = "reportexpids")
     public void expids(ModelMap map , HttpServletRequest request , HttpServletResponse response , @Valid String[] ids) throws IOException {
-    	if(ids!=null && ids.length > 0){
-    		Iterable<Report> topicList = reportRes.findAll(Arrays.asList(ids)) ;
-    		MetadataTable table = metadataRes.findByTablename("uk_report") ;
-    		List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
-    		for(Report topic : topicList){
-    			values.add(MainUtils.transBean2Map(topic)) ;
-    		}
-    		
-    		response.setHeader("content-disposition", "attachment;filename=UCKeFu-Report-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
-    		if(table!=null){
-    			ExcelExporterProcess excelProcess = new ExcelExporterProcess( values, table, response.getOutputStream()) ;
-    			excelProcess.process();
-    		}
-    	}
-    	
+    	if(ids!=null && ids.length > 0) {
+            Iterable<Report> topicList = reportRes.findAll(Arrays.asList(ids));
+            MetadataTable table = metadataRes.findByTablename("uk_report");
+            List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+            for (Report topic : topicList) {
+                values.add(MainUtils.transBean2Map(topic));
+            }
+
+            response.setHeader("content-disposition", "attachment;filename=UCKeFu-Report-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
+            if (table != null) {
+                ExcelExporterProcess excelProcess = new ExcelExporterProcess(values, table, response.getOutputStream());
+                excelProcess.process();
+            }
+        }
+
         return ;
     }
-    
+
     @RequestMapping("/expall")
     @Menu(type = "setting" , subtype = "reportexpall")
     public void expall(ModelMap map , HttpServletRequest request , HttpServletResponse response,@Valid String type) throws IOException {
-    	List<Report> reportList = reportRes.findByOrgiAndDicid(super.getOrgi(request) , type) ;
-    	
-    	MetadataTable table = metadataRes.findByTablename("uk_report") ;
-		List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
-		for(Report report : reportList){
-			values.add(MainUtils.transBean2Map(report)) ;
-		}
-		
-		response.setHeader("content-disposition", "attachment;filename=UCKeFu-Report-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
-		
-		if(table!=null){
-			ExcelExporterProcess excelProcess = new ExcelExporterProcess( values, table, response.getOutputStream()) ;
-			excelProcess.process();
-		}
-        return ;
+        List<Report> reportList = reportRes.findByOrgiAndDicid(super.getOrgi(request), type);
+
+        MetadataTable table = metadataRes.findByTablename("uk_report");
+        List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        for (Report report : reportList) {
+            values.add(MainUtils.transBean2Map(report));
+        }
+
+        response.setHeader("content-disposition", "attachment;filename=UCKeFu-Report-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
+
+        if (table != null) {
+            ExcelExporterProcess excelProcess = new ExcelExporterProcess(values, table, response.getOutputStream());
+            excelProcess.process();
+        }
+        return;
     }
-    
+
     @RequestMapping("/pbreportindex")
     @Menu(type = "setting" , subtype = "pbreport" , admin= true)
     public ModelAndView pbreportindex(ModelMap map , HttpServletRequest request , @Valid String dicid) {
-    	if(!StringUtils.isBlank(dicid) && !"0".equals(dicid)){
-        	map.put("dataDic", dataDicRes.findByIdAndOrgi(dicid, super.getOrgi(request))) ;
-    		map.put("reportList", publishedReportRes.findByOrgiAndDicid(super.getOrgi(request) , dicid , new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}else{
-    		map.put("reportList", publishedReportRes.findByOrgi(super.getOrgi(request) , new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}
+    	if(!StringUtils.isBlank(dicid) && !"0".equals(dicid)) {
+            map.put("dataDic", dataDicRes.findByIdAndOrgi(dicid, super.getOrgi(request)));
+            map.put("reportList", publishedReportRes.findByOrgiAndDicid(super.getOrgi(request), dicid, PageRequest.of(super.getP(request), super.getPs(request))));
+        }else {
+            map.put("reportList", publishedReportRes.findByOrgi(super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request))));
+        }
     	map.put("dataDicList", dataDicRes.findByOrgi(super.getOrgi(request))) ;
     	return request(super.createAppsTempletResponse("/apps/business/report/pbreportindex"));
     }
     @RequestMapping("/pbreportlist")
     @Menu(type = "setting" , subtype = "pbreport" , admin= true)
     public ModelAndView pbreportlist(ModelMap map , HttpServletRequest request , @Valid String dicid) {
-    	if(!StringUtils.isBlank(dicid) && !"0".equals(dicid)){
-        	map.put("dataDic", dataDicRes.findByIdAndOrgi(dicid, super.getOrgi(request))) ;
-    		map.put("reportList", publishedReportRes.findByOrgiAndDicid(super.getOrgi(request) , dicid , new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}else{
-    		map.put("reportList", publishedReportRes.findByOrgi(super.getOrgi(request) , new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}
+    	if(!StringUtils.isBlank(dicid) && !"0".equals(dicid)) {
+            map.put("dataDic", dataDicRes.findByIdAndOrgi(dicid, super.getOrgi(request)));
+            map.put("reportList", publishedReportRes.findByOrgiAndDicid(super.getOrgi(request), dicid, PageRequest.of(super.getP(request), super.getPs(request))));
+        }else {
+            map.put("reportList", publishedReportRes.findByOrgi(super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request))));
+        }
     	map.put("dataDicList", dataDicRes.findByOrgi(super.getOrgi(request))) ;
     	return request(super.createRequestPageTempletResponse("/apps/business/report/pbreportlist"));
     }
-    
+
     @RequestMapping("/pbdelete")
     @Menu(type = "setting" , subtype = "pbreport" , admin= true)
     public ModelAndView pbdelete(ModelMap map , HttpServletRequest request , @Valid String id) {
@@ -350,13 +350,15 @@ public class ReportController extends Handler{
     	}
     	return request(super.createRequestPageTempletResponse("redirect:/apps/report/pbreportindex.html?dicid="+report.getDicid()));
     }
+
     /**
      * 报表
+     *
      * @param map
      * @param request
      * @param id
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     @RequestMapping("/view")
 	@Menu(type = "report", subtype = "report")

@@ -87,12 +87,12 @@ public class ApiContactsController extends Handler {
             User user = super.getUser(request);
             contactsList = contactsRepository.findByCreaterAndSharesAndOrgi(user.getId(), user.getId(),
                                                                             super.getOrgi(request), false, q,
-                                                                            new PageRequest(
+                                                                            PageRequest.of(
                                                                                     super.getP(request),
                                                                                     super.getPs(request)));
         } else {
             contactsList = contactsRepository.findByOrgi(super.getOrgi(request), false, q,
-                                                         new PageRequest(super.getP(request), super.getPs(request)));
+                    PageRequest.of(super.getP(request), super.getPs(request)));
         }
         return new ResponseEntity<>(new RestResult(RestResultType.OK, contactsList), HttpStatus.OK);
     }

@@ -75,12 +75,12 @@ public class ApiWlContactsController extends Handler {
         if (StringUtils.isNotBlank(creater)) {
             User user = super.getUser(request);
             contactsList = contactsRes.findByCreaterAndSharesAndOrgi(
-                    user.getId(), user.getId(), super.getOrgi(request), false, q, new PageRequest(super.getP(request),
+                    user.getId(), user.getId(), super.getOrgi(request), false, q, PageRequest.of(super.getP(request),
                             super.getPs(
                                     request)));
         } else {
             contactsList = contactsRes.findByOrgi(
-                    super.getOrgi(request), false, q, new PageRequest(super.getP(request), super.getPs(request)));
+                    super.getOrgi(request), false, q, PageRequest.of(super.getP(request), super.getPs(request)));
         }
         return new ResponseEntity<>(new RestResult(RestResultType.OK, contactsList), HttpStatus.OK);
     }

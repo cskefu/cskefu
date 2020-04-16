@@ -129,7 +129,7 @@ public class AgentSettingsController extends Handler {
     @RequestMapping("/blacklist")
     @Menu(type = "setting", subtype = "blacklist", admin = false)
     public ModelAndView blacklist(ModelMap map, HttpServletRequest request) {
-        map.put("blackList", blackListRes.findByOrgi(super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "endtime")));
+        map.put("blackList", blackListRes.findByOrgi(super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "endtime")));
         map.put("tagTypeList", Dict.getInstance().getDic("com.dic.tag.type"));
         return request(super.createAppsTempletResponse("/apps/setting/agent/blacklist"));
     }
@@ -166,7 +166,7 @@ public class AgentSettingsController extends Handler {
             map.put("tagType", tagType);
         }
         if (tagType != null) {
-            map.put("tagList", tagRes.findByOrgiAndTagtype(super.getOrgi(request), tagType.getCode(), new PageRequest(super.getP(request), super.getPs(request))));
+            map.put("tagList", tagRes.findByOrgiAndTagtype(super.getOrgi(request), tagType.getCode(), PageRequest.of(super.getP(request), super.getPs(request))));
         }
         map.put("tagTypeList", tagList);
         return request(super.createAppsTempletResponse("/apps/setting/agent/tag"));

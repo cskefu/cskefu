@@ -115,7 +115,7 @@ public class CustomerController extends Handler {
                 false,
                 boolQueryBuilder,
                 q,
-                new PageRequest(super.getP(request), super.getPs(request))));
+                PageRequest.of(super.getP(request), super.getPs(request))));
 
         return request(super.createAppsTempletResponse("/apps/business/customer/index"));
     }
@@ -137,7 +137,7 @@ public class CustomerController extends Handler {
             boolQueryBuilder.must(termQuery("ekind", ekind));
             map.put("ekind", ekind);
         }
-        map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), MainUtils.getStartTime(), null, false, boolQueryBuilder, q, new PageRequest(super.getP(request), super.getPs(request))));
+        map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), MainUtils.getStartTime(), null, false, boolQueryBuilder, q, PageRequest.of(super.getP(request), super.getPs(request))));
 
         return request(super.createAppsTempletResponse("/apps/business/customer/index"));
     }
@@ -157,7 +157,7 @@ public class CustomerController extends Handler {
             boolQueryBuilder.must(termQuery("ekind", ekind));
             map.put("ekind", ekind);
         }
-        map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), MainUtils.getWeekStartTime(), null, false, boolQueryBuilder, q, new PageRequest(super.getP(request), super.getPs(request))));
+        map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), MainUtils.getWeekStartTime(), null, false, boolQueryBuilder, q, PageRequest.of(super.getP(request), super.getPs(request))));
 
         return request(super.createAppsTempletResponse("/apps/business/customer/index"));
     }
@@ -178,7 +178,7 @@ public class CustomerController extends Handler {
         if (StringUtils.isNotBlank(q)) {
             map.put("q", q);
         }
-        map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), null, null, false, boolQueryBuilder, q, new PageRequest(super.getP(request), super.getPs(request))));
+        map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), null, null, false, boolQueryBuilder, q, PageRequest.of(super.getP(request), super.getPs(request))));
         return request(super.createAppsTempletResponse("/apps/business/customer/index"));
     }
 
@@ -200,7 +200,7 @@ public class CustomerController extends Handler {
         if (StringUtils.isNotBlank(q)) {
             map.put("q", q);
         }
-        map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), null, null, false, boolQueryBuilder, q, new PageRequest(super.getP(request), super.getPs(request))));
+        map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), null, null, false, boolQueryBuilder, q, PageRequest.of(super.getP(request), super.getPs(request))));
         return request(super.createAppsTempletResponse("/apps/business/customer/index"));
     }
 
@@ -222,7 +222,7 @@ public class CustomerController extends Handler {
             map.put("q", q);
         }
 
-        map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), null, null, false, boolQueryBuilder, q, new PageRequest(super.getP(request), super.getPs(request))));
+        map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), null, null, false, boolQueryBuilder, q, PageRequest.of(super.getP(request), super.getPs(request))));
         return request(super.createAppsTempletResponse("/apps/business/customer/index"));
     }
 
@@ -374,7 +374,7 @@ public class CustomerController extends Handler {
         }
 
         boolQueryBuilder.must(termQuery("datastatus", false));        //只导出 数据删除状态 为 未删除的 数据
-        Iterable<EntCustomer> entCustomerList = entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), null, null, false, boolQueryBuilder, null, new PageRequest(super.getP(request), super.getPs(request)));
+        Iterable<EntCustomer> entCustomerList = entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), null, null, false, boolQueryBuilder, null, PageRequest.of(super.getP(request), super.getPs(request)));
 
         MetadataTable table = metadataRes.findByTablename("uk_entcustomer");
         List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
@@ -406,7 +406,7 @@ public class CustomerController extends Handler {
             map.put("ekind", ekind);
         }
 
-        Iterable<EntCustomer> entCustomerList = entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), null, null, false, boolQueryBuilder, q, new PageRequest(super.getP(request), super.getPs(request)));
+        Iterable<EntCustomer> entCustomerList = entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), null, null, false, boolQueryBuilder, q, PageRequest.of(super.getP(request), super.getPs(request)));
         MetadataTable table = metadataRes.findByTablename("uk_entcustomer");
         List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
         for (EntCustomer customer : entCustomerList) {

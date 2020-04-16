@@ -89,7 +89,7 @@ public class AppsController extends Handler {
         final Page<OnlineUser> onlineUserList = onlineUserRes.findByOrgiAndStatus(
                 super.getOrgi(request),
                 MainContext.OnlineUserStatusEnum.ONLINE.toString(),
-                new PageRequest(
+                PageRequest.of(
                         super.getP(request),
                         super.getPs(request),
                         Sort.Direction.DESC,
@@ -192,7 +192,7 @@ public class AppsController extends Handler {
     public ModelAndView onlineuser(ModelMap map, HttpServletRequest request) {
         Page<OnlineUser> onlineUserList = this.onlineUserRes.findByOrgiAndStatus(
                 super.getOrgi(request), MainContext.OnlineUserStatusEnum.ONLINE.toString(),
-                new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
+                PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
         List<String> ids = new ArrayList<String>();
         for (OnlineUser onlineUser : onlineUserList.getContent()) {
             onlineUser.setBetweentime((int) (System.currentTimeMillis() - onlineUser.getLogintime().getTime()));

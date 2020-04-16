@@ -31,17 +31,17 @@ import javax.validation.Valid;
 
 @Controller
 public class ContactsResourceController extends Handler{
-	
+
 	@Autowired
 	private ContactsRepository contactsRes ;
-	
-	@RequestMapping("/res/contacts")
+
+    @RequestMapping("/res/contacts")
     @Menu(type = "res" , subtype = "contacts")
     public ModelAndView add(ModelMap map , HttpServletRequest request , @Valid String q) {
-		if(q==null){
-			q = "" ;
-		}
-    	map.addAttribute("contactsList", contactsRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(),super.getUser(request).getId(),super.getOrgi(request), false , q , new PageRequest(0, 10))) ;
+        if (q == null) {
+            q = "";
+        }
+        map.addAttribute("contactsList", contactsRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), false, q, PageRequest.of(0, 10)));
         return request(super.createRequestPageTempletResponse("/public/contacts"));
     }
 }

@@ -388,7 +388,7 @@ public class ApiChatbotController extends Handler {
         }
 
         Page<Chatbot> records = chatbotRes.findWithPagination(
-                new PageRequest(p, ps, Sort.Direction.DESC, "createtime"));
+                PageRequest.of(p, ps, Sort.Direction.DESC, "createtime"));
 
         JsonArray ja = new JsonArray();
         for (Chatbot c : records) {

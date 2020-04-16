@@ -267,7 +267,7 @@ public class ApiContactNotesController extends Handler {
         String q = querybuilder(j);
 
         Page<ContactNotes> cns = contactNotesRes.findByContactidAndOrgiOrderByCreatetimeDesc(cid,
-                q, new PageRequest(super.getP(request), super.getPs(request)));
+                q, PageRequest.of(super.getP(request), super.getPs(request)));
 
         resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
         resp.addProperty("size", cns.getSize());

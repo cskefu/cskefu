@@ -64,7 +64,7 @@ public class UsersController extends Handler {
                         super.getOrgiByTenantshare(request),
                         super.getOrgid(request),
                         true,
-                        new PageRequest(
+                        PageRequest.of(
                                 super.getP(request),
                                 super.getPs(request),
                                 Sort.Direction.ASC,

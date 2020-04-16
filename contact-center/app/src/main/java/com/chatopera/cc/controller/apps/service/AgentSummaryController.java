@@ -56,33 +56,33 @@ import java.util.*;
 @Controller
 @RequestMapping("/apps/agent/summary")
 public class AgentSummaryController extends Handler{
-	
+
 	@Autowired
 	private ServiceSummaryRepository serviceSummaryRes ;
-	
+
 	@Autowired
 	private MetadataRepository metadataRes ;
-	
+
 	@Autowired
 	private AgentServiceRepository agentServiceRes ;
-	
+
 	@Autowired
 	private TagRepository tagRes ;
-	
-	@Autowired
+
+    @Autowired
 	private ContactsRepository contactsRes ;
-	
-	/**
-	 * 按条件查询
-	 * @param map
-	 * @param request
-	 * @param ani
-	 * @param called
-	 * @param begin
-	 * @param end
-	 * @param direction
-	 * @return
-	 */
+
+    /**
+     * 按条件查询
+     * @param map
+     * @param request
+     * @param ani
+     * @param called
+     * @param begin
+     * @param end
+     * @param direction
+     * @return
+     */
 	@RequestMapping(value = "/index")
     @Menu(type = "agent" , subtype = "agentsummary" , access = false)
     public ModelAndView index(ModelMap map , HttpServletRequest request , @Valid final String begin , @Valid final String end ) {
@@ -91,33 +91,34 @@ public class AgentSummaryController extends Handler{
 			@Override
 			public Predicate toPredicate(Root<AgentServiceSummary> root, CriteriaQuery<?> query,
 					CriteriaBuilder cb) {
-				List<Predicate> list = new ArrayList<Predicate>();  
-				list.add(cb.equal(root.get("orgi").as(String.class),orgi)) ;
-				list.add(cb.equal(root.get("process").as(boolean.class), 0)) ;
-				list.add(cb.notEqual(root.get("channel").as(String.class), MainContext.ChannelType.PHONE.toString())) ;
-				try {
-					if(!StringUtils.isBlank(begin) && begin.matches("[\\d]{4}-[\\d]{2}-[\\d]{2}")){
-						list.add(cb.greaterThanOrEqualTo(root.get("createtime").as(Date.class),MainUtils.simpleDateFormat.parse(begin)));
-					}
-					if(!StringUtils.isBlank(end) && end.matches("[\\d]{4}-[\\d]{2}-[\\d]{2}")){
-						list.add(cb.lessThanOrEqualTo(root.get("createtime").as(Date.class),MainUtils.dateFormate.parse(end + " 23:59:59")));
-					}
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-				Predicate[] p = new Predicate[list.size()];  
-			    return cb.and(list.toArray(p));  
-			}}, new PageRequest(super.getP(request), super.getPs(request) , Sort.Direction.DESC, "createtime")) ;
+                List<Predicate> list = new ArrayList<Predicate>();
+                list.add(cb.equal(root.get("orgi").as(String.class), orgi));
+                list.add(cb.equal(root.get("process").as(boolean.class), 0));
+                list.add(cb.notEqual(root.get("channel").as(String.class), MainContext.ChannelType.PHONE.toString()));
+                try {
+                    if (!StringUtils.isBlank(begin) && begin.matches("[\\d]{4}-[\\d]{2}-[\\d]{2}")) {
+                        list.add(cb.greaterThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.simpleDateFormat.parse(begin)));
+                    }
+                    if (!StringUtils.isBlank(end) && end.matches("[\\d]{4}-[\\d]{2}-[\\d]{2}")) {
+                        list.add(cb.lessThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.dateFormate.parse(end + " 23:59:59")));
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Predicate[] p = new Predicate[list.size()];
+                return cb.and(list.toArray(p));
+            }
+        }, PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
 		map.addAttribute("summaryList", page) ;
 		map.addAttribute("begin", begin) ;
 		map.addAttribute("end", end) ;
-		
-		map.addAttribute("tags", tagRes.findByOrgiAndTagtype(super.getOrgi(request) , MainContext.ModelType.SUMMARY.toString())) ;
-		
-    	return request(super.createAppsTempletResponse("/apps/service/summary/index"));
+
+        map.addAttribute("tags", tagRes.findByOrgiAndTagtype(super.getOrgi(request) , MainContext.ModelType.SUMMARY.toString())) ;
+
+        return request(super.createAppsTempletResponse("/apps/service/summary/index"));
     }
-	
-	@RequestMapping(value = "/process")
+
+    @RequestMapping(value = "/process")
     @Menu(type = "agent" , subtype = "agentsummary" , access = false)
     public ModelAndView process(ModelMap map , HttpServletRequest request , @Valid final String id) {
 		AgentServiceSummary summary = serviceSummaryRes.findByIdAndOrgi(id, super.getOrgi(request)) ;
@@ -131,11 +132,11 @@ public class AgentSummaryController extends Handler{
 				map.addAttribute("contacts",contacts) ;
 			}
 		}
-		
-		return request(super.createRequestPageTempletResponse("/apps/service/summary/process"));
+
+        return request(super.createRequestPageTempletResponse("/apps/service/summary/process"));
 	}
-	
-	@RequestMapping(value = "/save")
+
+    @RequestMapping(value = "/save")
     @Menu(type = "agent" , subtype = "agentsummary" , access = false)
     public ModelAndView save(ModelMap map , HttpServletRequest request , @Valid final AgentServiceSummary summary) {
 		AgentServiceSummary oldSummary = serviceSummaryRes.findByIdAndOrgi(summary.getId(), super.getOrgi(request)) ;
@@ -146,50 +147,50 @@ public class AgentSummaryController extends Handler{
 			oldSummary.setProcessmemo(summary.getProcessmemo());
 			serviceSummaryRes.save(oldSummary) ;
 		}
-		
-		return request(super.createRequestPageTempletResponse("redirect:/apps/agent/summary/index.html"));
+
+        return request(super.createRequestPageTempletResponse("redirect:/apps/agent/summary/index.html"));
 	}
-	
-	 @RequestMapping("/expids")
+
+    @RequestMapping("/expids")
 	    @Menu(type = "agent" , subtype = "agentsummary" , access = false)
 	    public void expids(ModelMap map , HttpServletRequest request , HttpServletResponse response , @Valid String[] ids) throws IOException {
-	    	if(ids!=null && ids.length > 0){
-	    		Iterable<AgentServiceSummary> statusEventList = serviceSummaryRes.findAll(Arrays.asList(ids)) ;
-	    		MetadataTable table = metadataRes.findByTablename("uk_servicesummary") ;
-	    		List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
-	    		for(AgentServiceSummary event : statusEventList){
-	    			values.add(MainUtils.transBean2Map(event)) ;
-	    		}
-	    		
-	    		response.setHeader("content-disposition", "attachment;filename=UCKeFu-Summary-History-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
-	    		
-	    		ExcelExporterProcess excelProcess = new ExcelExporterProcess( values, table, response.getOutputStream()) ;
-	    		excelProcess.process();
-	    	}
-	    	
-	        return ;
+	    	if(ids!=null && ids.length > 0) {
+                Iterable<AgentServiceSummary> statusEventList = serviceSummaryRes.findAll(Arrays.asList(ids));
+                MetadataTable table = metadataRes.findByTablename("uk_servicesummary");
+                List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+                for (AgentServiceSummary event : statusEventList) {
+                    values.add(MainUtils.transBean2Map(event));
+                }
+
+                response.setHeader("content-disposition", "attachment;filename=UCKeFu-Summary-History-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
+
+                ExcelExporterProcess excelProcess = new ExcelExporterProcess(values, table, response.getOutputStream());
+                excelProcess.process();
+            }
+
+        return ;
 	    }
-	    
-	    @RequestMapping("/expall")
+
+    @RequestMapping("/expall")
 	    @Menu(type = "agent" , subtype = "agentsummary" , access = false)
 	    public void expall(ModelMap map , HttpServletRequest request , HttpServletResponse response) throws IOException {
-	    	Iterable<AgentServiceSummary> statusEventList = serviceSummaryRes.findByChannelNotAndOrgi(
-                    MainContext.ChannelType.PHONE.toString() , super.getOrgi(request) , new PageRequest(0, 10000));
-	    	
-	    	MetadataTable table = metadataRes.findByTablename("uk_servicesummary") ;
-			List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
-			for(AgentServiceSummary statusEvent : statusEventList){
-				values.add(MainUtils.transBean2Map(statusEvent)) ;
-			}
-			
-			response.setHeader("content-disposition", "attachment;filename=UCKeFu-Summary-History-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
-			
-			ExcelExporterProcess excelProcess = new ExcelExporterProcess( values, table, response.getOutputStream()) ;
-			excelProcess.process();
-	        return ;
-	    }
-	    
-	    @RequestMapping("/expsearch")
+        Iterable<AgentServiceSummary> statusEventList = serviceSummaryRes.findByChannelNotAndOrgi(
+                MainContext.ChannelType.PHONE.toString(), super.getOrgi(request), PageRequest.of(0, 10000));
+
+        MetadataTable table = metadataRes.findByTablename("uk_servicesummary");
+        List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        for (AgentServiceSummary statusEvent : statusEventList) {
+            values.add(MainUtils.transBean2Map(statusEvent));
+        }
+
+        response.setHeader("content-disposition", "attachment;filename=UCKeFu-Summary-History-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
+
+        ExcelExporterProcess excelProcess = new ExcelExporterProcess(values, table, response.getOutputStream());
+        excelProcess.process();
+        return;
+    }
+
+    @RequestMapping("/expsearch")
 	    @Menu(type = "agent" , subtype = "agentsummary" , access = false)
 	    public void expall(ModelMap map , HttpServletRequest request  , HttpServletResponse response ,  @Valid final String begin , @Valid final String end ) throws IOException {
 	    	final String orgi = super.getOrgi(request);
@@ -197,36 +198,37 @@ public class AgentSummaryController extends Handler{
 				@Override
 				public Predicate toPredicate(Root<AgentServiceSummary> root, CriteriaQuery<?> query,
 						CriteriaBuilder cb) {
-					List<Predicate> list = new ArrayList<Predicate>();  
-					list.add(cb.and(cb.equal(root.get("process").as(boolean.class), 0))) ;
-					list.add(cb.equal(root.get("orgi").as(String.class),orgi)) ;
-					list.add(cb.and(cb.notEqual(root.get("channel").as(String.class), MainContext.ChannelType.PHONE.toString()))) ;
-					try {
-						if(!StringUtils.isBlank(begin) && begin.matches("[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}")){
-							list.add(cb.and(cb.greaterThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.dateFormate.parse(begin)))) ;
-						}
-						if(!StringUtils.isBlank(end) && end.matches("[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}")){
-							list.add(cb.and(cb.lessThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.dateFormate.parse(end)))) ;
-						}
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
-					Predicate[] p = new Predicate[list.size()];  
-				    return cb.and(list.toArray(p));  
-				}}, new PageRequest(0, 10000 , Sort.Direction.DESC, "createtime")) ;
-	    	
-	    	List<Map<String,Object>> values = new ArrayList<Map<String,Object>>();
-	    	for(AgentServiceSummary summary : page){
-	    		values.add(MainUtils.transBean2Map(summary)) ;
-	    	}
+                    List<Predicate> list = new ArrayList<Predicate>();
+                    list.add(cb.and(cb.equal(root.get("process").as(boolean.class), 0)));
+                    list.add(cb.equal(root.get("orgi").as(String.class), orgi));
+                    list.add(cb.and(cb.notEqual(root.get("channel").as(String.class), MainContext.ChannelType.PHONE.toString())));
+                    try {
+                        if (!StringUtils.isBlank(begin) && begin.matches("[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}")) {
+                            list.add(cb.and(cb.greaterThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.dateFormate.parse(begin))));
+                        }
+                        if (!StringUtils.isBlank(end) && end.matches("[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}")) {
+                            list.add(cb.and(cb.lessThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.dateFormate.parse(end))));
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    Predicate[] p = new Predicate[list.size()];
+                    return cb.and(list.toArray(p));
+                }
+            }, PageRequest.of(0, 10000, Sort.Direction.DESC, "createtime"));
 
-	    	response.setHeader("content-disposition", "attachment;filename=UCKeFu-Summary-History-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
+        List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        for (AgentServiceSummary summary : page) {
+            values.add(MainUtils.transBean2Map(summary));
+        }
 
-	    	MetadataTable table = metadataRes.findByTablename("uk_servicesummary") ;
-	    	
-	    	ExcelExporterProcess excelProcess = new ExcelExporterProcess( values, table, response.getOutputStream()) ;
-	    	excelProcess.process();
-	    	
-	        return ;
-	    }
+        response.setHeader("content-disposition", "attachment;filename=UCKeFu-Summary-History-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
+
+        MetadataTable table = metadataRes.findByTablename("uk_servicesummary");
+
+        ExcelExporterProcess excelProcess = new ExcelExporterProcess(values, table, response.getOutputStream());
+        excelProcess.process();
+
+        return;
+    }
 }

@@ -60,7 +60,7 @@ public class ApiQuickReplyController extends Handler {
         }
 
         Page<QuickReply> replyList = quickReplyRepository.getByOrgiAndCate(getOrgi(request), cate, q,
-                new PageRequest(p == null ? 1 : p, ps == null ? 20 : ps));
+                PageRequest.of(p == null ? 1 : p, ps == null ? 20 : ps));
         return new ResponseEntity<>(new RestResult(RestResultType.OK, replyList), HttpStatus.OK);
     }
 

@@ -153,7 +153,7 @@ public class ChatServiceController extends Handler {
                 Predicate[] p = new Predicate[list.size()];
                 return cb.and(list.toArray(p));
             }
-        }, new PageRequest(super.getP(request), super.getPs(request), Direction.DESC, "createtime"));
+        }, PageRequest.of(super.getP(request), super.getPs(request), Direction.DESC, "createtime"));
         map.put("agentServiceList", page);
         map.put("username", username);
         map.put("channel", channel);
@@ -175,7 +175,7 @@ public class ChatServiceController extends Handler {
                 "agentServiceList", agentServiceRes.findByOrgiAndStatus(
                         super.getOrgi(request),
                         MainContext.AgentUserStatusEnum.INSERVICE.toString(),
-                        new PageRequest(
+                        PageRequest.of(
                                 super.getP(request),
                                 super.getPs(request), Direction.DESC,
                                 "createtime")));
@@ -401,7 +401,7 @@ public class ChatServiceController extends Handler {
     public ModelAndView quene(ModelMap map, HttpServletRequest request) {
         Page<AgentUser> agentUserList = agentUserRes.findByOrgiAndStatus(
                 super.getOrgi(request), MainContext.AgentUserStatusEnum.INQUENE.toString(),
-                new PageRequest(super.getP(request), super.getPs(request), Direction.DESC, "createtime"));
+                PageRequest.of(super.getP(request), super.getPs(request), Direction.DESC, "createtime"));
         List<String> skillGroups = new ArrayList<String>();
         for (AgentUser agentUser : agentUserList.getContent()) {
             agentUser.setWaittingtime((int) (System.currentTimeMillis() - agentUser.getCreatetime().getTime()));
@@ -434,7 +434,7 @@ public class ChatServiceController extends Handler {
             agentUser.setAgentno(null);
             agentUser.setSkill(null);
             agentUserRes.save(agentUser);
-            ACDComposeContext ctx = acdMessageHelper.getComposeContextWithAgentUser(
+            ACDComposeContext ctx = ACDMessageHelper.getComposeContextWithAgentUser(
                     agentUser, false, MainContext.ChatInitiatorType.USER.toString());
             acdVisitorDispatcher.enqueue(ctx);
         }
@@ -518,22 +518,18 @@ public class ChatServiceController extends Handler {
                 }
             }
             userList = userProxy.findByOrganInAndAgentAndDatastatus(
-                    organIdList, true, false, new PageRequest(super.getP(request), super.getPs(request), Direction.DESC,
-                                                              "createtime"));
+                    organIdList, true, false, PageRequest.of(super.getP(request), super.getPs(request), Direction.DESC,
+                            "createtime"));
         } else {
             userList = userRes.findByOrgiAndAgentAndDatastatus(
-                    super.getOrgi(request), true, false, new PageRequest(super.getP(request), super.getPs(request),
-                                                                         Direction.DESC, "createtime"));
+                    super.getOrgi(request), true, false, PageRequest.of(super.getP(request), super.getPs(request),
+                            Direction.DESC, "createtime"));
         }
 
         Map<String, Boolean> onlines = new HashMap<>();
 
         for (User user : userList.getContent()) {
-            if (cache.findOneAgentStatusByAgentnoAndOrig(user.getId(), super.getOrgi(request)) != null) {
-                onlines.put(user.getId(), true);
-            } else {
-                onlines.put(user.getId(), false);
-            }
+            onlines.put(user.getId(), cache.findOneAgentStatusByAgentnoAndOrig(user.getId(), super.getOrgi(request)) != null);
         }
         map.put("userList", userList);
         map.put("onlines", onlines);
@@ -544,8 +540,8 @@ public class ChatServiceController extends Handler {
     @Menu(type = "service", subtype = "leavemsg", admin = true)
     public ModelAndView leavemsg(ModelMap map, HttpServletRequest request) {
         Page<LeaveMsg> leaveMsgs = leaveMsgRes.findByOrgi(
-                super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request), Direction.DESC,
-                                                        "createtime"));
+                super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request), Direction.DESC,
+                        "createtime"));
         for (final LeaveMsg l : leaveMsgs) {
             leaveMsgProxy.resolveChannelBySnsid(l);
         }

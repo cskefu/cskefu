@@ -301,10 +301,10 @@
              Page<ChatMessage> agentUserMessageList;
              if (condition.equals("label")) {
                  agentUserMessageList = this.chatMessageRes.findByislabel(
-                         agentUser.getUserid(), search, new PageRequest(0, 9999, Direction.DESC, "updatetime"));
+                         agentUser.getUserid(), search, PageRequest.of(0, 9999, Direction.DESC, "updatetime"));
              } else {
                  agentUserMessageList = this.chatMessageEsRes.findByUsessionAndMessageContaining(
-                         agentUser.getUserid(), search, new PageRequest(0, 9999, Direction.DESC, "updatetime"));
+                         agentUser.getUserid(), search, PageRequest.of(0, 9999, Direction.DESC, "updatetime"));
              }
              view.addObject("agentUserMessageList", agentUserMessageList);
          }
@@ -384,7 +384,7 @@
              view.addObject(
                      "agentUserMessageList",
                      this.chatMessageRes.findByUsessionAndOrgi(agentUser.getUserid(), orgi,
-                             new PageRequest(0, 20, Direction.DESC,
+                             PageRequest.of(0, 20, Direction.DESC,
                                      "updatetime")));
              AgentService agentService = null;
              if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
@@ -1343,7 +1343,7 @@
              quickTypeRes.delete(tempQuickType);
 
              Page<QuickReply> quickReplyList = quickReplyRes.getByOrgiAndCate(
-                     super.getOrgi(request), id, null, new PageRequest(0, 10000));
+                     super.getOrgi(request), id, null, PageRequest.of(0, 10000));
 
              quickReplyRes.deleteAll(quickReplyList.getContent());
          }

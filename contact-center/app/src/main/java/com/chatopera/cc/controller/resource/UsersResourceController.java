@@ -119,9 +119,9 @@ public class UsersResourceController extends Handler {
                     organIdList.add(rel.getSkillid());
                 }
             }
-            list = userProxy.findByOrganInAndDatastatusAndUsernameLike(organIdList, false, "%" + q + "%", new PageRequest(0, 10));
+            list = userProxy.findByOrganInAndDatastatusAndUsernameLike(organIdList, false, "%" + q + "%", PageRequest.of(0, 10));
         } else {
-            list = userRes.findByDatastatusAndOrgiAndOrgidAndUsernameLike(false, super.getOrgi(request), super.getOrgid(request), "%" + q + "%", new PageRequest(0, 10));
+            list = userRes.findByDatastatusAndOrgiAndOrgidAndUsernameLike(false, super.getOrgi(request), super.getOrgid(request), "%" + q + "%", PageRequest.of(0, 10));
         }
         return list;
     }

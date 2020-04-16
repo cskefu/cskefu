@@ -63,8 +63,8 @@ public class SNSAccountIMController extends Handler {
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "im", access = false, admin = true)
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String execute,@RequestParam(name = "status",required = false) String status ) {
-        map.addAttribute("snsAccountList", snsAccountRes.findBySnstypeAndOrgi(MainContext.ChannelType.WEBIM.toString(), super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request))));
-        map.addAttribute("status",status);
+        map.addAttribute("snsAccountList", snsAccountRes.findBySnstypeAndOrgi(MainContext.ChannelType.WEBIM.toString(), super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request))));
+        map.addAttribute("status", status);
         List<Secret> secretConfig = secRes.findByOrgi(super.getOrgi(request));
         if (secretConfig != null && secretConfig.size() > 0) {
             map.addAttribute("secret", secretConfig.get(0));

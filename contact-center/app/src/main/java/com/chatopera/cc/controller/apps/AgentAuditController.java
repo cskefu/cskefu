@@ -300,8 +300,8 @@ public class AgentAuditController extends Handler {
             view.addObject(
                     "agentUserMessageList",
                     this.chatMessageRepository.findByUsessionAndOrgi(agentUser.getUserid(), orgi,
-                                                                     new PageRequest(0, 20, Sort.Direction.DESC,
-                                                                                     "updatetime"
+                                                                     PageRequest.of(0, 20, Sort.Direction.DESC,
+                                                                             "updatetime"
                                                                      )
                                                                     )
                           );

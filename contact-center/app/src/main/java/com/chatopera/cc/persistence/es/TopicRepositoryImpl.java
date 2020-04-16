@@ -59,7 +59,7 @@ public class TopicRepositoryImpl implements TopicEsCommonRepository{
         }
         NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).withSort(new FieldSortBuilder("top").unmappedType("boolean").order(SortOrder.DESC)).withSort(new FieldSortBuilder("createtime").unmappedType("date").order(SortOrder.DESC));
         searchQueryBuilder.withHighlightFields(new HighlightBuilder.Field("title").fragmentSize(200));
-        SearchQuery searchQuery = searchQueryBuilder.build().setPageable(new PageRequest(p, ps));
+        SearchQuery searchQuery = searchQueryBuilder.build().setPageable(PageRequest.of(p, ps));
         if (elasticsearchTemplate.indexExists(Topic.class)) {
             pages = elasticsearchTemplate.queryForPage(searchQuery, Topic.class, new XiaoEUKResultMapper());
         }
@@ -86,7 +86,7 @@ public class TopicRepositoryImpl implements TopicEsCommonRepository{
 
 
         searchQueryBuilder.withHighlightFields(new HighlightBuilder.Field("title").fragmentSize(200));
-        SearchQuery searchQuery = searchQueryBuilder.build().setPageable(new PageRequest(p, ps));
+        SearchQuery searchQuery = searchQueryBuilder.build().setPageable(PageRequest.of(p, ps));
         if (elasticsearchTemplate.indexExists(Topic.class)) {
             pages = elasticsearchTemplate.queryForPage(searchQuery, Topic.class, new XiaoEUKResultMapper());
         }
@@ -106,7 +106,7 @@ public class TopicRepositoryImpl implements TopicEsCommonRepository{
         }
 
         NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).withQuery(termQuery("creater", user)).withSort(new FieldSortBuilder("top").unmappedType("boolean").order(SortOrder.DESC)).withSort(new FieldSortBuilder("updatetime").unmappedType("date").order(SortOrder.DESC));
-        SearchQuery searchQuery = searchQueryBuilder.build().setPageable(new PageRequest(p, ps));
+        SearchQuery searchQuery = searchQueryBuilder.build().setPageable(PageRequest.of(p, ps));
         if (elasticsearchTemplate.indexExists(Topic.class)) {
             pages = elasticsearchTemplate.queryForPage(searchQuery, Topic.class, new XiaoEUKResultMapper());
         }
@@ -123,7 +123,7 @@ public class TopicRepositoryImpl implements TopicEsCommonRepository{
         QueryBuilder endFilter = QueryBuilders.boolQuery().should(QueryBuilders.missingQuery("endtime")).should(QueryBuilders.rangeQuery("endtime").from(new Date().getTime()));
 
         NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).withFilter(QueryBuilders.boolQuery().must(beginFilter).must(endFilter)).withSort(new FieldSortBuilder("createtime").unmappedType("date").order(SortOrder.DESC));
-        SearchQuery searchQuery = searchQueryBuilder.build().setPageable(new PageRequest(p, ps));
+        SearchQuery searchQuery = searchQueryBuilder.build().setPageable(PageRequest.of(p, ps));
         if (elasticsearchTemplate.indexExists(Topic.class)) {
             pages = elasticsearchTemplate.queryForPage(searchQuery, Topic.class);
         }

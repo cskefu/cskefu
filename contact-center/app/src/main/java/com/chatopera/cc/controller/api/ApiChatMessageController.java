@@ -41,7 +41,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/chatmessage")
 public class ApiChatMessageController extends Handler{
-	
+
 	@Autowired
 	private ChatMessageRepository chatMessageRes ;
 
@@ -56,8 +56,8 @@ public class ApiChatMessageController extends Handler{
     public ResponseEntity<RestResult> list(HttpServletRequest request , @Valid String serviceid) {
 		ResponseEntity<RestResult> result = null ;
 		if(!StringUtils.isBlank(serviceid)) {
-			result = new ResponseEntity<>(new RestResult(RestResultType.OK , chatMessageRes.findByAgentserviceidAndOrgi(serviceid , super.getUser(request).getOrgi(),new PageRequest(super.getP(request), super.getPs(request) , Sort.Direction.DESC, "createtime"))), HttpStatus.OK) ;
-		}else {
+            result = new ResponseEntity<>(new RestResult(RestResultType.OK, chatMessageRes.findByAgentserviceidAndOrgi(serviceid, super.getUser(request).getOrgi(), PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"))), HttpStatus.OK);
+        }else {
 			result = new ResponseEntity<>(new RestResult(RestResultType.LACKDATA , RestResultType.LACKDATA.getMessage()), HttpStatus.OK) ;
 		}
         return result ;

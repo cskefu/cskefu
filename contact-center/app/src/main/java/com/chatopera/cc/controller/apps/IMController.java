@@ -62,7 +62,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/im")
@@ -889,9 +892,9 @@ public class IMController extends Handler {
                     }
 
                     map.addAttribute(
-                            "chatMessageList", chatMessageRes.findByUsessionAndOrgi(userid, orgi, new PageRequest(0, 20,
-                                                                                                                  Direction.DESC,
-                                                                                                                  "updatetime")));
+                            "chatMessageList", chatMessageRes.findByUsessionAndOrgi(userid, orgi, PageRequest.of(0, 20,
+                                    Direction.DESC,
+                                    "updatetime")));
                 }
                 view.addObject("commentList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_COMMENT_DIC));
                 view.addObject("commentItemList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_COMMENT_ITEM_DIC));
@@ -907,7 +910,7 @@ public class IMController extends Handler {
                 Page<InviteRecord> inviteRecords = inviteRecordRes.findByUseridAndOrgiAndResultAndCreatetimeGreaterThan(
                         userid, orgi,
                         MainContext.OnlineUserInviteStatus.DEFAULT.toString(),
-                        threshold, new PageRequest(0, 1, Direction.DESC, "createtime"));
+                        threshold, PageRequest.of(0, 1, Direction.DESC, "createtime"));
                 if (inviteRecords.getContent() != null && inviteRecords.getContent().size() > 0) {
                     final InviteRecord record = inviteRecords.getContent().get(0);
                     record.setUpdatetime(new Date());
@@ -1053,7 +1056,7 @@ public class IMController extends Handler {
                 orgi,
                 MainContext.OnlineUserInviteStatus.DEFAULT.toString(),
                 threshold,
-                new PageRequest(
+                PageRequest.of(
                         0,
                         1,
                         Direction.DESC,

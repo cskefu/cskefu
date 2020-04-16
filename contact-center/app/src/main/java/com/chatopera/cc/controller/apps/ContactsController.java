@@ -127,7 +127,7 @@ public class ContactsController extends Handler {
                 false,
                 boolQueryBuilder,
                 q,
-                new PageRequest(super.getP(request), super.getPs(request)));
+                PageRequest.of(super.getP(request), super.getPs(request)));
 
         map.addAttribute("contactsList", contacts);
 
@@ -159,7 +159,7 @@ public class ContactsController extends Handler {
                 orgi,
                 MainUtils.getStartTime(), null, false,
                 boolQueryBuilder, q,
-                new PageRequest(
+                PageRequest.of(
                         super.getP(request),
                         super.getPs(request)));
 
@@ -194,7 +194,7 @@ public class ContactsController extends Handler {
                 orgi,
                 MainUtils.getWeekStartTime(), null, false,
                 boolQueryBuilder, q,
-                new PageRequest(
+                PageRequest.of(
                         super.getP(request),
                         super.getPs(request)));
         map.addAttribute(
@@ -229,7 +229,7 @@ public class ContactsController extends Handler {
                 logined.getId(),
                 orgi, null, null, false,
                 boolQueryBuilder, q,
-                new PageRequest(
+                PageRequest.of(
                         super.getP(request),
                         super.getPs(request)));
 
@@ -494,7 +494,7 @@ public class ContactsController extends Handler {
         boolQueryBuilder.must(termQuery("datastatus", false));        //只导出 数据删除状态 为 未删除的 数据
         Iterable<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndOrgi(
                 logined.getId(), logined.getId(), orgi, null, null,
-                false, boolQueryBuilder, null, new PageRequest(super.getP(request), super.getPs(request)));
+                false, boolQueryBuilder, null, PageRequest.of(super.getP(request), super.getPs(request)));
 
         MetadataTable table = metadataRes.findByTablename("uk_contacts");
         List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
@@ -528,7 +528,7 @@ public class ContactsController extends Handler {
 
         Iterable<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndOrgi(
                 logined.getId(), logined.getId(), orgi, null, null,
-                false, boolQueryBuilder, q, new PageRequest(super.getP(request), super.getPs(request)));
+                false, boolQueryBuilder, q, PageRequest.of(super.getP(request), super.getPs(request)));
         MetadataTable table = metadataRes.findByTablename("uk_contacts");
         List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
         for (Contacts contacts : contactsList) {
@@ -566,7 +566,7 @@ public class ContactsController extends Handler {
         }
         Page<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndOrgi(
                 logined.getId(), logined.getId(), orgi, null, null, false, boolQueryBuilder, q,
-                new PageRequest(super.getP(request), super.getPs(request)));
+                PageRequest.of(super.getP(request), super.getPs(request)));
 
         map.addAttribute("contactsList", contactsList);
 

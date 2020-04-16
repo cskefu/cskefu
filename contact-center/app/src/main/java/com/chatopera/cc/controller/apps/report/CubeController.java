@@ -38,31 +38,31 @@ import java.util.List;
 @Controller
 @RequestMapping("/apps/report/cube")
 public class CubeController extends Handler{
-	
+
 	@Autowired
 	private CubeTypeRepository cubeTypeRes;
-	
+
 	@Autowired
 	private CubeRepository cubeRes;
-	
+
 	@Autowired
 	private DimensionRepository dimensionRes;
-	
+
 	@Autowired
 	private CubeMeasureRepository cubeMeasureRes;
 
 	@Autowired
 	private CubeLevelRepository cubeLevelRes;
-	
+
 	@Autowired
 	private CubeMetadataRepository cubeMetadataRes;
-	
+
 	@Autowired
 	private MetadataRepository metadataRes;
-	
+
 	@Autowired
 	private PublishedCubeRepository publishedCubeRes;
-	
+
 	@RequestMapping({"/type/add"})
 	@Menu(type="report", subtype="cube")
 	public ModelAndView addtype(ModelMap map , HttpServletRequest request , @Valid String typeid){
@@ -87,7 +87,7 @@ public class CubeController extends Handler{
     	}
     	return request(super.createRequestPageTempletResponse("redirect:/apps/report/cube/index.html"));
     }
-    
+
     @RequestMapping({"/type/edit"})
 	@Menu(type="report", subtype="cube")
 	public ModelAndView edittype(ModelMap map , HttpServletRequest request , String id){
@@ -95,7 +95,7 @@ public class CubeController extends Handler{
 		map.addAttribute("cubeTypeList",cubeTypeRes.findByOrgi(super.getOrgi(request))) ;
 		return request(super.createRequestPageTempletResponse("/apps/business/report/cube/type/edit"));
 	}
-	 
+
     @RequestMapping("/type/update")
     @Menu(type = "report" , subtype = "cube")
     public ModelAndView typeupdate(HttpServletRequest request ,@Valid CubeType cubeType) {
@@ -114,7 +114,7 @@ public class CubeController extends Handler{
     	}
     	return request(super.createRequestPageTempletResponse("redirect:/apps/business/report/cube/index.html?typeid="+cubeType.getId()));
     }
-    
+
     @RequestMapping({"/type/delete"})
 	@Menu(type="report", subtype="cube")
 	public ModelAndView deletetype(ModelMap map , HttpServletRequest request , @Valid String id){
@@ -134,36 +134,36 @@ public class CubeController extends Handler{
     	}
 		return request(super.createRequestPageTempletResponse("redirect:/apps/report/cube/index.html"));
 	}
-    
+
     @RequestMapping("/index")
     @Menu(type = "report" , subtype = "cube" )
     public ModelAndView index(ModelMap map , HttpServletRequest request , @Valid String typeid,@Valid String msg) {
-    	List<CubeType> cubeTypeList = cubeTypeRes.findByOrgi(super.getOrgi(request)) ; 
-    	if(!StringUtils.isBlank(typeid)){
-        	map.put("cubeType", cubeTypeRes.findByIdAndOrgi(typeid, super.getOrgi(request))) ;
-    		map.put("cubeList", cubeRes.getByOrgiAndTypeid(super.getOrgi(request) , typeid , new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}else{
-    		map.put("cubeList", cubeRes.getByOrgi(super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}
-    	map.put("pubCubeTypeList", cubeTypeList) ;
-    	map.put("typeid", typeid);
-    	map.put("msg", msg);
-    	return request(super.createAppsTempletResponse("/apps/business/report/cube/index"));
+		List<CubeType> cubeTypeList = cubeTypeRes.findByOrgi(super.getOrgi(request));
+		if (!StringUtils.isBlank(typeid)) {
+			map.put("cubeType", cubeTypeRes.findByIdAndOrgi(typeid, super.getOrgi(request)));
+			map.put("cubeList", cubeRes.getByOrgiAndTypeid(super.getOrgi(request), typeid, PageRequest.of(super.getP(request), super.getPs(request))));
+		} else {
+			map.put("cubeList", cubeRes.getByOrgi(super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request))));
+		}
+		map.put("pubCubeTypeList", cubeTypeList);
+		map.put("typeid", typeid);
+		map.put("msg", msg);
+		return request(super.createAppsTempletResponse("/apps/business/report/cube/index"));
     }
     @RequestMapping("/list")
     @Menu(type = "report" , subtype = "cube" )
     public ModelAndView list(ModelMap map , HttpServletRequest request , @Valid String typeid) {
-    	//List<CubeType> cubeTypeList = cubeTypeRes.findByOrgi(super.getOrgi(request)) ; 
-    	if(!StringUtils.isBlank(typeid)){
-        	map.put("cubeType", cubeTypeRes.findByIdAndOrgi(typeid, super.getOrgi(request))) ;
-    		map.put("cubeList", cubeRes.getByOrgiAndTypeid(super.getOrgi(request) , typeid , new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}else{
-    		map.put("cubeList", cubeRes.getByOrgi(super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}
-    	//map.put("pubCubeTypeList", cubeTypeList) ;
-    	map.put("typeid", typeid);
-    	return request(super.createRequestPageTempletResponse("/apps/business/report/cube/list"));
-    }
+		//List<CubeType> cubeTypeList = cubeTypeRes.findByOrgi(super.getOrgi(request)) ;
+		if (!StringUtils.isBlank(typeid)) {
+			map.put("cubeType", cubeTypeRes.findByIdAndOrgi(typeid, super.getOrgi(request)));
+			map.put("cubeList", cubeRes.getByOrgiAndTypeid(super.getOrgi(request), typeid, PageRequest.of(super.getP(request), super.getPs(request))));
+		} else {
+			map.put("cubeList", cubeRes.getByOrgi(super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request))));
+		}
+		//map.put("pubCubeTypeList", cubeTypeList) ;
+		map.put("typeid", typeid);
+		return request(super.createRequestPageTempletResponse("/apps/business/report/cube/list"));
+	}
     @RequestMapping("/add")
     @Menu(type = "report" , subtype = "cube")
     public ModelAndView cubeadd(ModelMap map , HttpServletRequest request , @Valid String typeid) {
@@ -174,8 +174,8 @@ public class CubeController extends Handler{
     	map.addAttribute("typeid", typeid);
         return request(super.createRequestPageTempletResponse("/apps/business/report/cube/add"));
     }
-    
-    @RequestMapping("/save")
+
+	@RequestMapping("/save")
     @Menu(type = "report" , subtype = "cube" )
     public ModelAndView cubesave(ModelMap map , HttpServletRequest request , @Valid Cube cube) {
     	if(!StringUtils.isBlank(cube.getName())){
@@ -185,8 +185,8 @@ public class CubeController extends Handler{
     	}
         return request(super.createRequestPageTempletResponse("redirect:/apps/report/cube/index.html?typeid="+cube.getTypeid()));
     }
-    
-    @RequestMapping("/delete")
+
+	@RequestMapping("/delete")
     @Menu(type = "report" , subtype = "cube" )
     public ModelAndView quickreplydelete(ModelMap map , HttpServletRequest request , @Valid String id) {
     	Cube cube = cubeRes.findOne(id) ;
@@ -202,16 +202,16 @@ public class CubeController extends Handler{
     @RequestMapping("/edit")
     @Menu(type = "report" , subtype = "cube" , admin= true)
     public ModelAndView cubeedit(ModelMap map , HttpServletRequest request , @Valid String id) {
-    	Cube cube = cubeRes.findOne(id) ; 
-    	map.put("cube", cube) ;
-    	if(cube!=null){
-    		map.put("cubeType", cubeTypeRes.findByIdAndOrgi(cube.getTypeid(), super.getOrgi(request))) ;
-    	}
-    	map.addAttribute("cubeTypeList", cubeTypeRes.findByOrgi(super.getOrgi(request))) ;
-        return request(super.createRequestPageTempletResponse("/apps/business/report/cube/edit"));
-    }
-    
-    @RequestMapping("/update")
+		Cube cube = cubeRes.findOne(id);
+		map.put("cube", cube);
+		if (cube != null) {
+			map.put("cubeType", cubeTypeRes.findByIdAndOrgi(cube.getTypeid(), super.getOrgi(request)));
+		}
+		map.addAttribute("cubeTypeList", cubeTypeRes.findByOrgi(super.getOrgi(request)));
+		return request(super.createRequestPageTempletResponse("/apps/business/report/cube/edit"));
+	}
+
+	@RequestMapping("/update")
     @Menu(type = "report" , subtype = "cube" , admin= true)
     public ModelAndView cubeupdate(ModelMap map , HttpServletRequest request , @Valid Cube cube) {
     	if(!StringUtils.isBlank(cube.getId())){
@@ -229,7 +229,7 @@ public class CubeController extends Handler{
     @RequestMapping("/imptb")
     @Menu(type = "report" , subtype = "metadata" , admin = true)
     public ModelAndView imptb(final ModelMap map , HttpServletRequest request,@Valid String cubeid) throws Exception {
-    	
+
 		map.put("tablesList", metadataRes.findByOrgi(super.getOrgi(request)));
 		map.put("cubeid",cubeid );
 		return request(super.createRequestPageTempletResponse("/apps/business/report/cube/cubemetadata/imptb"));
@@ -241,17 +241,17 @@ public class CubeController extends Handler{
     	for(String tableid : tables){
     		MetadataTable tb = new MetadataTable();
     		tb.setId(tableid);
-    		int count = cubeMetadataRes.countByTbAndCubeid(tb,cubeid);
-    		if(count == 0) {
-    			CubeMetadata cubeMetaData = new CubeMetadata();
-    			cubeMetaData.setCubeid(cubeid) ;
-    			cubeMetaData.setOrgi(super.getOrgi(request)) ;
-    			cubeMetaData.setTb(tb);
-    			cubeMetaData.setCreater(user.getId());
-    			cubeMetaData.setMtype("1");
-    			cubeMetadataRes.save(cubeMetaData);
-    		}
-		}    	
+			int count = cubeMetadataRes.countByTbAndCubeid(tb, cubeid);
+			if (count == 0) {
+				CubeMetadata cubeMetaData = new CubeMetadata();
+				cubeMetaData.setCubeid(cubeid);
+				cubeMetaData.setOrgi(super.getOrgi(request));
+				cubeMetaData.setTb(tb);
+				cubeMetaData.setCreater(user.getId());
+				cubeMetaData.setMtype("1");
+				cubeMetadataRes.save(cubeMetaData);
+			}
+		}
         return request(super.createRequestPageTempletResponse("redirect:/apps/report/cube/detail.html?id="+cubeid));
     }
     @RequestMapping("/metadata/edit")
@@ -315,8 +315,8 @@ public class CubeController extends Handler{
     		}else {
     			msg = "CM_DEL_FAILED";
     		}
-    		
-    	}
+
+		}
     	return request(super.createRequestPageTempletResponse("redirect:/apps/report/cube/detail.html?id="+cubeMetadata.getCubeid()+"&msg="+msg));
     }
     @RequestMapping("/detail")
@@ -379,47 +379,50 @@ public class CubeController extends Handler{
     	map.put("msg", msg);
     	return request(super.createRequestPageTempletResponse("redirect:/apps/report/cube/detail.html?id="+id+"&msg="+msg));
     }
-    
-    /**
+
+	/**
 	 * 模型发布页面加载
+	 *
 	 * @param request
 	 * @param cubeid
 	 * @return
 	 * @throws Exception
 	 */
-    @RequestMapping("/cubepublish")
-    @Menu(type = "report" , subtype = "cube" )
-    public ModelAndView cubepublish(ModelMap map ,HttpServletRequest request , @Valid String cubeid,@Valid String isRecover) throws Exception{  
+	@RequestMapping("/cubepublish")
+	@Menu(type = "report", subtype = "cube")
+	public ModelAndView cubepublish(ModelMap map, HttpServletRequest request, @Valid String cubeid, @Valid String isRecover) throws Exception {
 		map.put("cubeid", cubeid);
 		return request(super.createRequestPageTempletResponse("/apps/business/report/cube/cubepublish"));
-    }
-    /**
+	}
+
+	/**
 	 * 模型发布
+	 *
 	 * @param request
 	 * @param cubeid
 	 * @return
 	 * @throws Exception
 	 */
-    @RequestMapping("/cubepublished")
-    @Menu(type = "report" , subtype = "cube" )
-    public ModelAndView cubepublished(ModelMap map ,HttpServletRequest request , @Valid String cubeid,@Valid String isRecover) throws Exception{  
-    	this.cubevalid(map,request, cubeid) ;
-    	if(!StringUtils.isBlank((String)map.get("msg"))) {
-    		map.put("cubeid", cubeid);
-    		return request(super.createRequestPageTempletResponse("redirect:/apps/report/cube/index.html?msg="+ map.get("msg")));
-    	}
-    	User user = super.getUser(request);
-    	Cube cube =this.getCube(cubeid);
-    	PublishedCube publishCube  = new PublishedCube();
-    	MainUtils.copyProperties(cube, publishCube, "");
-    	publishCube.setId(null);
-    	Base64 base64 = new Base64();
-    	publishCube.setCubecontent(base64.encodeToString(MainUtils.toBytes(cube))) ;
+	@RequestMapping("/cubepublished")
+	@Menu(type = "report", subtype = "cube")
+	public ModelAndView cubepublished(ModelMap map, HttpServletRequest request, @Valid String cubeid, @Valid String isRecover) throws Exception {
+		this.cubevalid(map, request, cubeid);
+		if (!StringUtils.isBlank((String) map.get("msg"))) {
+			map.put("cubeid", cubeid);
+			return request(super.createRequestPageTempletResponse("redirect:/apps/report/cube/index.html?msg=" + map.get("msg")));
+		}
+		User user = super.getUser(request);
+		Cube cube = this.getCube(cubeid);
+		PublishedCube publishCube = new PublishedCube();
+		MainUtils.copyProperties(cube, publishCube, "");
+		publishCube.setId(null);
+		Base64 base64 = new Base64();
+		publishCube.setCubecontent(base64.encodeToString(MainUtils.toBytes(cube))) ;
     	publishCube.setDataid(cubeid);
     	publishCube.setUserid(user.getId());
     	publishCube.setUsername(user.getUsername());
     	publishCube.setCreatetime(new Date());
-    	
+
     	List<PublishedCube> pbCubeList = publishedCubeRes.findByOrgiAndDataidOrderByDataversionDesc(super.getOrgi(request), cubeid);
     	if(!pbCubeList.isEmpty()){
     		int maxVersion = pbCubeList.get(0).getDataversion() ;
@@ -451,17 +454,17 @@ public class CubeController extends Handler{
      */
     @RequestMapping("/pbcubeindex")
     @Menu(type = "report" , subtype = "pbcube" )
-    public ModelAndView pbcubeindex(ModelMap map , HttpServletRequest request , @Valid String typeid) {
-    	List<CubeType> cubeTypeList = cubeTypeRes.findByOrgi(super.getOrgi(request)) ; 
-    	if(!StringUtils.isBlank(typeid)){
-        	map.put("cubeType", cubeTypeRes.findByIdAndOrgi(typeid, super.getOrgi(request))) ;
-    		map.put("cubeList", publishedCubeRes.getByOrgiAndTypeid(super.getOrgi(request) , typeid , new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}else{
-    		map.put("cubeList", publishedCubeRes.getByOrgi(super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}
-    	map.put("pubCubeTypeList", cubeTypeList) ;
-    	map.put("typeid", typeid);
-    	return request(super.createAppsTempletResponse("/apps/business/report/cube/pbCubeIndex"));
+    public ModelAndView pbcubeindex(ModelMap map , HttpServletRequest request, @Valid String typeid) {
+		List<CubeType> cubeTypeList = cubeTypeRes.findByOrgi(super.getOrgi(request));
+		if (!StringUtils.isBlank(typeid)) {
+			map.put("cubeType", cubeTypeRes.findByIdAndOrgi(typeid, super.getOrgi(request)));
+			map.put("cubeList", publishedCubeRes.getByOrgiAndTypeid(super.getOrgi(request), typeid, PageRequest.of(super.getP(request), super.getPs(request))));
+		} else {
+			map.put("cubeList", publishedCubeRes.getByOrgi(super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request))));
+		}
+		map.put("pubCubeTypeList", cubeTypeList);
+		map.put("typeid", typeid);
+		return request(super.createAppsTempletResponse("/apps/business/report/cube/pbCubeIndex"));
     }
     /**
      * 已发布模型列表
@@ -474,11 +477,11 @@ public class CubeController extends Handler{
     @RequestMapping("/pbcubelist")
     @Menu(type = "report" , subtype = "pbcube" )
     public ModelAndView pbcubelist(ModelMap map , HttpServletRequest request , @Valid String typeid) {
-    	if(!StringUtils.isBlank(typeid)){
-        	map.put("cubeType", cubeTypeRes.findByIdAndOrgi(typeid, super.getOrgi(request))) ;
-    		map.put("cubeList", publishedCubeRes.getByOrgiAndTypeid(super.getOrgi(request) , typeid , new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}else{
-    		map.put("cubeList", publishedCubeRes.getByOrgi(super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request)))) ;
+		if (!StringUtils.isBlank(typeid)) {
+			map.put("cubeType", cubeTypeRes.findByIdAndOrgi(typeid, super.getOrgi(request)));
+			map.put("cubeList", publishedCubeRes.getByOrgiAndTypeid(super.getOrgi(request), typeid, PageRequest.of(super.getP(request), super.getPs(request))));
+		} else {
+			map.put("cubeList", publishedCubeRes.getByOrgi(super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request))));
     	}
     	map.put("typeid", typeid);
     	return request(super.createRequestPageTempletResponse("/apps/business/report/cube/pbcubelist"));
@@ -502,7 +505,7 @@ public class CubeController extends Handler{
     	}
     	return request(super.createRequestPageTempletResponse("redirect:/apps/report/cube/pbcubeindex.html?typeid="+typeid));
     }
-    
+
     /**
      * 选择已发布模型列表
      * @param map
@@ -513,18 +516,18 @@ public class CubeController extends Handler{
      */
     @RequestMapping("/selpbcubeindex")
     @Menu(type = "report" , subtype = "pbcube" )
-    public ModelAndView selpbcubeindex(ModelMap map , HttpServletRequest request , @Valid String typeid,@Valid String mid) {
-    	List<CubeType> cubeTypeList = cubeTypeRes.findByOrgi(super.getOrgi(request)) ; 
-    	if(!StringUtils.isBlank(typeid)){
-        	map.put("cubeType", cubeTypeRes.findByIdAndOrgi(typeid, super.getOrgi(request))) ;
-    		map.put("cubeList", publishedCubeRes.getByOrgiAndTypeid(super.getOrgi(request) , typeid , new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}else{
-    		map.put("cubeList", publishedCubeRes.getByOrgi(super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}
-    	map.put("pubCubeTypeList", cubeTypeList) ;
-    	map.put("typeid", typeid);
-    	map.put("mid", mid);
-    	return request(super.createRequestPageTempletResponse("/apps/business/report/design/cube/pbCubeIndex"));
+    public ModelAndView selpbcubeindex(ModelMap map , HttpServletRequest request, @Valid String typeid, @Valid String mid) {
+		List<CubeType> cubeTypeList = cubeTypeRes.findByOrgi(super.getOrgi(request));
+		if (!StringUtils.isBlank(typeid)) {
+			map.put("cubeType", cubeTypeRes.findByIdAndOrgi(typeid, super.getOrgi(request)));
+			map.put("cubeList", publishedCubeRes.getByOrgiAndTypeid(super.getOrgi(request), typeid, PageRequest.of(super.getP(request), super.getPs(request))));
+		} else {
+			map.put("cubeList", publishedCubeRes.getByOrgi(super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request))));
+		}
+		map.put("pubCubeTypeList", cubeTypeList);
+		map.put("typeid", typeid);
+		map.put("mid", mid);
+		return request(super.createRequestPageTempletResponse("/apps/business/report/design/cube/pbCubeIndex"));
     }
     /**
      * 选择已发布模型列表
@@ -537,17 +540,17 @@ public class CubeController extends Handler{
     @RequestMapping("/selpbcubelist")
     @Menu(type = "report" , subtype = "pbcube" )
     public ModelAndView selpbcubelist(ModelMap map , HttpServletRequest request , @Valid String typeid, @Valid String mid) {
-    	if(!StringUtils.isBlank(typeid)){
-        	map.put("cubeType", cubeTypeRes.findByIdAndOrgi(typeid, super.getOrgi(request))) ;
-    		map.put("cubeList", publishedCubeRes.getByOrgiAndTypeid(super.getOrgi(request) , typeid , new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}else{
-    		map.put("cubeList", publishedCubeRes.getByOrgi(super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request)))) ;
+		if (!StringUtils.isBlank(typeid)) {
+			map.put("cubeType", cubeTypeRes.findByIdAndOrgi(typeid, super.getOrgi(request)));
+			map.put("cubeList", publishedCubeRes.getByOrgiAndTypeid(super.getOrgi(request), typeid, PageRequest.of(super.getP(request), super.getPs(request))));
+		} else {
+			map.put("cubeList", publishedCubeRes.getByOrgi(super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request))));
     	}
     	map.put("typeid", typeid);
     	map.put("mid", mid);
     	return request(super.createRequestPageTempletResponse("/apps/business/report/design/cube/pbcubelist"));
     }
-    
+
     private Cube getCube(String id){
     	Cube cube = cubeRes.findOne(id);
     	if(cube!=null) {
@@ -556,8 +559,8 @@ public class CubeController extends Handler{
     		cube.setDimension(dimensionRes.findByCubeid(id));
     	}
 		return cube;
-    	
-    }
-    
-    
+
+	}
+
+
 }

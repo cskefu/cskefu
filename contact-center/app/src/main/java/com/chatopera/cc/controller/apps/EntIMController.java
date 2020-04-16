@@ -185,7 +185,7 @@ public class EntIMController extends Handler {
 
         Page<ChatMessage> chatMessageList = chatMessageRes.findByContextidAndUseridAndOrgi(userid,
                 super.getUser(request).getId(), super.getOrgi(request),
-                new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
+                PageRequest.of(0, 20, Sort.Direction.DESC, "createtime")
         );
 
         view.addObject("chatMessageList", chatMessageList);
@@ -230,7 +230,7 @@ public class EntIMController extends Handler {
 
         Page<ChatMessage> chatMessageList = chatMessageRes.findByContextidAndUseridAndOrgiAndCreatetimeLessThan(userid,
                 super.getUser(request).getId(), super.getOrgi(request), createtime,
-                new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
+                PageRequest.of(0, 20, Sort.Direction.DESC, "createtime")
         );
         view.addObject("chatMessageList", chatMessageList);
 
@@ -246,7 +246,7 @@ public class EntIMController extends Handler {
         view.addObject("imGroupUserList", imGroupUserRes.findByImgroupAndOrgi(imGroup, super.getOrgi(request)));
         view.addObject("contextid", id);
         view.addObject("chatMessageList", chatMessageRes.findByContextidAndOrgi(id, super.getOrgi(request),
-                new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
+                PageRequest.of(0, 20, Sort.Direction.DESC, "createtime")
         ));
         return view;
     }
@@ -259,7 +259,7 @@ public class EntIMController extends Handler {
     ) {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/entim/group/more"));
         view.addObject("chatMessageList", chatMessageRes.findByContextidAndOrgiAndCreatetimeLessThan(id,
-                super.getOrgi(request), createtime, new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
+                super.getOrgi(request), createtime, PageRequest.of(0, 20, Sort.Direction.DESC, "createtime")
         ));
         return view;
     }

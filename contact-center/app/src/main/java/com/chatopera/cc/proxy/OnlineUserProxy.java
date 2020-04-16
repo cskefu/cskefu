@@ -412,7 +412,7 @@ public class OnlineUserProxy {
                     query.append(" OR ").append(contacts.getEmail());
                 }
                 Page<Contacts> contactsList = contactsRes.findByOrgi(
-                        orgi, false, query.toString(), new PageRequest(0, 1));
+                        orgi, false, query.toString(), PageRequest.of(0, 1));
                 if (contactsList.getContent().size() > 0) {
                     contacts = contactsList.getContent().get(0);
                 } else {

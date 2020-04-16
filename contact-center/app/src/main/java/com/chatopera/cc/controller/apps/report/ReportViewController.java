@@ -41,34 +41,34 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/apps/view")
-public class ReportViewController extends Handler{
-	
-	@Value("${web.upload-path}")
+public class ReportViewController extends Handler {
+
+    @Value("${web.upload-path}")
     private String path;
-	
-	@Value("${uk.im.server.port}")  
-    private Integer port; 
-	
-	@Autowired
-	private DataDicRepository dataDicRes;
-	
-	@Autowired
-	private PublishedReportRepository publishedReportRes;
-	
-	@Autowired
-	private ReportCubeService reportCubeService;
-	
-	
+
+    @Value("${uk.im.server.port}")
+    private Integer port;
+
+    @Autowired
+    private DataDicRepository dataDicRes;
+
+    @Autowired
+    private PublishedReportRepository publishedReportRes;
+
+    @Autowired
+    private ReportCubeService reportCubeService;
+
+
     @RequestMapping("/index")
     @Menu(type = "setting" , subtype = "report" , admin= true)
     public ModelAndView index(ModelMap map , HttpServletRequest request , @Valid String dicid , @Valid String id) throws Exception {
     	Page<PublishedReport> publishedReportList = null ;
-    	if(!StringUtils.isBlank(dicid) && !"0".equals(dicid)){
-        	map.put("dataDic", dataDicRes.findByIdAndOrgi(dicid, super.getOrgi(request))) ;
-    		map.put("reportList", publishedReportList = publishedReportRes.findByOrgiAndDicid(super.getOrgi(request) , dicid , new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}else{
-    		map.put("reportList", publishedReportList = publishedReportRes.findByOrgi(super.getOrgi(request) , new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	}
+    	if(!StringUtils.isBlank(dicid) && !"0".equals(dicid)) {
+            map.put("dataDic", dataDicRes.findByIdAndOrgi(dicid, super.getOrgi(request)));
+            map.put("reportList", publishedReportList = publishedReportRes.findByOrgiAndDicid(super.getOrgi(request), dicid, PageRequest.of(super.getP(request), super.getPs(request))));
+        }else {
+            map.put("reportList", publishedReportList = publishedReportRes.findByOrgi(super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request))));
+        }
     	if(publishedReportList!=null && publishedReportList.getContent().size() > 0) {
     		PublishedReport publishedReport = publishedReportList.getContent().get(0);
     		if(!StringUtils.isBlank(id)) {
@@ -79,8 +79,8 @@ public class ReportViewController extends Handler{
     			}
     		}
     		map.put("report", publishedReport) ;
-    		
-    		if(publishedReport!=null) {
+
+            if(publishedReport!=null) {
 				map.addAttribute("publishedReport", publishedReport);
 				map.addAttribute("report", publishedReport.getReport());
 				map.addAttribute("reportModels", publishedReport.getReport().getReportModels());
@@ -98,8 +98,8 @@ public class ReportViewController extends Handler{
 				}
 				map.addAttribute("reportFilters", reportCubeService.fillReportFilterData(listFilters, request));
 			}
-    		
-    	}
+
+        }
     	map.put("dataDicList", dataDicRes.findByOrgi(super.getOrgi(request))) ;
     	return request(super.createRequestPageTempletResponse("/apps/business/view/index"));
     }

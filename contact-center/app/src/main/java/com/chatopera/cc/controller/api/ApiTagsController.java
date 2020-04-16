@@ -70,7 +70,7 @@ public class ApiTagsController extends Handler {
             tagType = j.get("tagtype").getAsString();
 
         Page<Tag> records = tagRes.findByOrgiAndTagtype(j.get("orgi").getAsString(), tagType,
-                new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
+                PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
 
         JsonArray ja = new JsonArray();
 

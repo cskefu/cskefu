@@ -59,9 +59,9 @@ public class ApiOnlineUserController extends Handler {
     public ResponseEntity<RestResult> list(HttpServletRequest request, @Valid String userid) {
         Page<OnlineUser> onlineUserList = null;
         if (!StringUtils.isBlank(userid)) {
-            onlineUserList = onlineUserRepository.findByUseridAndOrgi(userid, super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
+            onlineUserList = onlineUserRepository.findByUseridAndOrgi(userid, super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
         } else {
-            onlineUserList = onlineUserRepository.findByOrgiAndStatus(super.getOrgi(request), MainContext.OnlineUserStatusEnum.ONLINE.toString(), new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
+            onlineUserList = onlineUserRepository.findByOrgiAndStatus(super.getOrgi(request), MainContext.OnlineUserStatusEnum.ONLINE.toString(), PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
         }
         return new ResponseEntity<>(new RestResult(RestResultType.OK, onlineUserList), HttpStatus.OK);
     }

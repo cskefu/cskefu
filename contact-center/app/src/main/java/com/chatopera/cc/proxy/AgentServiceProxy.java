@@ -215,7 +215,7 @@ public class AgentServiceProxy {
             view.addObject(
                     "agentUserMessageList",
                     chatMessageRepository.findByUsessionAndOrgi(agentUser.getUserid(), logined.getOrgi(),
-                            new PageRequest(0, 20, Sort.Direction.DESC,
+                            PageRequest.of(0, 20, Sort.Direction.DESC,
                                     "updatetime")));
 
             // 坐席服务记录

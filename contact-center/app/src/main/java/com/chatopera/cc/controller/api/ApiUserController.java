@@ -85,16 +85,16 @@ public class ApiUserController extends Handler {
         Page<User> userList = null;
         if (!StringUtils.isBlank(id)) {
             userList = userRes.findByIdAndOrgi(
-                    id, super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request)));
+                    id, super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request)));
         } else {
             if (!StringUtils.isBlank(username)) {
                 userList = userRes.findByDatastatusAndOrgiAndUsernameLike(
-                        false, super.getOrgi(request), username, new PageRequest(
+                        false, super.getOrgi(request), username, PageRequest.of(
                                 super.getP(request),
                                 super.getPs(request)));
             } else {
                 userList = userRes.findByDatastatusAndOrgi(
-                        false, super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request)));
+                        false, super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request)));
             }
         }
         return new ResponseEntity<>(new RestResult(RestResultType.OK, userList), HttpStatus.OK);

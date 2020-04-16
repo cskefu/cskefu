@@ -74,7 +74,7 @@ public class ApiQualityController extends Handler {
                 Predicate[] p = new Predicate[list.size()];
                 return cb.and(list.toArray(p));
             }
-        }, new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
+        }, PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
         return new ResponseEntity<>(new RestResult(RestResultType.OK, page), HttpStatus.OK);
     }
 }

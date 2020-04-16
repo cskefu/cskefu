@@ -79,7 +79,7 @@ public class MetadataController extends Handler {
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "metadata", admin = true)
     public ModelAndView index(ModelMap map, HttpServletRequest request) throws SQLException {
-        map.addAttribute("metadataList", metadataRes.findAll(new PageRequest(super.getP(request), super.getPs(request))));
+        map.addAttribute("metadataList", metadataRes.findAll(PageRequest.of(super.getP(request), super.getPs(request))));
         return request(super.createAdminTempletResponse("/admin/system/metadata/index"));
     }
 
@@ -253,11 +253,7 @@ public class MetadataController extends Handler {
                 if (tablePorperties.getFieldname().equals("create_time") || tablePorperties.getFieldname().equals("createtime") || tablePorperties.getFieldname().equals("update_time")) {
                     tablePorperties.setDatatypename(getDataTypeName("datetime"));
                 }
-                if (colum.getName().startsWith("field")) {
-                    tablePorperties.setFieldstatus(false);
-                } else {
-                    tablePorperties.setFieldstatus(true);
-                }
+                tablePorperties.setFieldstatus(!colum.getName().startsWith("field"));
                 table.getTableproperty().add(tablePorperties);
             }
             table.setTablename(table.getTablename().toLowerCase());//转小写

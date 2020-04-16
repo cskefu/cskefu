@@ -153,7 +153,7 @@ public class OnlineUserController extends Handler {
                 map.put(
                         "agentUserMessageList",
                         chatMessageRepository.findByAgentserviceidAndOrgi(agentService.getId(), orgi,
-                                new PageRequest(
+                                PageRequest.of(
                                         0, 50, Direction.DESC,
                                         "updatetime")));
             }
@@ -209,7 +209,7 @@ public class OnlineUserController extends Handler {
         map.put(
                 "agentUserMessageList",
                 chatMessageRepository.findByAgentserviceidAndOrgi(agentService.getId(), super.getOrgi(request),
-                        new PageRequest(0, 50, Direction.DESC,
+                        PageRequest.of(0, 50, Direction.DESC,
                                 "updatetime")));
 
         return request(super.createRequestPageTempletResponse("/apps/service/online/chatmsg"));
@@ -225,7 +225,7 @@ public class OnlineUserController extends Handler {
         if (StringUtils.isNotBlank(sessionid)) {
             map.addAttribute(
                     "traceHisList", userEventRes.findBySessionidAndOrgi(sessionid, super.getOrgi(request),
-                            new PageRequest(0, 100)));
+                            PageRequest.of(0, 100)));
         }
         return request(super.createRequestPageTempletResponse("/apps/service/online/trace"));
     }
