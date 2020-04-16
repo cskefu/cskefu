@@ -21,52 +21,82 @@ import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.util.bi.ReportData;
-import freemarker.template.TemplateException;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @Service("reportCubeService")
 public class ReportCubeService {
 
-    @Autowired
-    private TemplateRepository templateRes;
-
+    @NonNull
+    private final TemplateRepository templateRes;
+    @NonNull
+    private final DataSourceService dataSource;
+    @NonNull
+    private final ReportFilterRepository reportFilterRes;
+    @NonNull
+    private final MetadataRepository metadataRes;
     @Value("${web.upload-path}")
     private String path;
 
-    @Autowired
-    private DataSourceService dataSource;
-
-    @Autowired
-    private ReportFilterRepository reportFilterRes;
-
-    @Autowired
-    private MetadataRepository metadataRes;
+    /**
+     * 获取默认的 参数
+     */
+    public static String getDefaultValue(ReportFilter filter) {
+        String value = filter.getDefaultvalue();
+        if (value != null && value.matches("[ ]{0,}[TtMmYy]{1,}[ ]{0,}[+-]{0,1}([\\d]{0,})")) {//处理动态参数的问题 ， Y表示 年 ， 如 Y+1 ， M表示 月 ， 如：M+1 ， T表示 日 ， 如 T+1 ， 例如，Y-1 = 2013 ， M-1 = 8
+            value = MainUtils.processParam(filter.getFormatstr(), value);
+        }
+        value = StringUtils.isBlank(filter.getRequestvalue()) ? value : filter.getRequestvalue();
+        return value;
+    }
 
     /**
-     * @param report
-     * @return
-     * @throws Exception
+     * 获取默认的 参数
      */
-    public ReportData getReportData(ReportModel model, Cube cube, HttpServletRequest request, boolean parseParam, HashMap<String, String> semap) throws Exception {
+    public static String getStartValue(ReportFilter filter) {
+        String startValue = filter.getStartvalue();
+        if (startValue != null && startValue.matches("[ ]{0,}[TtMmYy]{1,}[ ]{0,}[+-]{0,1}([\\d]{0,})")) {//处理动态参数的问题 ， Y表示 年 ， 如 Y+1 ， M表示 月 ， 如：M+1 ， T表示 日 ， 如 T+1 ， 例如，Y-1 = 2013 ， M-1 = 8
+            startValue = MainUtils.processParam(filter.getFormatstr(), startValue);
+        }
+        return StringUtils.isBlank(filter.getRequeststartvalue()) ? startValue : filter.getRequeststartvalue();
+    }
+
+    /**
+     * 获取默认的 参数
+     */
+    public static String getEndValue(ReportFilter filter) {
+        String endValue = filter.getEndvalue();
+        if (endValue != null && endValue.matches("[ ]{0,}[TtMmYy]{1,}[ ]{0,}[+-]{0,1}([\\d]{0,})")) {//处理动态参数的问题 ， Y表示 年 ， 如 Y+1 ， M表示 月 ， 如：M+1 ， T表示 日 ， 如 T+1 ， 例如，Y-1 = 2013 ， M-1 = 8
+            endValue = MainUtils.processParam(filter.getFormatstr(), endValue);
+        }
+        return StringUtils.isBlank(filter.getRequestendvalue()) ? endValue : filter.getRequestendvalue();
+    }
+
+    /**
+     *
+     */
+    public ReportData getReportData(ReportModel model, Cube cube, HttpServletRequest request) throws Exception {
 
         processFilter(model, cube, request);
 
         Template modeltp = templateRes.findByIdAndOrgi(model.getTempletid(), model.getOrgi());
         boolean isTable = modeltp != null && "数据表".equals(modeltp.getName());
 
-        cube.setSql(createCubeSQL(model, cube, request, true, semap));
+        cube.setSql(createCubeSQL(model, cube));
+
 
         Template tp = null;
-
         List<SysDic> tpDicList = Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_DIC);
         for (SysDic sysDic : tpDicList) {
             if (sysDic.getCode().equals("reportquery")) {
@@ -79,6 +109,11 @@ public class ReportCubeService {
                 }
             }
         }
+
+        if (tp == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Template not found");
+        }
+
         Map<String, Object> tplValuesMap = new HashMap<>();
         tplValuesMap.put("reportModel", model);
         tplValuesMap.put("cube", cube);
@@ -112,23 +147,19 @@ public class ReportCubeService {
     }
 
 
+	/*public void fillFilterValue(ReportModel model,ReportFilter filter,HttpServletRequest request ) {
+
+	}*/
+
     /**
      * 生成结算数据SQL
-     *
-     * @param model
-     * @param cube
-     * @param request
-     * @param queryLog
-     * @return
-     * @throws Exception
      */
-    public String createCubeSQL(ReportModel model, Cube cube,
-                                HttpServletRequest request, boolean useStaticFilter, HashMap<String, String> semap) throws Exception {
-        StringBuffer strb = new StringBuffer();
+    public String createCubeSQL(ReportModel model, Cube cube) {
+        StringBuilder strb = new StringBuilder();
         strb.append("select ");
         //要查询的表名以及左连接
-        StringBuffer tables = new StringBuffer();
-        StringBuffer mainTable = new StringBuffer(" from ");
+        StringBuilder tables = new StringBuilder();
+        StringBuilder mainTable = new StringBuilder(" from ");
         String mainTableStr = null;
         Map<String, String> tableMap = new HashMap<>();
         int index = 1;
@@ -148,12 +179,13 @@ public class ReportCubeService {
             tableObjMap.put(cm.getTb().getId(), cm.getTb());
             index++;
         }
+
         //要查询的列名
-        Map<String, String> exist = new HashMap<String, String>();
-        StringBuffer columns = new StringBuffer();
+        Map<String, String> exist = new HashMap<>();
+        StringBuilder columns = new StringBuilder();
         for (Dimension d : cube.getDimension()) {
             for (CubeLevel cl : d.getCubeLevel()) {
-                if (!exist.containsKey(cl.getColumname()) && !mainMetaData.getTb().getTablename().equals(cl.getTablename())) {
+                if (!exist.containsKey(cl.getColumname()) && mainMetaData != null && !mainMetaData.getTb().getTablename().equals(cl.getTablename())) {
                     if (columns.length() > 0) {
                         columns.append(",");
                     }
@@ -169,16 +201,13 @@ public class ReportCubeService {
                 for (Dimension d : cube.getDimension()) {
                     if (!StringUtils.isBlank(d.getFkfield()) && !StringUtils.isBlank(d.getFktable()) && !StringUtils.isBlank(d.getFktableid()) && cm.getTb().getId().equals(d.getFktable())) {
                         tables.append(" left join ").append(cm.getTb().getTablename()).append(" as ").append(tableMap.get(cm.getTb().getId())).append(" on ");
-                        StringBuffer onsql = new StringBuffer();
-                        onsql.append(tableMap.get(mainTableStr)).append(".").append(tableppyMap.get(d.getFkfield()).getFieldname());
-                        onsql.append("=").append(tableMap.get(d.getFktable())).append(".").append(tableppyMap.get(d.getFktableid()).getFieldname());
-                        onsql.append(" ");
+                        String onsql = tableMap.get(mainTableStr) + "." + tableppyMap.get(d.getFkfield()).getFieldname() +
+                                "=" + tableMap.get(d.getFktable()) + "." + tableppyMap.get(d.getFktableid()).getFieldname() +
+                                " ";
                         tables.append(onsql);
                     }
 
                 }
-            } else {
-
             }
         }
         if (mainMetaData != null) {
@@ -191,8 +220,8 @@ public class ReportCubeService {
             strb.append(" * ").append(mainTable).append(tables);
         }
         //过滤关联的表名以及左连接
-        StringBuffer filtertables = new StringBuffer();
-        StringBuffer wherecon = new StringBuffer();
+        StringBuilder filtertables = new StringBuilder();
+        StringBuilder wherecon = new StringBuilder();
         List<ReportFilter> reportFilter = model.getFilters();
         Map<String, String> tablefilterMap = new HashMap<>();
         if (!reportFilter.isEmpty()) {
@@ -204,15 +233,14 @@ public class ReportCubeService {
             }
             for (ReportFilter filter : reportFilter) {
                 filtertables.append(" left join ").append(tableObjMap.get(filter.getFktableid()).getTablename()).append(" as ").append(tablefilterMap.get(filter.getFktableid() + filter.getId())).append(" on ");
-                StringBuffer onsql = new StringBuffer();
-                onsql.append(tableMap.get(mainTableStr)).append(".").append(tableppyMap.get(filter.getFieldid()).getFieldname());
-                onsql.append("=").append(tablefilterMap.get(filter.getFktableid() + filter.getId())).append(".").append(tableppyMap.get(filter.getFkfieldid()).getFieldname());
-                onsql.append(" ");
+                String onsql = tableMap.get(mainTableStr) + "." + tableppyMap.get(filter.getFieldid()).getFieldname() +
+                        "=" + tablefilterMap.get(filter.getFktableid() + filter.getId()) + "." + tableppyMap.get(filter.getFkfieldid()).getFieldname() +
+                        " ";
                 filtertables.append(onsql);
                 if ("range".equals(filter.getValuefiltertype())) {//范围   range code_start 和 code_end
                     if ((!StringUtils.isBlank(filter.getCode()))) {
-                        String startValue = getStartValue(filter, request);
-                        String endValue = getEndValue(filter, request);
+                        String startValue = getStartValue(filter);
+                        String endValue = getEndValue(filter);
                         String dataname = tablefilterMap.get(filter.getFktableid() + filter.getId()) + "." + tableppyMap.get(filter.getFilterfieldid()).getFieldname();
 
                         if (!StringUtils.isBlank(startValue)) {
@@ -223,7 +251,7 @@ public class ReportCubeService {
                         }
                     }
                 } else {//compare
-                    String value = getDefaultValue(filter, request);
+                    String value = getDefaultValue(filter);
                     String dataname = tablefilterMap.get(filter.getFktableid() + filter.getId()) + "." + tableppyMap.get(filter.getFilterfieldid()).getFieldname();
                     if (!StringUtils.isBlank(value)) {
                         if (!wherecon.toString().contains(dataname)) {
@@ -232,13 +260,13 @@ public class ReportCubeService {
                                     wherecon.append(" and ");
                                 }
                                 if ("EQUAL".equals(filter.getComparetype().toUpperCase())) {
-                                    if (value.indexOf(",") > -1) {
+                                    if (value.contains(",")) {
                                         wherecon.append(dataname.toUpperCase()).append(" in ('").append(value.replaceAll(",", "','")).append("') ");
                                     } else {
                                         wherecon.append(dataname.toUpperCase()).append(" = '").append(value).append("' ");
                                     }
                                 } else if ("NOT".equals(filter.getComparetype().toUpperCase())) {
-                                    if (value.indexOf(",") > -1) {
+                                    if (value.contains(",")) {
                                         wherecon.append(dataname.toUpperCase()).append(" not in ('").append(value.replaceAll(",", "','")).append("') ");
                                     } else {
                                         wherecon.append(dataname.toUpperCase()).append(" != '").append(value).append("' ");
@@ -259,20 +287,10 @@ public class ReportCubeService {
         return strb.length() > 0 ? strb.toString() : null;
     }
 
-    public boolean checkSemap(String fieldename, CubeMetadata mainMetaData) {
-        List<TableProperties> mainlist = mainMetaData.getTb().getTableproperty();
-        for (TableProperties tableProperties : mainlist) {
-            if (tableProperties.getFieldname().equals(fieldename)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public String genMdx(ReportModel model, Cube cube, boolean isTable, HttpServletRequest request) {
-        StringBuffer rowstrb = new StringBuffer(), colstrb = new StringBuffer();
-        StringBuffer dimstrb = new StringBuffer();
-        StringBuffer coldimstrb = new StringBuffer();
+        StringBuilder rowstrb = new StringBuilder(), colstrb = new StringBuilder();
+        StringBuilder dimstrb = new StringBuilder();
+        StringBuilder coldimstrb = new StringBuilder();
         //维度 只需要最后一个
         if (!model.getProperties().isEmpty()) {
             ColumnProperties cp = model.getProperties().get(model.getProperties().size() - 1);
@@ -308,7 +326,7 @@ public class ReportCubeService {
         }
         rowstrb.append(dimstrb).append(" ON ROWS");
         //指标
-        StringBuffer measure = new StringBuffer();
+        StringBuilder measure = new StringBuilder();
         for (ColumnProperties cp : model.getMeasures()) {
             for (CubeMeasure cm : cube.getMeasure()) {
                 if (cp.getDataid().equals(cm.getId())) {
@@ -346,7 +364,7 @@ public class ReportCubeService {
             colstrb.append(measure).append(" ON COLUMNS");
         }
 
-        StringBuffer strb = new StringBuffer();
+        StringBuilder strb = new StringBuilder();
         strb.append("SELECT ").append(colstrb);
         if (dimstrb.length() > 0) {
             strb.append(" , ").append(rowstrb).append(" FROM [").append(cube.getName()).append("]");
@@ -367,11 +385,6 @@ public class ReportCubeService {
         }
         return strb.toString();
     }
-	
-	
-	/*public void fillFilterValue(ReportModel model,ReportFilter filter,HttpServletRequest request ) {
-		
-	}*/
 
     public void processReportFilter(Cube cube, ReportFilter filter, HttpServletRequest request) throws Exception {
         if (filter != null) {
@@ -386,13 +399,13 @@ public class ReportCubeService {
                     filter.setRequeststartvalue(request.getParameter(filter.getCode() + "_start"));
                     filter.setRequestendvalue(request.getParameter(filter.getCode() + "_end"));
 
-                    filter.setRequeststartvalue(getStartValue(filter, request));
-                    filter.setRequestendvalue(getEndValue(filter, request));
+                    filter.setRequeststartvalue(getStartValue(filter));
+                    filter.setRequestendvalue(getEndValue(filter));
 
                 } else {
                     filter.setRequestvalue(request.getParameter(filter.getCode()));
 
-                    filter.setRequestvalue(getDefaultValue(filter, request));
+                    filter.setRequestvalue(getDefaultValue(filter));
                 }
             }
             for (ReportFilter filter : model.getFilters()) {
@@ -417,59 +430,7 @@ public class ReportCubeService {
     }
 
     /**
-     * 获取默认的 参数
-     *
-     * @param filter
-     * @return
-     * @throws TemplateException
-     * @throws IOException
-     */
-    public static String getDefaultValue(ReportFilter filter, HttpServletRequest request) {
-        String value = filter.getDefaultvalue();
-        if (value != null && value.matches("[ ]{0,}[TtMmYy]{1,}[ ]{0,}[+-]{0,1}([\\d]{0,})")) {//处理动态参数的问题 ， Y表示 年 ， 如 Y+1 ， M表示 月 ， 如：M+1 ， T表示 日 ， 如 T+1 ， 例如，Y-1 = 2013 ， M-1 = 8
-            value = MainUtils.processParam(filter.getFormatstr(), value);
-        }
-        value = StringUtils.isBlank(filter.getRequestvalue()) ? value : filter.getRequestvalue();
-        return value;
-    }
-
-    /**
-     * 获取默认的 参数
-     *
-     * @param filter
-     * @return
-     */
-    public static String getStartValue(ReportFilter filter, HttpServletRequest request) {
-        String startValue = filter.getStartvalue();
-        if (startValue != null && startValue.matches("[ ]{0,}[TtMmYy]{1,}[ ]{0,}[+-]{0,1}([\\d]{0,})")) {//处理动态参数的问题 ， Y表示 年 ， 如 Y+1 ， M表示 月 ， 如：M+1 ， T表示 日 ， 如 T+1 ， 例如，Y-1 = 2013 ， M-1 = 8
-            startValue = MainUtils.processParam(filter.getFormatstr(), startValue);
-        }
-        return StringUtils.isBlank(filter.getRequeststartvalue()) ? startValue : filter.getRequeststartvalue();
-    }
-
-    /**
-     * 获取默认的 参数
-     *
-     * @param filter
-     * @return
-     */
-    public static String getEndValue(ReportFilter filter, HttpServletRequest request) {
-        String endValue = filter.getEndvalue();
-        if (endValue != null && endValue.matches("[ ]{0,}[TtMmYy]{1,}[ ]{0,}[+-]{0,1}([\\d]{0,})")) {//处理动态参数的问题 ， Y表示 年 ， 如 Y+1 ， M表示 月 ， 如：M+1 ， T表示 日 ， 如 T+1 ， 例如，Y-1 = 2013 ， M-1 = 8
-            endValue = MainUtils.processParam(filter.getFormatstr(), endValue);
-        }
-        return StringUtils.isBlank(filter.getRequestendvalue()) ? endValue : filter.getRequestendvalue();
-    }
-
-    /**
      * 生成过滤器自动获取数据SQL
-     *
-     * @param model
-     * @param cube
-     * @param request
-     * @param queryLog
-     * @return
-     * @throws Exception
      */
     public ReportFilter createCubeFilter(ReportFilter filter, Cube cube, HttpServletRequest request) throws Exception {
         if (MainContext.FilterConValueType.AUTO.toString().equals(filter.getConvalue()) && MainContext.FilterModelType.SIGSEL.toString().equals(filter.getModeltype())) {
@@ -500,21 +461,13 @@ public class ReportCubeService {
             TableProperties keyfield = tableppyMap.get(filter.getKeyfield());
             TableProperties valuefield = tableppyMap.get(filter.getValuefield());
             if (table != null && keyfield != null && valuefield != null && StringUtils.isNotBlank(filter.getFktableid()) && StringUtils.isNotBlank(filter.getKeyfield()) && StringUtils.isNotBlank(filter.getValuefield())) {
-                StringBuffer strb = new StringBuffer();
+                StringBuilder strb = new StringBuilder();
                 strb.append("select ");
-                //要查询的表名以及左连接
-                StringBuffer mainTable = new StringBuffer(" from ");
 
-                mainTable.append(table.getTablename()).append(" as ").append(tableIndexMap.get(filter.getFktableid()));
-                //要查询的列名
-                StringBuffer columns = new StringBuffer();
-                columns.append(tableIndexMap.get(filter.getFktableid())).append(".").append(keyfield.getFieldname()).append(" KEYVAL,");
-                columns.append(tableIndexMap.get(filter.getFktableid())).append(".").append(valuefield.getFieldname()).append(" VAL");
+                StringBuilder wherecon = new StringBuilder(" 1=1 ");
+                wherecon.append(" and ").append(tableIndexMap.get(filter.getFktableid())).append(".orgi = ").append("'").append(filter.getOrgi()).append("' ");
 
-                StringBuffer wherecon = new StringBuffer(" 1=1 ");
-                wherecon.append(" and " + tableIndexMap.get(filter.getFktableid()) + ".orgi = ").append("'").append(filter.getOrgi()).append("' ");
-
-                StringBuffer leftjoin = new StringBuffer();
+                StringBuilder leftjoin = new StringBuilder();
                 //查询所有级联上级
                 List<ReportFilter> rfList = reportFilterRes.findByCascadeidAndOrgi(filter.getId(), filter.getOrgi());
                 //字典项
@@ -542,22 +495,25 @@ public class ReportCubeService {
                     }
                     for (ReportFilter f : rfList) {
                         leftjoin.append(" left join ").append((tableMap.get(f.getFktableid()).getTablename())).append(" as ").append(tablefilterMap.get(f.getFktableid() + f.getId())).append(" on ").append(tablefilterMap.get(f.getFktableid() + f.getId())).append(".").append((tableppyMap.get(f.getKeyfield()).getFieldname())).append(" = ").append(tableIndexMap.get(filter.getFktableid())).append(".").append(f.getTableproperty().getFieldname());
-                        wherecon.append(" and ").append(tablefilterMap.get(f.getFktableid() + f.getId())).append(".").append((tableppyMap.get(f.getKeyfield()).getFieldname())).append(" = '").append(getDefaultValue(f, request)).append("' ");
+                        wherecon.append(" and ").append(tablefilterMap.get(f.getFktableid() + f.getId())).append(".").append((tableppyMap.get(f.getKeyfield()).getFieldname())).append(" = '").append(getDefaultValue(f)).append("' ");
                     }
                 }
-                strb.append(columns).append(mainTable).append(leftjoin);
+                String columns = tableIndexMap.get(filter.getFktableid()) + "." + keyfield.getFieldname() + " KEYVAL," +
+                        tableIndexMap.get(filter.getFktableid()) + "." + valuefield.getFieldname() + " VAL";
+                //要查询的列名
+                //查询所有级联上级
+                //字典项
+                //if(filter.isIsdic() && (rfList==null || rfList.isEmpty())) {
+                strb.append(columns).append(" from ").append(table.getTablename()).append(" as ").append(tableIndexMap.get(filter.getFktableid())).append(leftjoin);
                 if (wherecon.length() > 0) {
                     strb.append(" where ").append(wherecon);
                 }
-                StringBuffer rowstrb = new StringBuffer();
-                rowstrb.append(" {[KEYVAL].[KEYVAL].members,[KEYVAL].[VAL].members} ");
-                rowstrb.append(" ON COLUMNS");
-				/*StringBuffer colstrb = new StringBuffer();
+                /*StringBuffer colstrb = new StringBuffer();
 				colstrb.append(" [VAL].[VAL].members ");
 				colstrb.append(" ON COLUMNS");*/
 
-                StringBuffer strMdx = new StringBuffer();
-                strMdx.append("SELECT ")/*.append(colstrb).append(" , ")*/.append(rowstrb).append(" FROM [filterquery]");
+                String rowstrb = " {[KEYVAL].[KEYVAL].members,[KEYVAL].[VAL].members} " +
+                        " ON COLUMNS";
                 Template tp = null;
                 List<SysDic> tpDicList = Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_DIC);
                 for (SysDic sysDic : tpDicList) {
@@ -571,10 +527,15 @@ public class ReportCubeService {
                         }
                     }
                 }
+
+                if (tp == null) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Template not found");
+                }
+
                 Map<String, Object> tplValuesMap = new HashMap<>();
                 tplValuesMap.put("sql", strb.toString());
                 CubeService cubeService = new CubeService(tp.getTemplettext(), path, dataSource, tplValuesMap, true);
-                ReportData reportData = cubeService.execute(strMdx.toString());
+                ReportData reportData = cubeService.execute("SELECT "/*.append(colstrb).append(" , ")*/ + rowstrb + " FROM [filterquery]");
                 filter.setReportData(reportData);
                 return filter;
             }
@@ -584,10 +545,6 @@ public class ReportCubeService {
 
     /**
      * 填充报表过滤器的值以及下拉值
-     *
-     * @param report
-     * @return
-     * @throws Exception
      */
     public List<ReportFilter> fillReportFilterData(List<ReportFilter> reportFilterList, HttpServletRequest request) throws Exception {
         ReportModel model = new ReportModel();

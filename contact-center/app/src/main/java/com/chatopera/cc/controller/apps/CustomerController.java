@@ -35,20 +35,23 @@ import com.chatopera.cc.util.dsdata.DSDataEvent;
 import com.chatopera.cc.util.dsdata.ExcelImportProecess;
 import com.chatopera.cc.util.dsdata.export.ExcelExporterProcess;
 import com.chatopera.cc.util.dsdata.process.EntCustomerProcess;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,23 +66,24 @@ import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 @Controller
 @RequestMapping("/apps/customer")
+@RequiredArgsConstructor
 public class CustomerController extends Handler {
     private final static Logger logger = LoggerFactory.getLogger(CustomerController.class);
 
-    @Autowired
-    private EntCustomerRepository entCustomerRes;
+    @NonNull
+    private final EntCustomerRepository entCustomerRes;
 
-    @Autowired
-    private ContactsRepository contactsRes;
+    @NonNull
+    private final ContactsRepository contactsRes;
 
-    @Autowired
-    private ReporterRepository reporterRes;
+    @NonNull
+    private final ReporterRepository reporterRes;
 
-    @Autowired
-    private MetadataRepository metadataRes;
+    @NonNull
+    private final MetadataRepository metadataRes;
 
-    @Autowired
-    private PropertiesEventRepository propertiesEventRes;
+    @NonNull
+    private final PropertiesEventRepository propertiesEventRes;
 
     @Value("${web.upload-path}")
     private String path;
@@ -228,7 +232,7 @@ public class CustomerController extends Handler {
 
     @RequestMapping("/add")
     @Menu(type = "customer", subtype = "customer")
-    public ModelAndView add(ModelMap map, HttpServletRequest request, @Valid String ekind) {
+    public ModelAndView add(ModelMap map, @Valid String ekind) {
         map.addAttribute("ekind", ekind);
         return request(super.createRequestPageTempletResponse("/apps/business/customer/add"));
     }
@@ -237,7 +241,7 @@ public class CustomerController extends Handler {
     @Menu(type = "customer", subtype = "customer")
     public ModelAndView save(HttpServletRequest request,
                              @Valid CustomerGroupForm customerGroupForm) {
-        String msg = "";
+        String msg;
         msg = "new_entcustomer_success";
         customerGroupForm.getEntcustomer().setCreater(super.getUser(request).getId());
         customerGroupForm.getEntcustomer().setOrgi(super.getOrgi(request));
@@ -262,9 +266,11 @@ public class CustomerController extends Handler {
 
     @RequestMapping("/delete")
     @Menu(type = "customer", subtype = "customer")
-    public ModelAndView delete(HttpServletRequest request, @Valid EntCustomer entCustomer, @Valid String p, @Valid String ekind) {
+    public ModelAndView delete(@Valid EntCustomer entCustomer, @Valid String p, @Valid String ekind) {
         if (entCustomer != null) {
-            entCustomer = entCustomerRes.findOne(entCustomer.getId());
+            String customerId = entCustomer.getId();
+            entCustomer = entCustomerRes.findById(customerId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Customer %s not found", customerId)));
             entCustomer.setDatastatus(true);                            //客户和联系人都是 逻辑删除
             entCustomerRes.save(entCustomer);
         }
@@ -273,8 +279,8 @@ public class CustomerController extends Handler {
 
     @RequestMapping("/edit")
     @Menu(type = "customer", subtype = "customer")
-    public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String ekind) {
-        map.addAttribute("entCustomer", entCustomerRes.findOne(id));
+    public ModelAndView edit(ModelMap map, @Valid String id, @Valid String ekind) {
+        map.addAttribute("entCustomer", entCustomerRes.findById(id).orElse(null));
         map.addAttribute("ekindId", ekind);
         return request(super.createRequestPageTempletResponse("/apps/business/customer/edit"));
     }
@@ -283,7 +289,9 @@ public class CustomerController extends Handler {
     @Menu(type = "customer", subtype = "customer")
     public ModelAndView update(HttpServletRequest request, @Valid CustomerGroupForm customerGroupForm, @Valid String ekindId) {
         final User logined = super.getUser(request);
-        EntCustomer customer = entCustomerRes.findOne(customerGroupForm.getEntcustomer().getId());
+        String customerId = customerGroupForm.getEntcustomer().getId();
+        EntCustomer customer = entCustomerRes.findById(customerId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Customer %s not found", customerId)));
         String msg = "";
 
         List<PropertiesEvent> events = PropertiesEventUtil.processPropertiesModify(request, customerGroupForm.getEntcustomer(), customer, "id", "orgi", "creater", "createtime", "updatetime");    //记录 数据变更 历史
@@ -292,7 +300,7 @@ public class CustomerController extends Handler {
             String modifyid = MainUtils.getUUID();
             Date modifytime = new Date();
             for (PropertiesEvent event : events) {
-                event.setDataid(customerGroupForm.getEntcustomer().getId());
+                event.setDataid(customerId);
                 event.setCreater(super.getUser(request).getId());
                 event.setOrgi(super.getOrgi(request));
                 event.setModifyid(modifyid);
@@ -312,18 +320,20 @@ public class CustomerController extends Handler {
 
     @RequestMapping("/imp")
     @Menu(type = "customer", subtype = "customer")
-    public ModelAndView imp(ModelMap map, HttpServletRequest request, @Valid String ekind) {
+    public ModelAndView imp(ModelMap map, @Valid String ekind) {
         map.addAttribute("ekind", ekind);
         return request(super.createRequestPageTempletResponse("/apps/business/customer/imp"));
     }
 
     @RequestMapping("/impsave")
     @Menu(type = "customer", subtype = "customer")
-    public ModelAndView impsave(ModelMap map, HttpServletRequest request, @RequestParam(value = "cusfile", required = false) MultipartFile cusfile, @Valid String ekind) throws IOException {
+    public ModelAndView impsave(HttpServletRequest request, @RequestParam(value = "cusfile", required = false) MultipartFile cusfile) throws IOException {
         DSDataEvent event = new DSDataEvent();
-        String fileName = "customer/" + MainUtils.getUUID() + cusfile.getOriginalFilename().substring(cusfile.getOriginalFilename().lastIndexOf("."));
+        String originalFilename = Objects.requireNonNull(cusfile.getOriginalFilename());
+        String fileName = "customer/" + MainUtils.getUUID() + originalFilename.substring(originalFilename.lastIndexOf("."));
         File excelFile = new File(path, fileName);
         if (!excelFile.getParentFile().exists()) {
+            //noinspection ResultOfMethodCallIgnored
             excelFile.getParentFile().mkdirs();
         }
         MetadataTable table = metadataRes.findByTablename("uk_entcustomer");
@@ -346,11 +356,11 @@ public class CustomerController extends Handler {
 
     @RequestMapping("/expids")
     @Menu(type = "customer", subtype = "customer")
-    public void expids(ModelMap map, HttpServletRequest request, HttpServletResponse response, @Valid String[] ids) throws IOException {
+    public void expids(HttpServletResponse response, @Valid String[] ids) throws IOException {
         if (ids != null && ids.length > 0) {
-            Iterable<EntCustomer> entCustomerList = entCustomerRes.findAll(Arrays.asList(ids));
+            Iterable<EntCustomer> entCustomerList = entCustomerRes.findAllById(Arrays.asList(ids));
             MetadataTable table = metadataRes.findByTablename("uk_entcustomer");
-            List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+            List<Map<String, Object>> values = new ArrayList<>();
             for (EntCustomer customer : entCustomerList) {
                 values.add(MainUtils.transBean2Map(customer));
             }
@@ -361,12 +371,11 @@ public class CustomerController extends Handler {
             excelProcess.process();
         }
 
-        return;
     }
 
     @RequestMapping("/expall")
     @Menu(type = "customer", subtype = "customer")
-    public void expall(ModelMap map, HttpServletRequest request, HttpServletResponse response) throws IOException, CSKefuException {
+    public void expall(HttpServletRequest request, HttpServletResponse response) throws IOException, CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
             // #TODO 提示没有部门
@@ -377,7 +386,7 @@ public class CustomerController extends Handler {
         Iterable<EntCustomer> entCustomerList = entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), null, null, false, boolQueryBuilder, null, PageRequest.of(super.getP(request), super.getPs(request)));
 
         MetadataTable table = metadataRes.findByTablename("uk_entcustomer");
-        List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> values = new ArrayList<>();
         for (EntCustomer customer : entCustomerList) {
             values.add(MainUtils.transBean2Map(customer));
         }
@@ -386,7 +395,6 @@ public class CustomerController extends Handler {
 
         ExcelExporterProcess excelProcess = new ExcelExporterProcess(values, table, response.getOutputStream());
         excelProcess.process();
-        return;
     }
 
     @RequestMapping("/expsearch")
@@ -408,7 +416,7 @@ public class CustomerController extends Handler {
 
         Iterable<EntCustomer> entCustomerList = entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), null, null, false, boolQueryBuilder, q, PageRequest.of(super.getP(request), super.getPs(request)));
         MetadataTable table = metadataRes.findByTablename("uk_entcustomer");
-        List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> values = new ArrayList<>();
         for (EntCustomer customer : entCustomerList) {
             values.add(MainUtils.transBean2Map(customer));
         }
@@ -418,6 +426,5 @@ public class CustomerController extends Handler {
         ExcelExporterProcess excelProcess = new ExcelExporterProcess(values, table, response.getOutputStream());
         excelProcess.process();
 
-        return;
     }
 }

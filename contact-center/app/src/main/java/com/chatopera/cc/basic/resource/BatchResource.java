@@ -29,118 +29,118 @@ import com.chatopera.cc.util.dsdata.DSDataEvent;
 import com.chatopera.cc.util.dsdata.ExcelImportProecess;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.lang.NonNull;
 
 import java.io.File;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 
-public class BatchResource extends Resource{
+public class BatchResource extends Resource {
 
-	private JobDetail jobDetail ;
-	private MetadataTable metadataTable ;
-	private ESDataExchangeImpl esDataExchange = null ;
-	
-	private MetadataRepository metadataRes ;
-	
-	private ReporterRepository reporterRes ;
-	
-	public BatchResource(JobDetail jobDetail) {
-		this.jobDetail = jobDetail ;
-		this.metadataRes =  MainContext.getContext().getBean(MetadataRepository.class);
-		this.reporterRes =  MainContext.getContext().getBean(ReporterRepository.class);
-		this.esDataExchange = MainContext.getContext().getBean(ESDataExchangeImpl.class);
-	}
-	
-	@Override
-	public void begin() throws Exception {
-		if(!StringUtils.isBlank(jobDetail.getActid())) {
-			metadataTable = metadataRes.findByTablename(jobDetail.getActid()) ;
-		}
-		DSDataEvent event = new DSDataEvent();
-		String path = MainContext.getContext().getEnvironment().getProperty("web.upload-path") ;
-		File tempFile = null ;
-		if(metadataTable!=null && !StringUtils.isBlank(this.jobDetail.getBatchtype()) && this.jobDetail.getBatchtype().equals("plan")) {
-			if(!StringUtils.isBlank(this.jobDetail.getImptype())) {
-				if(this.jobDetail.getImptype().equals("local")) {
-					tempFile = new File(MainUtils.getTemplet(this.jobDetail.getImpurl(), new HashMap<String,Object>()));
-				}else if(this.jobDetail.getImptype().equals("remote")){
-					FileUtils.copyURLToFile(new URL(MainUtils.getTemplet(this.jobDetail.getImpurl(), new HashMap<String,Object>())), tempFile = File.createTempFile("UKeFu-CallOut-Temp", ".xls"));
-				}
-			}
-			if(tempFile.exists()) {
-				String fileName = "callout/batch/"+ MainUtils.getUUID() + tempFile.getName().substring(tempFile.getName().lastIndexOf(".")) ;
-		    	File excelFile = new File(path , fileName) ;
-		    	if(!excelFile.getParentFile().exists()){
-		    		excelFile.getParentFile().mkdirs() ;
-		    	}
-				
-				event.setTablename(metadataTable.getTablename());
-		    	event.setDSData(new DSData(null ,excelFile , tempFile.getName(), null));
-		    	event.setOrgi(this.jobDetail.getOrgi());
-		    	event.getValues().put("creater", this.jobDetail.getCreater()) ;
-		    	
-		    	FileUtils.copyFile(tempFile, new File(path , fileName));
-		    	
-		    	event.getDSData().setTask(metadataTable);
-		    	event.getDSData().setProcess(new BatchDataProcess(metadataTable, esDataExchange));
-		    	event.setOrgi(this.jobDetail.getOrgi());
-		    	event.setBatid(this.jobDetail.getId());
-		    	event.getDSData().setJobDetail(this.jobDetail);
-		    	
-		    	event.getDSData().getReport().setOrgi(this.jobDetail.getOrgi());
-		    	event.getDSData().getReport().setDataid(this.jobDetail.getId());
-		    	event.getDSData().getReport().setTitle(this.jobDetail.getName() + "_" + MainUtils.dateFormate.format(new Date()));
-			}else {
-				event.getDSData().getReport().setError(true);
-				if(tempFile!=null) {
-					event.getDSData().getReport().setErrormsg(tempFile.getAbsolutePath() + " Not Exist!");
-				}
-			}
-			reporterRes.save(event.getDSData().getReport()) ;
-	    	new ExcelImportProecess(event).process() ;		//启动导入任务
-		}
-	}
+    private final JobDetail jobDetail;
+    private final MetadataRepository metadataRes;
+    private final ReporterRepository reporterRes;
+    private final ESDataExchangeImpl esDataExchange;
+    private MetadataTable metadataTable;
 
-	@Override
-	public void end(boolean clear) throws Exception {
-		
-	}
+    public BatchResource(JobDetail jobDetail) {
+        this.jobDetail = jobDetail;
+        this.metadataRes = MainContext.getContext().getBean(MetadataRepository.class);
+        this.reporterRes = MainContext.getContext().getBean(ReporterRepository.class);
+        this.esDataExchange = MainContext.getContext().getBean(ESDataExchangeImpl.class);
+    }
 
-	@Override
-	public JobDetail getJob() {
-		return this.jobDetail;
-	}
+    @Override
+    public void begin() throws Exception {
+        if (!StringUtils.isBlank(jobDetail.getActid())) {
+            metadataTable = metadataRes.findByTablename(jobDetail.getActid());
+        }
+        DSDataEvent event = new DSDataEvent();
+        String path = MainContext.getContext().getEnvironment().getProperty("web.upload-path");
+        File tempFile = null;
+        if (metadataTable != null && !StringUtils.isBlank(this.jobDetail.getBatchtype()) && this.jobDetail.getBatchtype().equals("plan")) {
+            if (!StringUtils.isBlank(this.jobDetail.getImptype())) {
+                if (this.jobDetail.getImptype().equals("local")) {
+                    tempFile = new File(MainUtils.getTemplet(this.jobDetail.getImpurl(), new HashMap<String, Object>()));
+                } else if (this.jobDetail.getImptype().equals("remote")) {
+                    FileUtils.copyURLToFile(new URL(MainUtils.getTemplet(this.jobDetail.getImpurl(), new HashMap<String, Object>())), tempFile = File.createTempFile("UKeFu-CallOut-Temp", ".xls"));
+                }
+            }
+            if (tempFile != null && tempFile.exists()) {
+                String fileName = "callout/batch/" + MainUtils.getUUID() + tempFile.getName().substring(tempFile.getName().lastIndexOf("."));
+                File excelFile = new File(path, fileName);
+                if (!excelFile.getParentFile().exists()) {
+                    //noinspection ResultOfMethodCallIgnored
+                    excelFile.getParentFile().mkdirs();
+                }
 
-	@Override
-	public void process(OutputTextFormat meta, JobDetail job) throws Exception {
-		
-	}
+                event.setTablename(metadataTable.getTablename());
+                event.setDSData(new DSData(null, excelFile, tempFile.getName(), null));
+                event.setOrgi(this.jobDetail.getOrgi());
+                event.getValues().put("creater", this.jobDetail.getCreater());
 
-	@Override
-	public OutputTextFormat next() throws Exception {
-		return null ;
-	}
+                FileUtils.copyFile(tempFile, new File(path, fileName));
 
-	@Override
-	public boolean isAvailable() {
-		return true;
-	}
+                event.getDSData().setTask(metadataTable);
+                event.getDSData().setProcess(new BatchDataProcess(metadataTable, esDataExchange));
+                event.setOrgi(this.jobDetail.getOrgi());
+                event.setBatid(this.jobDetail.getId());
+                event.getDSData().setJobDetail(this.jobDetail);
 
-	@Override
-	public OutputTextFormat getText(OutputTextFormat object) throws Exception {
-		return object;
-	}
+                event.getDSData().getReport().setOrgi(this.jobDetail.getOrgi());
+                event.getDSData().getReport().setDataid(this.jobDetail.getId());
+                event.getDSData().getReport().setTitle(this.jobDetail.getName() + "_" + MainUtils.dateFormate.format(new Date()));
+            } else {
+                event.getDSData().getReport().setError(true);
+                if (tempFile != null) {
+                    event.getDSData().getReport().setErrormsg(tempFile.getAbsolutePath() + " Not Exist!");
+                }
+            }
+            reporterRes.save(event.getDSData().getReport());
+            new ExcelImportProecess(event).process();        //启动导入任务
+        }
+    }
 
-	@Override
-	public void rmResource() {
-		/**
-		 * 啥也不做
-		 */
-	}
+    @Override
+    public void end(boolean clear) {
 
-	@Override
-	public void updateTask() throws Exception {
-		
-	}
+    }
+
+    @Override
+    public JobDetail getJob() {
+        return this.jobDetail;
+    }
+
+    @Override
+    public void process(@NonNull OutputTextFormat meta, JobDetail job) {
+
+    }
+
+    @Override
+    public OutputTextFormat next() {
+        return null;
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return true;
+    }
+
+    @Override
+    public OutputTextFormat getText(OutputTextFormat object) {
+        return object;
+    }
+
+    @Override
+    public void rmResource() {
+        /*
+         * 啥也不做
+         */
+    }
+
+    @Override
+    public void updateTask() {
+
+    }
 }
