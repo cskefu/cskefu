@@ -20,30 +20,30 @@ import com.alibaba.fastjson.JSONObject;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.persistence.repository.BlackListRepository;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 /**
  * 访客黑名单
  */
 @Component
+@RequiredArgsConstructor
 public class BlackListEventSubscription {
     private final static Logger logger = LoggerFactory.getLogger(BlackListEventSubscription.class);
 
-    @Autowired
-    private Cache cache;
+    @NonNull
+    private final Cache cache;
 
-    @Autowired
-    private BlackListRepository blackListRes;
+    @NonNull
+    private final BlackListRepository blackListRes;
 
     /**
      * 拉黑访客到达拉黑时间后，从黑名单中移除
-     *
-     * @param payload
      */
     @JmsListener(destination = Constants.WEBIM_SOCKETIO_ONLINE_USER_BLACKLIST, containerFactory = "jmsListenerContainerQueue")
     public void onMessage(final String payload) {

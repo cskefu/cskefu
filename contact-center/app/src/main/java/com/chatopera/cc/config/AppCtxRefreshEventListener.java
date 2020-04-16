@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.lang.NonNull;
 
 import java.util.*;
 
@@ -40,7 +41,7 @@ public class AppCtxRefreshEventListener implements ApplicationListener<ContextRe
     private static final Logger logger = LoggerFactory.getLogger(AppCtxRefreshEventListener.class);
 
     @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
+    public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
         if (MainContext.getContext() == null) {
             logger.info("[onApplicationEvent] set main context and initialize the Cache System.");
             MainContext.setApplicationContext(event.getApplicationContext());
@@ -52,10 +53,10 @@ public class AppCtxRefreshEventListener implements ApplicationListener<ContextRe
 
             if (!StringUtils.equalsIgnoreCase(cacheSetupStrategy, Constants.cache_setup_strategy_skip)) {
 
-                /**************************
-                 * 加载系统到缓存
-                 * 加载系统词典大约只需要5s左右
-                 **************************/
+                //**************************
+                //* 加载系统到缓存
+                //* 加载系统词典大约只需要5s左右
+                //**************************
 
                 // 首先将之前缓存清空，此处使用系统的默认租户信息
                 cache.eraseSysDicByOrgi(MainContext.SYSTEM_ORGI);
@@ -79,7 +80,7 @@ public class AppCtxRefreshEventListener implements ApplicationListener<ContextRe
                             parents.contains(dic.getDicid())) {
                         // 不是根词典，并且包含在一个根词典内
                         if (!rootDictItems.containsKey(dic.getDicid())) {
-                            rootDictItems.put(dic.getDicid(), new ArrayList<SysDic>());
+                            rootDictItems.put(dic.getDicid(), new ArrayList<>());
                         }
                         rootDictItems.get(dic.getDicid()).add(dic);
                     }
