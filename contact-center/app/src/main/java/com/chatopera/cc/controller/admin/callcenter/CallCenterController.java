@@ -23,8 +23,9 @@ import com.chatopera.cc.model.PbxHost;
 import com.chatopera.cc.persistence.interfaces.CallCenterInterface;
 import com.chatopera.cc.persistence.repository.PbxHostRepository;
 import com.chatopera.cc.util.Menu;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,19 +37,21 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin/callcenter")
+@RequiredArgsConstructor
 public class CallCenterController extends Handler {
 
-    @Autowired
-    private PbxHostRepository pbxHostRes;
+    @NonNull
+    private final PbxHostRepository pbxHostRes;
 
     @RequestMapping(value = "/index")
-    @Menu(type = "callcenter", subtype = "callcenter", access = false, admin = true)
-    public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String msg) {
+    @Menu(type = "callcenter", subtype = "callcenter", admin = true)
+    public ModelAndView index(ModelMap map, HttpServletRequest request) {
         List<PbxHost> pbxHostList = pbxHostRes.findByOrgi(super.getOrgi(request));
         if (MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER)) {
             CallCenterInterface callCenterImpl = (CallCenterInterface) MainContext.getContext().getBean("callcenter");
 
             for (PbxHost pbxHost : pbxHostList) {
+                //noinspection ConstantConditions
                 if (callCenterImpl != null) {
                     pbxHost.setConnected(callCenterImpl.connected(pbxHost.getId()));
                 }
@@ -59,13 +62,14 @@ public class CallCenterController extends Handler {
     }
 
     @RequestMapping(value = "/pbxhost")
-    @Menu(type = "callcenter", subtype = "pbxhost", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "pbxhost", admin = true)
     public ModelAndView pbxhost(ModelMap map, HttpServletRequest request) {
         List<PbxHost> pbxHostList = pbxHostRes.findByOrgi(super.getOrgi(request));
         if (MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER)) {
             CallCenterInterface callCenterImpl = (CallCenterInterface) MainContext.getContext().getBean("callcenter");
 
             for (PbxHost pbxHost : pbxHostList) {
+                //noinspection ConstantConditions
                 if (callCenterImpl != null) {
                     pbxHost.setConnected(callCenterImpl.connected(pbxHost.getId()));
                 }
@@ -76,14 +80,14 @@ public class CallCenterController extends Handler {
     }
 
     @RequestMapping(value = "/pbxhost/add")
-    @Menu(type = "callcenter", subtype = "pbxhost", access = false, admin = true)
-    public ModelAndView pbxhostadd(ModelMap map, HttpServletRequest request) {
+    @Menu(type = "callcenter", subtype = "pbxhost", admin = true)
+    public ModelAndView pbxhostadd() {
         return request(super.createRequestPageTempletResponse("/admin/callcenter/pbxhost/add"));
     }
 
     @RequestMapping(value = "/pbxhost/save")
-    @Menu(type = "callcenter", subtype = "pbxhost", access = false, admin = true)
-    public ModelAndView pbxhostsave(ModelMap map, HttpServletRequest request, @Valid PbxHost pbxHost) {
+    @Menu(type = "callcenter", subtype = "pbxhost", admin = true)
+    public ModelAndView pbxhostsave(HttpServletRequest request, @Valid PbxHost pbxHost) {
         ModelAndView view = request(super.createRequestPageTempletResponse("redirect:/admin/callcenter/pbxhost.html"));
         String msg = null;
         if (!StringUtils.isBlank(pbxHost.getName())) {
@@ -95,6 +99,7 @@ public class CallCenterController extends Handler {
                 if (MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER)) {
                     CallCenterInterface callCenterImpl = (CallCenterInterface) MainContext.getContext().getBean(
                             "callcenter");
+                    //noinspection ConstantConditions
                     if (callCenterImpl != null) {
                         try {
                             callCenterImpl.init(pbxHost);
@@ -114,15 +119,15 @@ public class CallCenterController extends Handler {
     }
 
     @RequestMapping(value = "/pbxhost/edit")
-    @Menu(type = "callcenter", subtype = "pbxhost", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "pbxhost", admin = true)
     public ModelAndView pbxhostedit(ModelMap map, HttpServletRequest request, @Valid String id) {
         map.addAttribute("pbxHost", pbxHostRes.findByIdAndOrgi(id, super.getOrgi(request)));
         return request(super.createRequestPageTempletResponse("/admin/callcenter/pbxhost/edit"));
     }
 
     @RequestMapping(value = "/pbxhost/update")
-    @Menu(type = "callcenter", subtype = "pbxhost", access = false, admin = true)
-    public ModelAndView pbxhostupdate(ModelMap map, HttpServletRequest request, @Valid PbxHost pbxHost) {
+    @Menu(type = "callcenter", subtype = "pbxhost", admin = true)
+    public ModelAndView pbxhostupdate(HttpServletRequest request, @Valid PbxHost pbxHost) {
         ModelAndView view = request(super.createRequestPageTempletResponse("redirect:/admin/callcenter/pbxhost.html"));
         String msg = null;
         if (!StringUtils.isBlank(pbxHost.getId())) {
@@ -138,6 +143,7 @@ public class CallCenterController extends Handler {
             if (MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER)) {
                 CallCenterInterface callCenterImpl = (CallCenterInterface) MainContext.getContext().getBean(
                         "callcenter");
+                //noinspection ConstantConditions
                 if (callCenterImpl != null) {
                     try {
                         callCenterImpl.init(destHost);
@@ -156,13 +162,14 @@ public class CallCenterController extends Handler {
     }
 
     @RequestMapping(value = "/pbxhost/delete")
-    @Menu(type = "callcenter", subtype = "pbxhost", access = false, admin = true)
-    public ModelAndView mediadelete(ModelMap map, HttpServletRequest request, @Valid String id) {
+    @Menu(type = "callcenter", subtype = "pbxhost", admin = true)
+    public ModelAndView mediadelete(@Valid String id) {
         if (!StringUtils.isBlank(id)) {
-            pbxHostRes.delete(id);
+            pbxHostRes.deleteById(id);
             if (MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER)) {
                 CallCenterInterface callCenterImpl = (CallCenterInterface) MainContext.getContext().getBean(
                         "callcenter");
+                //noinspection ConstantConditions
                 if (callCenterImpl != null) {
                     callCenterImpl.remove(id);
                 }

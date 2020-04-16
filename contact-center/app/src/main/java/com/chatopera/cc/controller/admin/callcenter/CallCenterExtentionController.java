@@ -25,8 +25,9 @@ import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.proxy.CallcenterOutboundProxy;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.freeswitch.model.CallCenterAgent;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,39 +40,40 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin/callcenter")
+@RequiredArgsConstructor
 public class CallCenterExtentionController extends Handler {
 
-    @Autowired
-    private PbxHostRepository pbxHostRes;
+    @NonNull
+    private final PbxHostRepository pbxHostRes;
 
-    @Autowired
-    private ExtentionRepository extentionRes;
+    @NonNull
+    private final ExtentionRepository extentionRes;
 
-    @Autowired
-    private SipTrunkRepository sipTrunkRes;
+    @NonNull
+    private final SipTrunkRepository sipTrunkRes;
 
-    @Autowired
-    private MediaRepository mediaRes;
+    @NonNull
+    private final MediaRepository mediaRes;
 
-    @Autowired
-    private ServiceAiRepository serviceAiRes;
+    @NonNull
+    private final ServiceAiRepository serviceAiRes;
 
-    @Autowired
-    private ProductRepository productRes;
+    @NonNull
+    private final ProductRepository productRes;
 
-    @Autowired
-    private QueSurveyProcessRepository queSurveyProcessRes;
+    @NonNull
+    private final QueSurveyProcessRepository queSurveyProcessRes;
 
-    @Autowired
-    private Cache cache;
+    @NonNull
+    private final Cache cache;
 
 
     @RequestMapping(value = "/extention")
-    @Menu(type = "callcenter", subtype = "callcenterresource", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "callcenterresource", admin = true)
     public ModelAndView extention(ModelMap map, HttpServletRequest request, @Valid String hostid) {
         List<PbxHost> pbxHostList = pbxHostRes.findByOrgi(super.getOrgi(request));
         map.addAttribute("pbxHostList", pbxHostList);
-        PbxHost pbxHost = null;
+        PbxHost pbxHost;
         if (pbxHostList.size() > 0) {
             map.addAttribute("pbxHost", pbxHost = getPbxHost(pbxHostList, hostid));
             map.addAttribute("extentionList", extentionRes.findByHostidAndOrgi(pbxHost.getId(), super.getOrgi(request)));
@@ -93,7 +95,7 @@ public class CallCenterExtentionController extends Handler {
     }
 
     @RequestMapping(value = "/extention/add")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView extentionadd(ModelMap map, HttpServletRequest request, @Valid String hostid) {
         map.put("pbxHost", pbxHostRes.findByIdAndOrgi(hostid, super.getOrgi(request)));
 
@@ -104,11 +106,10 @@ public class CallCenterExtentionController extends Handler {
     }
 
     @RequestMapping(value = "/extention/save")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
-    public ModelAndView extentionsave(ModelMap map, HttpServletRequest request, @Valid Extention extention) {
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
+    public ModelAndView extentionsave(HttpServletRequest request, @Valid Extention extention) {
         if (StringUtils.isNotBlank(extention.getExtention()) && StringUtils.isNotBlank(extention.getPassword())) {
             String[] extstr = extention.getExtention().split("[,， ]");
-            int extnum = 0;
             for (String ext : extstr) {
                 if (ext.matches("[\\d]{3,8}")) {    //分机号码最少3位数字
                     createNewExtention(ext, super.getUser(request), extention.getHostid(), extention.getPassword(), super.getOrgi(request), extention);
@@ -118,7 +119,7 @@ public class CallCenterExtentionController extends Handler {
                         int start = Integer.parseInt(ph[0]);
                         int end = Integer.parseInt(ph[1]);
 
-                        for (int i = start; i <= end && extnum < 100; i++) {    //最大一次批量生产的 分机号不超过100个
+                        for (int i = start; i <= end; i++) {    //最大一次批量生产的 分机号不超过100个
                             createNewExtention(String.valueOf(i), super.getUser(request), extention.getHostid(), extention.getPassword(), super.getOrgi(request), extention);
                         }
                     }
@@ -128,7 +129,7 @@ public class CallCenterExtentionController extends Handler {
         return request(super.createRequestPageTempletResponse("redirect:/admin/callcenter/extention.html?hostid=" + extention.getHostid()));
     }
 
-    private Extention createNewExtention(String num, User user, String hostid, String password, String orgi, Extention src) {
+    private void createNewExtention(String num, User user, String hostid, String password, String orgi, Extention src) {
         Extention extno = new Extention();
         extno.setExtention(num);
         extno.setOrgi(orgi);
@@ -148,11 +149,10 @@ public class CallCenterExtentionController extends Handler {
         if (count == 0) {
             extentionRes.save(extno);
         }
-        return extno;
     }
 
     @RequestMapping(value = "/extention/edit")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView extentionedit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String hostid) {
         map.addAttribute("extention", extentionRes.findByIdAndOrgi(id, super.getOrgi(request)));
         map.put("pbxHost", pbxHostRes.findByIdAndOrgi(hostid, super.getOrgi(request)));
@@ -163,8 +163,8 @@ public class CallCenterExtentionController extends Handler {
     }
 
     @RequestMapping(value = "/extention/update")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
-    public ModelAndView extentionupdate(ModelMap map, HttpServletRequest request, @Valid Extention extention) {
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
+    public ModelAndView extentionupdate(HttpServletRequest request, @Valid Extention extention) {
         if (StringUtils.isNotBlank(extention.getId())) {
             Extention ext = extentionRes.findByIdAndOrgi(extention.getId(), super.getOrgi(request));
             if (ext != null) {
@@ -198,7 +198,7 @@ public class CallCenterExtentionController extends Handler {
     }
 
     @RequestMapping(value = "/extention/ivr")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView ivr(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String hostid) {
         map.addAttribute("extention", extentionRes.findByIdAndOrgi(id, super.getOrgi(request)));
         map.put("pbxHost", pbxHostRes.findByIdAndOrgi(hostid, super.getOrgi(request)));
@@ -213,8 +213,8 @@ public class CallCenterExtentionController extends Handler {
     }
 
     @RequestMapping(value = "/extention/ivr/update")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
-    public ModelAndView ivrupdate(ModelMap map, HttpServletRequest request, @Valid Extention extention) {
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
+    public ModelAndView ivrupdate(HttpServletRequest request, @Valid Extention extention) {
         if (StringUtils.isNotBlank(extention.getId())) {
             Extention ext = extentionRes.findByIdAndOrgi(extention.getId(), super.getOrgi(request));
             if (ext != null) {
@@ -238,10 +238,10 @@ public class CallCenterExtentionController extends Handler {
     }
 
     @RequestMapping(value = "/extention/delete")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
-    public ModelAndView extentiondelete(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String hostid) {
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
+    public ModelAndView extentiondelete(@Valid String id, @Valid String hostid) {
         if (StringUtils.isNotBlank(id)) {
-            extentionRes.delete(id);
+            extentionRes.deleteById(id);
         }
         return request(super.createRequestPageTempletResponse("redirect:/admin/callcenter/extention.html?hostid=" + hostid));
     }
