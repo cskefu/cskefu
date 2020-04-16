@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -160,28 +161,8 @@ public class ACDMessageHelper {
 
     /**
      * 构建WebIM分发的Context
-     *
-     * @param onlineUserId
-     * @param nickname
-     * @param orgi
-     * @param session
-     * @param appid
-     * @param ip
-     * @param osname
-     * @param browser
-     * @param headimg
-     * @param ipdata
-     * @param channel
-     * @param skill
-     * @param agent
-     * @param title
-     * @param url
-     * @param traceid
-     * @param ownerid
-     * @param isInvite
-     * @param initiator
-     * @return
      */
+    @NonNull
     public static ACDComposeContext getWebIMComposeContext(
             final String onlineUserId,
             final String nickname,

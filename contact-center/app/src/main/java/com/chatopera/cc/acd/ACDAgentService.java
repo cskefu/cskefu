@@ -33,70 +33,58 @@ import com.chatopera.cc.socketio.client.NettyClients;
 import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.util.HashMapUtils;
 import com.chatopera.cc.util.SerializeUtil;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class ACDAgentService {
     private final static Logger logger = LoggerFactory.getLogger(ACDAgentService.class);
 
-    @Autowired
-    private RedisCommand redisCommand;
+    private final RedisCommand redisCommand;
 
-    @Autowired
-    private ACDMessageHelper acdMessageHelper;
+    private final ACDMessageHelper acdMessageHelper;
 
-    @Autowired
-    private AgentStatusProxy agentStatusProxy;
+    private final AgentStatusProxy agentStatusProxy;
 
-    @Autowired
-    private ACDPolicyService acdPolicyService;
+    private final ACDPolicyService acdPolicyService;
 
-    @Autowired
-    private PeerSyncIM peerSyncIM;
+    private final PeerSyncIM peerSyncIM;
 
-    @Autowired
-    private Cache cache;
+    private final Cache cache;
 
-    @Autowired
-    private AgentUserRepository agentUserRes;
+    private final AgentUserRepository agentUserRes;
 
-    @Autowired
-    private AgentServiceRepository agentServiceRes;
+    private final AgentServiceRepository agentServiceRes;
 
-    @Autowired
-    private AgentUserTaskRepository agentUserTaskRes;
+    private final AgentUserTaskRepository agentUserTaskRes;
 
-    @Autowired
-    private AgentStatusRepository agentStatusRes;
+    private final AgentStatusRepository agentStatusRes;
 
-    @Autowired
-    private OnlineUserRepository onlineUserRes;
+    private final OnlineUserRepository onlineUserRes;
 
-    @Autowired
-    private UserRepository userRes;
+    private final UserRepository userRes;
 
-    @Autowired
-    private AgentUserProxy agentUserProxy;
-
+    private final AgentUserProxy agentUserProxy;
 
     /**
      * ACD结果通知
-     *
-     * @param ctx
      */
-    public void notifyAgentUserProcessResult(final ACDComposeContext ctx) {
-        if (ctx != null && StringUtils.isNotBlank(
-                ctx.getMessage())) {
+    public void notifyAgentUserProcessResult(@NonNull final ACDComposeContext ctx) {
+        if (StringUtils.isNotBlank(ctx.getMessage())) {
             logger.info("[onConnect] find available agent for onlineUser id {}", ctx.getOnlineUserId());
 
-            /**
+            /*
              * 发送消息给坐席
              * 如果没有AgentService或该AgentService没有坐席或AgentService在排队中，则不发送
              */
@@ -112,7 +100,7 @@ public class ACDAgentService {
                         ctx, true);
             }
 
-            /**
+            /*
              * 发送消息给访客
              */
             Message outMessage = new Message();
@@ -131,34 +119,22 @@ public class ACDAgentService {
 
 
         } else {
-            logger.info("[onConnect] can not find available agent for user {}", ctx.getOnlineUserId());
+            logger.info("[onConnect] Message not found for user {}", ctx.getOnlineUserId());
         }
     }
 
     /**
      * 邀请访客进入当前对话，如果当前操作的 坐席是已就绪状态，则直接加入到当前坐席的
      * 对话列表中，如果未登录，则分配给其他坐席
-     *
-     * @param agentno
-     * @param agentUser
-     * @param orgi
-     * @return
-     * @throws Exception
      */
-    public AgentService assignVisitorAsInvite(
-            final String agentno,
-            final AgentUser agentUser,
-            final String orgi
-    ) throws Exception {
+    @SuppressWarnings("UnusedReturnValue")
+    public AgentService assignVisitorAsInvite(final String agentno, final AgentUser agentUser, final String orgi) {
         final AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(agentno, orgi);
         return pickupAgentUserInQueue(agentUser, agentStatus);
     }
 
     /**
      * 为坐席批量分配用户
-     *
-     * @param agentno
-     * @param orgi
      */
     public void assignVisitors(String agentno, String orgi) {
         logger.info("[assignVisitors] agentno {}, orgi {}", agentno, orgi);
@@ -201,9 +177,7 @@ public class ACDAgentService {
             if ((StringUtils.equals(agentUser.getAgentno(), agentno))) {
                 // 待服务的访客指定了该坐席
                 process = true;
-            } else if (agentStatus != null &&
-                    agentStatus.getSkills() != null &&
-                    agentStatus.getSkills().size() > 0) {
+            } else if (agentStatus.getSkills() != null && agentStatus.getSkills().size() > 0) {
                 // 目标坐席有状态，并且坐席属于某技能组
                 if ((StringUtils.isBlank(agentUser.getAgentno()) &&
                         StringUtils.isBlank(agentUser.getSkill()))) {
@@ -243,10 +217,6 @@ public class ACDAgentService {
 
     /**
      * 从队列中选择访客进行会话
-     *
-     * @param agentUser
-     * @param agentStatus
-     * @return
      */
     public AgentService pickupAgentUserInQueue(final AgentUser agentUser, final AgentStatus agentStatus) {
         // 从排队队列移除
@@ -291,14 +261,10 @@ public class ACDAgentService {
 
     /**
      * 访客服务结束
-     *
-     * @param agentUser
-     * @param orgi
-     * @throws Exception
      */
     public void finishAgentService(final AgentUser agentUser, final String orgi) {
         if (agentUser != null) {
-            /**
+            /*
              * 设置AgentUser
              */
             // 获得坐席状态
@@ -319,7 +285,7 @@ public class ACDAgentService {
 
             final SessionConfig sessionConfig = acdPolicyService.initSessionConfig(orgi);
 
-            /**
+            /*
              * 坐席服务
              */
             AgentService service = null;
@@ -338,9 +304,10 @@ public class ACDAgentService {
                     service.setSessiontimes(System.currentTimeMillis() - service.getServicetime().getTime());
                 }
 
-                final AgentUserTask agentUserTask = agentUserTaskRes.findOne(
+                Optional<AgentUserTask> optional = agentUserTaskRes.findById(
                         agentUser.getId());
-                if (agentUserTask != null) {
+                if (optional.isPresent()) {
+                    final AgentUserTask agentUserTask = optional.get();
                     service.setAgentreplyinterval(agentUserTask.getAgentreplyinterval());
                     service.setAgentreplytime(agentUserTask.getAgentreplytime());
                     service.setAvgreplyinterval(agentUserTask.getAvgreplyinterval());
@@ -356,7 +323,7 @@ public class ACDAgentService {
                     }
                 }
 
-                /**
+                /*
                  * 启用了质检任务，开启质检
                  */
                 if ((!sessionConfig.isQuality()) || service.getUserasks() == 0) {
@@ -366,7 +333,7 @@ public class ACDAgentService {
                 agentServiceRes.save(service);
             }
 
-            /**
+            /*
              * 更新AgentStatus
              */
             if (agentStatus != null) {
@@ -375,7 +342,7 @@ public class ACDAgentService {
                 agentStatusRes.save(agentStatus);
             }
 
-            /**
+            /*
              * 发送到访客端的通知
              */
             switch (MainContext.ChannelType.toValue(agentUser.getChannel())) {
@@ -437,7 +404,7 @@ public class ACDAgentService {
                 }
             }
             agentStatusProxy.broadcastAgentsStatus(
-                    orgi, "end", "success", agentUser != null ? agentUser.getId() : null);
+                    orgi, "end", "success", agentUser.getId());
         } else {
             logger.info("[finishAgentService] orgi {}, invalid agent user, should not be null", orgi);
         }
@@ -447,20 +414,16 @@ public class ACDAgentService {
     /**
      * 删除AgentUser
      * 包括数据库记录及缓存信息
-     *
-     * @param agentUser
-     * @param orgi
-     * @return
      */
     public void finishAgentUser(final AgentUser agentUser, final String orgi) throws CSKefuException {
         logger.info("[finishAgentUser] userId {}, orgi {}", agentUser.getUserid(), orgi);
 
-        if (agentUser == null || agentUser.getId() == null) {
+        if (agentUser.getId() == null) {
             throw new CSKefuException("Invalid agentUser info");
         }
 
         if (!StringUtils.equals(MainContext.AgentUserStatusEnum.END.toString(), agentUser.getStatus())) {
-            /**
+            /*
              * 未结束聊天，先结束对话，然后删除记录
              */
             // 删除缓存
@@ -481,7 +444,6 @@ public class ACDAgentService {
      * @param agentUser   坐席访客会话
      * @param orgi        租户ID
      * @param finished    结束服务
-     * @return
      */
     public AgentService resolveAgentService(
             AgentStatus agentStatus,
@@ -489,14 +451,17 @@ public class ACDAgentService {
             final String orgi,
             final boolean finished) {
 
-        AgentService agentService = new AgentService();
+        final AgentService agentService;
         if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
             AgentService existAgentService = agentServiceRes.findByIdAndOrgi(agentUser.getAgentserviceid(), orgi);
             if (existAgentService != null) {
                 agentService = existAgentService;
             } else {
+                agentService = new AgentService();
                 agentService.setId(agentUser.getAgentserviceid());
             }
+        } else {
+            agentService = new AgentService();
         }
         agentService.setOrgi(orgi);
 
@@ -510,7 +475,7 @@ public class ACDAgentService {
         agentUser.setLogindate(now);
         OnlineUser onlineUser = onlineUserRes.findOneByUseridAndOrgi(agentUser.getUserid(), orgi);
 
-        if (finished == true) {
+        if (finished) {
             // 服务结束
             agentUser.setStatus(MainContext.AgentUserStatusEnum.END.toString());
             agentService.setStatus(MainContext.AgentUserStatusEnum.END.toString());
@@ -560,7 +525,8 @@ public class ACDAgentService {
             agentService.setOwner(agentUser.getOwner());
             agentService.setTimes(0);
 
-            final User agent = userRes.findOne(agentService.getAgentno());
+            Optional<User> optional = userRes.findById(agentService.getAgentno());
+            final User agent = optional.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User %s not found", agentService.getAgentno())));
             agentUser.setAgentname(agent.getUname());
             agentUser.setAgentno(agentService.getAgentno());
 
@@ -604,13 +570,13 @@ public class ACDAgentService {
 
         agentService.setDataid(agentUser.getId());
 
-        /**
+        /*
          * 分配成功以后， 将用户和坐席的对应关系放入到缓存
          * 将 AgentUser 放入到当前坐席的服务队列
          */
         agentUserRes.save(agentUser);
 
-        /**
+        /*
          * 更新OnlineUser对象，变更为服务中，不可邀请
          */
         if (onlineUser != null && !finished) {

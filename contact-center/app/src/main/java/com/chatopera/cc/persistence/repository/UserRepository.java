@@ -29,7 +29,7 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, String> {
     User findByIdAndOrgi(String paramString, String orgi);
-    User findById(String id);
+    // User findById(String id);
     User findByEmailAndDatastatus(String email, boolean datastatus);
     User findByMobileAndDatastatus(String mobile, boolean datastatus);
 
