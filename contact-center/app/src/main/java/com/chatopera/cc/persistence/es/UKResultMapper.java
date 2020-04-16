@@ -25,8 +25,8 @@ import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.get.MultiGetItemResponse;
 import org.elasticsearch.action.get.MultiGetResponse;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.common.document.DocumentField;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.ElasticsearchException;
@@ -119,18 +119,18 @@ public class UKResultMapper extends AbstractResultMapper {
 				ScriptedField scriptedField = field.getAnnotation(ScriptedField.class);
 				if (scriptedField != null) {
 					String name = scriptedField.name().isEmpty() ? field.getName() : scriptedField.name();
-					SearchHitField searchHitField = hit.getFields().get(name);
-					if (searchHitField != null) {
+					DocumentField DocumentField = hit.getFields().get(name);
+					if (DocumentField != null) {
 						field.setAccessible(true);
 						try {
-							if(name.equals("title") && hit.getHighlightFields().get("title")!=null){
+							if (name.equals("title") && hit.getHighlightFields().get("title") != null) {
 								field.set(result, hit.getHighlightFields().get("title").fragments()[0].string());
-							}else{
-								field.set(result, searchHitField.getValue());
+							} else {
+								field.set(result, DocumentField.getValue());
 							}
 						} catch (IllegalArgumentException e) {
 							throw new ElasticsearchException("failed to set scripted field: " + name + " with value: "
-									+ searchHitField.getValue(), e);
+									+ DocumentField.getValue(), e);
 						} catch (IllegalAccessException e) {
 							throw new ElasticsearchException("failed to access scripted field: " + name, e);
 						}
@@ -141,27 +141,27 @@ public class UKResultMapper extends AbstractResultMapper {
 	}
 
 
-	public <T> T mapEntity(Collection<SearchHitField> values, SearchHit hit , Class<T> clazz) {
-		return mapEntity(buildJSONFromFields(values) , hit , clazz);
+	public <T> T mapEntity(Collection<DocumentField> values, SearchHit hit, Class<T> clazz) {
+		return mapEntity(buildJSONFromFields(values), hit, clazz);
 	}
 
-	private String buildJSONFromFields(Collection<SearchHitField> values) {
+	private String buildJSONFromFields(Collection<DocumentField> values) {
 		JsonFactory nodeFactory = new JsonFactory();
 		try {
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			JsonGenerator generator = nodeFactory.createGenerator(stream, JsonEncoding.UTF8);
 			generator.writeStartObject();
-			for (SearchHitField value : values) {
+			for (DocumentField value : values) {
 				if (value.getValues().size() > 1) {
 					generator.writeArrayFieldStart(value.getName());
-                    for (Object val : value.getValues()) {
-                        generator.writeObject(val);
-                    }
-                    generator.writeEndArray();
-                } else {
-                    generator.writeObjectField(value.getName(), value.getValue());
-                }
-            }
+					for (Object val : value.getValues()) {
+						generator.writeObject(val);
+					}
+					generator.writeEndArray();
+				} else {
+					generator.writeObjectField(value.getName(), value.getValue());
+				}
+			}
             generator.writeEndObject();
             generator.flush();
             return new String(stream.toByteArray(), StandardCharsets.UTF_8);
