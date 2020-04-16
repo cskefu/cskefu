@@ -165,8 +165,8 @@ public class AgentServiceProxy {
                 StatusEvent statusEvent = statusEventRes.findById(agentService.getOwner());
                 if (statusEvent != null) {
                     if (StringUtils.isNotBlank(statusEvent.getHostid())) {
-                        PbxHost pbxHost = pbxHostRes.findById(statusEvent.getHostid());
-                        view.addObject("pbxHost", pbxHost);
+                        pbxHostRes.findById(statusEvent.getHostid())
+                                .ifPresent(it -> view.addObject("pbxHost", it));
                     }
                     view.addObject("statusEvent", statusEvent);
                 }
