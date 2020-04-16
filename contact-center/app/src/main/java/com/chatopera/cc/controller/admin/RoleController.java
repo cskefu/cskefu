@@ -22,11 +22,12 @@ import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.util.Menu;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,25 +39,26 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/admin/role")
 public class RoleController extends Handler {
 
     private final static Logger logger = LoggerFactory.getLogger(RoleController.class);
 
-    @Autowired
-    private RoleRepository roleRepository;
+    @NonNull
+    private final RoleRepository roleRepository;
 
-    @Autowired
-    private UserRoleRepository userRoleRes;
+    @NonNull
+    private final UserRoleRepository userRoleRes;
 
-    @Autowired
-    private RoleAuthRepository roleAuthRes;
+    @NonNull
+    private final RoleAuthRepository roleAuthRes;
 
-    @Autowired
-    private UserRepository userRepository;
+    @NonNull
+    private final UserRepository userRepository;
 
-    @Autowired
-    private SysDicRepository sysDicRes;
+    @NonNull
+    private final SysDicRepository sysDicRes;
 
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "role")
@@ -85,7 +87,7 @@ public class RoleController extends Handler {
 
     @RequestMapping("/add")
     @Menu(type = "admin", subtype = "role")
-    public ModelAndView add(ModelMap map, HttpServletRequest request) {
+    public ModelAndView add() {
         return request(super.createRequestPageTempletResponse("/admin/role/add"));
     }
 
@@ -135,10 +137,10 @@ public class RoleController extends Handler {
                 for (UserRole userRole : userRoleList) {
                     if (user.equals(userRole.getUser().getId())) {
                         exist = true;
-                        continue;
+                        break;
                     }
                 }
-                if (exist == false) {
+                if (!exist) {
                     UserRole userRole = new UserRole();
                     userRole.setUser(new User(user));
                     userRole.setRole(new Role(role));
@@ -153,16 +155,16 @@ public class RoleController extends Handler {
 
     @RequestMapping("/user/delete")
     @Menu(type = "admin", subtype = "role")
-    public ModelAndView userroledelete(HttpServletRequest request, @Valid String id, @Valid String role) {
+    public ModelAndView userroledelete(@Valid String id, @Valid String role) {
         if (role != null) {
-            userRoleRes.delete(id);
+            userRoleRes.deleteById(id);
         }
         return request(super.createRequestPageTempletResponse("redirect:/admin/role/index.html?role=" + role));
     }
 
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "role")
-    public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
+    public ModelAndView edit(HttpServletRequest request, @Valid String id) {
         ModelAndView view = request(super.createRequestPageTempletResponse("/admin/role/edit"));
         view.addObject("roleData", roleRepository.findByIdAndOrgi(id, super.getOrgiByTenantshare(request)));
         return view;
@@ -197,7 +199,7 @@ public class RoleController extends Handler {
     public ModelAndView delete(HttpServletRequest request, @Valid Role role) {
         String msg = "admin_role_delete";
         if (role != null) {
-            userRoleRes.delete(userRoleRes.findByOrgiAndRole(super.getOrgiByTenantshare(request), role));
+            userRoleRes.deleteAll(userRoleRes.findByOrgiAndRole(super.getOrgiByTenantshare(request), role));
             roleRepository.delete(role);
         } else {
             msg = "admin_role_not_exist";
@@ -226,7 +228,7 @@ public class RoleController extends Handler {
         logger.info("[authsave] id {}, menus {}", id, menus);
 
         List<RoleAuth> roleAuthList = roleAuthRes.findByRoleidAndOrgi(id, super.getOrgiByTenantshare(request));
-        roleAuthRes.delete(roleAuthList);
+        roleAuthRes.deleteAll(roleAuthList);
         if (StringUtils.isNotBlank(menus)) {
             String[] menuarray = menus.split(",");
 

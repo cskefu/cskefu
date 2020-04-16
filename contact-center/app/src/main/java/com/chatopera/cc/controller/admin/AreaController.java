@@ -25,7 +25,8 @@ import com.chatopera.cc.model.SysDic;
 import com.chatopera.cc.persistence.repository.AreaTypeRepository;
 import com.chatopera.cc.persistence.repository.SysDicRepository;
 import com.chatopera.cc.util.Menu;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,95 +34,92 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.Date;
 
 /**
- *
- * @author 程序猿DD
+ * @author <a href="http://blog.didispace.com">程序猿DD</a>
  * @version 1.0.0
- * @blog http://blog.didispace.com
- *
  */
 @Controller
 @RequestMapping("/admin/area")
-public class AreaController extends Handler{
-	
-	@Autowired
-	private AreaTypeRepository areaRepository;
-	
-	@Autowired
-	private SysDicRepository sysDicRepository;
+@RequiredArgsConstructor
+public class AreaController extends Handler {
+
+    @NonNull
+    private final AreaTypeRepository areaRepository;
+
+    @NonNull
+    private final SysDicRepository sysDicRepository;
 
     @RequestMapping("/index")
-    @Menu(type = "admin" , subtype = "area")
-    public ModelAndView index(ModelMap map , HttpServletRequest request) throws IOException {
-    	map.addAttribute("areaList", areaRepository.findByOrgi(super.getOrgi(request)));
-    	return request(super.createAdminTempletResponse("/admin/area/index"));
+    @Menu(type = "admin", subtype = "area")
+    public ModelAndView index(ModelMap map, HttpServletRequest request) {
+        map.addAttribute("areaList", areaRepository.findByOrgi(super.getOrgi(request)));
+        return request(super.createAdminTempletResponse("/admin/area/index"));
     }
-    
+
     @RequestMapping("/add")
-    @Menu(type = "admin" , subtype = "area")
-    public ModelAndView add(ModelMap map , HttpServletRequest request) {
-    	SysDic sysDic = sysDicRepository.findByCode(Constants.CSKEFU_SYSTEM_AREA_DIC) ;
-    	if(sysDic!=null){
-	    	map.addAttribute("sysarea", sysDic) ;
-	    	map.addAttribute("areaList", sysDicRepository.findByDicid(sysDic.getId())) ;
-    	}
-    	map.addAttribute("cacheList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_AREA_DIC)) ;
+    @Menu(type = "admin", subtype = "area")
+    public ModelAndView add(ModelMap map) {
+        SysDic sysDic = sysDicRepository.findByCode(Constants.CSKEFU_SYSTEM_AREA_DIC);
+        if (sysDic != null) {
+            map.addAttribute("sysarea", sysDic);
+            map.addAttribute("areaList", sysDicRepository.findByDicid(sysDic.getId()));
+        }
+        map.addAttribute("cacheList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_AREA_DIC));
         return request(super.createRequestPageTempletResponse("/admin/area/add"));
     }
-    
+
     @RequestMapping("/save")
-    @Menu(type = "admin" , subtype = "area")
-    public ModelAndView save(HttpServletRequest request ,@Valid AreaType area) {
-    	int areas = areaRepository.countByNameAndOrgi(area.getName(), super.getOrgi(request)) ;
-    	if(areas == 0){
-    		area.setOrgi(super.getOrgi(request));
-    		area.setCreatetime(new Date());
-    		area.setCreater(super.getUser(request).getId());
-    		areaRepository.save(area) ;
-    		MainUtils.initSystemArea();
-    	}
-    	return request(super.createRequestPageTempletResponse("redirect:/admin/area/index.html"));
+    @Menu(type = "admin", subtype = "area")
+    public ModelAndView save(HttpServletRequest request, @Valid AreaType area) {
+        int areas = areaRepository.countByNameAndOrgi(area.getName(), super.getOrgi(request));
+        if (areas == 0) {
+            area.setOrgi(super.getOrgi(request));
+            area.setCreatetime(new Date());
+            area.setCreater(super.getUser(request).getId());
+            areaRepository.save(area);
+            MainUtils.initSystemArea();
+        }
+        return request(super.createRequestPageTempletResponse("redirect:/admin/area/index.html"));
     }
-    
+
     @RequestMapping("/edit")
-    @Menu(type = "admin" , subtype = "area")
-    public ModelAndView edit(ModelMap map ,HttpServletRequest request , @Valid String id) {
-    	map.addAttribute("area", areaRepository.findByIdAndOrgi(id, super.getOrgi(request))) ;
-    	
-    	SysDic sysDic = sysDicRepository.findByCode(Constants.CSKEFU_SYSTEM_AREA_DIC) ;
-    	if(sysDic!=null){
-	    	map.addAttribute("sysarea", sysDic) ;
-	    	map.addAttribute("areaList", sysDicRepository.findByDicid(sysDic.getId())) ;
-    	}
-    	map.addAttribute("cacheList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_AREA_DIC)) ;
+    @Menu(type = "admin", subtype = "area")
+    public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
+        map.addAttribute("area", areaRepository.findByIdAndOrgi(id, super.getOrgi(request)));
+
+        SysDic sysDic = sysDicRepository.findByCode(Constants.CSKEFU_SYSTEM_AREA_DIC);
+        if (sysDic != null) {
+            map.addAttribute("sysarea", sysDic);
+            map.addAttribute("areaList", sysDicRepository.findByDicid(sysDic.getId()));
+        }
+        map.addAttribute("cacheList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_AREA_DIC));
         return request(super.createRequestPageTempletResponse("/admin/area/edit"));
     }
-    
+
     @RequestMapping("/update")
-    @Menu(type = "admin" , subtype = "area" , admin = true)
-    public ModelAndView update(HttpServletRequest request ,@Valid AreaType area) {
-    	AreaType areaType = areaRepository.findByIdAndOrgi(area.getId(), super.getOrgi(request)) ;
-    	if(areaType != null){
-    		area.setCreatetime(areaType.getCreatetime());
-    		area.setOrgi(super.getOrgi(request));
-    		area.setCreater(areaType.getCreater());
-    		areaRepository.save(area) ;
-    		MainUtils.initSystemArea();
-    	}
-    	return request(super.createRequestPageTempletResponse("redirect:/admin/area/index.html"));
+    @Menu(type = "admin", subtype = "area", admin = true)
+    public ModelAndView update(HttpServletRequest request, @Valid AreaType area) {
+        AreaType areaType = areaRepository.findByIdAndOrgi(area.getId(), super.getOrgi(request));
+        if (areaType != null) {
+            area.setCreatetime(areaType.getCreatetime());
+            area.setOrgi(super.getOrgi(request));
+            area.setCreater(areaType.getCreater());
+            areaRepository.save(area);
+            MainUtils.initSystemArea();
+        }
+        return request(super.createRequestPageTempletResponse("redirect:/admin/area/index.html"));
     }
-    
+
     @RequestMapping("/delete")
-    @Menu(type = "admin" , subtype = "area")
-    public ModelAndView delete(HttpServletRequest request ,@Valid AreaType area) {
-    	AreaType areaType = areaRepository.findByIdAndOrgi(area.getId(), super.getOrgi(request)) ;
-    	if(areaType!=null){
-    		areaRepository.delete(areaType);
-    		MainUtils.initSystemArea();
-    	}
-    	return request(super.createRequestPageTempletResponse("redirect:/admin/area/index.html"));
+    @Menu(type = "admin", subtype = "area")
+    public ModelAndView delete(HttpServletRequest request, @Valid AreaType area) {
+        AreaType areaType = areaRepository.findByIdAndOrgi(area.getId(), super.getOrgi(request));
+        if (areaType != null) {
+            areaRepository.delete(areaType);
+            MainUtils.initSystemArea();
+        }
+        return request(super.createRequestPageTempletResponse("redirect:/admin/area/index.html"));
     }
 }

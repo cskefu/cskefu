@@ -21,13 +21,16 @@ import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.SysDic;
 import com.chatopera.cc.persistence.repository.SysDicRepository;
 import com.chatopera.cc.util.Menu;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,15 +39,14 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/admin/sysdic")
 public class SysDicController extends Handler {
+    @NonNull
+    private final SysDicRepository sysDicRes;
 
-
-    @Autowired
-    private SysDicRepository sysDicRes;
-
-    @Autowired
-    private Cache cache;
+    @NonNull
+    private final Cache cache;
 
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "sysdic")
@@ -55,7 +57,7 @@ public class SysDicController extends Handler {
 
     @RequestMapping("/add")
     @Menu(type = "admin", subtype = "sysdic")
-    public ModelAndView add(ModelMap map, HttpServletRequest request) {
+    public ModelAndView add() {
         return request(super.createRequestPageTempletResponse("/admin/system/sysdic/add"));
     }
 
@@ -80,7 +82,7 @@ public class SysDicController extends Handler {
 
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "sysdic")
-    public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String p) {
+    public ModelAndView edit(ModelMap map, @Valid String id, @Valid String p) {
         map.addAttribute("sysDic", sysDicRes.findById(id));
         map.addAttribute("p", p);
         return request(super.createRequestPageTempletResponse("/admin/system/sysdic/edit"));
@@ -91,7 +93,8 @@ public class SysDicController extends Handler {
     public ModelAndView update(HttpServletRequest request, @Valid SysDic dic, @Valid String p) {
         List<SysDic> sysDicList = sysDicRes.findByCodeOrName(dic.getCode(), dic.getName());
         if (sysDicList.size() == 0 || (sysDicList.size() == 1 && sysDicList.get(0).getId().equals(dic.getId()))) {
-            SysDic sysDic = sysDicRes.findById(dic.getId());
+            SysDic sysDic = sysDicRes.findById(dic.getId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Value not found for " + dic.getId()));
             sysDic.setName(dic.getName());
             sysDic.setCode(dic.getCode());
             sysDic.setCtype(dic.getCtype());
@@ -107,9 +110,10 @@ public class SysDicController extends Handler {
 
     @RequestMapping("/delete")
     @Menu(type = "admin", subtype = "sysdic")
-    public ModelAndView delete(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String p) {
-        SysDic sysDic = sysDicRes.findById(id);
-        sysDicRes.delete(sysDicRes.findByDicid(id));
+    public ModelAndView delete(HttpServletRequest request, @Valid String id, @Valid String p) {
+        SysDic sysDic = sysDicRes.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Value not found for " + id));
+        sysDicRes.deleteAll(sysDicRes.findByDicid(id));
         sysDicRes.delete(sysDic);
 
         reloadSysDicItem(sysDic, super.getOrgi(request));
@@ -127,7 +131,7 @@ public class SysDicController extends Handler {
 
     @RequestMapping("/dicitem/add")
     @Menu(type = "admin", subtype = "sysdic")
-    public ModelAndView dicitemadd(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String p) {
+    public ModelAndView dicitemadd(ModelMap map, @Valid String id, @Valid String p) {
         map.addAttribute("sysDic", sysDicRes.findById(id));
         map.addAttribute("p", p);
         return request(super.createRequestPageTempletResponse("/admin/system/sysdic/dicitemadd"));
@@ -154,8 +158,6 @@ public class SysDicController extends Handler {
 
     /**
      * 更新系统词典缓存
-     * @param dic
-     * @param orgi
      */
     public void reloadSysDicItem(final SysDic dic, final String orgi) {
         cache.putSysDicByOrgi(dic.getId(), orgi, dic);
@@ -176,7 +178,7 @@ public class SysDicController extends Handler {
 
     @RequestMapping("/dicitem/batadd")
     @Menu(type = "admin", subtype = "sysdic")
-    public ModelAndView dicitembatadd(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String p) {
+    public ModelAndView dicitembatadd(ModelMap map, @Valid String id, @Valid String p) {
         map.addAttribute("sysDic", sysDicRes.findById(id));
         map.addAttribute("p", p);
         return request(super.createRequestPageTempletResponse("/admin/system/sysdic/batadd"));
@@ -185,11 +187,11 @@ public class SysDicController extends Handler {
     @RequestMapping("/dicitem/batsave")
     @Menu(type = "admin", subtype = "sysdic")
     public ModelAndView dicitembatsave(HttpServletRequest request, @Valid SysDic sysDic, @Valid String content, @Valid String p) {
-        String[] dicitems = content.split("[\n\r\n]");
+        String[] dicitems = content.split("[\n\r]");
         int count = 0;
         String orig = super.getOrgi(request);
         for (String dicitem : dicitems) {
-            String[] dicValues = dicitem.split("[\t, ;]{1,}");
+            String[] dicValues = dicitem.split("[\t, ;]+");
             if (dicValues.length == 2 && dicValues[0].length() > 0 && dicValues[1].length() > 0) {
                 SysDic dic = new SysDic();
                 dic.setOrgi(orig);
@@ -215,7 +217,7 @@ public class SysDicController extends Handler {
 
     @RequestMapping("/dicitem/edit")
     @Menu(type = "admin", subtype = "sysdic")
-    public ModelAndView dicitemedit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String p) {
+    public ModelAndView dicitemedit(ModelMap map, @Valid String id, @Valid String p) {
         map.addAttribute("sysDic", sysDicRes.findById(id));
         map.addAttribute("p", p);
         return request(super.createRequestPageTempletResponse("/admin/system/sysdic/dicitemedit"));
@@ -227,7 +229,8 @@ public class SysDicController extends Handler {
         List<SysDic> sysDicList = sysDicRes.findByDicidAndName(dic.getDicid(), dic.getName());
         String orgi = super.getOrgi(request);
         if (sysDicList.size() == 0 || (sysDicList.size() == 1 && sysDicList.get(0).getId().equals(dic.getId()))) {
-            SysDic sysDic = sysDicRes.findById(dic.getId());
+            SysDic sysDic = sysDicRes.findById(dic.getId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Value not found for " + dic.getId()));
             sysDic.setName(dic.getName());
             sysDic.setCode(dic.getCode());
             sysDic.setCtype(dic.getCtype());
@@ -245,8 +248,8 @@ public class SysDicController extends Handler {
 
     @RequestMapping("/dicitem/delete")
     @Menu(type = "admin", subtype = "sysdic")
-    public ModelAndView dicitemdelete(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String p) {
-        sysDicRes.delete(sysDicRes.findByDicid(id));
+    public ModelAndView dicitemdelete(HttpServletRequest request, @Valid String id, @Valid String p) {
+        sysDicRes.deleteAll(sysDicRes.findByDicid(id));
         SysDic dic = sysDicRes.getOne(id);
         sysDicRes.delete(dic);
         reloadSysDicItem(dic, super.getOrgi(request));

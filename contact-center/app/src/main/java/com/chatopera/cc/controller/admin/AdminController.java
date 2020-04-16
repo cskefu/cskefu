@@ -31,8 +31,9 @@ import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.proxy.OnlineUserProxy;
 import com.chatopera.cc.socketio.client.NettyClients;
 import com.chatopera.cc.util.Menu;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,28 +46,29 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class AdminController extends Handler {
 
-    @Autowired
-    private ACDWorkMonitor acdWorkMonitor;
+    @NonNull
+    private final ACDWorkMonitor acdWorkMonitor;
 
-    @Autowired
-    private UserRepository userRes;
+    @NonNull
+    private final UserRepository userRes;
 
-    @Autowired
-    private OnlineUserRepository onlineUserRes;
+    @NonNull
+    private final OnlineUserRepository onlineUserRes;
 
-    @Autowired
-    private UserEventRepository userEventRes;
+    @NonNull
+    private final UserEventRepository userEventRes;
 
-    @Autowired
-    private SysDicRepository sysDicRes;
+    @NonNull
+    private final SysDicRepository sysDicRes;
 
-    @Autowired
-    private Cache cache;
+    @NonNull
+    private final Cache cache;
 
     @RequestMapping("/admin")
-    public ModelAndView index(ModelMap map, HttpServletRequest request) {
+    public ModelAndView index(HttpServletRequest request) {
         ModelAndView view = request(super.createRequestPageTempletResponse("redirect:/"));
         User user = super.getUser(request);
         view.addObject("agentStatusReport", acdWorkMonitor.getAgentReport(user.getOrgi()));
@@ -107,13 +109,13 @@ public class AdminController extends Handler {
 
     private List<User> getAgent(HttpServletRequest request) {
         //获取当前产品or租户坐席数
-        List<User> userList = new ArrayList<>();
+        List<User> userList;
         if (super.isEnabletneant()) {
             userList = userRes.findByOrgidAndAgentAndDatastatus(super.getOrgid(request), true, false);
         } else {
             userList = userRes.findByOrgiAndAgentAndDatastatus(super.getOrgi(request), true, false);
         }
-        return userList.isEmpty() ? new ArrayList<User>() : userList;
+        return userList.isEmpty() ? new ArrayList<>() : userList;
     }
 
     @RequestMapping("/admin/content")
@@ -131,7 +133,7 @@ public class AdminController extends Handler {
 
     @RequestMapping("/admin/auth/infoacq")
     @Menu(type = "admin", subtype = "infoacq", admin = true)
-    public ModelAndView infoacq(ModelMap map, HttpServletRequest request) {
+    public ModelAndView infoacq(HttpServletRequest request) {
         String inacq = (String) request.getSession().getAttribute(Constants.CSKEFU_SYSTEM_INFOACQ);
         if (StringUtils.isNotBlank(inacq)) {
             request.getSession().removeAttribute(Constants.CSKEFU_SYSTEM_INFOACQ);
@@ -143,7 +145,7 @@ public class AdminController extends Handler {
 
     @RequestMapping("/admin/auth/event")
     @Menu(type = "admin", subtype = "authevent")
-    public ModelAndView authevent(ModelMap map, HttpServletRequest request, @Valid String title, @Valid String url, @Valid String iconstr, @Valid String icontext) {
+    public ModelAndView authevent(ModelMap map, @Valid String title, @Valid String url, @Valid String iconstr, @Valid String icontext) {
         map.addAttribute("title", title);
         map.addAttribute("url", url);
         if (StringUtils.isNotBlank(iconstr) && StringUtils.isNotBlank(icontext)) {
@@ -154,7 +156,7 @@ public class AdminController extends Handler {
 
     @RequestMapping("/admin/auth/save")
     @Menu(type = "admin", subtype = "authsave")
-    public ModelAndView authsave(ModelMap map, HttpServletRequest request, @Valid String title, @Valid SysDic dic) {
+    public ModelAndView authsave(HttpServletRequest request, @Valid SysDic dic) {
         SysDic sysDic = sysDicRes.findByCode(Constants.CSKEFU_SYSTEM_AUTH_DIC);
         boolean newdic = false;
         if (sysDic != null && StringUtils.isNotBlank(dic.getName())) {

@@ -23,24 +23,24 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface SysDicRepository extends JpaRepository<SysDic, String>{
-	
-	
-	SysDic findById(String id);
-	
-	SysDic findByCode(String code);
+public interface SysDicRepository extends JpaRepository<SysDic, String> {
 
-	Page<SysDic> findAll(Pageable paramPageable);
 
-	List<SysDic> findByCodeOrName(String code, String name);
-	
-	List<SysDic> findByDicidAndName(String dicid, String name);
-	
-	Page<SysDic> findByParentid(String type, Pageable paramPageable);
-	
-	List<SysDic> findByParentid(String type);
+    // SysDic findById(String id);
 
-	List<SysDic> findByDicid(String id);
-	
-	int countByName(String name);
+    SysDic findByCode(String code);
+
+    Page<SysDic> findAll(Pageable paramPageable);
+
+    List<SysDic> findByCodeOrName(String code, String name);
+
+    List<SysDic> findByDicidAndName(String dicid, String name);
+
+    Page<SysDic> findByParentid(String type, Pageable paramPageable);
+
+    List<SysDic> findByParentid(String type);
+
+    List<SysDic> findByDicid(String id);
+
+    int countByName(String name);
 }
