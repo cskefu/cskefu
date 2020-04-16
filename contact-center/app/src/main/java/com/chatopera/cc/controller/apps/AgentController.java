@@ -422,14 +422,14 @@
                          });
              } else if (MainContext.ChannelType.PHONE.toString().equals(agentUser.getChannel())) {
                  if (agentService != null && StringUtils.isNotBlank(agentService.getOwner())) {
-                     StatusEvent statusEvent = this.statusEventRes.findById(agentService.getOwner());
-                     if (statusEvent != null) {
-                         if (StringUtils.isNotBlank(statusEvent.getHostid())) {
-                             PbxHost pbxHost = pbxHostRes.findById(statusEvent.getHostid());
-                             view.addObject("pbxHost", pbxHost);
-                         }
-                         view.addObject("statusEvent", statusEvent);
-                     }
+                     this.statusEventRes.findById(agentService.getOwner())
+                             .ifPresent(statusEvent -> {
+                                 if (StringUtils.isNotBlank(statusEvent.getHostid())) {
+                                     pbxHostRes.findById(statusEvent.getHostid())
+                                             .ifPresent(pbxHost -> view.addObject("pbxHost", pbxHost));
+                                 }
+                                 view.addObject("statusEvent", statusEvent);
+                             });
                  }
              }
 

@@ -162,14 +162,14 @@ public class AgentServiceProxy {
             }
         } else if (MainContext.ChannelType.PHONE.toString().equals(agentUser.getChannel())) {
             if (agentService != null && StringUtils.isNotBlank(agentService.getOwner())) {
-                StatusEvent statusEvent = statusEventRes.findById(agentService.getOwner());
-                if (statusEvent != null) {
-                    if (StringUtils.isNotBlank(statusEvent.getHostid())) {
-                        pbxHostRes.findById(statusEvent.getHostid())
-                                .ifPresent(it -> view.addObject("pbxHost", it));
-                    }
-                    view.addObject("statusEvent", statusEvent);
-                }
+                statusEventRes.findById(agentService.getOwner())
+                        .ifPresent(statusEvent -> {
+                            if (StringUtils.isNotBlank(statusEvent.getHostid())) {
+                                pbxHostRes.findById(statusEvent.getHostid())
+                                        .ifPresent(it -> view.addObject("pbxHost", it));
+                            }
+                            view.addObject("statusEvent", statusEvent);
+                        });
                 MobileAddress ma = MobileNumberUtils.getAddress(agentUser.getPhone());
                 view.addObject("mobileAddress", ma);
             }
