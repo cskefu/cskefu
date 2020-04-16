@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.FileCopyUtils;
@@ -86,15 +87,15 @@ public class TenantController extends Handler {
             } else {
                 List<OrgiSkillRel> orgiSkillRelList = orgiSkillRelRes.findBySkillidIn(
                         new ArrayList<>((super.getUser(request)).getAffiliates()));
-                List<Tenant> tenantList = null;
+                List<Tenant> tenantList;
                 if (!orgiSkillRelList.isEmpty()) {
                     tenantList = new ArrayList<>();
                     for (OrgiSkillRel orgiSkillRel : orgiSkillRelList) {
-                        Tenant t = tenantRes.findById(orgiSkillRel.getOrgi());
-                        if (t != null) {
-                            tenantList.add(t);
-                        }
+                        tenantRes.findById(orgiSkillRel.getOrgi())
+                                .ifPresent(tenantList::add);
                     }
+                } else {
+                    tenantList = null;
                 }
                 map.addAttribute("tenantList", tenantList);
             }
@@ -183,12 +184,14 @@ public class TenantController extends Handler {
     @RequestMapping("/update")
     @Menu(type = "apps", subtype = "tenant", admin = true)
     public ModelAndView update(HttpServletRequest request, @NonNull @Valid Tenant tenant, @RequestParam(value = "tenantpic", required = false) MultipartFile tenantpic, @Valid String skills) throws IOException {
-        Tenant temp = tenantRes.findById(tenant.getId());
+        Tenant temp = optionalById(tenant.getId());
         Tenant tenanttemp = tenantRes.findByOrgidAndTenantname(super.getOrgid(request), tenant.getTenantname());
         if (temp != null && tenanttemp != null && !temp.getId().equals(tenanttemp.getId())) {
             return request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index.html?msg=tenantexist"));
         }
-        tenant.setCreatetime(temp.getCreatetime());
+        if (temp != null) {
+            tenant.setCreatetime(temp.getCreatetime());
+        }
         if (tenantpic != null && tenantpic.getOriginalFilename() != null && tenantpic.getOriginalFilename().lastIndexOf(".") > 0) {
             File logoDir = new File(path, "tenantpic");
             if (!logoDir.exists()) {
@@ -200,7 +203,9 @@ public class TenantController extends Handler {
             FileCopyUtils.copy(tenantpic.getBytes(), new File(path, fileName));
             tenant.setTenantlogo(fileName);
         } else {
-            tenant.setTenantlogo(temp.getTenantlogo());
+            if (temp != null) {
+                tenant.setTenantlogo(temp.getTenantlogo());
+            }
         }
         if (!StringUtils.isBlank(super.getUser(request).getOrgid())) {
             tenant.setOrgid(super.getUser(request).getOrgid());
@@ -228,9 +233,8 @@ public class TenantController extends Handler {
     @RequestMapping("/delete")
     @Menu(type = "apps", subtype = "tenant")
     public ModelAndView delete(@Valid Tenant tenant) {
-        Tenant temp = tenantRes.findById(tenant.getId());
         if (tenant != null) {
-            tenantRes.delete(temp);
+            tenantRes.deleteById(tenant.getId());
         }
         return request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index"));
     }
@@ -243,7 +247,7 @@ public class TenantController extends Handler {
                 (super.getUser(request)).getId(), super.getOrgi(request));
         if (agentStatus == null && cache.getInservAgentUsersSizeByAgentnoAndOrgi(
                 super.getUser(request).getId(), super.getOrgi(request)) == 0) {
-            Tenant temp = tenantRes.findById(tenant.getId());
+            Tenant temp = optionalById(tenant.getId());
             if (temp != null) {
                 super.getUser(request).setOrgi(temp.getId());
             }
@@ -251,13 +255,13 @@ public class TenantController extends Handler {
         }
         if (agentStatus != null) {
             if (tenant.getId().equals(agentStatus.getOrgi())) {
-                Tenant temp = tenantRes.findById(tenant.getId());
+                Tenant temp = optionalById(tenant.getId());
                 if (temp != null) {
                     super.getUser(request).setOrgi(temp.getId());
                 }
                 return view;
             } else {
-                Tenant temp = tenantRes.findById(agentStatus.getOrgi());
+                Tenant temp = optionalById(agentStatus.getOrgi());
                 return request(super.createRequestPageTempletResponse(
                         "redirect:/apps/tenant/index.html?msg=t0" + "&currentorgi=" + agentStatus.getOrgi() + "&currentname=" + URLEncoder.encode(
                                 temp != null ? temp.getTenantname() : "", "UTF-8")));
@@ -268,13 +272,13 @@ public class TenantController extends Handler {
                 super.getOrgi(request));
         if (agentUser != null) {
             if (tenant.getId().equals(agentUser.getOrgi())) {
-                Tenant temp = tenantRes.findById(tenant.getId());
+                Tenant temp = optionalById(tenant.getId());
                 if (temp != null) {
                     super.getUser(request).setOrgi(temp.getId());
                 }
                 return view;
             } else {
-                Tenant temp = tenantRes.findById(agentUser.getOrgi());
+                Tenant temp = optionalById(agentUser.getOrgi());
                 return request(super.createRequestPageTempletResponse(
                         "redirect:/apps/tenant/index.html?msg=t0" + "&currentorgi=" + agentUser.getOrgi() + "&currentname=" + URLEncoder.encode(
                                 temp != null ? temp.getTenantname() : "", "UTF-8")));
@@ -282,5 +286,11 @@ public class TenantController extends Handler {
 
         }
         return request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index.html?msg=t0"));
+    }
+
+    @Nullable
+    private Tenant optionalById(@NonNull String id) {
+        return tenantRes.findById(id)
+                .orElse(null);
     }
 }

@@ -22,7 +22,6 @@ import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.*;
-import com.chatopera.cc.persistence.es.ContactsRepository;
 import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.socketio.message.OtherMessageItem;
@@ -33,8 +32,6 @@ import freemarker.template.TemplateException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.servlet.http.Cookie;
@@ -43,7 +40,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.CharacterCodingException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -60,33 +56,10 @@ public class OnlineUserProxy {
     private static OnlineUserHisRepository onlineUserHisRes;
     private static UserTraceRepository userTraceRes;
     private static OrgiSkillRelRepository orgiSkillRelRes;
-    private static AgentUserContactsRepository agentUserContactsRes;
-    private static ContactsRepository contactsRes;
     private static UserProxy userProxy;
 
     /**
-     * @param id
-     * @return
-     * @throws Exception
-     */
-    public static OnlineUser user(final String orgi, final String id) {
-        return getOnlineUserRes().findOne(id);
-    }
-
-    /**
-     * 更新cache
      *
-     * @param consultInvite
-     */
-    public static void cacheConsult(final CousultInvite consultInvite) {
-        logger.info("[cacheConsult] snsid {}, orgi {}", consultInvite.getSnsaccountid(), consultInvite.getOrgi());
-        getCache().putConsultInviteByOrgi(consultInvite.getOrgi(), consultInvite);
-    }
-
-    /**
-     * @param snsid
-     * @param orgi
-     * @return
      */
     public static CousultInvite consult(final String snsid, final String orgi) {
 //        logger.info("[consult] snsid {}, orgi {}", snsid, orgi);
@@ -103,10 +76,6 @@ public class OnlineUserProxy {
 
     /**
      * 在Cache中查询OnlineUser，或者从数据库中根据UserId，Orgi和Invite查询
-     *
-     * @param userid
-     * @param orgi
-     * @return
      */
     public static OnlineUser onlineuser(String userid, String orgi) {
         // 从Cache中查找
@@ -123,13 +92,8 @@ public class OnlineUserProxy {
 
 
     /**
-     * @param orgi
-     * @param ipdata
-     * @param invite
-     * @param isJudgeShare 是否判断是否共享租户
-     * @return
+     *
      */
-    @SuppressWarnings("unchecked")
     public static List<Organ> organ(
             String orgi, final IP ipdata,
             final CousultInvite invite, boolean isJudgeShare) {
@@ -151,7 +115,7 @@ public class OnlineUserProxy {
                     MainContext.SYSTEM_ORGI, (invite == null ? origOrig : invite.getOrgi())))) {
                 OrgiSkillRelRepository orgiSkillRelService = MainContext.getContext().getBean(
                         OrgiSkillRelRepository.class);
-                List<OrgiSkillRel> orgiSkillRelList = null;
+                List<OrgiSkillRel> orgiSkillRelList;
                 orgiSkillRelList = orgiSkillRelService.findByOrgi((invite == null ? origOrig : invite.getOrgi()));
                 List<Organ> skillTempList = new ArrayList<>();
                 if (!orgiSkillRelList.isEmpty()) {
@@ -175,11 +139,13 @@ public class OnlineUserProxy {
             return skillGroups;
         }
 
-        List<Organ> regOrganList = new ArrayList<Organ>();
+        List<Organ> regOrganList = new ArrayList<>();
+        if (ipdata == null) {
+            return regOrganList;
+        }
         for (Organ organ : skillGroups) {
             if (StringUtils.isNotBlank(organ.getArea())) {
-                if (organ.getArea().indexOf(ipdata.getProvince()) >= 0 || organ.getArea().indexOf(
-                        ipdata.getCity()) >= 0) {
+                if (organ.getArea().contains(ipdata.getProvince()) || organ.getArea().contains(ipdata.getCity())) {
                     regOrganList.add(organ);
                 }
             } else {
@@ -191,20 +157,17 @@ public class OnlineUserProxy {
 
 
     /**
-     * @param orgi
-     * @param isJudgeShare
-     * @return
+     *
      */
-    @SuppressWarnings("unchecked")
     public static List<Organ> organ(String orgi, boolean isJudgeShare) {
         return organ(orgi, null, null, isJudgeShare);
     }
 
     private static List<AreaType> getAreaTypeList(String area, List<AreaType> areaTypeList) {
-        List<AreaType> atList = new ArrayList<AreaType>();
+        List<AreaType> atList = new ArrayList<>();
         if (areaTypeList != null && areaTypeList.size() > 0) {
             for (AreaType areaType : areaTypeList) {
-                if (StringUtils.isNotBlank(area) && area.indexOf(areaType.getId()) >= 0) {
+                if (StringUtils.isNotBlank(area) && area.contains(areaType.getId())) {
                     atList.add(areaType);
                 }
             }
@@ -212,62 +175,8 @@ public class OnlineUserProxy {
         return atList;
     }
 
-    /**
-     * 只要有一级 地区命中就就返回
-     *
-     * @param orgi
-     * @param ipdata
-     * @param topicTypeList
-     * @return
-     */
-    public static List<KnowledgeType> topicType(String orgi, IP ipdata, List<KnowledgeType> topicTypeList) {
-        List<KnowledgeType> tempTopicTypeList = new ArrayList<KnowledgeType>();
-        for (KnowledgeType topicType : topicTypeList) {
-            if (getParentArea(ipdata, topicType, topicTypeList) != null) {
-                tempTopicTypeList.add(topicType);
-            }
-        }
-        return tempTopicTypeList;
-    }
-
-    /**
-     * @param topicType
-     * @param topicTypeList
-     * @return
-     */
-    private static KnowledgeType getParentArea(IP ipdata, KnowledgeType topicType, List<KnowledgeType> topicTypeList) {
-        KnowledgeType area = null;
-        if (StringUtils.isNotBlank(topicType.getArea())) {
-            if ((topicType.getArea().indexOf(ipdata.getProvince()) >= 0 || topicType.getArea().indexOf(
-                    ipdata.getCity()) >= 0)) {
-                area = topicType;
-            }
-        } else {
-            if (StringUtils.isNotBlank(topicType.getParentid()) && !topicType.getParentid().equals("0")) {
-                for (KnowledgeType temp : topicTypeList) {
-                    if (temp.getId().equals(topicType.getParentid())) {
-                        if (StringUtils.isNotBlank(temp.getArea())) {
-                            if ((temp.getArea().indexOf(ipdata.getProvince()) >= 0 || temp.getArea().indexOf(
-                                    ipdata.getCity()) >= 0)) {
-                                area = temp;
-                                break;
-                            } else {
-                                break;
-                            }
-                        } else {
-                            area = getParentArea(ipdata, temp, topicTypeList);
-                        }
-                    }
-                }
-            } else {
-                area = topicType;
-            }
-        }
-        return area;
-    }
-
-    public static List<Topic> topic(String orgi, List<KnowledgeType> topicTypeList, List<Topic> topicList) {
-        List<Topic> tempTopicList = new ArrayList<Topic>();
+    public static List<Topic> topic(List<KnowledgeType> topicTypeList, List<Topic> topicList) {
+        List<Topic> tempTopicList = new ArrayList<>();
         if (topicList != null) {
             for (Topic topic : topicList) {
                 if (StringUtils.isBlank(topic.getCate()) || Constants.DEFAULT_TYPE.equals(
@@ -281,13 +190,9 @@ public class OnlineUserProxy {
 
     /**
      * 根据热点知识找到 非空的 分类
-     *
-     * @param topicTypeList
-     * @param topicList
-     * @return
      */
     public static List<KnowledgeType> filterTopicType(List<KnowledgeType> topicTypeList, List<Topic> topicList) {
-        List<KnowledgeType> tempTopicTypeList = new ArrayList<KnowledgeType>();
+        List<KnowledgeType> tempTopicTypeList = new ArrayList<>();
         if (topicTypeList != null) {
             for (KnowledgeType knowledgeType : topicTypeList) {
                 boolean hasTopic = false;
@@ -307,10 +212,6 @@ public class OnlineUserProxy {
 
     /**
      * 找到知识点对应的 分类
-     *
-     * @param cate
-     * @param topicTypeList
-     * @return
      */
     private static KnowledgeType getTopicType(String cate, List<KnowledgeType> topicTypeList) {
         KnowledgeType kt = null;
@@ -325,11 +226,8 @@ public class OnlineUserProxy {
 
 
     /**
-     * @param orgi
-     * @param isJudgeShare
-     * @return
+     *
      */
-    @SuppressWarnings("unchecked")
     public static List<User> agents(String orgi, boolean isJudgeShare) {
         String origOrig = orgi;
         boolean isShare = false;
@@ -341,10 +239,10 @@ public class OnlineUserProxy {
             }
         }
         List<User> agentList = getCache().findOneSystemByIdAndOrgi(Constants.CACHE_AGENT + origOrig, origOrig);
-        List<User> agentTempList = null;
+        List<User> agentTempList;
         if (agentList == null) {
             agentList = getUserRes().findByOrgiAndAgentAndDatastatus(orgi, true, false);
-            agentTempList = new ArrayList<User>();
+            agentTempList = new ArrayList<>();
             // 共享的话 查出绑定的组织
             if (isShare) {
                 List<OrgiSkillRel> orgiSkillRelList = getOrgiSkillRelRes().findByOrgi(origOrig);
@@ -375,7 +273,7 @@ public class OnlineUserProxy {
         SystemConfig systemConfig = MainUtils.getSystemConfig();
         if (systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantshare()) {
             TenantRepository tenantRes = MainContext.getContext().getBean(TenantRepository.class);
-            Tenant tenant = tenantRes.findById(orgi);
+            Tenant tenant = tenantRes.findById(orgi).orElse(null);
             if (tenant != null) {
                 List<Tenant> tenants = tenantRes.findByOrgid(tenant.getOrgid());
                 if (!tenants.isEmpty()) {
@@ -393,73 +291,9 @@ public class OnlineUserProxy {
     }
 
 
-    public static Contacts processContacts(
-            final String orgi,
-            Contacts contacts,
-            final String appid,
-            final String userid) {
-        if (contacts != null) {
-            if (contacts != null &&
-                    (StringUtils.isNotBlank(contacts.getName()) ||
-                            StringUtils.isNotBlank(contacts.getPhone()) ||
-                            StringUtils.isNotBlank(contacts.getEmail()))) {
-                StringBuffer query = new StringBuffer();
-                query.append(contacts.getName());
-                if (StringUtils.isNotBlank(contacts.getPhone())) {
-                    query.append(" OR ").append(contacts.getPhone());
-                }
-                if (StringUtils.isNotBlank(contacts.getEmail())) {
-                    query.append(" OR ").append(contacts.getEmail());
-                }
-                Page<Contacts> contactsList = contactsRes.findByOrgi(
-                        orgi, false, query.toString(), PageRequest.of(0, 1));
-                if (contactsList.getContent().size() > 0) {
-                    contacts = contactsList.getContent().get(0);
-                } else {
-//					contactsRes.save(contacts) ;	//需要增加签名验证，避免随便产生垃圾信息，也可以自行修改？
-                    contacts.setId(null);
-                }
-            } else {
-                contacts.setId(null);
-            }
-
-            if (contacts != null && StringUtils.isNotBlank(contacts.getId())) {
-                if (!getAgentUserContactsRes().findOneByUseridAndOrgi(userid, orgi).isPresent()) {
-                    AgentUserContacts agentUserContacts = new AgentUserContacts();
-                    agentUserContacts.setAppid(appid);
-                    agentUserContacts.setChannel(MainContext.ChannelType.WEBIM.toString());
-                    agentUserContacts.setContactsid(contacts.getId());
-                    agentUserContacts.setUserid(userid);
-                    agentUserContacts.setOrgi(orgi);
-                    agentUserContacts.setCreatetime(new Date());
-                    agentUserContactsRes.save(agentUserContacts);
-                }
-            } else if (StringUtils.isNotBlank(userid)) {
-                Optional<AgentUserContacts> agentUserContactOpt = agentUserContactsRes.findOneByUseridAndOrgi(
-                        userid, orgi);
-                if (agentUserContactOpt.isPresent()) {
-                    contacts = getContactsRes().findOne(agentUserContactOpt.get().getContactsid());
-                }
-            }
-        }
-        return contacts;
-    }
-
     /**
      * 创建OnlineUser并上线
      * 根据user判断追踪，在浏览器里，用fingerprint2生成的ID作为唯一标识
-     *
-     * @param user
-     * @param orgi
-     * @param sessionid
-     * @param optype
-     * @param request
-     * @param channel
-     * @param appid
-     * @param contacts
-     * @param invite
-     * @return
-     * @throws CharacterCodingException
      */
     public static OnlineUser online(
             final User user,
@@ -508,7 +342,7 @@ public class OnlineUserProxy {
                     onlineUser.setOlduser("1");
                 }
                 onlineUser.setMobile(MobileDevice.isMobile(request
-                                                                   .getHeader("User-Agent")) ? "1" : "0");
+                        .getHeader("User-Agent")) ? "1" : "0");
 
                 // onlineUser.setSource(user.getId());
 
@@ -546,10 +380,10 @@ public class OnlineUserProxy {
                 onlineUser.setCity(ipdata.getCity());
                 onlineUser.setIsp(ipdata.getIsp());
                 onlineUser.setRegion(ipdata.toString() + "（"
-                                             + ip + "）");
+                        + ip + "）");
 
                 onlineUser.setDatestr(new SimpleDateFormat("yyyMMdd")
-                                              .format(now));
+                        .format(now));
 
                 onlineUser.setHostname(ip);
                 onlineUser.setSessionid(sessionid);
@@ -620,7 +454,7 @@ public class OnlineUserProxy {
             }
 
             // 完成获取及更新OnlineUser, 将信息加入缓存
-            if (onlineUser != null && StringUtils.isNotBlank(onlineUser.getUserid())) {
+            if (StringUtils.isNotBlank(onlineUser.getUserid())) {
 //                logger.info(
 //                        "[online] onlineUser id {}, status {}, invite status {}", onlineUser.getId(),
 //                        onlineUser.getStatus(), onlineUser.getInvitestatus());
@@ -632,9 +466,7 @@ public class OnlineUserProxy {
     }
 
     /**
-     * @param request
-     * @param key
-     * @return
+     *
      */
     public static String getCookie(HttpServletRequest request, String key) {
         Cookie data = null;
@@ -650,9 +482,7 @@ public class OnlineUserProxy {
     }
 
     /**
-     * @param user
-     * @param orgi
-     * @throws Exception
+     *
      */
     public static void offline(String user, String orgi) {
         if (MainContext.getContext() != null) {
@@ -676,9 +506,6 @@ public class OnlineUserProxy {
 
     /**
      * 设置onlineUser为离线
-     *
-     * @param onlineUser
-     * @throws Exception
      */
     public static void offline(OnlineUser onlineUser) {
         if (onlineUser != null) {
@@ -687,12 +514,10 @@ public class OnlineUserProxy {
     }
 
     /**
-     * @param user
-     * @param orgi
-     * @throws Exception
+     *
      */
-    public static void refuseInvite(final String user, final String orgi) {
-        OnlineUser onlineUser = getOnlineUserRes().findOne(user);
+    public static void refuseInvite(final String user) {
+        OnlineUser onlineUser = getOnlineUserRes().findById(user).orElse(null);
         if (onlineUser != null) {
             onlineUser.setInvitestatus(MainContext.OnlineUserInviteStatus.REFUSE.toString());
             onlineUser.setRefusetimes(onlineUser.getRefusetimes() + 1);
@@ -701,7 +526,7 @@ public class OnlineUserProxy {
     }
 
     public static String unescape(String src) {
-        StringBuffer tmp = new StringBuffer();
+        StringBuilder tmp = new StringBuilder();
         try {
             tmp.append(java.net.URLDecoder.decode(src, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
@@ -712,13 +537,13 @@ public class OnlineUserProxy {
     }
 
     public static String getKeyword(String url) {
-        Map<String, String[]> values = new HashMap<String, String[]>();
+        Map<String, String[]> values = new HashMap<>();
         try {
             OnlineUserUtils.parseParameters(values, url, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        StringBuffer strb = new StringBuffer();
+        StringBuilder strb = new StringBuilder();
         String[] data = values.get("q");
         if (data != null) {
             for (String v : data) {
@@ -741,9 +566,6 @@ public class OnlineUserProxy {
 
     /**
      * 发送邀请
-     *
-     * @param userid
-     * @throws Exception
      */
     public static void sendWebIMClients(String userid, String msg) throws Exception {
 //        logger.info("[sendWebIMClients] userId {}, msg {}", userid, msg);
@@ -766,14 +588,14 @@ public class OnlineUserProxy {
         }
     }
 
-    public static void resetHotTopic(DataExchangeInterface dataExchange, User user, String orgi, String aiid) {
+    public static void resetHotTopic(DataExchangeInterface dataExchange, String orgi, String aiid) {
         getCache().deleteSystembyIdAndOrgi("xiaoeTopic", orgi);
-        cacheHotTopic(dataExchange, user, orgi, aiid);
+        cacheHotTopic(dataExchange, orgi, aiid);
     }
 
     @SuppressWarnings("unchecked")
-    public static List<Topic> cacheHotTopic(DataExchangeInterface dataExchange, User user, String orgi, String aiid) {
-        List<Topic> topicList = null;
+    public static List<Topic> cacheHotTopic(DataExchangeInterface dataExchange, String orgi, String aiid) {
+        List<Topic> topicList;
         if ((topicList = getCache().findOneSystemListByIdAndOrgi("xiaoeTopic", orgi)) == null) {
             topicList = (List<Topic>) dataExchange.getListDataByIdAndOrgi(aiid, null, orgi);
             getCache().putSystemListByIdAndOrgi("xiaoeTopic", orgi, topicList);
@@ -781,16 +603,16 @@ public class OnlineUserProxy {
         return topicList;
     }
 
-    public static void resetHotTopicType(DataExchangeInterface dataExchange, User user, String orgi, String aiid) {
+    public static void resetHotTopicType(DataExchangeInterface dataExchange, String orgi, String aiid) {
         if (getCache().existSystemByIdAndOrgi("xiaoeTopicType" + "." + orgi, orgi)) {
             getCache().deleteSystembyIdAndOrgi("xiaoeTopicType" + "." + orgi, orgi);
         }
-        cacheHotTopicType(dataExchange, user, orgi, aiid);
+        cacheHotTopicType(dataExchange, orgi, aiid);
     }
 
     @SuppressWarnings("unchecked")
-    public static List<KnowledgeType> cacheHotTopicType(DataExchangeInterface dataExchange, User user, String orgi, String aiid) {
-        List<KnowledgeType> topicTypeList = null;
+    public static List<KnowledgeType> cacheHotTopicType(DataExchangeInterface dataExchange, String orgi, String aiid) {
+        List<KnowledgeType> topicTypeList;
         if ((topicTypeList = getCache().findOneSystemListByIdAndOrgi("xiaoeTopicType" + "." + orgi, orgi)) == null) {
             topicTypeList = (List<KnowledgeType>) dataExchange.getListDataByIdAndOrgi(aiid, null, orgi);
             getCache().putSystemListByIdAndOrgi("xiaoeTopicType" + "." + orgi, orgi, topicTypeList);
@@ -799,8 +621,8 @@ public class OnlineUserProxy {
     }
 
     @SuppressWarnings("unchecked")
-    public static List<SceneType> cacheSceneType(DataExchangeInterface dataExchange, User user, String orgi) {
-        List<SceneType> sceneTypeList = null;
+    public static List<SceneType> cacheSceneType(DataExchangeInterface dataExchange, String orgi) {
+        List<SceneType> sceneTypeList;
         if ((sceneTypeList = getCache().findOneSystemListByIdAndOrgi("xiaoeSceneType", orgi)) == null) {
             sceneTypeList = (List<SceneType>) dataExchange.getListDataByIdAndOrgi(null, null, orgi);
             getCache().putSystemListByIdAndOrgi("xiaoeSceneType", orgi, sceneTypeList);
@@ -808,11 +630,10 @@ public class OnlineUserProxy {
         return sceneTypeList;
     }
 
-    @SuppressWarnings("unchecked")
     public static boolean filterSceneType(String cate, String orgi, IP ipdata) {
         boolean result = false;
         List<SceneType> sceneTypeList = cacheSceneType(
-                (DataExchangeInterface) MainContext.getContext().getBean("scenetype"), null, orgi);
+                (DataExchangeInterface) MainContext.getContext().getBean("scenetype"), orgi);
         List<AreaType> areaTypeList = getCache().findOneSystemListByIdAndOrgi(
                 Constants.CSKEFU_SYSTEM_AREA, MainContext.SYSTEM_ORGI);
         if (sceneTypeList != null && cate != null && !Constants.DEFAULT_TYPE.equals(cate)) {
@@ -823,8 +644,7 @@ public class OnlineUserProxy {
                             List<AreaType> atList = getAreaTypeList(
                                     sceneType.getArea(), areaTypeList);    //找到技能组配置的地区信息
                             for (AreaType areaType : atList) {
-                                if (areaType.getArea().indexOf(ipdata.getProvince()) >= 0 || areaType.getArea().indexOf(
-                                        ipdata.getCity()) >= 0) {
+                                if (areaType.getArea().contains(ipdata.getProvince()) || areaType.getArea().contains(ipdata.getCity())) {
                                     result = true;
                                     break;
                                 }
@@ -851,7 +671,7 @@ public class OnlineUserProxy {
                 orgi);
         if (StringUtils.isNotBlank(sessionConfig.getOqrsearchurl())) {
             Template templet = MainUtils.getTemplate(sessionConfig.getOqrsearchinput());
-            Map<String, Object> values = new HashMap<String, Object>();
+            Map<String, Object> values = new HashMap<>();
             values.put("q", q);
             values.put("user", user);
             param = MainUtils.getTemplet(templet.getTemplettext(), values);
@@ -862,7 +682,7 @@ public class OnlineUserProxy {
             Template templet = MainUtils.getTemplate(sessionConfig.getOqrsearchoutput());
             @SuppressWarnings("unchecked")
             Map<String, Object> jsonData = objectMapper.readValue(result, Map.class);
-            Map<String, Object> values = new HashMap<String, Object>();
+            Map<String, Object> values = new HashMap<>();
             values.put("q", q);
             values.put("user", user);
             values.put("data", jsonData);
@@ -875,12 +695,12 @@ public class OnlineUserProxy {
         return otherMessageItemList;
     }
 
-    public static OtherMessageItem suggestdetail(AiConfig aiCofig, String id, String orgi, User user) throws IOException, TemplateException {
+    public static OtherMessageItem suggestdetail(AiConfig aiCofig, String id, User user) throws IOException, TemplateException {
         OtherMessageItem otherMessageItem = null;
         String param = "";
         if (StringUtils.isNotBlank(aiCofig.getOqrdetailinput())) {
             Template templet = MainUtils.getTemplate(aiCofig.getOqrdetailinput());
-            Map<String, Object> values = new HashMap<String, Object>();
+            Map<String, Object> values = new HashMap<>();
             values.put("id", id);
             values.put("user", user);
             param = MainUtils.getTemplet(templet.getTemplettext(), values);
@@ -891,7 +711,7 @@ public class OnlineUserProxy {
                 Template templet = MainUtils.getTemplate(aiCofig.getOqrdetailoutput());
                 @SuppressWarnings("unchecked")
                 Map<String, Object> jsonData = objectMapper.readValue(result, Map.class);
-                Map<String, Object> values = new HashMap<String, Object>();
+                Map<String, Object> values = new HashMap<>();
                 values.put("id", id);
                 values.put("user", user);
                 values.put("data", jsonData);
@@ -911,7 +731,7 @@ public class OnlineUserProxy {
                 orgi);
         if (StringUtils.isNotBlank(sessionConfig.getOqrdetailinput())) {
             Template templet = MainUtils.getTemplate(sessionConfig.getOqrdetailinput());
-            Map<String, Object> values = new HashMap<String, Object>();
+            Map<String, Object> values = new HashMap<>();
             values.put("id", id);
             values.put("user", user);
             param = MainUtils.getTemplet(templet.getTemplettext(), values);
@@ -922,7 +742,7 @@ public class OnlineUserProxy {
                 Template templet = MainUtils.getTemplate(sessionConfig.getOqrdetailoutput());
                 @SuppressWarnings("unchecked")
                 Map<String, Object> jsonData = objectMapper.readValue(result, Map.class);
-                Map<String, Object> values = new HashMap<String, Object>();
+                Map<String, Object> values = new HashMap<>();
                 values.put("id", id);
                 values.put("user", user);
                 values.put("data", jsonData);
@@ -942,10 +762,6 @@ public class OnlineUserProxy {
 
     /**
      * 创建Skype联系人的onlineUser记录
-     *
-     * @param contact
-     * @param logined
-     * @return
      */
     public static OnlineUser createNewOnlineUserWithContactAndChannel(final Contacts contact, final User logined, final String channel) {
         final Date now = new Date();
@@ -968,21 +784,6 @@ public class OnlineUserProxy {
         getOnlineUserRes().save(onlineUser);
         return onlineUser;
 
-    }
-
-    private static AgentUserContactsRepository getAgentUserContactsRes() {
-        if (agentUserContactsRes == null) {
-            agentUserContactsRes = MainContext.getContext().getBean(AgentUserContactsRepository.class);
-        }
-        return agentUserContactsRes;
-    }
-
-
-    private static ContactsRepository getContactsRes() {
-        if (contactsRes == null) {
-            contactsRes = MainContext.getContext().getBean(ContactsRepository.class);
-        }
-        return contactsRes;
     }
 
 

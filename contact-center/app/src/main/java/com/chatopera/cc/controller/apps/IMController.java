@@ -957,7 +957,7 @@ public class IMController extends Handler {
     @RequestMapping("/refuse")
     @Menu(type = "im", subtype = "refuse", access = true)
     public void refuse(@Valid String orgi, @Valid String userid) {
-        OnlineUserProxy.refuseInvite(userid, orgi);
+        OnlineUserProxy.refuseInvite(userid);
         final Date threshold = new Date(System.currentTimeMillis() - Constants.WEBIM_AGENT_INVITE_TIMEOUT);
         Page<InviteRecord> inviteRecords = inviteRecordRes.findByUseridAndOrgiAndResultAndCreatetimeGreaterThan(
                 userid,

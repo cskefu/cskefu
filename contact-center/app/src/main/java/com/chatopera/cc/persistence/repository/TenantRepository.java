@@ -23,12 +23,12 @@ import java.util.List;
 
 
 public interface TenantRepository extends JpaRepository<Tenant, String> {
-	
-	Tenant findById(String id);
-	
-	List<Tenant> findByOrgid(String orgid);
 
-	Tenant findByOrgidAndTenantname(String orgid, String tenantname);
+    // Tenant findById(String id);
 
-	
+    List<Tenant> findByOrgid(String orgid);
+
+    Tenant findByOrgidAndTenantname(String orgid, String tenantname);
+
+
 }

@@ -108,7 +108,7 @@ public class ContactsController extends Handler {
 
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
         }
 
@@ -146,7 +146,7 @@ public class ContactsController extends Handler {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
         }
 
@@ -181,7 +181,7 @@ public class ContactsController extends Handler {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
         }
 
@@ -215,7 +215,7 @@ public class ContactsController extends Handler {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
         }
 
@@ -491,7 +491,7 @@ public class ContactsController extends Handler {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return;
         }
         boolQueryBuilder.must(termQuery("datastatus", false));        //只导出 数据删除状态 为 未删除的 数据
@@ -555,7 +555,7 @@ public class ContactsController extends Handler {
         final String orgi = logined.getOrgi();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         map.put("msg", msg);
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return request(super.createAppsTempletResponse("/apps/business/contacts/embed/index"));
         }
         if (StringUtils.isNotBlank(q)) {

@@ -99,7 +99,7 @@ public class CustomerController extends Handler {
         final User logined = super.getUser(request);
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         map.put("msg", msg);
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return request(super.createAppsTempletResponse("/apps/business/customer/index"));
         }
 
@@ -129,7 +129,7 @@ public class CustomerController extends Handler {
     public ModelAndView today(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ekind) throws CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return request(super.createAppsTempletResponse("/apps/business/customer/index"));
         }
 
@@ -150,7 +150,7 @@ public class CustomerController extends Handler {
     @Menu(type = "customer", subtype = "week")
     public ModelAndView week(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ekind) throws CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return request(super.createAppsTempletResponse("/apps/business/customer/index"));
         }
 
@@ -170,7 +170,7 @@ public class CustomerController extends Handler {
     @Menu(type = "customer", subtype = "enterprise")
     public ModelAndView enterprise(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ekind) throws CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return request(super.createAppsTempletResponse("/apps/business/customer/index"));
         }
 
@@ -190,7 +190,7 @@ public class CustomerController extends Handler {
     @Menu(type = "customer", subtype = "personal")
     public ModelAndView personal(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ekind) throws CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return request(super.createAppsTempletResponse("/apps/business/customer/index"));
         }
 
@@ -212,7 +212,7 @@ public class CustomerController extends Handler {
     @Menu(type = "customer", subtype = "creater")
     public ModelAndView creater(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ekind) throws CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return request(super.createAppsTempletResponse("/apps/business/customer/index"));
         }
 
@@ -377,7 +377,7 @@ public class CustomerController extends Handler {
     @Menu(type = "customer", subtype = "customer")
     public void expall(HttpServletRequest request, HttpServletResponse response) throws IOException, CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             // #TODO 提示没有部门
             return;
         }
@@ -401,7 +401,7 @@ public class CustomerController extends Handler {
     @Menu(type = "customer", subtype = "customer")
     public void expall(ModelMap map, HttpServletRequest request, HttpServletResponse response, @Valid String q, @Valid String ekind) throws IOException, CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             // #TODO 提示没有部门
             return;
         }
