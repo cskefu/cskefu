@@ -55,7 +55,7 @@ public class CallCenterMediaController extends Handler {
     private String path;
 
     @RequestMapping(value = "/media")
-    @Menu(type = "callcenter", subtype = "callcentermedia", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "callcentermedia", admin = true)
     public ModelAndView media(ModelMap map, HttpServletRequest request, @Valid String hostid) {
         if (!StringUtils.isBlank(hostid)) {
             map.addAttribute("pbxHost", pbxHostRes.findByIdAndOrgi(hostid, super.getOrgi(request)));
@@ -65,14 +65,14 @@ public class CallCenterMediaController extends Handler {
     }
 
     @RequestMapping(value = "/media/add")
-    @Menu(type = "callcenter", subtype = "media", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "media", admin = true)
     public ModelAndView mediaadd(ModelMap map, HttpServletRequest request, @Valid String hostid) {
         map.put("pbxHost", pbxHostRes.findByIdAndOrgi(hostid, super.getOrgi(request)));
         return request(super.createRequestPageTempletResponse("/admin/callcenter/media/add"));
     }
 
     @RequestMapping(value = "/media/save")
-    @Menu(type = "callcenter", subtype = "media", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "media", admin = true)
     public ModelAndView mediasave(HttpServletRequest request, @RequestParam(value = "mediafile", required = false) MultipartFile mediafile) throws IOException {
         Media media = new Media();
         media.setName(request.getParameter("name"));
@@ -105,7 +105,7 @@ public class CallCenterMediaController extends Handler {
     }
 
     @RequestMapping(value = "/media/edit")
-    @Menu(type = "callcenter", subtype = "media", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "media", admin = true)
     public ModelAndView mediaedit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String hostid) {
         map.addAttribute("media", mediaRes.findByIdAndOrgi(id, super.getOrgi(request)));
         map.put("pbxHost", pbxHostRes.findByIdAndOrgi(hostid, super.getOrgi(request)));
@@ -113,7 +113,7 @@ public class CallCenterMediaController extends Handler {
     }
 
     @RequestMapping(value = "/media/update")
-    @Menu(type = "callcenter", subtype = "media", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "media", admin = true)
     public ModelAndView pbxhostupdate(HttpServletRequest request, @RequestParam(value = "mediafile", required = false) MultipartFile mediafile) throws IOException {
         Media media = new Media();
         media.setName(request.getParameter("name"));
@@ -149,7 +149,7 @@ public class CallCenterMediaController extends Handler {
     }
 
     @RequestMapping(value = "/media/delete")
-    @Menu(type = "callcenter", subtype = "media", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "media", admin = true)
     public ModelAndView mediadelete(@Valid String id, @Valid String hostid) {
         if (!StringUtils.isBlank(id)) {
             mediaRes.deleteById(id);

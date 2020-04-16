@@ -130,7 +130,7 @@ public class AdminController extends Handler {
     }
 
     @RequestMapping("/admin/auth/infoacq")
-    @Menu(type = "admin", subtype = "infoacq", access = false, admin = true)
+    @Menu(type = "admin", subtype = "infoacq", admin = true)
     public ModelAndView infoacq(ModelMap map, HttpServletRequest request) {
         String inacq = (String) request.getSession().getAttribute(Constants.CSKEFU_SYSTEM_INFOACQ);
         if (StringUtils.isNotBlank(inacq)) {

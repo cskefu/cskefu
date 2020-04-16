@@ -48,7 +48,7 @@ public class CallCenterSipTrunkController extends Handler {
     private final Cache cache;
 
     @RequestMapping(value = "/siptrunk")
-    @Menu(type = "callcenter", subtype = "callcenterresource", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "callcenterresource", admin = true)
     public ModelAndView skill(ModelMap map, HttpServletRequest request, @Valid String hostid) {
         if (!StringUtils.isBlank(hostid)) {
             map.addAttribute("pbxHost", pbxHostRes.findByIdAndOrgi(hostid, super.getOrgi(request)));
@@ -58,14 +58,14 @@ public class CallCenterSipTrunkController extends Handler {
     }
 
     @RequestMapping(value = "/siptrunk/add")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView extentionadd(ModelMap map, HttpServletRequest request, @Valid String hostid) {
         map.put("pbxHost", pbxHostRes.findByIdAndOrgi(hostid, super.getOrgi(request)));
         return request(super.createRequestPageTempletResponse("/admin/callcenter/siptrunk/add"));
     }
 
     @RequestMapping(value = "/siptrunk/save")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView extentionsave(HttpServletRequest request, @Valid SipTrunk siptrunk) {
         if (!StringUtils.isBlank(siptrunk.getName())) {
             int count = sipTrunkRes.countByNameAndOrgi(siptrunk.getName(), super.getOrgi(request));
@@ -81,7 +81,7 @@ public class CallCenterSipTrunkController extends Handler {
     }
 
     @RequestMapping(value = "/siptrunk/edit")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView siptrunkedit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String hostid) {
         map.addAttribute("siptrunk", sipTrunkRes.findByIdAndOrgi(id, super.getOrgi(request)));
         map.put("pbxHost", pbxHostRes.findByIdAndOrgi(hostid, super.getOrgi(request)));
@@ -89,7 +89,7 @@ public class CallCenterSipTrunkController extends Handler {
     }
 
     @RequestMapping(value = "/siptrunk/update")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView pbxhostupdate(HttpServletRequest request, @Valid SipTrunk siptrunk) {
         if (!StringUtils.isBlank(siptrunk.getId())) {
             SipTrunk oldSipTrunk = sipTrunkRes.findByIdAndOrgi(siptrunk.getId(), super.getOrgi(request));
@@ -122,7 +122,7 @@ public class CallCenterSipTrunkController extends Handler {
     }
 
     @RequestMapping(value = "/siptrunk/code")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView siptrunkcode(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String hostid) {
         map.addAttribute("siptrunk", sipTrunkRes.findByIdAndOrgi(id, super.getOrgi(request)));
         map.put("pbxHost", pbxHostRes.findByIdAndOrgi(hostid, super.getOrgi(request)));
@@ -130,7 +130,7 @@ public class CallCenterSipTrunkController extends Handler {
     }
 
     @RequestMapping(value = "/siptrunk/code/update")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView siptrunkcodeupdate(HttpServletRequest request, @Valid SipTrunk siptrunk) {
         if (!StringUtils.isBlank(siptrunk.getId())) {
             SipTrunk oldSipTrunk = sipTrunkRes.findByIdAndOrgi(siptrunk.getId(), super.getOrgi(request));
@@ -144,7 +144,7 @@ public class CallCenterSipTrunkController extends Handler {
     }
 
     @RequestMapping(value = "/siptrunk/delete")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView extentiondelete(@Valid String id, @Valid String hostid) {
         if (!StringUtils.isBlank(id)) {
             sipTrunkRes.deleteById(id);

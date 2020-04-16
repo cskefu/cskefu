@@ -52,7 +52,7 @@ public class CallCenterResourceController extends Handler {
     private final ServiceAiRepository serviceAiRes;
 
     @RequestMapping(value = "/resource")
-    @Menu(type = "callcenter", subtype = "callcenter", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "callcenter", admin = true)
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String hostid) {
         List<PbxHost> pbxHostList = pbxHostRes.findByOrgi(super.getOrgi(request));
         map.addAttribute("pbxHostList", pbxHostList);
@@ -69,7 +69,7 @@ public class CallCenterResourceController extends Handler {
     }
 
     @RequestMapping(value = "/resource/config")
-    @Menu(type = "callcenter", subtype = "callcenter", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "callcenter", admin = true)
     public ModelAndView config(ModelMap map, HttpServletRequest request, @Valid String hostid) {
         List<PbxHost> pbxHostList = pbxHostRes.findByOrgi(super.getOrgi(request));
         map.addAttribute("pbxHostList", pbxHostList);
@@ -83,7 +83,7 @@ public class CallCenterResourceController extends Handler {
     }
 
     @RequestMapping(value = "/resource/save")
-    @Menu(type = "callcenter", subtype = "callcenter", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "callcenter", admin = true)
     public ModelAndView save(HttpServletRequest request, @Valid PbxHost pbxHost) throws Exception {
         PbxHost tempPbxHost = pbxHostRes.findByIdAndOrgi(pbxHost.getId(), super.getOrgi(request));
         if (tempPbxHost != null) {
@@ -106,7 +106,7 @@ public class CallCenterResourceController extends Handler {
     }
 
     @RequestMapping(value = "/resource/pbxhost")
-    @Menu(type = "callcenter", subtype = "callcenter", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "callcenter", admin = true)
     public ModelAndView resourcepbx(ModelMap map, HttpServletRequest request, @Valid String hostid) {
         List<PbxHost> pbxHostList = pbxHostRes.findByOrgi(super.getOrgi(request));
         map.addAttribute("pbxHostList", pbxHostList);

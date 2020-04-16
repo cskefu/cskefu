@@ -137,7 +137,7 @@ public class SystemConfigController extends Handler {
     }
 
     @RequestMapping("/stopimserver")
-    @Menu(type = "admin", subtype = "stopimserver", access = false, admin = true)
+    @Menu(type = "admin", subtype = "stopimserver", admin = true)
     public ModelAndView stopimserver(ModelMap map, HttpServletRequest request, @Valid String confirm) throws SQLException {
         boolean execute;
         if (execute = MainUtils.secConfirm(secRes, super.getOrgi(request), confirm)) {
@@ -148,14 +148,14 @@ public class SystemConfigController extends Handler {
     }
 
     @RequestMapping("/startentim")
-    @Menu(type = "admin", subtype = "startentim", access = false, admin = true)
+    @Menu(type = "admin", subtype = "startentim", admin = true)
     public ModelAndView startentim(ModelMap map, HttpServletRequest request) throws SQLException {
         MainContext.enableModule(Constants.CSKEFU_MODULE_ENTIM);
         return request(super.createRequestPageTempletResponse("redirect:/admin/config/index.html"));
     }
 
     @RequestMapping("/stopentim")
-    @Menu(type = "admin", subtype = "stopentim", access = false, admin = true)
+    @Menu(type = "admin", subtype = "stopentim", admin = true)
     public ModelAndView stopentim(ModelMap map, HttpServletRequest request) throws SQLException {
         MainContext.removeModule(Constants.CSKEFU_MODULE_ENTIM);
         return request(super.createRequestPageTempletResponse("redirect:/admin/config/index.html"));
@@ -170,7 +170,7 @@ public class SystemConfigController extends Handler {
      * @throws SQLException
      */
     @RequestMapping("/stop")
-    @Menu(type = "admin", subtype = "stop", access = false, admin = true)
+    @Menu(type = "admin", subtype = "stop", admin = true)
     public ModelAndView stop(ModelMap map, HttpServletRequest request, @Valid String confirm) throws SQLException {
         boolean execute = false;
         if (execute = MainUtils.secConfirm(secRes, super.getOrgi(request), confirm)) {

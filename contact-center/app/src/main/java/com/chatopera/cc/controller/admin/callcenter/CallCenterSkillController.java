@@ -56,7 +56,7 @@ public class CallCenterSkillController extends Handler {
     private final SkillExtentionRepository skillExtentionRes;
 
     @RequestMapping(value = "/skill")
-    @Menu(type = "callcenter", subtype = "callcenterresource", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "callcenterresource", admin = true)
     public ModelAndView skill(ModelMap map, HttpServletRequest request, @Valid String hostid) {
         List<PbxHost> pbxHostList = pbxHostRes.findByOrgi(super.getOrgi(request));
         map.addAttribute("pbxHostList", pbxHostList);
@@ -83,14 +83,14 @@ public class CallCenterSkillController extends Handler {
     }
 
     @RequestMapping(value = "/skill/add")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView extentionadd(ModelMap map, HttpServletRequest request, @Valid String hostid) {
         map.put("pbxHost", pbxHostRes.findByIdAndOrgi(hostid, super.getOrgi(request)));
         return request(super.createRequestPageTempletResponse("/admin/callcenter/skill/add"));
     }
 
     @RequestMapping(value = "/skill/save")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView extentionsave(HttpServletRequest request, @Valid CallCenterSkill skill) {
         if (!StringUtils.isBlank(skill.getSkill())) {
             int count = skillRes.countBySkillAndOrgi(skill.getSkill(), super.getOrgi(request));
@@ -104,7 +104,7 @@ public class CallCenterSkillController extends Handler {
     }
 
     @RequestMapping(value = "/skill/edit")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView extentionedit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String hostid) {
         map.addAttribute("extention", extentionRes.findByIdAndOrgi(id, super.getOrgi(request)));
         map.put("pbxHost", pbxHostRes.findByIdAndOrgi(hostid, super.getOrgi(request)));
@@ -112,7 +112,7 @@ public class CallCenterSkillController extends Handler {
     }
 
     @RequestMapping(value = "/skill/update")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView pbxhostupdate(HttpServletRequest request, @Valid Extention extention) {
         if (!StringUtils.isBlank(extention.getId())) {
             Extention ext = extentionRes.findByIdAndOrgi(extention.getId(), super.getOrgi(request));
@@ -129,7 +129,7 @@ public class CallCenterSkillController extends Handler {
     }
 
     @RequestMapping(value = "/skill/delete")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView extentiondelete(@Valid String id, @Valid String hostid) {
         if (!StringUtils.isBlank(id)) {
             extentionRes.deleteById(id);
@@ -138,7 +138,7 @@ public class CallCenterSkillController extends Handler {
     }
 
     @RequestMapping(value = "/skill/imp")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView skillimp(ModelMap map, HttpServletRequest request, @Valid String hostid) {
         if (!StringUtils.isBlank(hostid)) {
             map.put("pbxHost", pbxHostRes.findByIdAndOrgi(hostid, super.getOrgi(request)));
@@ -149,7 +149,7 @@ public class CallCenterSkillController extends Handler {
     }
 
     @RequestMapping(value = "/skill/extention/delete")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView skillextentiondelete(@Valid String id, @Valid String hostid) {
         if (!StringUtils.isBlank(id)) {
             skillExtentionRes.deleteById(id);
@@ -158,7 +158,7 @@ public class CallCenterSkillController extends Handler {
     }
 
     @RequestMapping(value = "/skill/extention/save")
-    @Menu(type = "callcenter", subtype = "extention", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "extention", admin = true)
     public ModelAndView skillextentionsave(HttpServletRequest request, @Valid SkillExtention skillExtention, @Valid String hostid, @Valid String[] exts) {
         if (exts != null && exts.length > 0) {
             List<SkillExtention> skillExtentionList = skillExtentionRes.findByHostidAndOrgi(hostid, super.getOrgi(request));

@@ -79,7 +79,7 @@ public class CallCenterIvrController extends Handler {
 
 
     @RequestMapping(value = "/ivr/delete")
-    @Menu(type = "callcenter", subtype = "ivr", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "ivr", admin = true)
     public ModelAndView extentiondelete(@Valid String id, @Valid String hostid) {
         if (!StringUtils.isBlank(id)) {
             extentionRes.deleteById(id);
