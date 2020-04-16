@@ -26,13 +26,16 @@ import com.chatopera.cc.persistence.es.ContactsRepository;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.socketio.message.Message;
 import freemarker.template.TemplateException;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
@@ -42,6 +45,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Component
+@RequiredArgsConstructor
 public class AgentUserProxy {
     private final static Logger logger = LoggerFactory.getLogger(AgentUserProxy.class);
 
@@ -60,57 +64,51 @@ public class AgentUserProxy {
     // 转接聊天
     private final static String AUTH_KEY_AUDIT_TRANS = "A13_A01_A03";
 
-    @Autowired
-    private ACDPolicyService acdPolicyService;
+    @NonNull
+    private final ACDPolicyService acdPolicyService;
 
-    @Autowired
-    private AgentUserRepository agentUserRes;
+    @NonNull
+    private final AgentUserRepository agentUserRes;
 
-    @Autowired
-    private RoleAuthRepository roleAuthRes;
+    @NonNull
+    private final RoleAuthRepository roleAuthRes;
 
-    @Autowired
-    private UserRepository userRes;
+    @NonNull
+    private final UserRepository userRes;
 
-    @Autowired
-    private UserRoleRepository userRoleRes;
+    @NonNull
+    private final UserRoleRepository userRoleRes;
 
-    @Autowired
-    private AgentServiceRepository agentServiceRes;
+    @NonNull
+    private final AgentServiceRepository agentServiceRes;
 
-    @Autowired
-    private SNSAccountRepository snsAccountRes;
+    @NonNull
+    private final SNSAccountRepository snsAccountRes;
 
-    @Autowired
-    private AgentServiceProxy agentServiceProxy;
+    @NonNull
+    private final AgentServiceProxy agentServiceProxy;
 
-    @Autowired
-    private ContactsRepository contactsRes;
+    @NonNull
+    private final ContactsRepository contactsRes;
 
-    @Autowired
-    private OnlineUserRepository onlineUserRes;
+    @NonNull
+    private final OnlineUserRepository onlineUserRes;
 
-    @Autowired
-    private AgentUserContactsRepository agentUserContactsRes;
+    @NonNull
+    private final AgentUserContactsRepository agentUserContactsRes;
 
-    @Autowired
-    private Cache cache;
+    @NonNull
+    private final Cache cache;
 
-    @Autowired
-    private AgentStatusRepository agentStatusRes;
+    @NonNull
+    private final AgentStatusRepository agentStatusRes;
 
-    @Autowired
-    private PeerSyncIM peerSyncIM;
+    @NonNull
+    private final PeerSyncIM peerSyncIM;
 
 
     /**
      * 与联系人主动聊天前查找获取AgentUser
-     *
-     * @param channels
-     * @param contactid
-     * @param logined
-     * @return
-     * @throws CSKefuException
      */
     public AgentUser figureAgentUserBeforeChatWithContactInfo(final String channels, final String contactid, final User logined) throws CSKefuException {
         // 聊天依赖的对象
@@ -123,17 +121,19 @@ public class AgentUserProxy {
             String channel = StringUtils.split(channels, ",")[0];
 
             // 查找联系人
-            final Contacts contact = contactsRes.findOne(contactid);
+            final Contacts contact = contactsRes.findById(contactid)
+                    .orElseThrow(() -> {
+                        String reason = String.format("Contacts %s not found", contactid);
+                        return new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
+                    });
 
             // 查找 OnlineUser
-            onlineUser = onlineUserRes.findOneByContactidAndOrigAndChannel(
-                    contactid, logined.getOrgi(), channel).orElseGet(() -> {
-                return OnlineUserProxy.createNewOnlineUserWithContactAndChannel(contact, logined, channel);
-            });
+            onlineUser = onlineUserRes.findOneByContactidAndOrigAndChannel(contactid, logined.getOrgi(), channel)
+                    .orElseGet(() -> OnlineUserProxy.createNewOnlineUserWithContactAndChannel(contact, logined, channel));
 
             // 查找满足条件的 AgentUser
             final Optional<AgentUser> op = agentUserRes.findOneByContactIdAndChannelAndOrgi(contactid, channel,
-                                                                                            logined.getOrgi());
+                    logined.getOrgi());
             if (op.isPresent()) {
                 if (StringUtils.equals(op.get().getAgentno(), logined.getId())) {
                     agentUser = op.get();
@@ -159,11 +159,11 @@ public class AgentUserProxy {
             outMessage.setChannelMessage(agentUser);
             outMessage.setAgentUser(agentUser);
             peerSyncIM.send(MainContext.ReceiverType.AGENT,
-                            MainContext.ChannelType.WEBIM,
-                            agentUser.getAppid(),
-                            MainContext.MessageType.NEW,
-                            logined.getId(),
-                            outMessage, true);
+                    MainContext.ChannelType.WEBIM,
+                    agentUser.getAppid(),
+                    MainContext.MessageType.NEW,
+                    logined.getId(),
+                    outMessage, true);
         } else {
             logger.info("[figureAgentUserBeforeChatWithContactInfo] agent user is null");
         }
@@ -174,16 +174,6 @@ public class AgentUserProxy {
 
     /**
      * 聊天列表数据
-     *
-     * @param view
-     * @param map
-     * @param request
-     * @param response
-     * @param sort
-     * @param logined
-     * @param orgi
-     * @throws IOException
-     * @throws TemplateException
      */
     public void buildIndexViewWithModels(
             final ModelAndView view,
@@ -207,7 +197,7 @@ public class AgentUserProxy {
             }
         }
         if (StringUtils.isNotBlank(sort)) {
-            List<Sort.Order> list = new ArrayList<Sort.Order>();
+            List<Sort.Order> list = new ArrayList<>();
             if (sort.equals("lastmessage")) {
                 list.add(new Sort.Order(Sort.Direction.DESC, "status"));
                 list.add(new Sort.Order(Sort.Direction.DESC, "lastmessage"));
@@ -215,20 +205,20 @@ public class AgentUserProxy {
                 list.add(new Sort.Order(Sort.Direction.DESC, "status"));
                 list.add(new Sort.Order(Sort.Direction.DESC, "createtime"));
             } else if (sort.equals("default")) {
-                defaultSort = new Sort(Sort.Direction.DESC, "status");
+                defaultSort = Sort.by(Sort.Direction.DESC, "status");
                 Cookie name = new Cookie("sort", null);
                 name.setMaxAge(0);
                 response.addCookie(name);
             }
             if (list.size() > 0) {
-                defaultSort = new Sort(list);
+                defaultSort = Sort.by(list);
                 Cookie name = new Cookie("sort", sort);
                 name.setMaxAge(60 * 60 * 24 * 365);
                 response.addCookie(name);
                 map.addAttribute("sort", sort);
             }
         } else {
-            defaultSort = new Sort(Sort.Direction.DESC, "status");
+            defaultSort = Sort.by(Sort.Direction.DESC, "status");
         }
 
         List<AgentUser> agentUserList = agentUserRes.findByAgentnoAndOrgi(
@@ -262,16 +252,12 @@ public class AgentUserProxy {
         if (agentUserList.size() > 0) {
             view.addObject("agentUserList", agentUserList);
             agentServiceProxy.bundleDialogRequiredDataInView(view,
-                                                             map, agentUserList.get(0), orgi, logined);
+                    map, agentUserList.get(0), orgi, logined);
         }
     }
 
     /**
      * 获得坐席访客会话相关的订阅者（会话监控人员）
-     *
-     * @param orgi
-     * @param agentUser
-     * @return
      */
     public HashMap<String, String> getAgentUserSubscribers(final String orgi, final AgentUser agentUser) {
         HashMap<String, String> result = new HashMap<>();
@@ -313,10 +299,6 @@ public class AgentUserProxy {
 
     /**
      * 根据指定的KEY从数据库加载权限数据
-     *
-     * @param key
-     * @param bypass
-     * @param result
      */
     private void loadPermissionsFromDB(final String orgi, final String key, final HashSet<String> bypass, final HashMap<String, String> result) {
         List<RoleAuth> roleAuths = roleAuthRes.findByDicvalueAndOrgi(key, orgi);
@@ -332,21 +314,14 @@ public class AgentUserProxy {
 
     /**
      * 同时增加权限
-     *
-     * @param user
-     * @param permissions
-     * @param result
      */
+    @SuppressWarnings("SameParameterValue")
     private void addPermissions(final String user, final String permissions, final HashMap<String, String> result) {
         result.put(user, permissions);
     }
 
     /**
      * 增加权限
-     *
-     * @param userId
-     * @param authKey
-     * @param result
      */
     private void addPermission(final String userId, final String authKey, final HashMap<String, String> result) {
         if (!result.containsKey(userId)) {
@@ -378,15 +353,6 @@ public class AgentUserProxy {
 
     /**
      * 创建AgentUser
-     *
-     * @param onlineUser
-     * @param contact
-     * @param agent
-     * @param channel
-     * @param status
-     * @param creator
-     * @return
-     * @throws CSKefuException
      */
     public AgentUser createAgentUserWithContactAndAgentAndChannelAndStatus(
             final OnlineUser onlineUser,
@@ -450,23 +416,12 @@ public class AgentUserProxy {
     /**
      * 查找AgentUser
      * 先从缓存查找，再从数据库查找
-     *
-     * @param userid
-     * @param agentuserid
-     * @param orgi
-     * @return
-     * @throws CSKefuException
      */
     public AgentUser resolveAgentUser(final String userid, final String agentuserid, final String orgi) throws CSKefuException {
         Optional<AgentUser> opt = cache.findOneAgentUserByUserIdAndOrgi(userid, orgi);
         if (!opt.isPresent()) {
-            AgentUser au = agentUserRes.findOne(agentuserid);
-            if (au == null) {
-                throw new CSKefuException("Invalid transfer request, agent user not exist.");
-            } else {
-                return au;
-            }
-
+            return agentUserRes.findById(agentuserid)
+                    .orElseThrow(() -> new CSKefuException("Invalid transfer request, agent user not exist."));
         }
         return opt.get();
     }
@@ -474,9 +429,6 @@ public class AgentUserProxy {
     /**
      * 更新坐席当前服务中的用户状态
      * #TODO 需要分布式锁
-     *
-     * @param agentStatus
-     * @param orgi
      */
     public synchronized void updateAgentStatus(AgentStatus agentStatus, String orgi) {
         int users = cache.getInservAgentUsersSizeByAgentnoAndOrgi(agentStatus.getAgentno(), orgi);
@@ -487,18 +439,13 @@ public class AgentUserProxy {
 
     /**
      * 使用AgentUser查询
-     *
-     * @param id
-     * @return
      */
     public Optional<AgentUser> findOne(final String id) {
-        return Optional.ofNullable(agentUserRes.findOne(id));
+        return agentUserRes.findById(id);
     }
 
     /**
      * 保存
-     *
-     * @param agentUser
      */
     public void save(final AgentUser agentUser) {
         agentUserRes.save(agentUser);
