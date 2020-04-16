@@ -27,7 +27,7 @@ import org.elasticsearch.action.get.MultiGetResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
-import org.elasticsearch.search.highlight.HighlightField;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.ElasticsearchException;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -45,7 +45,7 @@ import org.springframework.data.mapping.context.MappingContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class XiaoEUKResultMapper extends AbstractResultMapper {
@@ -55,7 +55,7 @@ public class XiaoEUKResultMapper extends AbstractResultMapper {
 	public XiaoEUKResultMapper() {
 		super(new DefaultEntityMapper());
 	}
-	
+
 	public XiaoEUKResultMapper(MappingContext<? extends ElasticsearchPersistentEntity<?>, ElasticsearchPersistentProperty> mappingContext) {
 		super(new DefaultEntityMapper());
 		this.mappingContext = mappingContext;
@@ -92,11 +92,11 @@ public class XiaoEUKResultMapper extends AbstractResultMapper {
 
 		return new AggregatedPageImpl<T>(results, pageable, totalHits);
 	}
-	
+
 	public <T> T mapEntity(String source , SearchHit hit , Class<T> clazz) {
 		T t = mapEntity(source , clazz) ;
-		
-		Map<String, HighlightField> highlightFields = hit.getHighlightFields();
+
+        Map<String, HighlightField> highlightFields = hit.getHighlightFields();
 		HighlightField highlightNameField = highlightFields.get("title");
 		HighlightField contentHightlightField = highlightFields.get("content");
 		try {
@@ -108,8 +108,8 @@ public class XiaoEUKResultMapper extends AbstractResultMapper {
 			}
 			PropertyUtils.setProperty(t, "id" , hit.getId());
 		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-			e.printStackTrace();
-		} 
+            e.printStackTrace();
+        }
 		return t;
 	}
 
@@ -154,18 +154,18 @@ public class XiaoEUKResultMapper extends AbstractResultMapper {
 			for (SearchHitField value : values) {
 				if (value.getValues().size() > 1) {
 					generator.writeArrayFieldStart(value.getName());
-					for (Object val : value.getValues()) {
-						generator.writeObject(val);
-					}
-					generator.writeEndArray();
-				} else {
-					generator.writeObjectField(value.getName(), value.getValue());
-				}
-			}
-			generator.writeEndObject();
-			generator.flush();
-			return new String(stream.toByteArray(), Charset.forName("UTF-8"));
-		} catch (IOException e) {
+                    for (Object val : value.getValues()) {
+                        generator.writeObject(val);
+                    }
+                    generator.writeEndArray();
+                } else {
+                    generator.writeObjectField(value.getName(), value.getValue());
+                }
+            }
+            generator.writeEndObject();
+            generator.flush();
+            return new String(stream.toByteArray(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
 			return null;
 		}
 	}
@@ -198,8 +198,8 @@ public class XiaoEUKResultMapper extends AbstractResultMapper {
 
 			ElasticsearchPersistentEntity<?> persistentEntity = mappingContext.getPersistentEntity(clazz);
 			PersistentProperty<?> idProperty = persistentEntity.getIdProperty();
-			
-			// Only deal with String because ES generated Ids are strings !
+
+            // Only deal with String because ES generated Ids are strings !
 			if (idProperty != null && idProperty.getType().isAssignableFrom(String.class)) {
 				persistentEntity.getPropertyAccessor(result).setProperty(idProperty, id);
 			}

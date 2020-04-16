@@ -19,7 +19,7 @@ package com.chatopera.cc.persistence.es;
 import com.chatopera.cc.model.KbsTopic;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.*;
-import org.elasticsearch.search.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
