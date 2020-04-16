@@ -24,11 +24,12 @@ import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.bi.ReportData;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,46 +41,35 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/apps/report/design")
+@RequiredArgsConstructor
 public class ReportDesignController extends Handler {
 
+	@NonNull
+	private final TemplateRepository templateRes;
+	@NonNull
+	private final ReportRepository reportRes;
+	@NonNull
+	private final ReportModelRepository reportModelRes;
+	@NonNull
+	private final PublishedCubeRepository publishedCubeRepository;
+	@NonNull
+	private final ColumnPropertiesRepository columnPropertiesRepository;
+	@NonNull
+	private final ReportFilterRepository reportFilterRepository;
+	@NonNull
+	private final ReportCubeService reportCubeService;
+	@NonNull
+	private final TablePropertiesRepository tablePropertiesRes;
+	@NonNull
+	private final PublishedReportRepository publishedReportRes;
+	@NonNull
+	private final SysDicRepository sysDicRes;
+	@NonNull
+	private final MetadataRepository metadataRes;
 	@Value("${web.upload-path}")
 	private String path;
-
 	@Value("${uk.im.server.port}")
 	private Integer port;
-
-	@Autowired
-	private TemplateRepository templateRes;
-
-	@Autowired
-	private ReportRepository reportRes;
-
-	@Autowired
-	private ReportModelRepository reportModelRes;
-
-	@Autowired
-	private PublishedCubeRepository publishedCubeRepository;
-
-	@Autowired
-	private ColumnPropertiesRepository columnPropertiesRepository;
-
-
-	@Autowired
-	private ReportFilterRepository reportFilterRepository;
-
-	@Autowired
-	private ReportCubeService reportCubeService;
-	
-	@Autowired
-	private TablePropertiesRepository tablePropertiesRes;
-	
-	@Autowired
-	private PublishedReportRepository publishedReportRes;
-	
-	@Autowired
-	private SysDicRepository sysDicRes;
-	@Autowired
-	private MetadataRepository metadataRes;
 
 	@RequestMapping("/index")
 	@Menu(type = "report", subtype = "reportdesign")
@@ -101,15 +91,15 @@ public class ReportDesignController extends Handler {
 		if (!StringUtils.isBlank(id)) {
 			map.addAttribute("report", reportRes.findByIdAndOrgi(id, super.getOrgi(request)));
 			map.addAttribute("reportModels", reportModelRes.findByOrgiAndReportid(super.getOrgi(request), id));
-			
+
 			List<ReportFilter> listFilters = reportFilterRepository.findByReportidAndFiltertypeAndOrgi(id, "report", super.getOrgi(request));
-			if(!listFilters.isEmpty()) {
-				Map<String,ReportFilter> filterMap = new HashMap<String,ReportFilter>();
-				for(ReportFilter rf:listFilters) {
+			if (!listFilters.isEmpty()) {
+				Map<String, ReportFilter> filterMap = new HashMap<String, ReportFilter>();
+				for (ReportFilter rf : listFilters) {
 					filterMap.put(rf.getId(), rf);
 				}
-				for(ReportFilter rf:listFilters) {
-					if(!StringUtils.isBlank(rf.getCascadeid())) {
+				for (ReportFilter rf : listFilters) {
+					if (!StringUtils.isBlank(rf.getCascadeid())) {
 						rf.setChildFilter(filterMap.get(rf.getCascadeid()));
 					}
 				}
@@ -121,18 +111,18 @@ public class ReportDesignController extends Handler {
 
 	/**
 	 * 请求 报表的模板组件， 请求的时候，生成个报表组件，报表组件 需要存放在列的对应关系中
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @param template
 	 * @param id
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@RequestMapping("/rtpl")
 	@Menu(type = "report", subtype = "reportdesign")
 	public ModelAndView rtpl(ModelMap map, HttpServletRequest request, @Valid String tplname, @Valid String template,
-			@Valid String colindex, @Valid String id, @Valid String parentid, @Valid String mid) throws Exception {
+							 @Valid String colindex, @Valid String id, @Valid String parentid, @Valid String mid) throws Exception {
 		Template tp = templateRes.findByIdAndOrgi(template, super.getOrgi(request));
 		map.addAttribute("eltemplet", tp);
 		if (!StringUtils.isBlank(parentid)) {
@@ -150,7 +140,7 @@ public class ReportDesignController extends Handler {
 			ChartProperties chartProperties = new ChartProperties();
 			chartProperties.setChartype(tp.getCharttype());
 			Base64 base64 = new Base64();
-			model.setChartcontent(base64.encodeToString(MainUtils.toBytes(chartProperties))) ;
+			model.setChartcontent(base64.encodeToString(MainUtils.toBytes(chartProperties)));
 			model.setTempletid(template);
 			model.setMid(mid);
 
@@ -162,17 +152,11 @@ public class ReportDesignController extends Handler {
 
 	/**
 	 * 请求 报表的模板组件， 请求的时候，生成个报表组件，报表组件 需要存放在列的对应关系中
-	 * 
-	 * @param map
-	 * @param request
-	 * @param template
-	 * @param id
-	 * @return
 	 */
 	@RequestMapping("/element")
 	@Menu(type = "report", subtype = "reportdesign")
 	public ModelAndView element(ModelMap map, HttpServletRequest request, @Valid String colindex, @Valid String id,
-			@Valid String parentid, @Valid String mid) {
+								@Valid String parentid, @Valid String mid) {
 
 		if (!StringUtils.isBlank(id) && !StringUtils.isBlank(parentid)) {
 			ReportModel model = reportModelRes.findByIdAndOrgi(id, super.getOrgi(request));
@@ -192,7 +176,7 @@ public class ReportDesignController extends Handler {
 	/**
 	 * 请求 布局的模板组件 ， 请求的时候，生成一个布局记录，布局记录分两个部分，一个是行，一个是列 ，一次请求，创建一条行记录（ROW）和多个列记录（COL）
 	 * 行记录和列记录都存放到 ES中
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @param template
@@ -202,7 +186,7 @@ public class ReportDesignController extends Handler {
 	@RequestMapping("/ltpl")
 	@Menu(type = "report", subtype = "reportdesign")
 	public ModelAndView ltpl(ModelMap map, HttpServletRequest request, @Valid String template, @Valid String id,
-			@Valid String mid, @Valid String colspan) {
+							 @Valid String mid, @Valid String colspan) {
 		map.addAttribute("templet", templateRes.findByIdAndOrgi(template, super.getOrgi(request)));
 		ReportModel model = new ReportModel();
 		model.setOrgi(super.getOrgi(request));
@@ -223,9 +207,10 @@ public class ReportDesignController extends Handler {
 
 		return request(super.createRequestPageTempletResponse("/apps/business/report/design/layout"));
 	}
+
 	/**
 	 * 请求 过滤器的模板组件， 请求的时候，生成个过滤器组件
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @param template
@@ -235,9 +220,9 @@ public class ReportDesignController extends Handler {
 	@RequestMapping("/ftpl")
 	@Menu(type = "report", subtype = "reportdesign")
 	public ModelAndView ftpl(ModelMap map, HttpServletRequest request, @Valid String tplname, @Valid String template,
-			@Valid String colindex, @Valid String id, @Valid String parentid, @Valid String mid) {
-		Template t =  templateRes.findByIdAndOrgi(template, super.getOrgi(request));
-		map.addAttribute("eltemplet",t);
+							 @Valid String colindex, @Valid String id, @Valid String parentid, @Valid String mid) {
+		Template t = templateRes.findByIdAndOrgi(template, super.getOrgi(request));
+		map.addAttribute("eltemplet", t);
 		if (!StringUtils.isBlank(parentid)) {
 			ReportFilter filter = new ReportFilter();
 			filter.setCode(MainUtils.genID());
@@ -248,11 +233,11 @@ public class ReportDesignController extends Handler {
 			filter.setDataname(t.getName());
 			filter.setTitle(t.getName());
 			filter.setFiltertype("report");
-	    	filter.setFuntype("filter");
+			filter.setFuntype("filter");
 			filter.setFiltertemplet(template);
 			filter.setModelid(mid);
 			filter.setModeltype(t.getCode());
-			
+
 			filter.setConvalue(MainContext.FilterConValueType.INPUT.toString());
 			filter.setValuefiltertype(MainContext.FilterValuefilterType.COMPARE.toString());
 			filter.setComparetype(MainContext.FilterCompType.EQUAL.toString());
@@ -262,9 +247,10 @@ public class ReportDesignController extends Handler {
 		}
 		return request(super.createRequestPageTempletResponse("/apps/business/report/design/filter"));
 	}
+
 	/**
 	 * 删除模板组件
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @param id
@@ -277,7 +263,7 @@ public class ReportDesignController extends Handler {
 		if (model != null) {
 			List<ReportModel> childsList = reportModelRes.findByParentidAndOrgi(model.getId(), super.getOrgi(request));
 			if (!childsList.isEmpty()) {
-				reportModelRes.delete(childsList);
+				reportModelRes.deleteAll(childsList);
 			}
 			reportModelRes.delete(model);
 		}
@@ -286,7 +272,7 @@ public class ReportDesignController extends Handler {
 
 	/**
 	 * 组件设计
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @param id
@@ -295,29 +281,29 @@ public class ReportDesignController extends Handler {
 	 */
 	@RequestMapping("/modeldesign")
 	@Menu(type = "report", subtype = "reportdesign")
-	public ModelAndView modeldesign(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String tabid , HashMap<String,String> semap)
+	public ModelAndView modeldesign(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String tabid, HashMap<String, String> semap)
 			throws Exception {
 		List<SysDic> tpDicList = Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_DIC);
 		for (SysDic sysDic : tpDicList) {
-			 if (sysDic.getCode().equals("report")) {
+			if (sysDic.getCode().equals("report")) {
 				map.addAttribute("reportList",
 						templateRes.findByTemplettypeAndOrgi(sysDic.getId(), super.getOrgi(request)));
-			 }
+			}
 		}
-		
+
 		ReportModel model = this.getModel(id, super.getOrgi(request));
 		map.addAttribute("reportModel", model);
 		map.addAttribute("element", model);
 		if (model != null && !StringUtils.isBlank(model.getPublishedcubeid())) {
-			PublishedCube cube = publishedCubeRepository.findOne(model.getPublishedcubeid());
+			PublishedCube cube = publishedCubeRepository.findById(model.getPublishedcubeid());
 			map.addAttribute("cube", cube);
 			if (canGetReportData(model, cube.getCube())) {
-				ReportData reportData = null ;
+				ReportData reportData = null;
 				try {
-					reportData = reportCubeService.getReportData(model, cube.getCube(), request, true,semap) ;
-					map.addAttribute("reportData",reportData);
-				}catch(Exception ex) {
-					map.addAttribute("msg",(ExceptionUtils.getMessage(ex).replaceAll("\r\n","") + ExceptionUtils.getRootCauseMessage(ex)).replaceAll("\"", "'"));
+					reportData = reportCubeService.getReportData(model, cube.getCube(), request, true, semap);
+					map.addAttribute("reportData", reportData);
+				} catch (Exception ex) {
+					map.addAttribute("msg", (ExceptionUtils.getMessage(ex).replaceAll("\r\n", "") + ExceptionUtils.getRootCauseMessage(ex)).replaceAll("\"", "'"));
 				}
 			}
 			map.addAttribute("eltemplet", templateRes.findByIdAndOrgi(model.getTempletid(), super.getOrgi(request)));
@@ -325,10 +311,12 @@ public class ReportDesignController extends Handler {
 		map.addAttribute("tabid", tabid);
 		return request(super.createRequestPageTempletResponse("/apps/business/report/design/modeldesign"));
 	}
-	private boolean canGetReportData(ReportModel model,Cube cube) {
+
+	private boolean canGetReportData(ReportModel model, Cube cube) {
 		return !model.getProperties().isEmpty() || !model.getColproperties().isEmpty() || !model.getMeasures().isEmpty();
 	}
-	private ReportModel getModel(String id,String orgi) {
+
+	private ReportModel getModel(String id, String orgi) {
 		ReportModel model = reportModelRes.findByIdAndOrgi(id, orgi);
 		if (model != null) {
 			model.setProperties(
@@ -338,9 +326,9 @@ public class ReportDesignController extends Handler {
 			model.setMeasures(
 					columnPropertiesRepository.findByModelidAndCurOrderBySortindexAsc(model.getId(), "measure"));
 			List<ReportFilter> listFilters = reportFilterRepository.findByModelidOrderBySortindexAsc(model.getId());
-			if(!listFilters.isEmpty()) {
-				for(ReportFilter rf:listFilters) {
-					if(!StringUtils.isBlank(rf.getCascadeid())) {
+			if (!listFilters.isEmpty()) {
+				for (ReportFilter rf : listFilters) {
+					if (!StringUtils.isBlank(rf.getCascadeid())) {
 						rf.setChildFilter(reportFilterRepository.findByIdAndOrgi(rf.getCascadeid(), orgi));
 					}
 				}
@@ -352,7 +340,7 @@ public class ReportDesignController extends Handler {
 
 	/**
 	 * 选择模型
-	 * 
+	 *
 	 * @param request
 	 * @return
 	 * @throws Exception
@@ -368,12 +356,10 @@ public class ReportDesignController extends Handler {
 		ReportModel model = this.getModel(mid, super.getOrgi(request));
 		if (!StringUtils.isBlank(cubeid)) {
 			model.setPublishedcubeid(cubeid);
-			if(model!=null) {
-				columnPropertiesRepository.delete(model.getProperties());
-				columnPropertiesRepository.delete(model.getColproperties());
-				columnPropertiesRepository.delete(model.getMeasures());
-				reportFilterRepository.delete(model.getFilters());
-			}
+			columnPropertiesRepository.deleteAll(model.getProperties());
+			columnPropertiesRepository.deleteAll(model.getColproperties());
+			columnPropertiesRepository.deleteAll(model.getMeasures());
+			reportFilterRepository.deleteAll(model.getFilters());
 		}
 		reportModelRes.save(model);
 		map.put("reportModel", model);
@@ -383,8 +369,8 @@ public class ReportDesignController extends Handler {
 
 	@RequestMapping("/adddata")
 	@Menu(type = "report", subtype = "reportdesign")
-	public ModelAndView dimensionadd(ModelMap map, HttpServletRequest request, @Valid String cubeid, @Valid String t,@Valid String dtype,
-			@Valid String mid, @Valid String dim, @Valid String tabid) {
+	public ModelAndView dimensionadd(ModelMap map, HttpServletRequest request, @Valid String cubeid, @Valid String t, @Valid String dtype,
+									 @Valid String mid, @Valid String dim, @Valid String tabid) {
 		ModelAndView view = request(
 				super.createRequestPageTempletResponse("/apps/business/report/design/modeldesign/add"));
 		if (!StringUtils.isBlank(cubeid)) {
@@ -395,71 +381,74 @@ public class ReportDesignController extends Handler {
 		ReportModel model = reportModelRes.findByIdAndOrgi(mid, super.getOrgi(request));
 		if (!StringUtils.isBlank(cubeid)) {
 			model.setPublishedcubeid(cubeid);
-        }
+		}
 		map.addAttribute("reportModel", model);
 		map.addAttribute("dim", dim);
 		map.addAttribute("tabid", tabid);
 		map.addAttribute("dtype", dtype);
 		return view;
 	}
+
 	/**
 	 * 添加过滤器
+	 *
 	 * @param map
 	 * @param request
 	 * @return
 	 */
 	@RequestMapping("/filteradd")
 	@Menu(type = "report", subtype = "reportdesign")
-	public ModelAndView filteradd(ModelMap map, HttpServletRequest request, @Valid String cubeid,@Valid String dtype,
-			@Valid String mid) {
+	public ModelAndView filteradd(ModelMap map, HttpServletRequest request, @Valid String cubeid, @Valid String dtype,
+								  @Valid String mid) {
 		ModelAndView view = request(
 				super.createRequestPageTempletResponse("/apps/business/report/design/modeldesign/filteradd"));
 		if (!StringUtils.isBlank(cubeid)) {
 			PublishedCube cube = publishedCubeRepository.findOne(cubeid);
 			map.addAttribute("cube", cube);
 			List<MetadataTable> metadataTable = new ArrayList<>();
-			for(CubeMetadata cm:cube.getCube().getMetadata()) {
-				if("0".equals(cm.getMtype())) {
-					map.addAttribute("table",cm.getTb());
-					map.addAttribute("fieldList",cm.getTb().getTableproperty());
+			for (CubeMetadata cm : cube.getCube().getMetadata()) {
+				if ("0".equals(cm.getMtype())) {
+					map.addAttribute("table", cm.getTb());
+					map.addAttribute("fieldList", cm.getTb().getTableproperty());
 				}
 				metadataTable.add(cm.getTb());
 			}
-			map.addAttribute("fktableList",metadataTable);
+			map.addAttribute("fktableList", metadataTable);
 		}
-		map.addAttribute("sysdicList", sysDicRes.findByParentid("0")) ;
+		map.addAttribute("sysdicList", sysDicRes.findByParentid("0"));
 		map.addAttribute("mid", mid);
 		map.addAttribute("dtype", dtype);
 		return view;
 	}
+
 	/**
 	 * 保存过滤器
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @return
 	 */
 	@RequestMapping("/filtersave")
 	@Menu(type = "report", subtype = "reportdesign")
-	public ModelAndView filterupfiltersavedate(ModelMap map, HttpServletRequest request, @Valid ReportFilter f,@Valid String tbppy) {
+	public ModelAndView filterupfiltersavedate(ModelMap map, HttpServletRequest request, @Valid ReportFilter f, @Valid String tbppy) {
 		String modelId = "";
 		if (f != null) {
-			if(StringUtils.isBlank(f.getCode())) {
+			if (StringUtils.isBlank(f.getCode())) {
 				f.setCode(MainUtils.genID());
 			}
 			f.setOrgi(super.getOrgi(request));
 			f.setCreatetime(new Date());
 			f.setName(f.getTitle());
 			f.setDataname(f.getTitle());
-			if(MainContext.FilterConValueType.AUTO.toString().equals(f.getConvalue()) && MainContext.FilterModelType.SIGSEL.toString().equals(f.getModeltype())) {
+			if (MainContext.FilterConValueType.AUTO.toString().equals(f.getConvalue()) && MainContext.FilterModelType.SIGSEL.toString().equals(f.getModeltype())) {
 				f.setCascadeid(f.getCascadeid());
 				f.setTableproperty(null);
-				if(!StringUtils.isBlank(tbppy)) {
+				if (!StringUtils.isBlank(tbppy)) {
 					TableProperties t = new TableProperties();
 					t.setId(tbppy);
 					f.setTableproperty(t);
 				}
-			}else {
+			} else {
 				f.setCascadeid(null);
 				f.setTableproperty(null);
 			}
@@ -469,18 +458,20 @@ public class ReportDesignController extends Handler {
 		return request(super.createRequestPageTempletResponse(
 				"redirect:/apps/report/design/modeldesign.html?id=" + modelId + "&tabid=filter"));
 	}
+
 	@RequestMapping("/gettableid")
-    @Menu(type = "report" , subtype = "reportdesign")
-    public ModelAndView gettableid(ModelMap map , HttpServletRequest request , @Valid String tableid) {
-    	if(!StringUtils.isBlank(tableid)){
-    		map.put("fktableidList", tablePropertiesRes.findByDbtableid(tableid));
-    	}
-    	return request(super.createRequestPageTempletResponse("/apps/business/report/design/modeldesign/fktableid"));
-    }
+	@Menu(type = "report", subtype = "reportdesign")
+	public ModelAndView gettableid(ModelMap map, HttpServletRequest request, @Valid String tableid) {
+		if (!StringUtils.isBlank(tableid)) {
+			map.put("fktableidList", tablePropertiesRes.findByDbtableid(tableid));
+		}
+		return request(super.createRequestPageTempletResponse("/apps/business/report/design/modeldesign/fktableid"));
+	}
+
 	@RequestMapping("/values")
 	@Menu(type = "report", subtype = "reportdesign")
 	public ModelAndView values(ModelMap map, HttpServletRequest request, @Valid String mid, @Valid String dsid,
-			@Valid String t, @Valid String d,@Valid String dtype, @Valid String m, @Valid String f, @Valid String tabid) throws Exception {
+							   @Valid String t, @Valid String d, @Valid String dtype, @Valid String m, @Valid String f, @Valid String tabid) throws Exception {
 		ReportModel model = this.getModel(mid, super.getOrgi(request));
 		if (!StringUtils.isBlank(dsid)) {
 			model.setPublishedcubeid(dsid);
@@ -507,9 +498,9 @@ public class ReportDesignController extends Handler {
 				}
 				if (!inlist) {
 					ColumnProperties col = new ColumnProperties();
-					if(StringUtils.isBlank(dtype)) {
+					if (StringUtils.isBlank(dtype)) {
 						col.setCur("field"); // 数据结构字段
-					}else{
+					} else {
 						col.setCur(dtype);
 					}
 					col.setId(MainUtils.genID());
@@ -528,14 +519,14 @@ public class ReportDesignController extends Handler {
 						col.setColname(cubeLevel.getColumname());
 						col.setTitle(cubeLevel.getName());
 					}
-					col.setSortindex(("cfield".equals(dtype))?model.getColproperties().size()+1:model.getProperties().size() + 1);
+					col.setSortindex(("cfield".equals(dtype)) ? model.getColproperties().size() + 1 : model.getProperties().size() + 1);
 					col.setOrgi(super.getOrgi(request));
 					col.setModelid(model.getId());
 					columnPropertiesRepository.save(col);
-				}else {
-					if(!StringUtils.isBlank(dtype)) {
+				} else {
+					if (!StringUtils.isBlank(dtype)) {
 						currCp.setCur(dtype);
-						currCp.setSortindex(("cfield".equals(dtype))?model.getColproperties().size()+1:model.getProperties().size() + 1);
+						currCp.setSortindex(("cfield".equals(dtype)) ? model.getColproperties().size() + 1 : model.getProperties().size() + 1);
 						columnPropertiesRepository.save(currCp);
 					}
 				}
@@ -605,12 +596,12 @@ public class ReportDesignController extends Handler {
 							filter.setDataname(cubeLevel.getName());
 							filter.setTitle(cubeLevel.getName());
 							filter.setModelid(mid);
-							
+
 							filter.setModeltype(MainContext.FilterModelType.TEXT.toString());
 							filter.setConvalue(MainContext.FilterConValueType.INPUT.toString());
 							filter.setValuefiltertype(MainContext.FilterValuefilterType.COMPARE.toString());
 							filter.setComparetype(MainContext.FilterCompType.EQUAL.toString());
-							
+
 							if ("select".equalsIgnoreCase(filter.getModeltype())) {
 								filter.setConvalue(MainContext.FilterConValueType.AUTO.toString());
 							}
@@ -620,7 +611,7 @@ public class ReportDesignController extends Handler {
 						filter.setOrgi(super.getOrgi(request));
 						model.getFilters().add(filter);
 						reportFilterRepository.save(filter);
-                    }
+					}
 				}
 			}
 		}
@@ -630,37 +621,36 @@ public class ReportDesignController extends Handler {
 
 	/**
 	 * 异步 请求 报表的模板组件
-	 * 
+	 *
 	 * @param map
 	 * @param request
-	 * @param template
 	 * @param id
 	 * @return
 	 * @throws Exception
 	 */
 	@RequestMapping("/getelement")
 	@Menu(type = "report", subtype = "reportdesign")
-	public ModelAndView getelement(ModelMap map, HttpServletRequest request, @Valid String id,@Valid String publishedid, HashMap<String,String> semap) throws Exception {
+	public ModelAndView getelement(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String publishedid, HashMap<String, String> semap) throws Exception {
 		if (!StringUtils.isBlank(id)) {
-			ReportModel model = this.getModel(id, super.getOrgi(request),publishedid);
-			if(model!=null) {
+			ReportModel model = this.getModel(id, super.getOrgi(request), publishedid);
+			if (model != null) {
 				map.addAttribute("eltemplet", MainUtils.getTemplate(model.getTempletid()));
 			}
 			map.addAttribute("element", model);
 			map.addAttribute("reportModel", model);
-			
+
 			if (model != null && !StringUtils.isBlank(model.getPublishedcubeid())) {
-				List<PublishedCube> cubeList = publishedCubeRepository.findByIdAndOrgi(model.getPublishedcubeid() , super.getOrgi(request));
-				if(cubeList.size() > 0) {
-					PublishedCube cube = cubeList.get(0) ;
+				List<PublishedCube> cubeList = publishedCubeRepository.findByIdAndOrgi(model.getPublishedcubeid(), super.getOrgi(request));
+				if (cubeList.size() > 0) {
+					PublishedCube cube = cubeList.get(0);
 					map.addAttribute("cube", cube);
 					if (canGetReportData(model, cube.getCube())) {
-						ReportData reportData = null ;
+						ReportData reportData = null;
 						try {
-							reportData = reportCubeService.getReportData(model, cube.getCube(), request, true, semap) ;
-							map.addAttribute("reportData",reportData);
-						}catch(Exception ex) {
-							map.addAttribute("msg",ex.getMessage());
+							reportData = reportCubeService.getReportData(model, cube.getCube(), request, true, semap);
+							map.addAttribute("reportData", reportData);
+						} catch (Exception ex) {
+							map.addAttribute("msg", ex.getMessage());
 						}
 					}
 				}
@@ -668,66 +658,68 @@ public class ReportDesignController extends Handler {
 		}
 		return request(super.createRequestPageTempletResponse("/apps/business/report/design/elementajax"));
 	}
-	private ReportModel getModel(String id,String orgi,String publishedid) {
-		if(!StringUtils.isBlank(publishedid)) {
+
+	private ReportModel getModel(String id, String orgi, String publishedid) {
+		if (!StringUtils.isBlank(publishedid)) {
 			PublishedReport publishedReport = publishedReportRes.findById(publishedid);
-			if(publishedReport!=null) {
-				if(publishedReport.getReport()!=null && !publishedReport.getReport().getReportModels().isEmpty()) {
-					for(ReportModel rm :publishedReport.getReport().getReportModels()) {
-						if(rm.getId().equals(id)) {
+			if (publishedReport != null) {
+				if (publishedReport.getReport() != null && !publishedReport.getReport().getReportModels().isEmpty()) {
+					for (ReportModel rm : publishedReport.getReport().getReportModels()) {
+						if (rm.getId().equals(id)) {
 							return rm;
 						}
 					}
 				}
 				return this.getModel(id, orgi);
-			}else{
+			} else {
 				return this.getModel(id, orgi);
 			}
-		}else {
+		} else {
 			return this.getModel(id, orgi);
 		}
-		
+
 	}
 
 	/**
 	 * 编辑报表过滤器
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@RequestMapping("/rfilteredit")
 	@Menu(type = "report", subtype = "reportdesign")
 	public ModelAndView rfilteredit(ModelMap map, HttpServletRequest request, @Valid String fid) throws Exception {
-		map.addAttribute("sysdicList", sysDicRes.findByParentid("0")) ;
+		map.addAttribute("sysdicList", sysDicRes.findByParentid("0"));
 		if (!StringUtils.isBlank(fid)) {
 			ReportFilter rf = reportFilterRepository.findByIdAndOrgi(fid, super.getOrgi(request));
-			if(rf!=null) {
+			if (rf != null) {
 				map.addAttribute("fktableList", metadataRes.findByOrgi(super.getOrgi(request)));
 				map.put("fktableidList", tablePropertiesRes.findByDbtableid(rf.getFktableid()));
-				if(!StringUtils.isBlank(rf.getCascadeid())) {
+				if (!StringUtils.isBlank(rf.getCascadeid())) {
 					ReportFilter rfcas = reportFilterRepository.findByIdAndOrgi(rf.getCascadeid(), super.getOrgi(request));
-					if(rfcas!=null) {
+					if (rfcas != null) {
 						map.put("fktableiddivList", tablePropertiesRes.findByDbtableid(rfcas.getFktableid()));
 					}
 				}
 			}
 			map.addAttribute("reportFilter", rf);
-			map.addAttribute("reportFilters", reportCubeService.fillReportFilterData(reportFilterRepository.findByReportidAndFiltertypeAndOrgi(rf.getReportid(), "report", super.getOrgi(request)),request));
+			map.addAttribute("reportFilters", reportCubeService.fillReportFilterData(reportFilterRepository.findByReportidAndFiltertypeAndOrgi(rf.getReportid(), "report", super.getOrgi(request)), request));
 		}
 		return request(super.createRequestPageTempletResponse("/apps/business/report/design/filteredit"));
 	}
+
 	/**
 	 * 编辑过滤器
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @return
 	 */
 	@RequestMapping("/rfilterupdate")
 	@Menu(type = "report", subtype = "reportdesign")
-	public ModelAndView rfilterupdate(ModelMap map, HttpServletRequest request, @Valid ReportFilter f,@Valid String tbppy) {
+	public ModelAndView rfilterupdate(ModelMap map, HttpServletRequest request, @Valid ReportFilter f, @Valid String tbppy) {
 		String reportId = "";
 		if (!StringUtils.isBlank(f.getId())) {
 			ReportFilter rf = reportFilterRepository.findByIdAndOrgi(f.getId(), super.getOrgi(request));
@@ -744,26 +736,26 @@ public class ReportDesignController extends Handler {
 				rf.setEndvalue(f.getEndvalue());
 				rf.setFormatstr(f.getFormatstr());
 				rf.setMustvalue(f.getMustvalue());
-				
+
 				rf.setTableid(f.getTableid());
 				rf.setFieldid(f.getFieldid());
 				rf.setFktableid(f.getFktableid());
 				rf.setFkfieldid(f.getFkfieldid());
 				rf.setFilterfieldid(f.getFilterfieldid());
-				
-				if(MainContext.FilterConValueType.AUTO.toString().equals(f.getConvalue()) && MainContext.FilterModelType.SIGSEL.toString().equals(f.getModeltype())) {
+
+				if (MainContext.FilterConValueType.AUTO.toString().equals(f.getConvalue()) && MainContext.FilterModelType.SIGSEL.toString().equals(f.getModeltype())) {
 					rf.setCascadeid(f.getCascadeid());
 					rf.setTableproperty(null);
 					rf.setIsdic(f.isIsdic());
 					rf.setDiccode(f.getDiccode());
 					rf.setKeyfield(f.getKeyfield());
 					rf.setValuefield(f.getValuefield());
-					if(!StringUtils.isBlank(tbppy)) {
+					if (!StringUtils.isBlank(tbppy)) {
 						TableProperties t = new TableProperties();
 						t.setId(tbppy);
 						rf.setTableproperty(t);
 					}
-				}else {
+				} else {
 					rf.setCascadeid(null);
 					rf.setTableproperty(null);
 					rf.setIsdic(false);
@@ -777,9 +769,10 @@ public class ReportDesignController extends Handler {
 		return request(super.createRequestPageTempletResponse(
 				"redirect:/apps/report/design/index.html?id=" + reportId));
 	}
+
 	/**
 	 * 编辑模型过滤器
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @return
@@ -787,28 +780,28 @@ public class ReportDesignController extends Handler {
 	@RequestMapping("/filteredit")
 	@Menu(type = "report", subtype = "reportdesign")
 	public ModelAndView filteredit(ModelMap map, HttpServletRequest request, @Valid String fid) {
-		map.addAttribute("sysdicList", sysDicRes.findByParentid("0")) ;
+		map.addAttribute("sysdicList", sysDicRes.findByParentid("0"));
 		if (!StringUtils.isBlank(fid)) {
 			ReportFilter rf = reportFilterRepository.findByIdAndOrgi(fid, super.getOrgi(request));
-			if(rf!=null) {
+			if (rf != null) {
 				if (!StringUtils.isBlank(rf.getCubeid())) {
 					PublishedCube cube = publishedCubeRepository.findOne(rf.getCubeid());
 					map.addAttribute("cube", cube);
 					List<MetadataTable> metadataTable = new ArrayList<>();
-					for(CubeMetadata cm:cube.getCube().getMetadata()) {
-						if("0".equals(cm.getMtype())) {
-							map.addAttribute("table",cm.getTb());
-							map.addAttribute("fieldList",cm.getTb().getTableproperty());
+					for (CubeMetadata cm : cube.getCube().getMetadata()) {
+						if ("0".equals(cm.getMtype())) {
+							map.addAttribute("table", cm.getTb());
+							map.addAttribute("fieldList", cm.getTb().getTableproperty());
 						}
 						metadataTable.add(cm.getTb());
 					}
-					if(!StringUtils.isBlank(rf.getCascadeid())) {
+					if (!StringUtils.isBlank(rf.getCascadeid())) {
 						ReportFilter rfcas = reportFilterRepository.findByIdAndOrgi(rf.getCascadeid(), super.getOrgi(request));
-						if(rfcas!=null) {
+						if (rfcas != null) {
 							map.put("fktableiddivList", tablePropertiesRes.findByDbtableid(rfcas.getFktableid()));
 						}
 					}
-					map.addAttribute("fktableList",metadataTable);
+					map.addAttribute("fktableList", metadataTable);
 					map.put("fktableidList", tablePropertiesRes.findByDbtableid(rf.getFktableid()));
 				}
 				ReportModel model = this.getModel(rf.getModelid(), super.getOrgi(request));
@@ -818,16 +811,17 @@ public class ReportDesignController extends Handler {
 		}
 		return request(super.createRequestPageTempletResponse("/apps/business/report/design/modeldesign/filteredit"));
 	}
+
 	/**
 	 * 编辑过滤器
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @return
 	 */
 	@RequestMapping("/filterupdate")
 	@Menu(type = "report", subtype = "reportdesign")
-	public ModelAndView filterupdate(ModelMap map, HttpServletRequest request, @Valid ReportFilter f,@Valid String tbppy) {
+	public ModelAndView filterupdate(ModelMap map, HttpServletRequest request, @Valid ReportFilter f, @Valid String tbppy) {
 		String modelId = "";
 		if (!StringUtils.isBlank(f.getId())) {
 			ReportFilter rf = reportFilterRepository.findByIdAndOrgi(f.getId(), super.getOrgi(request));
@@ -844,26 +838,26 @@ public class ReportDesignController extends Handler {
 				rf.setEndvalue(f.getEndvalue());
 				rf.setFormatstr(f.getFormatstr());
 				rf.setMustvalue(f.getMustvalue());
-				
+
 				rf.setTableid(f.getTableid());
 				rf.setFieldid(f.getFieldid());
 				rf.setFktableid(f.getFktableid());
 				rf.setFkfieldid(f.getFkfieldid());
 				rf.setFilterfieldid(f.getFilterfieldid());
-				
-				if(MainContext.FilterConValueType.AUTO.toString().equals(f.getConvalue()) && MainContext.FilterModelType.SIGSEL.toString().equals(f.getModeltype())) {
+
+				if (MainContext.FilterConValueType.AUTO.toString().equals(f.getConvalue()) && MainContext.FilterModelType.SIGSEL.toString().equals(f.getModeltype())) {
 					rf.setCascadeid(f.getCascadeid());
 					rf.setTableproperty(null);
 					rf.setIsdic(f.isIsdic());
 					rf.setDiccode(f.getDiccode());
 					rf.setKeyfield(f.getKeyfield());
 					rf.setValuefield(f.getValuefield());
-					if(!StringUtils.isBlank(tbppy)) {
+					if (!StringUtils.isBlank(tbppy)) {
 						TableProperties t = new TableProperties();
 						t.setId(tbppy);
 						rf.setTableproperty(t);
 					}
-				}else {
+				} else {
 					rf.setCascadeid(null);
 					rf.setTableproperty(null);
 					rf.setIsdic(false);
@@ -877,26 +871,28 @@ public class ReportDesignController extends Handler {
 		return request(super.createRequestPageTempletResponse(
 				"redirect:/apps/report/design/modeldesign.html?id=" + modelId + "&tabid=filter"));
 	}
-	 @RequestMapping("/fktableid")
-	    @Menu(type = "report" , subtype = "reportdesign" , admin= true)
-	    public ModelAndView fktableid(ModelMap map , HttpServletRequest request , @Valid String fid,@Valid String fkId) {
-		 if (!StringUtils.isBlank(fid)) {
-				ReportFilter rf = reportFilterRepository.findByIdAndOrgi(fid, super.getOrgi(request));
-				if(rf!=null) {
-					if(!StringUtils.isBlank(fkId)) {
-						ReportFilter rfcas = reportFilterRepository.findByIdAndOrgi(fkId, super.getOrgi(request));
-						if(rfcas!=null) {
-							map.put("fktableiddivList", tablePropertiesRes.findByDbtableid(rfcas.getFktableid()));
-						}
+
+	@RequestMapping("/fktableid")
+	@Menu(type = "report", subtype = "reportdesign", admin = true)
+	public ModelAndView fktableid(ModelMap map, HttpServletRequest request, @Valid String fid, @Valid String fkId) {
+		if (!StringUtils.isBlank(fid)) {
+			ReportFilter rf = reportFilterRepository.findByIdAndOrgi(fid, super.getOrgi(request));
+			if (rf != null) {
+				if (!StringUtils.isBlank(fkId)) {
+					ReportFilter rfcas = reportFilterRepository.findByIdAndOrgi(fkId, super.getOrgi(request));
+					if (rfcas != null) {
+						map.put("fktableiddivList", tablePropertiesRes.findByDbtableid(rfcas.getFktableid()));
 					}
 				}
-				map.addAttribute("reportFilter", rf);
 			}
-	    	return request(super.createRequestPageTempletResponse("/apps/business/report/design/modeldesign/fktableiddiv"));
-	    }
+			map.addAttribute("reportFilter", rf);
+		}
+		return request(super.createRequestPageTempletResponse("/apps/business/report/design/modeldesign/fktableiddiv"));
+	}
+
 	/**
 	 * 编辑过滤器
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @return
@@ -915,9 +911,10 @@ public class ReportDesignController extends Handler {
 		return request(super.createRequestPageTempletResponse(
 				"redirect:/apps/report/design/modeldesign.html?id=" + modelId + "&tabid=filter"));
 	}
+
 	/**
 	 * 编辑过滤器
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @return
@@ -936,35 +933,36 @@ public class ReportDesignController extends Handler {
 		return request(super.createRequestPageTempletResponse(
 				"redirect:/apps/report/design/index.html?id=" + reportId));
 	}
+
 	/**
 	 * 排序
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @return
 	 */
 	@RequestMapping("/sort")
 	@Menu(type = "report", subtype = "reportdesign")
-	public ModelAndView sort(ModelMap map, HttpServletRequest request,@Valid String modelId,@Valid String type, @Valid String[] sort, @Valid String[] colsort, @Valid String[] rowsort) {
+	public ModelAndView sort(ModelMap map, HttpServletRequest request, @Valid String modelId, @Valid String type, @Valid String[] sort, @Valid String[] colsort, @Valid String[] rowsort) {
 		String tabid = "data";
 		if (!StringUtils.isBlank(type)) {
-			if("dim".equals(type) || "measure".equals(type)) {
-				if(sort!=null && sort.length > 0 ) {
+			if ("dim".equals(type) || "measure".equals(type)) {
+				if (sort != null && sort.length > 0) {
 					int index = 1;
-					for(String id:sort) {
-						ColumnProperties col = columnPropertiesRepository.findByIdAndOrgi(id,super.getOrgi(request));
-						if(col!=null) {
+					for (String id : sort) {
+						ColumnProperties col = columnPropertiesRepository.findByIdAndOrgi(id, super.getOrgi(request));
+						if (col != null) {
 							col.setSortindex(index);
 							columnPropertiesRepository.save(col);
 							index++;
 						}
 					}
 				}
-				if(colsort!=null && colsort.length > 0 ) {
+				if (colsort != null && colsort.length > 0) {
 					int index = 1;
-					for(String id:colsort) {
-						ColumnProperties col = columnPropertiesRepository.findByIdAndOrgi(id,super.getOrgi(request));
-						if(col!=null) {
+					for (String id : colsort) {
+						ColumnProperties col = columnPropertiesRepository.findByIdAndOrgi(id, super.getOrgi(request));
+						if (col != null) {
 							col.setSortindex(index);
 							col.setCur("cfield");
 							columnPropertiesRepository.save(col);
@@ -972,11 +970,11 @@ public class ReportDesignController extends Handler {
 						}
 					}
 				}
-				if(rowsort!=null && rowsort.length > 0 ) {
+				if (rowsort != null && rowsort.length > 0) {
 					int index = 1;
-					for(String id:rowsort) {
-						ColumnProperties col = columnPropertiesRepository.findByIdAndOrgi(id,super.getOrgi(request));
-						if(col!=null) {
+					for (String id : rowsort) {
+						ColumnProperties col = columnPropertiesRepository.findByIdAndOrgi(id, super.getOrgi(request));
+						if (col != null) {
 							col.setSortindex(index);
 							col.setCur("field");
 							columnPropertiesRepository.save(col);
@@ -984,13 +982,13 @@ public class ReportDesignController extends Handler {
 						}
 					}
 				}
-			}else {
+			} else {
 				tabid = "filter";
-				if(sort!=null && sort.length > 0 ) {
+				if (sort != null && sort.length > 0) {
 					int index = 1;
-					for(String id:sort) {
-						ReportFilter rf = reportFilterRepository.findByIdAndOrgi(id,super.getOrgi(request));
-						if(rf!=null) {
+					for (String id : sort) {
+						ReportFilter rf = reportFilterRepository.findByIdAndOrgi(id, super.getOrgi(request));
+						if (rf != null) {
 							rf.setSortindex(index);
 							reportFilterRepository.save(rf);
 							index++;
@@ -1000,12 +998,12 @@ public class ReportDesignController extends Handler {
 			}
 		}
 		return request(super.createRequestPageTempletResponse(
-				"redirect:/apps/report/design/modeldesign.html?id=" + modelId + "&tabid="+tabid));
+				"redirect:/apps/report/design/modeldesign.html?id=" + modelId + "&tabid=" + tabid));
 	}
-	
+
 	/**
 	 * 移除维度或指标
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @return
@@ -1024,10 +1022,10 @@ public class ReportDesignController extends Handler {
 		return request(super.createRequestPageTempletResponse(
 				"redirect:/apps/report/design/modeldesign.html?id=" + modelId + "&tabid=data"));
 	}
-	
+
 	/**
 	 * 修改指标
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @return
@@ -1038,27 +1036,27 @@ public class ReportDesignController extends Handler {
 		if (!StringUtils.isBlank(id)) {
 			ColumnProperties col = columnPropertiesRepository.findByIdAndOrgi(id, super.getOrgi(request));
 			if (col != null) {
-				map.put("col", col) ;
+				map.put("col", col);
 			}
 		}
 		return request(super.createRequestPageTempletResponse("/apps/business/report/design/modeldesign/measureedit"));
 	}
-	
+
 	/**
 	 * 保存指标
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @return
 	 */
 	@RequestMapping("/columnupdate")
 	@Menu(type = "report", subtype = "reportdesign")
-	public ModelAndView columnupdte(ModelMap map, HttpServletRequest request, @Valid String id,@Valid String title, @Valid String mid) {
+	public ModelAndView columnupdte(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String title, @Valid String mid) {
 		if (!StringUtils.isBlank(id) && !StringUtils.isBlank(title)) {
 			ColumnProperties col = columnPropertiesRepository.findByIdAndOrgi(id, super.getOrgi(request));
 			if (col != null) {
 				col.setTitle(title);
-				columnPropertiesRepository.save(col) ;
+				columnPropertiesRepository.save(col);
 			}
 		}
 		return request(super.createRequestPageTempletResponse(
@@ -1075,47 +1073,47 @@ public class ReportDesignController extends Handler {
 			ChartProperties oldChartppy = model.getChartProperties();
 			oldChartppy.setChartype(tp.getCharttype());
 			Base64 base64 = new Base64();
-			model.setChartcontent(base64.encodeToString(MainUtils.toBytes(oldChartppy))) ;
+			model.setChartcontent(base64.encodeToString(MainUtils.toBytes(oldChartppy)));
 			reportModelRes.save(model);
 		}
 		return request(super.createRequestPageTempletResponse(
 				"redirect:/apps/report/design/modeldesign.html?id=" + model.getId() + "&tabid=data"));
 	}
-	
+
 	@RequestMapping("/changechartppy")
 	@Menu(type = "report", subtype = "reportdesign")
-	public ModelAndView changechartppy(ModelMap map,HttpServletRequest request, @Valid ReportModel reportModel, @Valid ChartProperties chartProperties,  HashMap<String,String> semap) throws Exception {
+	public ModelAndView changechartppy(ModelMap map, HttpServletRequest request, @Valid ReportModel reportModel, @Valid ChartProperties chartProperties, HashMap<String, String> semap) throws Exception {
 		ReportModel model = this.getModel(reportModel.getId(), super.getOrgi(request));
-		if (null!=model) {
+		if (null != model) {
 			model.setExchangerw(reportModel.isExchangerw());
-			model.setIsloadfulldata("true".equals(reportModel.getIsloadfulldata())?"true":"false");
+			model.setIsloadfulldata("true".equals(reportModel.getIsloadfulldata()) ? "true" : "false");
 			model.setPagesize(reportModel.getPagesize());
 			ChartProperties oldChartppy = model.getChartProperties();
-			oldChartppy = oldChartppy==null? new ChartProperties():oldChartppy;
+			oldChartppy = oldChartppy == null ? new ChartProperties() : oldChartppy;
 			oldChartppy.setLegen(chartProperties.isLegen());
 			oldChartppy.setLegenalign(chartProperties.getLegenalign());
 			oldChartppy.setDataview(chartProperties.isDataview());
-			oldChartppy.setFormat(StringUtils.isBlank(chartProperties.getFormat())?"val":chartProperties.getFormat());
+			oldChartppy.setFormat(StringUtils.isBlank(chartProperties.getFormat()) ? "val" : chartProperties.getFormat());
 			Base64 base64 = new Base64();
-			model.setChartcontent(base64.encodeToString(MainUtils.toBytes(oldChartppy))) ;
+			model.setChartcontent(base64.encodeToString(MainUtils.toBytes(oldChartppy)));
 			reportModelRes.save(model);
 		}
 		map.addAttribute("eltemplet", templateRes.findByIdAndOrgi(model.getTempletid(), super.getOrgi(request)));
 		map.addAttribute("element", model);
 		map.addAttribute("reportModel", model);
-		if (model != null && !StringUtils.isBlank(model.getPublishedcubeid())) {
+		if (!StringUtils.isBlank(model.getPublishedcubeid())) {
 			PublishedCube cube = publishedCubeRepository.findOne(model.getPublishedcubeid());
 			map.addAttribute("cube", cube);
 			if (!model.getMeasures().isEmpty()) {
-				map.addAttribute("reportData",reportCubeService.getReportData(model, cube.getCube(), request, true, semap));
+				map.addAttribute("reportData", reportCubeService.getReportData(model, cube.getCube(), request, true, semap));
 			}
 		}
 		return request(super.createRequestPageTempletResponse("/apps/business/report/design/elementajax"));
 	}
-	
+
 	/**
 	 * 组件设计
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @param id
@@ -1124,55 +1122,55 @@ public class ReportDesignController extends Handler {
 	 */
 	@RequestMapping("/filtervalchange")
 	@Menu(type = "report", subtype = "reportdesign")
-	public ModelAndView filtervalchange(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String fid,@Valid String publishedid)
+	public ModelAndView filtervalchange(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String fid, @Valid String publishedid)
 			throws Exception {
-		if(StringUtils.isBlank(publishedid)) {
+		if (StringUtils.isBlank(publishedid)) {
 			ReportFilter filter = reportFilterRepository.findByIdAndOrgi(fid, super.getOrgi(request));
-			if(filter!=null) {
-				if("report".equals(filter.getFiltertype())) {
+			if (filter != null) {
+				if ("report".equals(filter.getFiltertype())) {
 					ReportModel model = new ReportModel();
 					List<ReportFilter> reportFilterList = reportFilterRepository.findByReportidAndFiltertypeAndOrgi(filter.getReportid(), "report", super.getOrgi(request));
 					model.setFilters(reportFilterList);
-					map.addAttribute("filter", reportCubeService.processFilter(model, filter,null, request));
-				}else {
+					map.addAttribute("filter", reportCubeService.processFilter(model, filter, null, request));
+				} else {
 					ReportModel model = this.getModel(id, super.getOrgi(request));
-					if (model!=null && !StringUtils.isBlank(fid) && !StringUtils.isBlank(model.getPublishedcubeid())) {
+					if (model != null && !StringUtils.isBlank(fid) && !StringUtils.isBlank(model.getPublishedcubeid())) {
 						PublishedCube cube = publishedCubeRepository.findOne(model.getPublishedcubeid());
 						map.addAttribute("filter", reportCubeService.processFilter(model, filter, cube.getCube(), request));
 					}
 				}
 			}
-		}else {
+		} else {
 			PublishedReport publishedReport = publishedReportRes.findById(publishedid);
-			if(publishedReport!=null) {
+			if (publishedReport != null) {
 				map.addAttribute("publishedReport", publishedReport);
-				ReportFilter filter =  null;
-				for(ReportFilter f : publishedReport.getReport().getReportFilters()) {
-					if(!StringUtils.isBlank(fid) && f.getId().equals(fid)) {
+				ReportFilter filter = null;
+				for (ReportFilter f : publishedReport.getReport().getReportFilters()) {
+					if (!StringUtils.isBlank(fid) && f.getId().equals(fid)) {
 						filter = f;
 						break;
 					}
 				}
 				ReportModel model = null;
-				for(ReportModel rm:publishedReport.getReport().getReportModels()) {
-					if(id.equals(rm.getId())) {
+				for (ReportModel rm : publishedReport.getReport().getReportModels()) {
+					if (id.equals(rm.getId())) {
 						model = rm;
 					}
-					for(ReportFilter f:rm.getFilters()) {
-						if(!StringUtils.isBlank(fid) && f.getId().equals(fid)) {
+					for (ReportFilter f : rm.getFilters()) {
+						if (!StringUtils.isBlank(fid) && f.getId().equals(fid)) {
 							filter = f;
 							break;
 						}
 					}
 				}
-				if(filter!=null) {
-					if("report".equals(filter.getFiltertype())) {
+				if (filter != null) {
+					if ("report".equals(filter.getFiltertype())) {
 						ReportModel modelr = new ReportModel();
 						List<ReportFilter> reportFilterList = publishedReport.getReport().getReportFilters();
 						modelr.setFilters(reportFilterList);
-						map.addAttribute("filter", reportCubeService.processFilter(modelr, filter,null, request));
-					}else {
-						if (model!=null && !StringUtils.isBlank(fid) && !StringUtils.isBlank(model.getPublishedcubeid())) {
+						map.addAttribute("filter", reportCubeService.processFilter(modelr, filter, null, request));
+					} else {
+						if (model != null && !StringUtils.isBlank(fid) && !StringUtils.isBlank(model.getPublishedcubeid())) {
 							PublishedCube cube = publishedCubeRepository.findOne(model.getPublishedcubeid());
 							map.addAttribute("filter", reportCubeService.processFilter(model, filter, cube.getCube(), request));
 						}
@@ -1180,92 +1178,96 @@ public class ReportDesignController extends Handler {
 				}
 			}
 		}
-		
+
 		return request(super.createRequestPageTempletResponse("/apps/business/report/design/modeldesign/filter"));
 	}
+
 	@RequestMapping("/editmodelname")
 	@Menu(type = "report", subtype = "reportdesign")
-	public ModelAndView editmodelname(ModelMap map,HttpServletRequest request, @Valid String id, @Valid String name) {
+	public ModelAndView editmodelname(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String name) {
 		map.addAttribute("id", id);
 		map.addAttribute("name", name);
 		return request(super.createRequestPageTempletResponse(
 				"/apps/business/report/design/modeldesign/editmodelname"));
 	}
+
 	@RequestMapping("/updatemodelname")
 	@Menu(type = "report", subtype = "reportdesign")
-	public ModelAndView updatemodelname(ModelMap map,HttpServletRequest request,@Valid String name, @Valid String id) {
+	public ModelAndView updatemodelname(ModelMap map, HttpServletRequest request, @Valid String name, @Valid String id) {
 		ReportModel model = this.getModel(id, super.getOrgi(request));
-		if(!StringUtils.isBlank(name)) {
+		if (!StringUtils.isBlank(name)) {
 			model.setName(name);
 			reportModelRes.save(model);
 		}
 		return request(super.createRequestPageTempletResponse(
 				"redirect:/apps/report/design/modeldesign.html?id=" + model.getId() + "&tabid=data"));
 	}
+
 	/**
 	 * 报表发布页面加载
+	 *
 	 * @param request
-	 * @param cubeid
 	 * @return
 	 * @throws Exception
 	 */
-    @RequestMapping("/reportpublish")
-    @Menu(type = "report" , subtype = "reportdesign" )
-    public ModelAndView reportpublish(ModelMap map ,HttpServletRequest request , @Valid String reportid) throws Exception{  
+	@RequestMapping("/reportpublish")
+	@Menu(type = "report", subtype = "reportdesign")
+	public ModelAndView reportpublish(ModelMap map, HttpServletRequest request, @Valid String reportid) throws Exception {
 		map.put("reportid", reportid);
 		return request(super.createRequestPageTempletResponse("/apps/business/report/reportpublish"));
-    }
-	
+	}
+
 	/**
 	 * 报表发布
+	 *
 	 * @param request
 	 * @param reportid
 	 * @return
 	 * @throws Exception
 	 */
-    @RequestMapping("/reportpublished")
-    @Menu(type = "report" , subtype = "reportdesign" )
-    public ModelAndView reportpublished(ModelMap map ,HttpServletRequest request , @Valid String reportid,@Valid String isRecover) throws Exception{  
-    	User user = super.getUser(request);
-    	if(!StringUtils.isBlank(reportid)) {
-    		Report report =  reportRes.findByIdAndOrgi(reportid, super.getOrgi(request));
-    		List<ReportModel> reportModels =  reportModelRes.findByOrgiAndReportid(super.getOrgi(request), reportid);
-    		
-    		for(ReportModel r:reportModels){
-    			getModel(r.getId(), super.getOrgi(request));
-    		}
-    		report.setReportModels(reportModels);
-    		List<ReportFilter> reportFilters = reportCubeService.fillReportFilterData(reportFilterRepository.findByReportidAndFiltertypeAndOrgi(reportid, "report", super.getOrgi(request)),request);
-    		report.setReportFilters(reportFilters);
-    		PublishedReport publishedReport  = new PublishedReport();
-    		MainUtils.copyProperties(report, publishedReport, "");
-    		publishedReport.setId(null);
-        	Base64 base64 = new Base64();
-        	publishedReport.setReportcontent(base64.encodeToString(MainUtils.toBytes(report))) ;
-        	publishedReport.setDataid(reportid);
-        	publishedReport.setCreatetime(new Date());
-        	publishedReport.setCreater(user.getId());
-        	List<PublishedReport> pbReportList = publishedReportRes.findByOrgiAndDataidOrderByDataversionDesc(super.getOrgi(request), reportid);
-        	if(!pbReportList.isEmpty()){
-        		int maxVersion = pbReportList.get(0).getDataversion() ;
-        		if("yes".equals(isRecover)){
-        			publishedReport.setId(pbReportList.get(0).getId()) ;
-        			publishedReport.setDataversion(pbReportList.get(0).getDataversion());
-        			publishedReportRes.save(publishedReport);
-            	}else if("no".equals(isRecover)){
-            		publishedReport.setDataversion(maxVersion+1) ;
-            		publishedReportRes.save(publishedReport);
-            	}else{
-            		publishedReportRes.delete(pbReportList);
-            		publishedReport.setDataversion(1) ;
-            		publishedReportRes.save(publishedReport);
-            	}
-        	}else{
-        		publishedReport.setDataversion(1) ;
-        		publishedReportRes.save(publishedReport);
-        	}
-        	return request(super.createRequestPageTempletResponse("redirect:/apps/report/index.html?dicid="+publishedReport.getDicid()));
-    	}
-    	return request(super.createRequestPageTempletResponse("redirect:/apps/report/index.html"));
-    }
+	@RequestMapping("/reportpublished")
+	@Menu(type = "report", subtype = "reportdesign")
+	public ModelAndView reportpublished(ModelMap map, HttpServletRequest request, @Valid String reportid, @Valid String isRecover) throws Exception {
+		User user = super.getUser(request);
+		if (!StringUtils.isBlank(reportid)) {
+			Report report = reportRes.findByIdAndOrgi(reportid, super.getOrgi(request));
+			List<ReportModel> reportModels = reportModelRes.findByOrgiAndReportid(super.getOrgi(request), reportid);
+
+			for (ReportModel r : reportModels) {
+				getModel(r.getId(), super.getOrgi(request));
+			}
+			report.setReportModels(reportModels);
+			List<ReportFilter> reportFilters = reportCubeService.fillReportFilterData(reportFilterRepository.findByReportidAndFiltertypeAndOrgi(reportid, "report", super.getOrgi(request)), request);
+			report.setReportFilters(reportFilters);
+			PublishedReport publishedReport = new PublishedReport();
+			MainUtils.copyProperties(report, publishedReport, "");
+			publishedReport.setId(null);
+			Base64 base64 = new Base64();
+			publishedReport.setReportcontent(base64.encodeToString(MainUtils.toBytes(report)));
+			publishedReport.setDataid(reportid);
+			publishedReport.setCreatetime(new Date());
+			publishedReport.setCreater(user.getId());
+			List<PublishedReport> pbReportList = publishedReportRes.findByOrgiAndDataidOrderByDataversionDesc(super.getOrgi(request), reportid);
+			if (!pbReportList.isEmpty()) {
+				int maxVersion = pbReportList.get(0).getDataversion();
+				if ("yes".equals(isRecover)) {
+					publishedReport.setId(pbReportList.get(0).getId());
+					publishedReport.setDataversion(pbReportList.get(0).getDataversion());
+					publishedReportRes.save(publishedReport);
+				} else if ("no".equals(isRecover)) {
+					publishedReport.setDataversion(maxVersion + 1);
+					publishedReportRes.save(publishedReport);
+				} else {
+					publishedReportRes.deleteAll(pbReportList);
+					publishedReport.setDataversion(1);
+					publishedReportRes.save(publishedReport);
+				}
+			} else {
+				publishedReport.setDataversion(1);
+				publishedReportRes.save(publishedReport);
+			}
+			return request(super.createRequestPageTempletResponse("redirect:/apps/report/index.html?dicid=" + publishedReport.getDicid()));
+		}
+		return request(super.createRequestPageTempletResponse("redirect:/apps/report/index.html"));
+	}
 }

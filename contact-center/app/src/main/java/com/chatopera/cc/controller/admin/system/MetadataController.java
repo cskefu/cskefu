@@ -29,26 +29,26 @@ import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.metadata.DatabaseMetaDataHandler;
 import com.chatopera.cc.util.metadata.UKColumnMetadata;
 import com.chatopera.cc.util.metadata.UKTableMetaData;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
-import org.hibernate.jdbc.Work;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -56,43 +56,39 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin/metadata")
+@RequiredArgsConstructor
 public class MetadataController extends Handler {
 
-    @Autowired
-    private MetadataRepository metadataRes;
-
-    @Autowired
-    private BaseService<?> service;
-
-    @Autowired
-    private SysDicRepository sysDicRes;
-
-    @Autowired
-    private TablePropertiesRepository tablePropertiesRes;
-
     private static final Logger logger = LoggerFactory.getLogger(MetadataController.class);
-
-    @Autowired
+    @NonNull
+    private final MetadataRepository metadataRes;
+    @NonNull
+    private final BaseService<?> service;
+    @NonNull
+    private final SysDicRepository sysDicRes;
+    @NonNull
+    private final TablePropertiesRepository tablePropertiesRes;
+    @NonNull
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView index(ModelMap map, HttpServletRequest request) throws SQLException {
+    public ModelAndView index(ModelMap map, HttpServletRequest request) {
         map.addAttribute("metadataList", metadataRes.findAll(PageRequest.of(super.getP(request), super.getPs(request))));
         return request(super.createAdminTempletResponse("/admin/system/metadata/index"));
     }
 
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
+    public ModelAndView edit(ModelMap map, @Valid String id) {
         map.addAttribute("metadata", metadataRes.findById(id));
         return request(super.createRequestPageTempletResponse("/admin/system/metadata/edit"));
     }
 
     @RequestMapping("/update")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView update(ModelMap map, HttpServletRequest request, @Valid MetadataTable metadata) throws SQLException {
+    public ModelAndView update(@Valid MetadataTable metadata) {
         MetadataTable table = metadataRes.findById(metadata.getId());
         table.setName(metadata.getName());
         table.setFromdb(metadata.isFromdb());
@@ -104,7 +100,7 @@ public class MetadataController extends Handler {
 
     @RequestMapping("/properties/edit")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView propertiesedit(ModelMap map, HttpServletRequest request, @Valid String id) {
+    public ModelAndView propertiesedit(ModelMap map, @Valid String id) {
         map.addAttribute("tp", tablePropertiesRes.findById(id));
         map.addAttribute("sysdicList", sysDicRes.findByParentid("0"));
         map.addAttribute("dataImplList", Dict.getInstance().getDic("com.dic.data.impl"));
@@ -114,8 +110,9 @@ public class MetadataController extends Handler {
 
     @RequestMapping("/properties/update")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView propertiesupdate(ModelMap map, HttpServletRequest request, @Valid TableProperties tp) throws SQLException {
-        TableProperties tableProperties = tablePropertiesRes.findById(tp.getId());
+    public ModelAndView propertiesupdate(@Valid TableProperties tp) {
+        TableProperties tableProperties = tablePropertiesRes.findById(tp.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Table properties %s not found", tp.getId())));
         tableProperties.setName(tp.getName());
         tableProperties.setSeldata(tp.isSeldata());
         tableProperties.setSeldatacode(tp.getSeldatacode());
@@ -139,7 +136,7 @@ public class MetadataController extends Handler {
 
     @RequestMapping("/delete")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView delete(ModelMap map, HttpServletRequest request, @Valid String id) throws SQLException {
+    public ModelAndView delete(@Valid String id) {
         MetadataTable table = metadataRes.findById(id);
         metadataRes.delete(table);
         return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/index.html"));
@@ -147,33 +144,34 @@ public class MetadataController extends Handler {
 
     @RequestMapping("/batdelete")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView batdelete(ModelMap map, HttpServletRequest request, @Valid String[] ids) throws SQLException {
+    public ModelAndView batdelete(@Valid String[] ids) {
         if (ids != null && ids.length > 0) {
-            metadataRes.delete(metadataRes.findAll(Arrays.asList(ids)));
+            metadataRes.deleteAll(metadataRes.findAllById(Arrays.asList(ids)));
         }
         return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/index.html"));
     }
 
     @RequestMapping("/properties/delete")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView propertiesdelete(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String tbid) throws SQLException {
-        TableProperties prop = tablePropertiesRes.findById(id);
+    public ModelAndView propertiesdelete(@Valid String id, @Valid String tbid) {
+        TableProperties prop = tablePropertiesRes.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Table properties %s not found", id)));
         tablePropertiesRes.delete(prop);
         return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/table.html?id=" + (!StringUtils.isBlank(tbid) ? tbid : prop.getDbtableid())));
     }
 
     @RequestMapping("/properties/batdelete")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView propertiesbatdelete(ModelMap map, HttpServletRequest request, @Valid String[] ids, @Valid String tbid) throws SQLException {
+    public ModelAndView propertiesbatdelete(@Valid String[] ids, @Valid String tbid) {
         if (ids != null && ids.length > 0) {
-            tablePropertiesRes.delete(tablePropertiesRes.findAll(Arrays.asList(ids)));
+            tablePropertiesRes.deleteAll(tablePropertiesRes.findAllById(Arrays.asList(ids)));
         }
         return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/table.html?id=" + tbid));
     }
 
     @RequestMapping("/table")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView table(ModelMap map, HttpServletRequest request, @Valid String id) throws SQLException {
+    public ModelAndView table(ModelMap map, @Valid String id) {
         map.addAttribute("propertiesList", tablePropertiesRes.findByDbtableid(id));
         map.addAttribute("tbid", id);
         map.addAttribute("table", metadataRes.findById(id));
@@ -182,17 +180,15 @@ public class MetadataController extends Handler {
 
     @RequestMapping("/imptb")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView imptb(final ModelMap map, HttpServletRequest request) throws Exception {
+    public ModelAndView imptb(final ModelMap map) {
 
         Session session = (Session) em.getDelegate();
-        session.doWork(new Work() {
-            public void execute(Connection connection) throws SQLException {
-                try {
-                    map.addAttribute("tablesList",
-                            DatabaseMetaDataHandler.getTables(connection));
-                } catch (Exception e) {
-                    logger.error("When import metadata", e);
-                }
+        session.doWork(connection -> {
+            try {
+                map.addAttribute("tablesList",
+                        DatabaseMetaDataHandler.getTables(connection));
+            } catch (Exception e) {
+                logger.error("When import metadata", e);
             }
         });
 
@@ -202,34 +198,32 @@ public class MetadataController extends Handler {
 
     @RequestMapping("/imptbsave")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView imptb(ModelMap map, HttpServletRequest request, final @Valid String[] tables) throws Exception {
+    public ModelAndView imptb(HttpServletRequest request, final @Valid String[] tables) {
         final User user = super.getUser(request);
         if (tables != null && tables.length > 0) {
             Session session = (Session) em.getDelegate();
             session.doWork(
-                    new Work() {
-                        public void execute(Connection connection) throws SQLException {
-                            try {
-                                for (String table : tables) {
-                                    int count = metadataRes.countByTablename(table);
-                                    if (count == 0) {
-                                        MetadataTable metaDataTable = new MetadataTable();
-                                        //当前记录没有被添加过，进行正常添加
-                                        metaDataTable.setTablename(table);
-                                        metaDataTable.setOrgi(user.getOrgi());
-                                        metaDataTable.setId(MainUtils.md5(metaDataTable.getTablename()));
-                                        metaDataTable.setTabledirid("0");
-                                        metaDataTable.setCreater(user.getId());
-                                        metaDataTable.setCreatername(user.getUsername());
-                                        metaDataTable.setName(table);
-                                        metaDataTable.setUpdatetime(new Date());
-                                        metaDataTable.setCreatetime(new Date());
-                                        metadataRes.save(processMetadataTable(DatabaseMetaDataHandler.getTable(connection, metaDataTable.getTablename()), metaDataTable));
-                                    }
+                    connection -> {
+                        try {
+                            for (String table : tables) {
+                                int count = metadataRes.countByTablename(table);
+                                if (count == 0) {
+                                    MetadataTable metaDataTable = new MetadataTable();
+                                    //当前记录没有被添加过，进行正常添加
+                                    metaDataTable.setTablename(table);
+                                    metaDataTable.setOrgi(user.getOrgi());
+                                    metaDataTable.setId(MainUtils.md5(metaDataTable.getTablename()));
+                                    metaDataTable.setTabledirid("0");
+                                    metaDataTable.setCreater(user.getId());
+                                    metaDataTable.setCreatername(user.getUsername());
+                                    metaDataTable.setName(table);
+                                    metaDataTable.setUpdatetime(new Date());
+                                    metaDataTable.setCreatetime(new Date());
+                                    metadataRes.save(processMetadataTable(DatabaseMetaDataHandler.getTable(connection, metaDataTable.getTablename()), metaDataTable));
                                 }
-                            } catch (Exception e) {
-                                logger.error("When import metadata", e);
                             }
+                        } catch (Exception e) {
+                            logger.error("When import metadata", e);
                         }
                     }
             );
@@ -240,7 +234,7 @@ public class MetadataController extends Handler {
     }
 
     private MetadataTable processMetadataTable(UKTableMetaData metaData, MetadataTable table) {
-        table.setTableproperty(new ArrayList<TableProperties>());
+        table.setTableproperty(new ArrayList<>());
         if (metaData != null) {
             for (UKColumnMetadata colum : metaData.getColumnMetadatas()) {
                 TableProperties tablePorperties = new TableProperties(colum.getName().toLowerCase(), colum.getTypeName(), colum.getColumnSize(), metaData.getName().toLowerCase());
@@ -263,7 +257,7 @@ public class MetadataController extends Handler {
 
     public String getDataTypeName(String type) {
         String typeName = "text";
-        if (type.indexOf("varchar") >= 0) {
+        if (type.contains("varchar")) {
             typeName = "text";
         } else if (type.equalsIgnoreCase("date") || type.equalsIgnoreCase("datetime")) {
             typeName = type.toLowerCase();
@@ -275,7 +269,7 @@ public class MetadataController extends Handler {
 
     @RequestMapping("/clean")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView clean(ModelMap map, HttpServletRequest request, @Valid String id) throws SQLException, BeansException, ClassNotFoundException {
+    public ModelAndView clean(@Valid String id) throws BeansException, ClassNotFoundException {
         if (!StringUtils.isBlank(id)) {
             MetadataTable table = metadataRes.findById(id);
             if (table.isFromdb() && !StringUtils.isBlank(table.getListblocktemplet())) {
@@ -295,7 +289,7 @@ public class MetadataController extends Handler {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @RequestMapping("/synctoes")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView synctoes(ModelMap map, HttpServletRequest request, @Valid String id) throws SQLException, BeansException, ClassNotFoundException {
+    public ModelAndView synctoes(@Valid String id) throws BeansException, ClassNotFoundException {
         if (!StringUtils.isBlank(id)) {
             MetadataTable table = metadataRes.findById(id);
             if (table.isFromdb() && !StringUtils.isBlank(table.getListblocktemplet())) {
@@ -309,9 +303,7 @@ public class MetadataController extends Handler {
                             SysDic jpaDic = Dict.getInstance().getDicItem(table.getPreviewtemplet());
                             List dataList = service.list(jpaDic.getCode());
                             List values = new CskefuList();
-                            for (Object object : dataList) {
-                                values.add(object);
-                            }
+                            values.addAll(dataList);
                             if (dataList.size() > 0) {
                                 jpa.save(values);
                             }
@@ -326,7 +318,7 @@ public class MetadataController extends Handler {
     @SuppressWarnings({"rawtypes"})
     @RequestMapping("/synctodb")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView synctodb(ModelMap map, HttpServletRequest request, @Valid String id) throws SQLException, BeansException, ClassNotFoundException {
+    public ModelAndView synctodb(@Valid String id) throws BeansException, ClassNotFoundException {
         if (!StringUtils.isBlank(id)) {
             MetadataTable table = metadataRes.findById(id);
             if (table.isFromdb() && !StringUtils.isBlank(table.getListblocktemplet())) {

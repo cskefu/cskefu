@@ -112,7 +112,7 @@ public class AppCtxRefreshEventListener implements ApplicationListener<ContextRe
                     }
                 }
 
-                /**
+                /*
                  * 加载系统全局配置
                  */
                 SystemConfigRepository systemConfigRes = event.getApplicationContext().getBean(SystemConfigRepository.class);
