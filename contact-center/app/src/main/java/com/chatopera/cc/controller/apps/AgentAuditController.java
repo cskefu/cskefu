@@ -618,7 +618,7 @@ public class AgentAuditController extends Handler {
         payload.put("orgi", orgi);
         ModelAndView view = end(request, agentuserid);
         // 更新或创建黑名单
-        blackEntityProxy.updateOrCreateBlackEntity(blackEntity, logined, userid, orgi, agentserviceid, agentuserid);
+        blackEntityProxy.updateOrCreateBlackEntity(blackEntity, logined, userid, orgi, agentserviceid);
 
         // 创建定时任务 取消拉黑
         brokerPublisher.send(

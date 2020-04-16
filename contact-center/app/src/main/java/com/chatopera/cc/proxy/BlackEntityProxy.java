@@ -18,53 +18,40 @@ package com.chatopera.cc.proxy;
 
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.AgentService;
-import com.chatopera.cc.model.AgentUser;
 import com.chatopera.cc.model.BlackEntity;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.AgentServiceRepository;
-import com.chatopera.cc.persistence.repository.AgentUserRepository;
 import com.chatopera.cc.persistence.repository.BlackListRepository;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @Component
+@RequiredArgsConstructor
 public class BlackEntityProxy {
 
-    @Autowired
-    private BlackListRepository blackListRes;
+    @NonNull
+    private final BlackListRepository blackListRes;
 
-    @Autowired
-    private Cache cache;
+    @NonNull
+    private final Cache cache;
 
-    @Autowired
-    private AgentUserRepository agentUserRepository;
-
-    @Autowired
-    private AgentServiceRepository agentServiceRes;
+    @NonNull
+    private final AgentServiceRepository agentServiceRes;
 
 
     /**
      * 更新或创建黑名单记录
-     *
-     * @param pre
-     * @param owner
-     * @param userid
-     * @param orgi
-     * @param agentserviceid
-     * @param agentuserid
-     * @return
      */
-    public BlackEntity updateOrCreateBlackEntity(
+    public void updateOrCreateBlackEntity(
             final BlackEntity pre,
             final User owner,
             final String userid,
             final String orgi,
-            final String agentserviceid,
-            final String agentuserid) {
+            final String agentserviceid) {
         final BlackEntity blackEntityUpdated = cache.findOneBlackEntityByUserIdAndOrgi(
                 userid, orgi).orElseGet(
                 () -> {
@@ -102,6 +89,5 @@ public class BlackEntityProxy {
 
         blackListRes.save(blackEntityUpdated);
 
-        return blackEntityUpdated;
     }
 }

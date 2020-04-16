@@ -27,55 +27,59 @@ import com.chatopera.cc.socketio.client.NettyClients;
 import com.chatopera.cc.util.SerializeUtil;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 /**
  * 会话监控
  */
 @Component
+@RequiredArgsConstructor
 public class AgentAuditSubscription {
     private final static Logger logger = LoggerFactory.getLogger(AgentAuditSubscription.class);
 
-    @Autowired
-    private Cache cache;
+    @NonNull
+    private final Cache cache;
 
-    @Autowired
-    private AgentAuditProxy agentAuditProxy;
+    @NonNull
+    private final AgentAuditProxy agentAuditProxy;
 
-    @Autowired
-    private AgentUserRepository agentUserRes;
+    @NonNull
+    private final AgentUserRepository agentUserRes;
 
 
     /**
      * 接收坐席会话监控消息
-     *
-     * @param msg
      */
     @JmsListener(destination = Constants.AUDIT_AGENT_MESSAGE, containerFactory = "jmsListenerContainerTopic")
     public void onMessage(final String msg) {
         logger.info("[onMessage] payload {}", msg);
         try {
-            final JsonObject json = new JsonParser().parse(msg).getAsJsonObject();
+            final JsonObject json = JsonParser.parseString(msg).getAsJsonObject();
 
             if (json.has("orgi") && json.has("data") &&
                     json.has("agentUserId") &&
                     json.has("event") && json.has("agentno")) {
 
                 // 查找关联的会话监控信息
+                String agentUserId = json.get("agentUserId").getAsString();
                 final AgentUserAudit agentUserAudit = cache.findOneAgentUserAuditByOrgiAndId(
                         json.get("orgi").getAsString(),
-                        json.get("agentUserId").getAsString()).orElseGet(() -> {
-                    final AgentUser agentUser = agentUserRes.findOne(json.get("agentUserId").getAsString());
-                    if (agentUser != null) {
+                        agentUserId).orElseGet(() -> {
+                    Optional<AgentUser> optional = agentUserRes.findById(agentUserId);
+                    if (optional.isPresent()) {
+                        final AgentUser agentUser = optional.get();
                         return agentAuditProxy.updateAgentUserAudits(agentUser);
                     } else {
                         logger.warn(
-                                "[onMessage] can not find agent user by id {}", json.get("agentUserId").getAsString());
+                                "[onMessage] can not find agent user by id {}", agentUserId);
                     }
                     return null;
                 });
@@ -101,7 +105,7 @@ public class AgentAuditSubscription {
                 } else {
                     logger.warn(
                             "[onMessage] can not resolve agent user audit object for agent user id {}",
-                            json.get("agentUserId").getAsString());
+                            agentUserId);
                 }
             } else {
                 throw new CSKefuException("Invalid payload.");

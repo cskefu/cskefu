@@ -33,20 +33,20 @@ public interface AgentUserRepository extends JpaRepository<AgentUser, String> {
     @Query(value = "SELECT * FROM uk_agentuser WHERE userid = ?1 AND orgi = ?2 ORDER BY createtime DESC LIMIT 1", nativeQuery = true)
     Optional<AgentUser> findOneByUseridAndOrgi(String userid, String orgi);
 
-    @Query(value = "SELECT * FROM uk_agentuser WHERE userid = ?1 LIMIT 1", nativeQuery = true)
-    AgentUser findOneByUserid(final String userid);
+    // @Query(value = "SELECT * FROM uk_agentuser WHERE userid = ?1 LIMIT 1", nativeQuery = true)
+    // AgentUser findOneByUserid(final String userid);
 
     List<AgentUser> findByUseridAndOrgi(String userid, String orgi);
 
-    List<AgentUser> findByUseridAndStatus(String userid, String status);
+    // List<AgentUser> findByUseridAndStatus(String userid, String status);
 
     List<AgentUser> findByAgentnoAndOrgi(String agentno, String orgi, Sort sort);
 
-    List<AgentUser> findByAgentnoAndOrgi(String agentno, String orgi);
+    // List<AgentUser> findByAgentnoAndOrgi(String agentno, String orgi);
 
     Page<AgentUser> findByOrgiAndStatus(String orgi, String status, Pageable page);
 
-    List<AgentUser> findByOrgiAndStatus(final String orgi, final String status, final Sort sort);
+    // List<AgentUser> findByOrgiAndStatus(final String orgi, final String status, final Sort sort);
 
     List<AgentUser> findByOrgiAndStatusAndAgentnoIsNot(final String orgi, final String status, final String agentno, final Sort sort);
 
@@ -61,7 +61,7 @@ public interface AgentUserRepository extends JpaRepository<AgentUser, String> {
     @Query(value = "SELECT a FROM AgentUser a WHERE a.userid in(:userids)")
     List<AgentUser> findAllByUserids(@Param("userids") List<String> userids);
 
-    int countByAgentnoAndStatusAndOrgi(String agentno, String status, String orgi);
+    // int countByAgentnoAndStatusAndOrgi(String agentno, String status, String orgi);
 
     AgentUser findOneByAgentnoAndStatusAndOrgi(String id, String status, String orgi);
 

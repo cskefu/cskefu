@@ -32,127 +32,124 @@ import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.util.IP;
 import com.chatopera.cc.util.IPTools;
 import com.chatopera.cc.util.Menu;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.nio.charset.CharacterCodingException;
 import java.text.ParseException;
 import java.util.*;
 
 @Controller
 @RequestMapping("/service")
+@RequiredArgsConstructor
 public class ChatServiceController extends Handler {
 
     private final static Logger logger = LoggerFactory.getLogger(ChatServiceController.class);
 
-    @Autowired
-    private AgentUserProxy agentUserProxy;
+    @NonNull
+    private final AgentUserProxy agentUserProxy;
 
-    @Autowired
-    private AgentStatusProxy agentStatusProxy;
+    @NonNull
+    private final AgentStatusProxy agentStatusProxy;
 
-    @Autowired
-    private ACDAgentService acdAgentService;
+    @NonNull
+    private final ACDAgentService acdAgentService;
 
-    @Autowired
-    private ACDVisitorDispatcher acdVisitorDispatcher;
+    @NonNull
+    private final ACDVisitorDispatcher acdVisitorDispatcher;
 
-    @Autowired
-    private AgentServiceRepository agentServiceRes;
+    @NonNull
+    private final AgentServiceRepository agentServiceRes;
 
-    @Autowired
-    private AgentUserRepository agentUserRes;
+    @NonNull
+    private final AgentUserRepository agentUserRes;
 
-    @Autowired
-    private AgentStatusRepository agentStatusRepository;
+    @NonNull
+    private final AgentStatusRepository agentStatusRepository;
 
-    @Autowired
-    private AgentUserRepository agentUserRepository;
+    @NonNull
+    private final AgentUserRepository agentUserRepository;
 
-    @Autowired
-    private LeaveMsgRepository leaveMsgRes;
+    @NonNull
+    private final LeaveMsgRepository leaveMsgRes;
 
-    @Autowired
-    private LeaveMsgProxy leaveMsgProxy;
+    @NonNull
+    private final LeaveMsgProxy leaveMsgProxy;
 
-    @Autowired
-    private OrganRepository organRes;
+    @NonNull
+    private final OrganRepository organRes;
 
-    @Autowired
-    private OrganRepository organ;
+    @NonNull
+    private final OrganRepository organ;
 
-    @Autowired
-    private UserRepository user;
+    @NonNull
+    private final UserRepository user;
 
-    @Autowired
-    private UserRepository userRes;
+    @NonNull
+    private final UserRepository userRes;
 
-    @Autowired
-    private OrgiSkillRelRepository orgiSkillRelService;
+    @NonNull
+    private final OrgiSkillRelRepository orgiSkillRelService;
 
-    @Autowired
-    private UserProxy userProxy;
+    @NonNull
+    private final UserProxy userProxy;
 
-    @Autowired
-    private Cache cache;
+    @NonNull
+    private final Cache cache;
 
-    @Autowired
-    private PeerSyncIM peerSyncIM;
+    @NonNull
+    private final PeerSyncIM peerSyncIM;
 
-    @Autowired
-    private ACDMessageHelper acdMessageHelper;
+    @NonNull
+    private final ACDMessageHelper acdMessageHelper;
 
     @RequestMapping("/history/index")
     @Menu(type = "service", subtype = "history", admin = true)
     public ModelAndView index(ModelMap map, HttpServletRequest request, final String username, final String channel, final String servicetype, final String allocation, final String servicetimetype, final String begin, final String end) {
-        Page<AgentService> page = agentServiceRes.findAll(new Specification<AgentService>() {
-            @Override
-            public Predicate toPredicate(Root<AgentService> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                List<Predicate> list = new ArrayList<Predicate>();
-                if (StringUtils.isNotBlank(username)) {
-                    list.add(cb.equal(root.get("username").as(String.class), username));
-                }
-                if (StringUtils.isNotBlank(channel)) {
-                    list.add(cb.equal(root.get("channel").as(String.class), channel));
-                }
-                if (StringUtils.isNotBlank(servicetype) && StringUtils.isNotBlank(allocation)) {
-                    list.add(cb.equal(root.get(servicetype).as(String.class), allocation));
-                }
-                if (StringUtils.isNotBlank(servicetimetype)) {
-                    try {
-                        if (StringUtils.isNotBlank(begin) && begin.matches("[\\d]{4}-[\\d]{2}-[\\d]{2}")) {
-                            list.add(cb.greaterThanOrEqualTo(
-                                    root.get(servicetimetype).as(Date.class),
-                                    MainUtils.simpleDateFormat.parse(begin)));
-                        }
-                        if (StringUtils.isNotBlank(end) && end.matches("[\\d]{4}-[\\d]{2}-[\\d]{2}")) {
-                            list.add(cb.lessThanOrEqualTo(
-                                    root.get(servicetimetype).as(Date.class),
-                                    MainUtils.dateFormate.parse(end + " 23:59:59")));
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                }
-                Predicate[] p = new Predicate[list.size()];
-                return cb.and(list.toArray(p));
+        Page<AgentService> page = agentServiceRes.findAll((Specification<AgentService>) (root, query, cb) -> {
+            List<Predicate> list = new ArrayList<>();
+            if (StringUtils.isNotBlank(username)) {
+                list.add(cb.equal(root.get("username").as(String.class), username));
             }
+            if (StringUtils.isNotBlank(channel)) {
+                list.add(cb.equal(root.get("channel").as(String.class), channel));
+            }
+            if (StringUtils.isNotBlank(servicetype) && StringUtils.isNotBlank(allocation)) {
+                list.add(cb.equal(root.get(servicetype).as(String.class), allocation));
+            }
+            if (StringUtils.isNotBlank(servicetimetype)) {
+                try {
+                    if (StringUtils.isNotBlank(begin) && begin.matches("[\\d]{4}-[\\d]{2}-[\\d]{2}")) {
+                        list.add(cb.greaterThanOrEqualTo(
+                                root.get(servicetimetype).as(Date.class),
+                                MainUtils.simpleDateFormat.parse(begin)));
+                    }
+                    if (StringUtils.isNotBlank(end) && end.matches("[\\d]{4}-[\\d]{2}-[\\d]{2}")) {
+                        list.add(cb.lessThanOrEqualTo(
+                                root.get(servicetimetype).as(Date.class),
+                                MainUtils.dateFormate.parse(end + " 23:59:59")));
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            Predicate[] p = new Predicate[list.size()];
+            return cb.and(list.toArray(p));
         }, PageRequest.of(super.getP(request), super.getPs(request), Direction.DESC, "createtime"));
         map.put("agentServiceList", page);
         map.put("username", username);
@@ -199,7 +196,7 @@ public class ChatServiceController extends Handler {
                 }
             }
             List<AgentStatus> agentStatusList = cache.getAgentStatusBySkillAndOrgi(null, super.getOrgi(request));
-            List<String> usersids = new ArrayList<String>();
+            List<String> usersids = new ArrayList<>();
             if (!agentStatusList.isEmpty()) {
                 for (AgentStatus agentStatus : agentStatusList) {
                     if (agentStatus != null) {
@@ -207,16 +204,18 @@ public class ChatServiceController extends Handler {
                     }
                 }
             }
-            List<User> userList = userRes.findAll(usersids);
+            List<User> userList = userRes.findAllById(usersids);
             for (User user : userList) {
                 user.setAgentStatus(cache.findOneAgentStatusByAgentnoAndOrig(user.getId(), super.getOrgi(request)));
                 userProxy.attachOrgansPropertiesForUser(user);
             }
             map.addAttribute("userList", userList);
-            map.addAttribute("userid", agentService.getUserid());
-            map.addAttribute("agentserviceid", agentService.getId());
-            map.addAttribute("agentuserid", agentService.getAgentuserid());
-            map.addAttribute("agentservice", agentService);
+            if (agentService != null) {
+                map.addAttribute("userid", agentService.getUserid());
+                map.addAttribute("agentserviceid", agentService.getId());
+                map.addAttribute("agentuserid", agentService.getAgentuserid());
+                map.addAttribute("agentservice", agentService);
+            }
             map.addAttribute("skillGroups", skillGroups);
             map.addAttribute("currentorgan", currentOrgan);
         }
@@ -226,10 +225,11 @@ public class ChatServiceController extends Handler {
 
     @RequestMapping(value = "/transfer/save")
     @Menu(type = "apps", subtype = "transfersave")
-    public ModelAndView transfersave(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String agentno, @Valid String memo) throws CharacterCodingException {
+    public ModelAndView transfersave(HttpServletRequest request, @Valid String id, @Valid String agentno, @Valid String memo) {
         if (StringUtils.isNotBlank(id)) {
-            AgentService agentService = agentServiceRes.findByIdAndOrgi(id, super.getOrgi(request));
-            final User targetAgent = userRes.findOne(agentno);
+            AgentService agentService = Objects.requireNonNull(agentServiceRes.findByIdAndOrgi(id, super.getOrgi(request)));
+            final User targetAgent = userRes.findById(agentno)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Agent %s not found", agentno)));
             AgentUser agentUser = null;
             Optional<AgentUser> agentUserOpt = cache.findOneAgentUserByUserIdAndOrgi(
                     agentService.getUserid(), super.getOrgi(request));
@@ -303,15 +303,13 @@ public class ChatServiceController extends Handler {
                 }
             }
 
-            if (agentService != null) {
-                agentService.setAgentno(agentno);
-                if (StringUtils.isNotBlank(memo)) {
-                    agentService.setTransmemo(memo);
-                }
-                agentService.setTrans(true);
-                agentService.setTranstime(new Date());
-                agentServiceRes.save(agentService);
+            agentService.setAgentno(agentno);
+            if (StringUtils.isNotBlank(memo)) {
+                agentService.setTransmemo(memo);
             }
+            agentService.setTrans(true);
+            agentService.setTranstime(new Date());
+            agentServiceRes.save(agentService);
         }
 
         return request(super.createRequestPageTempletResponse("redirect:/service/current/index.html"));
@@ -319,7 +317,7 @@ public class ChatServiceController extends Handler {
 
     @RequestMapping("/current/end")
     @Menu(type = "service", subtype = "current", admin = true)
-    public ModelAndView end(ModelMap map, HttpServletRequest request, @Valid String id) throws Exception {
+    public ModelAndView end(HttpServletRequest request, @Valid String id) throws Exception {
         if (StringUtils.isNotBlank(id)) {
             AgentService agentService = agentServiceRes.findByIdAndOrgi(id, super.getOrgi(request));
             if (agentService != null) {
@@ -338,19 +336,12 @@ public class ChatServiceController extends Handler {
 
     /**
      * 邀请
-     *
-     * @param map
-     * @param request
-     * @param id
-     * @return
-     * @throws Exception
      */
     @RequestMapping("/current/invite")
     @Menu(type = "service", subtype = "current", admin = true)
     public ModelAndView currentinvite(
-            ModelMap map,
             final HttpServletRequest request,
-            final @Valid String id) throws Exception {
+            final @Valid String id) {
         if (StringUtils.isNotBlank(id)) {
             AgentService agentService = agentServiceRes.findByIdAndOrgi(id, super.getOrgi(request));
             if (agentService != null) {
@@ -402,7 +393,7 @@ public class ChatServiceController extends Handler {
         Page<AgentUser> agentUserList = agentUserRes.findByOrgiAndStatus(
                 super.getOrgi(request), MainContext.AgentUserStatusEnum.INQUENE.toString(),
                 PageRequest.of(super.getP(request), super.getPs(request), Direction.DESC, "createtime"));
-        List<String> skillGroups = new ArrayList<String>();
+        List<String> skillGroups = new ArrayList<>();
         for (AgentUser agentUser : agentUserList.getContent()) {
             agentUser.setWaittingtime((int) (System.currentTimeMillis() - agentUser.getCreatetime().getTime()));
             if (StringUtils.isNotBlank(agentUser.getSkill())) {
@@ -410,7 +401,7 @@ public class ChatServiceController extends Handler {
             }
         }
         if (skillGroups.size() > 0) {
-            List<Organ> organList = organRes.findAll(skillGroups);
+            List<Organ> organList = organRes.findAllById(skillGroups);
             for (AgentUser agentUser : agentUserList.getContent()) {
                 if (StringUtils.isNotBlank(agentUser.getSkill())) {
                     for (Organ organ : organList) {
@@ -428,7 +419,7 @@ public class ChatServiceController extends Handler {
 
     @RequestMapping("/quene/clean")
     @Menu(type = "service", subtype = "queneclean", admin = true)
-    public ModelAndView clean(ModelMap map, HttpServletRequest request, @Valid String id) {
+    public ModelAndView clean(HttpServletRequest request, @Valid String id) {
         AgentUser agentUser = agentUserRes.findByIdAndOrgi(id, super.getOrgi(request));
         if (agentUser != null && agentUser.getStatus().equals(MainContext.AgentUserStatusEnum.INQUENE.toString())) {
             agentUser.setAgentno(null);
@@ -443,7 +434,7 @@ public class ChatServiceController extends Handler {
 
     @RequestMapping("/quene/invite")
     @Menu(type = "service", subtype = "invite", admin = true)
-    public ModelAndView invite(ModelMap map, HttpServletRequest request, @Valid String id) throws Exception {
+    public ModelAndView invite(HttpServletRequest request, @Valid String id) {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         AgentUser agentUser = agentUserRes.findByIdAndOrgi(id, super.getOrgi(request));
@@ -455,10 +446,6 @@ public class ChatServiceController extends Handler {
 
     /**
      * 管理员查看在线坐席
-     *
-     * @param map
-     * @param request
-     * @return
      */
     @RequestMapping("/agent/index")
     @Menu(type = "service", subtype = "onlineagent", admin = true)
@@ -476,21 +463,16 @@ public class ChatServiceController extends Handler {
 
     /**
      * 查看离线坐席
-     *
-     * @param map
-     * @param request
-     * @param id
-     * @return
      */
     @RequestMapping("/agent/offline")
     @Menu(type = "service", subtype = "offline", admin = true)
-    public ModelAndView offline(ModelMap map, HttpServletRequest request, @Valid String id) {
+    public ModelAndView offline(HttpServletRequest request, @Valid String id) {
 
         AgentStatus agentStatus = agentStatusRepository.findByIdAndOrgi(id, super.getOrgi(request));
         if (agentStatus != null) {
             agentStatusRepository.delete(agentStatus);
+            cache.deleteAgentStatusByAgentnoAndOrgi(agentStatus.getAgentno(), super.getOrgi(request));
         }
-        cache.deleteAgentStatusByAgentnoAndOrgi(agentStatus.getAgentno(), super.getOrgi(request));
 
         agentStatusProxy.broadcastAgentsStatus(
                 super.getOrgi(request), "agent", "offline", super.getUser(request).getId());
@@ -500,10 +482,6 @@ public class ChatServiceController extends Handler {
 
     /**
      * 非管理员坐席
-     *
-     * @param map
-     * @param request
-     * @return
      */
     @RequestMapping("/user/index")
     @Menu(type = "service", subtype = "userlist", admin = true)
@@ -552,9 +530,9 @@ public class ChatServiceController extends Handler {
 
     @RequestMapping("/leavemsg/delete")
     @Menu(type = "service", subtype = "leavemsg", admin = true)
-    public ModelAndView leavemsg(ModelMap map, HttpServletRequest request, @Valid String id) {
+    public ModelAndView leavemsg(@Valid String id) {
         if (StringUtils.isNotBlank(id)) {
-            leaveMsgRes.delete(id);
+            leaveMsgRes.deleteById(id);
         }
         return request(super.createRequestPageTempletResponse("redirect:/service/leavemsg/index.html"));
     }
