@@ -23,42 +23,44 @@ import com.chatopera.cc.persistence.repository.OrganRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.compose4j.Functional;
 import com.chatopera.compose4j.Middleware;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
+@RequiredArgsConstructor
 public class ACDVisBindingMw implements Middleware<ACDComposeContext> {
 
     private final static Logger logger = LoggerFactory.getLogger(ACDVisBindingMw.class);
 
-    @Autowired
-    private UserRepository userRes;
+    @NonNull
+    private final UserRepository userRes;
 
-    @Autowired
-    private OrganRepository organRes;
+    @NonNull
+    private final OrganRepository organRes;
 
     /**
      * 绑定技能组或坐席
-     *
-     * @param ctx
-     * @param next
      */
     @Override
     public void apply(final ACDComposeContext ctx, final Functional next) {
-        /**
+        /*
          * 访客新上线的请求
          */
-        /**
+        /*
          * 技能组 和 坐席
          */
         if (StringUtils.isNotBlank(ctx.getOrganid())) {
             logger.info("[apply] bind skill {}", ctx.getOrganid());
             // 绑定技能组
-            Organ organ = organRes.findOne(ctx.getOrganid());
-            if (organ != null) {
+            Optional<Organ> optional = organRes.findById(ctx.getOrganid());
+            if (optional.isPresent()) {
+                Organ organ = optional.get();
                 ctx.getAgentUser().setSkill(organ.getId());
                 ctx.setOrgan(organ);
             }
@@ -73,9 +75,12 @@ public class ACDVisBindingMw implements Middleware<ACDComposeContext> {
             // 绑定坐席有可能是因为前端展示了技能组和坐席
             // 也有可能是坐席发送了邀请，该访客接收邀请
             ctx.getAgentUser().setAgentno(ctx.getAgentno());
-            User agent = userRes.findOne(ctx.getAgentno());
-            ctx.setAgent(agent);
-            ctx.getAgentUser().setAgentname(agent.getUname());
+            Optional<User> optional = userRes.findById(ctx.getAgentno());
+            if (optional.isPresent()) {
+                User agent = optional.get();
+                ctx.setAgent(agent);
+                ctx.getAgentUser().setAgentname(agent.getUname());
+            }
         } else {
             // 如果没有绑定坐席，则清除之前的标记
             ctx.getAgentUser().setAgentno(null);
