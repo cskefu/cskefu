@@ -25,71 +25,69 @@ import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.util.mobile.MobileAddress;
 import com.chatopera.cc.util.mobile.MobileNumberUtils;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class AgentServiceProxy {
     private final static Logger logger = LoggerFactory.getLogger(AgentServiceProxy.class);
 
-    @Autowired
-    private AgentServiceRepository agentServiceRes;
+    @NonNull
+    private final AgentServiceRepository agentServiceRes;
 
-    @Autowired
-    private AgentUserContactsRepository agentUserContactsRes;
+    @NonNull
+    private final AgentUserContactsRepository agentUserContactsRes;
 
-    @Autowired
-    private SNSAccountRepository snsAccountRes;
+    @NonNull
+    private final SNSAccountRepository snsAccountRes;
 
-    @Autowired
-    private WeiXinUserRepository weiXinUserRes;
+    @NonNull
+    private final WeiXinUserRepository weiXinUserRes;
 
-    @Autowired
-    private OnlineUserRepository onlineUserRes;
+    @NonNull
+    private final OnlineUserRepository onlineUserRes;
 
-    @Autowired
-    private PbxHostRepository pbxHostRes;
+    @NonNull
+    private final PbxHostRepository pbxHostRes;
 
-    @Autowired
-    private StatusEventRepository statusEventRes;
+    @NonNull
+    private final StatusEventRepository statusEventRes;
 
-    @Autowired
-    private ServiceSummaryRepository serviceSummaryRes;
+    @NonNull
+    private final ServiceSummaryRepository serviceSummaryRes;
 
-    @Autowired
-    private TagRepository tagRes;
+    @NonNull
+    private final TagRepository tagRes;
 
-    @Autowired
-    private QuickTypeRepository quickTypeRes;
+    @NonNull
+    private final QuickTypeRepository quickTypeRes;
 
-    @Autowired
-    private QuickReplyRepository quickReplyRes;
+    @NonNull
+    private final QuickReplyRepository quickReplyRes;
 
-    @Autowired
-    private TagRelationRepository tagRelationRes;
+    @NonNull
+    private final TagRelationRepository tagRelationRes;
 
-    @Autowired
-    private ChatMessageRepository chatMessageRepository;
+    @NonNull
+    private final ChatMessageRepository chatMessageRepository;
 
-    @Autowired
-    private ContactsRepository contactsRes;
+    @NonNull
+    private final ContactsRepository contactsRes;
 
     /**
      * 关联关系
-     *
-     * @param agentno
-     * @param orgi
-     * @param agentService
-     * @param map
      */
     public void processRelaData(
             final String agentno,
@@ -155,8 +153,9 @@ public class AgentServiceProxy {
                 view.addObject("weiXinUser", weiXinUser);
             }
         } else if (MainContext.ChannelType.WEBIM.toString().equals(agentUser.getChannel())) {
-            OnlineUser onlineUser = onlineUserRes.findOne(agentUser.getUserid());
-            if (onlineUser != null) {
+            Optional<OnlineUser> optional = onlineUserRes.findById(agentUser.getUserid());
+            if (optional.isPresent()) {
+                OnlineUser onlineUser = optional.get();
                 if (StringUtils.equals(
                         MainContext.OnlineUserStatusEnum.OFFLINE.toString(), onlineUser.getStatus())) {
                     onlineUser.setBetweentime(
@@ -185,12 +184,6 @@ public class AgentServiceProxy {
 
     /**
      * 组装AgentUser的相关信息并封装在ModelView中
-     *
-     * @param view
-     * @param map
-     * @param agentUser
-     * @param orgi
-     * @param logined
      */
     public void bundleDialogRequiredDataInView(
             final ModelAndView view,
@@ -207,7 +200,7 @@ public class AgentServiceProxy {
         }
 
         // 客服设置
-        if (agentUser != null && StringUtils.isNotBlank(agentUser.getAppid())) {
+        if (StringUtils.isNotBlank(agentUser.getAppid())) {
             view.addObject("inviteData", OnlineUserProxy.consult(agentUser.getAppid(), orgi));
             // 服务小结
             if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
@@ -228,9 +221,12 @@ public class AgentServiceProxy {
             // 坐席服务记录
             AgentService agentService = null;
             if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-                agentService = agentServiceRes.findOne(agentUser.getAgentserviceid());
-                view.addObject("curAgentService", agentService);
-                /**
+                Optional<AgentService> optional = agentServiceRes.findById(agentUser.getAgentserviceid());
+                if (optional.isPresent()) {
+                    agentService = optional.get();
+                    view.addObject("curAgentService", agentService);
+                }
+                /*
                  * 获取关联数据
                  */
                 if (agentService != null) {
@@ -243,11 +239,10 @@ public class AgentServiceProxy {
             attacheChannelInfo(view, agentUser, agentService, logined);
 
             // 标签，快捷回复等
-            view.addObject("serviceCount", Integer
-                    .valueOf(agentServiceRes
-                            .countByUseridAndOrgiAndStatus(agentUser
-                                            .getUserid(), logined.getOrgi(),
-                                    MainContext.AgentUserStatusEnum.END.toString())));
+            view.addObject("serviceCount", agentServiceRes
+                    .countByUseridAndOrgiAndStatus(agentUser
+                                    .getUserid(), logined.getOrgi(),
+                            MainContext.AgentUserStatusEnum.END.toString()));
             view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid()));
         }
 
