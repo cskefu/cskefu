@@ -97,7 +97,7 @@ public class AgentServiceProxy {
             final AgentService agentService,
             final ModelMap map) {
         Sort defaultSort;
-        defaultSort = new Sort(Sort.Direction.DESC, "servicetime");
+        defaultSort = Sort.by(Sort.Direction.DESC, "servicetime");
         map.addAttribute(
                 "agentServiceList",
                 agentServiceRes.findByUseridAndOrgiAndStatus(

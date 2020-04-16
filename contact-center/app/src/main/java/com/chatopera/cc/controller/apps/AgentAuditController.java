@@ -153,14 +153,14 @@ public class AgentAuditController extends Handler {
                 criterias.add(new Sort.Order(Sort.Direction.DESC, "status"));
                 criterias.add(new Sort.Order(Sort.Direction.DESC, "createtime"));
             } else if (sort.equals("default")) {
-                defaultSort = new Sort(Sort.Direction.DESC, "status");
+                defaultSort = Sort.by(Sort.Direction.DESC, "status");
             }
             if (criterias.size() > 0) {
-                defaultSort = new Sort(criterias);
+                defaultSort = Sort.by(criterias);
                 map.addAttribute("sort", sort);
             }
         } else {
-            defaultSort = new Sort(Sort.Direction.DESC, "status");
+            defaultSort = Sort.by(Sort.Direction.DESC, "status");
         }
 
         // 坐席对话列表
@@ -215,7 +215,7 @@ public class AgentAuditController extends Handler {
         final String orgi = super.getOrgi(request);
         final User logined = super.getUser(request);
 
-        Sort defaultSort = new Sort(Sort.Direction.DESC, "status");
+        Sort defaultSort = Sort.by(Sort.Direction.DESC, "status");
 
         // 坐席对话列表
         List<AgentUser> agentUsers;
@@ -246,7 +246,7 @@ public class AgentAuditController extends Handler {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/cca/agentusers"));
         User logined = super.getUser(request);
         final String orgi = super.getOrgi(request);
-        Sort defaultSort = new Sort(Sort.Direction.DESC, "status");
+        Sort defaultSort = Sort.by(Sort.Direction.DESC, "status");
         view.addObject(
                 "agentUserList", agentUserRes.findByOrgiAndStatusAndAgentnoIsNot(
                         orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), logined.getId(), defaultSort));

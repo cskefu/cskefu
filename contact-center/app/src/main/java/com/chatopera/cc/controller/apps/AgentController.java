@@ -263,7 +263,7 @@
          User logined = super.getUser(request);
          view.addObject(
                  "agentUserList", agentUserRes.findByAgentnoAndOrgi(logined.getId(), logined.getOrgi(),
-                         new Sort(Direction.DESC, "status")));
+                         Sort.by(Direction.DESC, "status")));
          List<AgentUser> agentUserList = agentUserRes.findByUseridAndOrgi(userid, logined.getOrgi());
          view.addObject(
                  "curagentuser", agentUserList != null && agentUserList.size() > 0 ? agentUserList.get(0) : null);
@@ -300,11 +300,7 @@
          ModelAndView view = request(super.createRequestPageTempletResponse(mainagentuserconter));
          ChatMessage labelid = this.chatMessageRes.findById(iconid);
          if (labelid != null) {
-             if (labelid.isIslabel() == false) {
-                 labelid.setIslabel(true);
-             } else {
-                 labelid.setIslabel(false);
-             }
+             labelid.setIslabel(labelid.isIslabel() == false);
              chatMessageRes.save(labelid);
          }
          return view;
