@@ -100,7 +100,7 @@ public class ActivityResource extends Resource {
                     //回收数据 , 需要传入回收的目标  ： 包括 批次ID，任务ID，筛选ID，活动ID
                     dataList = SearchTools.recoversearch(this.jobDetail.getOrgi(), this.jobDetail.getExectype(), this.jobDetail.getExectarget(), metadataTable, (int) Math.ceil(this.jobDetail.getStartindex() / 50000.0), 50000);
                 } else {
-                    dataList = SearchTools.dissearch(this.jobDetail.getOrgi(), formFilter, formFilterList, metadataTable, (int) Math.ceil(this.jobDetail.getStartindex() / 50000.0), 50000);
+                    dataList = SearchTools.dissearch(this.jobDetail.getOrgi(), formFilterList, metadataTable, (int) Math.ceil(this.jobDetail.getStartindex() / 50000.0), 50000);
                 }
             }
             this.callAgentList = MainContext.getContext().getBean(CallAgentRepository.class).findByActidAndOrgi(this.jobDetail.getId(), this.jobDetail.getOrgi());
