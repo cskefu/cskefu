@@ -1,30 +1,23 @@
 package com.chatopera.cc.proxy;
 
-import com.chatopera.cc.controller.admin.OrganController;
 import com.chatopera.cc.model.Organ;
-import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.OrganRepository;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
 @Service
+@RequiredArgsConstructor
 public class OrganProxy {
-    private final static Logger logger = LoggerFactory.getLogger(OrganController.class);
 
-    @Autowired
-    private OrganRepository organRes;
+    @NonNull
+    private final OrganRepository organRes;
 
     /**
      * 检查组织机构树
-     * @param organ
-     * @param organId
-     * @param orgi
-     * @return
      */
     private boolean checkParentOrgan(Organ organ, String organId, String orgi) {
         if (StringUtils.equals(organ.getParent(), "0")) {
@@ -48,13 +41,7 @@ public class OrganProxy {
     }
 
 
-    /**
-     * @param organ
-     * @param orgi
-     * @param user
-     * @return msg
-     */
-    public String updateOrgan(final Organ organ, final String orgi, final User user) {
+    public String updateOrgan(final Organ organ, final String orgi) {
         final Organ oldOrgan = organRes.findByNameAndOrgi(organ.getName(), orgi);
 
         String msg = "admin_organ_update_success";

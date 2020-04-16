@@ -32,6 +32,7 @@ import freemarker.template.TemplateException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.servlet.http.Cookie;
@@ -61,6 +62,7 @@ public class OnlineUserProxy {
     /**
      *
      */
+    @Nullable
     public static CousultInvite consult(final String snsid, final String orgi) {
 //        logger.info("[consult] snsid {}, orgi {}", snsid, orgi);
         CousultInvite consultInvite = MainContext.getCache().findOneConsultInviteBySnsidAndOrgi(snsid, orgi);

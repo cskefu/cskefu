@@ -20,52 +20,47 @@ import com.chatopera.cc.persistence.repository.OrganUserRepository;
 import com.chatopera.cc.persistence.repository.RoleAuthRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import com.google.gson.JsonObject;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.*;
 
 /**
  * 用户/坐席 常用方法
  */
 @Component
+@RequiredArgsConstructor
 public class UserProxy {
     private final static Logger logger = LoggerFactory.getLogger(UserProxy.class);
 
-    @Autowired
-    private OrganUserRepository organUserRes;
+    @NonNull
+    private final OrganUserRepository organUserRes;
 
-    @Autowired
-    private OrganRepository organRes;
+    @NonNull
+    private final OrganRepository organRes;
 
-    @Autowired
-    private UserRepository userRes;
+    @NonNull
+    private final UserRepository userRes;
 
-    @Autowired
-    private RoleAuthRepository roleAuthRes;
+    @NonNull
+    private final RoleAuthRepository roleAuthRes;
 
     /**
      * 创建新用户
      * 支持多租户
-     *
-     * @param user
-     * @param orgi
-     * @param orgid
-     * @param orgiByTenantshare
-     * @return
      */
     public String createNewUser(final User user, final String orgi, final String orgid, final String orgiByTenantshare) {
-        String msg = "";
+        String msg;
         msg = validUser(user);
         if (StringUtils.isNotBlank(msg) && !msg.equals("new_user_success")) {
             return msg;
@@ -90,8 +85,10 @@ public class UserProxy {
     }
 
 
+    @NonNull
     public User findOne(final String id) {
-        return userRes.findOne(id);
+        return userRes.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("User %s not found", id)));
     }
 
     public List<String> findUserIdsInOrgan(final String organ) {
@@ -127,13 +124,10 @@ public class UserProxy {
 
     /**
      * 通过坐席ID查找其技能组Map
-     *
-     * @param agentno
-     * @return
      */
     public HashMap<String, String> getSkillsMapByAgentno(final String agentno) {
 
-        final User user = userRes.findOne(agentno);
+        final User user = userRes.findById(agentno).orElse(null);
         if (user == null) return new HashMap<>();
 
         attachOrgansPropertiesForUser(user);
@@ -142,9 +136,6 @@ public class UserProxy {
 
     /**
      * 获得一个用户的直属组织机构
-     *
-     * @param userid
-     * @return
      */
     public List<String> findOrgansByUserid(final String userid) {
         List<OrganUser> x = organUserRes.findByUserid(userid);
@@ -216,10 +207,6 @@ public class UserProxy {
 
     /**
      * 检查用户更新是否合理
-     *
-     * @param user
-     * @param oldUser
-     * @return
      */
     public String validUserUpdate(final User user, final User oldUser) {
         String msg = "edit_user_success";
@@ -265,9 +252,6 @@ public class UserProxy {
 
     /**
      * 从Json中创建User
-     *
-     * @param json
-     * @return
      */
     public User parseUserFromJson(final JsonObject json) {
         User tempUser = new User();
@@ -323,11 +307,7 @@ public class UserProxy {
         // 是否是坐席
         if (json.has("agent")) {
             String val = json.get("agent").getAsString();
-            if (StringUtils.isNotBlank(val) && StringUtils.equals("1", val)) {
-                tempUser.setAgent(true);
-            } else {
-                tempUser.setAgent(false);
-            }
+            tempUser.setAgent(StringUtils.isNotBlank(val) && StringUtils.equals("1", val));
         } else {
             tempUser.setAgent(false);
         }
@@ -349,11 +329,7 @@ public class UserProxy {
         // 是否是呼叫中心
         if (json.has("callcenter")) {
             String val = json.get("callcenter").getAsString();
-            if (StringUtils.isNotBlank(val) && StringUtils.equals("1", val)) {
-                tempUser.setCallcenter(true);
-            } else {
-                tempUser.setCallcenter(false);
-            }
+            tempUser.setCallcenter(StringUtils.isNotBlank(val) && StringUtils.equals("1", val));
         } else {
             tempUser.setCallcenter(false);
         }
@@ -374,9 +350,6 @@ public class UserProxy {
 
     /**
      * 验证用户数据合法性
-     *
-     * @param user
-     * @return
      */
     public String validUser(final User user) {
         String msg = "new_user_success";
@@ -428,11 +401,6 @@ public class UserProxy {
 
     /**
      * 或取Sips列表
-     *
-     * @param organ
-     * @param datastatus
-     * @param orgi
-     * @return
      */
     public List<String> findSipsByOrganAndDatastatusAndOrgi(final String organ, final boolean datastatus, final String orgi) {
         List<String> users = findUserIdsInOrgan(organ);
@@ -445,15 +413,8 @@ public class UserProxy {
 
     /**
      * 通过租户ID，是否为坐席，是否有效和组织机构查询坐席数
-     *
-     * @param orgi
-     * @param agent
-     * @param datastatus
-     * @param organ
-     * @return
      */
     public long countByOrgiAndAgentAndDatastatusAndOrgan(
-            final String orgi,
             final boolean agent,
             final boolean datastatus,
             final String organ) {
@@ -468,26 +429,19 @@ public class UserProxy {
 
     /**
      * 增加用户的角色信息
-     *
-     * @param user
      */
     public void attachRolesMap(final User user) {
         // 获取用户的角色权限，进行授权
-        List<RoleAuth> roleAuthList = roleAuthRes.findAll(new Specification<RoleAuth>() {
-            @Override
-            public Predicate toPredicate(
-                    Root<RoleAuth> root, CriteriaQuery<?> query,
-                    CriteriaBuilder cb) {
-                List<Predicate> criteria = new ArrayList<Predicate>();
-                if (user.getRoleList() != null && user.getRoleList().size() > 0) {
-                    for (Role role : user.getRoleList()) {
-                        criteria.add(cb.equal(root.get("roleid").as(String.class), role.getId()));
-                    }
+        List<RoleAuth> roleAuthList = roleAuthRes.findAll((Specification<RoleAuth>) (root, query, cb) -> {
+            List<Predicate> criteria = new ArrayList<>();
+            if (user.getRoleList() != null && user.getRoleList().size() > 0) {
+                for (Role role : user.getRoleList()) {
+                    criteria.add(cb.equal(root.get("roleid").as(String.class), role.getId()));
                 }
-                Predicate[] p = new Predicate[criteria.size()];
-                cb.and(cb.equal(root.get("orgi").as(String.class), user.getOrgi()));
-                return cb.or(criteria.toArray(p));
             }
+            Predicate[] p = new Predicate[criteria.size()];
+            cb.and(cb.equal(root.get("orgi").as(String.class), user.getOrgi()));
+            return cb.or(criteria.toArray(p));
         });
 
         // clear previous auth map values, ensure the changes are token effect in real time.
@@ -501,8 +455,6 @@ public class UserProxy {
 
     /**
      * 获得一个部门及其子部门并添加到User的myorgans中
-     *
-     * @param user
      */
     public void processAffiliates(final User user, final Organ organ) {
         if (organ == null) {
@@ -530,8 +482,6 @@ public class UserProxy {
 
     /**
      * 获取用户部门以及下级部门
-     *
-     * @param user
      */
     public void attachOrgansPropertiesForUser(final User user) {
         List<OrganUser> organs = organUserRes.findByUserid(user.getId());
@@ -542,8 +492,10 @@ public class UserProxy {
 
         for (final OrganUser organ : organs) {
             // 添加直属部门到organs
-            final Organ o = organRes.findOne(organ.getOrgan());
-            user.getOrgans().put(organ.getOrgan(), o);
+            String id = organ.getOrgan();
+            final Organ o = organRes.findById(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Organization %s not found", id)));
+            user.getOrgans().put(id, o);
             if (o.isSkill()) {
                 skills.put(o.getId(), o.getName());
             }

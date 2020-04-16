@@ -25,9 +25,10 @@ import com.chatopera.cc.persistence.repository.OrgiSkillRelRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,22 +41,23 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/res")
+@RequiredArgsConstructor
 public class UsersResourceController extends Handler {
-    @Autowired
-    private UserRepository userRes;
+    @NonNull
+    private final UserRepository userRes;
 
-    @Autowired
-    private OrgiSkillRelRepository orgiSkillRelService;
+    @NonNull
+    private final OrgiSkillRelRepository orgiSkillRelService;
 
-    @Autowired
-    private OrganRepository organRes;
+    @NonNull
+    private final OrganRepository organRes;
 
-    @Autowired
-    private UserProxy userProxy;
+    @NonNull
+    private final UserProxy userProxy;
 
     @RequestMapping("/users")
     @Menu(type = "res", subtype = "users")
-    public ModelAndView add(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String id) {
+    public ModelAndView add(ModelMap map, HttpServletRequest request, @Valid String q) {
         if (q == null) {
             q = "";
         }
@@ -65,7 +67,7 @@ public class UsersResourceController extends Handler {
 
     @RequestMapping("/bpm/users")
     @Menu(type = "res", subtype = "users")
-    public ModelAndView bpmusers(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String id) {
+    public ModelAndView bpmusers(ModelMap map, HttpServletRequest request, @Valid String q) {
         if (q == null) {
             q = "";
         }
@@ -75,7 +77,7 @@ public class UsersResourceController extends Handler {
 
     @RequestMapping("/bpm/organ")
     @Menu(type = "res", subtype = "users")
-    public ModelAndView organ(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ids) {
+    public ModelAndView organ(ModelMap map, HttpServletRequest request, @Valid String ids) {
         map.addAttribute("organList", getOrgans(request));
         map.addAttribute("usersList", getUsers(request));
         map.addAttribute("ids", ids);
@@ -83,7 +85,7 @@ public class UsersResourceController extends Handler {
     }
 
     private List<User> getUsers(HttpServletRequest request) {
-        List<User> list = null;
+        List<User> list;
         if (super.isTenantshare()) {
             List<String> organIdList = new ArrayList<>();
             List<OrgiSkillRel> orgiSkillRelList = orgiSkillRelService.findByOrgi(super.getOrgi(request));
@@ -101,16 +103,12 @@ public class UsersResourceController extends Handler {
 
     /**
      * 获取当前产品下人员信息
-     *
-     * @param request
-     * @param q
-     * @return
      */
     private Page<User> getUsers(HttpServletRequest request, String q) {
         if (q == null) {
             q = "";
         }
-        Page<User> list = null;
+        Page<User> list;
         if (super.isTenantshare()) {
             List<String> organIdList = new ArrayList<>();
             List<OrgiSkillRel> orgiSkillRelList = orgiSkillRelService.findByOrgi(super.getOrgi(request));
@@ -128,12 +126,9 @@ public class UsersResourceController extends Handler {
 
     /**
      * 获取当前产品下 技能组 组织信息
-     *
-     * @param request
-     * @return
      */
     private List<Organ> getOrgans(HttpServletRequest request) {
-        List<Organ> list = null;
+        List<Organ> list;
         if (super.isTenantshare()) {
             List<String> organIdList = new ArrayList<>();
             List<OrgiSkillRel> orgiSkillRelList = orgiSkillRelService.findByOrgi(super.getOrgi(request));

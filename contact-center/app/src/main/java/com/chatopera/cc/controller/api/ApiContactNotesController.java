@@ -20,8 +20,9 @@ import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.controller.api.request.RestUtils;
-import com.chatopera.cc.exception.CSKefuRestException;
-import com.chatopera.cc.model.*;
+import com.chatopera.cc.model.ContactNotes;
+import com.chatopera.cc.model.OrganUser;
+import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.es.ContactNotesRepository;
 import com.chatopera.cc.persistence.es.ContactsRepository;
 import com.chatopera.cc.persistence.repository.OrganRepository;
@@ -32,15 +33,16 @@ import com.chatopera.cc.util.json.GsonTools;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -49,6 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 联系人笔记
@@ -56,39 +59,34 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/contacts/notes")
+@RequiredArgsConstructor
 public class ApiContactNotesController extends Handler {
     private final static Logger logger = LoggerFactory.getLogger(ApiContactNotesController.class);
 
-    @Autowired
-    private ContactNotesRepository contactNotesRes;
+    @NonNull
+    private final ContactNotesRepository contactNotesRes;
 
+    @NonNull
+    private final ContactsRepository contactsRes;
 
-    @Autowired
-    private ContactsRepository contactsRes;
+    @NonNull
+    private final UserRepository userRes;
 
+    @NonNull
+    private final OrganRepository organRes;
 
-    @Autowired
-    private UserRepository userRes;
-
-
-    @Autowired
-    private OrganRepository organRes;
-
-
-    @Autowired
-    private OrganUserRepository organUserRes;
+    @NonNull
+    private final OrganUserRepository organUserRes;
 
     /**
      * 获取创建人
-     *
-     * @param creater
-     * @return
      */
     private JsonObject creater(final String creater) {
         JsonObject data = new JsonObject();
         // 增加创建人
-        User u = userRes.findById(creater);
-        if (u != null) {
+        Optional<User> optional = userRes.findById(creater);
+        if (optional.isPresent()) {
+            User u = optional.get();
             data.addProperty("creater", u.getId());
             data.addProperty("creatername", u.getUname());
 
@@ -101,13 +99,13 @@ public class ApiContactNotesController extends Handler {
                 JsonArray y = new JsonArray();
 
                 for (final OrganUser organ : organs) {
-                    Organ o = organRes.findOne(organ.getOrgan());
-                    if (o != null) {
-                        JsonObject x = new JsonObject();
-                        x.addProperty("createrorgan", o.getName());
-                        x.addProperty("createrorganid", o.getId());
-                        y.add(x);
-                    }
+                    organRes.findById(organ.getOrgan())
+                            .ifPresent(o -> {
+                                JsonObject x = new JsonObject();
+                                x.addProperty("createrorgan", o.getName());
+                                x.addProperty("createrorganid", o.getId());
+                                y.add(x);
+                            });
                 }
                 data.add("organs", y);
             }
@@ -119,17 +117,15 @@ public class ApiContactNotesController extends Handler {
 
     /**
      * 获取笔记详情
-     *
-     * @param j
-     * @return
      */
     private JsonObject detail(final JsonObject j) throws GsonTools.JsonObjectExtensionConflictException {
-        logger.info("[contact note] detail {}] {}", j.toString());
+        logger.info("[contact note] detail: {}", j.toString());
         JsonObject resp = new JsonObject();
         // TODO 增加权限检查
         if (j.has("id") && StringUtils.isNotBlank(j.get("id").getAsString())) {
-            ContactNotes cn = contactNotesRes.findOne(j.get("id").getAsString());
-            if (cn != null) {
+            Optional<ContactNotes> optional = contactNotesRes.findById(j.get("id").getAsString());
+            if (optional.isPresent()) {
+                ContactNotes cn = optional.get();
                 JsonObject data = new JsonObject();
                 data.addProperty("contactid", cn.getContactid());
                 data.addProperty("category", cn.getCategory());
@@ -151,9 +147,6 @@ public class ApiContactNotesController extends Handler {
 
     /**
      * 创建联系人笔记
-     *
-     * @param payload
-     * @return
      */
     private JsonObject create(final JsonObject payload) throws GsonTools.JsonObjectExtensionConflictException {
         logger.info("[contact note] create {}", payload.toString());
@@ -199,9 +192,6 @@ public class ApiContactNotesController extends Handler {
 
     /**
      * 验证创建数据
-     *
-     * @param payload
-     * @return
      */
     private String validateCreatePayload(JsonObject payload) {
         if (!payload.has("category")) {
@@ -215,8 +205,7 @@ public class ApiContactNotesController extends Handler {
         if ((!payload.has("contactid")) || StringUtils.isBlank(payload.get("contactid").getAsString())) {
             return "参数传递不合法，没有[contactid]。";
         } else {
-            Contacts c = contactsRes.findOne(payload.get("contactid").getAsString());
-            if (c == null)
+            if (!contactsRes.existsById(payload.get("contactid").getAsString()))
                 return "参数不合法，不存在该联系人。";
         }
 
@@ -225,12 +214,9 @@ public class ApiContactNotesController extends Handler {
 
     /**
      * Build query string
-     *
-     * @param j
-     * @return
      */
     private String querybuilder(final JsonObject j) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (j.has("orgi")) {
             sb.append("orgi:");
             sb.append(j.get("orgi").getAsString());
@@ -242,10 +228,6 @@ public class ApiContactNotesController extends Handler {
 
     /**
      * 根据联系人ID获取联系人笔记列表
-     *
-     * @param j
-     * @param request
-     * @return
      */
     private JsonObject fetch(final JsonObject j, final HttpServletRequest request) throws GsonTools.JsonObjectExtensionConflictException {
         logger.info("[contact note] fetch [{}]", j.toString());
@@ -256,9 +238,8 @@ public class ApiContactNotesController extends Handler {
             return resp;
         }
         final String cid = j.get("contactid").getAsString();
-        Contacts c = contactsRes.findOne(cid);
 
-        if (c == null) {
+        if (!contactsRes.existsById(cid)) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "不存在该联系人。");
             return resp;
@@ -298,17 +279,11 @@ public class ApiContactNotesController extends Handler {
 
     /**
      * 联系人笔记
-     *
-     * @param request
-     * @param body
-     * @return
-     * @throws CSKefuRestException
-     * @throws GsonTools.JsonObjectExtensionConflictException
      */
     @RequestMapping(method = RequestMethod.POST)
     @Menu(type = "apps", subtype = "contactnotes", access = true)
-    public ResponseEntity<String> operations(HttpServletRequest request, @RequestBody final String body) throws CSKefuRestException, GsonTools.JsonObjectExtensionConflictException {
-        final JsonObject j = (new JsonParser()).parse(body).getAsJsonObject();
+    public ResponseEntity<String> operations(HttpServletRequest request, @RequestBody final String body) throws GsonTools.JsonObjectExtensionConflictException {
+        final JsonObject j = JsonParser.parseString(body).getAsJsonObject();
         logger.info("[contact note] operations payload {}", j.toString());
         JsonObject json = new JsonObject();
         HttpHeaders headers = RestUtils.header();
@@ -335,7 +310,7 @@ public class ApiContactNotesController extends Handler {
                     break;
             }
         }
-        return new ResponseEntity<String>(json.toString(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(json.toString(), headers, HttpStatus.OK);
     }
 
 

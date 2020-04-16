@@ -23,31 +23,29 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface OrganRepository
-  extends JpaRepository<Organ, String>
-{
-  Organ findByIdAndOrgi(String paramString, String orgi);
-  
-  Page<Organ> findByOrgi(String orgi, Pageable paramPageable);
+public interface OrganRepository extends JpaRepository<Organ, String> {
+    Organ findByIdAndOrgi(String paramString, String orgi);
 
-  Page<Organ> findByOrgiAndOrgid(String orgi, String orgid, Pageable paramPageable);
-  
-  Organ findByNameAndOrgi(String paramString, String orgi);
-  
-  Organ findByNameAndOrgiAndOrgid(String paramString, String orgi, String orgid);
+    Page<Organ> findByOrgi(String orgi, Pageable paramPageable);
 
-  Organ findByParentAndOrgi(String parent, String orgi);
+    // Page<Organ> findByOrgiAndOrgid(String orgi, String orgid, Pageable paramPageable);
 
-  List<Organ> findByOrgiAndParent(String orgi, String parent);
+    Organ findByNameAndOrgi(String paramString, String orgi);
 
-  List<Organ> findByOrgi(String orgi);
-  
-  List<Organ> findByOrgiAndOrgid(String orgi, String orgid);
-  
-  List<Organ> findByOrgiAndSkill(String orgi, boolean skill);
-  
-  List<Organ> findByOrgiAndSkillAndOrgid(String orgi, boolean skill, String orgid);
+    Organ findByNameAndOrgiAndOrgid(String paramString, String orgi, String orgid);
 
-  List<Organ> findByIdInAndSkill(List<String> organIdList, boolean b);
-  
+    // Organ findByParentAndOrgi(String parent, String orgi);
+
+    List<Organ> findByOrgiAndParent(String orgi, String parent);
+
+    List<Organ> findByOrgi(String orgi);
+
+    List<Organ> findByOrgiAndOrgid(String orgi, String orgid);
+
+    List<Organ> findByOrgiAndSkill(String orgi, boolean skill);
+
+    List<Organ> findByOrgiAndSkillAndOrgid(String orgi, boolean skill, String orgid);
+
+    List<Organ> findByIdInAndSkill(List<String> organIdList, boolean b);
+
 }

@@ -29,13 +29,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.ui.ModelMap;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaBuilder.In;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -47,10 +45,7 @@ public class CallCenterUtils {
     private static UserProxy userProxy;
 
     /**
-     * @param extno
-     * @param sipTrunkRes
-     * @param extRes
-     * @return
+     *
      */
     public static SipTrunk siptrunk(String extno, SipTrunkRepository sipTrunkRes, ExtentionRepository extRes) {
         SipTrunk sipTrunk = null;
@@ -77,9 +72,7 @@ public class CallCenterUtils {
 
 
     /**
-     * @param name
-     * @param sipTrunkRes
-     * @return
+     *
      */
     public static SipTrunk siptrunk(String name, SipTrunkRepository sipTrunkRes) {
         SipTrunk sipTrunk = null;
@@ -100,15 +93,10 @@ public class CallCenterUtils {
 
     /**
      * 我的部门以及授权给我的部门
-     *
-     * @param userRoleRes
-     * @param callOutRoleRes
-     * @param user
-     * @return
      */
     public static List<String> getAuthOrgan(UserRoleRepository userRoleRes, UKefuCallOutRoleRepository callOutRoleRes, User user) {
         List<UserRole> userRole = userRoleRes.findByOrgiAndUser(user.getOrgi(), user);
-        ArrayList<String> organList = new ArrayList<String>();
+        ArrayList<String> organList = new ArrayList<>();
         if (userRole.size() > 0) {
             for (UserRole userTemp : userRole) {
                 UKefuCallOutRole roleOrgan = callOutRoleRes.findByOrgiAndRoleid(
@@ -117,9 +105,7 @@ public class CallCenterUtils {
                 if (roleOrgan != null) {
                     if (StringUtils.isNotBlank(roleOrgan.getOrganid())) {
                         String[] organ = roleOrgan.getOrganid().split(",");
-                        for (int i = 0; i < organ.length; i++) {
-                            organList.add(organ[i]);
-                        }
+                        Collections.addAll(organList, organ);
 
                     }
                 }
@@ -128,9 +114,7 @@ public class CallCenterUtils {
 
         getUserProxy().attachOrgansPropertiesForUser(user);
         if (user.getAffiliates().size() > 0) {
-            for (final String organ : user.getAffiliates()) {
-                organList.add(organ);
-            }
+            organList.addAll(user.getAffiliates());
         }
 
         return organList;
@@ -138,142 +122,98 @@ public class CallCenterUtils {
 
     /**
      * 我的部门以及授权给我的部门 - 批次
-     *
-     * @param batchRes
-     * @param userRoleRes
-     * @param callOutRoleRes
-     * @param user
-     * @return
      */
-    public static List<JobDetail> getBatchList(JobDetailRepository batchRes, UserRoleRepository userRoleRes, UKefuCallOutRoleRepository callOutRoleRes, final User user) {
+    public static List<JobDetail> getBatchList(JobDetailRepository batchRes, final User user) {
 
         //final List<String> organList = CallCenterUtils.getAuthOrgan(userRoleRes, callOutRoleRes, user);
 
         final List<String> organList = CallCenterUtils.getExistOrgan(user);
 
-        List<JobDetail> batchList = batchRes.findAll(new Specification<JobDetail>() {
-            @Override
-            public Predicate toPredicate(
-                    Root<JobDetail> root, CriteriaQuery<?> query,
-                    CriteriaBuilder cb) {
-                List<Predicate> list = new ArrayList<Predicate>();
-                In<Object> in = cb.in(root.get("organ"));
+        return batchRes.findAll((Specification<JobDetail>) (root, query, cb) -> {
+            List<Predicate> list = new ArrayList<>();
+            In<Object> in = cb.in(root.get("organ"));
 
-                list.add(cb.equal(root.get("orgi").as(String.class), user.getOrgi()));
-                list.add(cb.equal(root.get("tasktype").as(String.class), MainContext.TaskType.BATCH.toString()));
+            list.add(cb.equal(root.get("orgi").as(String.class), user.getOrgi()));
+            list.add(cb.equal(root.get("tasktype").as(String.class), MainContext.TaskType.BATCH.toString()));
 
-                if (organList.size() > 0) {
+            if (organList.size() > 0) {
 
-                    for (String id : organList) {
-                        in.value(id);
-                    }
-                } else {
-                    in.value(Constants.CSKEFU_SYSTEM_NO_DAT);
+                for (String id : organList) {
+                    in.value(id);
                 }
-                list.add(in);
-
-                Predicate[] p = new Predicate[list.size()];
-                return cb.and(list.toArray(p));
+            } else {
+                in.value(Constants.CSKEFU_SYSTEM_NO_DAT);
             }
-        });
+            list.add(in);
 
-        return batchList;
+            Predicate[] p = new Predicate[list.size()];
+            return cb.and(list.toArray(p));
+        });
     }
 
     /**
      * 我的部门以及授权给我的部门 - 筛选表单
-     *
-     * @param filterRes
-     * @param userRoleRes
-     * @param callOutRoleRes
-     * @param user
-     * @return
      */
-    public static List<FormFilter> getFormFilterList(FormFilterRepository filterRes, UserRoleRepository userRoleRes, UKefuCallOutRoleRepository callOutRoleRes, final User user) {
+    public static List<FormFilter> getFormFilterList(FormFilterRepository filterRes, final User user) {
 
         //final List<String> organList = CallCenterUtils.getAuthOrgan(userRoleRes, callOutRoleRes, user);
 
         final List<String> organList = CallCenterUtils.getExistOrgan(user);
 
-        List<FormFilter> formFilterList = filterRes.findAll(new Specification<FormFilter>() {
-            @Override
-            public Predicate toPredicate(
-                    Root<FormFilter> root, CriteriaQuery<?> query,
-                    CriteriaBuilder cb) {
-                List<Predicate> list = new ArrayList<Predicate>();
-                In<Object> in = cb.in(root.get("organ"));
+        return filterRes.findAll((Specification<FormFilter>) (root, query, cb) -> {
+            List<Predicate> list = new ArrayList<>();
+            In<Object> in = cb.in(root.get("organ"));
 
-                list.add(cb.equal(root.get("orgi").as(String.class), user.getOrgi()));
+            list.add(cb.equal(root.get("orgi").as(String.class), user.getOrgi()));
 
-                if (organList.size() > 0) {
+            if (organList.size() > 0) {
 
-                    for (String id : organList) {
-                        in.value(id);
-                    }
-                } else {
-                    in.value(Constants.CSKEFU_SYSTEM_NO_DAT);
+                for (String id : organList) {
+                    in.value(id);
                 }
-                list.add(in);
-
-                Predicate[] p = new Predicate[list.size()];
-                return cb.and(list.toArray(p));
+            } else {
+                in.value(Constants.CSKEFU_SYSTEM_NO_DAT);
             }
-        });
+            list.add(in);
 
-        return formFilterList;
+            Predicate[] p = new Predicate[list.size()];
+            return cb.and(list.toArray(p));
+        });
     }
 
     /**
      * 我的部门以及授权给我的部门 - 活动
-     *
-     * @param batchRes
-     * @param userRoleRes
-     * @param callOutRoleRes
-     * @param user
-     * @return
      */
-    public static List<JobDetail> getActivityList(JobDetailRepository batchRes, UserRoleRepository userRoleRes, UKefuCallOutRoleRepository callOutRoleRes, final User user) {
+    public static List<JobDetail> getActivityList(JobDetailRepository batchRes, final User user) {
 
         //final List<String> organList = CallCenterUtils.getAuthOrgan(userRoleRes, callOutRoleRes, user);
 
         final List<String> organList = CallCenterUtils.getExistOrgan(user);
 
-        List<JobDetail> activityList = batchRes.findAll(new Specification<JobDetail>() {
-            @Override
-            public Predicate toPredicate(
-                    Root<JobDetail> root, CriteriaQuery<?> query,
-                    CriteriaBuilder cb) {
-                List<Predicate> list = new ArrayList<Predicate>();
-                In<Object> in = cb.in(root.get("organ"));
+        return batchRes.findAll((Specification<JobDetail>) (root, query, cb) -> {
+            List<Predicate> list = new ArrayList<>();
+            In<Object> in = cb.in(root.get("organ"));
 
-                list.add(cb.equal(root.get("orgi").as(String.class), user.getOrgi()));
-                list.add(cb.equal(root.get("tasktype").as(String.class), MainContext.TaskType.ACTIVE.toString()));
+            list.add(cb.equal(root.get("orgi").as(String.class), user.getOrgi()));
+            list.add(cb.equal(root.get("tasktype").as(String.class), MainContext.TaskType.ACTIVE.toString()));
 
-                if (organList.size() > 0) {
+            if (organList.size() > 0) {
 
-                    for (String id : organList) {
-                        in.value(id);
-                    }
-                } else {
-                    in.value(Constants.CSKEFU_SYSTEM_NO_DAT);
+                for (String id : organList) {
+                    in.value(id);
                 }
-                list.add(in);
-
-                Predicate[] p = new Predicate[list.size()];
-                return cb.and(list.toArray(p));
+            } else {
+                in.value(Constants.CSKEFU_SYSTEM_NO_DAT);
             }
-        });
+            list.add(in);
 
-        return activityList;
+            Predicate[] p = new Predicate[list.size()];
+            return cb.and(list.toArray(p));
+        });
     }
 
     /**
      * 查询条件，下拉信息返回
-     *
-     * @param map
-     * @param user
-     * @param ownerdept
-     * @param actid
      */
     public static void getAllCallOutList(ModelMap map, User user, String ownerdept, String actid) {
         JobDetailRepository batchRes = MainContext.getContext().getBean(JobDetailRepository.class);
@@ -282,7 +222,7 @@ public class CallCenterUtils {
         FormFilterRepository filterRes = MainContext.getContext().getBean(FormFilterRepository.class);
         OrganRepository organRes = MainContext.getContext().getBean(OrganRepository.class);
 
-        List<JobDetail> activityList = CallCenterUtils.getActivityList(batchRes, userRoleRes, callOutRoleRes, user);
+        List<JobDetail> activityList = CallCenterUtils.getActivityList(batchRes, user);
         List<SaleStatus> salestatusList = new ArrayList<>();
         for (JobDetail act : activityList) {
             List<SaleStatus> salestastus = MainContext.getContext().getBean(
@@ -290,14 +230,14 @@ public class CallCenterUtils {
             salestatusList.addAll(salestastus);
 
         }
-        LinkedHashSet<SaleStatus> set = new LinkedHashSet<SaleStatus>(salestatusList.size());
+        LinkedHashSet<SaleStatus> set = new LinkedHashSet<>(salestatusList.size());
         set.addAll(salestatusList);
         salestatusList.clear();
         salestatusList.addAll(set);
         map.put("salestatusList", salestatusList);
-        map.put("batchList", CallCenterUtils.getBatchList(batchRes, userRoleRes, callOutRoleRes, user));
-        map.put("activityList", CallCenterUtils.getActivityList(batchRes, userRoleRes, callOutRoleRes, user));
-        map.put("formFilterList", CallCenterUtils.getFormFilterList(filterRes, userRoleRes, callOutRoleRes, user));
+        map.put("batchList", CallCenterUtils.getBatchList(batchRes, user));
+        map.put("activityList", CallCenterUtils.getActivityList(batchRes, user));
+        map.put("formFilterList", CallCenterUtils.getFormFilterList(filterRes, user));
         if (StringUtils.isBlank(ownerdept)) {
 
             map.addAttribute(
@@ -310,7 +250,7 @@ public class CallCenterUtils {
 
         }
         map.addAttribute(
-                "skillGroups", organRes.findAll(CallCenterUtils.getAuthOrgan(userRoleRes, callOutRoleRes, user)));
+                "skillGroups", organRes.findAllById(CallCenterUtils.getAuthOrgan(userRoleRes, callOutRoleRes, user)));
         map.put(
                 "taskList", MainContext.getContext().getBean(UKefuCallOutTaskRepository.class).findByActidAndOrgi(
                         actid,
@@ -327,10 +267,6 @@ public class CallCenterUtils {
 
     /**
      * 指定活动，已设置的分配数
-     *
-     * @param map
-     * @param activityid
-     * @param user
      */
     public static void getNamenum(ModelMap map, String activityid, User user) {
 
@@ -351,9 +287,6 @@ public class CallCenterUtils {
     /**
      * 查询目前存在的部门
      * 已分配部门的坐席，如果部门被删之后，这个方法可以把这些用户过滤掉
-     *
-     * @param user
-     * @return
      */
     public static List<String> getExistOrgan(User user) {
 
@@ -365,7 +298,7 @@ public class CallCenterUtils {
 
         List<Organ> organAllList = organRes.findByOrgi(user.getOrgi());
 
-        final List<String> tempList = new ArrayList<String>();
+        final List<String> tempList = new ArrayList<>();
 
         for (String organid : organList) {
             for (Organ organ : organAllList) {
@@ -379,10 +312,6 @@ public class CallCenterUtils {
 
     /**
      * 分配给坐席的名单，单个名单，回收到池子
-     *
-     * @param task
-     * @param batch
-     * @param ukefuCallOutFilter
      */
     public static void getAgentRenum(UKefuCallOutTask task, JobDetail batch, UKefuCallOutFilter ukefuCallOutFilter) {
 
@@ -417,9 +346,6 @@ public class CallCenterUtils {
 
     /**
      * 分配给坐席的名单，单个名单，回收到部门
-     *
-     * @param task
-     * @param ukefuCallOutFilter
      */
     public static void getAgentReorgannum(UKefuCallOutTask task, UKefuCallOutFilter ukefuCallOutFilter) {
 
@@ -446,10 +372,6 @@ public class CallCenterUtils {
 
     /**
      * 分配给部门的名单，单个名单，回收到池子
-     *
-     * @param task
-     * @param batch
-     * @param ukefuCallOutFilter
      */
     public static void getOrganRenum(UKefuCallOutTask task, JobDetail batch, UKefuCallOutFilter ukefuCallOutFilter) {
 
@@ -484,12 +406,8 @@ public class CallCenterUtils {
 
     /**
      * 获取指定活动，已分配的名单数
-     *
-     * @param actid
-     * @param user
-     * @return
      */
-    public static int getActDisnum(@Valid String actid, User user, @Valid int p, @Valid int ps) {
+    public static int getActDisnum(@Valid String actid, @Valid int p, @Valid int ps) {
         BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
         queryBuilder.must(termQuery("actid", actid));// 活动ID
         queryBuilder.mustNot(termQuery("status", MainContext.NamesDisStatusType.NOT.toString()));

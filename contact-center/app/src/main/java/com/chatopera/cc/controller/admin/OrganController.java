@@ -281,7 +281,7 @@ public class OrganController extends Handler {
     @RequestMapping("/update")
     @Menu(type = "admin", subtype = "organ")
     public ModelAndView update(HttpServletRequest request, @Valid Organ organ) {
-        String msg = organProxy.updateOrgan(organ, super.getOrgi(request), super.getUser(request));
+        String msg = organProxy.updateOrgan(organ, super.getOrgi(request));
         return request(super.createRequestPageTempletResponse(
                 "redirect:/admin/organ/index.html?msg=" + msg + "&organ=" + organ.getId()));
     }

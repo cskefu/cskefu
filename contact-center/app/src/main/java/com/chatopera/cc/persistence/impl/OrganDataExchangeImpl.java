@@ -19,28 +19,30 @@ package com.chatopera.cc.persistence.impl;
 import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
 import com.chatopera.cc.persistence.repository.OrganRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.List;
 
 @Service("organdata")
+@RequiredArgsConstructor
 public class OrganDataExchangeImpl implements DataExchangeInterface {
-	@Autowired
-	private OrganRepository organRes ;
-	
-	public String getDataByIdAndOrgi(String id, String orgi){
-		Organ organ = organRes.findByIdAndOrgi(id, orgi) ;
-		return organ!=null ? organ.getName() : id;
-	}
+    @NonNull
+    private final OrganRepository organRes;
 
-	@Override
-	public List<Serializable> getListDataByIdAndOrgi(String id , String creater, String orgi) {
-		return null ;
-	}
-	
-	public void process(Object data , String orgi) {
-		
-	}
+    public String getDataByIdAndOrgi(String id, String orgi) {
+        Organ organ = organRes.findByIdAndOrgi(id, orgi);
+        return organ != null ? organ.getName() : id;
+    }
+
+    @Override
+    public List<Serializable> getListDataByIdAndOrgi(String id, String creater, String orgi) {
+        return null;
+    }
+
+    public void process(Object data, String orgi) {
+
+    }
 }
