@@ -26,9 +26,8 @@ import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.util.mobile.MobileAddress;
 import com.chatopera.cc.util.mobile.MobileNumberUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
@@ -39,10 +38,10 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AgentServiceProxy {
-    private final static Logger logger = LoggerFactory.getLogger(AgentServiceProxy.class);
 
     @NonNull
     private final AgentServiceRepository agentServiceRes;
@@ -113,14 +112,13 @@ public class AgentServiceProxy {
                 agentService.getUserid(), agentService.getOrgi()).ifPresent(p -> {
             if (MainContext.hasModule(Constants.CSKEFU_MODULE_CONTACTS) && StringUtils.isNotBlank(
                     p.getContactsid())) {
-                contactsRes.findOneById(p.getContactsid()).ifPresent(k -> {
-                    map.addAttribute("contacts", k);
-                });
+                contactsRes.findOneById(p.getContactsid()).ifPresent(k -> map.addAttribute("contacts", k));
             }
             if (MainContext.hasModule(Constants.CSKEFU_MODULE_WORKORDERS) && StringUtils.isNotBlank(
                     p.getContactsid())) {
                 DataExchangeInterface dataExchange = (DataExchangeInterface) MainContext.getContext().getBean(
                         "workorders");
+                //noinspection ConstantConditions
                 if (dataExchange != null) {
                     map.addAttribute(
                             "workOrdersList",
@@ -135,10 +133,7 @@ public class AgentServiceProxy {
     /**
      * 增加不同渠道的信息
      *
-     * @param view
-     * @param agentUser
-     * @param agentService
-     * @param logined      登录的用户
+     * @param logined 登录的用户
      */
     public void attacheChannelInfo(
             final ModelAndView view,

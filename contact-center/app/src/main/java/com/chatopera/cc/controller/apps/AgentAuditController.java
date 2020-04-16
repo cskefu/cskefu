@@ -29,21 +29,23 @@ import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.exception.CSKefuException;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.peer.PeerSyncIM;
-import com.chatopera.cc.persistence.es.QuickReplyRepository;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.proxy.*;
 import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.util.Menu;
 import freemarker.template.TemplateException;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,80 +55,72 @@ import java.util.*;
 
 @Controller
 @RequestMapping(value = "/apps/cca")
+@RequiredArgsConstructor
 public class AgentAuditController extends Handler {
     private final static Logger logger = LoggerFactory.getLogger(AgentAuditController.class);
 
-    @Autowired
-    private AgentUserProxy agentUserProxy;
+    @NonNull
+    private final AgentUserProxy agentUserProxy;
 
-    @Autowired
-    private ACDPolicyService acdPolicyService;
+    @NonNull
+    private final ACDPolicyService acdPolicyService;
 
-    @Autowired
-    private ACDMessageHelper acdMessageHelper;
+    @NonNull
+    private final ACDMessageHelper acdMessageHelper;
 
-    @Autowired
-    private AgentUserRepository agentUserRes;
+    @NonNull
+    private final AgentUserRepository agentUserRes;
 
-    @Autowired
-    private OrganRepository organRes;
+    @NonNull
+    private final OrganRepository organRes;
 
-    @Autowired
-    private UserRepository userRes;
+    @NonNull
+    private final UserRepository userRes;
 
-    @Autowired
-    private AgentUserRepository agentUserRepository;
+    @NonNull
+    private final AgentUserRepository agentUserRepository;
 
-    @Autowired
-    private ChatMessageRepository chatMessageRepository;
+    @NonNull
+    private final ChatMessageRepository chatMessageRepository;
 
-    @Autowired
-    private AgentServiceRepository agentServiceRes;
+    @NonNull
+    private final AgentServiceRepository agentServiceRes;
 
-    @Autowired
-    private AgentUserTaskRepository agentUserTaskRes;
+    @NonNull
+    private final AgentUserTaskRepository agentUserTaskRes;
 
-    @Autowired
-    private ServiceSummaryRepository serviceSummaryRes;
+    @NonNull
+    private final ServiceSummaryRepository serviceSummaryRes;
 
-    @Autowired
-    private UserProxy userProxy;
+    @NonNull
+    private final UserProxy userProxy;
 
-    @Autowired
-    private OnlineUserRepository onlineUserRes;
+    @NonNull
+    private final OnlineUserRepository onlineUserRes;
 
-    @Autowired
-    private PbxHostRepository pbxHostRes;
+    @NonNull
+    private final TagRepository tagRes;
 
-    @Autowired
-    private TagRepository tagRes;
+    @NonNull
+    private final Cache cache;
 
-    @Autowired
-    private Cache cache;
+    @NonNull
+    private final PeerSyncIM peerSyncIM;
 
-    @Autowired
-    private PeerSyncIM peerSyncIM;
+    @NonNull
+    private final TagRelationRepository tagRelationRes;
 
-    @Autowired
-    private QuickReplyRepository quickReplyRes;
+    @NonNull
+    private final BlackEntityProxy blackEntityProxy;
 
-    @Autowired
-    private QuickTypeRepository quickTypeRes;
+    @NonNull
+    private final BrokerPublisher brokerPublisher;
 
-    @Autowired
-    private TagRelationRepository tagRelationRes;
+    @NonNull
+    private final AgentServiceProxy agentServiceProxy;
 
-    @Autowired
-    private BlackEntityProxy blackEntityProxy;
-
-    @Autowired
-    private BrokerPublisher brokerPublisher;
-
-    @Autowired
-    private AgentServiceProxy agentServiceProxy;
-
-    @Autowired
-    private ACDAgentService acdAgentService;
+    @NonNull
+    private final ACDAgentService acdAgentService;
 
     @RequestMapping(value = "/index")
     @Menu(type = "cca", subtype = "cca", access = true)
@@ -136,7 +130,7 @@ public class AgentAuditController extends Handler {
             @Valid final String skill,
             @Valid final String agentno,
             @Valid String sort
-                             ) {
+    ) {
         final String orgi = super.getOrgi(request);
         final User logined = super.getUser(request);
         logger.info("[index] skill {}, agentno {}, logined {}", skill, agentno, logined.getId());
@@ -146,14 +140,18 @@ public class AgentAuditController extends Handler {
 
         if (StringUtils.isNotBlank(sort)) {
             List<Sort.Order> criterias = new ArrayList<>();
-            if (sort.equals("lastmessage")) {
-                criterias.add(new Sort.Order(Sort.Direction.DESC, "status"));
-                criterias.add(new Sort.Order(Sort.Direction.DESC, "lastmessage"));
-            } else if (sort.equals("logintime")) {
-                criterias.add(new Sort.Order(Sort.Direction.DESC, "status"));
-                criterias.add(new Sort.Order(Sort.Direction.DESC, "createtime"));
-            } else if (sort.equals("default")) {
-                defaultSort = Sort.by(Sort.Direction.DESC, "status");
+            switch (sort) {
+                case "lastmessage":
+                    criterias.add(new Sort.Order(Sort.Direction.DESC, "status"));
+                    criterias.add(new Sort.Order(Sort.Direction.DESC, "lastmessage"));
+                    break;
+                case "logintime":
+                    criterias.add(new Sort.Order(Sort.Direction.DESC, "status"));
+                    criterias.add(new Sort.Order(Sort.Direction.DESC, "createtime"));
+                    break;
+                case "default":
+                    defaultSort = Sort.by(Sort.Direction.DESC, "status");
+                    break;
             }
             if (criterias.size() > 0) {
                 defaultSort = Sort.by(criterias);
@@ -190,7 +188,7 @@ public class AgentAuditController extends Handler {
         if (agentUsers.size() > 0) {
             view.addObject("agentUserList", agentUsers);
 
-            /**
+            /*
              * 当前对话
              */
             final AgentUser currentAgentUser = agentUsers.get(0);
@@ -264,7 +262,7 @@ public class AgentAuditController extends Handler {
             HttpServletRequest request,
             String id,
             String channel
-                                 ) throws IOException, TemplateException {
+    ) throws IOException, TemplateException {
         String mainagentuser = "/apps/cca/mainagentuser";
         if (channel.equals("phone")) {
             mainagentuser = "/apps/cca/mainagentuser_callout";
@@ -297,28 +295,25 @@ public class AgentAuditController extends Handler {
                 }
             }
 
-            view.addObject(
-                    "agentUserMessageList",
-                    this.chatMessageRepository.findByUsessionAndOrgi(agentUser.getUserid(), orgi,
-                                                                     PageRequest.of(0, 20, Sort.Direction.DESC,
-                                                                             "updatetime"
-                                                                     )
-                                                                    )
-                          );
+            PageRequest pageRequest = PageRequest.of(0, 20, Sort.Direction.DESC, "updatetime");
+            view.addObject("agentUserMessageList",
+                    this.chatMessageRepository.findByUsessionAndOrgi(agentUser.getUserid(), orgi, pageRequest));
             AgentService agentService = null;
             if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-                agentService = this.agentServiceRes.findOne(agentUser.getAgentserviceid());
-                view.addObject("curAgentService", agentService);
-                if (agentService != null) {
-                    /**
+                Optional<AgentService> optional = this.agentServiceRes.findById(agentUser.getAgentserviceid());
+                if (optional.isPresent()) {
+                    agentService = optional.get();
+                    /*
                      * 获取关联数据
                      */
                     agentServiceProxy.processRelaData(logined.getId(), orgi, agentService, map);
                 }
+                view.addObject("curAgentService", agentService);
             }
             if (MainContext.ChannelType.WEBIM.toString().equals(agentUser.getChannel())) {
-                OnlineUser onlineUser = onlineUserRes.findOne(agentUser.getUserid());
-                if (onlineUser != null) {
+                Optional<OnlineUser> optional = onlineUserRes.findById(agentUser.getUserid());
+                if (optional.isPresent()) {
+                    OnlineUser onlineUser = optional.get();
                     if (onlineUser.getLogintime() != null) {
                         if (MainContext.OnlineUserStatusEnum.OFFLINE.toString().equals(onlineUser.getStatus())) {
                             onlineUser.setBetweentime(
@@ -331,12 +326,8 @@ public class AgentAuditController extends Handler {
                     view.addObject("onlineUser", onlineUser);
                 }
             }
-            view.addObject("serviceCount", Integer
-                    .valueOf(this.agentServiceRes
-                                     .countByUseridAndOrgiAndStatus(agentUser
-                                                                            .getUserid(), orgi,
-                                                                    MainContext.AgentUserStatusEnum.END
-                                                                            .toString())));
+            view.addObject("serviceCount", this.agentServiceRes
+                    .countByUseridAndOrgiAndStatus(agentUser.getUserid(), orgi, MainContext.AgentUserStatusEnum.END.toString()));
             view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid()));
         }
         SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
@@ -353,13 +344,6 @@ public class AgentAuditController extends Handler {
 
     /**
      * 坐席转接窗口
-     *
-     * @param map
-     * @param request
-     * @param userid
-     * @param agentserviceid
-     * @param agentuserid
-     * @return
      */
     @RequestMapping(value = "/transfer")
     @Menu(type = "apps", subtype = "transfer")
@@ -370,17 +354,16 @@ public class AgentAuditController extends Handler {
             final @Valid String agentserviceid,
             final @Valid String agentnoid,
             final @Valid String agentuserid
-                                ) {
+    ) {
         logger.info("[transfer] userId {}, agentUser {}", userid, agentuserid);
         final String orgi = super.getOrgi(request);
-        final User logined = super.getUser(request);
         if (StringUtils.isNotBlank(userid) && StringUtils.isNotBlank(agentuserid)) {
             // 列出所有技能组
             final List<Organ> skillGroups = OnlineUserProxy.organ(orgi, true);
 
             // 选择当前用户的默认技能组
             Set<String> organs = super.getUser(request).getOrgans().keySet();
-            String currentOrgan = organs.size() > 0 ? (new ArrayList<String>(organs)).get(0) : null;
+            String currentOrgan = organs.size() > 0 ? (new ArrayList<>(organs)).get(0) : null;
 
             if (StringUtils.isBlank(currentOrgan)) {
                 if (!skillGroups.isEmpty()) {
@@ -399,7 +382,7 @@ public class AgentAuditController extends Handler {
                 }
             }
 
-            final List<User> userList = userRes.findAll(userids);
+            final List<User> userList = userRes.findAllById(userids);
             for (final User o : userList) {
                 o.setAgentStatus(agentStatusMap.get(o.getId()));
                 // find user's skills
@@ -422,11 +405,6 @@ public class AgentAuditController extends Handler {
 
     /**
      * 查找一个组织机构中的在线坐席
-     *
-     * @param map
-     * @param request
-     * @param organ
-     * @return
      */
     @RequestMapping(value = "/transfer/agent")
     @Menu(type = "apps", subtype = "transferagent")
@@ -435,10 +413,10 @@ public class AgentAuditController extends Handler {
             HttpServletRequest request,
             @Valid String agentnoid,
             @Valid String organ
-                                     ) {
+    ) {
         final String orgi = super.getOrgi(request);
         if (StringUtils.isNotBlank(organ)) {
-            List<String> usersids = new ArrayList<String>();
+            List<String> usersids = new ArrayList<>();
             final List<AgentStatus> agentStatusList = cache.getAgentStatusBySkillAndOrgi(organ, orgi);
             if (agentStatusList.size() > 0) {
                 for (AgentStatus agentStatus : agentStatusList) {
@@ -447,7 +425,7 @@ public class AgentAuditController extends Handler {
                     }
                 }
             }
-            List<User> userList = userRes.findAll(usersids);
+            List<User> userList = userRes.findAllById(usersids);
             for (User user : userList) {
                 userProxy.attachOrgansPropertiesForUser(user);
                 for (final AgentStatus as : agentStatusList) {
@@ -466,37 +444,31 @@ public class AgentAuditController extends Handler {
 
     /**
      * 执行坐席转接
-     *
-     * @param map
-     * @param request
-     * @param userid
-     * @param agentserviceid
-     * @param agentuserid
-     * @param agentno
-     * @param memo
-     * @return
      */
     @RequestMapping(value = "/transfer/save")
     @Menu(type = "apps", subtype = "transfersave")
     public ModelAndView transfersave(
-            final ModelMap map, HttpServletRequest request,
+            HttpServletRequest request,
             @Valid final String userid,         // 访客ID
             @Valid final String agentserviceid, // 服务记录ID
             @Valid final String agentuserid,    // 坐席访客ID
             @Valid final String currentAgentnoid,
             @Valid final String agentno,   // 会话转接给下一个坐席
             @Valid final String memo
-                                    ) throws CSKefuException {
-        final String currentAgentno = currentAgentnoid; // 当前会话坐席的agentno
+    ) throws CSKefuException {
 
         final String orgi = super.getOrgi(request);
 
         if (StringUtils.isNotBlank(userid) &&
                 StringUtils.isNotBlank(agentuserid) &&
                 StringUtils.isNotBlank(agentno)) {
-            final User targetAgent = userRes.findOne(agentno);
+            final User targetAgent = userRes.findById(agentno)
+                    .orElseThrow(() -> {
+                        String reason = String.format("Agent %s not found", agentno);
+                        return new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
+                    });
             final AgentService agentService = agentServiceRes.findByIdAndOrgi(agentserviceid, super.getOrgi(request));
-            /**
+            /*
              * 更新AgentUser
              */
             final AgentUser agentUser = agentUserProxy.resolveAgentUser(userid, agentuserid, orgi);
@@ -504,21 +476,21 @@ public class AgentAuditController extends Handler {
             agentUser.setAgentname(targetAgent.getUname());
             agentUserRes.save(agentUser);
 
-            /**
+            /*
              * 坐席状态
              */
             // 转接目标坐席
             final AgentStatus transAgentStatus = cache.findOneAgentStatusByAgentnoAndOrig(agentno, orgi);
 
             // 转接源坐席
-            final AgentStatus currentAgentStatus = cache.findOneAgentStatusByAgentnoAndOrig(currentAgentno, orgi);
+            final AgentStatus currentAgentStatus = cache.findOneAgentStatusByAgentnoAndOrig(currentAgentnoid, orgi);
 
             if (StringUtils.equals(
                     MainContext.AgentUserStatusEnum.INSERVICE.toString(), agentUser.getStatus())) { //转接 ， 发送消息给 目标坐席
 
                 // 更新当前坐席的服务访客列表
                 if (currentAgentStatus != null) {
-                    cache.deleteOnlineUserIdFromAgentStatusByUseridAndAgentnoAndOrgi(userid, currentAgentno, orgi);
+                    cache.deleteOnlineUserIdFromAgentStatusByUseridAndAgentnoAndOrgi(userid, currentAgentnoid, orgi);
                     agentUserProxy.updateAgentStatus(currentAgentStatus, super.getOrgi(request));
                 }
 
@@ -547,7 +519,7 @@ public class AgentAuditController extends Handler {
                                 agentUser.getUserid(),
                                 outMessage,
                                 true
-                                       );
+                        );
                     }
 
                     // 通知转接消息给新坐席
@@ -557,7 +529,7 @@ public class AgentAuditController extends Handler {
                             MainContext.ReceiverType.AGENT, MainContext.ChannelType.WEBIM,
                             agentUser.getAppid(), MainContext.MessageType.NEW, agentService.getAgentno(),
                             outMessage, true
-                                   );
+                    );
 
                 } catch (Exception ex) {
                     logger.error("[transfersave]", ex);
@@ -582,11 +554,6 @@ public class AgentAuditController extends Handler {
     /**
      * 结束对话
      * 如果当前对话属于登录用户或登录用户为超级用户，则可以结束这个对话
-     *
-     * @param request
-     * @param id
-     * @return
-     * @throws Exception
      */
     @RequestMapping({"/end"})
     @Menu(type = "apps", subtype = "agent")
@@ -616,8 +583,7 @@ public class AgentAuditController extends Handler {
 
     @RequestMapping({"/blacklist/add"})
     @Menu(type = "apps", subtype = "blacklist")
-    public ModelAndView blacklistadd(ModelMap map, HttpServletRequest request, @Valid String agentuserid, @Valid String agentserviceid, @Valid String userid)
-            throws Exception {
+    public ModelAndView blacklistadd(ModelMap map, HttpServletRequest request, @Valid String agentuserid, @Valid String agentserviceid, @Valid String userid) {
         map.addAttribute("agentuserid", agentuserid);
         map.addAttribute("agentserviceid", agentserviceid);
         map.addAttribute("userid", userid);
@@ -641,7 +607,7 @@ public class AgentAuditController extends Handler {
         if (StringUtils.isBlank(userid)) {
             throw new CSKefuException("Invalid userid");
         }
-        /**
+        /*
          * 添加黑名单
          * 一定时间后触发函数
          */

@@ -22,18 +22,17 @@ import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.AgentService;
 import com.chatopera.cc.model.AgentServiceSummary;
-import com.chatopera.cc.model.OnlineUser;
 import com.chatopera.cc.model.WeiXinUser;
 import com.chatopera.cc.persistence.es.ContactsRepository;
 import com.chatopera.cc.persistence.repository.*;
-import com.chatopera.cc.proxy.AgentUserProxy;
 import com.chatopera.cc.util.Menu;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,51 +44,46 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/service")
+@RequiredArgsConstructor
 public class OnlineUserController extends Handler {
     private final static Logger logger = LoggerFactory.getLogger(OnlineUserController.class);
 
-    @Autowired
-    private AgentServiceRepository agentServiceRes;
+    @NonNull
+    private final AgentServiceRepository agentServiceRes;
 
-    @Autowired
-    private AgentUserProxy agentUserProxy;
+    @NonNull
+    private final OnlineUserRepository onlineUserRes;
 
-    @Autowired
-    private OnlineUserRepository onlineUserRes;
+    @NonNull
+    private final UserEventRepository userEventRes;
 
-    @Autowired
-    private UserEventRepository userEventRes;
-
-    @Autowired
-    private ServiceSummaryRepository serviceSummaryRes;
+    @NonNull
+    private final ServiceSummaryRepository serviceSummaryRes;
 
 
-    @Autowired
-    private OnlineUserHisRepository onlineUserHisRes;
+    @NonNull
+    private final OnlineUserHisRepository onlineUserHisRes;
 
-    @Autowired
-    private WeiXinUserRepository weiXinUserRes;
+    @NonNull
+    private final WeiXinUserRepository weiXinUserRes;
 
-    @Autowired
-    private TagRepository tagRes;
+    @NonNull
+    private final TagRepository tagRes;
 
-    @Autowired
-    private TagRelationRepository tagRelationRes;
+    @NonNull
+    private final TagRelationRepository tagRelationRes;
 
-    @Autowired
-    private ChatMessageRepository chatMessageRepository;
+    @NonNull
+    private final ChatMessageRepository chatMessageRepository;
 
-    @Autowired
-    private ContactsRepository contactsRes;
+    @NonNull
+    private final ContactsRepository contactsRes;
 
-    @Autowired
-    private AgentUserContactsRepository agentUserContactsRes;
+    @NonNull
+    private final AgentUserContactsRepository agentUserContactsRes;
 
-    @Autowired
-    private Cache cache;
-
-    @Autowired
-    private AgentUserRepository agentUserRes;
+    @NonNull
+    private final Cache cache;
 
     @RequestMapping("/online/index")
     @Menu(type = "service", subtype = "online", admin = true)
@@ -112,10 +106,8 @@ public class OnlineUserController extends Handler {
 
             map.put("agentServiceList", agentServiceList);
             if (agentServiceList.size() > 0) {
-                map.put("serviceCount", Integer
-                        .valueOf(this.agentServiceRes
-                                .countByUseridAndOrgiAndStatus(userid, orgi,
-                                        MainContext.AgentUserStatusEnum.END.toString())));
+                map.put("serviceCount", this.agentServiceRes
+                        .countByUseridAndOrgiAndStatus(userid, orgi, MainContext.AgentUserStatusEnum.END.toString()));
 
                 AgentService agentService = agentServiceList.get(0);
                 if (StringUtils.isNotBlank(agentservice)) {
@@ -136,10 +128,9 @@ public class OnlineUserController extends Handler {
 
                 }
 
-                agentUserContactsRes.findOneByUseridAndOrgi(
-                        userid, orgi).ifPresent(p -> {
-                    map.put("contacts", contactsRes.findOne(p.getContactsid()));
-                });
+                agentUserContactsRes.findOneByUseridAndOrgi(userid, orgi)
+                        .flatMap(p -> contactsRes.findById(p.getContactsid()))
+                        .ifPresent(it -> map.put("contacts", it));
 
                 map.put(
                         "tags",
@@ -149,13 +140,11 @@ public class OnlineUserController extends Handler {
                         tagRes.findByOrgiAndTagtype(orgi, MainContext.ModelType.SUMMARY.toString()));
                 map.put("curAgentService", agentService);
 
-
-                map.put(
-                        "agentUserMessageList",
-                        chatMessageRepository.findByAgentserviceidAndOrgi(agentService.getId(), orgi,
-                                PageRequest.of(
-                                        0, 50, Direction.DESC,
-                                        "updatetime")));
+                if (agentService != null) {
+                    map.put("agentUserMessageList",
+                            chatMessageRepository.findByAgentserviceidAndOrgi(agentService.getId(), orgi,
+                                    PageRequest.of(0, 50, Direction.DESC, "updatetime")));
+                }
             }
 
             if (MainContext.ChannelType.WEIXIN.toString().equals(channel)) {
@@ -165,17 +154,11 @@ public class OnlineUserController extends Handler {
                     map.put("weiXinUser", weiXinUser);
                 }
             } else if (MainContext.ChannelType.WEBIM.toString().equals(channel)) {
-                OnlineUser onlineUser = onlineUserRes.findOne(userid);
-                if (onlineUser != null) {
-                    map.put("onlineUser", onlineUser);
-                }
+                onlineUserRes.findById(userid)
+                        .ifPresent(it -> map.put("onlineUser", it));
             }
 
-            cache.findOneAgentUserByUserIdAndOrgi(userid, orgi).ifPresent(agentUser -> {
-                map.put("agentUser", agentUser);
-            });
-
-
+            cache.findOneAgentUserByUserIdAndOrgi(userid, orgi).ifPresent(agentUser -> map.put("agentUser", agentUser));
         }
         return request(super.createAppsTempletResponse("/apps/service/online/index"));
     }
@@ -185,9 +168,8 @@ public class OnlineUserController extends Handler {
     public ModelAndView onlinechat(ModelMap map, HttpServletRequest request, String id, String title) {
         AgentService agentService = agentServiceRes.getOne(id);
         map.put("curAgentService", agentService);
-        cache.findOneAgentUserByUserIdAndOrgi(agentService.getUserid(), super.getOrgi(request)).ifPresent(p -> {
-            map.put("curragentuser", p);
-        });
+        cache.findOneAgentUserByUserIdAndOrgi(agentService.getUserid(), super.getOrgi(request))
+                .ifPresent(p -> map.put("curragentuser", p));
 
         if (StringUtils.isNotBlank(title)) {
             map.put("title", title);
@@ -197,13 +179,10 @@ public class OnlineUserController extends Handler {
                 "summaryTags",
                 tagRes.findByOrgiAndTagtype(super.getOrgi(request), MainContext.ModelType.SUMMARY.toString()));
 
-        if (agentService != null) {
-            List<AgentServiceSummary> summaries = serviceSummaryRes.findByAgentserviceidAndOrgi(
-                    agentService.getId(), super.getOrgi(request));
-            if (summaries.size() > 0) {
-                map.put("summary", summaries.get(0));
-            }
-
+        List<AgentServiceSummary> summaries = serviceSummaryRes.findByAgentserviceidAndOrgi(
+                agentService.getId(), super.getOrgi(request));
+        if (summaries.size() > 0) {
+            map.put("summary", summaries.get(0));
         }
 
         map.put(
@@ -216,7 +195,7 @@ public class OnlineUserController extends Handler {
     }
 
     @RequestMapping("/trace")
-    @Menu(type = "service", subtype = "trace", admin = false)
+    @Menu(type = "service", subtype = "trace")
     public ModelAndView trace(
             final ModelMap map, final HttpServletRequest request,
             final @Valid String sessionid,

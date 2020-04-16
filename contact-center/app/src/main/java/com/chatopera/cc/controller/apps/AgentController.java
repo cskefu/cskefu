@@ -277,8 +277,9 @@
      public ModelAndView agentuserLabel(String iconid) {
          String mainagentuserconter = "/apps/agent/mainagentuserconter";
          ModelAndView view = request(super.createRequestPageTempletResponse(mainagentuserconter));
-         ChatMessage labelid = this.chatMessageRes.findById(iconid);
-         if (labelid != null) {
+         Optional<ChatMessage> optional = this.chatMessageRes.findById(iconid);
+         if (optional.isPresent()) {
+             ChatMessage labelid = optional.get();
              labelid.setIslabel(!labelid.isIslabel());
              chatMessageRes.save(labelid);
          }
@@ -814,7 +815,8 @@
      @RequestMapping("/message/image")
      @Menu(type = "resouce", subtype = "image", access = true)
      public ModelAndView messageimage(ModelMap map, @Valid String id) {
-         ChatMessage message = chatMessageRes.findById(id);
+         ChatMessage message = chatMessageRes.findById(id)
+                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("ChatMessage %s not found", id)));
          map.addAttribute("chatMessage", message);
          map.addAttribute("agentUser", cache.findOneAgentUserByUserIdAndOrgi(message.getUserid(), message.getOrgi()));
          map.addAttribute("t", true);
@@ -839,7 +841,8 @@
                  }
                  // 写入临时文件
                  FileCopyUtils.copy(image.getBytes(), tempFile);
-                 ChatMessage chatMessage = chatMessageRes.findById(id);
+                 ChatMessage chatMessage = chatMessageRes.findById(id)
+                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("ChatMessage %s not found", id)));
                  chatMessage.setCooperation(true);
                  chatMessageRes.save(chatMessage);
 
