@@ -25,6 +25,7 @@ import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.get.MultiGetItemResponse;
 import org.elasticsearch.action.get.MultiGetResponse;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.common.Nullable;
 import org.elasticsearch.common.document.DocumentField;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
@@ -33,7 +34,6 @@ import org.springframework.data.elasticsearch.ElasticsearchException;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.ScriptedField;
 import org.springframework.data.elasticsearch.core.AbstractResultMapper;
-import org.springframework.data.elasticsearch.core.DefaultEntityMapper;
 import org.springframework.data.elasticsearch.core.EntityMapper;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
@@ -41,6 +41,8 @@ import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersiste
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentProperty;
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.mapping.context.MappingContext;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -48,26 +50,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+@Component
 public class UKResultMapper extends AbstractResultMapper {
+    @Nullable
+    private final MappingContext<? extends ElasticsearchPersistentEntity<?>, ElasticsearchPersistentProperty> mappingContext;
 
-    private MappingContext<? extends ElasticsearchPersistentEntity<?>, ElasticsearchPersistentProperty> mappingContext;
-
-    public UKResultMapper() {
-        super(new DefaultEntityMapper());
-    }
-
-    public UKResultMapper(MappingContext<? extends ElasticsearchPersistentEntity<?>, ElasticsearchPersistentProperty> mappingContext) {
-        super(new DefaultEntityMapper());
-        this.mappingContext = mappingContext;
-    }
-
-    public UKResultMapper(EntityMapper entityMapper) {
-        super(entityMapper);
-    }
-
-    public UKResultMapper(
-            MappingContext<? extends ElasticsearchPersistentEntity<?>, ElasticsearchPersistentProperty> mappingContext,
-            EntityMapper entityMapper) {
+    public UKResultMapper(@NonNull EntityMapper entityMapper, @Nullable MappingContext<? extends ElasticsearchPersistentEntity<?>, ElasticsearchPersistentProperty> mappingContext) {
         super(entityMapper);
         this.mappingContext = mappingContext;
     }
@@ -75,10 +63,10 @@ public class UKResultMapper extends AbstractResultMapper {
     @Override
     public <T> AggregatedPage<T> mapResults(SearchResponse response, Class<T> clazz, Pageable pageable) {
         long totalHits = response.getHits().getTotalHits();
-        List<T> results = new ArrayList<T>();
+        List<T> results = new ArrayList<>();
         for (SearchHit hit : response.getHits()) {
             if (hit != null) {
-                T result = null;
+                T result;
                 if (StringUtils.isNotBlank(hit.getSourceAsString())) {
                     result = mapEntity(hit.getSourceAsString(), hit, clazz);
                 } else {
@@ -90,7 +78,7 @@ public class UKResultMapper extends AbstractResultMapper {
             }
         }
 
-        return new AggregatedPageImpl<T>(results, pageable, totalHits);
+        return new AggregatedPageImpl<>(results, pageable, totalHits);
     }
 
     public <T> T mapEntity(String source, SearchHit hit, Class<T> clazz) {
@@ -181,7 +169,7 @@ public class UKResultMapper extends AbstractResultMapper {
 
     @Override
     public <T> LinkedList<T> mapResults(MultiGetResponse responses, Class<T> clazz) {
-        LinkedList<T> list = new LinkedList<T>();
+        LinkedList<T> list = new LinkedList<>();
         for (MultiGetItemResponse response : responses.getResponses()) {
             if (!response.isFailed() && response.getResponse().isExists()) {
                 T result = mapEntity(response.getResponse().getSourceAsString(), clazz);
@@ -193,10 +181,11 @@ public class UKResultMapper extends AbstractResultMapper {
     }
 
     private <T> void setPersistentEntityId(T result, String id, Class<T> clazz) {
-
         if (mappingContext != null && clazz.isAnnotationPresent(Document.class)) {
-
             ElasticsearchPersistentEntity<?> persistentEntity = mappingContext.getPersistentEntity(clazz);
+            if (persistentEntity == null) {
+                return;
+            }
             PersistentProperty<?> idProperty = persistentEntity.getIdProperty();
 
             // Only deal with String because ES generated Ids are strings !

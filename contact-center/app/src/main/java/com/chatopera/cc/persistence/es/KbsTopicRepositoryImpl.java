@@ -17,17 +17,18 @@
 package com.chatopera.cc.persistence.es;
 
 import com.chatopera.cc.model.KbsTopic;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -36,13 +37,12 @@ import java.util.List;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 @Component
+@RequiredArgsConstructor
 public class KbsTopicRepositoryImpl implements KbsTopicEsCommonRepository {
-    private ElasticsearchTemplate elasticsearchTemplate;
-
-    @Autowired
-    public void setElasticsearchTemplate(ElasticsearchTemplate elasticsearchTemplate) {
-        this.elasticsearchTemplate = elasticsearchTemplate;
-    }
+    @NonNull
+    private final UKResultMapper ukResultMapper;
+    @NonNull
+    private final ElasticsearchTemplate elasticsearchTemplate;
 
     @Override
     public Page<KbsTopic> getTopicByCate(String cate, String q, final int p, final int ps) {
@@ -59,7 +59,7 @@ public class KbsTopicRepositoryImpl implements KbsTopicEsCommonRepository {
         searchQueryBuilder.withHighlightFields(new HighlightBuilder.Field("title").fragmentSize(200));
         SearchQuery searchQuery = searchQueryBuilder.build().setPageable(PageRequest.of(p, ps));
         if (elasticsearchTemplate.indexExists(KbsTopic.class)) {
-            pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopic.class, new UKResultMapper());
+            pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopic.class, ukResultMapper);
         }
         return pages;
     }
@@ -80,7 +80,7 @@ public class KbsTopicRepositoryImpl implements KbsTopicEsCommonRepository {
         searchQueryBuilder.withHighlightFields(new HighlightBuilder.Field("title").fragmentSize(200));
         SearchQuery searchQuery = searchQueryBuilder.build().setPageable(PageRequest.of(p, ps));
         if (elasticsearchTemplate.indexExists(KbsTopic.class)) {
-            pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopic.class, new UKResultMapper());
+            pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopic.class, ukResultMapper);
         }
         return pages;
     }
@@ -100,7 +100,7 @@ public class KbsTopicRepositoryImpl implements KbsTopicEsCommonRepository {
         NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).withQuery(termQuery("creater", user)).withSort(new FieldSortBuilder("top").unmappedType("boolean").order(SortOrder.DESC)).withSort(new FieldSortBuilder("updatetime").unmappedType("date").order(SortOrder.DESC));
         SearchQuery searchQuery = searchQueryBuilder.build().setPageable(PageRequest.of(p, ps));
         if (elasticsearchTemplate.indexExists(KbsTopic.class)) {
-            pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopic.class, new UKResultMapper());
+            pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopic.class, ukResultMapper);
         }
         return pages;
     }
