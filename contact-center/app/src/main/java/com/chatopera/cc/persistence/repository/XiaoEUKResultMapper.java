@@ -74,15 +74,15 @@ public class XiaoEUKResultMapper extends AbstractResultMapper {
 
 	@Override
 	public <T> AggregatedPage<T> mapResults(SearchResponse response, Class<T> clazz, Pageable pageable) {
-		long totalHits = response.getHits().totalHits();
+		long totalHits = response.getHits().getTotalHits();
 		List<T> results = new ArrayList<T>();
 		for (SearchHit hit : response.getHits()) {
 			if (hit != null) {
 				T result = null;
-				if (StringUtils.isNotBlank(hit.sourceAsString())) {
-					result = mapEntity(hit.sourceAsString() , hit , clazz);
+				if (StringUtils.isNotBlank(hit.getSourceAsString())) {
+					result = mapEntity(hit.getSourceAsString(), hit, clazz);
 				} else {
-					result = mapEntity(hit.getFields().values() , hit , clazz);
+					result = mapEntity(hit.getFields().values(), hit, clazz);
 				}
 				setPersistentEntityId(result, hit.getId(), clazz);
 				populateScriptFields(result, hit);
