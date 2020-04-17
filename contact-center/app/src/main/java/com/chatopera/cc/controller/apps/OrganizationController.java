@@ -25,8 +25,9 @@ import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.OrganizationRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.util.Menu;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,71 +35,71 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/apps/organization")
+@RequiredArgsConstructor
 public class OrganizationController extends Handler {
 
-	@Autowired
-	private OrganizationRepository organizationRes;
+    @NonNull
+    private final OrganizationRepository organizationRes;
 
-	@Autowired
-	private UserRepository userRes;
-	
-	
+    @NonNull
+    private final UserRepository userRes;
+
     @RequestMapping("/add")
-    @Menu(type = "apps" , subtype = "organization")
-    public ModelAndView add(ModelMap map , HttpServletRequest request) {
+    @Menu(type = "apps", subtype = "organization")
+    public ModelAndView add() {
         return request(super.createRequestPageTempletResponse("/apps/organization/add"));
     }
-    
+
     @RequestMapping("/save")
-    @Menu(type = "apps" , subtype = "organization")
-    public ModelAndView save(HttpServletRequest request ,@Valid Organization organization) throws NoSuchAlgorithmException, IOException {
-    	if(StringUtils.isBlank(organization.getName())|| organization.getName().length()>100) {
-    		return request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index?msg=max_illegal"));	
-    	}
-    	organizationRes.save(organization) ;
-    	User user = super.getUser(request);
-    	if(user!=null) {
-    		User userTemp = userRes.getOne(user.getId());
-    		if(userTemp!=null&&StringUtils.isBlank(user.getOrgid())) {
-    			userTemp.setOrgid(organization.getId());
-    			userTemp.setOrgi(organization.getId());
-    			userRes.save(userTemp);
-    			super.setUser(request, userTemp);
-    		}
-    	}
-    	ModelAndView view = request(super.createRequestPageTempletResponse("redirect:/"));
-    	//登录成功 判断是否进入多租户页面
-    	SystemConfig systemConfig = MainUtils.getSystemConfig();
-    	if(systemConfig!=null&&systemConfig.isEnabletneant()&&systemConfig.isTenantconsole()) {
-    		view = request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index"));
-    	}
-    	return view;
+    @Menu(type = "apps", subtype = "organization")
+    public ModelAndView save(HttpServletRequest request, @Valid Organization organization) {
+        if (StringUtils.isBlank(organization.getName()) || organization.getName().length() > 100) {
+            return request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index?msg=max_illegal"));
+        }
+        organizationRes.save(organization);
+        User user = super.getUser(request);
+        if (user != null) {
+            userRes.findById(user.getId()).ifPresent(userTemp -> {
+                if (StringUtils.isBlank(user.getOrgid())) {
+                    userTemp.setOrgid(organization.getId());
+                    userTemp.setOrgi(organization.getId());
+                    userRes.save(userTemp);
+                    super.setUser(request, userTemp);
+                }
+            });
+        }
+        ModelAndView view = request(super.createRequestPageTempletResponse("redirect:/"));
+        //登录成功 判断是否进入多租户页面
+        SystemConfig systemConfig = MainUtils.getSystemConfig();
+        if (systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantconsole()) {
+            view = request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index"));
+        }
+        return view;
     }
-    
+
     @RequestMapping("/edit")
-    @Menu(type = "apps" , subtype = "organization")
-    public ModelAndView edit(ModelMap map , HttpServletRequest request , @Valid String id) {
-    	map.addAttribute("organization", organizationRes.findById(id)) ;
+    @Menu(type = "apps", subtype = "organization")
+    public ModelAndView edit(ModelMap map, @Valid String id) {
+        map.addAttribute("organization", organizationRes.findById(id));
         return request(super.createRequestPageTempletResponse("/apps/organization/edit"));
     }
-    
+
     @RequestMapping("/update")
-    @Menu(type = "apps" , subtype = "organizationRes" , admin = true)
-    public ModelAndView update(HttpServletRequest request ,@Valid Organization organization) throws NoSuchAlgorithmException, IOException {
-    	if(StringUtils.isBlank(organization.getName())|| organization.getName().length()>100) {
-    		return request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index?msg=max_illegal"));	
-    	}
-    	Organization temp = organizationRes.findById(organization.getId()) ;
-    	if(organization!=null) {
-    		organization.setCreatetime(temp.getCreatetime());
-    		organizationRes.save(organization) ;
-    	}
-    	return request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index"));
+    @Menu(type = "apps", subtype = "organizationRes", admin = true)
+    public ModelAndView update(@Valid Organization organization) {
+        if (StringUtils.isBlank(organization.getName()) || organization.getName().length() > 100) {
+            return request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index?msg=max_illegal"));
+        }
+        Optional<Organization> optional = organizationRes.findById(organization.getId());
+        optional.ifPresent(temp -> {
+            organization.setCreatetime(temp.getCreatetime());
+            organizationRes.save(organization);
+        });
+        return request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index"));
     }
-    
+
 }

@@ -20,7 +20,7 @@ import com.chatopera.cc.model.Organization;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrganizationRepository extends JpaRepository<Organization, String> {
-	
-	Organization findById(String id);
-	
+
+    // Organization findById(String id);
+
 }

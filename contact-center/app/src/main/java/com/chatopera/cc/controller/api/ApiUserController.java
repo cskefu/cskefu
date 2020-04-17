@@ -34,15 +34,16 @@ import com.chatopera.cc.util.RestResultType;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,37 +53,37 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
 @RestController
 @RequestMapping("/api/user")
+@RequiredArgsConstructor
 public class ApiUserController extends Handler {
     private final static Logger logger = LoggerFactory.getLogger(ApiUserController.class);
 
-    @Autowired
-    private UserRepository userRes;
+    @NonNull
+    private final UserRepository userRes;
 
-    @Autowired
-    private OrganUserRepository organUserRepository;
+    @NonNull
+    private final OrganUserRepository organUserRepository;
 
-    @Autowired
-    private UserProxy userProxy;
+    @NonNull
+    private final UserProxy userProxy;
 
-    @Autowired
-    private Cache cache;
+    @NonNull
+    private final Cache cache;
 
     /**
      * 返回用户列表，支持分页，分页参数为 p=1&ps=50，默认分页尺寸为 20条每页
      *
-     * @param request
      * @param username 搜索用户名，精确搜索
-     * @return
      */
     @RequestMapping(method = RequestMethod.GET)
     @Menu(type = "apps", subtype = "user", access = true)
     public ResponseEntity<RestResult> list(HttpServletRequest request, @Valid String id, @Valid String username) {
-        Page<User> userList = null;
+        Page<User> userList;
         if (!StringUtils.isBlank(id)) {
             userList = userRes.findByIdAndOrgi(
                     id, super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request)));
@@ -102,10 +103,6 @@ public class ApiUserController extends Handler {
 
     /**
      * 新增或修改用户用户 ，在修改用户信息的时候，如果用户 密码未改变，请设置为 NULL
-     *
-     * @param request
-     * @param user
-     * @return
      */
     @RequestMapping(method = RequestMethod.PUT)
     @Menu(type = "apps", subtype = "user", access = true)
@@ -125,18 +122,13 @@ public class ApiUserController extends Handler {
 
     /**
      * 删除用户，只提供 按照用户ID删除 ， 并且，不能删除系统管理员
-     *
-     * @param request
-     * @param id
-     * @return
      */
     @RequestMapping(method = RequestMethod.DELETE)
     @Menu(type = "apps", subtype = "user", access = true)
     public ResponseEntity<RestResult> delete(HttpServletRequest request, @Valid String id) {
         RestResult result = new RestResult(RestResultType.OK);
-        User user = null;
         if (!StringUtils.isBlank(id)) {
-            user = userRes.findByIdAndOrgi(id, super.getOrgi(request));
+            User user = userRes.findByIdAndOrgi(id, super.getOrgi(request));
             if (!user.isSuperadmin()) {    //系统管理员， 不允许 使用 接口删除
                 userRes.delete(user);
             } else {
@@ -148,18 +140,12 @@ public class ApiUserController extends Handler {
 
     /**
      * 用户管理
-     *
-     * @param request
-     * @param body
-     * @param q
-     * @return
      */
     @RequestMapping(method = RequestMethod.POST)
     @Menu(type = "apps", subtype = "user", access = true)
     public ResponseEntity<String> operations(HttpServletRequest request, @RequestBody final String body, @Valid String q) {
         logger.info("[operations] body {}, q {}", body, q);
-        final JsonObject j = StringUtils.isBlank(body) ? (new JsonObject()) : (new JsonParser()).parse(
-                body).getAsJsonObject();
+        final JsonObject j = StringUtils.isBlank(body) ? (new JsonObject()) : JsonParser.parseString(body).getAsJsonObject();
         JsonObject json = new JsonObject();
         HttpHeaders headers = RestUtils.header();
 
@@ -183,25 +169,22 @@ public class ApiUserController extends Handler {
             }
         }
 
-        return new ResponseEntity<String>(json.toString(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(json.toString(), headers, HttpStatus.OK);
 
     }
 
     /**
      * 根据组织查找用户
-     *
-     * @param payload
-     * @return
      */
     private JsonObject findByOrgan(final JsonObject payload) {
         final JsonObject resp = new JsonObject();
         if (payload.has("organ")) {
             List<OrganUser> organUsers = organUserRepository.findByOrgan(payload.get("organ").getAsString());
-            List<String> userids = organUsers.stream().map(p -> p.getUserid()).collect(Collectors.toList());
-            List<User> users = userRes.findAll(userids);
+            List<String> userids = organUsers.stream().map(OrganUser::getUserid).collect(Collectors.toList());
+            List<User> users = userRes.findAllById(userids);
 
             JsonArray data = new JsonArray();
-            users.stream().forEach(u -> {
+            users.forEach(u -> {
                 JsonObject obj = new JsonObject();
                 obj.addProperty("id", u.getId());
                 obj.addProperty("uname", u.getUname());
@@ -220,10 +203,6 @@ public class ApiUserController extends Handler {
 
     /**
      * 更新用户信息
-     *
-     * @param request
-     * @param payload
-     * @return
      */
     private JsonObject update(final HttpServletRequest request, final JsonObject payload) {
         logger.info("[update] payload {}", payload.toString());
@@ -235,8 +214,9 @@ public class ApiUserController extends Handler {
             return resp;
         }
 
-        final User previous = userRes.getOne(updated.getId());
-        if (previous != null) {
+        Optional<User> optional = userRes.findById(updated.getId());
+        if (optional.isPresent()) {
+            final User previous = optional.get();
             String msg = userProxy.validUserUpdate(updated, previous);
             if (StringUtils.equals(msg, "edit_user_success")) {
 
@@ -299,10 +279,6 @@ public class ApiUserController extends Handler {
 
     /**
      * 创建新用户
-     *
-     * @param request
-     * @param payload
-     * @return
      */
     private JsonObject create(final HttpServletRequest request, final JsonObject payload) {
         logger.info("[create] payload {}", payload.toString());
@@ -310,10 +286,9 @@ public class ApiUserController extends Handler {
         JsonObject resp = new JsonObject();
 
         // 从payload中创建User
-        User newUser = null;
         // 创建新用户时，阻止传入ID
         payload.remove("id");
-        newUser = userProxy.parseUserFromJson(payload);
+        User newUser = userProxy.parseUserFromJson(payload);
         final String msg = userProxy.createNewUser(
                 newUser, logined.getOrgi(), logined.getOrgid(), super.getOrgiByTenantshare(request));
 

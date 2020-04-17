@@ -102,7 +102,7 @@ public class TenantController extends Handler {
         } else {
             map.addAttribute("tenantList", tenantRes.findById(super.getOrgi(request)));
         }
-        map.addAttribute("organization", organizationRes.findById(super.getUser(request).getOrgid()));
+        map.addAttribute("organization", organizationRes.findById(super.getUser(request).getOrgid()).orElse(null));
         map.addAttribute("msg", msg);
         map.addAttribute("currentorgi", currentorgi);
         if (currentname != null) {

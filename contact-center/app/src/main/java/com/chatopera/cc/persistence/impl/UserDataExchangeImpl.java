@@ -19,20 +19,23 @@ package com.chatopera.cc.persistence.impl;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
 import com.chatopera.cc.persistence.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 @Service("userdata")
+@RequiredArgsConstructor
 public class UserDataExchangeImpl implements DataExchangeInterface {
-    @Autowired
-    private UserRepository userRes;
+    @NonNull
+    private final UserRepository userRes;
 
     public String getDataByIdAndOrgi(String id, String orgi) {
-        User user = userRes.findById(id);
-        return user != null ? user.getUsername() : id;
+        Optional<User> optional = userRes.findById(id);
+        return optional.isPresent() ? optional.get().getUsername() : id;
     }
 
     @Override
