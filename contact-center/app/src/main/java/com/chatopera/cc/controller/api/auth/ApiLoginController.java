@@ -18,19 +18,18 @@ package com.chatopera.cc.controller.api.auth;
 
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.basic.auth.AuthToken;
-import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.model.UserRole;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.persistence.repository.UserRoleRepository;
 import com.chatopera.cc.util.Menu;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,38 +45,30 @@ import java.util.List;
 /**
  * 账号密码登录
  */
+@Slf4j
 @RestController
 @RequestMapping("/tokens")
+@RequiredArgsConstructor
 public class ApiLoginController extends Handler {
-    private final static Logger logger = LoggerFactory.getLogger(ApiLoginController.class);
 
-    @Autowired
-    private UserRepository userRepository;
+    @NonNull
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRoleRepository userRoleRes;
+    @NonNull
+    private final UserRoleRepository userRoleRes;
 
-    @Autowired
-    private Cache cache;
-
-    @Autowired
-    private AuthToken authToken;
+    @NonNull
+    private final AuthToken authToken;
 
     /**
      * 登录服务，传入登录账号和密码
-     *
-     * @param request
-     * @param response
-     * @param username
-     * @param password
-     * @return
      */
     @SuppressWarnings("rawtypes")
     @RequestMapping(method = RequestMethod.POST)
     @Menu(type = "apps", subtype = "token", access = true)
-    public ResponseEntity login(HttpServletRequest request, HttpServletResponse response, @Valid String username, @Valid String password) {
+    public ResponseEntity login(HttpServletResponse response, @Valid String username, @Valid String password) {
         User loginUser = userRepository.findByUsernameAndPassword(username, MainUtils.md5(password));
-        ResponseEntity entity = null;
+        ResponseEntity entity;
         if (loginUser != null && !StringUtils.isBlank(loginUser.getId())) {
             loginUser.setLogin(true);
             List<UserRole> userRoleList = userRoleRes.findByOrgiAndUser(loginUser.getOrgi(), loginUser);
@@ -111,7 +102,7 @@ public class ApiLoginController extends Handler {
 
     @SuppressWarnings("rawtypes")
     @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity logout(HttpServletRequest request, @RequestHeader(value = "authorization") String authorization) {
+    public ResponseEntity logout(@RequestHeader(value = "authorization") String authorization) {
         authToken.deleteUserByAuth(authorization);
         return new ResponseEntity<>(HttpStatus.OK);
     }

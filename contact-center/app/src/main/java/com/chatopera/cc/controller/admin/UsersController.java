@@ -23,11 +23,11 @@ import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.persistence.repository.UserRoleRepository;
 import com.chatopera.cc.proxy.OnlineUserProxy;
 import com.chatopera.cc.util.Menu;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,28 +35,27 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 
 /**
- * @author 程序猿DD
+ * @author <a href="http://blog.didispace.com>程序猿DD</a>
  * @version 1.0.0
- * @blog http://blog.didispace.com
  */
+@Slf4j
 @Controller
 @RequestMapping("/admin/user")
+@RequiredArgsConstructor
 public class UsersController extends Handler {
-    private final static Logger logger = LoggerFactory.getLogger(UsersController.class);
 
-    @Autowired
-    private UserRepository userRepository;
+    @NonNull
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRoleRepository userRoleRes;
+    @NonNull
+    private final UserRoleRepository userRoleRes;
 
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "user")
-    public ModelAndView index(ModelMap map, HttpServletRequest request) throws IOException {
+    public ModelAndView index(ModelMap map, HttpServletRequest request) {
         map.addAttribute(
                 "userList",
                 userRepository.findByDatastatusAndOrgiAndOrgidAndSuperadminNot(
@@ -70,20 +69,20 @@ public class UsersController extends Handler {
                                 Sort.Direction.ASC,
                                 "createtime"
                         )
-                                                                              )
-                        );
+                )
+        );
         return request(super.createAdminTempletResponse("/admin/user/index"));
     }
 
     @RequestMapping("/add")
     @Menu(type = "admin", subtype = "user")
-    public ModelAndView add(ModelMap map, HttpServletRequest request) {
+    public ModelAndView add() {
         return request(super.createRequestPageTempletResponse("/admin/user/add"));
     }
 
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "user")
-    public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
+    public ModelAndView edit(HttpServletRequest request, @Valid String id) {
         ModelAndView view = request(super.createRequestPageTempletResponse("/admin/user/edit"));
         view.addObject("userData", userRepository.findByIdAndOrgi(id, super.getOrgiByTenantshare(request)));
         return view;
@@ -95,7 +94,7 @@ public class UsersController extends Handler {
         String msg = "admin_user_delete";
         if (user != null) {
             List<UserRole> userRole = userRoleRes.findByOrgiAndUser(super.getOrgiByTenantshare(request), user);
-            userRoleRes.delete(userRole);    //删除用户的时候，同时删除用户对应的
+            userRoleRes.deleteAll(userRole);    //删除用户的时候，同时删除用户对应的
             user = userRepository.getOne(user.getId());
             user.setDatastatus(true);
             userRepository.save(user);
