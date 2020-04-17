@@ -51,7 +51,7 @@ public class Application {
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
     /*
-     * 记载模块
+     * 加载模块
      */
     static {
         // CRM模块
