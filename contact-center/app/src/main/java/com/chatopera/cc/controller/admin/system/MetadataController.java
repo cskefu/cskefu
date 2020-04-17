@@ -89,12 +89,13 @@ public class MetadataController extends Handler {
     @RequestMapping("/update")
     @Menu(type = "admin", subtype = "metadata", admin = true)
     public ModelAndView update(@Valid MetadataTable metadata) {
-        MetadataTable table = metadataRes.findById(metadata.getId());
-        table.setName(metadata.getName());
-        table.setFromdb(metadata.isFromdb());
-        table.setListblocktemplet(metadata.getListblocktemplet());
-        table.setPreviewtemplet(metadata.getPreviewtemplet());
-        metadataRes.save(table);
+        metadataRes.findById(metadata.getId()).ifPresent(table -> {
+            table.setName(metadata.getName());
+            table.setFromdb(metadata.isFromdb());
+            table.setListblocktemplet(metadata.getListblocktemplet());
+            table.setPreviewtemplet(metadata.getPreviewtemplet());
+            metadataRes.save(table);
+        });
         return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/index.html"));
     }
 
@@ -137,8 +138,7 @@ public class MetadataController extends Handler {
     @RequestMapping("/delete")
     @Menu(type = "admin", subtype = "metadata", admin = true)
     public ModelAndView delete(@Valid String id) {
-        MetadataTable table = metadataRes.findById(id);
-        metadataRes.delete(table);
+        metadataRes.deleteById(id);
         return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/index.html"));
     }
 
@@ -269,19 +269,26 @@ public class MetadataController extends Handler {
 
     @RequestMapping("/clean")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView clean(@Valid String id) throws BeansException, ClassNotFoundException {
+    public ModelAndView clean(@Valid String id) throws BeansException {
         if (!StringUtils.isBlank(id)) {
-            MetadataTable table = metadataRes.findById(id);
-            if (table.isFromdb() && !StringUtils.isBlank(table.getListblocktemplet())) {
+            metadataRes.findById(id).ifPresent(table -> {
+                if (!table.isFromdb() || StringUtils.isBlank(table.getListblocktemplet())) {
+                    return;
+                }
                 SysDic dic = Dict.getInstance().getDicItem(table.getListblocktemplet());
-                if (dic != null) {
+                if (dic == null) {
+                    return;
+                }
+                try {
                     Object bean = MainContext.getContext().getBean(Class.forName(dic.getCode()));
                     if (bean instanceof ElasticsearchRepository) {
                         ElasticsearchRepository<?, ?> jpa = (ElasticsearchRepository<?, ?>) bean;
                         jpa.deleteAll();
                     }
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
-            }
+            });
         }
         return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/index.html"));
     }
@@ -289,13 +296,17 @@ public class MetadataController extends Handler {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @RequestMapping("/synctoes")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView synctoes(@Valid String id) throws BeansException, ClassNotFoundException {
+    public ModelAndView synctoes(@Valid String id) throws BeansException {
         if (!StringUtils.isBlank(id)) {
-            MetadataTable table = metadataRes.findById(id);
-            if (table.isFromdb() && !StringUtils.isBlank(table.getListblocktemplet())) {
+            metadataRes.findById(id).ifPresent(table -> {
+                if (!table.isFromdb() || StringUtils.isBlank(table.getListblocktemplet())) {
+                    return;
+                }
                 SysDic dic = Dict.getInstance().getDicItem(table.getListblocktemplet());
-
-                if (dic != null) {
+                if (dic == null) {
+                    return;
+                }
+                try {
                     Object bean = MainContext.getContext().getBean(Class.forName(dic.getCode()));
                     if (bean instanceof ElasticsearchRepository) {
                         ElasticsearchRepository jpa = (ElasticsearchRepository) bean;
@@ -309,8 +320,10 @@ public class MetadataController extends Handler {
                             }
                         }
                     }
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
-            }
+            });
         }
         return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/index.html"));
     }
@@ -318,13 +331,17 @@ public class MetadataController extends Handler {
     @SuppressWarnings({"rawtypes"})
     @RequestMapping("/synctodb")
     @Menu(type = "admin", subtype = "metadata", admin = true)
-    public ModelAndView synctodb(@Valid String id) throws BeansException, ClassNotFoundException {
+    public ModelAndView synctodb(@Valid String id) throws BeansException {
         if (!StringUtils.isBlank(id)) {
-            MetadataTable table = metadataRes.findById(id);
-            if (table.isFromdb() && !StringUtils.isBlank(table.getListblocktemplet())) {
+            metadataRes.findById(id).ifPresent(table -> {
+                if (!table.isFromdb() || StringUtils.isBlank(table.getListblocktemplet())) {
+                    return;
+                }
                 SysDic dic = Dict.getInstance().getDicItem(table.getListblocktemplet());
-
-                if (dic != null) {
+                if (dic == null) {
+                    return;
+                }
+                try {
                     Object bean = MainContext.getContext().getBean(Class.forName(dic.getCode()));
                     if (bean instanceof ElasticsearchRepository) {
                         ElasticsearchRepository jpa = (ElasticsearchRepository) bean;
@@ -336,8 +353,10 @@ public class MetadataController extends Handler {
                             }
                         }
                     }
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
-            }
+            });
         }
         return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/index.html"));
     }
