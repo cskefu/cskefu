@@ -19,26 +19,30 @@ package com.chatopera.cc.persistence.impl;
 import com.chatopera.cc.model.Topic;
 import com.chatopera.cc.persistence.es.TopicRepository;
 import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service("topic")
-public class TopicDataExchangeImpl implements DataExchangeInterface{
-	@Autowired
-	private TopicRepository topicRes ;
-	
-	public Topic getDataByIdAndOrgi(String id, String orgi){
-		return topicRes.findOne(id) ;
-	}
+@RequiredArgsConstructor
+public class TopicDataExchangeImpl implements DataExchangeInterface {
+    @NonNull
+    private final TopicRepository topicRes;
 
-	@Override
-	public List<Topic> getListDataByIdAndOrgi(String id , String creater, String orgi) {
-		return topicRes.getTopicByTopAndOrgi(true,orgi , id , 0, 10).getContent() ;
-	}
-	
-	public void process(Object data , String orgi) {
-		
-	}
+    @Nullable
+    public Topic getDataByIdAndOrgi(String id, String orgi) {
+        return topicRes.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Topic> getListDataByIdAndOrgi(String id, String creater, String orgi) {
+        return topicRes.getTopicByTopAndOrgi(true, orgi, id, 0, 10).getContent();
+    }
+
+    public void process(Object data, String orgi) {
+
+    }
 }
