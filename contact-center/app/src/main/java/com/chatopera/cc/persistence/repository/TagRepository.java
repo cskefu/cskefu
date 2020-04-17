@@ -25,19 +25,18 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface TagRepository  extends JpaRepository<Tag, String>
-{
-	
-	Tag findByOrgiAndTag(String orgi, String tag);
-	
-	Tag findByOrgiAndId(String orgi, String id);
+public interface TagRepository extends JpaRepository<Tag, String> {
 
-	@Query(value = "select t from Tag t where (:tagtype is null or t.tagtype = :tagtype) " +
+    Tag findByOrgiAndTag(String orgi, String tag);
+
+    Tag findByOrgiAndId(String orgi, String id);
+
+    @Query(value = "select t from Tag t where (:tagtype is null or t.tagtype = :tagtype) " +
             "and t.orgi = :orgi")
     Page<Tag> findByOrgiAndTagtype(@Param("orgi") String orgi, @Param("tagtype") String tagtype, Pageable paramPageable);
-	
-	List<Tag> findByOrgi(String orgi);
-	
-	List<Tag> findByOrgiAndTagtype(String orgi, String tagtype);
+
+    List<Tag> findByOrgi(String orgi);
+
+    List<Tag> findByOrgiAndTagtype(String orgi, String tagtype);
 }
 

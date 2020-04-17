@@ -22,10 +22,11 @@ import com.chatopera.cc.persistence.repository.TagRepository;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.RestResult;
 import com.chatopera.cc.util.RestResultType;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,21 +40,21 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/tags")
+@RequiredArgsConstructor
 public class UkefuApiTagsController extends Handler {
 
-	@Autowired
-	private TagRepository tagRes;
-	
-	/**
-	 * 按照分类获取标签列表
-	 * 按照分类获取标签列表，Type 参数类型来自于 枚举，可选值目前有三个 ： user  workorders summary
-	 * @param request
-	 * @param type 类型
-	 * @return
-	 */
-	@RequestMapping( method = RequestMethod.GET)
-	@Menu(type = "apps" , subtype = "tags" , access = true)
-    public ResponseEntity<RestResult> list(HttpServletRequest request , @Valid String type) {
-        return new ResponseEntity<>(new RestResult(RestResultType.OK, tagRes.findByOrgiAndTagtype(super.getOrgi(request) , !StringUtils.isBlank(type) ? type : MainContext.ModelType.USER.toString())), HttpStatus.OK);
+    @NonNull
+    private final TagRepository tagRes;
+
+    /**
+     * 按照分类获取标签列表
+     * 按照分类获取标签列表，Type 参数类型来自于 枚举，可选值目前有三个 ： user  workorders summary
+     *
+     * @param type 类型
+     */
+    @RequestMapping(method = RequestMethod.GET)
+    @Menu(type = "apps", subtype = "tags", access = true)
+    public ResponseEntity<RestResult> list(HttpServletRequest request, @Valid String type) {
+        return new ResponseEntity<>(new RestResult(RestResultType.OK, tagRes.findByOrgiAndTagtype(super.getOrgi(request), !StringUtils.isBlank(type) ? type : MainContext.ModelType.USER.toString())), HttpStatus.OK);
     }
 }

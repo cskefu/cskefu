@@ -29,7 +29,8 @@ import com.chatopera.cc.persistence.repository.QualityRepository;
 import com.chatopera.cc.persistence.repository.SessionConfigRepository;
 import com.chatopera.cc.persistence.repository.TagRepository;
 import com.chatopera.cc.util.Menu;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,22 +43,23 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/apps/quality")
+@RequiredArgsConstructor
 public class AgentQualityController extends Handler {
 
-    @Autowired
-    private ACDPolicyService acdPolicyService;
+    @NonNull
+    private final ACDPolicyService acdPolicyService;
 
-    @Autowired
-    private QualityRepository qualityRes;
+    @NonNull
+    private final QualityRepository qualityRes;
 
-    @Autowired
-    private SessionConfigRepository sessionConfigRes;
+    @NonNull
+    private final SessionConfigRepository sessionConfigRes;
 
-    @Autowired
-    private TagRepository tagRes;
+    @NonNull
+    private final TagRepository tagRes;
 
-    @Autowired
-    private Cache cache;
+    @NonNull
+    private final Cache cache;
 
     @RequestMapping(value = "/index")
     @Menu(type = "agent", subtype = "quality")
@@ -71,13 +73,13 @@ public class AgentQualityController extends Handler {
 
     @RequestMapping(value = "/save")
     @Menu(type = "agent", subtype = "quality")
-    public ModelAndView save(ModelMap map, HttpServletRequest request, @Valid QualityRequest qualityArray) {
-       String orgi = super.getOrgi(request);
+    public ModelAndView save(HttpServletRequest request, @Valid QualityRequest qualityArray) {
+        String orgi = super.getOrgi(request);
 
         if (qualityArray != null && qualityArray.getTitle() != null) {
             List<Quality> qualityList = qualityRes.findByQualitytypeAndOrgi(MainContext.QualityType.CHAT.toString(), super.getOrgi(request));
-            qualityRes.delete(qualityList);
-            List<Quality> tempList = new ArrayList<Quality>();
+            qualityRes.deleteAll(qualityList);
+            List<Quality> tempList = new ArrayList<>();
             for (int i = 0; i < qualityArray.getTitle().length; i++) {
                 Quality temp = new Quality();
                 temp.setName(qualityArray.getTitle()[i]);
@@ -92,7 +94,7 @@ public class AgentQualityController extends Handler {
                 tempList.add(temp);
             }
             if (tempList.size() > 0) {
-                qualityRes.save(tempList);
+                qualityRes.saveAll(tempList);
             }
             SessionConfig config = acdPolicyService.initSessionConfig(super.getOrgi(request));
             if (config != null) {
@@ -106,12 +108,12 @@ public class AgentQualityController extends Handler {
                 cache.putSessionConfigByOrgi(config, orgi);
                 cache.deleteSessionConfigListByOrgi(orgi);
             }
-            if (qualityArray != null && qualityArray.getTag() != null && qualityArray.getTag().length > 0) {
+            if (qualityArray.getTag() != null && qualityArray.getTag().length > 0) {
                 List<Tag> tagList = tagRes.findByOrgiAndTagtype(super.getOrgi(request), MainContext.TagType.QUALITY.toString());
                 if (tagList.size() > 0) {
-                    tagRes.delete(tagList);
+                    tagRes.deleteAll(tagList);
                 }
-                List<Tag> tagTempList = new ArrayList<Tag>();
+                List<Tag> tagTempList = new ArrayList<>();
                 for (String tag : qualityArray.getTag()) {
                     Tag temp = new Tag();
                     temp.setOrgi(super.getOrgi(request));
@@ -122,7 +124,7 @@ public class AgentQualityController extends Handler {
                     tagTempList.add(temp);
                 }
                 if (tagTempList.size() > 0) {
-                    tagRes.save(tagTempList);
+                    tagRes.saveAll(tagTempList);
                 }
             }
         }
