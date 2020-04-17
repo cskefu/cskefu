@@ -22,28 +22,21 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface QuickTypeRepository extends JpaRepository<QuickType, String> {
-	
+
 	QuickType findByIdAndOrgi(String id, String orgi);
 
 	int countByNameAndOrgi(String name, String orgi);
-	
+
 	/**
 	 * 获取所有的公共分类
-	 * @param orgi
-	 * @param quicktype
-	 * @return
 	 */
     List<QuickType> findByOrgiAndQuicktype(String orgi, String quicktype) ;
-	
+
 	/**
 	 * 获取个人分类
-	 * @param orgi
-	 * @param quicktype
-	 * @param creater
-	 * @return
 	 */
     List<QuickType> findByOrgiAndQuicktypeAndCreater(String orgi, String quicktype, String creater) ;
-	
+
 	int countByOrgiAndNameAndParentid(String orgi, String name, String parentid) ;
 
 	QuickType findByOrgiAndName(String orgi, String name);

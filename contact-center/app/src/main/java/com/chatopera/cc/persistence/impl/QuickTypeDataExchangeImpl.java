@@ -19,28 +19,30 @@ package com.chatopera.cc.persistence.impl;
 import com.chatopera.cc.model.QuickType;
 import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
 import com.chatopera.cc.persistence.repository.QuickTypeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.List;
 
 @Service("quicktypedata")
+@RequiredArgsConstructor
 public class QuickTypeDataExchangeImpl implements DataExchangeInterface {
-	@Autowired
-	private QuickTypeRepository quickTypeRes ;
-	
-	public String getDataByIdAndOrgi(String id, String orgi){
-		QuickType quickType = quickTypeRes.findByIdAndOrgi(id,orgi);
-		return quickType!=null ? quickType.getName() : id;
-	}
+    @NonNull
+    private final QuickTypeRepository quickTypeRes;
 
-	@Override
-	public List<Serializable> getListDataByIdAndOrgi(String id , String creater, String orgi) {
-		return null ;
-	}
-	
-	public void process(Object data , String orgi) {
-		
-	}
+    public String getDataByIdAndOrgi(String id, String orgi) {
+        QuickType quickType = quickTypeRes.findByIdAndOrgi(id, orgi);
+        return quickType != null ? quickType.getName() : id;
+    }
+
+    @Override
+    public List<Serializable> getListDataByIdAndOrgi(String id, String creater, String orgi) {
+        return null;
+    }
+
+    public void process(Object data, String orgi) {
+
+    }
 }
