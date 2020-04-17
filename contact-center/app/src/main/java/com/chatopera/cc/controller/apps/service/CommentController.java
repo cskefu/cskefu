@@ -20,27 +20,27 @@ import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.AgentService;
 import com.chatopera.cc.persistence.repository.AgentServiceRepository;
 import com.chatopera.cc.util.Menu;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/service")
-public class CommentController extends Handler{
-	@Autowired
-	private AgentServiceRepository agentServiceRes ;
-
+@RequiredArgsConstructor
+public class CommentController extends Handler {
+    @NonNull
+    private final AgentServiceRepository agentServiceRes;
 
     @RequestMapping("/comment/index")
-    @Menu(type = "service" , subtype = "comment" , admin= true)
-    public ModelAndView index(ModelMap map , HttpServletRequest request , String userid , String agentservice , @Valid String channel) {
+    @Menu(type = "service", subtype = "comment", admin = true)
+    public ModelAndView index(ModelMap map, HttpServletRequest request) {
         Page<AgentService> agentServiceList = agentServiceRes.findByOrgiAndSatisfaction(super.getOrgi(request), true, PageRequest.of(super.getP(request), super.getPs(request)));
         map.addAttribute("serviceList", agentServiceList);
         return request(super.createAppsTempletResponse("/apps/service/comment/index"));

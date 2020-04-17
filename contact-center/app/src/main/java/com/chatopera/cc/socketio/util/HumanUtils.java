@@ -30,6 +30,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 public class HumanUtils {
     private final static Logger logger = LoggerFactory.getLogger(HumanUtils.class);
     private static AgentServiceRepository agentServiceRes;
@@ -37,9 +39,6 @@ public class HumanUtils {
 
     /**
      * 发送文本消息
-     *
-     * @param data
-     * @param userid
      */
     public static void processMessage(ChatMessage data, String userid) {
         processMessage(data, MainContext.MediaType.TEXT.toString(), userid);
@@ -47,10 +46,6 @@ public class HumanUtils {
 
     /**
      * 发送各种消息的底层方法
-     *
-     * @param chatMessage
-     * @param msgtype
-     * @param userid
      */
     protected static void processMessage(final ChatMessage chatMessage, final String msgtype, final String userid) {
         logger.info("[processMessage] userid {}, msgtype {}", userid, msgtype);
@@ -59,7 +54,7 @@ public class HumanUtils {
 
         Message outMessage = new Message();
 
-        /**
+        /*
          * 访客的昵称
          */
         // TODO 确定该值代表访客昵称
@@ -67,10 +62,12 @@ public class HumanUtils {
                 agentUser.getNickname()) ? agentUser.getNickname() : "";
 
         if (agentUser != null && StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-            AgentService agentService = getAgentServiceRes().findOne(
-                    agentUser.getAgentserviceid());
-            if (StringUtils.isNotBlank(agentService.getUsername())) {
-                userNickName = agentService.getUsername();
+            Optional<AgentService> optional = getAgentServiceRes().findById(agentUser.getAgentserviceid());
+            if (optional.isPresent()) {
+                AgentService agentService = optional.get();
+                if (StringUtils.isNotBlank(agentService.getUsername())) {
+                    userNickName = agentService.getUsername();
+                }
             }
         }
 
@@ -121,23 +118,23 @@ public class HumanUtils {
         if (StringUtils.isNotBlank(chatMessage.getUserid()) && MainContext.MessageType.MESSAGE.toString().equals(
                 chatMessage.getType())) {
             MainContext.getPeerSyncIM().send(ReceiverType.VISITOR, ChannelType.toValue(outMessage.getChannel()),
-                                             outMessage.getAppid(), MessageType.MESSAGE, chatMessage.getUserid(),
-                                             outMessage, true);
+                    outMessage.getAppid(), MessageType.MESSAGE, chatMessage.getUserid(),
+                    outMessage, true);
             if (statusMessage != null) {
                 MainContext.getPeerSyncIM().send(ReceiverType.VISITOR, ChannelType.toValue(outMessage.getChannel()),
-                                                 outMessage.getAppid(), MessageType.STATUS, chatMessage.getUserid(),
-                                                 statusMessage, true);
+                        outMessage.getAppid(), MessageType.STATUS, chatMessage.getUserid(),
+                        statusMessage, true);
             }
         }
 
         // 将消息发送给 坐席
         if (agentUser != null && StringUtils.isNotBlank(agentUser.getAgentno())) {
             MainContext.getPeerSyncIM().send(ReceiverType.AGENT,
-                                             ChannelType.WEBIM,
-                                             agentUser.getAppid(),
-                                             MessageType.MESSAGE,
-                                             agentUser.getAgentno(),
-                                             outMessage, true);
+                    ChannelType.WEBIM,
+                    agentUser.getAppid(),
+                    MessageType.MESSAGE,
+                    agentUser.getAgentno(),
+                    outMessage, true);
         }
     }
 
