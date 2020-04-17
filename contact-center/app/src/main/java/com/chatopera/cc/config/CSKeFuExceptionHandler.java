@@ -27,13 +27,13 @@ public class CSKeFuExceptionHandler implements ExceptionHandler<Object>{
 
 	@Override
 	public void handleOnShutdownException(Throwable ex) {
-		
+
 	}
 
 	@Override
 	public void handleOnStartException(Throwable ex) {
-		// TODO Auto-generated method stub
-		
+
+
 	}
 
 }

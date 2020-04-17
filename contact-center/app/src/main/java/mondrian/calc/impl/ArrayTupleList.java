@@ -9,10 +9,16 @@
 
 package mondrian.calc.impl;
 
-import mondrian.calc.*;
-import mondrian.olap.*;
+import mondrian.calc.TupleCursor;
+import mondrian.calc.TupleIterator;
+import mondrian.calc.TupleList;
+import mondrian.olap.Evaluator;
+import mondrian.olap.Member;
+import mondrian.olap.Util;
 
-import java.util.*;
+import java.util.AbstractList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Implementation of {@link TupleList} that stores tuples end-to-end in an
@@ -254,14 +260,14 @@ public class ArrayTupleList extends AbstractEndToEndTupleList
 
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
-		return count;
+
+        return count;
 	}
 
 	@Override
 	public void setCount(int count) {
-		// TODO Auto-generated method stub
-		this.count = count;
+
+        this.count = count;
 	}
 }
 

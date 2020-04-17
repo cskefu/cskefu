@@ -528,7 +528,7 @@ public class UKExcelUtil {
     }
 
     public String getHeadTitle() {
-        // TODO Auto-generated method stub
+
         return this.headTitle;
     }
 
@@ -537,7 +537,7 @@ public class UKExcelUtil {
     }
 
     public String getStartTime() {
-        // TODO Auto-generated method stub
+
         return this.startTime;
     }
 
@@ -546,7 +546,7 @@ public class UKExcelUtil {
     }
 
     public String getEndTime() {
-        // TODO Auto-generated method stub
+
         return this.endTime;
     }
 
@@ -555,12 +555,12 @@ public class UKExcelUtil {
     }
 
     public void createSheet(String sheetName) throws Exception {
-        // TODO Auto-generated method stub
+
         this.sheet = wb.createSheet(sheetName);
     }
 
     public int getRowNum() throws Exception {
-        // TODO Auto-generated method stub
+
         return rowNum;
     }
 
@@ -578,17 +578,17 @@ public class UKExcelUtil {
     }
 
     public void setOut(OutputStream out) throws Exception {
-        // TODO Auto-generated method stub
+
         this.out = out;
     }
 
     public int getPage() {
-        // TODO Auto-generated method stub
+
         return this.page;
     }
 
     public void setPage(int page) {
-        // TODO Auto-generated method stub
+
         this.page = page;
     }
 
@@ -610,12 +610,12 @@ public class UKExcelUtil {
     }
 
     public ReportData getReportData() {
-        // TODO Auto-generated method stub
+
         return this.reportData;
     }
 
     public void setReportData(ReportData reportData) {
-        // TODO Auto-generated method stub
+
         this.reportData = reportData;
     }
 
