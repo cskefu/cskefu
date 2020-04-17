@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -44,6 +45,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -230,7 +232,7 @@ public class EntIMController extends Handler {
     @Menu(type = "im", subtype = "entim")
     public ModelAndView groupMore(HttpServletRequest request, @Valid String id) {
         ModelAndView view = request(super.createEntIMTempletResponse("/apps/entim/group/index"));
-        IMGroup imGroup = imGroupRes.findById(id);
+        IMGroup imGroup = imGroupRes.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("IMGroup %s not found", id)));
         view.addObject("imGroup", imGroup);
         view.addObject("imGroupUserList", imGroupUserRes.findByImgroupAndOrgi(imGroup, super.getOrgi(request)));
         view.addObject("contextid", id);
@@ -264,7 +266,7 @@ public class EntIMController extends Handler {
         users.forEach(userProxy::attachOrgansPropertiesForUser);
         view.addObject("userList", users);
 
-        IMGroup imGroup = imGroupRes.findById(id);
+        IMGroup imGroup = imGroupRes.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("IMGroup %s not found", id)));
         List<Organ> organs = organRes.findAllById(affiliates);
 
         view.addObject("imGroup", imGroup);
@@ -318,12 +320,11 @@ public class EntIMController extends Handler {
             @Valid String tipmsg
     ) {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/entim/group/tipmsg"));
-        IMGroup imGroup = imGroupRes.findById(id);
-        if (imGroup != null) {
+        imGroupRes.findById(id).ifPresent(imGroup -> {
             imGroup.setTipmessage(tipmsg);
             imGroupRes.save(imGroup);
-        }
-        view.addObject("imGroup", imGroup);
+            view.addObject("imGroup", imGroup);
+        });
         return view;
     }
 
