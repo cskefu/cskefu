@@ -24,13 +24,13 @@ import java.util.List;
 public interface ReportFilterRepository extends JpaRepository<ReportFilter, String> {
 
 
-	ReportFilter findByIdAndOrgi(String id, String orgi);
-	
-	ReportFilter findById(String id);
+    ReportFilter findByIdAndOrgi(String id, String orgi);
 
-	List<ReportFilter> findByModelidOrderBySortindexAsc(String modelid);
+    // ReportFilter findById(String id);
 
-	List<ReportFilter> findByCascadeidAndOrgi(String id, String orgi);
+    List<ReportFilter> findByModelidOrderBySortindexAsc(String modelid);
 
-	List<ReportFilter> findByReportidAndFiltertypeAndOrgi(String reportid, String filtertype, String orgi);
+    List<ReportFilter> findByCascadeidAndOrgi(String id, String orgi);
+
+    List<ReportFilter> findByReportidAndFiltertypeAndOrgi(String reportid, String filtertype, String orgi);
 }
