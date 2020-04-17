@@ -18,23 +18,22 @@ package com.chatopera.cc.util.dsdata.process;
 
 import com.chatopera.cc.model.QuickReply;
 import com.chatopera.cc.persistence.es.QuickReplyRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 
-public class QuickReplyProcess implements JPAProcess{
-	
-	private QuickReplyRepository quickReplyRes ;
-	
-	public QuickReplyProcess(QuickReplyRepository quickReplyRes){
-		this.quickReplyRes = quickReplyRes ;
-	}
+@RequiredArgsConstructor
+public class QuickReplyProcess implements JPAProcess {
+    @NonNull
+    private final QuickReplyRepository quickReplyRes;
 
-	@Override
-	public void process(Object data) {
-		quickReplyRes.save((QuickReply)data) ;
-	}
+    @Override
+    public void process(Object data) {
+        quickReplyRes.save((QuickReply) data);
+    }
 
-	@Override
-	public void end() {
-		
-	}
+    @Override
+    public void end() {
+
+    }
 
 }
