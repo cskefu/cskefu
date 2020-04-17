@@ -18,7 +18,6 @@ package com.chatopera.cc.persistence.es;
 
 import com.chatopera.cc.model.KbsTopicComment;
 import com.chatopera.cc.model.Topic;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
@@ -28,8 +27,12 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.EntityMapper;
+import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
+import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentProperty;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
+import org.springframework.data.mapping.context.MappingContext;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
@@ -38,7 +41,6 @@ import java.util.List;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 @Component
-@RequiredArgsConstructor
 public class KbsTopicCommentRepositoryImpl implements KbsTopicCommentEsCommonRepository {
 
     @NonNull
@@ -49,6 +51,13 @@ public class KbsTopicCommentRepositoryImpl implements KbsTopicCommentEsCommonRep
     private final UKAggResultExtractor ukAggResultExtractor;
     @NonNull
     private final UKAggTopResultExtractor ukAggTopResultExtractor;
+
+    public KbsTopicCommentRepositoryImpl(@NonNull UKResultMapper resultMapper, @NonNull ElasticsearchTemplate elasticsearchTemplate, @NonNull EntityMapper entityMapper, @NonNull MappingContext<? extends ElasticsearchPersistentEntity<?>, ElasticsearchPersistentProperty> mappingContext) {
+        this.resultMapper = resultMapper;
+        this.elasticsearchTemplate = elasticsearchTemplate;
+        ukAggTopResultExtractor = new UKAggTopResultExtractor(entityMapper, mappingContext);
+        ukAggResultExtractor = new UKAggResultExtractor(entityMapper, mappingContext);
+    }
 
     @Override
     public Page<KbsTopicComment> findByDataid(String id, int p, int ps) {

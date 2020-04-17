@@ -31,12 +31,10 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentProperty;
 import org.springframework.data.mapping.context.MappingContext;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 public class UKAggTopResultExtractor extends UKResultMapper {
 
     @Setter
