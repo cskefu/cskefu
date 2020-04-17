@@ -17,6 +17,8 @@
 
 **开发环境搭建：** [https://github.com/chatopera/cosin/wiki/春松客服：开发环境](https://github.com/chatopera/cosin/wiki/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%EF%BC%9A%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83)
 
+**春松客服团队博客:** [https://blog.chatopera.com/](https://blog.chatopera.com/)
+
 ## 内容结构
 
 |                                                                                     |                                                                                                           |                                                                                                           |
