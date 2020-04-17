@@ -137,7 +137,8 @@ public class TopicController extends Handler {
             /*
              * 重新缓存
              */
-            OnlineUserProxy.resetHotTopic((DataExchangeInterface) MainContext.getContext().getBean("topic"), super.getUser(request), super.getOrgi(request), aiid);
+            DataExchangeInterface dataExchangeInterface = (DataExchangeInterface) MainContext.getContext().getBean("topic");
+            OnlineUserProxy.resetHotTopic(dataExchangeInterface, super.getOrgi(request), aiid);
         }
         return request(super.createRequestPageTempletResponse("redirect:/apps/topic.html" + (!StringUtils.isBlank(type) ? "?type=" + type : "")));
     }
@@ -189,7 +190,8 @@ public class TopicController extends Handler {
             /*
              * 重新缓存
              */
-            OnlineUserProxy.resetHotTopic((DataExchangeInterface) MainContext.getContext().getBean("topic"), super.getUser(request), super.getOrgi(request), aiid);
+            DataExchangeInterface dataExchangeInterface = (DataExchangeInterface) MainContext.getContext().getBean("topic");
+            OnlineUserProxy.resetHotTopic(dataExchangeInterface, super.getOrgi(request), aiid);
         }
         return request(super.createRequestPageTempletResponse("redirect:/apps/topic.html" + (!StringUtils.isBlank(type) ? "?type=" + type : "")));
     }
@@ -204,7 +206,8 @@ public class TopicController extends Handler {
              */
             topicItemRes.deleteAll(topicItemRes.findByTopicid(id));
 
-            OnlineUserProxy.resetHotTopic((DataExchangeInterface) MainContext.getContext().getBean("topic"), super.getUser(request), super.getOrgi(request), aiid);
+            DataExchangeInterface dataExchangeInterface = (DataExchangeInterface) MainContext.getContext().getBean("topic");
+            OnlineUserProxy.resetHotTopic(dataExchangeInterface, super.getOrgi(request), aiid);
         }
         return request(super.createRequestPageTempletResponse("redirect:/apps/topic.html" + (!StringUtils.isBlank(type) ? "?type=" + type : "")));
     }
@@ -242,7 +245,8 @@ public class TopicController extends Handler {
             }
             type.setCreater(super.getUser(request).getId());
             knowledgeTypeRes.save(type);
-            OnlineUserProxy.resetHotTopicType((DataExchangeInterface) MainContext.getContext().getBean("topictype"), super.getUser(request), super.getOrgi(request), aiid);
+            DataExchangeInterface dataExchangeInterface = (DataExchangeInterface) MainContext.getContext().getBean("topictype");
+            OnlineUserProxy.resetHotTopicType(dataExchangeInterface, super.getOrgi(request), aiid);
         } else {
             return request(super.createRequestPageTempletResponse("redirect:/apps/topic.html?aiid=" + aiid + "&msg=k_type_exist"));
         }
@@ -279,7 +283,8 @@ public class TopicController extends Handler {
                 temp.setTypeid(type.getParentid());
             }
             knowledgeTypeRes.save(temp);
-            OnlineUserProxy.resetHotTopicType((DataExchangeInterface) MainContext.getContext().getBean("topictype"), super.getUser(request), super.getOrgi(request), aiid);
+            DataExchangeInterface dataExchangeInterface = (DataExchangeInterface) MainContext.getContext().getBean("topictype");
+            OnlineUserProxy.resetHotTopicType(dataExchangeInterface, super.getOrgi(request), aiid);
         } else {
             return request(super.createRequestPageTempletResponse("redirect:/apps/topic.html?aiid=" + aiid + "&msg=k_type_exist&type=" + type.getId()));
         }
@@ -294,7 +299,7 @@ public class TopicController extends Handler {
         if (page.getTotalElements() == 0) {
             if (!StringUtils.isBlank(id)) {
                 knowledgeTypeRes.deleteById(id);
-                OnlineUserProxy.resetHotTopicType((DataExchangeInterface) MainContext.getContext().getBean("topictype"), super.getUser(request), super.getOrgi(request), aiid);
+                OnlineUserProxy.resetHotTopicType((DataExchangeInterface) MainContext.getContext().getBean("topictype"), super.getOrgi(request), aiid);
             }
         } else {
             msg = "notempty";
@@ -325,7 +330,7 @@ public class TopicController extends Handler {
         if (temp != null) {
             temp.setArea(type.getArea());
             knowledgeTypeRes.save(temp);
-            OnlineUserProxy.resetHotTopicType((DataExchangeInterface) MainContext.getContext().getBean("topictype"), super.getUser(request), super.getOrgi(request), aiid);
+            OnlineUserProxy.resetHotTopicType((DataExchangeInterface) MainContext.getContext().getBean("topictype"), super.getOrgi(request), aiid);
         }
         return request(super.createRequestPageTempletResponse("redirect:/apps/topic.html?type=" + type.getId()));
     }
