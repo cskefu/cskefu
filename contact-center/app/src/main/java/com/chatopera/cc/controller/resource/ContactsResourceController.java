@@ -19,8 +19,9 @@ package com.chatopera.cc.controller.resource;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.persistence.es.ContactsRepository;
 import com.chatopera.cc.util.Menu;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,14 +31,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
-public class ContactsResourceController extends Handler{
+@RequiredArgsConstructor
+public class ContactsResourceController extends Handler {
 
-	@Autowired
-	private ContactsRepository contactsRes ;
+    @NonNull
+    private final ContactsRepository contactsRes;
 
     @RequestMapping("/res/contacts")
-    @Menu(type = "res" , subtype = "contacts")
-    public ModelAndView add(ModelMap map , HttpServletRequest request , @Valid String q) {
+    @Menu(type = "res", subtype = "contacts")
+    public ModelAndView add(ModelMap map, HttpServletRequest request, @Valid String q) {
         if (q == null) {
             q = "";
         }

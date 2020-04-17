@@ -23,6 +23,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings({"unused", "SqlResolve", "JpaQlInspection"})
 public interface ContactsRepository extends ElasticsearchRepository<Contacts, String>, ContactsEsCommonRepository {
 
     int countByDatastatusIsFalseAndPhoneAndOrgi(String phone, String orgi);

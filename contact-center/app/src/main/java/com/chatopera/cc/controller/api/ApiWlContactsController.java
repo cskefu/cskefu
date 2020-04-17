@@ -28,15 +28,16 @@ import com.chatopera.cc.util.RestResult;
 import com.chatopera.cc.util.RestResultType;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,24 +55,20 @@ import java.util.Date;
  */
 @RestController
 @RequestMapping("/api/wl/contacts")
+@RequiredArgsConstructor
 public class ApiWlContactsController extends Handler {
     final private static Logger logger = LoggerFactory.getLogger(ApiWlContactsController.class);
 
-    @Autowired
-    private ContactsRepository contactsRes;
+    @NonNull
+    private final ContactsRepository contactsRes;
 
     /**
      * 返回联系人列表，支持分页，分页参数为 p=1&ps=50，默认分页尺寸为 20条每页
-     *
-     * @param request
-     * @param creater
-     * @param q
-     * @return
      */
     @RequestMapping(method = RequestMethod.GET)
     @Menu(type = "apps", subtype = "contacts", access = true)
     public ResponseEntity<RestResult> list(HttpServletRequest request, @Valid String creater, @Valid String q) {
-        Page<Contacts> contactsList = null;
+        Page<Contacts> contactsList;
         if (StringUtils.isNotBlank(creater)) {
             User user = super.getUser(request);
             contactsList = contactsRes.findByCreaterAndSharesAndOrgi(
@@ -88,15 +85,11 @@ public class ApiWlContactsController extends Handler {
 
     /**
      * 联系人
-     *
-     * @param request
-     * @param body
-     * @return
      */
     @RequestMapping(method = RequestMethod.POST)
     @Menu(type = "apps", subtype = "contacts", access = true)
     public ResponseEntity<String> operations(HttpServletRequest request, @RequestBody final String body) {
-        final JsonObject j = (new JsonParser()).parse(body).getAsJsonObject();
+        final JsonObject j = JsonParser.parseString(body).getAsJsonObject();
         logger.info("[wl/contacts api] operations payload {}", j.toString());
         JsonObject result = new JsonObject();
         HttpHeaders headers = RestUtils.header();
@@ -106,25 +99,18 @@ public class ApiWlContactsController extends Handler {
             result.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_1);
             result.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的请求参数。");
         } else {
-            switch (StringUtils.lowerCase(j.get("ops").getAsString())) {
-                case "create": // 增加联系人类型
-                    result = createContact(logined.getId(), logined.getOrgi(), j);
-                    break;
-                default:
-                    logger.info("[wl/contacts api] unknown operation {}", j.toString());
+            if ("create".equals(StringUtils.lowerCase(j.get("ops").getAsString()))) { // 增加联系人类型
+                result = createContact(logined.getId(), logined.getOrgi(), j);
+            } else {
+                logger.info("[wl/contacts api] unknown operation {}", j.toString());
             }
         }
-        return new ResponseEntity<String>(result.toString(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(result.toString(), headers, HttpStatus.OK);
     }
 
     /**
      * 创建/更新联系人
      * 通过UID和SID和CID唯一确定一个联系人
-     *
-     * @param creator
-     * @param orgi
-     * @param j
-     * @return
      */
     private JsonObject createContact(
             final String creator,
