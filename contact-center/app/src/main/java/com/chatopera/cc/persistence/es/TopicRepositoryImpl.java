@@ -37,22 +37,23 @@ import java.util.List;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 @Component
-public class TopicRepositoryImpl implements TopicEsCommonRepository{
-	private ElasticsearchTemplate elasticsearchTemplate;
+public class TopicRepositoryImpl implements TopicEsCommonRepository {
+    private ElasticsearchTemplate elasticsearchTemplate;
 
-	@Autowired
-	public void setElasticsearchTemplate(ElasticsearchTemplate elasticsearchTemplate) {
+    @Autowired
+    public void setElasticsearchTemplate(ElasticsearchTemplate elasticsearchTemplate) {
         this.elasticsearchTemplate = elasticsearchTemplate;
     }
-	@Override
-	public Page<Topic> getTopicByCateAndOrgi(String cate ,String orgi, String q, final int p , final int ps) {
 
-		Page<Topic> pages  = null ;
+    @Override
+    public Page<Topic> getTopicByCateAndOrgi(String cate, String orgi, String q, final int p, final int ps) {
 
-		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-		if(!StringUtils.isBlank(cate)) {
-			boolQueryBuilder.must(termQuery("cate" , cate)) ;
-		}
+        Page<Topic> pages = null;
+
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        if (!StringUtils.isBlank(cate)) {
+            boolQueryBuilder.must(termQuery("cate", cate));
+        }
         boolQueryBuilder.must(termQuery("orgi", orgi));
         if (!StringUtils.isBlank(q)) {
             boolQueryBuilder.must(new QueryStringQueryBuilder(q).defaultOperator(Operator.AND));
@@ -66,21 +67,20 @@ public class TopicRepositoryImpl implements TopicEsCommonRepository{
         return pages;
     }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public Page<Topic> getTopicByTopAndOrgi(boolean top ,String orgi, String aiid ,final int p , final int ps) {
+    @Override
+    public Page<Topic> getTopicByTopAndOrgi(boolean top, String orgi, String aiid, final int p, final int ps) {
 
-		Page<Topic> pages  = null ;
+        Page<Topic> pages = null;
 
-		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-		boolQueryBuilder.must(termQuery("top" , top)) ;
-		boolQueryBuilder.must(termQuery("orgi" , orgi)) ;
-		if(!StringUtils.isBlank(aiid)) {
-			boolQueryBuilder.must(termQuery("aiid" , aiid)) ;
-		}
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        boolQueryBuilder.must(termQuery("top", top));
+        boolQueryBuilder.must(termQuery("orgi", orgi));
+        if (!StringUtils.isBlank(aiid)) {
+            boolQueryBuilder.must(termQuery("aiid", aiid));
+        }
 
-		QueryBuilder beginFilter = QueryBuilders.boolQuery().should(QueryBuilders.missingQuery("begintime")).should(QueryBuilders.rangeQuery("begintime").to(new Date().getTime())) ;
-        QueryBuilder endFilter = QueryBuilders.boolQuery().should(QueryBuilders.missingQuery("endtime")).should(QueryBuilders.rangeQuery("endtime").from(new Date().getTime()));
+        QueryBuilder beginFilter = QueryBuilders.boolQuery().should(QueryBuilders.existsQuery("begintime")).should(QueryBuilders.rangeQuery("begintime").to(new Date().getTime()));
+        QueryBuilder endFilter = QueryBuilders.boolQuery().should(QueryBuilders.existsQuery("endtime")).should(QueryBuilders.rangeQuery("endtime").from(new Date().getTime()));
 
         NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).withFilter(QueryBuilders.boolQuery().must(beginFilter).must(endFilter)).withSort(new FieldSortBuilder("createtime").unmappedType("date").order(SortOrder.DESC));
 
@@ -94,12 +94,12 @@ public class TopicRepositoryImpl implements TopicEsCommonRepository{
     }
 
     @Override
-	public Page<Topic> getTopicByCateAndUser(String cate  , String q , String user ,final int p , final int ps) {
+    public Page<Topic> getTopicByCateAndUser(String cate, String q, String user, final int p, final int ps) {
 
-		Page<Topic> pages  = null ;
+        Page<Topic> pages = null;
 
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-		boolQueryBuilder.must(termQuery("cate" , cate)) ;
+        boolQueryBuilder.must(termQuery("cate", cate));
 
         if (!StringUtils.isBlank(q)) {
             boolQueryBuilder.must(new QueryStringQueryBuilder(q).defaultOperator(Operator.AND));
@@ -113,14 +113,13 @@ public class TopicRepositoryImpl implements TopicEsCommonRepository{
         return pages;
     }
 
-    @SuppressWarnings("deprecation")
-	@Override
-	public Page<Topic> getTopicByCon(BoolQueryBuilder boolQueryBuilder, final int p , final int ps) {
+    @Override
+    public Page<Topic> getTopicByCon(BoolQueryBuilder boolQueryBuilder, final int p, final int ps) {
 
         Page<Topic> pages = null;
 
-        QueryBuilder beginFilter = QueryBuilders.boolQuery().should(QueryBuilders.missingQuery("begintime")).should(QueryBuilders.rangeQuery("begintime").to(new Date().getTime()));
-        QueryBuilder endFilter = QueryBuilders.boolQuery().should(QueryBuilders.missingQuery("endtime")).should(QueryBuilders.rangeQuery("endtime").from(new Date().getTime()));
+        QueryBuilder beginFilter = QueryBuilders.boolQuery().should(QueryBuilders.existsQuery("begintime")).should(QueryBuilders.rangeQuery("begintime").to(new Date().getTime()));
+        QueryBuilder endFilter = QueryBuilders.boolQuery().should(QueryBuilders.existsQuery("endtime")).should(QueryBuilders.rangeQuery("endtime").from(new Date().getTime()));
 
         NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).withFilter(QueryBuilders.boolQuery().must(beginFilter).must(endFilter)).withSort(new FieldSortBuilder("createtime").unmappedType("date").order(SortOrder.DESC));
         SearchQuery searchQuery = searchQueryBuilder.build().setPageable(PageRequest.of(p, ps));
@@ -129,17 +128,18 @@ public class TopicRepositoryImpl implements TopicEsCommonRepository{
         }
         return pages;
     }
-	@Override
-	public List<Topic> getTopicByOrgi(String orgi , String type, String q) {
 
-        List<Topic> list  = null ;
+    @Override
+    public List<Topic> getTopicByOrgi(String orgi, String type, String q) {
+
+        List<Topic> list = null;
 
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-		boolQueryBuilder.must(termQuery("orgi" , orgi)) ;
+        boolQueryBuilder.must(termQuery("orgi", orgi));
 
-        if(!StringUtils.isBlank(type)){
-			boolQueryBuilder.must(termQuery("cate" , type)) ;
-		}
+        if (!StringUtils.isBlank(type)) {
+            boolQueryBuilder.must(termQuery("cate", type));
+        }
 
         if (!StringUtils.isBlank(q)) {
             boolQueryBuilder.must(new QueryStringQueryBuilder(q).defaultOperator(Operator.AND));

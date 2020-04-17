@@ -36,15 +36,16 @@ import java.util.List;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 @Component
-public class KbsTopicRepositoryImpl implements KbsTopicEsCommonRepository{
-	private ElasticsearchTemplate elasticsearchTemplate;
+public class KbsTopicRepositoryImpl implements KbsTopicEsCommonRepository {
+    private ElasticsearchTemplate elasticsearchTemplate;
 
-	@Autowired
-	public void setElasticsearchTemplate(ElasticsearchTemplate elasticsearchTemplate) {
+    @Autowired
+    public void setElasticsearchTemplate(ElasticsearchTemplate elasticsearchTemplate) {
         this.elasticsearchTemplate = elasticsearchTemplate;
     }
-	@Override
-	public Page<KbsTopic> getTopicByCate(String cate , String q, final int p , final int ps) {
+
+    @Override
+    public Page<KbsTopic> getTopicByCate(String cate, String q, final int p, final int ps) {
 
         Page<KbsTopic> pages = null;
 
@@ -63,17 +64,16 @@ public class KbsTopicRepositoryImpl implements KbsTopicEsCommonRepository{
         return pages;
     }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public Page<KbsTopic> getTopicByTop(boolean top , final int p , final int ps) {
+    @Override
+    public Page<KbsTopic> getTopicByTop(boolean top, final int p, final int ps) {
 
-		Page<KbsTopic> pages  = null ;
+        Page<KbsTopic> pages = null;
 
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         boolQueryBuilder.must(termQuery("top", top));
 
-        QueryBuilder beginFilter = QueryBuilders.boolQuery().should(QueryBuilders.missingQuery("begintime")).should(QueryBuilders.rangeQuery("begintime").from(new Date().getTime()));
-        QueryBuilder endFilter = QueryBuilders.boolQuery().should(QueryBuilders.missingQuery("endtime")).should(QueryBuilders.rangeQuery("endtime").to(new Date().getTime()));
+        QueryBuilder beginFilter = QueryBuilders.boolQuery().should(QueryBuilders.existsQuery("begintime")).should(QueryBuilders.rangeQuery("begintime").from(new Date().getTime()));
+        QueryBuilder endFilter = QueryBuilders.boolQuery().should(QueryBuilders.existsQuery("endtime")).should(QueryBuilders.rangeQuery("endtime").to(new Date().getTime()));
 
         NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).withFilter(QueryBuilders.boolQuery().must(beginFilter).must(endFilter)).withSort(new FieldSortBuilder("createtime").unmappedType("date").order(SortOrder.DESC));
 
@@ -85,8 +85,8 @@ public class KbsTopicRepositoryImpl implements KbsTopicEsCommonRepository{
         return pages;
     }
 
-	@Override
-	public Page<KbsTopic> getTopicByCateAndUser(String cate  , String q , String user ,final int p , final int ps) {
+    @Override
+    public Page<KbsTopic> getTopicByCateAndUser(String cate, String q, String user, final int p, final int ps) {
 
         Page<KbsTopic> pages = null;
 
@@ -105,14 +105,13 @@ public class KbsTopicRepositoryImpl implements KbsTopicEsCommonRepository{
         return pages;
     }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public Page<KbsTopic> getTopicByCon(BoolQueryBuilder boolQueryBuilder, final int p , final int ps) {
+    @Override
+    public Page<KbsTopic> getTopicByCon(BoolQueryBuilder boolQueryBuilder, final int p, final int ps) {
 
         Page<KbsTopic> pages = null;
 
-        QueryBuilder beginFilter = QueryBuilders.boolQuery().should(QueryBuilders.missingQuery("begintime")).should(QueryBuilders.rangeQuery("begintime").from(new Date().getTime()));
-        QueryBuilder endFilter = QueryBuilders.boolQuery().should(QueryBuilders.missingQuery("endtime")).should(QueryBuilders.rangeQuery("endtime").to(new Date().getTime()));
+        QueryBuilder beginFilter = QueryBuilders.boolQuery().should(QueryBuilders.existsQuery("begintime")).should(QueryBuilders.rangeQuery("begintime").from(new Date().getTime()));
+        QueryBuilder endFilter = QueryBuilders.boolQuery().should(QueryBuilders.existsQuery("endtime")).should(QueryBuilders.rangeQuery("endtime").to(new Date().getTime()));
 
         NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).withFilter(QueryBuilders.boolQuery().must(beginFilter).must(endFilter)).withSort(new FieldSortBuilder("createtime").unmappedType("date").order(SortOrder.DESC));
 
@@ -122,27 +121,28 @@ public class KbsTopicRepositoryImpl implements KbsTopicEsCommonRepository{
         }
         return pages;
     }
-	@Override
-	public List<KbsTopic> getTopicByOrgi(String orgi , String type, String q) {
 
-		List<KbsTopic> list  = null ;
+    @Override
+    public List<KbsTopic> getTopicByOrgi(String orgi, String type, String q) {
 
-		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-		boolQueryBuilder.must(termQuery("orgi" , orgi)) ;
+        List<KbsTopic> list = null;
 
-		if(!StringUtils.isBlank(type)){
-			boolQueryBuilder.must(termQuery("cate" , type)) ;
-		}
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        boolQueryBuilder.must(termQuery("orgi", orgi));
 
-		if (!StringUtils.isBlank(q)) {
-			boolQueryBuilder.must(new QueryStringQueryBuilder(q).defaultOperator(Operator.AND));
-		}
+        if (!StringUtils.isBlank(type)) {
+            boolQueryBuilder.must(termQuery("cate", type));
+        }
 
-		NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).withSort(new FieldSortBuilder("top").unmappedType("boolean").order(SortOrder.DESC)).withSort(new FieldSortBuilder("updatetime").unmappedType("date").order(SortOrder.DESC));
-		SearchQuery searchQuery = searchQueryBuilder.build();
-		if (elasticsearchTemplate.indexExists(KbsTopic.class)) {
-			list = elasticsearchTemplate.queryForList(searchQuery, KbsTopic.class);
-		}
-		return list;
-	}
+        if (!StringUtils.isBlank(q)) {
+            boolQueryBuilder.must(new QueryStringQueryBuilder(q).defaultOperator(Operator.AND));
+        }
+
+        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).withSort(new FieldSortBuilder("top").unmappedType("boolean").order(SortOrder.DESC)).withSort(new FieldSortBuilder("updatetime").unmappedType("date").order(SortOrder.DESC));
+        SearchQuery searchQuery = searchQueryBuilder.build();
+        if (elasticsearchTemplate.indexExists(KbsTopic.class)) {
+            list = elasticsearchTemplate.queryForList(searchQuery, KbsTopic.class);
+        }
+        return list;
+    }
 }
