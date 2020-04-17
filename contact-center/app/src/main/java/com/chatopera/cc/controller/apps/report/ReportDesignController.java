@@ -252,7 +252,7 @@ public class ReportDesignController extends Handler {
      */
     @RequestMapping("/modeldesign")
     @Menu(type = "report", subtype = "reportdesign")
-    public ModelAndView modeldesign(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String tabid, HashMap<String, String> semap) {
+    public ModelAndView modeldesign(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String tabid) {
         List<SysDic> tpDicList = Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_DIC);
         for (SysDic sysDic : tpDicList) {
             if (sysDic.getCode().equals("report")) {
@@ -587,7 +587,7 @@ public class ReportDesignController extends Handler {
      */
     @RequestMapping("/getelement")
     @Menu(type = "report", subtype = "reportdesign")
-    public ModelAndView getelement(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String publishedid, HashMap<String, String> semap) {
+    public ModelAndView getelement(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String publishedid) {
         if (!StringUtils.isBlank(id)) {
             ReportModel model = this.getModel(id, super.getOrgi(request), publishedid);
             if (model != null) {
@@ -618,8 +618,9 @@ public class ReportDesignController extends Handler {
 
     private ReportModel getModel(String id, String orgi, String publishedid) {
         if (!StringUtils.isBlank(publishedid)) {
-            PublishedReport publishedReport = publishedReportRes.findById(publishedid);
-            if (publishedReport != null) {
+            Optional<PublishedReport> optional = publishedReportRes.findById(publishedid);
+            if (optional.isPresent()) {
+                PublishedReport publishedReport = optional.get();
                 if (publishedReport.getReport() != null && !publishedReport.getReport().getReportModels().isEmpty()) {
                     for (ReportModel rm : publishedReport.getReport().getReportModels()) {
                         if (rm.getId().equals(id)) {
@@ -997,7 +998,7 @@ public class ReportDesignController extends Handler {
 
     @RequestMapping("/changechartppy")
     @Menu(type = "report", subtype = "reportdesign")
-    public ModelAndView changechartppy(ModelMap map, HttpServletRequest request, @Valid ReportModel reportModel, @Valid ChartProperties chartProperties, HashMap<String, String> semap) throws Exception {
+    public ModelAndView changechartppy(ModelMap map, HttpServletRequest request, @Valid ReportModel reportModel, @Valid ChartProperties chartProperties) throws Exception {
         ReportModel model = this.getModel(reportModel.getId(), super.getOrgi(request));
         if (null != model) {
             model.setExchangerw(reportModel.isExchangerw());
@@ -1054,8 +1055,9 @@ public class ReportDesignController extends Handler {
                 }
             }
         } else {
-            PublishedReport publishedReport = publishedReportRes.findById(publishedid);
-            if (publishedReport != null) {
+            Optional<PublishedReport> optional = publishedReportRes.findById(publishedid);
+            if (optional.isPresent()) {
+                PublishedReport publishedReport = optional.get();
                 map.addAttribute("publishedReport", publishedReport);
                 ReportFilter filter = null;
                 for (ReportFilter f : publishedReport.getReport().getReportFilters()) {
