@@ -25,13 +25,14 @@ import com.chatopera.cc.persistence.blob.JpaBlobHelper;
 import com.chatopera.cc.persistence.repository.AttachmentRepository;
 import com.chatopera.cc.persistence.repository.StreamingFileRepository;
 import com.chatopera.cc.util.Menu;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,25 +49,22 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/res")
+@RequiredArgsConstructor
 public class MediaController extends Handler {
     private final static Logger logger = LoggerFactory.getLogger(MediaController.class);
-
+    private static final String TEMPLATE_DATA_PATH = "WEB-INF/data/templates/";
+    @NonNull
+    private final StreamingFileRepository streamingFileRes;
+    @NonNull
+    private final JpaBlobHelper jpaBlobHelper;
+    @NonNull
+    private final AttachmentRepository attachementRes;
     @Value("${web.upload-path}")
     private String path;
-
-    @Autowired
-    private StreamingFileRepository streamingFileRes;
-
-    @Autowired
-    private JpaBlobHelper jpaBlobHelper;
-
-    private final String TEMPLATE_DATA_PATH = "WEB-INF/data/templates/";
-
-    @Autowired
-    private AttachmentRepository attachementRes;
 
     @RequestMapping("/image")
     @Menu(type = "resouce", subtype = "image", access = true)
@@ -74,8 +72,9 @@ public class MediaController extends Handler {
                       @Valid String id,
                       @RequestParam(value = "original", required = false) boolean original,
                       @RequestParam(value = "cooperation", required = false) boolean cooperation) throws IOException, SQLException {
-        StreamingFile sf = streamingFileRes.findOne(id);
-        if (sf != null) {
+        Optional<StreamingFile> optional = streamingFileRes.findById(id);
+        if (optional.isPresent()) {
+            StreamingFile sf = optional.get();
             response.setHeader("Content-Type", sf.getMime());
             response.setContentType(sf.getMime());
             if (cooperation && (sf.getCooperation() != null)) { // 协作文件
@@ -105,7 +104,7 @@ public class MediaController extends Handler {
     @Menu(type = "resouce", subtype = "image", access = true)
     public void url(HttpServletResponse response, @Valid String url) throws IOException {
         byte[] data = new byte[1024];
-        int length = 0;
+        int length;
         OutputStream out = response.getOutputStream();
         if (StringUtils.isNotBlank(url)) {
             InputStream input = new URL(url).openStream();
@@ -119,13 +118,13 @@ public class MediaController extends Handler {
     @RequestMapping("/image/upload")
     @Menu(type = "resouce", subtype = "imageupload")
     public ModelAndView upload(ModelMap map,
-                               HttpServletRequest request,
                                @RequestParam(value = "imgFile", required = false) MultipartFile multipart) throws IOException {
         ModelAndView view = request(super.createRequestPageTempletResponse("/public/upload"));
-        UploadStatus notify = null;
-        if (multipart != null && multipart.getOriginalFilename().lastIndexOf(".") > 0) {
+        UploadStatus notify;
+        if (multipart != null && multipart.getOriginalFilename() != null && multipart.getOriginalFilename().lastIndexOf(".") > 0) {
             File uploadDir = new File(path, "upload");
             if (!uploadDir.exists()) {
+                //noinspection ResultOfMethodCallIgnored
                 uploadDir.mkdirs();
             }
             String fileid = MainUtils.getUUID();
@@ -150,8 +149,9 @@ public class MediaController extends Handler {
         if (StringUtils.isNotBlank(id)) {
             AttachmentFile attachmentFile = attachementRes.findByIdAndOrgi(id, super.getOrgi(request));
             if (attachmentFile != null && attachmentFile.getFileid() != null) {
-                StreamingFile sf = streamingFileRes.findOne(attachmentFile.getFileid());
-                if (sf != null) {
+                Optional<StreamingFile> optional = streamingFileRes.findById(attachmentFile.getFileid());
+                if (optional.isPresent()) {
+                    StreamingFile sf = optional.get();
                     response.setContentType(attachmentFile.getFiletype());
                     response.setHeader("Content-Disposition", "attachment;filename=" + java.net.URLEncoder.encode(attachmentFile.getTitle(), "UTF-8"));
                     IOUtils.copy(sf.getData().getBinaryStream(), response.getOutputStream());
@@ -166,7 +166,7 @@ public class MediaController extends Handler {
 
     @RequestMapping("/template")
     @Menu(type = "resouce", subtype = "template")
-    public void template(HttpServletResponse response, HttpServletRequest request, @Valid String filename) throws IOException {
+    public void template(HttpServletResponse response, @Valid String filename) throws IOException {
         if (StringUtils.isNotBlank(filename)) {
             InputStream is = MediaController.class.getClassLoader().getResourceAsStream(TEMPLATE_DATA_PATH + filename);
             if (is != null) {
@@ -180,7 +180,6 @@ public class MediaController extends Handler {
                 is.close();
             }
         }
-        return;
     }
 
 }
