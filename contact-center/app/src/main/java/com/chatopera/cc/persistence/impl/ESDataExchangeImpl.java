@@ -25,10 +25,12 @@ import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.util.es.UKDataBean;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.action.index.IndexRequestBuilder;
-import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.Aggregation;
@@ -36,6 +38,7 @@ import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageImpl;
@@ -44,6 +47,7 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,31 +66,26 @@ public class ESDataExchangeImpl {
     @NonNull
     private final OrganRepository organRes;
 
-    public void saveIObject(UKDataBean dataBean) {
+    public void saveIObject(UKDataBean dataBean) throws IOException {
         if (dataBean.getId() == null) {
             dataBean.setId((String) dataBean.getValues().get("id"));
         }
-        this.saveBulk(dataBean).execute().actionGet();
+        MainContext.getTemplet().getClient().index(this.saveBulk(dataBean), RequestOptions.DEFAULT);
     }
 
-    /**
-     *
-     */
-    public IndexRequestBuilder saveBulk(UKDataBean dataBean) {
-        IndexRequestBuilder indexRequestBuilder;
+    @NonNull
+    public IndexRequest saveBulk(UKDataBean dataBean) {
         if (dataBean.getId() == null) {
             dataBean.setId((String) dataBean.getValues().get("id"));
         }
+        String type;
         if (!StringUtils.isBlank(dataBean.getType())) {
-            indexRequestBuilder = MainContext.getTemplet().getClient().prepareIndex(Constants.SYSTEM_INDEX,
-                    dataBean.getType(), dataBean.getId())
-                    .setSource(processValues(dataBean));
+            type = dataBean.getType();
         } else {
-            indexRequestBuilder = MainContext.getTemplet().getClient().prepareIndex(Constants.SYSTEM_INDEX,
-                    dataBean.getTable().getTablename(), dataBean.getId())
-                    .setSource(processValues(dataBean));
+            type = dataBean.getTable().getTablename();
         }
-        return indexRequestBuilder;
+        return new IndexRequest(Constants.SYSTEM_INDEX,
+                type, dataBean.getId()).source(processValues(dataBean));
     }
 
     /**
@@ -113,18 +112,16 @@ public class ESDataExchangeImpl {
 
     public void deleteById(String type, String id) {
         if (!StringUtils.isBlank(type) && !StringUtils.isBlank(id)) {
-            MainContext.getTemplet().getClient()
-                    .prepareDelete(Constants.SYSTEM_INDEX, type, id).execute().actionGet();
+            MainContext.getTemplet().delete(Constants.SYSTEM_INDEX, type, id);
         }
     }
 
 
-    public UKDataBean getIObjectByPK(UKDataBean dataBean) {
+    public UKDataBean getIObjectByPK(UKDataBean dataBean) throws IOException {
         if (dataBean.getTable() != null) {
             GetResponse getResponse = MainContext.getTemplet().getClient()
-                    .prepareGet(Constants.SYSTEM_INDEX,
-                            dataBean.getTable().getTablename(), dataBean.getId())
-                    .execute().actionGet();
+                    .get(new GetRequest(Constants.SYSTEM_INDEX,
+                            dataBean.getTable().getTablename(), dataBean.getId()), RequestOptions.DEFAULT);
             dataBean.setValues(getResponse.getSource());
             dataBean.setType(getResponse.getType());
         } else {
@@ -134,13 +131,12 @@ public class ESDataExchangeImpl {
         return processDate(dataBean);
     }
 
-    public UKDataBean getIObjectByPK(String type, String id) {
+    public UKDataBean getIObjectByPK(String type, String id) throws IOException {
         UKDataBean dataBean = new UKDataBean();
         if (!StringUtils.isBlank(type)) {
             GetResponse getResponse = MainContext.getTemplet().getClient()
-                    .prepareGet(Constants.SYSTEM_INDEX,
-                            type, id)
-                    .execute().actionGet();
+                    .get(new GetRequest(Constants.SYSTEM_INDEX,
+                            type, id), RequestOptions.DEFAULT);
             dataBean.setValues(getResponse.getSource());
             dataBean.setType(getResponse.getType());
         } else {
@@ -152,32 +148,35 @@ public class ESDataExchangeImpl {
     /**
      *
      */
-    public PageImpl<UKDataBean> findPageResult(QueryBuilder query, MetadataTable metadata, Pageable page, boolean loadRef) {
+    public PageImpl<UKDataBean> findPageResult(QueryBuilder query, MetadataTable metadata, Pageable page, boolean loadRef) throws IOException {
         return findAllPageResult(query, metadata, page, loadRef, metadata != null ? metadata.getTablename() : null);
     }
 
     /**
      *
      */
-    public PageImpl<UKDataBean> findAllPageResult(QueryBuilder query, MetadataTable metadata, Pageable page, boolean loadRef, String types) {
-        List<UKDataBean> dataBeanList = new ArrayList<>();
-        SearchRequestBuilder searchBuilder = MainContext.getTemplet().getClient().prepareSearch(Constants.SYSTEM_INDEX);
-        if (!StringUtils.isBlank(types)) {
-            searchBuilder.setTypes(types);
+    public PageImpl<UKDataBean> findAllPageResult(QueryBuilder query, MetadataTable metadata, Pageable page, boolean loadRef, String types) throws IOException {
+
+        SearchSourceBuilder source = new SearchSourceBuilder();
+        int start = page.getPageSize() * page.getPageNumber();
+        source.from(start).size(page.getPageSize()).query(query);
+
+        for (Order order : page.getSort()) {
+            source.sort(new FieldSortBuilder(order.getProperty()).unmappedType(order.getProperty().equals("createtime") ? "long" : "string").order(order.isDescending() ? SortOrder.DESC : SortOrder.ASC));
         }
 
-        int start = page.getPageSize() * page.getPageNumber();
-        searchBuilder.setFrom(start).setSize(page.getPageSize());
-        page.getSort();
-        for (Order order : page.getSort()) {
-            searchBuilder.addSort(new FieldSortBuilder(order.getProperty()).unmappedType(order.getProperty().equals("createtime") ? "long" : "string").order(order.isDescending() ? SortOrder.DESC : SortOrder.ASC));
+        SearchRequest request = new SearchRequest(new String[]{Constants.SYSTEM_INDEX}, source);
+        if (!StringUtils.isBlank(types)) {
+            request.types(types);
         }
-        SearchResponse response = searchBuilder.setQuery(query).execute().actionGet();
+
+        SearchResponse response = MainContext.getTemplet().getClient().search(request, RequestOptions.DEFAULT);
         List<String> users = new ArrayList<>();
         List<String> organs = new ArrayList<>();
         List<String> taskList = new ArrayList<>();
         // List<String> batchList = new ArrayList<>();
         // List<String> activityList = new ArrayList<>();
+        List<UKDataBean> dataBeanList = new ArrayList<>();
         for (SearchHit hit : response.getHits().getHits()) {
             UKDataBean temp = new UKDataBean();
             temp.setType(hit.getType());
@@ -268,29 +267,26 @@ public class ESDataExchangeImpl {
     /**
      *
      */
-    public PageImpl<UKDataBean> findAllPageAggResult(QueryBuilder query, String aggField, Pageable page, boolean loadRef, String types) {
-        List<UKDataBean> dataBeanList = new ArrayList<>();
-        SearchRequestBuilder searchBuilder = MainContext.getTemplet().getClient().prepareSearch(Constants.SYSTEM_INDEX);
-        if (!StringUtils.isBlank(types)) {
-            searchBuilder.setTypes(types);
-        }
+    public PageImpl<UKDataBean> findAllPageAggResult(QueryBuilder query, String aggField, Pageable page, boolean loadRef, String types) throws IOException {
 
         int size = page.getPageSize() * (page.getPageNumber() + 1);
-        searchBuilder.setFrom(0).setSize(0);
 
         AggregationBuilder aggregition = AggregationBuilders.terms(aggField).field(aggField).size(size);
         aggregition.subAggregation(AggregationBuilders.terms("apstatus").field("apstatus"));
         aggregition.subAggregation(AggregationBuilders.terms("callstatus").field("callstatus"));
 
-        searchBuilder.addAggregation(aggregition);
-
-
-        SearchResponse response = searchBuilder.setQuery(query).execute().actionGet();
+        SearchSourceBuilder source = new SearchSourceBuilder().aggregation(aggregition).query(query);
+        SearchRequest request = new SearchRequest(new String[]{Constants.SYSTEM_INDEX}, source);
+        if (!StringUtils.isBlank(types)) {
+            request.types(types);
+        }
+        SearchResponse response = MainContext.getTemplet().getClient().search(request, RequestOptions.DEFAULT);
         List<String> users = new ArrayList<>();
         List<String> organs = new ArrayList<>();
         List<String> taskList = new ArrayList<>();
         // List<String> batchList = new ArrayList<>();
         // List<String> activityList = new ArrayList<>();
+        List<UKDataBean> dataBeanList = new ArrayList<>();
 
         if (response.getAggregations().get(aggField) instanceof Terms) {
             Terms agg = response.getAggregations().get(aggField);

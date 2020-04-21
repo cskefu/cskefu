@@ -30,6 +30,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
@@ -37,7 +38,7 @@ import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 public class SearchTools {
 
-    public static PageImpl<UKDataBean> search(String orgi, List<FormFilterItem> itemList, MetadataTable metadataTable, boolean loadRef, int p, int ps) {
+    public static PageImpl<UKDataBean> search(String orgi, List<FormFilterItem> itemList, MetadataTable metadataTable, boolean loadRef, int p, int ps) throws IOException {
         BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
         queryBuilder.must(termQuery("orgi", orgi));
 
@@ -96,7 +97,7 @@ public class SearchTools {
         return search(queryBuilder, metadataTable, loadRef, p, ps);
     }
 
-    public static PageImpl<UKDataBean> dissearch(String orgi, List<FormFilterItem> itemList, MetadataTable metadataTable, int p, int ps) {
+    public static PageImpl<UKDataBean> dissearch(String orgi, List<FormFilterItem> itemList, MetadataTable metadataTable, int p, int ps) throws IOException {
         BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
         queryBuilder.must(termQuery("orgi", orgi));
         queryBuilder.must(termQuery("status", MainContext.NamesDisStatusType.NOT.toString()));
@@ -156,7 +157,7 @@ public class SearchTools {
         return search(queryBuilder, metadataTable, false, p, ps);
     }
 
-    public static PageImpl<UKDataBean> recoversearch(String orgi, String cmd, String id, MetadataTable metadataTable, int p, int ps) {
+    public static PageImpl<UKDataBean> recoversearch(String orgi, String cmd, String id, MetadataTable metadataTable, int p, int ps) throws IOException {
         BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
         queryBuilder.must(termQuery("orgi", orgi));
         queryBuilder.mustNot(termQuery("status", MainContext.NamesDisStatusType.NOT.toString()));
@@ -198,7 +199,7 @@ public class SearchTools {
     /**
      *
      */
-    public static PageImpl<UKDataBean> namesearch(String orgi, String phonenum) {
+    public static PageImpl<UKDataBean> namesearch(String orgi, String phonenum) throws IOException {
         BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
         queryBuilder.must(termQuery("orgi", orgi));
         queryBuilder.must(termQuery("validresult", "valid"));
@@ -219,14 +220,14 @@ public class SearchTools {
     /**
      *
      */
-    public static PageImpl<UKDataBean> search(BoolQueryBuilder queryBuilder, int p, int ps) {
+    public static PageImpl<UKDataBean> search(BoolQueryBuilder queryBuilder, int p, int ps) throws IOException {
         return search(queryBuilder, null, true, p, ps);
     }
 
     /**
      *
      */
-    private static PageImpl<UKDataBean> search(BoolQueryBuilder queryBuilder, MetadataTable metadataTable, boolean loadRef, int p, int ps) {
+    private static PageImpl<UKDataBean> search(BoolQueryBuilder queryBuilder, MetadataTable metadataTable, boolean loadRef, int p, int ps) throws IOException {
         ESDataExchangeImpl esDataExchange = MainContext.getContext().getBean(ESDataExchangeImpl.class);
         return esDataExchange.findPageResult(queryBuilder, metadataTable, PageRequest.of(p, ps, Sort.Direction.ASC, "createtime"), loadRef);
     }
@@ -234,7 +235,7 @@ public class SearchTools {
     /**
      *
      */
-    public static PageImpl<UKDataBean> aggregation(BoolQueryBuilder queryBuilder, String aggField, boolean loadRef, int p, int ps) {
+    public static PageImpl<UKDataBean> aggregation(BoolQueryBuilder queryBuilder, String aggField, boolean loadRef, int p, int ps) throws IOException {
         ESDataExchangeImpl esDataExchange = MainContext.getContext().getBean(ESDataExchangeImpl.class);
         return esDataExchange.findAllPageAggResult(queryBuilder, aggField, PageRequest.of(p, ps, Sort.Direction.ASC, "createtime"), loadRef, null);
     }
@@ -242,7 +243,7 @@ public class SearchTools {
     /**
      *
      */
-    public static UKDataBean get(UKDataBean dataBean) {
+    public static UKDataBean get(UKDataBean dataBean) throws IOException {
         ESDataExchangeImpl esDataExchange = MainContext.getContext().getBean(ESDataExchangeImpl.class);
         return esDataExchange.getIObjectByPK(dataBean);
     }
@@ -250,7 +251,7 @@ public class SearchTools {
     /**
      *
      */
-    public static UKDataBean get(String type, String id) {
+    public static UKDataBean get(String type, String id) throws IOException {
         ESDataExchangeImpl esDataExchange = MainContext.getContext().getBean(ESDataExchangeImpl.class);
         return esDataExchange.getIObjectByPK(type, id);
     }

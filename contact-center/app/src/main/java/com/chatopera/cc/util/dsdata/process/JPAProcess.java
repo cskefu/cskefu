@@ -16,7 +16,10 @@
  */
 package com.chatopera.cc.util.dsdata.process;
 
+import java.io.IOException;
+
 public interface JPAProcess {
-	public void process(Object data) ;
-	public void end();
+    void process(Object data);
+
+    void end() throws IOException;
 }

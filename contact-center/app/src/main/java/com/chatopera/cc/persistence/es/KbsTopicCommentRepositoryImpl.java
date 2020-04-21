@@ -26,7 +26,7 @@ import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.EntityMapper;
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentProperty;
@@ -46,15 +46,15 @@ public class KbsTopicCommentRepositoryImpl implements KbsTopicCommentEsCommonRep
     @NonNull
     private final UKResultMapper resultMapper;
     @NonNull
-    private final ElasticsearchTemplate elasticsearchTemplate;
+    private final ElasticsearchRestTemplate elasticsearchRestTemplate;
     @NonNull
     private final UKAggResultExtractor ukAggResultExtractor;
     @NonNull
     private final UKAggTopResultExtractor ukAggTopResultExtractor;
 
-    public KbsTopicCommentRepositoryImpl(@NonNull UKResultMapper resultMapper, @NonNull ElasticsearchTemplate elasticsearchTemplate, @NonNull EntityMapper entityMapper, @NonNull MappingContext<? extends ElasticsearchPersistentEntity<?>, ElasticsearchPersistentProperty> mappingContext) {
+    public KbsTopicCommentRepositoryImpl(@NonNull UKResultMapper resultMapper, @NonNull ElasticsearchRestTemplate elasticsearchRestTemplate, @NonNull EntityMapper entityMapper, @NonNull MappingContext<? extends ElasticsearchPersistentEntity<?>, ElasticsearchPersistentProperty> mappingContext) {
         this.resultMapper = resultMapper;
-        this.elasticsearchTemplate = elasticsearchTemplate;
+        this.elasticsearchRestTemplate = elasticsearchRestTemplate;
         ukAggTopResultExtractor = new UKAggTopResultExtractor(entityMapper, mappingContext);
         ukAggResultExtractor = new UKAggResultExtractor(entityMapper, mappingContext);
     }
@@ -63,8 +63,8 @@ public class KbsTopicCommentRepositoryImpl implements KbsTopicCommentEsCommonRep
     public Page<KbsTopicComment> findByDataid(String id, int p, int ps) {
         Page<KbsTopicComment> pages = null;
         SearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(termQuery("dataid", id)).withSort(new FieldSortBuilder("optimal").unmappedType("boolean").order(SortOrder.DESC)).withSort(new FieldSortBuilder("updatetime").unmappedType("date").order(SortOrder.DESC)).build().setPageable(PageRequest.of(p, ps));
-        if (elasticsearchTemplate.indexExists(KbsTopicComment.class)) {
-            pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopicComment.class);
+        if (elasticsearchRestTemplate.indexExists(KbsTopicComment.class)) {
+            pages = elasticsearchRestTemplate.queryForPage(searchQuery, KbsTopicComment.class);
         }
         return pages;
     }
@@ -73,8 +73,8 @@ public class KbsTopicCommentRepositoryImpl implements KbsTopicCommentEsCommonRep
     public List<KbsTopicComment> findByOptimal(String dataid) {
         List<KbsTopicComment> commentList = null;
         SearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(termQuery("dataid", dataid)).withQuery(termQuery("optimal", true)).build();
-        if (elasticsearchTemplate.indexExists(KbsTopicComment.class)) {
-            commentList = elasticsearchTemplate.queryForList(searchQuery, KbsTopicComment.class);
+        if (elasticsearchRestTemplate.indexExists(KbsTopicComment.class)) {
+            commentList = elasticsearchRestTemplate.queryForList(searchQuery, KbsTopicComment.class);
         }
         return commentList;
     }
@@ -86,13 +86,13 @@ public class KbsTopicCommentRepositoryImpl implements KbsTopicCommentEsCommonRep
             searchQueryBuilder.withQuery(new QueryStringQueryBuilder(q).defaultOperator(Operator.AND));
         }
         SearchQuery searchQuery = searchQueryBuilder.build();
-        if (elasticsearchTemplate.indexExists(KbsTopicComment.class)) {
+        if (elasticsearchRestTemplate.indexExists(KbsTopicComment.class)) {
             if (!StringUtils.isBlank(q)) {
-                pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopicComment.class, resultMapper);
+                pages = elasticsearchRestTemplate.queryForPage(searchQuery, KbsTopicComment.class, resultMapper);
             } else {
                 ukAggTopResultExtractor.setTerm(field);
                 ukAggTopResultExtractor.setName(aggname);
-                pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopicComment.class, ukAggTopResultExtractor);
+                pages = elasticsearchRestTemplate.queryForPage(searchQuery, KbsTopicComment.class, ukAggTopResultExtractor);
             }
         }
         return pages;
@@ -106,7 +106,7 @@ public class KbsTopicCommentRepositoryImpl implements KbsTopicCommentEsCommonRep
         if (!StringUtils.isBlank(q)) {
             searchQueryBuilder.withQuery(new QueryStringQueryBuilder(q).defaultOperator(Operator.AND));
         }
-        return elasticsearchTemplate.queryForPage(searchQueryBuilder.build(), KbsTopicComment.class, resultMapper);
+        return elasticsearchRestTemplate.queryForPage(searchQueryBuilder.build(), KbsTopicComment.class, resultMapper);
     }
 
     @Override
@@ -117,9 +117,9 @@ public class KbsTopicCommentRepositoryImpl implements KbsTopicCommentEsCommonRep
             searchQueryBuilder.withQuery(new QueryStringQueryBuilder(q).defaultOperator(Operator.AND));
         }
         SearchQuery searchQuery = searchQueryBuilder.build().setPageable(PageRequest.of(p, ps));
-        if (elasticsearchTemplate.indexExists(Topic.class)) {
+        if (elasticsearchRestTemplate.indexExists(Topic.class)) {
             ukAggResultExtractor.setTerm("creater");
-            pages = elasticsearchTemplate.queryForPage(searchQuery, KbsTopicComment.class, ukAggResultExtractor);
+            pages = elasticsearchRestTemplate.queryForPage(searchQuery, KbsTopicComment.class, ukAggResultExtractor);
         }
         return pages;
     }

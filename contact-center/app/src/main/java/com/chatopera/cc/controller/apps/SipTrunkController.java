@@ -42,6 +42,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,7 +74,7 @@ public class SipTrunkController extends Handler {
 
     @RequestMapping(value = "/agent")
     @Menu(type = "callcenter", subtype = "agent", access = true)
-    public ModelAndView agent(ModelMap map, HttpServletResponse response, @Valid String ani, @Valid String sip) {
+    public ModelAndView agent(ModelMap map, HttpServletResponse response, @Valid String ani, @Valid String sip) throws IOException {
         SipTrunk sipTrunk = CallCenterUtils.siptrunk(sip, sipTrunkRes);
         map.addAttribute("siptrunk", sipTrunk);
         String agent = null;

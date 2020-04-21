@@ -32,6 +32,7 @@ import org.springframework.ui.ModelMap;
 import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.Predicate;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -407,7 +408,7 @@ public class CallCenterUtils {
     /**
      * 获取指定活动，已分配的名单数
      */
-    public static int getActDisnum(@Valid String actid, @Valid int p, @Valid int ps) {
+    public static int getActDisnum(@Valid String actid, @Valid int p, @Valid int ps) throws IOException {
         BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
         queryBuilder.must(termQuery("actid", actid));// 活动ID
         queryBuilder.mustNot(termQuery("status", MainContext.NamesDisStatusType.NOT.toString()));

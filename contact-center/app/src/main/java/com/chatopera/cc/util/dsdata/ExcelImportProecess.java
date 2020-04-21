@@ -51,12 +51,12 @@ public class ExcelImportProecess extends DataProcess {
     }
 
     @Override
-    public void process() {
+    public void process() throws IOException {
         processExcel(event);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private void processExcel(final DSDataEvent event) {
+    private void processExcel(final DSDataEvent event) throws IOException {
         InputStream is = null;
         try {
             event.getDSData().getReport().setTableid(event.getDSData().getTask().getId());

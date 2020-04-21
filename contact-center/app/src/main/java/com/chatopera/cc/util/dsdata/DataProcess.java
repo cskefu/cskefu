@@ -17,10 +17,14 @@
 package com.chatopera.cc.util.dsdata;
 
 
+import java.io.IOException;
+
 public abstract class DataProcess {
-	protected DSDataEvent event ;
-	public DataProcess(final DSDataEvent event){
-		this.event = event ;
+	protected DSDataEvent event;
+
+	public DataProcess(final DSDataEvent event) {
+		this.event = event;
 	}
-	public abstract void process() ;
+
+	public abstract void process() throws IOException;
 }

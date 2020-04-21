@@ -19,41 +19,41 @@ package com.chatopera.cc.persistence.impl;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.util.dsdata.process.JPAProcess;
 import com.chatopera.cc.util.es.UKDataBean;
-import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.client.RequestOptions;
+import org.springframework.lang.NonNull;
 
-public class DataBatProcess implements JPAProcess{
-	
-	private ESDataExchangeImpl esDataExchangeImpl ;
-	private BulkRequestBuilder builder ;
-	
-	public DataBatProcess(ESDataExchangeImpl esDataExchangeImpl) {
-		this.esDataExchangeImpl = esDataExchangeImpl ;
-		builder = MainContext.getTemplet().getClient().prepareBulk() ;
-	}
-	
-	@Override
-	public void process(Object data) {
-		if(data instanceof UKDataBean){
-			UKDataBean dataBean = (UKDataBean)data;
-			try {
-				if(builder!=null) {
-					builder.add(esDataExchangeImpl.saveBulk(dataBean)) ;
-				}else {
-					esDataExchangeImpl.saveIObject(dataBean);
-				}
-				if(builder.numberOfActions() % 1000 ==0) {
-					builder.execute().actionGet();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
+import java.io.IOException;
 
-	@Override
-	public void end() {
-		if(builder!=null) {
-			builder.execute().actionGet();
-		}
-	}
+public class DataBatProcess implements JPAProcess {
+    @NonNull
+    private final BulkRequest request;
+    @NonNull
+    private final ESDataExchangeImpl esDataExchangeImpl;
+
+    public DataBatProcess(@NonNull ESDataExchangeImpl esDataExchangeImpl) {
+        this.esDataExchangeImpl = esDataExchangeImpl;
+        request = new BulkRequest();
+    }
+
+    @Override
+    public void process(Object data) {
+        if (data instanceof UKDataBean) {
+            UKDataBean dataBean = (UKDataBean) data;
+            try {
+                request.add(esDataExchangeImpl.saveBulk(dataBean));
+                if (request.numberOfActions() % 1000 == 0) {
+                    end();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void end() throws IOException {
+        MainContext.getTemplet().getClient().bulk(request, RequestOptions.DEFAULT);
+        request.requests().clear();
+    }
 }

@@ -30,7 +30,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,13 +45,13 @@ public class MainContext {
 
     public static String SYSTEM_ORGI = "cskefu";
 
-    private static Set<String> modules = new HashSet<String>();
+    private static final Set<String> modules = new HashSet<String>();
 
     public static Map<String, Class<?>> csKeFuResourceMap = new HashMap<String, Class<?>>();
 
     private static ApplicationContext applicationContext;
 
-    private static ElasticsearchTemplate templet;
+    private static ElasticsearchRestTemplate templet;
 
     private static RedisCommand redisCommand;
 
@@ -333,36 +333,8 @@ public class MainContext {
         }
     }
 
-    public enum CallWireEventType {
-        DIALPLAN_CONN("自动外呼接通", 1),
-        DIALPLAN_DISC("自动外呼挂断", 2),
-        DIALPLAN_FAIL("自动外呼失败", 3),
-        MANUDIAL_CONN("手动外呼接通", 4),
-        MANUDIAL_DISC("手动外呼挂断", 5),
-        MANUDIAL_FAIL("手动外呼失败", 6),
-        CALLIN_CONN("呼入接通", 7),
-        CALLIN_DIST("呼入挂断", 8),
-        CALLIN_FAIL("呼入失败", 9);
-
-        private String name;
-        private int index;
-
-        CallWireEventType(final String name, final int index) {
-            this.name = name;
-            this.index = index;
-        }
-
-        public String toLetters() {
-            return super.toString().toLowerCase();
-        }
-
-        public String toString() {
-            return this.name;
-        }
-
-        public int getIndex() {
-            return this.index;
-        }
+    public static ElasticsearchRestTemplate getTemplet() {
+        return templet;
     }
 
 
@@ -646,41 +618,8 @@ public class MainContext {
         }
     }
 
-    public enum AgentStatusEnum {
-        READY("就绪", 1),
-        NOTREADY("未就绪", 2),
-        BUSY("置忙", 3),
-        NOTBUSY("不忙", 4),
-        IDLE("空闲", 5),
-        OFFLINE("离线", 6),
-        SERVICES("服务", 7);
-
-        private String name;
-        private int index;
-
-        AgentStatusEnum(final String name, final int index) {
-            this.name = name;
-            this.index = index;
-        }
-
-        public String zh() {
-            return this.name;
-        }
-
-        @Override
-        public String toString() {
-            return super.toString().toLowerCase();
-        }
-
-        public static AgentStatusEnum toValue(final String str) {
-            for (final AgentStatusEnum item : values()) {
-                if (StringUtils.equalsIgnoreCase(item.toString(), str)) {
-                    return item;
-                }
-            }
-            throw new IllegalArgumentException();
-        }
-
+    public static void setTemplet(ElasticsearchRestTemplate templet) {
+        MainContext.templet = templet;
     }
 
     public enum WorkStatusEnum {
@@ -937,12 +876,73 @@ public class MainContext {
         return applicationContext;
     }
 
-    public static ElasticsearchTemplate getTemplet() {
-        return templet;
+    public enum CallWireEventType {
+        DIALPLAN_CONN("自动外呼接通", 1),
+        DIALPLAN_DISC("自动外呼挂断", 2),
+        DIALPLAN_FAIL("自动外呼失败", 3),
+        MANUDIAL_CONN("手动外呼接通", 4),
+        MANUDIAL_DISC("手动外呼挂断", 5),
+        MANUDIAL_FAIL("手动外呼失败", 6),
+        CALLIN_CONN("呼入接通", 7),
+        CALLIN_DIST("呼入挂断", 8),
+        CALLIN_FAIL("呼入失败", 9);
+
+        private final String name;
+        private final int index;
+
+        CallWireEventType(final String name, final int index) {
+            this.name = name;
+            this.index = index;
+        }
+
+        public String toLetters() {
+            return super.toString().toLowerCase();
+        }
+
+        public String toString() {
+            return this.name;
+        }
+
+        public int getIndex() {
+            return this.index;
+        }
     }
 
-    public static void setTemplet(ElasticsearchTemplate templet) {
-        MainContext.templet = templet;
+    public enum AgentStatusEnum {
+        READY("就绪", 1),
+        NOTREADY("未就绪", 2),
+        BUSY("置忙", 3),
+        NOTBUSY("不忙", 4),
+        IDLE("空闲", 5),
+        OFFLINE("离线", 6),
+        SERVICES("服务", 7);
+
+        private final String name;
+        private final int index;
+
+        AgentStatusEnum(final String name, final int index) {
+            this.name = name;
+            this.index = index;
+        }
+
+        public String zh() {
+            return this.name;
+        }
+
+        @Override
+        public String toString() {
+            return super.toString().toLowerCase();
+        }
+
+        public static AgentStatusEnum toValue(final String str) {
+            for (final AgentStatusEnum item : values()) {
+                if (StringUtils.equalsIgnoreCase(item.toString(), str)) {
+                    return item;
+                }
+            }
+            throw new IllegalArgumentException();
+        }
+
     }
 
     /**

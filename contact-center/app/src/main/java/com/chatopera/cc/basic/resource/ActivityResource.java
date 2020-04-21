@@ -31,6 +31,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +75,7 @@ public class ActivityResource extends Resource {
     }
 
     @Override
-    public void begin() {
+    public void begin() throws IOException {
         if (!StringUtils.isBlank(jobDetail.getFilterid())) {
             formFilter = formFilterRes.findByIdAndOrgi(jobDetail.getFilterid(), this.jobDetail.getOrgi());
             List<FormFilterItem> formFilterList = formFilterItemRes.findByOrgiAndFormfilterid(this.jobDetail.getOrgi(), jobDetail.getFilterid());
@@ -160,7 +161,7 @@ public class ActivityResource extends Resource {
     }
 
     @Override
-    public void end(boolean clear) {
+    public void end(boolean clear) throws IOException {
         if (this.atomInt.intValue() > 0) {
             this.batchDataProcess.end();
         }

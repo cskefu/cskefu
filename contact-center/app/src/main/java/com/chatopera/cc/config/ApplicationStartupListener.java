@@ -19,32 +19,34 @@ package com.chatopera.cc.config;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.model.Favorites;
 import com.chatopera.cc.model.WorkOrders;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.elasticsearch.ElasticsearchException;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ApplicationStartupListener implements ApplicationListener<ContextRefreshedEvent> {
-	
-    @Autowired ElasticsearchTemplate elasticSearchTemplate;
+    @NonNull
+    private final ElasticsearchRestTemplate elasticsearchRestTemplate;
 
     @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
-    	if (!elasticSearchTemplate.indexExists(WorkOrders.class)) {
-            elasticSearchTemplate.createIndex(WorkOrders.class);
+    public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
+        if (!elasticsearchRestTemplate.indexExists(WorkOrders.class)) {
+            elasticsearchRestTemplate.createIndex(WorkOrders.class);
         }
-    	if (!elasticSearchTemplate.indexExists(Favorites.class)) {
-            elasticSearchTemplate.createIndex(Favorites.class);
+        if (!elasticsearchRestTemplate.indexExists(Favorites.class)) {
+            elasticsearchRestTemplate.createIndex(Favorites.class);
         }
-    	try {
-    		elasticSearchTemplate.getMapping(WorkOrders.class);
+        try {
+            elasticsearchRestTemplate.getMapping(WorkOrders.class);
         } catch (ElasticsearchException e) {
-        	elasticSearchTemplate.putMapping(Favorites.class);
-        	elasticSearchTemplate.putMapping(WorkOrders.class);
+            elasticsearchRestTemplate.putMapping(Favorites.class);
+            elasticsearchRestTemplate.putMapping(WorkOrders.class);
         }
-    	MainContext.setTemplet(elasticSearchTemplate);
+        MainContext.setTemplet(elasticsearchRestTemplate);
     }
 }
