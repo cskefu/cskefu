@@ -19,11 +19,10 @@ package com.chatopera.cc.persistence.repository;
 import com.chatopera.cc.model.WorkTime;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 public interface WorkTimeRepository extends JpaRepository<WorkTime, String> {
-	
-	WorkTime findByIdAndOrgi(String id, String orgi);
-	List<WorkTime> findByOrgi(String hostid, String orgi);
-	int countByNameAndOrgi(String name, String orgi);
+
+    WorkTime findByIdAndOrgi(String id, String orgi);
+
+    // List<WorkTime> findByOrgi(String hostid, String orgi);
+    int countByNameAndOrgi(String name, String orgi);
 }
