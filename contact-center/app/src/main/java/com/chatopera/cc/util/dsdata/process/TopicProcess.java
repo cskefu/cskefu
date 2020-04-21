@@ -23,10 +23,12 @@ import com.chatopera.cc.persistence.es.TopicRepository;
 import com.chatopera.cc.persistence.repository.TopicItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
 
+@Component
 @RequiredArgsConstructor
 public class TopicProcess implements JPAProcess {
 
