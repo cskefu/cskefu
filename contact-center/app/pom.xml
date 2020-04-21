@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.chatopera.cc</groupId>
     <artifactId>contact-center</artifactId>
-    <version>6.0.0-PREVIEW</version>
+    <version>6.0.1-PREVIEW</version>
     <packaging>war</packaging>
     <name>cskefu</name>
     <description>春松客服：多渠道智能客服系统</description>
