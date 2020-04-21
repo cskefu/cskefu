@@ -32,7 +32,7 @@ import javax.persistence.Transient;
 import java.util.Date;
 
 @Data
-@Document(indexName = "cskefu", type = "kbs_topiccomment")
+@Document(indexName = "kbs_topiccomment", type = "kbs_topiccomment")
 public class KbsTopicComment implements UKAgg {
 
     private static final long serialVersionUID = -4911955236794918875L;

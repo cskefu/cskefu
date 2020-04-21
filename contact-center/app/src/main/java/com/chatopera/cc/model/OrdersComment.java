@@ -28,7 +28,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Data
-@Document(indexName = "cskefu", type = "orderscomment")
+@Document(indexName = "orderscomment", type = "orderscomment")
 @Entity
 @Table(name = "uk_orderscomment")
 @org.hibernate.annotations.Proxy(lazy = false)

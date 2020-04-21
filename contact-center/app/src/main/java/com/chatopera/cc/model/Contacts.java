@@ -23,13 +23,13 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import java.util.Date;
 
-@Document(indexName = "cskefu", type = "contacts")
+@Document(indexName = "contacts", type = "contacts")
 @Entity
 @Table(name = "uk_contacts")
 @org.hibernate.annotations.Proxy(lazy = false)
 public class Contacts extends ESBean implements java.io.Serializable{
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -5781401948807231526L;
 	private String id  = MainUtils.getUUID();
@@ -106,11 +106,11 @@ public class Contacts extends ESBean implements java.io.Serializable{
 
 
 	private String organ ;
-	
+
 	private String marriage;
-	
+
 	private String entcusid;	//客户ID
-	
+
 	private String education;
 	private String identifytype;
 	private String identifynumber;
@@ -145,7 +145,7 @@ public class Contacts extends ESBean implements java.io.Serializable{
 	private String weibo;
 	private String weiboid;
 	private String qqcode;
-	
+
 	private Date touchtime;
 	private boolean datastatus;
 	private String processid;
@@ -154,11 +154,11 @@ public class Contacts extends ESBean implements java.io.Serializable{
 	private String updateuser;
 	private String memo;
 	private String updateusername;
-	
+
 	private Date updatetime = new Date();
 	private String orgi;
 	private String compper;
-	
+
 	private Date createtime = new Date();
 	private String name;
 	private String assignedto;
@@ -166,13 +166,13 @@ public class Contacts extends ESBean implements java.io.Serializable{
 	private String shares;
 	private String owner;
 	private String datadept;
-	
+
 	private String pinyin ;		//拼音首字母
-	
+
 	@Id
 	@Column(length = 32)
 	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "assigned")	
+	@GenericGenerator(name = "system-uuid", strategy = "assigned")
 	public String getId() {
 		return id;
 	}

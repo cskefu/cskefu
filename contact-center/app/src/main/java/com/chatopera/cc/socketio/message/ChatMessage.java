@@ -29,7 +29,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "uk_chat_message")
-@Document(indexName = "cskefu", type = "chat_message")
+@Document(indexName = "chat_message", type = "chat_message")
 @org.hibernate.annotations.Proxy(lazy = false)
 public class ChatMessage implements java.io.Serializable {
     /**

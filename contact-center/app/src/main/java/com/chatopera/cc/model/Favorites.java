@@ -23,13 +23,12 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.Parent;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Data
-@Document(indexName = "cskefu", type = "favorites", createIndex = false)
+@Document(indexName = "favorites", type = "favorites", createIndex = false)
 @Entity
 @Table(name = "uk_favorites")
 @org.hibernate.annotations.Proxy(lazy = false)
@@ -41,7 +40,7 @@ public class Favorites implements java.io.Serializable {
     private String title;
     private String model;
     @Field(type = FieldType.Text, store = true)
-    @Parent(type = "uk_workorders")
+    // @Parent(type = "uk_workorders")
     private String orderid;
     private WorkOrders workOrders;
     private Date createtime = new Date();

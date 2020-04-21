@@ -23,7 +23,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import java.util.Date;
 
-@Document(indexName = "cskefu", type = "contact_notes")
+@Document(indexName = "contact_notes", type = "contact_notes")
 @Entity
 @Table(name = "cs_contact_notes")
 @org.hibernate.annotations.Proxy(lazy = false)

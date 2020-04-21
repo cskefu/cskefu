@@ -24,94 +24,94 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import java.util.Date;
 
-@Document(indexName = "cskefu", type = "entcustomer")
+@Document(indexName = "entcustomer", type = "entcustomer")
 @Entity
 @Table(name = "uk_entcustomer")
 @org.hibernate.annotations.Proxy(lazy = false)
-public class EntCustomer extends ESBean implements java.io.Serializable{
-	
+public class EntCustomer extends ESBean implements java.io.Serializable {
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String id  = MainUtils.getUUID();
-	
-	private String name;			
-	private String etype;			
-	private String ekind;	
-	private String maturity ;
-	private String elevel;			
-	private String ecode;			
-	private String nickname;		
-	private String esource;			
-	private String organ;		
-	private String corporation;		
+	private String id = MainUtils.getUUID();
+
+	private String name;
+	private String etype;
+	private String ekind;
+	private String maturity;
+	private String elevel;
+	private String ecode;
+	private String nickname;
+	private String esource;
+	private String organ;
+	private String corporation;
 	private String leadername;
 	private String leadermobile;
 	private String leadermobile2;
 	private String leaderphone;
-	private String leaderemail;		
-	private String website;			
-	private String email;			
-	private String emailalt;		
-	private String phone;	
+	private String leaderemail;
+	private String website;
+	private String email;
+	private String emailalt;
+	private String phone;
 	private String phonealt;
-	private String fax;	
-	private String faxalt;	
-	private String country;			
-	private String province;		
-	
-	private String entcusid;	//客户ID
-	
-	private String city;			
-	private String sarea;			
-	private String address;			
+	private String fax;
+	private String faxalt;
+	private String country;
+	private String province;
+
+	private String entcusid;    //客户ID
+
+	private String city;
+	private String sarea;
+	private String address;
 	private String postcode;
-	private String businessscope;			
-	private String capital;	
+	private String businessscope;
+	private String capital;
 	private String stockcode;
 	private String bankaccount;
-	private String registeredaddress;		
-	private String esize;			
-	private String industry;		
-	private String validstatus;		
-	private String weixin;			
-	private String weibo;		
-	
-	private Date touchtime ;						
-	private String dzip;			
-	private String daddress;		
-	private String darea;			
-	private String dcity;			
-	private String dprovince;		
-	private boolean datastatus;		
-	private String processid;		
+	private String registeredaddress;
+	private String esize;
+	private String industry;
+	private String validstatus;
+	private String weixin;
+	private String weibo;
+
+	private Date touchtime;
+	private String dzip;
+	private String daddress;
+	private String darea;
+	private String dcity;
+	private String dprovince;
+	private boolean datastatus;
+	private String processid;
 	private String description;
-	
-	private String creater;			
-	private String username;		
-	private String updateuser;		
-	private String updateusername;		
-	
-	private Date updatetime = new Date();						
-	private String orgi;		
-	
-	private Date createtime = new Date();						
-	private String assignedto;		
+
+	private String creater;
+	private String username;
+	private String updateuser;
+	private String updateusername;
+
+	private Date updatetime = new Date();
+	private String orgi;
+
+	private Date createtime = new Date();
+	private String assignedto;
 	private String wfstatus;
-	private String shares;			
-	private String owner;			
-	private String datadept;		
+	private String shares;
+	private String owner;
+	private String datadept;
 	private String batid;
-	
-	private String pinyin ;		//拼音首字母
-	
-	
+
+	private String pinyin;        //拼音首字母
+
+
 	@Id
 	@Column(length = 32)
 	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "assigned")	
+	@GenericGenerator(name = "system-uuid", strategy = "assigned")
 	public String getId() {
 		return id;
 	}
@@ -490,5 +490,5 @@ public class EntCustomer extends ESBean implements java.io.Serializable{
 	public void setPinyin(String pinyin) {
 		this.pinyin = pinyin;
 	}
-	
+
 }
