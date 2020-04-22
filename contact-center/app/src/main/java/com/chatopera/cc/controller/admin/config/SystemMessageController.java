@@ -39,23 +39,23 @@ import java.security.NoSuchAlgorithmException;
 @Controller
 @RequestMapping("/admin")
 public class SystemMessageController extends Handler {
-	
+
 	@Autowired
 	private SystemMessageRepository systemMessageRepository;
-	
+
     @RequestMapping("/email/index")
     @Menu(type = "setting" , subtype = "email")
     public ModelAndView index(ModelMap map , HttpServletRequest request) throws IOException {
-    	map.addAttribute("emailList", systemMessageRepository.findByMsgtypeAndOrgi("email" , super.getOrgi(request) , new PageRequest(super.getP(request), super.getPs(request))));
-    	return request(super.createAdminTempletResponse("/admin/email/index"));
+        map.addAttribute("emailList", systemMessageRepository.findByMsgtypeAndOrgi("email", super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request))));
+        return request(super.createAdminTempletResponse("/admin/email/index"));
     }
-    
+
     @RequestMapping("/email/add")
     @Menu(type = "admin" , subtype = "email")
     public ModelAndView add(ModelMap map , HttpServletRequest request) {
         return request(super.createRequestPageTempletResponse("/admin/email/add"));
     }
-    
+
     @RequestMapping("/email/save")
     @Menu(type = "admin" , subtype = "user")
     public ModelAndView save(HttpServletRequest request ,@Valid SystemMessage email) throws NoSuchAlgorithmException {
@@ -67,14 +67,14 @@ public class SystemMessageController extends Handler {
     	systemMessageRepository.save(email) ;
     	return request(super.createRequestPageTempletResponse("redirect:/admin/email/index.html"));
     }
-    
+
     @RequestMapping("/email/edit")
     @Menu(type = "admin" , subtype = "email")
     public ModelAndView edit(ModelMap map , HttpServletRequest request , @Valid String id) {
     	map.addAttribute("email", systemMessageRepository.findByIdAndOrgi(id, super.getOrgi(request))) ;
         return request(super.createRequestPageTempletResponse("/admin/email/edit"));
     }
-    
+
     @RequestMapping("/email/update")
     @Menu(type = "admin" , subtype = "user" , admin = true)
     public ModelAndView update(HttpServletRequest request ,@Valid SystemMessage email) throws NoSuchAlgorithmException {
@@ -92,7 +92,7 @@ public class SystemMessageController extends Handler {
     	}
     	return request(super.createRequestPageTempletResponse("redirect:/admin/email/index.html"));
     }
-    
+
     @RequestMapping("/email/delete")
     @Menu(type = "admin" , subtype = "user")
     public ModelAndView delete(HttpServletRequest request ,@Valid SystemMessage email) {
@@ -102,23 +102,23 @@ public class SystemMessageController extends Handler {
     	}
     	return request(super.createRequestPageTempletResponse("redirect:/admin/email/index.html"));
     }
-    
-    
+
+
     @RequestMapping("/sms/index")
     @Menu(type = "setting" , subtype = "sms")
     public ModelAndView smsindex(ModelMap map , HttpServletRequest request) throws IOException {
-    	map.addAttribute("smsList", systemMessageRepository.findByMsgtypeAndOrgi("sms" , super.getOrgi(request) , new PageRequest(super.getP(request), super.getPs(request))));
-    	return request(super.createAdminTempletResponse("/admin/sms/index"));
+        map.addAttribute("smsList", systemMessageRepository.findByMsgtypeAndOrgi("sms", super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request))));
+        return request(super.createAdminTempletResponse("/admin/sms/index"));
     }
-    
+
     @RequestMapping("/sms/add")
     @Menu(type = "admin" , subtype = "sms")
     public ModelAndView smsadd(ModelMap map , HttpServletRequest request) {
-    	
-    	map.addAttribute("smsType", Dict.getInstance().getDic("com.dic.sms.type")) ;
+
+        map.addAttribute("smsType", Dict.getInstance().getDic("com.dic.sms.type")) ;
         return request(super.createRequestPageTempletResponse("/admin/sms/add"));
     }
-    
+
     @RequestMapping("/sms/save")
     @Menu(type = "admin" , subtype = "sms")
     public ModelAndView smssave(HttpServletRequest request ,@Valid SystemMessage sms) throws NoSuchAlgorithmException {
@@ -130,7 +130,7 @@ public class SystemMessageController extends Handler {
     	systemMessageRepository.save(sms) ;
     	return request(super.createRequestPageTempletResponse("redirect:/admin/sms/index.html"));
     }
-    
+
     @RequestMapping("/sms/edit")
     @Menu(type = "admin" , subtype = "sms")
     public ModelAndView smsedit(ModelMap map , HttpServletRequest request , @Valid String id) {
@@ -138,7 +138,7 @@ public class SystemMessageController extends Handler {
     	map.addAttribute("sms", systemMessageRepository.findByIdAndOrgi(id, super.getOrgi(request))) ;
         return request(super.createRequestPageTempletResponse("/admin/sms/edit"));
     }
-    
+
     @RequestMapping("/sms/update")
     @Menu(type = "admin" , subtype = "sms" , admin = true)
     public ModelAndView smsupdate(HttpServletRequest request ,@Valid SystemMessage sms) throws NoSuchAlgorithmException {
@@ -156,7 +156,7 @@ public class SystemMessageController extends Handler {
     	}
     	return request(super.createRequestPageTempletResponse("redirect:/admin/sms/index.html"));
     }
-    
+
     @RequestMapping("/sms/delete")
     @Menu(type = "admin" , subtype = "sms")
     public ModelAndView smsdelete(HttpServletRequest request ,@Valid SystemMessage sms) {

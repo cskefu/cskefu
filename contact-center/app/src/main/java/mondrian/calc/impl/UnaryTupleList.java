@@ -9,7 +9,9 @@
 
 package mondrian.calc.impl;
 
-import mondrian.calc.*;
+import mondrian.calc.TupleCursor;
+import mondrian.calc.TupleIterator;
+import mondrian.calc.TupleList;
 import mondrian.olap.Evaluator;
 import mondrian.olap.Member;
 
@@ -259,14 +261,14 @@ public class UnaryTupleList
 
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
-		return count;
+
+        return count;
 	}
 
 	@Override
 	public void setCount(int count) {
-		// TODO Auto-generated method stub
-		this.count = count;
+
+        this.count = count;
 	}
 }
 

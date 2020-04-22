@@ -29,16 +29,15 @@ import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
-import org.springframework.boot.web.servlet.ErrorPage;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.server.ErrorPage;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jms.annotation.EnableJms;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.util.unit.DataSize;
 
 import javax.servlet.MultipartConfigElement;
 import java.io.IOException;
@@ -51,17 +50,8 @@ public class Application {
 
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
-    @Value("${web.upload-path}")
-    private String uploaddir;
-
-    @Value("${spring.servlet.multipart.max-file-size}")
-    private String multipartMaxUpload;
-
-    @Value("${spring.servlet.multipart.max-request-size}")
-    private String multipartMaxRequest;
-
-    /**
-     * 记载模块
+    /*
+     * 加载模块
      */
     static {
         // CRM模块
@@ -73,7 +63,7 @@ public class Application {
         // 企业聊天模块
         MainContext.enableModule(Constants.CSKEFU_MODULE_ENTIM);
 
-        /**
+        /*
          * 插件组
          */
         // 外呼模块
@@ -94,6 +84,13 @@ public class Application {
         }
     }
 
+    @Value("${web.upload-path}")
+    private String uploadDir;
+    @Value("${spring.servlet.multipart.max-file-size}")
+    private DataSize multipartMaxUpload;
+    @Value("${spring.servlet.multipart.max-request-size}")
+    private DataSize multipartMaxRequest;
+
     /**
      * Init local resources
      */
@@ -106,33 +103,13 @@ public class Application {
         }
     }
 
-    @Bean
-    public MultipartConfigElement multipartConfigElement() {
-        MultipartConfigFactory factory = new MultipartConfigFactory();
-        factory.setMaxFileSize(multipartMaxUpload); //KB,MB
-        factory.setMaxRequestSize(multipartMaxRequest);
-        factory.setLocation(uploaddir);
-        return factory.createMultipartConfig();
-    }
-
-    @Bean
-    public EmbeddedServletContainerCustomizer containerCustomizer() {
-        return new EmbeddedServletContainerCustomizer() {
-            @Override
-            public void customize(ConfigurableEmbeddedServletContainer container) {
-                ErrorPage error = new ErrorPage("/error.html");
-                container.addErrorPages(error);
-            }
-        };
-    }
-
     public static void main(String[] args) {
         Application.init();
 
-        /************************
-         *  该APP中加载多个配置文件
-         *  http://roufid.com/load-multiple-configuration-files-different-directories-spring-boot/
-         ************************/
+        /*
+         该APP中加载多个配置文件
+         http://roufid.com/load-multiple-configuration-files-different-directories-spring-boot/
+         */
         SpringApplication app = new SpringApplicationBuilder(Application.class)
                 .properties("spring.config.name:application,git")
                 .build();
@@ -141,5 +118,22 @@ public class Application {
         app.setAddCommandLineProperties(false);
         app.addListeners(new AppCtxRefreshEventListener());
         MainContext.setApplicationContext(app.run(args));
+    }
+
+    @Bean
+    public MultipartConfigElement multipartConfigElement() {
+        MultipartConfigFactory factory = new MultipartConfigFactory();
+        factory.setMaxFileSize(multipartMaxUpload); //KB,MB
+        factory.setMaxRequestSize(multipartMaxRequest);
+        factory.setLocation(uploadDir);
+        return factory.createMultipartConfig();
+    }
+
+    @Bean
+    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> containerCustomizer() {
+        return container -> {
+            ErrorPage error = new ErrorPage("/error.html");
+            container.addErrorPages(error);
+        };
     }
 }

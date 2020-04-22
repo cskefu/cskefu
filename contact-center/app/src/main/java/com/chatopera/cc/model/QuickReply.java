@@ -23,30 +23,30 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import java.util.Date;
 
-@Document(indexName = "cskefu", type = "quickreply")
+@Document(indexName = "quickreply", type = "quickreply")
 @Entity
 @Table(name = "uk_quickreply")
 @org.hibernate.annotations.Proxy(lazy = false)
 public class QuickReply {
-	
+
 	private String id  = MainUtils.getUUID();
-	
+
 	private String title ;		//标题
 	private String content ;	//内容
-	
+
 	private String type ;		//公用 /私有
 	private String creater; 	//创建人
 	private Date createtime = new Date();	//创建时间
-	
+
 	private String orgi ;		//
-	
+
 	private String cate ; 		//所属分类
 
-	
+
 	@Id
 	@Column(length = 32)
 	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "assigned")		
+	@GenericGenerator(name = "system-uuid", strategy = "assigned")
 	public String getId() {
 		return id;
 	}

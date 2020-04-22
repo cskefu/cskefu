@@ -1,20 +1,20 @@
 package com.chatopera.cc.persistence.impl;
 
 import com.chatopera.cc.model.Tag;
-import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
 import com.chatopera.cc.persistence.repository.TagRepository;
-import com.chatopera.cc.persistence.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.List;
 
 @Service("tagdata")
+@RequiredArgsConstructor
 public class TagDataExchangeImpl implements DataExchangeInterface {
-    @Autowired
-    private TagRepository tagRes;
+    @NonNull
+    private final TagRepository tagRes;
 
     public String getDataByIdAndOrgi(String id, String orgi) {
         Tag tag = tagRes.findByOrgiAndId(orgi, id);

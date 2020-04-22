@@ -7,23 +7,24 @@ import com.chatopera.cc.persistence.repository.ChatMessageRepository;
 import com.chatopera.cc.persistence.repository.RecentUserRepository;
 import com.chatopera.cc.socketio.client.NettyClients;
 import com.chatopera.cc.socketio.message.ChatMessage;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class PeerSyncEntIM {
     private final static Logger logger = LoggerFactory.getLogger(
             PeerSyncEntIM.class);
+    @NonNull
+    private final ChatMessageRepository chatMessageRes;
 
-    @Autowired
-    ChatMessageRepository chatMessageRes;
-
-    @Autowired
-    RecentUserRepository recentUserRes;
+    @NonNull
+    private final RecentUserRepository recentUserRes;
 
     public void send(
             final String user,

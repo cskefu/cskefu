@@ -19,24 +19,22 @@ package com.chatopera.cc.controller.api;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.controller.api.request.RestUtils;
-import com.chatopera.cc.exception.CSKefuRestException;
 import com.chatopera.cc.model.Tag;
 import com.chatopera.cc.model.TagRelation;
 import com.chatopera.cc.persistence.repository.TagRelationRepository;
 import com.chatopera.cc.persistence.repository.TagRepository;
-import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.util.Menu;
-import com.chatopera.cc.util.json.GsonTools;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -51,26 +49,20 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/contacts/tags")
+@RequiredArgsConstructor
 public class ApiContactTagsController extends Handler {
     private static final Logger logger = LoggerFactory.getLogger(ApiContactTagsController.class);
     private static final String TAGTYPE_USER = "user";
 
+    @NonNull
+    private final TagRepository tagRes;
 
-    @Autowired
-    private TagRepository tagRes;
-
-    @Autowired
-    private TagRelationRepository tagRelationRes;
-
-    @Autowired
-    private UserRepository userRes;
+    @NonNull
+    private final TagRelationRepository tagRelationRes;
 
 
     /**
      * 获取联系人标签
-     *
-     * @param j
-     * @return
      */
     private JsonObject fetch(JsonObject j) {
         JsonObject resp = new JsonObject();
@@ -78,7 +70,7 @@ public class ApiContactTagsController extends Handler {
             String contactid = j.get("contactid").getAsString();
             // 获取联系人所有标签
             List<TagRelation> rels = tagRelationRes.findByUserid(contactid);
-            HashMap<String, String> tagged = new HashMap<String, String>();
+            HashMap<String, String> tagged = new HashMap<>();
 
             for (TagRelation t : rels) {
                 tagged.put(t.getTagid(), t.getId());
@@ -114,9 +106,6 @@ public class ApiContactTagsController extends Handler {
 
     /**
      * 创建联系人标签关系
-     *
-     * @param j
-     * @return
      */
     private JsonObject create(JsonObject j) {
         JsonObject resp = new JsonObject();
@@ -135,9 +124,8 @@ public class ApiContactTagsController extends Handler {
 
         final String tagId = j.get("tagId").getAsString();
         final String contactid = j.get("contactid").getAsString();
-        Tag tag = tagRes.findOne(tagId);
 
-        if (tag == null) {
+        if (!tagRes.existsById(tagId)) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_2);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "不存在该标签。");
             return resp;
@@ -161,9 +149,6 @@ public class ApiContactTagsController extends Handler {
 
     /**
      * 去掉标签
-     *
-     * @param j
-     * @return
      */
     private JsonObject remove(JsonObject j) {
         JsonObject resp = new JsonObject();
@@ -173,14 +158,14 @@ public class ApiContactTagsController extends Handler {
             return resp;
         }
 
-        TagRelation t = tagRelationRes.findOne(j.get("xid").getAsString());
-        if (t == null) {
+        String tagId = j.get("xid").getAsString();
+        if (!tagRelationRes.existsById(tagId)) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "该联系人没有打这个标签。");
             return resp;
         }
 
-        tagRelationRes.delete(t);
+        tagRelationRes.deleteById(tagId);
         JsonObject data = new JsonObject();
         data.addProperty("msg", "删除成功。");
         resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
@@ -191,8 +176,8 @@ public class ApiContactTagsController extends Handler {
 
     @RequestMapping(method = RequestMethod.POST)
     @Menu(type = "apps", subtype = "contacttags", access = true)
-    public ResponseEntity<String> operations(HttpServletRequest request, @RequestBody final String body) throws CSKefuRestException, GsonTools.JsonObjectExtensionConflictException {
-        final JsonObject j = (new JsonParser()).parse(body).getAsJsonObject();
+    public ResponseEntity<String> operations(HttpServletRequest request, @RequestBody final String body) {
+        final JsonObject j = JsonParser.parseString(body).getAsJsonObject();
         logger.info("[contact tags] operations payload {}", j.toString());
         JsonObject json = new JsonObject();
         HttpHeaders headers = RestUtils.header();
@@ -219,7 +204,7 @@ public class ApiContactTagsController extends Handler {
                     break;
             }
         }
-        return new ResponseEntity<String>(json.toString(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(json.toString(), headers, HttpStatus.OK);
     }
 
 }

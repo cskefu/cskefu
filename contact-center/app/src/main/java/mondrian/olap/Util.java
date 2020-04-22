@@ -18,28 +18,27 @@ import mondrian.resource.MondrianResource;
 import mondrian.rolap.*;
 import mondrian.spi.UserDefinedFunction;
 import mondrian.util.*;
-
 import org.apache.commons.collections.keyvalue.AbstractMapEntry;
 import org.apache.commons.vfs.*;
 import org.apache.commons.vfs.provider.http.HttpFileObject;
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.Logger;
 import org.eigenbase.xom.XOMUtil;
-
 import org.olap4j.impl.Olap4jUtil;
 import org.olap4j.mdx.*;
 
 import java.io.*;
 import java.lang.ref.Reference;
 import java.lang.reflect.*;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.*;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -56,7 +55,7 @@ public class Util extends XOMUtil {
 
     public static final String nl = System.getProperty("line.separator");
 
-    private static final Logger LOGGER = Logger.getLogger(Util.class);
+    private static final Logger LOGGER = org.apache.logging.log4j.LogManager.getLogger(Util.class);
 
     /**
      * Placeholder which indicates a value NULL.
@@ -428,7 +427,7 @@ public class Util extends XOMUtil {
      * you wish to compare names, use {@link #equalName(String, String)}.
      */
     public static boolean equals(String s, String t) {
-        return equals((Object) s, (Object) t);
+        return equals(s, t);
     }
 
     /**
@@ -2310,8 +2309,7 @@ public class Util extends XOMUtil {
                 }
                 resultSet.close();
             } catch (Throwable t) {
-                firstException = new SQLException();
-                firstException.initCause(t);
+                firstException = new SQLException(t);
             }
         }
         if (statement != null) {
@@ -2319,8 +2317,7 @@ public class Util extends XOMUtil {
                 statement.close();
             } catch (Throwable t) {
                 if (firstException == null) {
-                    firstException = new SQLException();
-                    firstException.initCause(t);
+                    firstException = new SQLException(t);
                 }
             }
         }
@@ -2329,8 +2326,7 @@ public class Util extends XOMUtil {
                 connection.close();
             } catch (Throwable t) {
                 if (firstException == null) {
-                    firstException = new SQLException();
-                    firstException.initCause(t);
+                    firstException = new SQLException(t);
                 }
             }
         }
@@ -3371,7 +3367,7 @@ public class Util extends XOMUtil {
         InputStream in = readVirtualFile(catalogUrl);
         try {
             final byte[] bytes = Util.readFully(in, 1024);
-            return new String(bytes,"utf-8");
+            return new String(bytes, StandardCharsets.UTF_8);
         } finally {
             if (in != null) {
                 in.close();
@@ -4256,7 +4252,7 @@ public class Util extends XOMUtil {
         }
     }
 
-    public static interface Functor1<RT, PT> {
+    public interface Functor1<RT, PT> {
         RT apply(PT param);
     }
 
@@ -4304,9 +4300,11 @@ public class Util extends XOMUtil {
     public interface MemoryInfo {
         Usage get();
 
-        public interface Usage {
+        interface Usage {
             long getUsed();
+
             long getCommitted();
+
             long getMax();
         }
     }
@@ -4434,9 +4432,7 @@ public class Util extends XOMUtil {
                 }
                 public boolean contains(Object o) {
                     if (o instanceof Entry) {
-                        if (list.contains(((Entry) o).getKey())) {
-                            return true;
-                        }
+                        return list.contains(((Entry) o).getKey());
                     }
                     return false;
                 }
@@ -4475,11 +4471,7 @@ public class Util extends XOMUtil {
                     return list.size();
                 }
                 public boolean contains(Object o) {
-                    if (o == null && size() > 0) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    return o == null && size() > 0;
                 }
             };
         }
@@ -4490,11 +4482,7 @@ public class Util extends XOMUtil {
             return list.contains(key);
         }
         public boolean containsValue(Object o) {
-            if (o == null && size() > 0) {
-                return true;
-            } else {
-                return false;
-            }
+            return o == null && size() > 0;
         }
     }
 }

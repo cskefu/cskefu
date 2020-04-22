@@ -37,6 +37,7 @@ import com.googlecode.aviator.AviatorEvaluator;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import io.netty.handler.codec.http.HttpHeaders;
+import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConversionException;
@@ -49,8 +50,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
@@ -63,39 +62,39 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("unused")
+@Slf4j
 public class MainUtils {
-    private final static Logger logger = LoggerFactory.getLogger(MainUtils.class);
-
-    private static MD5 md5 = new MD5();
-
+    private static final ObjectMapper JSON = new ObjectMapper();
+    private static final MD5 md5 = new MD5();
+    private static final Random random = new Random();
     public static SimpleDateFormat dateFormate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
     public static SimpleDateFormat timeRangeDateFormat = new SimpleDateFormat("HH:mm");
+
+    static {
+        JSON.setSerializationInclusion(Include.NON_NULL);
+        JSON.configure(SerializationFeature.INDENT_OUTPUT, Boolean.TRUE);
+    }
 
     /**
      * 当前时间+已过随机生成的 长整形数字
-     *
-     * @return
      */
     public static String genID() {
-        return Base62.encode(getUUID()).toLowerCase();
+        return Objects.requireNonNull(Base62.encode(getUUID())).toLowerCase();
     }
 
     public static String genIDByKey(String key) {
-        return Base62.encode(key).toLowerCase();
+        return Objects.requireNonNull(Base62.encode(key)).toLowerCase();
     }
 
     public static String getUUID() {
@@ -156,7 +155,7 @@ public class MainUtils {
     public static long ipToLong(String ipAddress) {
         long result = 0;
         String[] ipAddressInArray = ipAddress.split("\\.");
-        if (ipAddressInArray != null && ipAddressInArray.length == 4) {
+        if (ipAddressInArray.length == 4) {
             for (int i = 3; i >= 0; i--) {
                 long ip = Long.parseLong(ipAddressInArray[3 - i]);
 
@@ -181,12 +180,9 @@ public class MainUtils {
 
     /***
      * ID编码 ， 发送对话的时候使用
-     * @param id
-     * @param nid
-     * @return
      */
     public static String genNewID(String id, String nid) {
-        StringBuffer strb = new StringBuffer();
+        StringBuilder strb = new StringBuilder();
         if (id != null && nid != null) {
             int length = Math.max(id.length(), nid.length());
             for (int i = 0; i < length; i++) {
@@ -203,12 +199,8 @@ public class MainUtils {
         return strb.toString();
     }
 
-    /**
-     * @param request
-     * @return
-     */
     public static Map<String, Object> getRequestParam(HttpServletRequest request) {
-        Map<String, Object> values = new HashMap<String, Object>();
+        Map<String, Object> values = new HashMap<>();
         Enumeration<String> enums = request.getParameterNames();
         while (enums.hasMoreElements()) {
             String param = enums.nextElement();
@@ -218,15 +210,14 @@ public class MainUtils {
     }
 
     /**
-     * @param request
-     * @return
+     *
      */
     public static String getParameter(HttpServletRequest request) {
         Enumeration<String> names = request.getParameterNames();
-        StringBuffer strb = new StringBuffer();
+        StringBuilder strb = new StringBuilder();
         while (names.hasMoreElements()) {
             String name = names.nextElement();
-            if (name.indexOf("password") < 0) {    //不记录 任何包含 password 的参数内容
+            if (!name.contains("password")) {    //不记录 任何包含 password 的参数内容
                 if (strb.length() > 0) {
                     strb.append(",");
                 }
@@ -239,8 +230,6 @@ public class MainUtils {
 
     /**
      * 获取一天的开始时间
-     *
-     * @return
      */
     public static Date getStartTime() {
         Calendar todayStart = Calendar.getInstance();
@@ -253,13 +242,11 @@ public class MainUtils {
 
     /**
      * 获取一天的开始时间
-     *
-     * @return
      */
     public static Date getWeekStartTime() {
         Calendar weekStart = Calendar.getInstance();
         weekStart.set(
-                weekStart.get(Calendar.YEAR), weekStart.get(Calendar.MONDAY), weekStart.get(Calendar.DAY_OF_MONTH), 0,
+                weekStart.get(Calendar.YEAR), weekStart.get(Calendar.MONTH), weekStart.get(Calendar.DAY_OF_MONTH), 0,
                 0, 0);
         weekStart.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         return weekStart.getTime();
@@ -267,8 +254,6 @@ public class MainUtils {
 
     /**
      * 获取一天的开始时间
-     *
-     * @return
      */
     public static Date getLast30Day() {
         Calendar todayStart = Calendar.getInstance();
@@ -282,8 +267,6 @@ public class MainUtils {
 
     /**
      * 获取一天的开始时间
-     *
-     * @return
      */
     public static Date getLastDay(int days) {
         Calendar todayStart = Calendar.getInstance();
@@ -297,8 +280,6 @@ public class MainUtils {
 
     /**
      * 获取一天的结束时间
-     *
-     * @return
      */
     public static Date getEndTime() {
         Calendar todayEnd = Calendar.getInstance();
@@ -311,8 +292,6 @@ public class MainUtils {
 
     /**
      * 获取一天的结束时间
-     *
-     * @return
      */
     public static Date getLastTime(int secs) {
         Calendar todayEnd = Calendar.getInstance();
@@ -335,34 +314,35 @@ public class MainUtils {
     public static BrowserClient parseClient(HttpServletRequest request) {
         BrowserClient client = new BrowserClient();
         String browserDetails = request.getHeader("User-Agent");
-        String userAgent = browserDetails;
-        String user = userAgent.toLowerCase();
-        String os = "";
+        String user = browserDetails.toLowerCase();
+        String os;
         String browser = "", version = "";
 
 
         //=================OS=======================
-        if (userAgent.toLowerCase().indexOf("windows") >= 0) {
+        if (user.contains("windows")) {
             os = "windows";
-        } else if (userAgent.toLowerCase().indexOf("mac") >= 0) {
+        } else if (user.contains("mac")) {
             os = "mac";
-        } else if (userAgent.toLowerCase().indexOf("x11") >= 0) {
+        } else if (user.contains("x11")) {
             os = "unix";
-        } else if (userAgent.toLowerCase().indexOf("android") >= 0) {
+        } else if (user.contains("android")) {
             os = "android";
-        } else if (userAgent.toLowerCase().indexOf("iphone") >= 0) {
+        } else if (user.contains("iphone")) {
             os = "iphone";
         } else {
             os = "UnKnown";
         }
+
+
         //===============Browser===========================
         if (user.contains("qqbrowser")) {
             browser = "QQBrowser";
-        } else if (user.contains("msie") || user.indexOf("rv:11") > -1) {
-            if (user.indexOf("rv:11") >= 0) {
+        } else if (user.contains("msie") || user.contains("rv:11")) {
+            if (user.contains("rv:11")) {
                 browser = "IE11";
             } else {
-                String substring = userAgent.substring(userAgent.indexOf("MSIE")).split(";")[0];
+                String substring = browserDetails.substring(browserDetails.indexOf("MSIE")).split(";")[0];
                 browser = substring.split(" ")[0].replace("MSIE", "IE") + substring.split(" ")[1];
             }
         } else if (user.contains("trident")) {
@@ -370,25 +350,24 @@ public class MainUtils {
         } else if (user.contains("edge")) {
             browser = "Edge";
         } else if (user.contains("safari") && user.contains("version")) {
-            browser = (userAgent.substring(userAgent.indexOf("Safari")).split(" ")[0]).split("/")[0];
-            version = (userAgent.substring(userAgent.indexOf("Version")).split(" ")[0]).split("/")[1];
+            browser = (browserDetails.substring(browserDetails.indexOf("Safari")).split(" ")[0]).split("/")[0];
+            version = (browserDetails.substring(browserDetails.indexOf("Version")).split(" ")[0]).split("/")[1];
         } else if (user.contains("opr") || user.contains("opera")) {
             if (user.contains("opera")) {
-                browser = (userAgent.substring(userAgent.indexOf("Opera")).split(" ")[0]).split(
-                        "/")[0] + "-" + (userAgent.substring(userAgent.indexOf("Version")).split(" ")[0]).split("/")[1];
+                browser = (browserDetails.substring(browserDetails.indexOf("Opera")).split(" ")[0]).split(
+                        "/")[0] + "-" + (browserDetails.substring(browserDetails.indexOf("Version")).split(" ")[0]).split("/")[1];
             } else if (user.contains("opr")) {
-                browser = ((userAgent.substring(userAgent.indexOf("OPR")).split(" ")[0]).replace("/", "-")).replace(
+                browser = ((browserDetails.substring(browserDetails.indexOf("OPR")).split(" ")[0]).replace("/", "-")).replace(
                         "OPR", "Opera");
             }
         } else if (user.contains("chrome")) {
             browser = "Chrome";
-        } else if ((user.indexOf("mozilla/7.0") > -1) || (user.indexOf("netscape6") != -1) || (user.indexOf(
-                "mozilla/4.7") != -1) || (user.indexOf("mozilla/4.78") != -1) || (user.indexOf(
-                "mozilla/4.08") != -1) || (user.indexOf("mozilla/3") != -1)) {
+        } else if (user.contains("mozilla/7.0") || user.contains("netscape6") || user.contains("mozilla/4.7") ||
+                user.contains("mozilla/4.78") || user.contains("mozilla/4.08") || user.contains("mozilla/3")) {
             //browser=(userAgent.substring(userAgent.indexOf("MSIE")).split(" ")[0]).replace("/", "-");
             browser = "Netscape-?";
 
-        } else if ((user.indexOf("mozilla") > -1)) {
+        } else if (user.contains("mozilla")) {
             //browser=(userAgent.substring(userAgent.indexOf("MSIE")).split(" ")[0]).replace("/", "-");
             if (browserDetails.indexOf(" ") > 0) {
                 browser = browserDetails.substring(0, browserDetails.indexOf(" "));
@@ -397,7 +376,7 @@ public class MainUtils {
             }
 
         } else if (user.contains("firefox")) {
-            browser = (userAgent.substring(userAgent.indexOf("Firefox")).split(" ")[0]).replace("/", "-");
+            browser = (browserDetails.substring(browserDetails.indexOf("Firefox")).split(" ")[0]).replace("/", "-");
         } else if (user.contains("rv")) {
             browser = "ie";
         } else {
@@ -413,9 +392,6 @@ public class MainUtils {
 
     /**
      * 活动JPA统计结果
-     *
-     * @param values
-     * @return
      */
     public static WebIMReport getWebIMReport(List<Object> values) {
         WebIMReport report = new WebIMReport();
@@ -431,16 +407,12 @@ public class MainUtils {
 
     /**
      * 活动JPA统计结果
-     *
-     * @param values
-     * @return
      */
     public static WebIMReport getWebIMInviteStatus(List<Object> values) {
         WebIMReport report = new WebIMReport();
         if (values != null && values.size() > 0) {
-
-            for (int i = 0; i < values.size(); i++) {
-                Object[] value = (Object[]) values.get(i);
+            for (Object o : values) {
+                Object[] value = (Object[]) o;
                 if (value.length >= 2) {
                     String invitestatus = (String) value[0];
                     if (MainContext.OnlineUserInviteStatus.DEFAULT.toString().equals(
@@ -459,15 +431,12 @@ public class MainUtils {
 
     /**
      * 活动JPA统计结果
-     *
-     * @param values
-     * @return
      */
     public static List<WebIMReport> getWebIMInviteAgg(List<Object> values) {
-        List<WebIMReport> webIMReportList = new ArrayList<WebIMReport>();
+        List<WebIMReport> webIMReportList = new ArrayList<>();
         if (values != null && values.size() > 0) {
-            for (int i = 0; i < values.size(); i++) {
-                Object[] value = (Object[]) values.get(i);
+            for (Object o : values) {
+                Object[] value = (Object[]) o;
                 WebIMReport report = new WebIMReport();
                 if (value.length == 3) {
                     report.setData((String) value[0]);
@@ -482,15 +451,12 @@ public class MainUtils {
 
     /**
      * 活动JPA统计结果
-     *
-     * @param values
-     * @return
      */
     public static List<WebIMReport> getWebIMDataAgg(List<Object> values) {
-        List<WebIMReport> webIMReportList = new ArrayList<WebIMReport>();
+        List<WebIMReport> webIMReportList = new ArrayList<>();
         if (values != null && values.size() > 0) {
-            for (int i = 0; i < values.size(); i++) {
-                Object[] value = (Object[]) values.get(i);
+            for (Object o : values) {
+                Object[] value = (Object[]) o;
                 WebIMReport report = new WebIMReport();
                 if (value.length == 2) {
                     if (value[0] == null || value[0].toString().equalsIgnoreCase("null") || StringUtils.isBlank(value[0].toString())) {
@@ -508,16 +474,12 @@ public class MainUtils {
 
     /**
      * 活动JPA统计结果
-     *
-     * @param values
-     * @return
      */
     public static WebIMReport getWebIMInviteResult(List<Object> values) {
         WebIMReport report = new WebIMReport();
         if (values != null && values.size() > 0) {
-
-            for (int i = 0; i < values.size(); i++) {
-                Object[] value = (Object[]) values.get(i);
+            for (Object o : values) {
+                Object[] value = (Object[]) o;
                 if (value.length >= 2) {
                     String invitestatus = (String) value[0];
                     if (MainContext.OnlineUserInviteStatus.DEFAULT.toString().equals(
@@ -536,15 +498,12 @@ public class MainUtils {
 
     /**
      * 活动JPA统计结果
-     *
-     * @param values
-     * @return
      */
     public static WeiXinReport getWeiXinReportResult(List<Object> values) {
         WeiXinReport report = new WeiXinReport();
         if (values != null && values.size() > 0) {
-            for (int i = 0; i < values.size(); i++) {
-                Object[] value = (Object[]) values.get(i);
+            for (Object o : values) {
+                Object[] value = (Object[]) o;
                 if (value.length >= 2) {
                     String event = (String) value[0];
                     if (MainContext.WeiXinEventType.SUB.toString().equals(event)) {
@@ -563,16 +522,16 @@ public class MainUtils {
         if (obj == null) {
             return null;
         }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(obj.getClass());
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor property : propertyDescriptors) {
                 String key = property.getName();
 
-                // 过滤class属性  
+                // 过滤class属性
                 if (!key.equals("class")) {
-                    // 得到property对应的getter方法 
+                    // 得到property对应的getter方法
 
                     Method readMethod = property.getReadMethod();
 
@@ -593,9 +552,9 @@ public class MainUtils {
 
     }
 
-    public static void populate(Object bean, Map<Object, Object> properties) throws IllegalAccessException, InvocationTargetException {
+    public static void populate(Object bean, Map<String, Object> properties) {
+        //noinspection unchecked
         ConvertUtils.register(new Converter() {
-            @SuppressWarnings("rawtypes")
             @Override
             public Object convert(Class arg0, Object arg1) {
                 if (arg1 == null) {
@@ -645,30 +604,21 @@ public class MainUtils {
         return objectInput.readObject();
     }
 
-    /**
-     * @param str
-     * @return
-     * @throws NoSuchAlgorithmException
-     */
-    public static String encryption(final String str) throws NoSuchAlgorithmException {
+
+    public static String encryption(final String str) {
         BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
         textEncryptor.setPassword(MainContext.getSystemSecrityPassword());
         return textEncryptor.encrypt(str);
     }
 
-    /**
-     * @param str
-     * @return
-     * @throws NoSuchAlgorithmException
-     */
-    public static String decryption(final String str) throws NoSuchAlgorithmException {
+    public static String decryption(final String str) {
         BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
         textEncryptor.setPassword(MainContext.getSystemSecrityPassword());
         return textEncryptor.decrypt(str);
     }
 
     public static String getTopic(final String snsid, final String msgtype, final String eventype, final String eventkey, final String msg) {
-        StringBuffer strb = new StringBuffer();
+        StringBuilder strb = new StringBuilder();
         strb.append(snsid);
         strb.append(".").append(msgtype);
         if (msgtype.equals("text")) {
@@ -685,7 +635,7 @@ public class MainUtils {
     }
 
     public static String getTopic(String snsid, String msgtype, String eventype) {
-        StringBuffer strb = new StringBuffer();
+        StringBuilder strb = new StringBuilder();
         strb.append(snsid);
         strb.append(".").append(msgtype);
         if (msgtype.equals("text")) {
@@ -700,16 +650,13 @@ public class MainUtils {
 
     /**
      * 处理 对话消息中的图片
-     *
-     * @param message
-     * @return
      */
     public static String filterChatMessage(String message) {
         Document document = Jsoup.parse(message);
         Elements pngs = document.select("img[src]");
         for (Element element : pngs) {
             String imgUrl = element.attr("src");
-            if (imgUrl.indexOf("/res/image") >= 0) {
+            if (imgUrl.contains("/res/image")) {
                 element.attr("class", "ukefu-media-image");
             }
         }
@@ -718,9 +665,6 @@ public class MainUtils {
 
     /**
      * 检查当前时间是否是在 时间范围内 ，时间范围的格式为 ： 08:30~11:30,13:30~17:30
-     *
-     * @param timeRanges
-     * @return
      */
     public static boolean isInWorkingHours(String timeRanges) {
         boolean workintTime = true;
@@ -746,22 +690,20 @@ public class MainUtils {
         return workintTime;
     }
 
-    public static File processImage(final File destFile, final File imageFile) throws IOException {
+    public static void processImage(final File destFile, final File imageFile) throws IOException {
         if (imageFile != null && imageFile.exists()) {
             Thumbnails.of(imageFile).width(460).keepAspectRatio(true).toFile(destFile);
         }
-        return destFile;
     }
 
-    public static File scaleImage(final File destFile, final File imageFile, float quality) throws IOException {
+    public static void scaleImage(final File destFile, final File imageFile, float quality) throws IOException {
         if (imageFile != null && imageFile.exists()) {
             Thumbnails.of(imageFile).scale(1f).outputQuality(quality).toFile(destFile);
         }
-        return destFile;
     }
 
     public static String processEmoti(String message) {
-        Pattern pattern = Pattern.compile("\\[([\\d]*?)\\]");
+        Pattern pattern = Pattern.compile("\\[([\\d]*?)]");
         SystemConfig systemConfig = MainContext.getCache().findOneSystemByIdAndOrgi(
                 "systemConfig", MainContext.SYSTEM_ORGI);
 
@@ -814,7 +756,7 @@ public class MainUtils {
     }
 
     public static boolean secConfirm(SecretRepository secRes, String orgi, String confirm) {
-        /**
+        /*
          * 先调用 IMServer
          */
         boolean execute = false;
@@ -834,8 +776,6 @@ public class MainUtils {
 
     /**
      * 获取系统配置
-     *
-     * @return
      */
     public static SystemConfig getSystemConfig() {
         SystemConfig systemConfig = MainContext.getCache().findOneSystemByIdAndOrgi(
@@ -849,8 +789,6 @@ public class MainUtils {
 
     /**
      * 初始化呼叫中心功能里需要隐藏号码的字段
-     *
-     * @param tpRes
      */
     public static void initSystemSecField(TablePropertiesRepository tpRes) {
         if (tpRes != null) {
@@ -862,8 +800,6 @@ public class MainUtils {
 
     /**
      * 获取系统地区配置
-     *
-     * @return
      */
     public static void initSystemArea() {
         MainContext.getCache().deleteSystembyIdAndOrgi(Constants.CSKEFU_SYSTEM_AREA, MainContext.SYSTEM_ORGI);
@@ -874,8 +810,6 @@ public class MainUtils {
 
     /**
      * 缓存 广告位
-     *
-     * @return
      */
     public static void initAdv(String orgi) {
         MainContext.getCache().deleteSystembyIdAndOrgi(Constants.CSKEFU_SYSTEM_ADV + "_" + orgi, orgi);
@@ -885,7 +819,7 @@ public class MainUtils {
     }
 
     public static Template getTemplate(String id) {
-        Template templet = null;
+        Template templet;
         if ((templet = MainContext.getCache().findOneSystemByIdAndOrgi(id, MainContext.SYSTEM_ORGI)) == null) {
             TemplateRepository templateRes = MainContext.getContext().getBean(TemplateRepository.class);
             templet = templateRes.findByIdAndOrgi(id, MainContext.SYSTEM_ORGI);
@@ -896,13 +830,9 @@ public class MainUtils {
 
     /**
      * 按照权重获取广告
-     *
-     * @param adpos
-     * @return
      */
-    @SuppressWarnings("unchecked")
     public static AdType getPointAdv(String adpos, String orgi) {
-        List<AdType> adTypeList = new ArrayList<AdType>();
+        List<AdType> adTypeList = new ArrayList<>();
         List<AdType> cacheAdTypeList = MainContext.getCache().findOneSystemListByIdAndOrgi(
                 Constants.CSKEFU_SYSTEM_ADV + "_" + orgi, orgi);
         if (cacheAdTypeList == null) {
@@ -921,7 +851,7 @@ public class MainUtils {
                 }
             }
         }
-        if (adTypeList != null && sysDic != null) {
+        if (sysDic != null) {
             for (AdType adType : cacheAdTypeList) {
                 if (adType.getAdpos().equals(sysDic.getId())) {
                     adTypeList.add(adType);
@@ -931,13 +861,8 @@ public class MainUtils {
         return weitht(adTypeList);
     }
 
-    private static Random random = new Random();
-
     /**
      * 按照权重，获取广告内容
-     *
-     * @param adList
-     * @return
      */
     private static AdType weitht(List<AdType> adList) {
         AdType adType = null;
@@ -960,30 +885,24 @@ public class MainUtils {
 
     /**
      * 16进制字符串转换为字符串
-     *
-     * @return
      */
     public static String string2HexString(String strPart) {
-        StringBuffer hexString = new StringBuffer();
+        StringBuilder hexString = new StringBuilder();
         for (int i = 0; i < strPart.length(); i++) {
-            int ch = (int) strPart.charAt(i);
+            int ch = strPart.charAt(i);
             String strHex = Integer.toHexString(ch);
             hexString.append(strHex);
         }
         return hexString.toString();
     }
 
-    /**
-     * @throws IOException
-     * @throws TemplateException
-     */
     @SuppressWarnings("deprecation")
     public static String getTemplet(String templet, Map<String, Object> values) throws IOException, TemplateException {
         StringWriter writer = new StringWriter();
-        Configuration cfg = null;
-        freemarker.template.Template template = null;
+        Configuration cfg;
+        freemarker.template.Template template;
         String retValue = templet;
-        if (templet != null && templet.length() > 0 && templet.indexOf("$") >= 0) {
+        if (templet != null && templet.length() > 0 && templet.contains("$")) {
             cfg = new Configuration();
             TempletLoader loader = new TempletLoader(templet);
             cfg.setTemplateLoader(loader);
@@ -997,12 +916,6 @@ public class MainUtils {
 
     /**
      * 发送邮件
-     *
-     * @param email
-     * @param cc
-     * @param subject
-     * @param content
-     * @throws Exception
      */
     public static void sendMail(String email, String cc, String subject, String content, List<String> filenames) throws Exception {
         SystemConfig config = MainUtils.getSystemConfig();
@@ -1028,24 +941,19 @@ public class MainUtils {
         return null;
     }
 
-    public static String processContentEncode(String str) throws Exception {
+    public static String processContentEncode(String str) {
         return Base64.encodeBase64String(str.getBytes(StandardCharsets.UTF_8)).replaceAll("\\+", "-");
     }
 
-    public static String processContentDecode(String str) throws Exception {
+    public static String processContentDecode(String str) {
         return new String(Base64.decodeBase64(str.replaceAll("-", "\\+").getBytes()), StandardCharsets.UTF_8);
     }
 
-    /**
-     * @param defaultFormatValue
-     * @param text
-     * @return
-     */
     public static String processParam(String defaultFormatValue, String text) {
         String formatValue = "yyyy-MM-dd";
-        if (text.matches("[ ]{0,}([Yy]{1,})[ ]{0,}[+-]{0,1}([\\d]{0,})")) {
+        if (text.matches("[ ]*([Yy]+)[ ]*[+-]?([\\d]*)")) {
             formatValue = "yyyy";
-        } else if (text.matches("[ ]{0,}([Mm]{1,})[ ]{0,}[+-]{0,1}([\\d]{0,})")) {
+        } else if (text.matches("[ ]*([Mm]+)[ ]*[+-]?([\\d]*)")) {
             formatValue = "yyyy-MM";
         }
 
@@ -1055,13 +963,10 @@ public class MainUtils {
 
     /***
      * 计算T+1
-     * @param text
-     * @param format
-     * @return
      */
     public static String getDays(String text, String format) {
         String retDateFormat = text;
-        Pattern pattern = Pattern.compile("[ ]{0,}([TtMmYy]{1,})[ ]{0,}[+-]{0,1}([\\d]{0,})");
+        Pattern pattern = Pattern.compile("[ ]*([TtMmYy]+)[ ]*[+-]?([\\d]*)");
         Matcher matcher = pattern.matcher(text);
         if (matcher.find() && matcher.groupCount() >= 1) {
             try {
@@ -1081,11 +986,9 @@ public class MainUtils {
 
     /***
      * 计算T+1
-     * @param text
-     * @return
      */
     public static Object getDaysParam(String text) {
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, Object> context = new HashMap<>();
         context.put("T", processDays());
         context.put("t", processDays());
         context.put("M", processMonth());
@@ -1096,13 +999,7 @@ public class MainUtils {
         return AviatorEvaluator.execute(text, context);
     }
 
-    /**
-     * @param value
-     * @return
-     * @throws ParseException
-     * @throws Exception
-     */
-    public static String formatDateValue(String format, Object value) throws ParseException {
+    public static String formatDateValue(String format, Object value) {
         if (value != null && value.toString().matches("[\\d.]{5,}")) {
             value = new SimpleDateFormat(format).format(
                     new Date((long) (Double.parseDouble(value.toString()) * 24 * 60 * 60 * 1000)));
@@ -1110,17 +1007,11 @@ public class MainUtils {
         return value != null ? value.toString() : "0";
     }
 
-    /**
-     * @param value
-     * @return
-     * @throws ParseException
-     * @throws Exception
-     */
     public static String formatMonthValue(String formatValue, Object value) throws ParseException {
         if (value != null && value.toString().matches("[\\d.]{3,}")) {
             int months = (int) Double.parseDouble(String.valueOf(value));
-            int year = 0;
-            int month = 0;
+            int year;
+            int month;
             if (months % 12 == 0) {
                 year = months / 12 - 1;
                 month = 12;
@@ -1139,34 +1030,17 @@ public class MainUtils {
         return value != null ? value.toString() : "0";
     }
 
-    /**
-     * @return
-     */
     public static double processDays() {
         return System.currentTimeMillis() * 1.0f / (1000 * 60 * 60 * 24);
     }
 
-    /**
-     * @return
-     */
     public static double processMonth() {
         Calendar calendar = Calendar.getInstance();
-        int month = calendar.get(Calendar.YEAR) * 12 + calendar.get(Calendar.MONTH) + 1;
-        return month;
+        return calendar.get(Calendar.YEAR) * 12 + calendar.get(Calendar.MONTH) + 1;
     }
 
-    /**
-     * @return
-     */
     public static double processYear() {
         return Calendar.getInstance().get(Calendar.YEAR);
-    }
-
-    private static final ObjectMapper JSON = new ObjectMapper();
-
-    static {
-        JSON.setSerializationInclusion(Include.NON_NULL);
-        JSON.configure(SerializationFeature.INDENT_OUTPUT, Boolean.TRUE);
     }
 
     public static String toJson(Object obj) {
@@ -1179,12 +1053,9 @@ public class MainUtils {
         return null;
     }
 
-    /**
-     * @param message
-     */
     public static AsrResult parseAsrResult(String id, String message, int speakms) {
         AsrResult asrResult = null;
-        Pattern pattern = Pattern.compile("([\\d]{1,})[\\.]{1}([\\s\\S]*);");
+        Pattern pattern = Pattern.compile("([\\d]+)[.]([\\s\\S]*);");
         Matcher matcher = pattern.matcher(message);
         if (matcher.find() && matcher.groupCount() == 2) {
             asrResult = new AsrResult(id, matcher.group(2), matcher.group(1));
@@ -1200,13 +1071,6 @@ public class MainUtils {
 
     /**
      * 发送短信
-     *
-     * @param phone
-     * @param id
-     * @param tpId
-     * @param tplValuesMap
-     * @return
-     * @throws Exception
      */
     public static boolean sendSms(String phone, String id, String tpId, Map<String, Object> tplValuesMap) throws Exception {
         SystemConfig config = MainUtils.getSystemConfig();
@@ -1237,12 +1101,12 @@ public class MainUtils {
                 //初始化ascClient,暂时不支持多region（请勿修改）
                 IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId,
                         accessKeySecret);
-                DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product, domain);
+                DefaultProfile.addEndpoint("cn-hangzhou", product, domain);
                 IAcsClient acsClient = new DefaultAcsClient(profile);
                 //组装请求对象
                 SendSmsRequest request = new SendSmsRequest();
                 //使用post提交
-                request.setMethod(MethodType.POST);
+                request.setSysMethod(MethodType.POST);
                 //必填:待发送手机号。支持以逗号分隔的形式进行批量调用，批量上限为1000个手机号码,批量调用相对于单条调用及时性稍有延迟,验证码类型的短信推荐使用单条调用的方式
                 request.setPhoneNumbers(phone);
                 //必填:短信签名-可在短信控制台中找到
@@ -1272,15 +1136,6 @@ public class MainUtils {
         return false;
     }
 
-    /**
-     * @param userid
-     * @param client
-     * @param session
-     * @param orgi
-     * @param ipaddr
-     * @param hostname
-     * @return
-     */
     public static WorkSession createWorkSession(String userid, String client, String session, String orgi, String ipaddr, String hostname, String admin, boolean first) {
         WorkSession workSession = new WorkSession();
         workSession.setCreatetime(new Date());
@@ -1306,44 +1161,33 @@ public class MainUtils {
         return workSession;
     }
 
-    /**
-     * @param plan
-     * @return
-     */
     public static String convertCrond(JobTask plan) {
-        StringBuffer strb = new StringBuffer();
+        StringBuilder strb = new StringBuilder();
+        strb.append(plan.getRunBeginSecond()).append(" ").append(plan.getRunBeginMinute()).append(
+                plan.getIsRepeat() && plan.getRepeatSpace() != null && plan.getRepeatSpace() < 60 ? "/" + plan.getRepeatSpace() : "").append(
+                " ").append(plan.getRunBeginHour()).append(
+                plan.getIsRepeat() && plan.getRepeatSpace() != null && plan.getRepeatSpace() > 60 ? "/" + plan.getRepeatSpace() / 60 : (plan.getRepeatJustTime() != null && plan.getRepeatJustTime() > 0 ? "-" + (plan.getRunBeginHour() + plan.getRepeatJustTime()) : "")).append(
+                " ");
         if ("day".equals(plan.getRunCycle())) {
-            strb.append(plan.getRunBeginSecond()).append(" ").append(plan.getRunBeginMinute()).append(
-                    plan.getIsRepeat() && plan.getRepeatSpace() != null && plan.getRepeatSpace() < 60 ? "/" + plan.getRepeatSpace() : "").append(
-                    " ").append(plan.getRunBeginHour()).append(
-                    plan.getIsRepeat() && plan.getRepeatSpace() != null && plan.getRepeatSpace() > 60 ? "/" + plan.getRepeatSpace() / 60 : (plan.getRepeatJustTime() != null && plan.getRepeatJustTime() > 0 ? "-" + (plan.getRunBeginHour() + plan.getRepeatJustTime()) : "")).append(
-                    " ").append("*").append(
+            strb.append("*").append(
                     plan.getRunSpace() != null && plan.getRunSpace() > 0 ? "/" + plan.getRunSpace() : "").append(
                     " ").append(" * ?");
         }
         if ("week".equals(plan.getRunCycle())) {
-            strb.append(plan.getRunBeginSecond()).append(" ").append(plan.getRunBeginMinute()).append(
-                    plan.getIsRepeat() && plan.getRepeatSpace() != null && plan.getRepeatSpace() < 60 ? "/" + plan.getRepeatSpace() : "").append(
-                    " ").append(plan.getRunBeginHour()).append(
-                    plan.getIsRepeat() && plan.getRepeatSpace() != null && plan.getRepeatSpace() > 60 ? "/" + plan.getRepeatSpace() / 60 : (plan.getRepeatJustTime() != null && plan.getRepeatJustTime() > 0 ? "-" + (plan.getRunBeginHour() + plan.getRepeatJustTime()) : "")).append(
-                    " ").append(plan.getRunDates() == null || plan.getRunDates().length == 0 ? "*" : "?").append(
+            strb.append(plan.getRunDates() == null || plan.getRunDates().length == 0 ? "*" : "?").append(
                     " * ").append(plan.getRunDates() == null || plan.getRunDates().length == 0 ? "?" : StringUtils.join(
                     plan.getRunDates(), ",")).append(
                     plan.getRunSpace() != null && plan.getRunSpace() > 0 ? "/" + plan.getRunSpace() : "");
         }
         if ("month".equals(plan.getRunCycle())) {
-            strb.append(plan.getRunBeginSecond()).append(" ").append(plan.getRunBeginMinute()).append(
-                    plan.getIsRepeat() && plan.getRepeatSpace() != null && plan.getRepeatSpace() < 60 ? "/" + plan.getRepeatSpace() : "").append(
-                    " ").append(plan.getRunBeginHour()).append(
-                    plan.getIsRepeat() && plan.getRepeatSpace() != null && plan.getRepeatSpace() > 60 ? "/" + plan.getRepeatSpace() / 60 : (plan.getRepeatJustTime() != null && plan.getRepeatJustTime() > 0 ? "-" + (plan.getRunBeginHour() + plan.getRepeatJustTime()) : "")).append(
-                    " ").append(plan.getRunBeginDate()).append(" ").append(
+            strb.append(plan.getRunBeginDate()).append(" ").append(
                     plan.getRunDates() == null || plan.getRunDates().length == 0 ? "*" : StringUtils.join(
                             plan.getRunDates(), ",")).append(" ").append(" ?");
         }
         return strb.toString();
     }
 
-    public static Date updateTaskNextFireTime(JobDetail jobDetail) throws Exception {
+    public static Date updateTaskNextFireTime(JobDetail jobDetail) {
         Date nextFireDate = new Date();
         Date date = new Date();
         if (jobDetail != null && jobDetail.getCronexp() != null && jobDetail.getCronexp().length() > 0) {
@@ -1360,37 +1204,33 @@ public class MainUtils {
         return nextFireDate;
     }
 
-    /**
-     * @param dialNum
-     * @param distype
-     * @return
-     */
     public static String processSecField(String dialNum, String distype) {
         StringBuilder strb = new StringBuilder(dialNum);
-        if (distype.equals("01")) {
-            if (strb.length() > 4) {
-                strb.replace(strb.length() / 2 - 2, strb.length() / 2 + 2, "****");
-            } else {
-                strb.replace(0, strb.length(), "****");
-            }
-        } else if (distype.equals("02")) {
-            if (strb.length() > 4) {
-                strb.replace(strb.length() - 4, strb.length(), "****");
-            } else {
-                strb.replace(0, strb.length(), "****");
-            }
-        } else if (distype.equals("03")) {
-            if (strb.length() > 4) {
-                strb.replace(0, 4, "****");
-            } else {
-                strb.replace(0, strb.length(), "****");
-            }
-        } else if (distype.equals("04")) {
-            int length = strb.length();
-            strb.setLength(0);
-            for (int i = 0; i < length; i++) {
-                strb.append("*");
-            }
+        switch (distype) {
+            case "01":
+                if (strb.length() > 4) {
+                    strb.replace(strb.length() / 2 - 2, strb.length() / 2 + 2, "****");
+                } else {
+                    strb.replace(0, strb.length(), "****");
+                }
+                break;
+            case "02":
+                if (strb.length() > 4) {
+                    strb.replace(strb.length() - 4, strb.length(), "****");
+                } else {
+                    strb.replace(0, strb.length(), "****");
+                }
+                break;
+            case "03":
+                strb.replace(0, Math.min(strb.length(), 4), "****");
+                break;
+            case "04":
+                int length = strb.length();
+                strb.setLength(0);
+                for (int i = 0; i < length; i++) {
+                    strb.append("*");
+                }
+                break;
         }
         return strb.toString();
     }
@@ -1398,8 +1238,8 @@ public class MainUtils {
     public static void putMapEntry(
             Map<String, String[]> map, String name,
             String value) {
-        String[] newValues = null;
-        String[] oldValues = (String[]) (String[]) map.get(name);
+        String[] newValues;
+        String[] oldValues = map.get(name);
         if (oldValues == null) {
             newValues = new String[1];
             newValues[0] = value;

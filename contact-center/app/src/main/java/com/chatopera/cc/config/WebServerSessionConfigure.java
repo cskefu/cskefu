@@ -22,12 +22,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.session.data.redis.RedisFlushMode;
-import org.springframework.session.data.redis.RedisOperationsSessionRepository;
+import org.springframework.lang.NonNull;
+import org.springframework.session.FlushMode;
+import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+
+import java.time.Duration;
 
 
 /**
@@ -68,26 +73,20 @@ public class WebServerSessionConfigure {
 
     @Primary
     @Bean
-    public RedisOperationsSessionRepository sessionRepository(RedisTemplate<Object, Object> sessionRedisTemplate) {
-        RedisOperationsSessionRepository sessionRepository = new RedisOperationsSessionRepository(sessionRedisTemplate);
-        sessionRepository.setDefaultMaxInactiveInterval(maxInactiveIntervalInSeconds);
-        sessionRepository.setRedisFlushMode(RedisFlushMode.IMMEDIATE);
-        sessionRepository.setRedisKeyNamespace(RedisKey.CACHE_SESSIONS);
-        return sessionRepository;
+    public RedisIndexedSessionRepository redisIndexedSessionRepository(@NonNull RedisTemplate<Object, Object> sessionRedisTemplate) {
+        RedisIndexedSessionRepository repository = new RedisIndexedSessionRepository(sessionRedisTemplate);
+        repository.setDefaultMaxInactiveInterval(maxInactiveIntervalInSeconds);
+        repository.setFlushMode(FlushMode.IMMEDIATE);
+        repository.setRedisKeyNamespace(RedisKey.CACHE_SESSIONS);
+        return repository;
     }
 
     @Bean
     public RedisTemplate<Object, Object> sessionRedisTemplate() {
-        JedisConnectionFactory factory = new JedisConnectionFactory();
-        factory.setHostName(host);
-        factory.setPort(port);
-        factory.setDatabase(sessionDb);
-        if (StringUtils.isNotBlank(pass)) {
-            factory.setPassword(pass);
-        }
-        factory.setTimeout(timeout);
+        JedisConnectionFactory factory = createJedisConnectionFactory(sessionDb);
         factory.afterPropertiesSet();
-        RedisTemplate<Object, Object> template = new RedisTemplate<Object, Object>();
+
+        RedisTemplate<Object, Object> template = new RedisTemplate<>();
         template.setKeySerializer(new StringRedisSerializer());
         template.setHashKeySerializer(new StringRedisSerializer());
         template.setConnectionFactory(factory);
@@ -97,18 +96,10 @@ public class WebServerSessionConfigure {
 
     /**
      * 存储AuthToken
-     * @return
      */
     @Bean
     public AuthRedisTemplate authRedisTemplate() {
-        JedisConnectionFactory factory = new JedisConnectionFactory();
-        factory.setHostName(host);
-        factory.setPort(port);
-        factory.setDatabase(tokenDb);
-        if (StringUtils.isNotBlank(pass)) {
-            factory.setPassword(pass);
-        }
-        factory.setTimeout(timeout);
+        JedisConnectionFactory factory = createJedisConnectionFactory(tokenDb);
         factory.afterPropertiesSet();
 
         AuthRedisTemplate template = new AuthRedisTemplate();
@@ -116,6 +107,22 @@ public class WebServerSessionConfigure {
         template.setHashKeySerializer(new StringRedisSerializer());
         template.setConnectionFactory(factory);
         return template;
+    }
+
+    @NonNull
+    private JedisConnectionFactory createJedisConnectionFactory(int tokenDb) {
+        RedisStandaloneConfiguration standaloneConfiguration = new RedisStandaloneConfiguration();
+        standaloneConfiguration.setHostName(host);
+        standaloneConfiguration.setDatabase(tokenDb);
+        standaloneConfiguration.setPort(port);
+        if (StringUtils.isNotBlank(pass)) {
+            standaloneConfiguration.setPassword(pass);
+        }
+        JedisClientConfiguration jedisClientConfiguration = JedisClientConfiguration.builder()
+                .connectTimeout(Duration.ofMillis(timeout))
+                .readTimeout(Duration.ofMillis(timeout))
+                .build();
+        return new JedisConnectionFactory(standaloneConfiguration, jedisClientConfiguration);
     }
 
 }

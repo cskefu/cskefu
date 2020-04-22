@@ -25,8 +25,9 @@ import com.chatopera.cc.persistence.repository.ExtentionRepository;
 import com.chatopera.cc.persistence.repository.PbxHostRepository;
 import com.chatopera.cc.persistence.repository.ServiceAiRepository;
 import com.chatopera.cc.util.Menu;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,51 +39,52 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin/callcenter")
+@RequiredArgsConstructor
 public class CallCenterResourceController extends Handler {
 
-    @Autowired
-    private PbxHostRepository pbxHostRes;
+    @NonNull
+    private final PbxHostRepository pbxHostRes;
 
-    @Autowired
-    private ExtentionRepository extentionRes;
+    @NonNull
+    private final ExtentionRepository extentionRes;
 
-    @Autowired
-    private ServiceAiRepository serviceAiRes;
+    @NonNull
+    private final ServiceAiRepository serviceAiRes;
 
     @RequestMapping(value = "/resource")
-    @Menu(type = "callcenter", subtype = "callcenter", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "callcenter", admin = true)
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String hostid) {
         List<PbxHost> pbxHostList = pbxHostRes.findByOrgi(super.getOrgi(request));
         map.addAttribute("pbxHostList", pbxHostList);
 
         map.put("serviceAiList", serviceAiRes.findByOrgi(super.getOrgi(request)));
 
-        PbxHost pbxHost = null;
+        PbxHost pbxHost;
         if (pbxHostList.size() > 0) {
             map.addAttribute("pbxHost", pbxHost = getPbxHost(pbxHostList, hostid));
             map.addAttribute("extentionList",
-                             extentionRes.findByHostidAndOrgi(pbxHost.getId(), super.getOrgi(request)));
+                    extentionRes.findByHostidAndOrgi(pbxHost.getId(), super.getOrgi(request)));
         }
         return request(super.createAdminTempletResponse("/admin/callcenter/resource/index"));
     }
 
     @RequestMapping(value = "/resource/config")
-    @Menu(type = "callcenter", subtype = "callcenter", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "callcenter", admin = true)
     public ModelAndView config(ModelMap map, HttpServletRequest request, @Valid String hostid) {
         List<PbxHost> pbxHostList = pbxHostRes.findByOrgi(super.getOrgi(request));
         map.addAttribute("pbxHostList", pbxHostList);
-        PbxHost pbxHost = null;
+        PbxHost pbxHost;
         if (pbxHostList.size() > 0) {
             map.addAttribute("pbxHost", pbxHost = getPbxHost(pbxHostList, hostid));
             map.addAttribute("extentionList",
-                             extentionRes.findByHostidAndOrgi(pbxHost.getId(), super.getOrgi(request)));
+                    extentionRes.findByHostidAndOrgi(pbxHost.getId(), super.getOrgi(request)));
         }
         return request(super.createRequestPageTempletResponse("/admin/callcenter/resource/config"));
     }
 
     @RequestMapping(value = "/resource/save")
-    @Menu(type = "callcenter", subtype = "callcenter", access = false, admin = true)
-    public ModelAndView save(ModelMap map, HttpServletRequest request, @Valid PbxHost pbxHost) throws Exception {
+    @Menu(type = "callcenter", subtype = "callcenter", admin = true)
+    public ModelAndView save(HttpServletRequest request, @Valid PbxHost pbxHost) throws Exception {
         PbxHost tempPbxHost = pbxHostRes.findByIdAndOrgi(pbxHost.getId(), super.getOrgi(request));
         if (tempPbxHost != null) {
             pbxHost.setCreater(tempPbxHost.getCreater());
@@ -104,15 +106,15 @@ public class CallCenterResourceController extends Handler {
     }
 
     @RequestMapping(value = "/resource/pbxhost")
-    @Menu(type = "callcenter", subtype = "callcenter", access = false, admin = true)
+    @Menu(type = "callcenter", subtype = "callcenter", admin = true)
     public ModelAndView resourcepbx(ModelMap map, HttpServletRequest request, @Valid String hostid) {
         List<PbxHost> pbxHostList = pbxHostRes.findByOrgi(super.getOrgi(request));
         map.addAttribute("pbxHostList", pbxHostList);
-        PbxHost pbxHost = null;
+        PbxHost pbxHost;
         if (pbxHostList.size() > 0) {
             map.addAttribute("pbxHost", pbxHost = getPbxHost(pbxHostList, hostid));
             map.addAttribute("extentionList",
-                             extentionRes.findByHostidAndOrgi(pbxHost.getId(), super.getOrgi(request)));
+                    extentionRes.findByHostidAndOrgi(pbxHost.getId(), super.getOrgi(request)));
         }
         return request(super.createAdminTempletResponse("/admin/callcenter/resource/pbxhost"));
     }

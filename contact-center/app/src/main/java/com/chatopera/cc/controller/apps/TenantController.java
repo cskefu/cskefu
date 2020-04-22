@@ -23,9 +23,11 @@ import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.proxy.OnlineUserProxy;
 import com.chatopera.cc.util.Menu;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.FileCopyUtils;
@@ -41,32 +43,32 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Controller
 @RequestMapping("/apps/tenant")
+@RequiredArgsConstructor
 public class TenantController extends Handler {
 
-    @Autowired
-    private TenantRepository tenantRes;
+    @NonNull
+    private final TenantRepository tenantRes;
 
-    @Autowired
-    private OrgiSkillRelRepository orgiSkillRelRes;
+    @NonNull
+    private final OrgiSkillRelRepository orgiSkillRelRes;
 
-    @Autowired
-    private OrganRepository organRes;
+    @NonNull
+    private final OrganRepository organRes;
 
-    @Autowired
-    private OrganizationRepository organizationRes;
+    @NonNull
+    private final OrganizationRepository organizationRes;
 
-    @Autowired
-    private AgentUserRepository agentUserRepository;
+    @NonNull
+    private final AgentUserRepository agentUserRepository;
 
-    @Autowired
-    private Cache cache;
+    @NonNull
+    private final Cache cache;
 
     @Value("${web.upload-path}")
     private String path;
@@ -85,22 +87,22 @@ public class TenantController extends Handler {
             } else {
                 List<OrgiSkillRel> orgiSkillRelList = orgiSkillRelRes.findBySkillidIn(
                         new ArrayList<>((super.getUser(request)).getAffiliates()));
-                List<Tenant> tenantList = null;
+                List<Tenant> tenantList;
                 if (!orgiSkillRelList.isEmpty()) {
-                    tenantList = new ArrayList<Tenant>();
+                    tenantList = new ArrayList<>();
                     for (OrgiSkillRel orgiSkillRel : orgiSkillRelList) {
-                        Tenant t = tenantRes.findById(orgiSkillRel.getOrgi());
-                        if (t != null) {
-                            tenantList.add(t);
-                        }
+                        tenantRes.findById(orgiSkillRel.getOrgi())
+                                .ifPresent(tenantList::add);
                     }
+                } else {
+                    tenantList = null;
                 }
                 map.addAttribute("tenantList", tenantList);
             }
         } else {
             map.addAttribute("tenantList", tenantRes.findById(super.getOrgi(request)));
         }
-        map.addAttribute("organization", organizationRes.findById(super.getUser(request).getOrgid()));
+        map.addAttribute("organization", organizationRes.findById(super.getUser(request).getOrgid()).orElse(null));
         map.addAttribute("msg", msg);
         map.addAttribute("currentorgi", currentorgi);
         if (currentname != null) {
@@ -123,15 +125,16 @@ public class TenantController extends Handler {
 
     @RequestMapping("/save")
     @Menu(type = "apps", subtype = "tenant")
-    public ModelAndView save(HttpServletRequest request, @Valid Tenant tenant, @RequestParam(value = "tenantpic", required = false) MultipartFile tenantpic, @Valid String skills) throws NoSuchAlgorithmException, IOException {
+    public ModelAndView save(HttpServletRequest request, @Valid Tenant tenant, @RequestParam(value = "tenantpic", required = false) MultipartFile tenantpic, @Valid String skills) throws IOException {
         Tenant tenanttemp = tenantRes.findByOrgidAndTenantname(super.getOrgid(request), tenant.getTenantname());
         if (tenanttemp != null) {
             return request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index.html?msg=tenantexist"));
         }
         tenantRes.save(tenant);
-        if (tenantpic != null && tenantpic.getOriginalFilename().lastIndexOf(".") > 0) {
+        if (tenantpic != null && tenantpic.getOriginalFilename() != null && tenantpic.getOriginalFilename().lastIndexOf(".") > 0) {
             File logoDir = new File(path, "tenantpic");
             if (!logoDir.exists()) {
+                //noinspection ResultOfMethodCallIgnored
                 logoDir.mkdirs();
             }
             String fileName = "tenantpic/" + tenant.getId() + tenantpic.getOriginalFilename().substring(
@@ -141,7 +144,7 @@ public class TenantController extends Handler {
         }
         String tenantid = tenant.getId();
         List<OrgiSkillRel> orgiSkillRelList = orgiSkillRelRes.findByOrgi(tenantid);
-        orgiSkillRelRes.delete(orgiSkillRelList);
+        orgiSkillRelRes.deleteAll(orgiSkillRelList);
         if (!StringUtils.isBlank(skills)) {
             String[] skillsarray = skills.split(",");
             for (String skill : skillsarray) {
@@ -180,56 +183,58 @@ public class TenantController extends Handler {
 
     @RequestMapping("/update")
     @Menu(type = "apps", subtype = "tenant", admin = true)
-    public ModelAndView update(HttpServletRequest request, @Valid Tenant tenant, @RequestParam(value = "tenantpic", required = false) MultipartFile tenantpic, @Valid String skills) throws NoSuchAlgorithmException, IOException {
-        Tenant temp = tenantRes.findById(tenant.getId());
+    public ModelAndView update(HttpServletRequest request, @NonNull @Valid Tenant tenant, @RequestParam(value = "tenantpic", required = false) MultipartFile tenantpic, @Valid String skills) throws IOException {
+        Tenant temp = optionalById(tenant.getId());
         Tenant tenanttemp = tenantRes.findByOrgidAndTenantname(super.getOrgid(request), tenant.getTenantname());
         if (temp != null && tenanttemp != null && !temp.getId().equals(tenanttemp.getId())) {
             return request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index.html?msg=tenantexist"));
         }
-        if (tenant != null) {
+        if (temp != null) {
             tenant.setCreatetime(temp.getCreatetime());
-            if (tenantpic != null && tenantpic.getOriginalFilename().lastIndexOf(".") > 0) {
-                File logoDir = new File(path, "tenantpic");
-                if (!logoDir.exists()) {
-                    logoDir.mkdirs();
-                }
-                String fileName = "tenantpic/" + tenant.getId() + tenantpic.getOriginalFilename().substring(
-                        tenantpic.getOriginalFilename().lastIndexOf("."));
-                FileCopyUtils.copy(tenantpic.getBytes(), new File(path, fileName));
-                tenant.setTenantlogo(fileName);
-            } else {
+        }
+        if (tenantpic != null && tenantpic.getOriginalFilename() != null && tenantpic.getOriginalFilename().lastIndexOf(".") > 0) {
+            File logoDir = new File(path, "tenantpic");
+            if (!logoDir.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                logoDir.mkdirs();
+            }
+            String fileName = "tenantpic/" + tenant.getId() + tenantpic.getOriginalFilename().substring(
+                    tenantpic.getOriginalFilename().lastIndexOf("."));
+            FileCopyUtils.copy(tenantpic.getBytes(), new File(path, fileName));
+            tenant.setTenantlogo(fileName);
+        } else {
+            if (temp != null) {
                 tenant.setTenantlogo(temp.getTenantlogo());
             }
-            if (!StringUtils.isBlank(super.getUser(request).getOrgid())) {
-                tenant.setOrgid(super.getUser(request).getOrgid());
-            } else {
-                tenant.setOrgid(MainContext.SYSTEM_ORGI);
-            }
-            tenantRes.save(tenant);
-            List<OrgiSkillRel> orgiSkillRelList = orgiSkillRelRes.findByOrgi(tenant.getId());
-            orgiSkillRelRes.delete(orgiSkillRelList);
-            if (!StringUtils.isBlank(skills)) {
-                String[] skillsarray = skills.split(",");
-                for (String skill : skillsarray) {
-                    OrgiSkillRel rel = new OrgiSkillRel();
-                    rel.setOrgi(tenant.getId());
-                    rel.setSkillid(skill);
-                    rel.setCreater(super.getUser(request).getId());
-                    rel.setCreatetime(new Date());
-                    orgiSkillRelRes.save(rel);
-                }
-            }
-            OnlineUserProxy.clean(tenant.getId());
         }
+        if (!StringUtils.isBlank(super.getUser(request).getOrgid())) {
+            tenant.setOrgid(super.getUser(request).getOrgid());
+        } else {
+            tenant.setOrgid(MainContext.SYSTEM_ORGI);
+        }
+        tenantRes.save(tenant);
+        List<OrgiSkillRel> orgiSkillRelList = orgiSkillRelRes.findByOrgi(tenant.getId());
+        orgiSkillRelRes.deleteAll(orgiSkillRelList);
+        if (!StringUtils.isBlank(skills)) {
+            String[] skillsarray = skills.split(",");
+            for (String skill : skillsarray) {
+                OrgiSkillRel rel = new OrgiSkillRel();
+                rel.setOrgi(tenant.getId());
+                rel.setSkillid(skill);
+                rel.setCreater(super.getUser(request).getId());
+                rel.setCreatetime(new Date());
+                orgiSkillRelRes.save(rel);
+            }
+        }
+        OnlineUserProxy.clean(tenant.getId());
         return request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index"));
     }
 
     @RequestMapping("/delete")
     @Menu(type = "apps", subtype = "tenant")
-    public ModelAndView delete(HttpServletRequest request, @Valid Tenant tenant) {
-        Tenant temp = tenantRes.findById(tenant.getId());
+    public ModelAndView delete(@Valid Tenant tenant) {
         if (tenant != null) {
-            tenantRes.delete(temp);
+            tenantRes.deleteById(tenant.getId());
         }
         return request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index"));
     }
@@ -242,7 +247,7 @@ public class TenantController extends Handler {
                 (super.getUser(request)).getId(), super.getOrgi(request));
         if (agentStatus == null && cache.getInservAgentUsersSizeByAgentnoAndOrgi(
                 super.getUser(request).getId(), super.getOrgi(request)) == 0) {
-            Tenant temp = tenantRes.findById(tenant.getId());
+            Tenant temp = optionalById(tenant.getId());
             if (temp != null) {
                 super.getUser(request).setOrgi(temp.getId());
             }
@@ -250,13 +255,13 @@ public class TenantController extends Handler {
         }
         if (agentStatus != null) {
             if (tenant.getId().equals(agentStatus.getOrgi())) {
-                Tenant temp = tenantRes.findById(tenant.getId());
+                Tenant temp = optionalById(tenant.getId());
                 if (temp != null) {
                     super.getUser(request).setOrgi(temp.getId());
                 }
                 return view;
             } else {
-                Tenant temp = tenantRes.findById(agentStatus.getOrgi());
+                Tenant temp = optionalById(agentStatus.getOrgi());
                 return request(super.createRequestPageTempletResponse(
                         "redirect:/apps/tenant/index.html?msg=t0" + "&currentorgi=" + agentStatus.getOrgi() + "&currentname=" + URLEncoder.encode(
                                 temp != null ? temp.getTenantname() : "", "UTF-8")));
@@ -267,13 +272,13 @@ public class TenantController extends Handler {
                 super.getOrgi(request));
         if (agentUser != null) {
             if (tenant.getId().equals(agentUser.getOrgi())) {
-                Tenant temp = tenantRes.findById(tenant.getId());
+                Tenant temp = optionalById(tenant.getId());
                 if (temp != null) {
                     super.getUser(request).setOrgi(temp.getId());
                 }
                 return view;
             } else {
-                Tenant temp = tenantRes.findById(agentUser.getOrgi());
+                Tenant temp = optionalById(agentUser.getOrgi());
                 return request(super.createRequestPageTempletResponse(
                         "redirect:/apps/tenant/index.html?msg=t0" + "&currentorgi=" + agentUser.getOrgi() + "&currentname=" + URLEncoder.encode(
                                 temp != null ? temp.getTenantname() : "", "UTF-8")));
@@ -281,5 +286,11 @@ public class TenantController extends Handler {
 
         }
         return request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index.html?msg=t0"));
+    }
+
+    @Nullable
+    private Tenant optionalById(@NonNull String id) {
+        return tenantRes.findById(id)
+                .orElse(null);
     }
 }

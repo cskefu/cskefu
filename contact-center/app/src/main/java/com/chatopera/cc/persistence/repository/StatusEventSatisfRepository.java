@@ -21,5 +21,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StatusEventSatisfRepository extends JpaRepository<StatusEventSatisf, String> {
 
-	StatusEventSatisf findById(String id);
+    // StatusEventSatisf findById(String id);
 }

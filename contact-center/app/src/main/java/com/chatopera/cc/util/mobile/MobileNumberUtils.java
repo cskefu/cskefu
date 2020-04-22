@@ -21,59 +21,55 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MobileNumberUtils {
-	private static final Logger logger = LoggerFactory.getLogger(MobileNumberUtils.class);
-	private static Map<String , MobileAddress> mobileAddressMap  = new HashMap<String ,MobileAddress>();
-	private static boolean isInited = false;
-	
-	public static int init() throws IOException{
-		File file = new File( MobileNumberUtils.class.getResource("/config/mobile.data").getFile());
+    private static final Logger logger = LoggerFactory.getLogger(MobileNumberUtils.class);
+    private static final Map<String, MobileAddress> mobileAddressMap = new HashMap<>();
+    private static boolean isInited = false;
+
+    public static int init() throws IOException {
+        File file = new File(MobileNumberUtils.class.getResource("/config/mobile.data").getFile());
         logger.info("init with file [{}]", file.getAbsolutePath());
-		if(file.exists()){
-			FileInputStream reader = new FileInputStream(file);
-			InputStreamReader isr = new InputStreamReader(reader , "UTF-8");
-			BufferedReader bf = new BufferedReader(isr);
-			try{
-				String data = null ;
-				while((data = bf.readLine()) != null){
-					String[] group = data.split("[\t ]") ;
-					MobileAddress address = null ;
-					if(group.length == 5){
-						address = new MobileAddress(group[0], group[1], group[2], group[3],group[4]) ;
-					}else if(group.length == 4){
-						address = new MobileAddress(group[0], group[1], group[2], group[2],group[3]) ;
-					}
-					if(address!=null){
-						if(mobileAddressMap.get(address.getCode()) == null){
-							mobileAddressMap.put(address.getCode(), address) ;
-						}
-						if(mobileAddressMap.get(address.getAreacode()) == null){
-							mobileAddressMap.put(address.getAreacode(), address) ;
-						}
-					}
-				}
-				isInited = true;
-				logger.info("inited successfully, map size [{}]", mobileAddressMap.size());
-			}catch(Exception ex){
-				ex.printStackTrace();
-			}finally{
-				bf.close();
-				isr.close();
-				reader.close();
-			}
-		}
-		return mobileAddressMap.size() ;
-	}
-	/**
-	 * 根据呼入号码 找到对应 城市 , 需要传入的号码是 手机号 或者 固话号码，位数为 11位
-	 * @param phoneNumber
-	 * @return
-	 */
-	public static MobileAddress getAddress(String phoneNumber){
-	    if(!isInited){
+        if (file.exists()) {
+            FileInputStream reader = new FileInputStream(file);
+            InputStreamReader isr = new InputStreamReader(reader, StandardCharsets.UTF_8);
+            BufferedReader bf = new BufferedReader(isr);
+            try {
+                String data;
+                while ((data = bf.readLine()) != null) {
+                    String[] group = data.split("[\t ]");
+                    MobileAddress address = null;
+                    if (group.length == 5) {
+                        address = new MobileAddress(group[0], group[1], group[2], group[3], group[4]);
+                    } else if (group.length == 4) {
+                        address = new MobileAddress(group[0], group[1], group[2], group[2], group[3]);
+                    }
+                    if (address != null) {
+                        mobileAddressMap.putIfAbsent(address.getCode(), address);
+                        mobileAddressMap.putIfAbsent(address.getAreacode(), address);
+                    }
+                }
+                isInited = true;
+                logger.info("inited successfully, map size [{}]", mobileAddressMap.size());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                bf.close();
+                isr.close();
+                reader.close();
+            }
+        }
+        return mobileAddressMap.size();
+    }
+
+    /**
+     * 根据呼入号码 找到对应 城市 , 需要传入的号码是 手机号 或者 固话号码，位数为 11位
+     */
+    public static MobileAddress getAddress(String phoneNumber) {
+        if (!isInited) {
             try {
                 MobileNumberUtils.init();
             } catch (IOException e) {
@@ -82,14 +78,14 @@ public class MobileNumberUtils {
             }
         }
 
-		String code = "";
-		if(!StringUtils.isBlank(phoneNumber) && phoneNumber.length() > 10){
-			if(phoneNumber.startsWith("0")){
-				code = phoneNumber.substring(0 ,  4) ;
-			}else if(phoneNumber.startsWith("1")){
-				code = phoneNumber.substring(0 , 7) ;
-			}
-		}
-		return mobileAddressMap.get(code) ;
-	}
+        String code = "";
+        if (!StringUtils.isBlank(phoneNumber) && phoneNumber.length() > 10) {
+            if (phoneNumber.startsWith("0")) {
+                code = phoneNumber.substring(0, 4);
+            } else if (phoneNumber.startsWith("1")) {
+                code = phoneNumber.substring(0, 7);
+            }
+        }
+        return mobileAddressMap.get(code);
+    }
 }

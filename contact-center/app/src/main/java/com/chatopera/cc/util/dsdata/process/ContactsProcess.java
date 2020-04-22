@@ -18,23 +18,22 @@ package com.chatopera.cc.util.dsdata.process;
 
 import com.chatopera.cc.model.Contacts;
 import com.chatopera.cc.persistence.es.ContactsRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 
-public class ContactsProcess implements JPAProcess{
-	
-	private ContactsRepository contactsRes ;
-	
-	public ContactsProcess(ContactsRepository contactsRes){
-		this.contactsRes = contactsRes ;
-	}
+@RequiredArgsConstructor
+public class ContactsProcess implements JPAProcess {
+	@NonNull
+	private final ContactsRepository contactsRes;
 
 	@Override
 	public void process(Object data) {
-		contactsRes.save((Contacts)data) ;
+		contactsRes.save((Contacts) data);
 	}
 
 	@Override
 	public void end() {
-		
+
 	}
 
 }

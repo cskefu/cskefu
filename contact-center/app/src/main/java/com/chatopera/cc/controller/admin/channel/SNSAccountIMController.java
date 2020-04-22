@@ -61,10 +61,10 @@ public class SNSAccountIMController extends Handler {
     private SecretRepository secRes;
 
     @RequestMapping("/index")
-    @Menu(type = "admin", subtype = "im", access = false, admin = true)
+    @Menu(type = "admin", subtype = "im", admin = true)
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String execute,@RequestParam(name = "status",required = false) String status ) {
-        map.addAttribute("snsAccountList", snsAccountRes.findBySnstypeAndOrgi(MainContext.ChannelType.WEBIM.toString(), super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request))));
-        map.addAttribute("status",status);
+        map.addAttribute("snsAccountList", snsAccountRes.findBySnstypeAndOrgi(MainContext.ChannelType.WEBIM.toString(), super.getOrgi(request), PageRequest.of(super.getP(request), super.getPs(request))));
+        map.addAttribute("status", status);
         List<Secret> secretConfig = secRes.findByOrgi(super.getOrgi(request));
         if (secretConfig != null && secretConfig.size() > 0) {
             map.addAttribute("secret", secretConfig.get(0));
@@ -76,7 +76,7 @@ public class SNSAccountIMController extends Handler {
     }
 
     @RequestMapping("/add")
-    @Menu(type = "admin", subtype = "send", access = false, admin = true)
+    @Menu(type = "admin", subtype = "send", admin = true)
     public ModelAndView add(ModelMap map, HttpServletRequest request) {
         return request(super.createRequestPageTempletResponse("/admin/channel/im/add"));
     }
@@ -140,14 +140,14 @@ public class SNSAccountIMController extends Handler {
     }
 
     @RequestMapping("/edit")
-    @Menu(type = "admin", subtype = "send", access = false, admin = true)
+    @Menu(type = "admin", subtype = "send", admin = true)
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
         map.addAttribute("snsAccount", snsAccountRes.findByIdAndOrgi(id, super.getOrgi(request)));
         return request(super.createRequestPageTempletResponse("/admin/channel/im/edit"));
     }
 
     @RequestMapping("/update")
-    @Menu(type = "admin", subtype = "send", access = false, admin = true)
+    @Menu(type = "admin", subtype = "send", admin = true)
     public ModelAndView update(HttpServletRequest request, @Valid SNSAccount snsAccount) throws NoSuchAlgorithmException {
         SNSAccount oldSnsAccount = snsAccountRes.findByIdAndOrgi(snsAccount.getId(), super.getOrgi(request));
         if (oldSnsAccount != null) {

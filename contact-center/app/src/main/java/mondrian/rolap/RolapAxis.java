@@ -12,7 +12,9 @@
 package mondrian.rolap;
 
 import mondrian.calc.TupleList;
-import mondrian.olap.*;
+import mondrian.olap.Axis;
+import mondrian.olap.Member;
+import mondrian.olap.Position;
 
 import java.util.AbstractList;
 import java.util.List;
@@ -112,8 +114,8 @@ public class RolapAxis implements Axis {
 
 	@Override
 	public int getDataSize() {
-		// TODO Auto-generated method stub
-		return list.getCount();
+
+        return list.getCount();
 	}
 }
 

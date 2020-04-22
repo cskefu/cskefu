@@ -29,13 +29,13 @@ import com.chatopera.cc.persistence.repository.UserEventRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,34 +46,36 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+@Slf4j
 @Controller
+@RequiredArgsConstructor
 public class AppsController extends Handler {
-    private final static Logger logger = LoggerFactory.getLogger(AppsController.class);
 
-    @Autowired
-    private ACDWorkMonitor acdWorkMonitor;
+    @NonNull
+    private final ACDWorkMonitor acdWorkMonitor;
 
-    @Autowired
-    private UserRepository userRes;
+    @NonNull
+    private final UserRepository userRes;
 
-    @Autowired
-    private OnlineUserRepository onlineUserRes;
+    @NonNull
+    private final OnlineUserRepository onlineUserRes;
 
-    @Autowired
-    private UserEventRepository userEventRes;
+    @NonNull
+    private final UserEventRepository userEventRes;
 
-    @Autowired
-    private ContactsRepository contactsRes;
+    @NonNull
+    private final ContactsRepository contactsRes;
 
-    @Autowired
-    private OrgiSkillRelRepository orgiSkillRelService;
+    @NonNull
+    private final OrgiSkillRelRepository orgiSkillRelService;
 
-    @Autowired
-    private Cache cache;
+    @NonNull
+    private final Cache cache;
 
-    @Autowired
-    private UserProxy userProxy;
+    @NonNull
+    private final UserProxy userProxy;
 
     @RequestMapping({"/apps/content"})
     @Menu(type = "apps", subtype = "content")
@@ -81,15 +83,15 @@ public class AppsController extends Handler {
         final User user = super.getUser(request);
         final String orgi = super.getOrgi(request);
 
-        /****************************
-         * 获得在线访客列表
-         ****************************/
+        // ****************************
+        // * 获得在线访客列表
+        // ****************************
 
 //        TODO 此处为从数据库加载
         final Page<OnlineUser> onlineUserList = onlineUserRes.findByOrgiAndStatus(
                 super.getOrgi(request),
                 MainContext.OnlineUserStatusEnum.ONLINE.toString(),
-                new PageRequest(
+                PageRequest.of(
                         super.getP(request),
                         super.getPs(request),
                         Sort.Direction.DESC,
@@ -98,9 +100,9 @@ public class AppsController extends Handler {
         );
 
         final long msec = System.currentTimeMillis();
-        final List<String> contactIds = new ArrayList<String>();
+        final List<String> contactIds = new ArrayList<>();
 
-        /**
+        /*
          * 设置访客状态
          *
          */
@@ -111,11 +113,11 @@ public class AppsController extends Handler {
             }
         }
 
-        /**
+        /*
          * 获得在线访客与联系人的关联信息
          */
         if (contactIds.size() > 0) {
-            final Iterable<Contacts> contacts = contactsRes.findAll(contactIds);
+            final Iterable<Contacts> contacts = contactsRes.findAllById(contactIds);
             for (final OnlineUser onlineUser : onlineUserList.getContent()) {
                 if (StringUtils.isNotBlank(onlineUser.getContactsid())) {
                     for (final Contacts contact : contacts) {
@@ -192,8 +194,8 @@ public class AppsController extends Handler {
     public ModelAndView onlineuser(ModelMap map, HttpServletRequest request) {
         Page<OnlineUser> onlineUserList = this.onlineUserRes.findByOrgiAndStatus(
                 super.getOrgi(request), MainContext.OnlineUserStatusEnum.ONLINE.toString(),
-                new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
-        List<String> ids = new ArrayList<String>();
+                PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
+        List<String> ids = new ArrayList<>();
         for (OnlineUser onlineUser : onlineUserList.getContent()) {
             onlineUser.setBetweentime((int) (System.currentTimeMillis() - onlineUser.getLogintime().getTime()));
             if (StringUtils.isNotBlank(onlineUser.getContactsid())) {
@@ -201,7 +203,7 @@ public class AppsController extends Handler {
             }
         }
         if (ids.size() > 0) {
-            Iterable<Contacts> contactsList = contactsRes.findAll(ids);
+            Iterable<Contacts> contactsList = contactsRes.findAllById(ids);
             for (OnlineUser onlineUser : onlineUserList.getContent()) {
                 if (StringUtils.isNotBlank(onlineUser.getContactsid())) {
                     for (Contacts contacts : contactsList) {
@@ -228,13 +230,14 @@ public class AppsController extends Handler {
 
     @RequestMapping({"/apps/profile/save"})
     @Menu(type = "apps", subtype = "content")
-    public ModelAndView profile(ModelMap map, HttpServletRequest request, @Valid User user, @Valid String index) {
-        User tempUser = userRes.getOne(user.getId());
+    public ModelAndView profile(HttpServletRequest request, @Valid User user, @Valid String index) {
+        Optional<User> optional = userRes.findById(user.getId());
         final User logined = super.getUser(request);
         // 用户名不可修改
         user.setUsername(logined.getUsername());
 
-        if (tempUser != null) {
+        if (optional.isPresent()) {
+            User tempUser = optional.get();
             String msg = userProxy.validUserUpdate(user, tempUser);
             if (StringUtils.isNotBlank(msg) && (!StringUtils.equals(msg, "edit_user_success"))) {
                 // 处理异常返回
@@ -268,9 +271,8 @@ public class AppsController extends Handler {
             tempUser.setRoleList(sessionUser.getRoleList());
             tempUser.setRoleAuthMap(sessionUser.getRoleAuthMap());
             tempUser.setAffiliates(sessionUser.getAffiliates());
-            User u = tempUser;
-            u.setOrgi(super.getOrgi(request));
-            super.setUser(request, u);
+            tempUser.setOrgi(super.getOrgi(request));
+            super.setUser(request, tempUser);
             //切换成非坐席 判断是否坐席 以及 是否有对话
             if (!user.isAgent()) {
                 AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
@@ -294,9 +296,6 @@ public class AppsController extends Handler {
 
     /**
      * 获取当前产品下人员信息
-     *
-     * @param request
-     * @return
      */
     private List<User> getUsers(HttpServletRequest request) {
         List<User> userList;

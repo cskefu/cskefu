@@ -29,8 +29,8 @@ import java.util.Map;
 
 public class CubeReportData implements ReportData, Cloneable {
 	/**
-	 * 
-	 */
+     *
+     */
 	private static final long serialVersionUID = 3987533346101055742L;
 	private Exception exception ;
 	private Level row ;
@@ -43,12 +43,12 @@ public class CubeReportData implements ReportData, Cloneable {
 	private Map<String , Object> options ;
 	private long queryTime ;
 	private long total ;
-	
+
 	private Date createTime;
 
 	private List<List<ValueData>> data ;
 	private String viewData ;
-	
+
 	public void setRow(Level row) {
 		this.row = row;
 	}
@@ -111,17 +111,17 @@ public class CubeReportData implements ReportData, Cloneable {
 
 	@Override
 	public void exchangeColRow() {
-		Level temp = this.col ; 
-		this.col = this.row ;
-		this.row = temp ;
-		int colspan = this.col.getColspan() ;
-		this.col.setColspan(this.col.getRowspan()) ;
-		this.col.setRowspan(colspan) ;
-		
-		colspan = this.row.getColspan() ;
-		this.row.setColspan(this.row.getRowspan()) ;
-		this.row.setRowspan(colspan) ;
-		
+        Level temp = this.col;
+        this.col = this.row;
+        this.row = temp;
+        int colspan = this.col.getColspan();
+        this.col.setColspan(this.col.getRowspan());
+        this.col.setRowspan(colspan);
+
+        colspan = this.row.getColspan();
+        this.row.setColspan(this.row.getRowspan());
+        this.row.setRowspan(colspan) ;
+
  		List<List<ValueData>> tempList = new ArrayList<List<ValueData>>();
 		for(int i=0 ; i<data.size() ; i++){
 			for(int j=0 ; j<data.get(i).size() ; j++){
@@ -157,7 +157,7 @@ public class CubeReportData implements ReportData, Cloneable {
 
 	@Override
 	public Date getDate() {
-		// TODO Auto-generated method stub
+
 		return createTime;
 	}
 
@@ -221,7 +221,7 @@ public class CubeReportData implements ReportData, Cloneable {
 
 	@Override
 	public void setDate(Date createtime) {
-		// TODO Auto-generated method stub
+
 		this.createTime = createtime;
 	}
 }

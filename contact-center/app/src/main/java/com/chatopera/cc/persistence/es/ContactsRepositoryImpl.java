@@ -19,19 +19,16 @@ package com.chatopera.cc.persistence.es;
 import com.chatopera.cc.model.Contacts;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.QueryStringQueryBuilder;
-import org.elasticsearch.index.query.QueryStringQueryBuilder.Operator;
-import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -41,16 +38,12 @@ import java.util.List;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 @Component
+@RequiredArgsConstructor
 public class ContactsRepositoryImpl implements ContactsEsCommonRepository {
-    @Autowired
-    private UserRepository userRes;
-
-    private ElasticsearchTemplate elasticsearchTemplate;
-
-    @Autowired
-    public void setElasticsearchTemplate(ElasticsearchTemplate elasticsearchTemplate) {
-        this.elasticsearchTemplate = elasticsearchTemplate;
-    }
+    @NonNull
+    private final UserRepository userRes;
+    @NonNull
+    private final ElasticsearchRestTemplate elasticsearchRestTemplate;
 
     @Override
     public Page<Contacts> findByCreaterAndSharesAndOrgi(String creater, String shares, String orgi, boolean includeDeleteData, String q, Pageable page) {
@@ -161,17 +154,17 @@ public class ContactsRepositoryImpl implements ContactsEsCommonRepository {
         searchQueryBuilder.withPageable(page);
 
         Page<Contacts> entCustomerList = null;
-        if (elasticsearchTemplate.indexExists(Contacts.class)) {
-            entCustomerList = elasticsearchTemplate.queryForPage(searchQueryBuilder.build(), Contacts.class);
+        if (elasticsearchRestTemplate.indexExists(Contacts.class)) {
+            entCustomerList = elasticsearchRestTemplate.queryForPage(searchQueryBuilder.build(), Contacts.class);
         }
-        if (entCustomerList.getContent().size() > 0) {
-            List<String> ids = new ArrayList<String>();
+        if (entCustomerList != null && entCustomerList.getContent().size() > 0) {
+            List<String> ids = new ArrayList<>();
             for (Contacts contacts : entCustomerList.getContent()) {
                 if (contacts.getCreater() != null && ids.size() < 1024) {
                     ids.add(contacts.getCreater());
                 }
             }
-            List<User> users = userRes.findAll(ids);
+            List<User> users = userRes.findAllById(ids);
             for (Contacts contacts : entCustomerList.getContent()) {
                 for (User user : users) {
                     if (user.getId().equals(contacts.getCreater())) {

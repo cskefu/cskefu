@@ -27,10 +27,13 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings({"SqlResolve", "JpaQlInspection"})
 public interface UserRepository extends JpaRepository<User, String> {
     User findByIdAndOrgi(String paramString, String orgi);
-    User findById(String id);
+
+    // User findById(String id);
     User findByEmailAndDatastatus(String email, boolean datastatus);
+
     User findByMobileAndDatastatus(String mobile, boolean datastatus);
 
     @Query(value = "SELECT * FROM cs_user WHERE sipaccount = ?1 AND DATASTATUS = ?2 LIMIT 1", nativeQuery = true)
@@ -45,10 +48,15 @@ public interface UserRepository extends JpaRepository<User, String> {
     List<User> findAllByCallcenterIsTrueAndDatastatusIsFalseAndIdIn(@Param("users") List<String> users);
 
     User findByUsernameAndDatastatus(String username, boolean datastatus);
+
     User findByUsernameAndPasswordAndDatastatus(String username, String password, boolean datastatus);
+
     User findByMobileAndPasswordAndDatastatus(String mobile, String password, boolean datastatus);
+
     User findByUsernameAndOrgi(String paramString, String orgi);
+
     User findByUsernameAndPassword(String username, String password);
+
     Page<User> findByOrgi(String orgi, Pageable paramPageable);
 
 //    // 查询系统管理员
@@ -56,10 +64,15 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     // 查询所有管理员
     List<User> findByAdminAndOrgi(boolean admin, final String orgi);
+
     List<User> findByOrgi(String orgi);
+
     Page<User> findByDatastatusAndOrgi(boolean datastatus, String orgi, Pageable paramPageable);
+
     Page<User> findByDatastatusAndOrgiAndUsernameLike(boolean datastatus, String orgi, String username, Pageable paramPageable);
+
     Page<User> findByIdAndOrgi(String id, String orgi, Pageable paramPageable);
+
     List<User> findByOrgiAndDatastatusAndIdIn(
             String orgi,
             boolean datastatus,
@@ -97,7 +110,6 @@ public interface UserRepository extends JpaRepository<User, String> {
     Page<User> findByDatastatusAndOrgiAndOrgidAndSuperadminNot(
             boolean datastatus, String orgi, String orgid, boolean superadmin,
             Pageable pageRequest);
-
 
 
     List<User> findByOrgiAndDatastatusAndOrgid(String orgi, boolean b, String orgid);

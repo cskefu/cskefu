@@ -18,12 +18,13 @@ import mondrian.rolap.agg.*;
 import mondrian.rolap.aggmatcher.AggStar;
 import mondrian.rolap.sql.SqlQuery;
 import mondrian.server.Locus;
-import mondrian.spi.*;
+import mondrian.spi.DataSourceChangeListener;
+import mondrian.spi.Dialect;
 import mondrian.util.Bug;
-
 import org.apache.commons.collections.map.ReferenceMap;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
+import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.ref.SoftReference;
@@ -31,8 +32,6 @@ import java.sql.Connection;
 import java.sql.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.sql.DataSource;
 
 /**
  * A <code>RolapStar</code> is a star schema. It is the means to read cell
@@ -45,7 +44,7 @@ import javax.sql.DataSource;
  * @since 12 August, 2001
  */
 public class RolapStar {
-    private static final Logger LOGGER = Logger.getLogger(RolapStar.class);
+    private static final Logger LOGGER = org.apache.logging.log4j.LogManager.getLogger(RolapStar.class);
 
     private final RolapSchema schema;
 
@@ -83,9 +82,9 @@ public class RolapStar {
 
     // temporary model, should eventually use RolapStar.Table and
     // RolapStar.Column
-    private StarNetworkNode factNode;
-    private Map<String, StarNetworkNode> nodeLookup =
-        new HashMap<String, StarNetworkNode>();
+    private final StarNetworkNode factNode;
+    private final Map<String, StarNetworkNode> nodeLookup =
+            new HashMap<String, StarNetworkNode>();
 
     private final RolapStatisticsCache statisticsCache;
 
@@ -220,18 +219,17 @@ public class RolapStar {
         };
 
     private static class StarNetworkNode {
-        private StarNetworkNode parent;
-        private MondrianDef.Relation origRel;
-        private String foreignKey;
-        private String joinKey;
+        private final StarNetworkNode parent;
+        private final MondrianDef.Relation origRel;
+        private final String foreignKey;
+        private final String joinKey;
 
         private StarNetworkNode(
-            StarNetworkNode parent,
-            String alias,
-            MondrianDef.Relation origRel,
-            String foreignKey,
-            String joinKey)
-        {
+                StarNetworkNode parent,
+                String alias,
+                MondrianDef.Relation origRel,
+                String foreignKey,
+                String joinKey) {
             this.parent = parent;
             this.origRel = origRel;
             this.foreignKey = foreignKey;
@@ -872,14 +870,16 @@ public class RolapStar {
 
         private boolean isNameColumn;
 
-        /** this has a unique value per star */
+        /**
+         * this has a unique value per star
+         */
         private final int bitPosition;
         /**
          * The estimated cardinality of the column.
          * {@link Integer#MIN_VALUE} means unknown.
          */
-        private AtomicInteger approxCardinality = new AtomicInteger(
-            Integer.MIN_VALUE);
+        private final AtomicInteger approxCardinality = new AtomicInteger(
+                Integer.MIN_VALUE);
 
         private Column(
             String name,
@@ -1722,9 +1722,7 @@ public class RolapStar {
         public boolean equalsTableName(String tableName) {
             if (this.relation instanceof MondrianDef.Table) {
                 MondrianDef.Table mt = (MondrianDef.Table) this.relation;
-                if (mt.name.equals(tableName)) {
-                    return true;
-                }
+                return mt.name.equals(tableName);
             }
             return false;
         }
@@ -1883,8 +1881,8 @@ public class RolapStar {
         public boolean containsColumn(String columnName) {
             if (relation instanceof MondrianDef.Relation) {
                 return star.containsColumn(
-                    ((MondrianDef.Relation) relation).getAlias(),
-                    columnName);
+                        relation.getAlias(),
+                        columnName);
             } else {
                 // todo: Deal with join.
                 return false;
@@ -1893,7 +1891,7 @@ public class RolapStar {
     }
 
     public static class Condition {
-        private static final Logger LOGGER = Logger.getLogger(Condition.class);
+        private static final Logger LOGGER = org.apache.logging.log4j.LogManager.getLogger(Condition.class);
 
         private final MondrianDef.Expression left;
         private final MondrianDef.Expression right;

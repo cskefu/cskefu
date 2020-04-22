@@ -37,10 +37,10 @@ import com.chatopera.cc.util.Menu;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +48,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -59,50 +60,47 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/agentuser")
+@RequiredArgsConstructor
 public class ApiAgentUserController extends Handler {
 
     private final static Logger logger = LoggerFactory.getLogger(ApiAgentUserController.class);
 
-    @Autowired
-    private ACDMessageHelper acdMessageHelper;
+    @org.springframework.lang.NonNull
+    private final ACDMessageHelper acdMessageHelper;
 
-    @Autowired
-    private AgentUserProxy agentUserProxy;
+    @org.springframework.lang.NonNull
+    private final AgentUserProxy agentUserProxy;
 
-    @Autowired
-    private ACDAgentService acdAgentService;
+    @org.springframework.lang.NonNull
+    private final ACDAgentService acdAgentService;
 
-    @Autowired
-    private Cache cache;
+    @org.springframework.lang.NonNull
+    private final Cache cache;
 
-    @Autowired
-    private PeerSyncIM peerSyncIM;
+    @org.springframework.lang.NonNull
+    private final PeerSyncIM peerSyncIM;
 
-    @Autowired
-    private AgentUserRepository agentUserRes;
+    @org.springframework.lang.NonNull
+    private final AgentUserRepository agentUserRes;
 
-    @Autowired
-    private UserRepository userRes;
+    @org.springframework.lang.NonNull
+    private final UserRepository userRes;
 
-    @Autowired
-    private AgentServiceRepository agentServiceRes;
+    @org.springframework.lang.NonNull
+    private final AgentServiceRepository agentServiceRes;
 
-    @Autowired
-    private ACDAgentDispatcher acdAgentDispatcher;
+    @org.springframework.lang.NonNull
+    private final ACDAgentDispatcher acdAgentDispatcher;
 
     /**
      * 获取当前对话中的访客
      * 坐席相关 RestAPI
-     *
-     * @param request
-     * @return
      */
     @RequestMapping(method = RequestMethod.POST)
     @Menu(type = "apps", subtype = "agentuser", access = true)
     public ResponseEntity<String> operations(HttpServletRequest request, @RequestBody final String body, @Valid String q) {
         logger.info("[operations] body {}, q {}", body, q);
-        final JsonObject j = StringUtils.isBlank(body) ? (new JsonObject()) : (new JsonParser()).parse(
-                body).getAsJsonObject();
+        final JsonObject j = StringUtils.isBlank(body) ? new JsonObject() : JsonParser.parseString(body).getAsJsonObject();
         JsonObject json = new JsonObject();
         HttpHeaders headers = RestUtils.header();
 
@@ -112,10 +110,10 @@ public class ApiAgentUserController extends Handler {
         } else {
             switch (StringUtils.lowerCase(j.get("ops").getAsString())) {
                 case "inserv":
-                    json = inserv(request, j);
+                    json = inserv(request);
                     break;
                 case "withdraw":
-                    json = withdraw(request, j);
+                    json = withdraw(request);
                     break;
                 case "end":
                     json = end(request, j);
@@ -129,24 +127,20 @@ public class ApiAgentUserController extends Handler {
             }
         }
 
-        return new ResponseEntity<String>(json.toString(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(json.toString(), headers, HttpStatus.OK);
     }
 
     /**
      * 执行坐席转接
      * 将会话转接给别人
-     *
-     * @param request
-     * @param payload
-     * @return
      */
     private JsonObject transout(final HttpServletRequest request, final JsonObject payload) {
-        logger.info("[transout] payload ", payload.toString());
+        logger.info("[transout] payload {}", payload.toString());
         final String orgi = super.getOrgi(request);
         final User logined = super.getUser(request);
         JsonObject resp = new JsonObject();
 
-        /**
+        /*
          * 必填参数
          */
         // 目标坐席
@@ -159,16 +153,16 @@ public class ApiAgentUserController extends Handler {
         if (StringUtils.isNotBlank(agentUserId) &&
                 StringUtils.isNotBlank(transAgentId) &&
                 StringUtils.isNotBlank(agentServiceId)) {
-            final User targetAgent = userRes.findOne(transAgentId);
+            final User targetAgent = userRes.findById(transAgentId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Agent %s not found", transAgentId)));
             final AgentService agentService = agentServiceRes.findByIdAndOrgi(agentServiceId, orgi);
 
-            /**
+            /*
              * 更新AgentUser
              */
-            final AgentUser agentUser = agentUserProxy.findOne(agentUserId).orElseGet(null);
+            final AgentUser agentUser = agentUserProxy.findOne(agentUserId).orElse(null);
             if (agentUser != null) {
-                final AgentUserAudit agentAudits = cache.findOneAgentUserAuditByOrgiAndId(orgi, agentUserId).orElseGet(
-                        null);
+                final AgentUserAudit agentAudits = cache.findOneAgentUserAuditByOrgiAndId(orgi, agentUserId).orElse(null);
 
                 // 当前服务于访客的坐席
                 final String currentAgentno = agentUser.getAgentno();
@@ -196,7 +190,7 @@ public class ApiAgentUserController extends Handler {
                 agentUser.setAgentname(targetAgent.getUname());
                 agentUserRes.save(agentUser);
 
-                /**
+                /*
                  * 坐席状态
                  */
                 // 转接目标坐席
@@ -254,8 +248,8 @@ public class ApiAgentUserController extends Handler {
                         // 该登录用户可能是坐席监控或当前坐席，那么，如果是坐席监控，就有必要
                         // 通知前坐席这个事件
                         peerSyncIM.send(ReceiverType.AGENT, ChannelType.WEBIM, agentUser.getAppid(),
-                                        MessageType.TRANSOUT,
-                                        currentAgentno, outMessage, true);
+                                MessageType.TRANSOUT,
+                                currentAgentno, outMessage, true);
                     }
                 }
 
@@ -286,10 +280,6 @@ public class ApiAgentUserController extends Handler {
     /**
      * 结束对话
      * 如果当前对话属于登录用户或登录用户为超级用户，则可以结束这个对话
-     *
-     * @param request
-     * @param payload
-     * @return
      */
     private JsonObject end(final HttpServletRequest request, final JsonObject payload) {
         logger.info("[end] payload {}", payload.toString());
@@ -326,12 +316,8 @@ public class ApiAgentUserController extends Handler {
     /**
      * 撤退一个坐席
      * 将当前坐席服务中的访客分配给其他就绪的坐席
-     *
-     * @param request
-     * @param j
-     * @return
      */
-    private JsonObject withdraw(final HttpServletRequest request, final JsonObject j) {
+    private JsonObject withdraw(final HttpServletRequest request) {
         JsonObject resp = new JsonObject();
         ACDComposeContext ctx = new ACDComposeContext();
         ctx.setAgentno(super.getUser(request).getId());
@@ -345,12 +331,8 @@ public class ApiAgentUserController extends Handler {
     /**
      * 获得当前访客服务中的访客信息
      * 获取当前正在对话的访客信息，包含多种渠道来源的访客
-     *
-     * @param request
-     * @param j
-     * @return
      */
-    private JsonObject inserv(final HttpServletRequest request, final JsonObject j) {
+    private JsonObject inserv(final HttpServletRequest request) {
         JsonObject resp = new JsonObject();
         JsonArray data = new JsonArray();
 
@@ -374,15 +356,8 @@ public class ApiAgentUserController extends Handler {
 
     /**
      * 检查是否具备该会话的坐席监控权限
-     *
-     * @param agentUserAudit
-     * @param user
-     * @return
      */
     private boolean isTransPermissionAllowed(final AgentUserAudit agentUserAudit, final User user) {
-        if (agentUserAudit != null && agentUserAudit.getSubscribers().containsKey(user.getId())) {
-            return true;
-        }
-        return false;
+        return agentUserAudit != null && agentUserAudit.getSubscribers().containsKey(user.getId());
     }
 }

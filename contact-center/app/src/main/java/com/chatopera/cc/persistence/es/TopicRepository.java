@@ -19,6 +19,6 @@ package com.chatopera.cc.persistence.es;
 import com.chatopera.cc.model.Topic;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-public interface TopicRepository extends  ElasticsearchRepository<Topic, String> , TopicEsCommonRepository {
-	
+public interface TopicRepository extends ElasticsearchRepository<Topic, String>, TopicEsCommonRepository {
+
 }

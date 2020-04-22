@@ -26,8 +26,9 @@ import com.chatopera.cc.model.Template;
 import com.chatopera.cc.persistence.repository.SysDicRepository;
 import com.chatopera.cc.persistence.repository.TemplateRepository;
 import com.chatopera.cc.util.Menu;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,150 +44,145 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/admin/template")
-public class TemplateController extends Handler{
-	
-	
-	@Autowired
-	private TemplateRepository templateRes;
-	
-	@Autowired
-	private SysDicRepository dicRes;
+public class TemplateController extends Handler {
 
-	@Autowired
-	private Cache cache;
+    @NonNull
+    private final TemplateRepository templateRes;
+
+    @NonNull
+    private final SysDicRepository dicRes;
+
+    @NonNull
+    private final Cache cache;
 
     @RequestMapping("/index")
-    @Menu(type = "admin" , subtype = "template" , access = false , admin = true)
-    public ModelAndView index(ModelMap map , HttpServletRequest request) {
-    	map.addAttribute("sysDicList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_DIC));
+    @Menu(type = "admin", subtype = "template", admin = true)
+    public ModelAndView index(ModelMap map) {
+        map.addAttribute("sysDicList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_DIC));
         return request(super.createAdminTempletResponse("/admin/system/template/index"));
     }
-    
+
     @RequestMapping("/expall")
-    @Menu(type = "admin" , subtype = "template" , access = false , admin = true)
-    public void expall(ModelMap map , HttpServletRequest request , HttpServletResponse response) throws Exception {
-    	List<Template> templateList = templateRes.findByOrgi(super.getOrgi(request)) ;
-		response.setHeader("content-disposition", "attachment;filename=UCKeFu-Template-Export-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".data");  
-		response.getOutputStream().write(MainUtils.toBytes(templateList));
-        return ;
+    @Menu(type = "admin", subtype = "template", admin = true)
+    public void expall(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        List<Template> templateList = templateRes.findByOrgi(super.getOrgi(request));
+        response.setHeader("content-disposition", "attachment;filename=UCKeFu-Template-Export-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".data");
+        response.getOutputStream().write(MainUtils.toBytes(templateList));
     }
-    
+
     @RequestMapping("/imp")
-    @Menu(type = "admin" , subtype = "template" , access = false , admin = true)
-    public ModelAndView imp(ModelMap map , HttpServletRequest request) {
+    @Menu(type = "admin", subtype = "template", admin = true)
+    public ModelAndView imp() {
         return request(super.createRequestPageTempletResponse("/admin/system/template/imp"));
     }
-    
+
     @SuppressWarnings("unchecked")
-	@RequestMapping("/impsave")
-    @Menu(type = "admin" , subtype = "template" , access = false , admin = true)
-    public ModelAndView impsave(ModelMap map , HttpServletRequest request , @RequestParam(value = "dataFile", required = false) MultipartFile dataFile) throws Exception {
-    	if(dataFile!=null && dataFile.getSize() > 0){
-    		List<Template> templateList = (List<Template>) MainUtils.toObject(dataFile.getBytes()) ;
-    		if(templateList!=null && templateList.size() >0){
-    			templateRes.deleteInBatch(templateList);
-    			for(Template template : templateList){
-    				templateRes.save(template) ;
-    			}
-    		}
-    	}
-    	return request(super.createRequestPageTempletResponse("redirect:/admin/template/index.html"));
+    @RequestMapping("/impsave")
+    @Menu(type = "admin", subtype = "template", admin = true)
+    public ModelAndView impsave(@RequestParam(value = "dataFile", required = false) MultipartFile dataFile) throws Exception {
+        if (dataFile != null && dataFile.getSize() > 0) {
+            List<Template> templateList = (List<Template>) MainUtils.toObject(dataFile.getBytes());
+            if (templateList != null && templateList.size() > 0) {
+                templateRes.deleteInBatch(templateList);
+                for (Template template : templateList) {
+                    templateRes.save(template);
+                }
+            }
+        }
+        return request(super.createRequestPageTempletResponse("redirect:/admin/template/index.html"));
     }
-    
+
     @RequestMapping("/list")
-    @Menu(type = "admin" , subtype = "template" , access = false , admin = true)
-    public ModelAndView list(ModelMap map , HttpServletRequest request ,@Valid String type) {
-    	map.addAttribute("sysDic", dicRes.findById(type));
-    	map.addAttribute("templateList", templateRes.findByTemplettypeAndOrgi(type, super.getOrgi(request)));
+    @Menu(type = "admin", subtype = "template", admin = true)
+    public ModelAndView list(ModelMap map, HttpServletRequest request, @Valid String type) {
+        map.addAttribute("sysDic", dicRes.findById(type));
+        map.addAttribute("templateList", templateRes.findByTemplettypeAndOrgi(type, super.getOrgi(request)));
         return request(super.createAdminTempletResponse("/admin/system/template/list"));
     }
-    
+
     @RequestMapping("/add")
-    @Menu(type = "admin" , subtype = "template" , access = false , admin = true)
-    public ModelAndView add(ModelMap map , HttpServletRequest request ,@Valid String type) {
-    	map.addAttribute("sysDic", dicRes.findById(type));
+    @Menu(type = "admin", subtype = "template", admin = true)
+    public ModelAndView add(ModelMap map, @Valid String type) {
+        map.addAttribute("sysDic", dicRes.findById(type));
         return request(super.createRequestPageTempletResponse("/admin/system/template/add"));
     }
-    
-    @RequestMapping(  "/save")
-    @Menu(type = "admin" , subtype = "template" , access = false , admin = true)
-    public ModelAndView save(HttpServletRequest request  , @Valid Template template) {
-    	template.setOrgi(super.getOrgi(request));
-    	template.setCreatetime(new Date());
-    	
-    	SysDic dic = dicRes.findById(template.getTemplettype());
-		if(dic!=null && StringUtils.isBlank(template.getCode())) {
-			template.setCode(dic.getCode());
-		}
-    	templateRes.save(template) ;
-    	
-		return request(super.createRequestPageTempletResponse("redirect:/admin/template/list.html?type="+template.getTemplettype()));
+
+    @RequestMapping("/save")
+    @Menu(type = "admin", subtype = "template", admin = true)
+    public ModelAndView save(HttpServletRequest request, @Valid Template template) {
+        template.setOrgi(super.getOrgi(request));
+        template.setCreatetime(new Date());
+
+        String dicId = template.getTemplettype();
+        SysDic dic = dicRes.findById(dicId).orElse(null);
+        if (dic != null && StringUtils.isBlank(template.getCode())) {
+            template.setCode(dic.getCode());
+        }
+        templateRes.save(template);
+
+        return request(super.createRequestPageTempletResponse("redirect:/admin/template/list.html?type=" + dicId));
     }
-    
+
     @RequestMapping("/edit")
-    @Menu(type = "admin" , subtype = "template" , access = false , admin = true)
-    public ModelAndView edit(ModelMap map , HttpServletRequest request , @Valid String id, @Valid String type) {
-    	map.addAttribute("sysDic", dicRes.findById(type));
-    	map.addAttribute("template", templateRes.findByIdAndOrgi(id, super.getOrgi(request))) ;
+    @Menu(type = "admin", subtype = "template", admin = true)
+    public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String type) {
+        map.addAttribute("sysDic", dicRes.findById(type));
+        map.addAttribute("template", templateRes.findByIdAndOrgi(id, super.getOrgi(request)));
         return request(super.createRequestPageTempletResponse("/admin/system/template/edit"));
     }
-    
-    @RequestMapping(  "/update")
-    @Menu(type = "admin" , subtype = "template" , access = false , admin = true)
-    public ModelAndView update(HttpServletRequest request  , @Valid Template template) {
-    	Template oldTemplate = templateRes.findByIdAndOrgi(template.getId(), super.getOrgi(request)) ;
-    	if(oldTemplate!=null){
-    		SysDic dic = dicRes.findById(oldTemplate.getTemplettype());
-    		if(dic!=null) {
-    			oldTemplate.setCode(dic.getCode());
-    		}
-    		if(!StringUtils.isBlank(template.getCode())) {
-    			oldTemplate.setCode(template.getCode());
-    		}
-    		oldTemplate.setName(template.getName());
-    		oldTemplate.setLayoutcols(template.getLayoutcols());
-    		oldTemplate.setIconstr(template.getIconstr());
-    		oldTemplate.setDatatype(template.getDatatype());
-    		oldTemplate.setCharttype(template.getCharttype());
-    		templateRes.save(oldTemplate) ;
-    		
-    		cache.deleteSystembyIdAndOrgi(template.getId(), super.getOrgi(request));
-    	}
-		return request(super.createRequestPageTempletResponse("redirect:/admin/template/list.html?type="+template.getTemplettype()));
+
+    @RequestMapping("/update")
+    @Menu(type = "admin", subtype = "template", admin = true)
+    public ModelAndView update(HttpServletRequest request, @Valid Template template) {
+        Template oldTemplate = templateRes.findByIdAndOrgi(template.getId(), super.getOrgi(request));
+        if (oldTemplate != null) {
+            String dicId = oldTemplate.getTemplettype();
+            dicRes.findById(dicId).ifPresent(dic -> oldTemplate.setCode(dic.getCode()));
+            if (!StringUtils.isBlank(template.getCode())) {
+                oldTemplate.setCode(template.getCode());
+            }
+            oldTemplate.setName(template.getName());
+            oldTemplate.setLayoutcols(template.getLayoutcols());
+            oldTemplate.setIconstr(template.getIconstr());
+            oldTemplate.setDatatype(template.getDatatype());
+            oldTemplate.setCharttype(template.getCharttype());
+            templateRes.save(oldTemplate);
+
+            cache.deleteSystembyIdAndOrgi(template.getId(), super.getOrgi(request));
+        }
+        return request(super.createRequestPageTempletResponse("redirect:/admin/template/list.html?type=" + template.getTemplettype()));
     }
-    
+
     @RequestMapping("/code")
-    @Menu(type = "admin" , subtype = "template" , access = false , admin = true)
-    public ModelAndView code(ModelMap map , HttpServletRequest request , @Valid String id, @Valid String type) {
-    	map.addAttribute("sysDic", dicRes.findById(type));
-    	map.addAttribute("template", templateRes.findByIdAndOrgi(id, super.getOrgi(request))) ;
+    @Menu(type = "admin", subtype = "template", admin = true)
+    public ModelAndView code(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String type) {
+        map.addAttribute("sysDic", dicRes.findById(type));
+        map.addAttribute("template", templateRes.findByIdAndOrgi(id, super.getOrgi(request)));
         return request(super.createRequestPageTempletResponse("/admin/system/template/code"));
     }
-    
-    @RequestMapping(  "/codesave")
-    @Menu(type = "admin" , subtype = "template" , access = false , admin = true)
-    public ModelAndView codesave(HttpServletRequest request  , @Valid Template template) {
-    	Template oldTemplate = templateRes.findByIdAndOrgi(template.getId(), super.getOrgi(request)) ;
-    	if(oldTemplate!=null){
-    		oldTemplate.setTemplettext(template.getTemplettext());
-    		oldTemplate.setTemplettitle(template.getTemplettitle());
-    		templateRes.save(oldTemplate) ;
-    		
-    		cache.deleteSystembyIdAndOrgi(template.getId(), super.getOrgi(request));
-    	}
-		return request(super.createRequestPageTempletResponse("redirect:/admin/template/list.html?type="+template.getTemplettype()));
+
+    @RequestMapping("/codesave")
+    @Menu(type = "admin", subtype = "template", admin = true)
+    public ModelAndView codesave(HttpServletRequest request, @Valid Template template) {
+        Template oldTemplate = templateRes.findByIdAndOrgi(template.getId(), super.getOrgi(request));
+        if (oldTemplate != null) {
+            oldTemplate.setTemplettext(template.getTemplettext());
+            oldTemplate.setTemplettitle(template.getTemplettitle());
+            templateRes.save(oldTemplate);
+
+            cache.deleteSystembyIdAndOrgi(template.getId(), super.getOrgi(request));
+        }
+        return request(super.createRequestPageTempletResponse("redirect:/admin/template/list.html?type=" + template.getTemplettype()));
     }
-    
+
     @RequestMapping("/delete")
-    @Menu(type = "admin" , subtype = "template" , access = false , admin = true)
-    public ModelAndView delete(HttpServletRequest request ,@Valid Template template) {
-    	if(template!=null){
-    		templateRes.delete(template) ;
-    		
-    		cache.deleteSystembyIdAndOrgi(template.getId(), super.getOrgi(request));
-    	}
-    	return request(super.createRequestPageTempletResponse("redirect:/admin/template/list.html?type="+template.getTemplettype()));
+    @Menu(type = "admin", subtype = "template", admin = true)
+    public ModelAndView delete(HttpServletRequest request, @Valid Template template) {
+        templateRes.delete(template);
+        cache.deleteSystembyIdAndOrgi(template.getId(), super.getOrgi(request));
+        return request(super.createRequestPageTempletResponse("redirect:/admin/template/list.html?type=" + template.getTemplettype()));
     }
-    
+
 }

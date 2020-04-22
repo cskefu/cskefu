@@ -23,34 +23,51 @@ import com.chatopera.cc.persistence.repository.AgentUserRepository;
 import com.chatopera.cc.persistence.repository.OnlineUserRepository;
 import com.chatopera.cc.util.SerializeUtil;
 import com.chatopera.cc.util.freeswitch.model.CallCenterAgent;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.*;
 
 @Component
+@RequiredArgsConstructor
 public class Cache {
 
     final static private Logger logger = LoggerFactory.getLogger(Cache.class);
 
-    @Autowired
-    private OnlineUserRepository onlineUserRes;
+    @NonNull
+    private final OnlineUserRepository onlineUserRes;
 
-    @Autowired
-    private AgentUserRepository agentUserRes;
+    @NonNull
+    private final AgentUserRepository agentUserRes;
 
-    @Autowired
-    private RedisCommand redisCommand;
+    @NonNull
+    private final RedisCommand redisCommand;
+
+    /**
+     * Inline方法
+     */
+    private static Map<String, AgentStatus> convertFromStringToAgentStatus(final Map<String, String> map) {
+        Map<String, AgentStatus> result = new HashMap<>();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            AgentStatus obj = SerializeUtil.deserialize(entry.getValue());
+            result.put(entry.getKey(), obj);
+        }
+        return result;
+    }
+
+    private static OnlineUser convertFromStringToOnlineUser(final String serialized) {
+        return SerializeUtil.deserialize(serialized);
+    }
 
     /**
      * 获得就绪的坐席列表
      *
      * @param orgi 租户
-     * @return
      */
     public Map<String, AgentStatus> getAgentStatusReadyByOrig(final String orgi) {
         Map<String, String> agentStatuses = redisCommand.getHash(RedisKey.getAgentStatusReadyHashKey(orgi));
@@ -59,23 +76,19 @@ public class Cache {
 
     /**
      * 通过访客ID和ORGI获得访客坐席关联关系
-     *
-     * @param userId
-     * @param orgi
-     * @return
      */
     public Optional<AgentUser> findOneAgentUserByUserIdAndOrgi(final String userId, final String orgi) {
         if (redisCommand.hasHashKV(RedisKey.getAgentUserInQueHashKey(orgi), userId)) {
             // 排队等待中
-            return Optional.ofNullable((AgentUser) SerializeUtil.deserialize(
+            return Optional.ofNullable(SerializeUtil.deserialize(
                     redisCommand.getHashKV(RedisKey.getAgentUserInQueHashKey(orgi), userId)));
         } else if (redisCommand.hasHashKV(RedisKey.getAgentUserInServHashKey(orgi), userId)) {
             // 服务中
-            return Optional.ofNullable((AgentUser) SerializeUtil.deserialize(
+            return Optional.ofNullable(SerializeUtil.deserialize(
                     redisCommand.getHashKV(RedisKey.getAgentUserInServHashKey(orgi), userId)));
         } else if (redisCommand.hasHashKV(RedisKey.getAgentUserEndHashKey(orgi), userId)) {
             // 已经结束
-            return Optional.ofNullable((AgentUser) SerializeUtil.deserialize(
+            return Optional.ofNullable(SerializeUtil.deserialize(
                     redisCommand.getHashKV(RedisKey.getAgentUserEndHashKey(orgi), userId)));
         } else {
             // 缓存中没有找到，继续到数据库查找
@@ -83,19 +96,15 @@ public class Cache {
         }
     }
 
-
     /**
      * 返回排队中的客服列表
-     *
-     * @param orgi
-     * @return
      */
     public Map<String, AgentUser> getAgentUsersInQueByOrgi(final String orgi) {
         Map<String, String> agentUsers = redisCommand.getHash(RedisKey.getAgentUserInQueHashKey(orgi));
         Map<String, AgentUser> map = new HashMap<>();
         for (final Map.Entry<String, String> entry : agentUsers.entrySet()) {
             final AgentUser obj = SerializeUtil.deserialize(entry.getValue());
-            map.put(obj.getId(), obj);
+            map.put(Objects.requireNonNull(obj).getId(), obj);
         }
         return map;
     }
@@ -103,20 +112,13 @@ public class Cache {
     /**
      * 将访客ID从服务中队列中删除
      * TODO 将访客对应的客服的服务列表变更
-     *
-     * @param userid
-     * @param orgi
      */
     public void deleteAgentUserInservByAgentUserIdAndOrgi(final String userid, final String orgi) {
         redisCommand.delHashKV(RedisKey.getAgentUserInServHashKey(orgi), userid);
     }
 
-
     /**
      * 将访客ID从排队队列中删除
-     *
-     * @param userid
-     * @param orgi
      */
     public void deleteAgentUserInqueByAgentUserIdAndOrgi(final String userid, final String orgi) {
         redisCommand.delHashKV(RedisKey.getAgentUserInQueHashKey(orgi), userid);
@@ -127,7 +129,6 @@ public class Cache {
      *
      * @param agentno 坐席ID
      * @param orgi    租户ID
-     * @return
      */
     public AgentStatus findOneAgentStatusByAgentnoAndOrig(final String agentno, final String orgi) {
         String status = getAgentStatusStatus(agentno, orgi);
@@ -140,15 +141,12 @@ public class Cache {
 
         String val = redisCommand.getHashKV(RedisKey.getAgentStatusHashKeyByStatusStr(orgi, status), agentno);
         AgentStatus result = SerializeUtil.deserialize(val);
-        logger.debug("[findOneAgentStatusByAgentnoAndOrig] result: username {}", result.getUsername());
+        logger.debug("[findOneAgentStatusByAgentnoAndOrig] result: username {}", Objects.requireNonNull(result).getUsername());
         return result;
     }
 
     /**
      * 更新坐席状态
-     *
-     * @param agentStatus
-     * @param orgi
      */
     public void putAgentStatusByOrgi(AgentStatus agentStatus, String orgi) {
         String pre = getAgentStatusStatus(agentStatus.getAgentno(), orgi); // 坐席前状态
@@ -160,14 +158,12 @@ public class Cache {
                         RedisKey.getAgentStatusHashKeyByStatusStr(orgi, agentStatus.getStatus()),
                         agentStatus.getAgentno(), SerializeUtil.serialize(agentStatus));
             }
-            return;
         } else {
             // 之前存在，与将要更新的状态一致
             if (StringUtils.equals(pre, agentStatus.getStatus())) {
                 redisCommand.setHashKV(
                         RedisKey.getAgentStatusHashKeyByStatusStr(orgi, pre), agentStatus.getAgentno(),
                         SerializeUtil.serialize(agentStatus));
-                return;
             } else {
                 // 之前存在，而且与新状态不一致
                 redisCommand.delHashKV(RedisKey.getAgentStatusHashKeyByStatusStr(orgi, pre), agentStatus.getAgentno());
@@ -182,9 +178,6 @@ public class Cache {
 
     /**
      * 获得一个租户的就绪坐席状态
-     *
-     * @param orgi
-     * @return
      */
     public Map<String, AgentStatus> findAllReadyAgentStatusByOrgi(final String orgi) {
         List<String> keys = new ArrayList<>();
@@ -196,9 +189,6 @@ public class Cache {
 
     /**
      * 获得一个租户的所有坐席状态
-     *
-     * @param orgi
-     * @return
      */
     public Map<String, AgentStatus> findAllAgentStatusByOrgi(final String orgi) {
         List<String> keys = new ArrayList<>();
@@ -210,25 +200,8 @@ public class Cache {
         return convertFromStringToAgentStatus(map);
     }
 
-
-    /**
-     * Inline方法
-     */
-    private static Map<String, AgentStatus> convertFromStringToAgentStatus(final Map<String, String> map) {
-        Map<String, AgentStatus> result = new HashMap<String, AgentStatus>();
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            AgentStatus obj = SerializeUtil.deserialize(entry.getValue());
-            result.put(entry.getKey(), obj);
-        }
-        return result;
-    }
-
-
     /**
      * Delete Agent Status
-     *
-     * @param agentno
-     * @param orgi
      */
     public void deleteAgentStatusByAgentnoAndOrgi(final String agentno, final String orgi) {
         String status = getAgentStatusStatus(agentno, orgi);
@@ -240,10 +213,6 @@ public class Cache {
     /**
      * 获得一个坐席的状态 agentStatus.status
      * 只返回大类状态
-     *
-     * @param agentno
-     * @param orgi
-     * @return
      */
     private String getAgentStatusStatus(final String agentno, final String orgi) {
         // 首先判断这个坐席的状态是READY还是BUSY，再去更新
@@ -256,24 +225,18 @@ public class Cache {
         }
     }
 
-
     /**
      * 获得技能组的坐席状态
-     *
-     * @param skill
-     * @param orgi
-     * @return
      */
     public List<AgentStatus> getAgentStatusBySkillAndOrgi(final String skill, final String orgi) {
         Map<String, AgentStatus> map = findAllAgentStatusByOrgi(orgi);
-        List<AgentStatus> agentList = new ArrayList<AgentStatus>();
+        List<AgentStatus> agentList = new ArrayList<>();
 
         for (Map.Entry<String, AgentStatus> entry : map.entrySet()) {
             if (StringUtils.isNotBlank(skill)) {
                 if (entry.getValue().getSkills() != null &&
                         entry.getValue().getSkills().containsKey(skill)) {
                     agentList.add(entry.getValue());
-                    continue;
                 }
             } else {
                 agentList.add(entry.getValue());
@@ -282,20 +245,17 @@ public class Cache {
         return agentList;
     }
 
+
+    //**************************
+    //* AgentUser相关
+    //**************************
+
     /**
      * 获得指定租户的就绪的坐席个数
-     *
-     * @param orgi
-     * @return
      */
     public int getAgentStatusReadySizeByOrgi(final String orgi) {
         return Math.toIntExact(redisCommand.getHashSize(RedisKey.getAgentStatusReadyHashKey(orgi)));
     }
-
-
-    /**************************
-     * AgentUser相关
-     **************************/
 
     /**
      * 更新坐席访客关联关系
@@ -305,7 +265,6 @@ public class Cache {
      * 但是之前那个关联坐席的信息需要删除，要另行维护
      *
      * @param agentUser 最新的agentUser的状态
-     * @param orgi
      */
     @AgentUserAspect.LinkAgentUser
     public void putAgentUserByOrgi(AgentUser agentUser, String orgi) {
@@ -335,13 +294,8 @@ public class Cache {
         }
     }
 
-
     /**
      * 获得一个客服服务中的访客列表
-     *
-     * @param agentno
-     * @param orgi
-     * @return
      */
     public List<AgentUser> findInservAgentUsersByAgentnoAndOrgi(final String agentno, final String orgi) {
         logger.info("[findInservAgentUsersByAgentnoAndOrgi] agentno {}, orgi {}", agentno, orgi);
@@ -358,10 +312,6 @@ public class Cache {
 
     /**
      * 获得一个坐席服务中的访客数量
-     *
-     * @param agentno
-     * @param orgi
-     * @return
      */
     public int getInservAgentUsersSizeByAgentnoAndOrgi(final String agentno, final String orgi) {
         return Math.toIntExact(redisCommand.getSetSize(RedisKey.getInServAgentUsersByAgentnoAndOrgi(agentno, orgi)));
@@ -369,9 +319,6 @@ public class Cache {
 
     /**
      * 获得服务中的访客的数量
-     *
-     * @param orgi
-     * @return
      */
     public int getInservAgentUsersSizeByOrgi(final String orgi) {
         return redisCommand.getHashSize(RedisKey.getAgentUserInServHashKey(orgi));
@@ -379,9 +326,6 @@ public class Cache {
 
     /**
      * 获得等待中的访客的数量
-     *
-     * @param orgi
-     * @return
      */
     public int getInqueAgentUsersSizeByOrgi(final String orgi) {
         return redisCommand.getHashSize(RedisKey.getAgentUserInQueHashKey(orgi));
@@ -389,9 +333,6 @@ public class Cache {
 
     /**
      * Delete agentUser
-     *
-     * @param agentUser
-     * @param orgi
      */
     @AgentUserAspect.LinkAgentUser
     public void deleteAgentUserByUserIdAndOrgi(final AgentUser agentUser, String orgi) {
@@ -402,9 +343,8 @@ public class Cache {
             redisCommand.delHashKV(RedisKey.getAgentUserInServHashKey(orgi), agentUser.getUserid());
         } else if (redisCommand.hasHashKV(RedisKey.getAgentUserEndHashKey(orgi), agentUser.getUserid())) {
             redisCommand.delHashKV(RedisKey.getAgentUserEndHashKey(orgi), agentUser.getUserid());
-        } else {
-            // TODO 考虑是否有其他状态保存
         }
+        // TODO 考虑是否有其他状态保存
     }
 
     /***************************
@@ -425,20 +365,17 @@ public class Cache {
         }
     }
 
-    public void deleteConsultInviteBySnsidAndOrgi(final String snsid, final String orgi) {
-        redisCommand.delHashKV(RedisKey.getConsultInvitesByOrgi(orgi), snsid);
-    }
-
 
     /****************************
      *  OnlineUser相关
      ****************************/
 
+    public void deleteConsultInviteBySnsidAndOrgi(final String snsid, final String orgi) {
+        redisCommand.delHashKV(RedisKey.getConsultInvitesByOrgi(orgi), snsid);
+    }
+
     /**
      * 更新 onlineUser
-     *
-     * @param onlineUser
-     * @param orgi
      */
     public void putOnlineUserByOrgi(final OnlineUser onlineUser, final String orgi) {
         // 此处onlineUser的id 与 onlineUser userId相同
@@ -448,10 +385,6 @@ public class Cache {
 
     /**
      * 获得 onlineUser
-     *
-     * @param id
-     * @param orgi
-     * @return
      */
     public OnlineUser findOneOnlineUserByUserIdAndOrgi(final String id, final String orgi) {
         String serialized = redisCommand.getHashKV(RedisKey.getOnlineUserHashKey(orgi), id);
@@ -463,16 +396,8 @@ public class Cache {
         }
     }
 
-    private static OnlineUser convertFromStringToOnlineUser(final String serialized) {
-        OnlineUser obj = SerializeUtil.deserialize(serialized);
-        return obj;
-    }
-
     /**
      * 删除 onlineUser
-     *
-     * @param id
-     * @param orgi
      */
     public void deleteOnlineUserByIdAndOrgi(final String id, final String orgi) {
         redisCommand.delHashKV(RedisKey.getOnlineUserHashKey(orgi), id);
@@ -480,8 +405,6 @@ public class Cache {
 
     /**
      * 根据租户ID获得在线访客的列表大小
-     *
-     * @param orgi
      */
     public int getOnlineUserSizeByOrgi(final String orgi) {
         return redisCommand.getHashSize(RedisKey.getOnlineUserHashKey(orgi));
@@ -490,10 +413,6 @@ public class Cache {
 
     /**
      * 将在线访客从一个坐席的服务列表中删除
-     *
-     * @param userid
-     * @param agentno
-     * @param orgi
      */
     public void deleteOnlineUserIdFromAgentStatusByUseridAndAgentnoAndOrgi(final String userid, final String agentno, final String orgi) {
         redisCommand.removeSetVal(RedisKey.getInServAgentUsersByAgentnoAndOrgi(agentno, orgi), userid);
@@ -509,16 +428,12 @@ public class Cache {
     }
 
 
-    /******************************
-     * Callcenter Agent 相关
-     ******************************/
+    //******************************
+    //* Callcenter Agent 相关
+    //******************************
 
     /**
      * 更新CallCenterAgent
-     *
-     * @param id
-     * @param orgi
-     * @param agent
      */
     public void putCallCenterAgentByIdAndOrgi(final String id, final String orgi, final CallCenterAgent agent) {
         redisCommand.setHashKV(RedisKey.getCallCenterAgentHashKeyByOrgi(orgi), id, SerializeUtil.serialize(agent));
@@ -526,10 +441,6 @@ public class Cache {
 
     /**
      * 根据ID和租户ID获得CallCenterAgent
-     *
-     * @param id
-     * @param orgi
-     * @return
      */
     public CallCenterAgent findOneCallCenterAgentByIdAndOrgi(final String id, final String orgi) {
         String serialized = redisCommand.getHashKV(RedisKey.getCallCenterAgentHashKeyByOrgi(orgi), id);
@@ -542,9 +453,6 @@ public class Cache {
 
     /**
      * 删除CallCenterAgent
-     *
-     * @param id
-     * @param orgi
      */
     public void deleteCallCenterAgentByIdAndOrgi(final String id, final String orgi) {
         redisCommand.delHashKV(RedisKey.getCallCenterAgentHashKeyByOrgi(orgi), id);
@@ -553,9 +461,6 @@ public class Cache {
 
     /**
      * 根据租户ID获得所有的CallCenterAgent
-     *
-     * @param orgi
-     * @return
      */
     public Map<String, CallCenterAgent> findAllCallCenterAgentsByOrgi(final String orgi) {
         Map<String, String> map = redisCommand.getHash(RedisKey.getCallCenterAgentHashKeyByOrgi(orgi));
@@ -654,6 +559,7 @@ public class Cache {
     public List<SysDic> getSysDicItemsByCodeAndOrgi(final String code, final String orgi) {
         String serialized = redisCommand.getHashKV(RedisKey.getSysDicHashKeyByOrgi(orgi), code);
         if (serialized != null) {
+            //noinspection unchecked
             return (List<SysDic>) SerializeUtil.deserialize(serialized);
         }
         return null;
@@ -724,6 +630,7 @@ public class Cache {
     public <T extends Serializable> T findOneSystemByIdAndOrgi(final String id, final String orgi) {
         String serialized = redisCommand.getHashKV(RedisKey.getSystemHashKeyByOrgi(orgi), id);
         if (StringUtils.isNotBlank(serialized)) {
+            //noinspection unchecked
             return (T) SerializeUtil.deserialize(serialized);
         }
         return null;
@@ -732,6 +639,7 @@ public class Cache {
     public <T extends Serializable> List<T> findOneSystemListByIdAndOrgi(final String id, final String orgi) {
         String serialized = redisCommand.getHashKV(RedisKey.getSystemHashKeyByOrgi(orgi), id);
         if (StringUtils.isNotBlank(serialized)) {
+            //noinspection unchecked
             return (List<T>) SerializeUtil.deserialize(serialized);
         }
         return null;
@@ -740,6 +648,7 @@ public class Cache {
     public <TK, TV extends Serializable> Map<TK, TV> findOneSystemMapByIdAndOrgi(final String id, final String orgi) {
         String serialized = redisCommand.getHashKV(RedisKey.getSystemHashKeyByOrgi(orgi), id);
         if (StringUtils.isNotBlank(serialized)) {
+            //noinspection unchecked
             return (Map<TK, TV>) SerializeUtil.deserialize(serialized);
         }
         return null;
@@ -781,6 +690,7 @@ public class Cache {
     public List<SessionConfig> findOneSessionConfigListByOrgi(final String orgi) {
         String serialized = redisCommand.get(RedisKey.getSessionConfigList(orgi));
         if (StringUtils.isNotBlank(serialized)) {
+            //noinspection unchecked
             return (List<SessionConfig>) SerializeUtil.deserialize(serialized);
         }
 
@@ -816,7 +726,7 @@ public class Cache {
         if (StringUtils.isBlank(serialized)) {
             return Optional.empty();
         }
-        return Optional.ofNullable((AgentUserAudit) SerializeUtil.deserialize(serialized));
+        return Optional.ofNullable(SerializeUtil.deserialize(serialized));
     }
 
     public boolean existAgentUserAuditByOrgiAndId(final String orgi, final String agentUserId) {
@@ -824,16 +734,13 @@ public class Cache {
     }
 
 
-    /******************************************
-     * User Session 相关
-     ******************************************/
+    //******************************************
+    //* User Session 相关
+    //******************************************
+
     /**
      * 存入user的session，存储这组信息是为了让客户的账号只能在一个浏览器内登录使用
      * 如果一个用户账号在多个浏览器使用，则登出之前的登录，只保留最后一个登录正常使用
-     *
-     * @param agentno
-     * @param sessionId
-     * @param orgi
      */
     public void putUserSessionByAgentnoAndSessionIdAndOrgi(final String agentno, final String sessionId, final String orgi) {
         redisCommand.setHashKV(RedisKey.getUserSessionKeyByOrgi(orgi), agentno, sessionId);

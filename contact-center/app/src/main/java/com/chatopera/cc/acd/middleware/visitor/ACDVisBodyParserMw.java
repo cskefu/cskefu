@@ -30,56 +30,55 @@ import com.chatopera.cc.proxy.AgentStatusProxy;
 import com.chatopera.cc.proxy.AgentUserProxy;
 import com.chatopera.compose4j.Functional;
 import com.chatopera.compose4j.Middleware;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 /**
  * Resolve AgentUser
  */
 @Component
+@RequiredArgsConstructor
 public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
     private final static Logger logger = LoggerFactory.getLogger(ACDVisBodyParserMw.class);
 
-    @Autowired
-    private AgentUserContactsRepository agentUserContactsRes;
+    @NonNull
+    private final AgentUserContactsRepository agentUserContactsRes;
 
-    @Autowired
-    private ContactsRepository contactsRes;
+    @NonNull
+    private final ContactsRepository contactsRes;
 
-    @Autowired
-    private Cache cache;
+    @NonNull
+    private final Cache cache;
 
-    @Autowired
-    private AgentUserProxy agentUserProxy;
+    @NonNull
+    private final AgentUserProxy agentUserProxy;
 
-    @Autowired
-    private AgentStatusProxy agentStatusProxy;
+    @NonNull
+    private final AgentStatusProxy agentStatusProxy;
 
-    @Autowired
-    private ACDQueueService acdQueueService;
+    @NonNull
+    private final ACDQueueService acdQueueService;
 
-    @Autowired
-    private ACDMessageHelper acdMessageHelper;
+    @NonNull
+    private final ACDMessageHelper acdMessageHelper;
 
     /**
      * 设置AgentUser基本信息
-     *
-     * @param ctx
-     * @param next
      */
     @Override
     public void apply(final ACDComposeContext ctx, final Functional next) {
 
-        /**
+        /*
          * NOTE AgentUser代表一次会话记录，在上一个会话结束，并且由坐席人员点击"清除"后，会从数据库中删除
          * 此处查询到的，可能是之前的会话。其状态需要验证，所以不一定是由TA来服务本次会话。
          */
         AgentUser agentUser = cache.findOneAgentUserByUserIdAndOrgi(ctx.getOnlineUserId(), ctx.getOrgi()).orElseGet(
                 () -> {
-                    /**
+                    /*
                      * NOTE 新创建的AgentUser不需要设置Status和Agentno
                      * 因为两个值在后面会检查，如果存在则不会申请新的Agent
                      */
@@ -125,11 +124,11 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
 
         next.apply();
 
-        /**
+        /*
          * 发送通知
          */
         if (ctx.getAgentService() != null && StringUtils.isNotBlank(ctx.getAgentService().getStatus())) {
-            /**
+            /*
              * 找到空闲坐席，如果未找到坐席，则将该用户放入到 排队队列
              */
             switch (MainContext.AgentUserStatusEnum.toValue(ctx.getAgentService().getStatus())) {
@@ -150,9 +149,7 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
                             ctx.getAgentService().getQueneindex());
 
                     if (StringUtils.isNotBlank(ctx.getAgentService().getAgentuserid())) {
-                        agentUserProxy.findOne(ctx.getAgentService().getAgentuserid()).ifPresent(p -> {
-                            ctx.setAgentUser(p);
-                        });
+                        agentUserProxy.findOne(ctx.getAgentService().getAgentuserid()).ifPresent(ctx::setAgentUser);
                     }
 
                     // TODO 如果是 INSERVICE 那么  agentService.getAgentuserid 就一定不能为空？
@@ -219,10 +216,6 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
      * <p>
      * TODO 此处有一些问题：如果联系人更新了名字，那么么后面TA的会话用的还是旧的名字，
      * 所以，在更新联系人名字的时候，也应更新其对应的AgentUser里面的名字
-     *
-     * @param agentUser
-     * @param nickname
-     * @return
      */
     private String resolveAgentUsername(final AgentUser agentUser, final String nickname) {
         if (!StringUtils.equals(agentUser.getUsername(), nickname)) {
@@ -233,7 +226,7 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
         AgentUserContacts agentUserContact = agentUserContactsRes.findOneByUseridAndOrgi(
                 agentUser.getUserid(), agentUser.getOrgi()).orElse(null);
         if (agentUserContact != null) {
-            Contacts contact = contactsRes.findOneById(agentUserContact.getContactsid()).orElseGet(null);
+            Contacts contact = contactsRes.findOneById(agentUserContact.getContactsid()).orElse(null);
             if (contact != null) {
                 return contact.getName();
             }

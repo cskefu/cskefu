@@ -24,28 +24,28 @@ import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import java.util.Date;
-@Document(indexName = "cskefu", type = "publishedreport")
+@Document(indexName = "publishedreport", type = "publishedreport")
 @Entity
 @Table(name = "uk_publishedreport")
 @org.hibernate.annotations.Proxy(lazy = false)
-public class PublishedReport implements java.io.Serializable{
+public class PublishedReport implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id ;
-	private String name ;	
-	private String code ;
-	private String reporttype ;
-	private String dicid ;	//目录ID
-	private String orgi ;
-	private String dataid ;
-	private String dataflag ;
-	private int startindex ;
-	private Date startdate ;
+	private String id;
+	private String name;
+	private String code;
+	private String reporttype;
+	private String dicid;    //目录ID
+	private String orgi;
+	private String dataid;
+	private String dataflag;
+	private int startindex;
+	private Date startdate;
 	private int dataversion;
-	private String creater ;
+	private String creater;
 	private String reportcontent;
 	private Date createtime;
 	private Report report ;
-	
+
 	@Id
 	@Column(length = 32)
 	@GeneratedValue(generator = "system-uuid")
@@ -68,7 +68,7 @@ public class PublishedReport implements java.io.Serializable{
 	public void setCode(String code) {
 		this.code = code;
 	}
-	
+
 	public String getReporttype() {
 		return reporttype;
 	}
@@ -145,5 +145,5 @@ public class PublishedReport implements java.io.Serializable{
 		}
 		return report;
 	}
-	
+
 }

@@ -34,21 +34,24 @@ import com.chatopera.cc.util.dsdata.DSDataEvent;
 import com.chatopera.cc.util.dsdata.ExcelImportProecess;
 import com.chatopera.cc.util.dsdata.export.ExcelExporterProcess;
 import com.chatopera.cc.util.dsdata.process.ContactsProcess;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,31 +65,32 @@ import java.util.*;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/apps/contacts")
 public class ContactsController extends Handler {
 
     private final static Logger logger = LoggerFactory.getLogger(ContactsController.class);
 
-    @Autowired
-    private ContactsRepository contactsRes;
+    @NonNull
+    private final ContactsRepository contactsRes;
 
-    @Autowired
-    private PropertiesEventRepository propertiesEventRes;
+    @NonNull
+    private final PropertiesEventRepository propertiesEventRes;
 
-    @Autowired
-    private ReporterRepository reporterRes;
+    @NonNull
+    private final ReporterRepository reporterRes;
 
-    @Autowired
-    private MetadataRepository metadataRes;
+    @NonNull
+    private final MetadataRepository metadataRes;
 
-    @Autowired
-    private ContactsProxy contactsProxy;
+    @NonNull
+    private final ContactsProxy contactsProxy;
 
-    @Autowired
-    private OrganRepository organRes;
+    @NonNull
+    private final OrganRepository organRes;
 
-    @Autowired
-    private AgentUserContactsRepository agentUserContactsRes;
+    @NonNull
+    private final AgentUserContactsRepository agentUserContactsRes;
 
     @Value("${web.upload-path}")
     private String path;
@@ -104,7 +108,7 @@ public class ContactsController extends Handler {
 
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
         }
 
@@ -127,7 +131,7 @@ public class ContactsController extends Handler {
                 false,
                 boolQueryBuilder,
                 q,
-                new PageRequest(super.getP(request), super.getPs(request)));
+                PageRequest.of(super.getP(request), super.getPs(request)));
 
         map.addAttribute("contactsList", contacts);
 
@@ -142,7 +146,7 @@ public class ContactsController extends Handler {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
         }
 
@@ -159,7 +163,7 @@ public class ContactsController extends Handler {
                 orgi,
                 MainUtils.getStartTime(), null, false,
                 boolQueryBuilder, q,
-                new PageRequest(
+                PageRequest.of(
                         super.getP(request),
                         super.getPs(request)));
 
@@ -177,7 +181,7 @@ public class ContactsController extends Handler {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
         }
 
@@ -194,7 +198,7 @@ public class ContactsController extends Handler {
                 orgi,
                 MainUtils.getWeekStartTime(), null, false,
                 boolQueryBuilder, q,
-                new PageRequest(
+                PageRequest.of(
                         super.getP(request),
                         super.getPs(request)));
         map.addAttribute(
@@ -211,7 +215,7 @@ public class ContactsController extends Handler {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
         }
 
@@ -229,10 +233,7 @@ public class ContactsController extends Handler {
                 logined.getId(),
                 orgi, null, null, false,
                 boolQueryBuilder, q,
-                new PageRequest(
-                        super.getP(request),
-                        super.getPs(request)));
-
+                PageRequest.of(super.getP(request), super.getPs(request)));
 
         map.addAttribute(
                 "contactsList", contacts);
@@ -242,10 +243,12 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/delete")
     @Menu(type = "contacts", subtype = "contacts")
-    public ModelAndView delete(HttpServletRequest request, @Valid Contacts contacts, @Valid String p, @Valid String ckind) {
+    public ModelAndView delete(@Valid Contacts contacts, @Valid String p, @Valid String ckind) {
         if (contacts != null) {
-            contacts = contactsRes.findOne(contacts.getId());
-            contacts.setDatastatus(true);                            //客户和联系人都是 逻辑删除
+            String contactsId = contacts.getId();
+            contacts = contactsRes.findById(contactsId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Contacts %s not found", contactsId)));
+            contacts.setDatastatus(true); //客户和联系人都是 逻辑删除
             contactsRes.save(contacts);
         }
         return request(super.createRequestPageTempletResponse(
@@ -254,7 +257,7 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/add")
     @Menu(type = "contacts", subtype = "add")
-    public ModelAndView add(ModelMap map, HttpServletRequest request, @Valid String ckind) {
+    public ModelAndView add(ModelMap map, @Valid String ckind) {
         map.addAttribute("ckind", ckind);
         return request(super.createRequestPageTempletResponse("/apps/business/contacts/add"));
     }
@@ -263,7 +266,6 @@ public class ContactsController extends Handler {
     @RequestMapping("/save")
     @Menu(type = "contacts", subtype = "save")
     public ModelAndView save(
-            ModelMap map,
             HttpServletRequest request,
             @Valid Contacts contacts,
             @RequestParam(name = "savefrom", required = false) String savefrom,
@@ -271,7 +273,7 @@ public class ContactsController extends Handler {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         String skypeIDReplace = contactsProxy.sanitizeSkypeId(contacts.getSkypeid());
-        String msg = "";
+        String msg;
         List<Contacts> contact = contactsRes.findByskypeidAndDatastatus(skypeIDReplace, false);
 
         // 添加数据
@@ -296,19 +298,19 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/edit")
     @Menu(type = "contacts", subtype = "contacts")
-    public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String ckind) {
-        map.addAttribute("contacts", contactsRes.findOne(id));
+    public ModelAndView edit(ModelMap map, @Valid String id, @Valid String ckind) {
+        map.addAttribute("contacts", contactsRes.findById(id).orElse(null));
         map.addAttribute("ckindId", ckind);
         return request(super.createRequestPageTempletResponse("/apps/business/contacts/edit"));
     }
 
     @RequestMapping("/detail")
     @Menu(type = "customer", subtype = "index")
-    public ModelAndView detail(ModelMap map, HttpServletRequest request, @Valid String id) {
+    public ModelAndView detail(ModelMap map, @Valid String id) {
         if (id == null) {
             return null; // id is required. Block strange requst anyway with g2.min, https://github.com/alibaba/BizCharts/issues/143
         }
-        map.addAttribute("contacts", contactsRes.findOne(id));
+        map.addAttribute("contacts", contactsRes.findById(id).orElse(null));
         return request(super.createAppsTempletResponse("/apps/business/contacts/detail"));
 
     }
@@ -351,19 +353,21 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/update")
     @Menu(type = "contacts", subtype = "contacts")
-    public ModelAndView update(HttpServletRequest request, @Valid Contacts contacts , @Valid String ckindId) {
+    public ModelAndView update(HttpServletRequest request, @Valid Contacts contacts, @Valid String ckindId) {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
-        Contacts data = contactsRes.findOne(contacts.getId());
-        String msg = "";
+        String contactsId = contacts.getId();
+        Contacts data = contactsRes.findById(contactsId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Contacts %s not found", contactsId)));
+        String msg;
 
         String skypeIDReplace = contactsProxy.sanitizeSkypeId(contacts.getSkypeid());
         Contacts theOnlyContact = contactsRes.findByskypeidAndOrgiAndDatastatus(
                 skypeIDReplace, logined.getOrgi(), false);
-        Contacts oldContact = contactsRes.findByidAndOrgiAndDatastatus(contacts.getId(), logined.getOrgi(), false);
+        Contacts oldContact = contactsRes.findByidAndOrgiAndDatastatus(contactsId, logined.getOrgi(), false);
 
-        Boolean determineChange = contactsProxy.determineChange(contacts, oldContact);
-        /**
+        boolean determineChange = contactsProxy.determineChange(contacts, oldContact);
+        /*
          * 验证skype唯一性验证
          */
         if (theOnlyContact == null || theOnlyContact.getId().equals(oldContact.getId())) {
@@ -389,7 +393,7 @@ public class ContactsController extends Handler {
             String modifyid = MainUtils.getUUID();
             Date modifytime = new Date();
             for (PropertiesEvent event : events) {
-                event.setDataid(contacts.getId());
+                event.setDataid(contactsId);
                 event.setCreater(logined.getId());
                 event.setOrgi(orgi);
                 event.setModifyid(modifyid);
@@ -408,9 +412,7 @@ public class ContactsController extends Handler {
             contacts.setCusbirthday(null);
         }
 
-        if (msg.equals("edit_contacts_success")) {
-            contactsRes.save(contacts);
-        }
+        contactsRes.save(contacts);
         return request(super.createRequestPageTempletResponse(
                 "redirect:/apps/contacts/index.html?ckind=" + ckindId + "&msg=" + msg));
     }
@@ -418,21 +420,23 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/imp")
     @Menu(type = "contacts", subtype = "contacts")
-    public ModelAndView imp(ModelMap map, HttpServletRequest request, @Valid String ckind) {
+    public ModelAndView imp(ModelMap map, @Valid String ckind) {
         map.addAttribute("ckind", ckind);
         return request(super.createRequestPageTempletResponse("/apps/business/contacts/imp"));
     }
 
     @RequestMapping("/impsave")
     @Menu(type = "contacts", subtype = "contacts")
-    public ModelAndView impsave(ModelMap map, HttpServletRequest request, @RequestParam(value = "cusfile", required = false) MultipartFile cusfile, @Valid String ckind) throws IOException {
+    public ModelAndView impsave(HttpServletRequest request, @RequestParam(value = "cusfile", required = false) MultipartFile cusfile) throws IOException {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         DSDataEvent event = new DSDataEvent();
-        String fileName = "contacts/" + MainUtils.getUUID() + cusfile.getOriginalFilename().substring(
-                cusfile.getOriginalFilename().lastIndexOf("."));
+        String originalFilename = Objects.requireNonNull(cusfile.getOriginalFilename());
+        String fileName = "contacts/" + MainUtils.getUUID() + originalFilename.substring(
+                originalFilename.lastIndexOf("."));
         File excelFile = new File(path, fileName);
         if (!excelFile.getParentFile().exists()) {
+            //noinspection ResultOfMethodCallIgnored
             excelFile.getParentFile().mkdirs();
         }
         MetadataTable table = metadataRes.findByTablename("uk_contacts");
@@ -460,11 +464,11 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/expids")
     @Menu(type = "contacts", subtype = "contacts")
-    public void expids(ModelMap map, HttpServletRequest request, HttpServletResponse response, @Valid String[] ids) throws IOException {
+    public void expids(HttpServletResponse response, @Valid String[] ids) throws IOException {
         if (ids != null && ids.length > 0) {
-            Iterable<Contacts> contactsList = contactsRes.findAll(Arrays.asList(ids));
+            Iterable<Contacts> contactsList = contactsRes.findAllById(Arrays.asList(ids));
             MetadataTable table = metadataRes.findByTablename("uk_contacts");
-            List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+            List<Map<String, Object>> values = new ArrayList<>();
             for (Contacts contacts : contactsList) {
                 values.add(MainUtils.transBean2Map(contacts));
             }
@@ -478,26 +482,25 @@ public class ContactsController extends Handler {
             excelProcess.process();
         }
 
-        return;
     }
 
 
     @RequestMapping("/expall")
     @Menu(type = "contacts", subtype = "contacts")
-    public void expall(ModelMap map, HttpServletRequest request, HttpServletResponse response) throws IOException, CSKefuException {
+    public void expall(HttpServletRequest request, HttpServletResponse response) throws IOException, CSKefuException {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return;
         }
         boolQueryBuilder.must(termQuery("datastatus", false));        //只导出 数据删除状态 为 未删除的 数据
         Iterable<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndOrgi(
                 logined.getId(), logined.getId(), orgi, null, null,
-                false, boolQueryBuilder, null, new PageRequest(super.getP(request), super.getPs(request)));
+                false, boolQueryBuilder, null, PageRequest.of(super.getP(request), super.getPs(request)));
 
         MetadataTable table = metadataRes.findByTablename("uk_contacts");
-        List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> values = new ArrayList<>();
         for (Contacts contacts : contactsList) {
             values.add(MainUtils.transBean2Map(contacts));
         }
@@ -509,7 +512,6 @@ public class ContactsController extends Handler {
 
         ExcelExporterProcess excelProcess = new ExcelExporterProcess(values, table, response.getOutputStream());
         excelProcess.process();
-        return;
     }
 
     @RequestMapping("/expsearch")
@@ -528,9 +530,9 @@ public class ContactsController extends Handler {
 
         Iterable<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndOrgi(
                 logined.getId(), logined.getId(), orgi, null, null,
-                false, boolQueryBuilder, q, new PageRequest(super.getP(request), super.getPs(request)));
+                false, boolQueryBuilder, q, PageRequest.of(super.getP(request), super.getPs(request)));
         MetadataTable table = metadataRes.findByTablename("uk_contacts");
-        List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> values = new ArrayList<>();
         for (Contacts contacts : contactsList) {
             values.add(MainUtils.transBean2Map(contacts));
         }
@@ -543,7 +545,6 @@ public class ContactsController extends Handler {
         ExcelExporterProcess excelProcess = new ExcelExporterProcess(values, table, response.getOutputStream());
         excelProcess.process();
 
-        return;
     }
 
 
@@ -554,7 +555,7 @@ public class ContactsController extends Handler {
         final String orgi = logined.getOrgi();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         map.put("msg", msg);
-        if (!super.esOrganFilter(request, boolQueryBuilder)) {
+        if (!super.esOrganFilter(request)) {
             return request(super.createAppsTempletResponse("/apps/business/contacts/embed/index"));
         }
         if (StringUtils.isNotBlank(q)) {
@@ -566,7 +567,7 @@ public class ContactsController extends Handler {
         }
         Page<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndOrgi(
                 logined.getId(), logined.getId(), orgi, null, null, false, boolQueryBuilder, q,
-                new PageRequest(super.getP(request), super.getPs(request)));
+                PageRequest.of(super.getP(request), super.getPs(request)));
 
         map.addAttribute("contactsList", contactsList);
 
@@ -582,7 +583,7 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/embed/add")
     @Menu(type = "contacts", subtype = "embedadd")
-    public ModelAndView embedadd(ModelMap map, HttpServletRequest request) {
+    public ModelAndView embedadd() {
         return request(super.createRequestPageTempletResponse("/apps/business/contacts/embed/add"));
     }
 
@@ -590,9 +591,8 @@ public class ContactsController extends Handler {
     @Menu(type = "contacts", subtype = "embedsave")
     public ModelAndView embedsave(HttpServletRequest request, @Valid Contacts contacts) {
         final User logined = super.getUser(request);
-        final String orgi = logined.getOrgi();
         String skypeIDReplace = contactsProxy.sanitizeSkypeId(contacts.getSkypeid());
-        String msg = "";
+        String msg;
         List<Contacts> contact = contactsRes.findByskypeidAndDatastatus(skypeIDReplace, false);
 
         //添加数据
@@ -614,8 +614,8 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/embed/edit")
     @Menu(type = "contacts", subtype = "embededit")
-    public ModelAndView embededit(ModelMap map, HttpServletRequest request, @Valid String id) {
-        map.addAttribute("contacts", contactsRes.findOne(id));
+    public ModelAndView embededit(ModelMap map, @Valid String id) {
+        map.addAttribute("contacts", contactsRes.findById(id).orElse(null));
         return request(super.createRequestPageTempletResponse("/apps/business/contacts/embed/edit"));
     }
 
@@ -624,16 +624,18 @@ public class ContactsController extends Handler {
     public ModelAndView embedupdate(HttpServletRequest request, @Valid Contacts contacts) {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
-        Contacts data = contactsRes.findOne(contacts.getId());
-        String msg = "";
+        String contactsId = contacts.getId();
+        Contacts data = contactsRes.findById(contactsId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Contacts %s not found", contactsId)));
+        String msg;
         String skypeIDReplace = contactsProxy.sanitizeSkypeId(contacts.getSkypeid());
         Contacts theOnlyContact = contactsRes.findByskypeidAndOrgiAndDatastatus(
                 skypeIDReplace, logined.getOrgi(), false);
-        Contacts oldContact = contactsRes.findByidAndOrgiAndDatastatus(contacts.getId(), logined.getOrgi(), false);
+        Contacts oldContact = contactsRes.findByidAndOrgiAndDatastatus(contactsId, logined.getOrgi(), false);
 
-        Boolean determineChange = contactsProxy.determineChange(contacts, oldContact);
+        boolean determineChange = contactsProxy.determineChange(contacts, oldContact);
 
-        /**
+        /*
          * 验证skype唯一性验证
          */
         if (theOnlyContact == null || theOnlyContact.getId().equals(oldContact.getId())) {
@@ -657,7 +659,7 @@ public class ContactsController extends Handler {
             String modifyid = MainUtils.getUUID();
             Date modifytime = new Date();
             for (PropertiesEvent event : events) {
-                event.setDataid(contacts.getId());
+                event.setDataid(contactsId);
                 event.setCreater(logined.getId());
                 event.setOrgi(orgi);
                 event.setModifyid(modifyid);
@@ -677,9 +679,7 @@ public class ContactsController extends Handler {
             contacts.setCusbirthday(null);
         }
 
-        if (msg.equals("edit_contacts_success")) {
-            contactsRes.save(contacts);
-        }
+        contactsRes.save(contacts);
         return request(super.createRequestPageTempletResponse("redirect:/apps/contacts/embed/index.html?msg=" + msg));
     }
 }

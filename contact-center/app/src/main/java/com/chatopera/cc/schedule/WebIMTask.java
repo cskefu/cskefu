@@ -210,7 +210,7 @@ public class WebIMTask {
     public void onlineuser() {
         final Page<OnlineUser> pages = onlineUserRes.findByStatusAndCreatetimeLessThan(
                 MainContext.OnlineUserStatusEnum.ONLINE.toString(),
-                MainUtils.getLastTime(60), new PageRequest(0, 1000));
+                MainUtils.getLastTime(60), PageRequest.of(0, 1000));
         if (pages.getContent().size() > 0) {
             for (final OnlineUser onlineUser : pages.getContent()) {
                 try {
@@ -321,10 +321,10 @@ public class WebIMTask {
     public void jobDetail() {
         List<JobDetail> allJob = new ArrayList<JobDetail>();
         Page<JobDetail> readyTaskList = jobDetailRes.findByTaskstatus(
-                MainContext.TaskStatusType.READ.getType(), new PageRequest(0, 100));
+                MainContext.TaskStatusType.READ.getType(), PageRequest.of(0, 100));
         allJob.addAll(readyTaskList.getContent());
         Page<JobDetail> planTaskList = jobDetailRes.findByPlantaskAndTaskstatusAndNextfiretimeLessThan(
-                true, MainContext.TaskStatusType.NORMAL.getType(), new Date(), new PageRequest(0, 100));
+                true, MainContext.TaskStatusType.NORMAL.getType(), new Date(), PageRequest.of(0, 100));
         allJob.addAll(planTaskList.getContent());
         if (allJob.size() > 0) {
             for (JobDetail jobDetail : allJob) {

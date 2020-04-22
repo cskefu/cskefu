@@ -32,15 +32,15 @@ import com.chatopera.cc.util.RestResultType;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -56,52 +56,44 @@ import java.util.Optional;
  * 联系人服务
  * 联系人管理功能
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/contacts")
+@RequiredArgsConstructor
 public class ApiContactsController extends Handler {
-    private final static Logger logger = LoggerFactory.getLogger(ApiContactsController.class);
 
-    @Autowired
-    private ContactsRepository contactsRepository;
+    @NonNull
+    private final ContactsRepository contactsRepository;
 
-    @Autowired
-    private ContactsRepository contactsRes;
+    @NonNull
+    private final ContactsProxy contactsProxy;
 
-    @Autowired
-    private ContactsProxy contactsProxy;
-
-    @Autowired
-    private AgentUserProxy agentUserProxy;
+    @NonNull
+    private final AgentUserProxy agentUserProxy;
 
     /**
      * 返回用户列表，支持分页，分页参数为 p=1&ps=50，默认分页尺寸为 20条每页
-     *
-     * @param request
-     * @return
      */
     @RequestMapping(method = RequestMethod.GET)
     @Menu(type = "apps", subtype = "contacts", access = true)
     public ResponseEntity<RestResult> list(HttpServletRequest request, @Valid String creater, @Valid String q) {
-        Page<Contacts> contactsList = null;
+        Page<Contacts> contactsList;
         if (!StringUtils.isBlank(creater)) {
             User user = super.getUser(request);
             contactsList = contactsRepository.findByCreaterAndSharesAndOrgi(user.getId(), user.getId(),
-                                                                            super.getOrgi(request), false, q,
-                                                                            new PageRequest(
-                                                                                    super.getP(request),
-                                                                                    super.getPs(request)));
+                    super.getOrgi(request), false, q,
+                    PageRequest.of(
+                            super.getP(request),
+                            super.getPs(request)));
         } else {
             contactsList = contactsRepository.findByOrgi(super.getOrgi(request), false, q,
-                                                         new PageRequest(super.getP(request), super.getPs(request)));
+                    PageRequest.of(super.getP(request), super.getPs(request)));
         }
         return new ResponseEntity<>(new RestResult(RestResultType.OK, contactsList), HttpStatus.OK);
     }
 
     /**
      * 新增或修改用户用户 ，在修改用户信息的时候，如果用户 密码未改变，请设置为 NULL
-     *
-     * @param request
-     * @return
      */
     @RequestMapping(method = RequestMethod.PUT)
     @Menu(type = "apps", subtype = "contacts", access = true)
@@ -122,43 +114,34 @@ public class ApiContactsController extends Handler {
     /**
      * 删除用户，只提供 按照用户ID删除 ， 并且，不能删除系统管理员
      * 删除联系人，联系人删除是逻辑删除，将 datastatus字段标记为 true，即已删除
-     *
-     * @param request
-     * @param id
-     * @return
      */
     @RequestMapping(method = RequestMethod.DELETE)
     @Menu(type = "apps", subtype = "contacts", access = true)
-    public ResponseEntity<RestResult> delete(HttpServletRequest request, @Valid String id) {
+    public ResponseEntity<RestResult> delete(@Valid String id) {
         RestResult result = new RestResult(RestResultType.OK);
         if (!StringUtils.isBlank(id)) {
-            Contacts contacts = contactsRepository.findOne(id);
-            if (contacts != null) {    //系统管理员， 不允许 使用 接口删除
+            contactsRepository.findById(id).ifPresent(contacts -> {
+                //系统管理员， 不允许 使用 接口删除
                 contacts.setDatastatus(true);
                 contactsRepository.save(contacts);
-            }
+            });
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**
      * 联系人页面，客户点击页面时，判断是否有能触达的通道
-     *
-     * @param request
-     * @param body
-     * @return
      */
     @RequestMapping(method = RequestMethod.POST)
     @Menu(type = "apps", subtype = "contacts", access = true)
     public ResponseEntity<String> operations(
             final HttpServletRequest request,
             @RequestBody final String body) {
-        final JsonObject j = (new JsonParser()).parse(body).getAsJsonObject();
-        logger.info("[chatbot] operations payload {}", j.toString());
+        final JsonObject j = JsonParser.parseString(body).getAsJsonObject();
+        log.info("[chatbot] operations payload {}", j.toString());
         JsonObject json = new JsonObject();
         HttpHeaders headers = RestUtils.header();
         final User logined = super.getUser(request);
-        final String orgi = logined.getOrgi();
 
         if (!j.has("ops")) {
             json.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_1);
@@ -179,15 +162,11 @@ public class ApiContactsController extends Handler {
             }
         }
 
-        return new ResponseEntity<String>(json.toString(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(json.toString(), headers, HttpStatus.OK);
     }
 
     /**
      * 主动与联系人聊天
-     *
-     * @param payload
-     * @param logined
-     * @return
      */
     private JsonObject proactive(final JsonObject payload, User logined) {
         JsonObject resp = new JsonObject();
@@ -218,10 +197,6 @@ public class ApiContactsController extends Handler {
 
     /**
      * 根据联系人信息查找立即触达的渠道
-     *
-     * @param payload
-     * @param logined
-     * @return
      */
     private JsonObject approach(final JsonObject payload, final User logined) {
         JsonObject resp = new JsonObject();
@@ -233,7 +208,7 @@ public class ApiContactsController extends Handler {
         }
 
         final String contactsid = payload.get("contactsid").getAsString();
-        Optional<Contacts> contactOpt = contactsRes.findOneById(contactsid).filter(
+        Optional<Contacts> contactOpt = contactsRepository.findOneById(contactsid).filter(
                 p -> !p.isDatastatus());
 
         if (contactOpt.isPresent()) {

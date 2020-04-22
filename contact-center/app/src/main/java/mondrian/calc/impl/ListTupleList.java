@@ -14,7 +14,10 @@ import mondrian.calc.TupleList;
 import mondrian.olap.Member;
 import mondrian.olap.Util;
 
-import java.util.*;
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Implementation of {@link mondrian.calc.TupleList} that stores tuples
@@ -143,19 +146,19 @@ public class ListTupleList extends AbstractEndToEndTupleList
         return new AbstractTupleListIterator();
     }
 
-	@Override
-	public void setCount(int count) {
-		// TODO Auto-generated method stub
-		this.count = count;
-	}
+    @Override
+    public int getCount() {
 
-	@Override
-	public int getCount() {
-		// TODO Auto-generated method stub
-		return count;
-	}
+        return count;
+    }
 
-	
+    @Override
+    public void setCount(int count) {
+
+        this.count = count;
+    }
+
+
 }
 
 // End ListTupleList.java

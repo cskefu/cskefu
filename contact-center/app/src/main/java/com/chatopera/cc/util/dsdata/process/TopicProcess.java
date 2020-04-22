@@ -21,57 +21,59 @@ import com.chatopera.cc.model.Topic;
 import com.chatopera.cc.model.TopicItem;
 import com.chatopera.cc.persistence.es.TopicRepository;
 import com.chatopera.cc.persistence.repository.TopicItemRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
 
-public class TopicProcess implements JPAProcess{
-	
-	private TopicRepository topicRes ;
-	
-	public TopicProcess(TopicRepository topicRes){
-		this.topicRes = topicRes ;
-	}
-	
-	public TopicProcess(){}
+@Component
+@RequiredArgsConstructor
+public class TopicProcess implements JPAProcess {
 
-	@Override
-	public void process(Object data) {
-		Topic topic = (Topic) data ;
-		topicRes.save(topic) ;
-		this.process(data, topic.getOrgi());
-	}
-	/**
-	 * 只处理 类似问题
-	 * @param data
-	 * @param orgi
-	 */
-	public void process(Object data , String orgi) {
-		Topic topic = (Topic) data ;
-		if(topic.getSilimar()!=null && topic.getSilimar().size() > 0) {
-			TopicItemRepository topicItemRes = MainContext.getContext().getBean(TopicItemRepository.class) ;
-			List<TopicItem> topicItemList = topicItemRes.findByTopicid(topic.getId()) ;
-			if(topicItemList!=null && topicItemList.size() > 0) {
-				topicItemRes.delete(topicItemList);
-			}
-			topicItemList.clear(); 
-			for(String item : topic.getSilimar()) {
-				TopicItem topicItem = new TopicItem();
-				topicItem.setTitle(item);
-				topicItem.setTopicid(topic.getId());
-				topicItem.setOrgi(topic.getOrgi());
-				topicItem.setCreater(topic.getCreater());
-				topicItem.setCreatetime(new Date());
-				topicItemList.add(topicItem) ;
-			}
-			if(topicItemList.size() > 0) {
-				topicItemRes.save(topicItemList) ;
-			}
-		}
-	}
+    @NonNull
+    private final TopicRepository topicRes;
 
-	@Override
-	public void end() {
-		
-	}
+    @Override
+    public void process(Object data) {
+        Topic topic = (Topic) data;
+        topicRes.save(topic);
+        this.process(data, topic.getOrgi());
+    }
+
+    /**
+     * 只处理 类似问题
+     */
+    public void process(Object data, String orgi) {
+        Topic topic = (Topic) data;
+        if (topic.getSilimar() != null && topic.getSilimar().size() > 0) {
+            TopicItemRepository topicItemRes = MainContext.getContext().getBean(TopicItemRepository.class);
+            List<TopicItem> topicItemList = topicItemRes.findByTopicid(topic.getId());
+            if (topicItemList == null) {
+                return;
+            }
+            if (topicItemList.size() > 0) {
+                topicItemRes.deleteAll(topicItemList);
+            }
+            topicItemList.clear();
+            for (String item : topic.getSilimar()) {
+                TopicItem topicItem = new TopicItem();
+                topicItem.setTitle(item);
+                topicItem.setTopicid(topic.getId());
+                topicItem.setOrgi(topic.getOrgi());
+                topicItem.setCreater(topic.getCreater());
+                topicItem.setCreatetime(new Date());
+                topicItemList.add(topicItem);
+            }
+            if (topicItemList.size() > 0) {
+                topicItemRes.saveAll(topicItemList);
+            }
+        }
+    }
+
+    @Override
+    public void end() {
+
+    }
 }

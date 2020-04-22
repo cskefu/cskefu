@@ -21,15 +21,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface TablePropertiesRepository extends JpaRepository<TableProperties, String>{
-	
-	TableProperties findById(String id);
+public interface TablePropertiesRepository extends JpaRepository<TableProperties, String> {
 
-	List<TableProperties> findByDbtableid(String dbtableid) ;
-	
-	List<TableProperties> findByTablename(String tablename) ;
-	
-	List<TableProperties> findBySecfield(boolean secfield) ;
-	
-	TableProperties findByTablenameAndFieldname(String tablename, String fieldname) ;
+	// TableProperties findById(String id);
+
+	List<TableProperties> findByDbtableid(String dbtableid);
+
+	List<TableProperties> findByTablename(String tablename);
+
+	List<TableProperties> findBySecfield(boolean secfield);
+
+	// TableProperties findByTablenameAndFieldname(String tablename, String fieldname) ;
 }

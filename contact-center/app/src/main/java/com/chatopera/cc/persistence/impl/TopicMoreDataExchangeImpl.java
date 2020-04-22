@@ -20,28 +20,30 @@ import com.chatopera.cc.model.TopicItem;
 import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
 import com.chatopera.cc.persistence.repository.TopicItemRepository;
 import com.chatopera.cc.util.dsdata.process.TopicProcess;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service("topicmore")
-public class TopicMoreDataExchangeImpl implements DataExchangeInterface{
-	@Autowired
-	private TopicItemRepository topicItemRes ;
-	
-	private TopicProcess topicProcess = new TopicProcess();
-	
-	public TopicItem getDataByIdAndOrgi(String id, String orgi){
-		return topicItemRes.findByIdAndOrgi(id, orgi) ;
-	}
+@RequiredArgsConstructor
+public class TopicMoreDataExchangeImpl implements DataExchangeInterface {
+    @NonNull
+    private final TopicItemRepository topicItemRes;
+    @NonNull
+    private final TopicProcess topicProcess;
 
-	@Override
-	public List<TopicItem> getListDataByIdAndOrgi(String id , String creater, String orgi) {
-		return null ;
-	}
-	
-	public void process(Object data , String orgi) {
-		topicProcess.process(data, orgi);
-	}
+    public TopicItem getDataByIdAndOrgi(String id, String orgi) {
+        return topicItemRes.findByIdAndOrgi(id, orgi);
+    }
+
+    @Override
+    public List<TopicItem> getListDataByIdAndOrgi(String id, String creater, String orgi) {
+        return null;
+    }
+
+    public void process(Object data, String orgi) {
+        topicProcess.process(data, orgi);
+    }
 }

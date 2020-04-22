@@ -12,24 +12,26 @@
 package com.chatopera.cc.activemq;
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.RequiredArgsConstructor;
 import org.apache.activemq.ScheduledMessage;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class BrokerPublisher {
 
     final static private Logger logger = LoggerFactory.getLogger(BrokerPublisher.class);
 
-    @Autowired
-    private JmsTemplate jmsTemplate;
+    @NonNull
+    private final JmsTemplate jmsTemplate;
 
     @PostConstruct
     public void setup() {
@@ -40,9 +42,7 @@ public class BrokerPublisher {
     /**
      * 时延消息
      *
-     * @param destination
-     * @param payload
-     * @param delay       available by delayed seconds
+     * @param delay available by delayed seconds
      */
     public void send(final String destination, final String payload, final boolean isTopic, final int delay) {
         try {
@@ -64,11 +64,6 @@ public class BrokerPublisher {
         }
     }
 
-    /**
-     * @param destination
-     * @param payload
-     * @param isTopic
-     */
     public void send(final String destination, final String payload, boolean isTopic) {
         try {
             if (isTopic) {
@@ -77,7 +72,7 @@ public class BrokerPublisher {
                 // 默认为Queue
                 jmsTemplate.convertAndSend(destination, payload);
             }
-            logger.debug("[send] send succ, dest {}, payload {}", destination, payload);
+            logger.debug("[send] send success, dest {}, payload {}", destination, payload);
         } catch (Exception e) {
             logger.warn("[send] error happens.", e);
         }

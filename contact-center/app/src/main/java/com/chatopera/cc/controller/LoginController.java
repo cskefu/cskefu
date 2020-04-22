@@ -21,12 +21,10 @@ import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.basic.auth.AuthToken;
-import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.AgentStatus;
 import com.chatopera.cc.model.SystemConfig;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.model.UserRole;
-import com.chatopera.cc.persistence.repository.AgentStatusRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.persistence.repository.UserRoleRepository;
 import com.chatopera.cc.proxy.AgentProxy;
@@ -34,11 +32,12 @@ import com.chatopera.cc.proxy.AgentSessionProxy;
 import com.chatopera.cc.proxy.OnlineUserProxy;
 import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,59 +49,46 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author CSKefu
  * @version 1.0.1
  */
 @Controller
+@RequiredArgsConstructor
 public class LoginController extends Handler {
     private final static Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-    @Autowired
-    private UserRepository userRepository;
+    @NonNull
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRoleRepository userRoleRes;
+    @NonNull
+    private final UserRoleRepository userRoleRes;
 
-    @Autowired
-    private AuthToken authToken;
+    @NonNull
+    private final AuthToken authToken;
 
-    @Autowired
-    private AgentStatusRepository agentStatusRes;
+    @NonNull
+    private final AgentProxy agentProxy;
 
-    @Autowired
-    private Cache cache;
+    @NonNull
+    private final AgentSessionProxy agentSessionProxy;
 
-    @Autowired
-    private AgentProxy agentProxy;
+    @NonNull
+    private final UserProxy userProxy;
 
-    @Autowired
-    private AgentSessionProxy agentSessionProxy;
-
-    @Autowired
-    private UserProxy userProxy;
-
-    @Autowired
-    private ACDWorkMonitor acdWorkMonitor;
+    @NonNull
+    private final ACDWorkMonitor acdWorkMonitor;
 
     /**
      * 登录页面
-     *
-     * @param request
-     * @param response
-     * @param referer
-     * @param msg
-     * @return
-     * @throws NoSuchAlgorithmException
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     @Menu(type = "apps", subtype = "user", access = true)
-    public ModelAndView login(HttpServletRequest request, HttpServletResponse response, @RequestHeader(value = "referer", required = false) String referer, @Valid String msg) {
+    public ModelAndView login(HttpServletRequest request, @RequestHeader(value = "referer", required = false) String referer, @Valid String msg) {
         ModelAndView view = new ModelAndView("redirect:/");
         if (request.getSession(true).getAttribute(Constants.USER_SESSION_NAME) == null) {
             view = new ModelAndView("/login");
@@ -122,17 +108,15 @@ public class LoginController extends Handler {
                             try {
                                 flagid = MainUtils.decryption(cookie.getValue());
                                 if (StringUtils.isNotBlank(flagid)) {
-                                    User user = userRepository.findById(flagid);
-                                    if (user != null) {
-                                        view = this.processLogin(request, user, referer);
+                                    Optional<User> optional = userRepository.findById(flagid);
+                                    if (optional.isPresent()) {
+                                        view = this.processLogin(request, optional.get(), referer);
                                     }
                                 }
                             } catch (EncryptionOperationNotPossibleException e) {
                                 logger.error("[login] error:", e);
                                 view = request(super.createRequestPageTempletResponse("/public/clearcookie"));
                                 return view;
-                            } catch (NoSuchAlgorithmException e) {
-                                logger.error("[login] error:", e);
                             }
                         }
                     }
@@ -154,14 +138,6 @@ public class LoginController extends Handler {
 
     /**
      * 提交登录表单
-     *
-     * @param request
-     * @param response
-     * @param user
-     * @param referer
-     * @param sla
-     * @return
-     * @throws NoSuchAlgorithmException
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @Menu(type = "apps", subtype = "user", access = true)
@@ -170,7 +146,7 @@ public class LoginController extends Handler {
             final HttpServletResponse response,
             @Valid User user,
             @Valid String referer,
-            @Valid String sla) throws NoSuchAlgorithmException {
+            @Valid String sla) {
         ModelAndView view = new ModelAndView("redirect:/");
         if (request.getSession(true).getAttribute(Constants.USER_SESSION_NAME) == null) {
             if (user != null && user.getUsername() != null) {
@@ -197,12 +173,12 @@ public class LoginController extends Handler {
                     // 该登录用户是坐席，并且具有坐席对话的角色
                     if ((loginUser.isAgent() &&
                             loginUser.getRoleAuthMap().containsKey("A01") &&
-                            ((boolean) loginUser.getRoleAuthMap().get("A01") == true))
+                            ((boolean) loginUser.getRoleAuthMap().get("A01")))
                             || loginUser.isAdmin()) {
                         try {
-                            /****************************************
-                             * 登录成功，设置该坐席为就绪状态（默认）
-                             ****************************************/
+                            //****************************************
+                            //* 登录成功，设置该坐席为就绪状态（默认）
+                            //****************************************
                             // https://gitlab.chatopera.com/chatopera/cosinee.w4l/issues/306
                             final AgentStatus agentStatus = agentProxy.resolveAgentStatusByAgentnoAndOrgi(
                                     loginUser.getId(), orgi, loginUser.getSkills());
@@ -211,14 +187,14 @@ public class LoginController extends Handler {
 
                             // 工作状态记录
                             acdWorkMonitor.recordAgentStatus(agentStatus.getAgentno(),
-                                                                   agentStatus.getUsername(),
-                                                                   agentStatus.getAgentno(),
-                                                                   user.isAdmin(), // 0代表admin
-                                                                   agentStatus.getAgentno(),
-                                                                   MainContext.AgentStatusEnum.OFFLINE.toString(),
-                                                                   MainContext.AgentStatusEnum.READY.toString(),
-                                                                   MainContext.AgentWorkType.MEIDIACHAT.toString(),
-                                                                   orgi, null);
+                                    agentStatus.getUsername(),
+                                    agentStatus.getAgentno(),
+                                    user.isAdmin(), // 0代表admin
+                                    agentStatus.getAgentno(),
+                                    MainContext.AgentStatusEnum.OFFLINE.toString(),
+                                    MainContext.AgentStatusEnum.READY.toString(),
+                                    MainContext.AgentWorkType.MEIDIACHAT.toString(),
+                                    orgi, null);
 
                         } catch (Exception e) {
                             logger.error("[login] set agent status", e);
@@ -246,11 +222,6 @@ public class LoginController extends Handler {
 
     /**
      * 处理登录事件
-     *
-     * @param request
-     * @param loginUser
-     * @param referer
-     * @return
      */
     private ModelAndView processLogin(final HttpServletRequest request, final User loginUser, String referer) {
         ModelAndView view = new ModelAndView();
@@ -306,14 +277,10 @@ public class LoginController extends Handler {
      * 登出用户
      * code代表登出的原因
      *
-     * @param request
-     * @param response
-     * @param code     登出的代码
-     * @return
+     * @param code 登出的代码
      */
     @RequestMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "code", required = false) String code) throws UnsupportedEncodingException {
-        final User user = super.getUser(request);
+    public String logout(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "code", required = false) String code) {
         request.getSession().removeAttribute(Constants.USER_SESSION_NAME);
         request.getSession().invalidate();
         Cookie[] cookies = request.getCookies();
@@ -338,7 +305,7 @@ public class LoginController extends Handler {
 
     @RequestMapping(value = "/register")
     @Menu(type = "apps", subtype = "user", access = true)
-    public ModelAndView register(HttpServletRequest request, HttpServletResponse response, @Valid String msg) {
+    public ModelAndView register(HttpServletRequest request, @Valid String msg) {
         ModelAndView view = request(super.createRequestPageTempletResponse("redirect:/"));
         if (request.getSession(true).getAttribute(Constants.USER_SESSION_NAME) == null) {
             view = request(super.createRequestPageTempletResponse("/register"));
@@ -351,9 +318,8 @@ public class LoginController extends Handler {
 
     @RequestMapping("/addAdmin")
     @Menu(type = "apps", subtype = "user", access = true)
-    public ModelAndView addAdmin(HttpServletRequest request, HttpServletResponse response, @Valid User user) {
-        String msg = "";
-        msg = validUser(user);
+    public ModelAndView addAdmin(HttpServletRequest request, @Valid User user) {
+        String msg = validUser(user);
         if (StringUtils.isNotBlank(msg)) {
             return request(super.createRequestPageTempletResponse("redirect:/register.html?msg=" + msg));
         } else {

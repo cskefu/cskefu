@@ -11,17 +11,20 @@
 package mondrian.olap.fun;
 
 import mondrian.calc.*;
-import mondrian.calc.impl.*;
+import mondrian.calc.impl.DelegatingTupleList;
+import mondrian.calc.impl.UnaryTupleList;
 import mondrian.mdx.*;
 import mondrian.olap.*;
 import mondrian.olap.type.*;
 import mondrian.resource.MondrianResource;
-import mondrian.rolap.*;
-import mondrian.util.*;
-
+import mondrian.rolap.RolapHierarchy;
+import mondrian.rolap.RolapUtil;
+import mondrian.util.ConcatenableList;
+import mondrian.util.IdentifierParser;
+import mondrian.util.Pair;
 import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.collections.comparators.ComparatorChain;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -34,7 +37,7 @@ import java.util.*;
  */
 public class FunUtil extends Util {
     private static final Logger LOGGER =
-        Logger.getLogger(FunUtil.class);
+            org.apache.logging.log4j.LogManager.getLogger(FunUtil.class);
     private static final String SORT_TIMING_NAME = "Sort";
     private static final String SORT_EVAL_TIMING_NAME = "EvalForSort";
 
@@ -2697,7 +2700,7 @@ public class FunUtil extends Util {
         public final int TOO_SMALL = 8;
 
         private static final Logger LOGGER =
-            Logger.getLogger(Quicksorter.class);
+                org.apache.logging.log4j.LogManager.getLogger(Quicksorter.class);
         private final T[] vec;
         private final Comparator<T> comp;
         private final boolean traced;
@@ -2812,9 +2815,7 @@ public class FunUtil extends Util {
                 while (less(pivot, vec[right])) {
                     --right;
                 }
-                if (debug) {
-                    assert (left <= end) && (right >= start);
-                }
+                assert !debug || (left <= end) && (right >= start);
                 if (left < right) {     // found a misplaced pair
                     swap(left, right);
                     ++left; --right;
@@ -2919,7 +2920,7 @@ public class FunUtil extends Util {
     private static abstract class MemberComparator implements Comparator<Member>
     {
         private static final Logger LOGGER =
-            Logger.getLogger(MemberComparator.class);
+                org.apache.logging.log4j.LogManager.getLogger(MemberComparator.class);
         final Evaluator evaluator;
         final Calc exp;
 

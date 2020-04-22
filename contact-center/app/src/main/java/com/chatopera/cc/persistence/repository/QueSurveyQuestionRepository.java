@@ -23,16 +23,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface QueSurveyQuestionRepository extends JpaRepository<QueSurveyQuestion, String>{
+public interface QueSurveyQuestionRepository extends JpaRepository<QueSurveyQuestion, String> {
 
   Page<QueSurveyQuestion> findByProcessidAndOrgi(String processid, String orgi, Pageable paramPageable);
 
   List<QueSurveyQuestion> findByOrgi(String orgi);
-  
+
   QueSurveyQuestion findByOrgiAndId(String orgi, String id);
-  
-  QueSurveyQuestion findById(String id);
-  
+
+  // QueSurveyQuestion findById(String id);
+
   List<QueSurveyQuestion> findByOrgiAndProcessid(String orgi, String processid);
-  
+
 }

@@ -21,10 +21,6 @@ import com.chatopera.cc.acd.ACDVisitorDispatcher;
 import com.chatopera.cc.acd.basic.ACDComposeContext;
 import com.chatopera.cc.acd.basic.ACDMessageHelper;
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.basic.MainContext.CallType;
-import com.chatopera.cc.basic.MainContext.ChannelType;
-import com.chatopera.cc.basic.MainContext.MessageType;
-import com.chatopera.cc.basic.MainContext.ReceiverType;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.model.Contacts;
 import com.chatopera.cc.model.CousultInvite;
@@ -34,7 +30,6 @@ import com.chatopera.cc.proxy.OnlineUserProxy;
 import com.chatopera.cc.socketio.client.NettyClients;
 import com.chatopera.cc.socketio.message.AgentStatusMessage;
 import com.chatopera.cc.socketio.message.ChatMessage;
-import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.socketio.util.HumanUtils;
 import com.chatopera.cc.socketio.util.IMServiceUtils;
 import com.chatopera.cc.util.IP;
@@ -50,24 +45,42 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.util.Date;
 
+@SuppressWarnings("unused")
 public class IMEventHandler {
-    private final static Logger logger = LoggerFactory.getLogger(IMEventHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(IMEventHandler.class);
+    private static AgentUserProxy agentUserProxy;
+    private static AgentServiceRepository agentServiceRepository;
+    private static ACDVisitorDispatcher acdVisitorDispatcher;
     protected SocketIOServer server;
 
     public IMEventHandler(SocketIOServer server) {
         this.server = server;
     }
 
-    static private AgentUserProxy agentUserProxy;
-    static private AgentServiceRepository agentServiceRepository;
-    static private ACDVisitorDispatcher acdVisitorDispatcher;
+    private static AgentUserProxy getAgentUserProxy() {
+        if (agentUserProxy == null) {
+            agentUserProxy = MainContext.getContext().getBean(AgentUserProxy.class);
+        }
+        return agentUserProxy;
+    }
+
+    private static AgentServiceRepository getAgentServiceRepository() {
+        if (agentServiceRepository == null) {
+            agentServiceRepository = MainContext.getContext().getBean(AgentServiceRepository.class);
+        }
+        return agentServiceRepository;
+    }
+
+    private static ACDVisitorDispatcher getAcdVisitorDispatcher() {
+        if (acdVisitorDispatcher == null) {
+            acdVisitorDispatcher = MainContext.getContext().getBean(ACDVisitorDispatcher.class);
+        }
+        return acdVisitorDispatcher;
+    }
 
     /**
      * 接入访客并未访客寻找坐席服务人员
-     *
-     * @param client
      */
     @OnConnect
     public void onConnect(SocketIOClient client) {
@@ -114,12 +127,12 @@ public class IMEventHandler {
                 InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress();
                 String ip = MainUtils.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString());
 
-                /**
+                /*
                  * 加入到 缓存列表
                  */
                 NettyClients.getInstance().putIMEventClient(user, client);
 
-                /**
+                /*
                  * 更新坐席服务类型
                  */
                 IMServiceUtils.shiftOpsType(user, orgi, MainContext.OptType.HUMAN);
@@ -129,7 +142,7 @@ public class IMEventHandler {
                     ipdata = IPTools.getInstance().findGeography(ip);
                 }
 
-                /**
+                /*
                  * 用户进入到对话连接 ， 排队用户请求 , 如果返回失败，
                  * 表示当前坐席全忙，用户进入排队状态，当前提示信息 显示 当前排队的队列位置，
                  * 不可进行对话，用户发送的消息作为留言处理
@@ -175,13 +188,11 @@ public class IMEventHandler {
         logger.info("[onDisconnect] user {}, orgi {}", user, orgi);
         if (user != null) {
             try {
-                /**
+                /*
                  * 用户主动断开服务
                  */
-                MainContext.getCache().findOneAgentUserByUserIdAndOrgi(user, orgi).ifPresent(p -> {
-                    ACDServiceRouter.getAcdAgentService().finishAgentService(p
-                            , orgi);
-                });
+                MainContext.getCache().findOneAgentUserByUserIdAndOrgi(user, orgi)
+                        .ifPresent(p -> ACDServiceRouter.getAcdAgentService().finishAgentService(p, orgi));
             } catch (Exception e) {
                 logger.warn("[onDisconnect] error", e);
             }
@@ -228,7 +239,7 @@ public class IMEventHandler {
         if (data.getType() == null) {
             data.setType("message");
         }
-        /**
+        /*
          * 以下代码主要用于检查 访客端的字数限制
          */
         CousultInvite invite = OnlineUserProxy.consult(data.getAppid(), data.getOrgi());
@@ -242,32 +253,11 @@ public class IMEventHandler {
 //        else if (StringUtils.isNotBlank(data.getMessage()) && dataLength > 600) {
 //            data.setMessage(data.getMessage().substring(0, 600));
 //        }
-        /**
+        /*
          * 处理表情
          */
         data.setMessage(MainUtils.processEmoti(data.getMessage()));
         HumanUtils.processMessage(data, data.getUserid());
-    }
-
-    private static AgentUserProxy getAgentUserProxy() {
-        if (agentUserProxy == null) {
-            agentUserProxy = MainContext.getContext().getBean(AgentUserProxy.class);
-        }
-        return agentUserProxy;
-    }
-
-    private static AgentServiceRepository getAgentServiceRepository() {
-        if (agentServiceRepository == null) {
-            agentServiceRepository = MainContext.getContext().getBean(AgentServiceRepository.class);
-        }
-        return agentServiceRepository;
-    }
-
-    private static ACDVisitorDispatcher getAcdVisitorDispatcher() {
-        if (acdVisitorDispatcher == null) {
-            acdVisitorDispatcher = MainContext.getContext().getBean(ACDVisitorDispatcher.class);
-        }
-        return acdVisitorDispatcher;
     }
 
 }

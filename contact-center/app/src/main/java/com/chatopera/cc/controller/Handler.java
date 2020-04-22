@@ -31,19 +31,18 @@ import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.blob.JpaBlobHelper;
 import com.chatopera.cc.persistence.repository.StreamingFileRepository;
 import com.chatopera.cc.persistence.repository.TenantRepository;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.QueryStringQueryBuilder;
-import org.elasticsearch.index.query.QueryStringQueryBuilder.Operator;
-import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.index.query.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
@@ -55,32 +54,26 @@ import java.util.Map;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Controller
 @SessionAttributes
+@NoArgsConstructor
 public class Handler {
-    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
-
-    @Autowired
-    private TenantRepository tenantRes;
-
-    @Autowired
-    private JpaBlobHelper jpaBlobHelper;
-
-    @Autowired
-    private StreamingFileRepository streamingFileRes;
-
-    @Autowired
-    private Cache cache;
-
-    @Autowired
-    private AuthToken authToken;
-
     public final static int PAGE_SIZE_BG = 1;
     public final static int PAGE_SIZE_TW = 20;
-    public final static int PAGE_SIZE_FV = 50;
     public final static int PAGE_SIZE_HA = 100;
-
-    private long starttime = System.currentTimeMillis();
+    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
+    @Autowired
+    private TenantRepository tenantRes;
+    @Autowired
+    private JpaBlobHelper jpaBlobHelper;
+    @Autowired
+    private StreamingFileRepository streamingFileRes;
+    @Autowired
+    private Cache cache;
+    @Autowired
+    private AuthToken authToken;
+    private long startTime = System.currentTimeMillis();
 
     public User getUser(HttpServletRequest request) {
         User user = (User) request.getSession(true).getAttribute(Constants.USER_SESSION_NAME);
@@ -112,13 +105,8 @@ public class Handler {
 
     /**
      * 构建ElasticSearch基于部门查询的Filter
-     *
-     * @param request
-     * @param boolQueryBuilder
-     * @return
-     * @throws CSKefuException
      */
-    public boolean esOrganFilter(final HttpServletRequest request, final BoolQueryBuilder boolQueryBuilder) throws CSKefuException {
+    public boolean esOrganFilter(final HttpServletRequest request) throws CSKefuException {
         // 组合部门条件
         User u = getUser(request);
         if (u == null) {
@@ -126,7 +114,7 @@ public class Handler {
         } else if (u.isAdmin()) {
             // 管理员, 查看任何数据
             return true;
-        } else {
+            // } else {
             // 用户在部门中，通过部门过滤数据
 //            String[] values = u.getAffiliates().toArray(new String[u.getAffiliates().size()]);
 //            boolQueryBuilder.filter(termsQuery("organ", values));
@@ -137,8 +125,7 @@ public class Handler {
     }
 
     /**
-     * @param queryBuilder
-     * @param request
+     *
      */
     public BoolQueryBuilder search(BoolQueryBuilder queryBuilder, ModelMap map, HttpServletRequest request) {
         queryBuilder.must(termQuery("orgi", this.getOrgi(request)));
@@ -291,11 +278,6 @@ public class Handler {
      * 创建或从HTTP会话中查找到访客的User对象，该对象不在数据库中，属于临时会话。
      * 这个User很可能是打开一个WebIM访客聊天控件，随机生成用户名，之后和Contact关联
      * 这个用户可能关联一个OnlineUser，如果开始给TA分配坐席
-     *
-     * @param request
-     * @param userid
-     * @param nickname
-     * @return
      */
     public User getIMUser(HttpServletRequest request, String userid, String nickname) {
         User user = (User) request.getSession(true).getAttribute(Constants.IM_USER_SESSION_NAME);
@@ -365,9 +347,6 @@ public class Handler {
 
     /**
      * 创建系统监控的 模板页面
-     *
-     * @param page
-     * @return
      */
     public Viewport createAdminTempletResponse(String page) {
         return new Viewport("/admin/include/tpl", page);
@@ -375,9 +354,6 @@ public class Handler {
 
     /**
      * 创建系统监控的 模板页面
-     *
-     * @param page
-     * @return
      */
     public Viewport createAppsTempletResponse(String page) {
         return new Viewport("/apps/include/tpl", page);
@@ -385,9 +361,6 @@ public class Handler {
 
     /**
      * 创建系统监控的 模板页面
-     *
-     * @param page
-     * @return
      */
     public Viewport createEntIMTempletResponse(final String page) {
         return new Viewport("/apps/entim/include/tpl", page);
@@ -398,8 +371,7 @@ public class Handler {
     }
 
     /**
-     * @param data
-     * @return
+     *
      */
     public ModelAndView request(Viewport data) {
         return new ModelAndView(data.getTemplet() != null ? data.getTemplet() : data.getPage(), "data", data);
@@ -446,24 +418,12 @@ public class Handler {
     }
 
 
-    public int get50Ps(HttpServletRequest request) {
-        int pagesize = PAGE_SIZE_FV;
-        String ps = request.getParameter("ps");
-        if (StringUtils.isNotBlank(ps) && ps.matches("[\\d]*")) {
-            pagesize = Integer.parseInt(ps);
-        }
-        return pagesize;
-    }
-
     public String getOrgi(HttpServletRequest request) {
         return getUser(request).getOrgi();
     }
 
     /**
      * 机构id
-     *
-     * @param request
-     * @return
      */
     public String getOrgid(HttpServletRequest request) {
         User u = getUser(request);
@@ -471,14 +431,13 @@ public class Handler {
     }
 
     public Tenant getTenant(HttpServletRequest request) {
-        return tenantRes.findById(getOrgi(request));
+        String id = getOrgi(request);
+        return tenantRes.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Tenant %s not found", id)));
     }
 
     /**
      * 根据是否租户共享获取orgi
-     *
-     * @param request
-     * @return
      */
     public String getOrgiByTenantshare(HttpServletRequest request) {
         SystemConfig systemConfig = MainUtils.getSystemConfig();
@@ -491,8 +450,6 @@ public class Handler {
 
     /**
      * 判断是否租户共享
-     *
-     * @return
      */
     public boolean isTenantshare() {
         SystemConfig systemConfig = MainUtils.getSystemConfig();
@@ -501,8 +458,6 @@ public class Handler {
 
     /**
      * 判断是否多租户
-     *
-     * @return
      */
     public boolean isEnabletneant() {
         SystemConfig systemConfig = MainUtils.getSystemConfig();
@@ -511,28 +466,22 @@ public class Handler {
 
     /**
      * 判断是否多租户
-     *
-     * @return
      */
     public boolean isTenantconsole() {
         SystemConfig systemConfig = MainUtils.getSystemConfig();
         return systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantconsole();
     }
 
-    public long getStarttime() {
-        return starttime;
+    public long getStartTime() {
+        return startTime;
     }
 
-    public void setStarttime(long starttime) {
-        this.starttime = starttime;
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
     }
 
     /**
      * 使用Blob保存文件
-     *
-     * @param multipart
-     * @return id
-     * @throws IOException
      */
     public String saveImageFileWithMultipart(MultipartFile multipart) throws IOException {
         StreamingFile sf = new StreamingFile();

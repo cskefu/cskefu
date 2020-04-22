@@ -26,19 +26,18 @@ import org.springframework.data.repository.query.Param;
 import java.util.Date;
 import java.util.List;
 
-public interface ChatMessageRepository
-        extends JpaRepository<ChatMessage, String> {
-    List<ChatMessage> findByUsessionAndOrgi(String usession, String orgi);
+public interface ChatMessageRepository extends JpaRepository<ChatMessage, String> {
+    // List<ChatMessage> findByUsessionAndOrgi(String usession, String orgi);
 
-    ChatMessage findById(String id);
+    // ChatMessage findById(String id);
 
     Page<ChatMessage> findByUsessionAndOrgi(String usession, String orgi, Pageable page);
 
 //    public abstract Page<ChatMessage> findByUseridAndOrgi(String usession, String orgi, Pageable page);
 //
 
-    @Query(value = "select u from ChatMessage u where u.usession = ?1 and u.message like %?2%")
-    Page<ChatMessage> findByUsessionAndMessageLike(String usession, String message, Pageable page);
+    // @Query(value = "select u from ChatMessage u where u.usession = ?1 and u.message like %?2%")
+    // Page<ChatMessage> findByUsessionAndMessageLike(String usession, String message, Pageable page);
 //
 //
 //    @Query(value = "select u from ChatMessage u where u.usession = ?1 and  u.createtime > ?2 order by createtime")
@@ -62,17 +61,17 @@ public interface ChatMessageRepository
 
     int countByUsessionAndCreatetimeGreaterThanEqual(String usession, Date createtime);
 
-    Page<ChatMessage> findByUsessionAndCreatetimeGreaterThanEqual(String userid, String createtime, Pageable page);
+    // Page<ChatMessage> findByUsessionAndCreatetimeGreaterThanEqual(String userid, String createtime, Pageable page);
 
     Page<ChatMessage> findByUseridAndOrgi(String userid, String orgi, Pageable page);
 
-    List<ChatMessage> findByContextidAndOrgi(String contextid, String orgi);
+    // List<ChatMessage> findByContextidAndOrgi(String contextid, String orgi);
 
     Page<ChatMessage> findByContextidAndOrgi(String contextid, String orgi, Pageable page);
 
     Page<ChatMessage> findByContextidAndOrgiAndCreatetimeLessThan(String contextid, String orgi, Date createtime, Pageable page);
 
-    Page<ChatMessage> findByChatypeAndOrgi(String chatype, String orgi, Pageable page);
+    // Page<ChatMessage> findByChatypeAndOrgi(String chatype, String orgi, Pageable page);
 
     Page<ChatMessage> findByAgentserviceidAndOrgi(String agentserviceid, String orgi, Pageable page);
 

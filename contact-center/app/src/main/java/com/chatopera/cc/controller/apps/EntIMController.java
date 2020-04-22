@@ -31,22 +31,24 @@ import com.chatopera.cc.socketio.client.NettyClients;
 import com.chatopera.cc.socketio.message.ChatMessage;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.StreamingFileUtil;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
@@ -54,60 +56,51 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/ent/im")
+@RequiredArgsConstructor
 public class EntIMController extends Handler {
+    @NonNull
+    private final OrganRepository organRes;
+    @NonNull
+    private final UserRepository userRes;
+    @NonNull
+    private final IMGroupRepository imGroupRes;
+    @NonNull
+    private final IMGroupUserRepository imGroupUserRes;
+    @NonNull
+    private final ChatMessageRepository chatMessageRes;
+    @NonNull
+    private final RecentUserRepository recentUserRes;
+    @NonNull
+    private final StreamingFileRepository streamingFileRepository;
+    @NonNull
+    private final JpaBlobHelper jpaBlobHelper;
+    @NonNull
+    private final UserProxy userProxy;
+    @NonNull
+    private final AttachmentProxy attachmentProxy;
+    @NonNull
+    private final PeerSyncEntIM peerSyncEntIM;
+
     @Value("${web.upload-path}")
     private String path;
 
-    @Autowired
-    private OrganRepository organRes;
-
-    @Autowired
-    private UserRepository userRes;
-
-    @Autowired
-    private IMGroupRepository imGroupRes;
-
-    @Autowired
-    private IMGroupUserRepository imGroupUserRes;
-
-    @Autowired
-    private ChatMessageRepository chatMessageRes;
-
-    @Autowired
-    private RecentUserRepository recentUserRes;
-
-    @Autowired
-    private StreamingFileRepository streamingFileRepository;
-
-    @Autowired
-    private JpaBlobHelper jpaBlobHelper;
-
-    @Autowired
-    AttachmentProxy attachmentProxy;
-
-    @Autowired
-    PeerSyncEntIM peerSyncEntIM;
-
-    @Autowired
-    private UserProxy userProxy;
-
     private Map<String, Organ> getChatOrgans(User user, String orgi) {
         Map<String, Organ> organs = new HashMap<>();
-        user.getOrgans().values().stream().forEach(o -> {
+        user.getOrgans().values().forEach(o -> {
             if (!StringUtils.equals(o.getParent(), "0")) {
                 Organ parent = organRes.findByIdAndOrgi(o.getParent(), orgi);
                 organs.put(parent.getId(), parent);
             }
 
             List<Organ> brother = organRes.findByOrgiAndParent(orgi, o.getParent());
-            brother.stream().forEach(b -> {
+            brother.forEach(b -> {
                 if (!organs.containsKey(b.getId())) {
                     organs.put(b.getId(), b);
                 }
             });
         });
 
-        user.getAffiliates().stream().forEach(p -> {
+        user.getAffiliates().forEach(p -> {
             if (!organs.containsKey(p)) {
                 Organ organ = organRes.findByIdAndOrgi(p, orgi);
                 organs.put(p, organ);
@@ -118,8 +111,8 @@ public class EntIMController extends Handler {
     }
 
     @RequestMapping("/index")
-    @Menu(type = "im", subtype = "entim", access = false)
-    public ModelAndView index(HttpServletRequest request, HttpServletResponse response) {
+    @Menu(type = "im", subtype = "entim")
+    public ModelAndView index(HttpServletRequest request) {
         ModelAndView view = request(super.createEntIMTempletResponse("/apps/entim/index"));
 
         User logined = super.getUser(request);
@@ -143,16 +136,15 @@ public class EntIMController extends Handler {
     }
 
     @RequestMapping("/skin")
-    @Menu(type = "im", subtype = "entim", access = false)
-    public ModelAndView skin(HttpServletRequest request, HttpServletResponse response) {
-        ModelAndView view = request(super.createEntIMTempletResponse("/apps/entim/skin"));
+    @Menu(type = "im", subtype = "entim")
+    public ModelAndView skin() {
 
-        return view;
+        return request(super.createEntIMTempletResponse("/apps/entim/skin"));
     }
 
     @RequestMapping("/point")
-    @Menu(type = "im", subtype = "entim", access = false)
-    public ModelAndView point(HttpServletRequest request, HttpServletResponse response) {
+    @Menu(type = "im", subtype = "entim")
+    public ModelAndView point(HttpServletRequest request) {
         ModelAndView view = request(super.createEntIMTempletResponse("/apps/entim/point"));
         view.addObject(
                 "recentUserList",
@@ -162,15 +154,14 @@ public class EntIMController extends Handler {
     }
 
     @RequestMapping("/expand")
-    @Menu(type = "im", subtype = "entim", access = false)
-    public ModelAndView expand(HttpServletRequest request, HttpServletResponse response) {
-        ModelAndView view = request(super.createEntIMTempletResponse("/apps/entim/expand"));
-        return view;
+    @Menu(type = "im", subtype = "entim")
+    public ModelAndView expand() {
+        return request(super.createEntIMTempletResponse("/apps/entim/expand"));
     }
 
     @RequestMapping("/chat")
-    @Menu(type = "im", subtype = "entim", access = false)
-    public ModelAndView chat(HttpServletRequest request, HttpServletResponse response, @Valid String userid) {
+    @Menu(type = "im", subtype = "entim")
+    public ModelAndView chat(HttpServletRequest request, @Valid String userid) {
         ModelAndView view = request(super.createEntIMTempletResponse("/apps/entim/chat"));
         User entImUser = userRes.findByIdAndOrgi(userid, super.getOrgi(request));
 
@@ -185,7 +176,7 @@ public class EntIMController extends Handler {
 
         Page<ChatMessage> chatMessageList = chatMessageRes.findByContextidAndUseridAndOrgi(userid,
                 super.getUser(request).getId(), super.getOrgi(request),
-                new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
+                PageRequest.of(0, 20, Sort.Direction.DESC, "createtime")
         );
 
         view.addObject("chatMessageList", chatMessageList);
@@ -199,13 +190,13 @@ public class EntIMController extends Handler {
             u.setUser(new User(userid));
             return u;
         });
-        /**
+        /*
          * 我的最近联系人
          */
         recentUser.setNewmsg(0);
 
         recentUserRes.save(recentUser);
-        /**
+        /*
          * 对方的最近联系人
          */
         recentUserRes.findByCreaterAndUserAndOrgi(userid, super.getUser(request), super.getOrgi(request)).orElseGet(() -> {
@@ -221,16 +212,16 @@ public class EntIMController extends Handler {
     }
 
     @RequestMapping("/chat/more")
-    @Menu(type = "im", subtype = "entim", access = false)
+    @Menu(type = "im", subtype = "entim")
     public ModelAndView chatMore(
-            HttpServletRequest request, HttpServletResponse response, @Valid String userid,
+            HttpServletRequest request, @Valid String userid,
             @Valid Date createtime
     ) {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/entim/more"));
 
         Page<ChatMessage> chatMessageList = chatMessageRes.findByContextidAndUseridAndOrgiAndCreatetimeLessThan(userid,
                 super.getUser(request).getId(), super.getOrgi(request), createtime,
-                new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
+                PageRequest.of(0, 20, Sort.Direction.DESC, "createtime")
         );
         view.addObject("chatMessageList", chatMessageList);
 
@@ -238,45 +229,45 @@ public class EntIMController extends Handler {
     }
 
     @RequestMapping("/group")
-    @Menu(type = "im", subtype = "entim", access = false)
-    public ModelAndView groupMore(HttpServletRequest request, HttpServletResponse response, @Valid String id) {
+    @Menu(type = "im", subtype = "entim")
+    public ModelAndView groupMore(HttpServletRequest request, @Valid String id) {
         ModelAndView view = request(super.createEntIMTempletResponse("/apps/entim/group/index"));
-        IMGroup imGroup = imGroupRes.findById(id);
+        IMGroup imGroup = imGroupRes.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("IMGroup %s not found", id)));
         view.addObject("imGroup", imGroup);
         view.addObject("imGroupUserList", imGroupUserRes.findByImgroupAndOrgi(imGroup, super.getOrgi(request)));
         view.addObject("contextid", id);
         view.addObject("chatMessageList", chatMessageRes.findByContextidAndOrgi(id, super.getOrgi(request),
-                new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
+                PageRequest.of(0, 20, Sort.Direction.DESC, "createtime")
         ));
         return view;
     }
 
     @RequestMapping("/group/more")
-    @Menu(type = "im", subtype = "entim", access = false)
+    @Menu(type = "im", subtype = "entim")
     public ModelAndView group(
-            HttpServletRequest request, HttpServletResponse response, @Valid String id,
+            HttpServletRequest request, @Valid String id,
             @Valid Date createtime
     ) {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/entim/group/more"));
         view.addObject("chatMessageList", chatMessageRes.findByContextidAndOrgiAndCreatetimeLessThan(id,
-                super.getOrgi(request), createtime, new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
+                super.getOrgi(request), createtime, PageRequest.of(0, 20, Sort.Direction.DESC, "createtime")
         ));
         return view;
     }
 
     @RequestMapping("/group/user")
-    @Menu(type = "im", subtype = "entim", access = false)
-    public ModelAndView user(HttpServletRequest request, HttpServletResponse response, @Valid String id) {
+    @Menu(type = "im", subtype = "entim")
+    public ModelAndView user(HttpServletRequest request, @Valid String id) {
         ModelAndView view = request(super.createEntIMTempletResponse("/apps/entim/group/user"));
         User logined = super.getUser(request);
         HashSet<String> affiliates = logined.getAffiliates();
 
         List<User> users = userProxy.findByOrganInAndDatastatus(new ArrayList<>(affiliates), false);
-        users.stream().forEach(u -> userProxy.attachOrgansPropertiesForUser(u));
+        users.forEach(userProxy::attachOrgansPropertiesForUser);
         view.addObject("userList", users);
 
-        IMGroup imGroup = imGroupRes.findById(id);
-        List<Organ> organs = organRes.findAll(affiliates);
+        IMGroup imGroup = imGroupRes.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("IMGroup %s not found", id)));
+        List<Organ> organs = organRes.findAllById(affiliates);
 
         view.addObject("imGroup", imGroup);
         view.addObject("organList", organs);
@@ -286,9 +277,9 @@ public class EntIMController extends Handler {
     }
 
     @RequestMapping("/group/seluser")
-    @Menu(type = "im", subtype = "entim", access = false)
+    @Menu(type = "im", subtype = "entim")
     public void seluser(
-            HttpServletRequest request, HttpServletResponse response, @Valid String id,
+            HttpServletRequest request, @Valid String id,
             @Valid String user
     ) {
         IMGroup imGroup = new IMGroup();
@@ -307,9 +298,9 @@ public class EntIMController extends Handler {
     }
 
     @RequestMapping("/group/rmuser")
-    @Menu(type = "im", subtype = "entim", access = false)
+    @Menu(type = "im", subtype = "entim")
     public void rmluser(
-            HttpServletRequest request, HttpServletResponse response, @Valid String id,
+            HttpServletRequest request, @Valid String id,
             @Valid String user
     ) {
         IMGroup imGroup = new IMGroup();
@@ -323,24 +314,23 @@ public class EntIMController extends Handler {
     }
 
     @RequestMapping("/group/tipmsg")
-    @Menu(type = "im", subtype = "entim", access = false)
+    @Menu(type = "im", subtype = "entim")
     public ModelAndView tipmsg(
-            HttpServletRequest request, HttpServletResponse response, @Valid String id,
+            @Valid String id,
             @Valid String tipmsg
     ) {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/entim/group/tipmsg"));
-        IMGroup imGroup = imGroupRes.findById(id);
-        if (imGroup != null) {
+        imGroupRes.findById(id).ifPresent(imGroup -> {
             imGroup.setTipmessage(tipmsg);
             imGroupRes.save(imGroup);
-        }
-        view.addObject("imGroup", imGroup);
+            view.addObject("imGroup", imGroup);
+        });
         return view;
     }
 
     @RequestMapping("/group/save")
-    @Menu(type = "im", subtype = "entim", access = false)
-    public ModelAndView groupsave(HttpServletRequest request, HttpServletResponse response, @Valid IMGroup group) {
+    @Menu(type = "im", subtype = "entim")
+    public ModelAndView groupsave(HttpServletRequest request, @Valid IMGroup group) {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/entim/group/grouplist"));
         if (!StringUtils.isBlank(group.getName())
                 && imGroupRes.countByNameAndOrgi(group.getName(), super.getOrgi(request)) == 0) {
@@ -390,18 +380,19 @@ public class EntIMController extends Handler {
     public ModelAndView upload(
             ModelMap map, HttpServletRequest request,
             @RequestParam(value = "imgFile", required = false) MultipartFile multipart, @Valid String group,
-            @Valid String userid, @Valid String username, @Valid String orgi, @Valid String paste
+            @Valid String userid, @Valid String orgi, @Valid String paste
     ) throws IOException {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/im/upload"));
         final User logined = super.getUser(request);
 
-        UploadStatus upload = null;
-        String fileName = null;
+        UploadStatus upload;
+        String fileName;
 
-        if (multipart != null && multipart.getOriginalFilename().lastIndexOf(".") > 0
+        if (multipart != null && multipart.getOriginalFilename() != null && multipart.getOriginalFilename().lastIndexOf(".") > 0
                 && StringUtils.isNotBlank(userid)) {
             File uploadDir = new File(path, "upload");
             if (!uploadDir.exists()) {
+                //noinspection ResultOfMethodCallIgnored
                 uploadDir.mkdirs();
             }
 
@@ -411,7 +402,7 @@ public class EntIMController extends Handler {
             sf.setName(multipart.getOriginalFilename());
             sf.setMime(multipart.getContentType());
             if (multipart.getContentType() != null
-                    && multipart.getContentType().indexOf(Constants.ATTACHMENT_TYPE_IMAGE) >= 0) {
+                    && multipart.getContentType().contains(Constants.ATTACHMENT_TYPE_IMAGE)) {
                 String invalid = StreamingFileUtil.getInstance().validate(Constants.ATTACHMENT_TYPE_IMAGE, multipart.getOriginalFilename());
                 if (invalid == null) {
                     fileName = "upload/" + fileid + "_original";

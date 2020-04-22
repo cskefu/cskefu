@@ -22,12 +22,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PbxHostRepository extends JpaRepository<PbxHost, String> {
-	
-	PbxHost findByIdAndOrgi(String id, String orgi);
-	PbxHost findById(String id);
-	List<PbxHost> findByOrgi(String orgi);
-	List<PbxHost> findByHostnameOrIpaddr(String hostname, String ip);
-	
-	int countByHostnameAndOrgi(String hostname, String orgi) ;
-	
+
+    PbxHost findByIdAndOrgi(String id, String orgi);
+
+    // PbxHost findById(String id);
+
+    List<PbxHost> findByOrgi(String orgi);
+
+    List<PbxHost> findByHostnameOrIpaddr(String hostname, String ip);
+
+    int countByHostnameAndOrgi(String hostname, String orgi);
+
 }

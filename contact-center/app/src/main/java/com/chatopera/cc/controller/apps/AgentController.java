@@ -42,15 +42,18 @@
  import com.chatopera.cc.util.PinYinTools;
  import com.chatopera.cc.util.PropertiesEventUtil;
  import freemarker.template.TemplateException;
+ import lombok.RequiredArgsConstructor;
  import org.apache.commons.lang.StringUtils;
  import org.slf4j.Logger;
  import org.slf4j.LoggerFactory;
- import org.springframework.beans.factory.annotation.Autowired;
  import org.springframework.beans.factory.annotation.Value;
  import org.springframework.data.domain.Page;
  import org.springframework.data.domain.PageRequest;
  import org.springframework.data.domain.Sort;
  import org.springframework.data.domain.Sort.Direction;
+ import org.springframework.http.HttpStatus;
+ import org.springframework.lang.NonNull;
+ import org.springframework.lang.Nullable;
  import org.springframework.stereotype.Controller;
  import org.springframework.ui.ModelMap;
  import org.springframework.util.FileCopyUtils;
@@ -58,6 +61,7 @@
  import org.springframework.web.bind.annotation.RequestParam;
  import org.springframework.web.bind.annotation.ResponseBody;
  import org.springframework.web.multipart.MultipartFile;
+ import org.springframework.web.server.ResponseStatusException;
  import org.springframework.web.servlet.ModelAndView;
 
  import javax.servlet.http.HttpServletRequest;
@@ -70,125 +74,113 @@
  import java.util.*;
 
  @Controller
+ @RequiredArgsConstructor
  @RequestMapping("/agent")
  public class AgentController extends Handler {
 
      static final Logger logger = LoggerFactory.getLogger(AgentController.class);
 
-     @Autowired
-     private ACDWorkMonitor acdWorkMonitor;
+     @NonNull
+     private final ACDWorkMonitor acdWorkMonitor;
 
-     @Autowired
-     private ACDPolicyService acdPolicyService;
+     @NonNull
+     private final ACDPolicyService acdPolicyService;
 
-     @Autowired
-     private ACDAgentService acdAgentService;
+     @NonNull
+     private final ACDAgentService acdAgentService;
 
-     @Autowired
-     private ContactsRepository contactsRes;
+     @NonNull
+     private final ContactsRepository contactsRes;
 
-     @Autowired
-     private PropertiesEventRepository propertiesEventRes;
+     @NonNull
+     private final PropertiesEventRepository propertiesEventRes;
 
-     @Autowired
-     private AgentUserRepository agentUserRes;
+     @NonNull
+     private final AgentUserRepository agentUserRes;
 
-     @Autowired
-     private AgentStatusRepository agentStatusRes;
+     @NonNull
+     private final AgentStatusRepository agentStatusRes;
 
-     @Autowired
-     private AgentServiceRepository agentServiceRes;
+     @NonNull
+     private final AgentServiceRepository agentServiceRes;
 
-     @Autowired
-     private OnlineUserRepository onlineUserRes;
+     @NonNull
+     private final OnlineUserRepository onlineUserRes;
 
-     @Autowired
-     private WeiXinUserRepository weiXinUserRes;
+     @NonNull
+     private final WeiXinUserRepository weiXinUserRes;
 
-     @Autowired
-     private ServiceSummaryRepository serviceSummaryRes;
+     @NonNull
+     private final ServiceSummaryRepository serviceSummaryRes;
 
-     @Autowired
-     private ChatMessageRepository chatMessageRes;
+     @NonNull
+     private final ChatMessageRepository chatMessageRes;
 
-     @Autowired
-     private ChatMessageEsRepository chatMessageEsRes;
+     @NonNull
+     private final ChatMessageEsRepository chatMessageEsRes;
 
-     @Autowired
-     private AgentProxy agentProxy;
+     @NonNull
+     private final AgentProxy agentProxy;
 
-     @Autowired
-     private TagRepository tagRes;
+     @NonNull
+     private final TagRepository tagRes;
 
-     @Autowired
-     private TagRelationRepository tagRelationRes;
+     @NonNull
+     private final TagRelationRepository tagRelationRes;
 
-     @Autowired
-     private QuickReplyRepository quickReplyRes;
+     @NonNull
+     private final QuickReplyRepository quickReplyRes;
 
-     @Autowired
-     private QuickTypeRepository quickTypeRes;
+     @NonNull
+     private final QuickTypeRepository quickTypeRes;
 
-     @Autowired
-     private AgentUserTaskRepository agentUserTaskRes;
+     @NonNull
+     private final AgentUserTaskRepository agentUserTaskRes;
 
-     @Autowired
-     private UserRepository userRes;
+     @NonNull
+     private final UserRepository userRes;
 
-     @Autowired
-     private StatusEventRepository statusEventRes;
+     @NonNull
+     private final StatusEventRepository statusEventRes;
 
-     @Autowired
-     private AgentUserProxy agentUserProxy;
+     @NonNull
+     private final AgentUserProxy agentUserProxy;
 
-     @Autowired
-     private PbxHostRepository pbxHostRes;
+     @NonNull
+     private final PbxHostRepository pbxHostRes;
 
-     @Autowired
-     private AgentUserContactsRepository agentUserContactsRes;
+     @NonNull
+     private final AgentUserContactsRepository agentUserContactsRes;
 
-     @Autowired
-     private StreamingFileRepository streamingFileRes;
+     @NonNull
+     private final StreamingFileRepository streamingFileRes;
 
-     @Autowired
-     private JpaBlobHelper jpaBlobHelper;
+     @NonNull
+     private final JpaBlobHelper jpaBlobHelper;
 
-     @Autowired
-     private BlackEntityProxy blackEntityProxy;
+     @NonNull
+     private final BlackEntityProxy blackEntityProxy;
 
-     @Autowired
-     private Cache cache;
+     @NonNull
+     private final Cache cache;
 
-     @Autowired
-     private AgentServiceProxy agentServiceProxy;
-
+     @NonNull
+     private final AgentServiceProxy agentServiceProxy;
+     @NonNull
+     private final PeerSyncIM peerSyncIM;
+     @NonNull
+     private final BrokerPublisher brokerPublisher;
+     @NonNull
+     private final AgentStatusProxy agentStatusProxy;
+     @NonNull
+     private final UserProxy userProxy;
      @Value("${web.upload-path}")
      private String webUploadPath;
-
-     @Autowired
-     private PeerSyncIM peerSyncIM;
-
-     @Autowired
-     private BrokerPublisher brokerPublisher;
-
-     @Autowired
-     private AgentStatusProxy agentStatusProxy;
-
-     @Autowired
-     private UserProxy userProxy;
 
      /**
       * 坐席从联系人列表进入坐席工作台和该联系人聊天
       *
-      * @param map
-      * @param request
-      * @param response
-      * @param sort
-      * @param channels  可立即触达的渠道
-      * @param contactid
-      * @return
-      * @throws IOException
-      * @throws TemplateException
+      * @param channels 可立即触达的渠道
       */
      @RequestMapping("/proactive")
      @Menu(type = "apps", subtype = "agent")
@@ -233,14 +225,6 @@
 
      /**
       * 打开坐席工作台
-      *
-      * @param map
-      * @param request
-      * @param response
-      * @param sort
-      * @return
-      * @throws IOException
-      * @throws TemplateException
       */
      @RequestMapping("/index")
      @Menu(type = "apps", subtype = "agent")
@@ -263,7 +247,7 @@
          User logined = super.getUser(request);
          view.addObject(
                  "agentUserList", agentUserRes.findByAgentnoAndOrgi(logined.getId(), logined.getOrgi(),
-                         new Sort(Direction.DESC, "status")));
+                         Sort.by(Direction.DESC, "status")));
          List<AgentUser> agentUserList = agentUserRes.findByUseridAndOrgi(userid, logined.getOrgi());
          view.addObject(
                  "curagentuser", agentUserList != null && agentUserList.size() > 0 ? agentUserList.get(0) : null);
@@ -274,11 +258,9 @@
      @RequestMapping("/agentuserpage")
      @Menu(type = "apps", subtype = "agent")
      public ModelAndView agentuserpage(
-             ModelMap map,
              HttpServletRequest request,
              String id,
-             Integer page,
-             Integer current) throws IOException, TemplateException {
+             Integer current) {
          String mainagentuserconter = "/apps/agent/mainagentuserconter";
          ModelAndView view = request(super.createRequestPageTempletResponse(mainagentuserconter));
          AgentUser agentUser = agentUserRes.findByIdAndOrgi(id, super.getOrgi(request));
@@ -292,19 +274,13 @@
 
      @RequestMapping("/agentuserLabel")
      @Menu(type = "apps", subtype = "agent")
-     public ModelAndView agentuserLabel(
-             ModelMap map,
-             HttpServletRequest request,
-             String iconid) throws IOException, TemplateException {
+     public ModelAndView agentuserLabel(String iconid) {
          String mainagentuserconter = "/apps/agent/mainagentuserconter";
          ModelAndView view = request(super.createRequestPageTempletResponse(mainagentuserconter));
-         ChatMessage labelid = this.chatMessageRes.findById(iconid);
-         if (labelid != null) {
-             if (labelid.isIslabel() == false) {
-                 labelid.setIslabel(true);
-             } else {
-                 labelid.setIslabel(false);
-             }
+         Optional<ChatMessage> optional = this.chatMessageRes.findById(iconid);
+         if (optional.isPresent()) {
+             ChatMessage labelid = optional.get();
+             labelid.setIslabel(!labelid.isIslabel());
              chatMessageRes.save(labelid);
          }
          return view;
@@ -313,24 +289,23 @@
      @RequestMapping("/agentusersearch")
      @Menu(type = "apps", subtype = "agent")
      public ModelAndView agentusersearch(
-             ModelMap map,
              HttpServletRequest request,
              String id,
              String search,
              String condition
-     ) throws IOException, TemplateException {
+     ) {
          String mainagentuserconter = "/apps/agent/mainagentusersearch";
          ModelAndView view = request(super.createRequestPageTempletResponse(mainagentuserconter));
          AgentUser agentUser = agentUserRes.findByIdAndOrgi(id, super.getOrgi(request));
 
          if (agentUser != null) {
-             Page<ChatMessage> agentUserMessageList = null;
+             Page<ChatMessage> agentUserMessageList;
              if (condition.equals("label")) {
                  agentUserMessageList = this.chatMessageRes.findByislabel(
-                         agentUser.getUserid(), search, new PageRequest(0, 9999, Direction.DESC, "updatetime"));
+                         agentUser.getUserid(), search, PageRequest.of(0, 9999, Direction.DESC, "updatetime"));
              } else {
                  agentUserMessageList = this.chatMessageEsRes.findByUsessionAndMessageContaining(
-                         agentUser.getUserid(), search, new PageRequest(0, 9999, Direction.DESC, "updatetime"));
+                         agentUser.getUserid(), search, PageRequest.of(0, 9999, Direction.DESC, "updatetime"));
              }
              view.addObject("agentUserMessageList", agentUserMessageList);
          }
@@ -341,11 +316,10 @@
      @RequestMapping("/agentusersearchdetails")
      @Menu(type = "apps", subtype = "agent")
      public ModelAndView agentusersearchdetails(
-             ModelMap map,
              HttpServletRequest request,
              String id,
              String createtime,
-             String thisid) throws IOException, TemplateException, ParseException {
+             String thisid) throws ParseException {
          String mainagentuserconter = "/apps/agent/mainagentuserconter";
          ModelAndView view = request(super.createRequestPageTempletResponse(mainagentuserconter));
          AgentUser agentUser = agentUserRes.findByIdAndOrgi(id, super.getOrgi(request));
@@ -411,18 +385,20 @@
              view.addObject(
                      "agentUserMessageList",
                      this.chatMessageRes.findByUsessionAndOrgi(agentUser.getUserid(), orgi,
-                             new PageRequest(0, 20, Direction.DESC,
+                             PageRequest.of(0, 20, Direction.DESC,
                                      "updatetime")));
              AgentService agentService = null;
              if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-                 agentService = this.agentServiceRes.findOne(agentUser.getAgentserviceid());
-                 view.addObject("curAgentService", agentService);
-                 if (agentService != null) {
-                     /**
-                      * 获取关联数据
-                      */
+                 Optional<AgentService> optional = this.agentServiceRes.findById(agentUser.getAgentserviceid());
+                 /*
+                  * 获取关联数据
+                  */
+                 if (optional.isPresent()) {
+                     agentService = optional.get();
                      agentServiceProxy.processRelaData(logined.getId(), orgi, agentService, map);
                  }
+                 //noinspection OptionalGetWithoutIsPresent
+                 view.addObject("curAgentService", optional.get());
              }
              if (MainContext.ChannelType.WEIXIN.toString().equals(agentUser.getChannel())) {
                  List<WeiXinUser> weiXinUserList = weiXinUserRes.findByOpenidAndOrgi(agentUser.getUserid(), orgi);
@@ -431,39 +407,35 @@
                      view.addObject("weiXinUser", weiXinUser);
                  }
              } else if (MainContext.ChannelType.WEBIM.toString().equals(agentUser.getChannel())) {
-                 OnlineUser onlineUser = onlineUserRes.findOne(agentUser.getUserid());
-                 if (onlineUser != null) {
-                     if (onlineUser.getLogintime() != null) {
-                         if (MainContext.OnlineUserStatusEnum.OFFLINE.toString().equals(onlineUser.getStatus())) {
-                             onlineUser.setBetweentime(
-                                     (int) (onlineUser.getUpdatetime().getTime() - onlineUser.getLogintime().getTime()));
-                         } else {
-                             onlineUser.setBetweentime(
-                                     (int) (System.currentTimeMillis() - onlineUser.getLogintime().getTime()));
-                         }
-                     }
-                     view.addObject("onlineUser", onlineUser);
-                 }
+                 onlineUserRes.findById(agentUser.getUserid())
+                         .ifPresent(onlineUser -> {
+                             if (onlineUser.getLogintime() != null) {
+                                 if (MainContext.OnlineUserStatusEnum.OFFLINE.toString().equals(onlineUser.getStatus())) {
+                                     onlineUser.setBetweentime(
+                                             (int) (onlineUser.getUpdatetime().getTime() - onlineUser.getLogintime().getTime()));
+                                 } else {
+                                     onlineUser.setBetweentime(
+                                             (int) (System.currentTimeMillis() - onlineUser.getLogintime().getTime()));
+                                 }
+                             }
+                             view.addObject("onlineUser", onlineUser);
+                         });
              } else if (MainContext.ChannelType.PHONE.toString().equals(agentUser.getChannel())) {
                  if (agentService != null && StringUtils.isNotBlank(agentService.getOwner())) {
-                     StatusEvent statusEvent = this.statusEventRes.findById(agentService.getOwner());
-                     if (statusEvent != null) {
-                         if (StringUtils.isNotBlank(statusEvent.getHostid())) {
-                             PbxHost pbxHost = pbxHostRes.findById(statusEvent.getHostid());
-                             view.addObject("pbxHost", pbxHost);
-                         }
-                         view.addObject("statusEvent", statusEvent);
-                     }
+                     this.statusEventRes.findById(agentService.getOwner())
+                             .ifPresent(statusEvent -> {
+                                 if (StringUtils.isNotBlank(statusEvent.getHostid())) {
+                                     pbxHostRes.findById(statusEvent.getHostid())
+                                             .ifPresent(pbxHost -> view.addObject("pbxHost", pbxHost));
+                                 }
+                                 view.addObject("statusEvent", statusEvent);
+                             });
                  }
              }
 
 
-             view.addObject("serviceCount", Integer
-                     .valueOf(this.agentServiceRes
-                             .countByUseridAndOrgiAndStatus(agentUser
-                                             .getUserid(), orgi,
-                                     MainContext.AgentUserStatusEnum.END
-                                             .toString())));
+             view.addObject("serviceCount", this.agentServiceRes
+                     .countByUseridAndOrgiAndStatus(agentUser.getUserid(), orgi, MainContext.AgentUserStatusEnum.END.toString()));
              view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid()));
          }
 
@@ -521,6 +493,7 @@
          if (MainContext.hasModule(Constants.CSKEFU_MODULE_WORKORDERS) && StringUtils.isNotBlank(contactsid)) {
              DataExchangeInterface dataExchange = (DataExchangeInterface) MainContext.getContext().getBean(
                      "workorders");
+             //noinspection ConstantConditions
              if (dataExchange != null) {
                  map.addAttribute(
                          "workOrdersList",
@@ -534,9 +507,6 @@
 
      /**
       * 设置为就绪，置闲
-      *
-      * @param request
-      * @return
       */
      @RequestMapping(value = "/ready")
      @Menu(type = "apps", subtype = "agent")
@@ -567,9 +537,6 @@
      /**
       * 将一个已经就绪的坐席设置为未就绪的状态
       * 这个接口并不会重新分配坐席的现在的服务中的访客给其它坐席
-      *
-      * @param request
-      * @return
       */
      @RequestMapping(value = "/notready")
      @Menu(type = "apps", subtype = "agent")
@@ -604,9 +571,6 @@
 
      /**
       * 设置状态：就绪，置忙
-      *
-      * @param request
-      * @return
       */
      @RequestMapping(value = "/busy")
      @Menu(type = "apps", subtype = "agent")
@@ -639,9 +603,6 @@
 
      /**
       * 设置状态：就绪，置闲
-      *
-      * @param request
-      * @return
       */
      @RequestMapping(value = "/notbusy")
      @Menu(type = "apps", subtype = "agent")
@@ -682,13 +643,13 @@
      }
 
      @RequestMapping(value = "/clean")
-     @Menu(type = "apps", subtype = "clean", access = false)
+     @Menu(type = "apps", subtype = "clean")
      public ModelAndView clean(HttpServletRequest request) throws Exception {
          final String orgi = super.getOrgi(request);
          List<AgentUser> agentUserList = agentUserRes.findByAgentnoAndStatusAndOrgi(
                  super.getUser(request).getId(), MainContext.AgentUserStatusEnum.END.toString(),
                  super.getOrgi(request));
-         List<AgentService> agentServiceList = new ArrayList<AgentService>();
+         List<AgentService> agentServiceList = new ArrayList<>();
          for (AgentUser agentUser : agentUserList) {
              if (agentUser != null && super.getUser(request).getId().equals(agentUser.getAgentno())) {
                  acdAgentService.finishAgentUser(agentUser, orgi);
@@ -699,7 +660,7 @@
                  }
              }
          }
-         agentServiceRes.save(agentServiceList);
+         agentServiceRes.saveAll(agentServiceList);
          return request(super
                  .createRequestPageTempletResponse("redirect:/agent/index.html"));
      }
@@ -708,11 +669,6 @@
      /**
       * 结束对话
       * 如果当前对话属于登录用户或登录用户为超级用户，则可以结束这个对话
-      *
-      * @param request
-      * @param id
-      * @return
-      * @throws Exception
       */
      @RequestMapping({"/end"})
      @Menu(type = "apps", subtype = "agent")
@@ -756,8 +712,7 @@
 
      @RequestMapping({"/blacklist/add"})
      @Menu(type = "apps", subtype = "blacklist")
-     public ModelAndView blacklistadd(ModelMap map, HttpServletRequest request, @Valid String agentuserid, @Valid String agentserviceid, @Valid String userid)
-             throws Exception {
+     public ModelAndView blacklistadd(ModelMap map, HttpServletRequest request, @Valid String agentuserid, @Valid String agentserviceid, @Valid String userid) {
          map.addAttribute("agentuserid", agentuserid);
          map.addAttribute("agentserviceid", agentserviceid);
          map.addAttribute("userid", userid);
@@ -781,7 +736,7 @@
          if (StringUtils.isBlank(userid)) {
              throw new CSKefuException("Invalid userid");
          }
-         /**
+         /*
           * 添加黑名单
           * 一定时间后触发函数
           */
@@ -793,7 +748,7 @@
          ModelAndView view = end(request, agentuserid);
 
          // 更新或创建黑名单
-         blackEntityProxy.updateOrCreateBlackEntity(blackEntity, logined, userid, orgi, agentserviceid, agentuserid);
+         blackEntityProxy.updateOrCreateBlackEntity(blackEntity, logined, userid, orgi, agentserviceid);
 
          // 创建定时任务 取消拉黑
          brokerPublisher.send(
@@ -804,7 +759,7 @@
 
      @RequestMapping("/tagrelation")
      @Menu(type = "apps", subtype = "tagrelation")
-     public ModelAndView tagrelation(ModelMap map, HttpServletRequest request, @Valid String userid, @Valid String tagid, @Valid String dataid) {
+     public ModelAndView tagrelation(@Valid String userid, @Valid String tagid, @Valid String dataid) {
          TagRelation tagRelation = tagRelationRes.findByUseridAndTagid(userid, tagid);
          if (tagRelation == null) {
              tagRelation = new TagRelation();
@@ -821,16 +776,10 @@
      /**
       * 坐席聊天时发送图片和文件
       *
-      * @param map
-      * @param request
-      * @param multipart
-      * @param id
-      * @param paste     是否是粘贴到chatbox的图片事件，此时发送者还没有执行发送
-      * @return
-      * @throws IOException
+      * @param paste 是否是粘贴到chatbox的图片事件，此时发送者还没有执行发送
       */
      @RequestMapping("/image/upload")
-     @Menu(type = "im", subtype = "image", access = false)
+     @Menu(type = "im", subtype = "image")
      public ModelAndView upload(
              ModelMap map,
              HttpServletRequest request,
@@ -844,7 +793,8 @@
          UploadStatus notify;
          final AgentUser agentUser = agentUserRes.findByIdAndOrgi(id, orgi);
 
-         if (multipart != null && multipart.getOriginalFilename().lastIndexOf(".") > 0) {
+         if (multipart != null && multipart.getOriginalFilename() != null &&
+                 multipart.getOriginalFilename().lastIndexOf(".") > 0) {
              try {
                  StreamingFile sf = agentProxy.saveFileIntoMySQLBlob(logined, multipart);
                  // 发送通知
@@ -864,22 +814,18 @@
 
      @RequestMapping("/message/image")
      @Menu(type = "resouce", subtype = "image", access = true)
-     public ModelAndView messageimage(HttpServletResponse response, ModelMap map, @Valid String id, @Valid String t) throws IOException {
-         ChatMessage message = chatMessageRes.findById(id);
+     public ModelAndView messageimage(ModelMap map, @Valid String id) {
+         ChatMessage message = chatMessageRes.findById(id)
+                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("ChatMessage %s not found", id)));
          map.addAttribute("chatMessage", message);
          map.addAttribute("agentUser", cache.findOneAgentUserByUserIdAndOrgi(message.getUserid(), message.getOrgi()));
-    	/*if(StringUtils.isNotBlank(t)){
-    		map.addAttribute("t", t) ;
-    	}*/
          map.addAttribute("t", true);
          return request(super.createRequestPageTempletResponse("/apps/agent/media/messageimage"));
      }
 
      @RequestMapping("/message/image/upload")
-     @Menu(type = "im", subtype = "image", access = false)
+     @Menu(type = "im", subtype = "image")
      public ModelAndView messageimage(
-             ModelMap map,
-             HttpServletRequest request,
              @RequestParam(value = "image", required = false) MultipartFile image,
              @Valid String id,
              @Valid String userid,
@@ -890,11 +836,13 @@
              try {
                  // 创建临时图片文件
                  if (!tempFile.getParentFile().exists()) {
+                     //noinspection ResultOfMethodCallIgnored
                      tempFile.getParentFile().mkdirs();
                  }
                  // 写入临时文件
                  FileCopyUtils.copy(image.getBytes(), tempFile);
-                 ChatMessage chatMessage = chatMessageRes.findById(id);
+                 ChatMessage chatMessage = chatMessageRes.findById(id)
+                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("ChatMessage %s not found", id)));
                  chatMessage.setCooperation(true);
                  chatMessageRes.save(chatMessage);
 
@@ -904,8 +852,9 @@
                  MainUtils.scaleImage(imageFile, tempFile, 0.1F);
 
                  // 保存到数据库
-                 StreamingFile sf = streamingFileRes.findOne(fileid);
-                 if (sf != null) {
+                 Optional<StreamingFile> optional = streamingFileRes.findById(fileid);
+                 if (optional.isPresent()) {
+                     StreamingFile sf = optional.get();
                      sf.setCooperation(jpaBlobHelper.createBlobWithFile(imageFile));
                      streamingFileRes.save(sf);
                  }
@@ -933,6 +882,7 @@
                  });
              } finally {
                  if (tempFile.exists()) {
+                     //noinspection ResultOfMethodCallIgnored
                      tempFile.delete();
                  }
              }
@@ -944,13 +894,10 @@
      /**
       * 坐席会话关联联系人
       *
-      * @param map
-      * @param request
       * @param contactsid     联系人ID
       * @param userid         访客ID
       * @param agentserviceid 坐席服务ID
       * @param agentuserid    坐席ID
-      * @return
       */
      @RequestMapping(value = "/contacts")
      @Menu(type = "apps", subtype = "contacts")
@@ -960,7 +907,7 @@
              @Valid String contactsid,
              @Valid String userid,
              @Valid String agentserviceid,
-             @Valid String agentuserid) throws CSKefuException {
+             @Valid String agentuserid) {
          logger.info(
                  "[contacts] contactsid {}, userid {}, agentserviceid {}, agentuserid {}", contactsid, userid,
                  agentserviceid, agentuserid);
@@ -970,15 +917,14 @@
 
          if (StringUtils.isNotBlank(userid) && StringUtils.isNotBlank(contactsid)) {
 
-             /**
+             /*
               * 获得联系人
               */
-             Contacts contacts = contactsRes.findOne(contactsid);
-             if (contacts != null) {
-                 map.addAttribute("contacts", contacts);
-             }
+             Contacts contacts = contactsRes.findById(contactsid)
+                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Contacts %s not found", contactsid)));
+             map.addAttribute("contacts", contacts);
 
-             /**
+             /*
               * 在关联联系人后，更新AgentUser的显示的名字
               */
              AgentUser agentUser = agentUserRes.findByIdAndOrgi(agentuserid, orgi);
@@ -988,38 +934,38 @@
                  agentUserRes.save(agentUser);
              }
 
-             /**
+             /*
               * 更新OnlineUser
               */
-             OnlineUser onlineUser = onlineUserRes.findOneByUseridAndOrgi(userid, agentUser.getOrgi());
+             OnlineUser onlineUser = onlineUserRes.findOneByUseridAndOrgi(userid, orgi);
              onlineUser.setContactsid(contactsid);
              onlineUser.setUsername(contacts.getName());
              onlineUser.setUpdateuser(logined.getUname());
              onlineUserRes.save(onlineUser);
 
-             AgentService agentService = agentServiceRes.findOne(agentserviceid);
-             if (agentService != null) {
-                 agentService.setContactsid(contactsid);
-                 agentService.setUsername(contacts.getName());
-                 agentServiceRes.save(agentService);
+             agentServiceRes.findById(agentserviceid)
+                     .ifPresent(agentService -> {
+                         agentService.setContactsid(contactsid);
+                         agentService.setUsername(contacts.getName());
+                         agentServiceRes.save(agentService);
 
-                 AgentUserContacts agentUserContacts = agentUserContactsRes.findOneByUseridAndOrgi(
-                         userid, orgi).orElseGet(() -> {
-                     AgentUserContacts p = new AgentUserContacts();
+                         AgentUserContacts agentUserContacts = agentUserContactsRes.findOneByUseridAndOrgi(
+                                 userid, orgi).orElseGet(() -> {
+                             AgentUserContacts p = new AgentUserContacts();
 
-                     p.setUserid(userid);
-                     p.setCreater(super.getUser(request).getId());
-                     p.setOrgi(super.getOrgi(request));
-                     p.setCreatetime(new Date());
-                     return p;
-                 });
+                             p.setUserid(userid);
+                             p.setCreater(super.getUser(request).getId());
+                             p.setOrgi(super.getOrgi(request));
+                             p.setCreatetime(new Date());
+                             return p;
+                         });
 
-                 agentUserContacts.setContactsid(contactsid);
-                 agentUserContacts.setAppid(agentService.getAppid());
-                 agentUserContacts.setChannel(agentService.getChannel());
+                         agentUserContacts.setContactsid(contactsid);
+                         agentUserContacts.setAppid(agentService.getAppid());
+                         agentUserContacts.setChannel(agentService.getChannel());
 
-                 agentUserContactsRes.save(agentUserContacts);
-             }
+                         agentUserContactsRes.save(agentUserContacts);
+                     });
          }
          return request(super.createRequestPageTempletResponse("/apps/agent/contacts"));
      }
@@ -1027,16 +973,11 @@
 
      @RequestMapping(value = "/clean/associated")
      @Menu(type = "apps", subtype = "cleanassociated")
-     public ModelAndView cleanAssociated(ModelMap map, HttpServletRequest request, final @RequestParam String currentAgentUserContactsId) {
-         String contactsid = null;
-         final String orgi = super.getOrgi(request);
+     public ModelAndView cleanAssociated(final @RequestParam String currentAgentUserContactsId) {
          if (StringUtils.isNotEmpty(currentAgentUserContactsId)) {
-             AgentUserContacts agentUserContacts = agentUserContactsRes.getOne(currentAgentUserContactsId);
-             if (agentUserContacts != null) {
-                 agentUserContactsRes.delete(agentUserContacts);
-             }
+             agentUserContactsRes.findById(currentAgentUserContactsId)
+                     .ifPresent(agentUserContactsRes::delete);
          }
-
          return request(super.createRequestPageTempletResponse("/apps/agent/contacts"));
      }
 
@@ -1096,7 +1037,6 @@
      @RequestMapping(value = "/summary/save")
      @Menu(type = "apps", subtype = "summarysave")
      public ModelAndView summarysave(
-             ModelMap map,
              HttpServletRequest request,
              @Valid AgentServiceSummary summary,
              @Valid String contactsid,
@@ -1129,13 +1069,6 @@
 
      /**
       * 坐席转接窗口
-      *
-      * @param map
-      * @param request
-      * @param userid
-      * @param agentserviceid
-      * @param agentuserid
-      * @return
       */
      @RequestMapping(value = "/transfer")
      @Menu(type = "apps", subtype = "transfer")
@@ -1153,7 +1086,7 @@
              final List<Organ> skillGroups = OnlineUserProxy.organ(orgi, true);
 
              // DEBUG
-             StringBuffer sb = new StringBuffer();
+             StringBuilder sb = new StringBuilder();
              for (final Organ organ : skillGroups) {
                  sb.append(organ.getId());
                  sb.append(":");
@@ -1165,7 +1098,7 @@
 
              // 选择当前用户的默认技能组
              Set<String> organs = logined.getOrgans().keySet();
-             String currentOrgan = organs.size() > 0 ? (new ArrayList<String>(organs)).get(0) : null;
+             String currentOrgan = organs.size() > 0 ? (new ArrayList<>(organs)).get(0) : null;
 
              if (StringUtils.isBlank(currentOrgan)) {
                  if (!skillGroups.isEmpty()) {
@@ -1189,7 +1122,7 @@
 
              logger.info("[transfer] get all userids except mine, {}", StringUtils.join(userids, "\t"));
 
-             final List<User> userList = userRes.findAll(userids);
+             final List<User> userList = userRes.findAllById(userids);
              for (final User o : userList) {
                  o.setAgentStatus(agentStatusMap.get(o.getId()));
                  // find user's skills
@@ -1210,11 +1143,6 @@
 
      /**
       * 查找一个组织机构中的在线坐席
-      *
-      * @param map
-      * @param request
-      * @param organ
-      * @return
       */
      @RequestMapping(value = "/transfer/agent")
      @Menu(type = "apps", subtype = "transferagent")
@@ -1225,7 +1153,7 @@
          final User logined = super.getUser(request);
          final String orgi = super.getOrgi(request);
          if (StringUtils.isNotBlank(organ)) {
-             List<String> usersids = new ArrayList<String>();
+             List<String> usersids = new ArrayList<>();
              final List<AgentStatus> agentStatusList = cache.getAgentStatusBySkillAndOrgi(organ, orgi);
              if (agentStatusList.size() > 0) {
                  for (AgentStatus agentStatus : agentStatusList) {
@@ -1234,7 +1162,7 @@
                      }
                  }
              }
-             List<User> userList = userRes.findAll(usersids);
+             List<User> userList = userRes.findAllById(usersids);
              for (User user : userList) {
                  userProxy.attachOrgansPropertiesForUser(user);
                  for (final AgentStatus as : agentStatusList) {
@@ -1287,7 +1215,7 @@
 
      @RequestMapping("/quickreply/save")
      @Menu(type = "setting", subtype = "quickreply", admin = true)
-     public ModelAndView quickreplysave(ModelMap map, HttpServletRequest request, @Valid QuickReply quickReply) {
+     public ModelAndView quickreplysave(HttpServletRequest request, @Valid QuickReply quickReply) {
          if (StringUtils.isNotBlank(quickReply.getTitle()) && StringUtils.isNotBlank(quickReply.getContent())) {
              quickReply.setOrgi(super.getOrgi(request));
              quickReply.setCreater(super.getUser(request).getId());
@@ -1300,19 +1228,31 @@
 
      @RequestMapping("/quickreply/delete")
      @Menu(type = "setting", subtype = "quickreply", admin = true)
-     public ModelAndView quickreplydelete(ModelMap map, HttpServletRequest request, @Valid String id) {
-         QuickReply quickReply = quickReplyRes.findOne(id);
-         if (quickReply != null) {
-             quickReplyRes.delete(quickReply);
-         }
+     public ModelAndView quickreplydelete(@Valid String id) {
+         QuickReply quickReply = requireQuickReply(id);
+         quickReplyRes.delete(quickReply);
          return request(super.createRequestPageTempletResponse(
                  "redirect:/agent/quicklist.html?typeid=" + quickReply.getCate()));
+     }
+
+     @NonNull
+     private QuickReply requireQuickReply(@Valid String id) {
+         return quickReplyRes.findById(id)
+                 .orElseThrow(() -> {
+                     String reason = String.format("Quick reply %s not found", id);
+                     return new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
+                 });
+     }
+
+     @Nullable
+     private QuickReply optionalQuickReply(@Valid String id) {
+         return quickReplyRes.findById(id).orElse(null);
      }
 
      @RequestMapping("/quickreply/edit")
      @Menu(type = "setting", subtype = "quickreply", admin = true)
      public ModelAndView quickreplyedit(ModelMap map, HttpServletRequest request, @Valid String id) {
-         QuickReply quickReply = quickReplyRes.findOne(id);
+         QuickReply quickReply = optionalQuickReply(id);
          map.put("quickReply", quickReply);
          if (quickReply != null) {
              map.put("quickType", quickTypeRes.findByIdAndOrgi(quickReply.getCate(), super.getOrgi(request)));
@@ -1326,9 +1266,9 @@
 
      @RequestMapping("/quickreply/update")
      @Menu(type = "setting", subtype = "quickreply", admin = true)
-     public ModelAndView quickreplyupdate(ModelMap map, HttpServletRequest request, @Valid QuickReply quickReply) {
+     public ModelAndView quickreplyupdate(HttpServletRequest request, @Valid QuickReply quickReply) {
          if (StringUtils.isNotBlank(quickReply.getId())) {
-             QuickReply temp = quickReplyRes.findOne(quickReply.getId());
+             QuickReply temp = optionalQuickReply(quickReply.getId());
              quickReply.setOrgi(super.getOrgi(request));
              quickReply.setCreater(super.getUser(request).getId());
              if (temp != null) {
@@ -1400,15 +1340,15 @@
 
      @RequestMapping({"/quickreply/deletetype"})
      @Menu(type = "apps", subtype = "kbs")
-     public ModelAndView deletetype(ModelMap map, HttpServletRequest request, @Valid String id) {
+     public ModelAndView deletetype(HttpServletRequest request, @Valid String id) {
          QuickType tempQuickType = quickTypeRes.findByIdAndOrgi(id, super.getOrgi(request));
          if (tempQuickType != null) {
              quickTypeRes.delete(tempQuickType);
 
              Page<QuickReply> quickReplyList = quickReplyRes.getByOrgiAndCate(
-                     super.getOrgi(request), id, null, new PageRequest(0, 10000));
+                     super.getOrgi(request), id, null, PageRequest.of(0, 10000));
 
-             quickReplyRes.delete(quickReplyList.getContent());
+             quickReplyRes.deleteAll(quickReplyList.getContent());
          }
          return request(super.createRequestPageTempletResponse(
                  "redirect:/agent/quicklist.html" + (tempQuickType != null ? "?typeid=" + tempQuickType.getParentid() : "")));
@@ -1416,8 +1356,8 @@
 
      @RequestMapping({"/quickreply/content"})
      @Menu(type = "apps", subtype = "quickreply")
-     public ModelAndView quickreplycontent(ModelMap map, HttpServletRequest request, @Valid String id) {
-         QuickReply quickReply = quickReplyRes.findOne(id);
+     public ModelAndView quickreplycontent(ModelMap map, @Valid String id) {
+         QuickReply quickReply = optionalQuickReply(id);
          if (quickReply != null) {
              map.addAttribute("quickReply", quickReply);
          }
@@ -1426,7 +1366,7 @@
 
      @RequestMapping("/calloutcontact/add")
      @Menu(type = "apps", subtype = "calloutcontact", admin = true)
-     public ModelAndView add(ModelMap map, HttpServletRequest request, @Valid String ckind) {
+     public ModelAndView add(ModelMap map, @Valid String ckind) {
          map.addAttribute("ckind", ckind);
          return request(super.createRequestPageTempletResponse("/apps/agent/calloutcontact/add"));
      }
@@ -1434,15 +1374,12 @@
      @RequestMapping(value = "/calloutcontact/save")
      @Menu(type = "apps", subtype = "calloutcontact")
      public ModelAndView calloutcontactsave(
-             ModelMap map,
              HttpServletRequest request,
-             @RequestParam(value = "agentuser", required = true) String agentuser,
+             @RequestParam(value = "agentuser") String agentuser,
              @Valid Contacts contacts) throws CSKefuException {
          logger.info("[agent ctrl] calloutcontactsave agentuser [{}]", agentuser);
-         AgentUser au = agentUserRes.findOne(agentuser);
-         if (au == null) {
-             throw new CSKefuException("不存在该服务记录");
-         }
+         AgentUser au = agentUserRes.findById(agentuser)
+                 .orElseThrow(() -> new CSKefuException("不存在该服务记录"));
 
          User logined = super.getUser(request);
          contacts.setId(MainUtils.getUUID());
@@ -1471,35 +1408,34 @@
      @RequestMapping("/calloutcontact/update")
      @Menu(type = "apps", subtype = "calloutcontact")
      public ModelAndView update(HttpServletRequest request, @Valid Contacts contacts) {
-         Contacts data = contactsRes.findOne(contacts.getId());
-         if (data != null) {
-             List<PropertiesEvent> events = PropertiesEventUtil.processPropertiesModify(
-                     request, contacts, data, "id", "orgi", "creater", "createtime", "updatetime");    //记录 数据变更 历史
-             if (events.size() > 0) {
-                 String modifyid = MainUtils.getUUID();
-                 Date modifytime = new Date();
-                 for (PropertiesEvent event : events) {
-                     event.setDataid(contacts.getId());
-                     event.setCreater(super.getUser(request).getId());
-                     event.setOrgi(super.getOrgi(request));
-                     event.setModifyid(modifyid);
-                     event.setCreatetime(modifytime);
-                     propertiesEventRes.save(event);
-                 }
-             }
+         contactsRes.findById(contacts.getId())
+                 .ifPresent(data -> {
+                     List<PropertiesEvent> events = PropertiesEventUtil.processPropertiesModify(
+                             request, contacts, data, "id", "orgi", "creater", "createtime", "updatetime");    //记录 数据变更 历史
+                     if (events.size() > 0) {
+                         String modifyid = MainUtils.getUUID();
+                         Date modifytime = new Date();
+                         for (PropertiesEvent event : events) {
+                             event.setDataid(contacts.getId());
+                             event.setCreater(super.getUser(request).getId());
+                             event.setOrgi(super.getOrgi(request));
+                             event.setModifyid(modifyid);
+                             event.setCreatetime(modifytime);
+                             propertiesEventRes.save(event);
+                         }
+                     }
 
-             final User logined = super.getUser(request);
+                     final User logined = super.getUser(request);
 
-             contacts.setCreater(data.getCreater());
-             contacts.setCreatetime(data.getCreatetime());
-             contacts.setOrgi(logined.getOrgi());
-             contacts.setPinyin(PinYinTools.getInstance().getFirstPinYin(contacts.getName()));
-             if (StringUtils.isBlank(contacts.getCusbirthday())) {
-                 contacts.setCusbirthday(null);
-             }
-             contactsRes.save(contacts);
-         }
-
+                     contacts.setCreater(data.getCreater());
+                     contacts.setCreatetime(data.getCreatetime());
+                     contacts.setOrgi(logined.getOrgi());
+                     contacts.setPinyin(PinYinTools.getInstance().getFirstPinYin(contacts.getName()));
+                     if (StringUtils.isBlank(contacts.getCusbirthday())) {
+                         contacts.setCusbirthday(null);
+                     }
+                     contactsRes.save(contacts);
+                 });
          return request(super.createRequestPageTempletResponse("redirect:/agent/index.html"));
      }
  }

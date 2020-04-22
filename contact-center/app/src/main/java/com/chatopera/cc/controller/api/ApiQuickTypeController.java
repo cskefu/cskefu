@@ -23,13 +23,15 @@ import com.chatopera.cc.persistence.repository.QuickTypeRepository;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.RestResult;
 import com.chatopera.cc.util.RestResultType;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -42,25 +44,26 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/quicktype")
+@RequiredArgsConstructor
 public class ApiQuickTypeController extends Handler {
 
-    @Autowired
-    private QuickTypeRepository quickTypeRepository;
+    @NonNull
+    private final QuickTypeRepository quickTypeRepository;
 
-    @Autowired
-    private QuickReplyRepository quickReplyRepository;
+    @NonNull
+    private final QuickReplyRepository quickReplyRepository;
 
     /**
      * 返回快捷回复分类列表
-     * @param request
-     * @param quicktype	搜索pub,pri
-     * @return
+     *
+     * @param quicktype 搜索pub,pri
      */
     @RequestMapping(method = RequestMethod.GET)
     @Menu(type = "apps", subtype = "quicktype", access = true)
     public ResponseEntity<RestResult> list(HttpServletRequest request, @Valid String id, @Valid String quicktype) {
         if (StringUtils.isNotBlank(id)) {
-            return new ResponseEntity<>(new RestResult(RestResultType.OK, quickTypeRepository.findOne(id)), HttpStatus.OK);
+            return new ResponseEntity<>(new RestResult(RestResultType.OK, quickTypeRepository.findById(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Quick type %s not found", id)))), HttpStatus.OK);
         }
         List<QuickType> quickTypeList = quickTypeRepository.findByOrgiAndQuicktype(getOrgi(request), quicktype);
         return new ResponseEntity<>(new RestResult(RestResultType.OK, quickTypeList), HttpStatus.OK);
@@ -68,9 +71,6 @@ public class ApiQuickTypeController extends Handler {
 
     /**
      * 新增或修改快捷回复分类
-     * @param request
-     * @param user
-     * @return
      */
     @RequestMapping(method = RequestMethod.PUT)
     @Menu(type = "apps", subtype = "quicktype", access = true)
@@ -89,22 +89,16 @@ public class ApiQuickTypeController extends Handler {
 
     /**
      * 删除分类，并且删除分类下的快捷回复
-     * @param request
-     * @param id
-     * @return
      */
     @RequestMapping(method = RequestMethod.DELETE)
     @Menu(type = "apps", subtype = "reply", access = true)
-    public ResponseEntity<RestResult> delete(HttpServletRequest request, @Valid String id) {
+    public ResponseEntity<RestResult> delete(@Valid String id) {
         RestResult result = new RestResult(RestResultType.OK);
         if (!StringUtils.isBlank(id)) {
-            QuickType quickType = quickTypeRepository.findOne(id);
-            if (quickType != null) {
+            quickTypeRepository.findById(id).ifPresent(quickType -> {
                 quickReplyRepository.deleteByCate(quickType.getId(), quickType.getOrgi());
                 quickTypeRepository.delete(quickType);
-            } else {
-                return new ResponseEntity<>(new RestResult(RestResultType.ORGAN_DELETE), HttpStatus.OK);
-            }
+            });
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

@@ -14,7 +14,10 @@ import mondrian.calc.TupleList;
 import mondrian.olap.Member;
 import mondrian.olap.Util;
 
-import java.util.*;
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Implementation of {@link mondrian.calc.TupleList} based on a list of
@@ -83,7 +86,7 @@ public class DelegatingTupleList extends AbstractTupleList
                         .get(0);
                 }
                 return subList.set(column, element);
-            };
+            }
         };
     }
 
@@ -125,13 +128,13 @@ public class DelegatingTupleList extends AbstractTupleList
 
                         public Member set(int column, Member element) {
                             return list.get(index).set(index, element);
-                        };
+                        }
                     };
                 }
 
                 public List<Member> set(int index, List<Member> element) {
                     return list.set(index, element);
-                };
+                }
 
                 public int size() {
                     return list.size();
@@ -178,17 +181,17 @@ public class DelegatingTupleList extends AbstractTupleList
         );
     }
 
-	@Override
-	public void setCount(int count) {
-		// TODO Auto-generated method stub
-		this.count = count;
-	}
+    @Override
+    public int getCount() {
 
-	@Override
-	public int getCount() {
-		// TODO Auto-generated method stub
-		return count;
-	}
+        return count;
+    }
+
+    @Override
+    public void setCount(int count) {
+
+        this.count = count;
+    }
 }
 
 // End DelegatingTupleList.java

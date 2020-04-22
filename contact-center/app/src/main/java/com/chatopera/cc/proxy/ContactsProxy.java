@@ -22,12 +22,12 @@ import com.chatopera.cc.persistence.es.ContactsRepository;
 import com.chatopera.cc.persistence.repository.AgentUserRepository;
 import com.chatopera.cc.persistence.repository.OnlineUserRepository;
 import com.chatopera.cc.persistence.repository.SNSAccountRepository;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 
@@ -37,34 +37,27 @@ import java.util.*;
  * 向联系人发送消息
  */
 @Component
+@RequiredArgsConstructor
 public class ContactsProxy {
 
     private final static Logger logger = LoggerFactory.getLogger(ContactsProxy.class);
 
-    @Autowired
-    private Cache cache;
+    @NonNull
+    private final Cache cache;
 
-    @Autowired
-    private AgentUserRepository agentUserRes;
+    @NonNull
+    private final AgentUserRepository agentUserRes;
 
-    @Autowired
-    private ContactsRepository contactsRes;
+    @NonNull
+    private final ContactsRepository contactsRes;
 
-    @Autowired
-    private OnlineUserRepository onlineUserRes;
-
-    @Value("${web.upload-path}")
-    private String path;
-
-    @Autowired
-    private SNSAccountRepository snsAccountRes;
-
+    @NonNull
+    private final OnlineUserRepository onlineUserRes;
+    @NonNull
+    private final SNSAccountRepository snsAccountRes;
 
     /**
      * 在传输SkypeId中有操作混入了非法字符
-     *
-     * @param dirty
-     * @return
      */
     public String sanitizeSkypeId(final String dirty) {
         if (dirty != null) {
@@ -80,7 +73,6 @@ public class ContactsProxy {
      *
      * @param logined   当前查询该信息的访客
      * @param contactid 目标联系人ID
-     * @return
      */
     public List<MainContext.ChannelType> liveApproachChannelsByContactid(
             final User logined,
@@ -106,9 +98,7 @@ public class ContactsProxy {
                         if (!cache.existBlackEntityByUserIdAndOrgi(p.getUserid(), logined.getOrgi())) {
                             // 访客在线 WebIM，排队或服务中
                             result.add(MainContext.ChannelType.WEBIM);
-                        } else {
-                            // 该访客被拉黑
-                        }
+                        }  // else 该访客被拉黑
                     });
 
             // 查看 Skype 渠道
@@ -162,10 +152,6 @@ public class ContactsProxy {
 
     /**
      * 批量查询联系人的可触达状态
-     *
-     * @param contacts
-     * @param map
-     * @param user
      */
     public void bindContactsApproachableData(final Page<Contacts> contacts, final ModelMap map, final User user) {
         Set<String> approachable = new HashSet<>();
@@ -184,23 +170,14 @@ public class ContactsProxy {
 
     /**
      * 检查Skype渠道是否被建立
-     *
-     * @return
      */
     public boolean isSkypeSetup(final String orgi) {
-        if (MainContext.hasModule(Constants.CSKEFU_MODULE_SKYPE) && snsAccountRes.countBySnstypeAndOrgi(
-                Constants.CSKEFU_MODULE_SKYPE, orgi) > 0) {
-            return true;
-        }
-        return false;
+        return MainContext.hasModule(Constants.CSKEFU_MODULE_SKYPE) && snsAccountRes.countBySnstypeAndOrgi(
+                Constants.CSKEFU_MODULE_SKYPE, orgi) > 0;
     }
 
     /**
      * 判断编辑是否变更
-     *
-     * @param newValue
-     * @param oldValue
-     * @return
      */
     public boolean determineChange(Contacts newValue, Contacts oldValue) {
         return (!newValue.getName().equals(oldValue.getName()) ||
