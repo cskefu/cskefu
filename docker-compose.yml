@@ -98,12 +98,14 @@ services:
       - "${REDIS_PORT:-8041}:6379"
 
   elasticsearch:
-    image: elasticsearch:2.4.6
-    restart: always
-    volumes:
-      - ./database/elasticsearch/data:/usr/share/elasticsearch/data
-      - ./database/elasticsearch/config:/usr/share/elasticsearch/config
-      - ./database/elasticsearch/plugins:/usr/share/elasticsearch/plugins
+    # checkout spring data elasticsearch's document to known which version of es should be used.
+    # https://docs.spring.io/spring-data/elasticsearch/docs/3.2.6.RELEASE/reference/html/#preface.versions
+    image: elasticsearch:6.8.7
     ports:
-      - "${ES_PORT1:-8039}:9200"
-      - "${ES_PORT2:-8040}:9300"
+      - 9200:9200
+      - 9300:9300
+    environment:
+      # override default cluster.name
+      - cluster.name=elasticsearch
+      # disable bootstrap check for development environment
+      - discovery.type=single-node
