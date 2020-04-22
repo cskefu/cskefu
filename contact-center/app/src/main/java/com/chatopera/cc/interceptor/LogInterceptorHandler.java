@@ -24,9 +24,11 @@ import com.chatopera.cc.model.RequestLog;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.RequestLogRepository;
 import com.chatopera.cc.util.Menu;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -41,24 +43,24 @@ import java.util.Enumeration;
  *
  * @author admin
  */
-public class LogIntercreptorHandler implements org.springframework.web.servlet.HandlerInterceptor {
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class LogInterceptorHandler implements org.springframework.web.servlet.HandlerInterceptor {
 
-    private final static Logger logger = LoggerFactory.getLogger(LogIntercreptorHandler.class);
-
-    private static RequestLogRepository requestLogRes;
-
-    @Override
-    public void afterCompletion(HttpServletRequest request,
-                                HttpServletResponse arg1, Object arg2, Exception arg3)
-            throws Exception {
-
-    }
+    @NonNull
+    private final RequestLogRepository requestLogRes;
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response,
-                           Object arg2, ModelAndView arg3) throws Exception {
-        HandlerMethod handlerMethod = (HandlerMethod) arg2;
-        Object hander = handlerMethod.getBean();
+    public void postHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler,
+                           ModelAndView modelAndView) {
+        if (!(handler instanceof HandlerMethod)) {
+            log.debug("Request {} invoked with handler {}", request.getServletPath(), handler.getClass());
+            return;
+        }
+
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        Object actualHandler = handlerMethod.getBean();
         RequestMapping obj = handlerMethod.getMethod().getAnnotation(RequestMapping.class);
         if (StringUtils.isNotBlank(request.getRequestURI()) && !(request.getRequestURI().startsWith("/message/ping") || request.getRequestURI().startsWith("/res/css") || request.getRequestURI().startsWith("/error") || request.getRequestURI().startsWith("/im/"))) {
             RequestLog log = new RequestLog();
@@ -69,11 +71,9 @@ public class LogIntercreptorHandler implements org.springframework.web.servlet.H
             }
             log.setMethodname(handlerMethod.toString());
             log.setIp(request.getRemoteAddr());
-            if (hander != null) {
-                log.setClassname(hander.getClass().toString());
-                if (hander instanceof Handler && ((Handler) hander).getStartTime() != 0) {
-                    log.setQuerytime(System.currentTimeMillis() - ((Handler) hander).getStartTime());
-                }
+            log.setClassname(actualHandler.getClass().toString());
+            if (actualHandler instanceof Handler && ((Handler) actualHandler).getStartTime() != 0) {
+                log.setQuerytime(System.currentTimeMillis() - ((Handler) actualHandler).getStartTime());
             }
             log.setUrl(request.getRequestURI());
 
@@ -87,11 +87,11 @@ public class LogIntercreptorHandler implements org.springframework.web.servlet.H
                 log.setUsermail(user.getEmail());
                 log.setOrgi(user.getOrgi());
             }
-            StringBuffer str = new StringBuffer();
+            StringBuilder str = new StringBuilder();
             Enumeration<String> names = request.getParameterNames();
             while (names.hasMoreElements()) {
                 String paraName = names.nextElement();
-                if (paraName.indexOf("password") >= 0) {
+                if (paraName.contains("password")) {
                     str.append(paraName).append("=").append(MainUtils.encryption(request.getParameter(paraName))).append(",");
                 } else {
                     str.append(paraName).append("=").append(request.getParameter(paraName)).append(",");
@@ -106,25 +106,21 @@ public class LogIntercreptorHandler implements org.springframework.web.servlet.H
             }
 
             log.setParameters(str.toString());
-            getRequestLogRes().save(log);
+            requestLogRes.save(log);
         }
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-                             Object arg2) {
-        HandlerMethod handlerMethod = (HandlerMethod) arg2;
-        Object hander = handlerMethod.getBean();
-        if (hander instanceof Handler) {
-            ((Handler) hander).setStartTime(System.currentTimeMillis());
+    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
+        if (!(handler instanceof HandlerMethod)) {
+            log.debug("Request {} invoked with handler {}", request.getServletPath(), handler.getClass());
+            return true;
+        }
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        Object actualHandler = handlerMethod.getBean();
+        if (actualHandler instanceof Handler) {
+            ((Handler) actualHandler).setStartTime(System.currentTimeMillis());
         }
         return true;
-    }
-
-    private static RequestLogRepository getRequestLogRes() {
-        if (requestLogRes == null) {
-            requestLogRes = MainContext.getContext().getBean(RequestLogRepository.class);
-        }
-        return requestLogRes;
     }
 }

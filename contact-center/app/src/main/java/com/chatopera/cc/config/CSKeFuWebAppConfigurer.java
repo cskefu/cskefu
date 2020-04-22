@@ -17,24 +17,29 @@
 package com.chatopera.cc.config;
 
 import com.chatopera.cc.interceptor.CrossInterceptorHandler;
-import com.chatopera.cc.interceptor.LogIntercreptorHandler;
+import com.chatopera.cc.interceptor.LogInterceptorHandler;
 import com.chatopera.cc.interceptor.UserInterceptorHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class CSKeFuWebAppConfigurer
-        extends WebMvcConfigurerAdapter {
+@RequiredArgsConstructor
+public class CSKeFuWebAppConfigurer implements WebMvcConfigurer {
+    @NonNull
+    private final LogInterceptorHandler logInterceptorHandler;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 多个拦截器组成一个拦截器链
         // addPathPatterns 用于添加拦截规则
         // excludePathPatterns 用户排除拦截
-        registry.addInterceptor(new UserInterceptorHandler()).addPathPatterns("/**").excludePathPatterns("/login.html","/im/**","/res/image*","/res/file*","/cs/**");
+        registry.addInterceptor(new UserInterceptorHandler())
+                .addPathPatterns("/**")
+                .excludePathPatterns("/login.html", "/im/**", "/res/image*", "/res/file*", "/cs/**");
         registry.addInterceptor(new CrossInterceptorHandler()).addPathPatterns("/**");
-        registry.addInterceptor(new LogIntercreptorHandler()).addPathPatterns("/**");
-        super.addInterceptors(registry);
+        registry.addInterceptor(logInterceptorHandler).addPathPatterns("/**");
     }
 }
