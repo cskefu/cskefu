@@ -28,6 +28,7 @@ import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -47,6 +48,7 @@ public class AgentAuditProxy {
     @Autowired
     private Cache cache;
 
+    @Lazy
     @Autowired
     private AgentUserProxy agentUserProxy;
 

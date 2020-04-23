@@ -4,6 +4,7 @@ import com.chatopera.cc.socketio.message.ChatMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface ChatMessageEsRepository extends ElasticsearchRepository<ChatMessage,String> {
 

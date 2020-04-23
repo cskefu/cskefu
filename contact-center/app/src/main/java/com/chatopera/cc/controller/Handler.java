@@ -432,8 +432,7 @@ public class Handler {
 
     public Tenant getTenant(HttpServletRequest request) {
         String id = getOrgi(request);
-        return tenantRes.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Tenant %s not found", id)));
+        return tenantRes.findById(id).orElse(null);
     }
 
     /**

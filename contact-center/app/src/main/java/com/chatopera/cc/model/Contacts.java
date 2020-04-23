@@ -19,6 +19,8 @@ package com.chatopera.cc.model;
 import com.chatopera.cc.basic.MainUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -149,6 +151,8 @@ public class Contacts extends ESBean implements java.io.Serializable{
 	private Date touchtime;
 	private boolean datastatus;
 	private String processid;
+
+	@Field(type = FieldType.Text, fielddata = true)
 	private String creater;
 	private String username;
 	private String updateuser;
@@ -160,6 +164,8 @@ public class Contacts extends ESBean implements java.io.Serializable{
 	private String compper;
 
 	private Date createtime = new Date();
+
+	@Field(type = FieldType.Text, fielddata = true)
 	private String name;
 	private String assignedto;
 	private String wfstatus;
