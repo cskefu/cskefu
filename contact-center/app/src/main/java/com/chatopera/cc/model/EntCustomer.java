@@ -20,6 +20,8 @@ package com.chatopera.cc.model;
 import com.chatopera.cc.basic.MainUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -37,6 +39,7 @@ public class EntCustomer extends ESBean implements java.io.Serializable {
 
 	private String id = MainUtils.getUUID();
 
+	@Field(type = FieldType.Text, fielddata = true)
 	private String name;
 	private String etype;
 	private String ekind;
@@ -89,6 +92,7 @@ public class EntCustomer extends ESBean implements java.io.Serializable {
 	private String processid;
 	private String description;
 
+	@Field(type = FieldType.Text, fielddata = true)
 	private String creater;
 	private String username;
 	private String updateuser;

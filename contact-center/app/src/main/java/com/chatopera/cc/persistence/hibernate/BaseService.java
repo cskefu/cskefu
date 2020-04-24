@@ -46,14 +46,17 @@ public class BaseService<T> {
      */
     public void saveOrUpdateAll(final List<Object> ts) {
         Session session = hibernateFactory.openSession();
+        Transaction tx = session.beginTransaction();
         try {
-            Transaction tx = session.beginTransaction();
             for (final Object t : ts) {
                 session.saveOrUpdate(t);
             }
             tx.commit();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            if (ex != null) {
+                tx.rollback();
+            }
+            throw ex;
         } finally {
             session.close();
         }
@@ -61,12 +64,15 @@ public class BaseService<T> {
 
     public void saveOrUpdate(final Object t) {
         Session session = hibernateFactory.openSession();
+        Transaction tx = session.beginTransaction();
         try {
-            Transaction tx = session.beginTransaction();
             session.saveOrUpdate(t);
             tx.commit();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            if (ex != null) {
+                tx.rollback();
+            }
+            throw ex;
         } finally {
             session.close();
         }
@@ -74,12 +80,15 @@ public class BaseService<T> {
 
     public void save(final Object t) {
         Session session = hibernateFactory.openSession();
+        Transaction tx = session.beginTransaction();
         try {
-            Transaction tx = session.beginTransaction();
             session.save(t);
             tx.commit();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            if (ex != null) {
+                tx.rollback();
+            }
+            throw ex;
         } finally {
             session.close();
         }
@@ -92,14 +101,17 @@ public class BaseService<T> {
      */
     public void deleteAll(final List<Object> objects) {
         Session session = hibernateFactory.openSession();
+        Transaction tx = session.beginTransaction();
         try {
-            Transaction tx = session.beginTransaction();
             for (final Object t : objects) {
                 session.delete(session.merge(t));
             }
             tx.commit();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            if (ex != null) {
+                tx.rollback();
+            }
+            throw ex;
         } finally {
             session.close();
         }
@@ -107,12 +119,15 @@ public class BaseService<T> {
 
     public void delete(final Object object) {
         Session session = hibernateFactory.openSession();
+        Transaction tx = session.beginTransaction();
         try {
-            Transaction tx = session.beginTransaction();
             session.delete(session.merge(object));
             tx.commit();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            if (ex != null) {
+                tx.rollback();
+            }
+            throw ex;
         } finally {
             session.close();
         }
@@ -122,8 +137,8 @@ public class BaseService<T> {
     public List<T> list(final String bean) {
         List<T> dataList = null;
         Session session = hibernateFactory.openSession();
+        Transaction tx = session.beginTransaction();
         try {
-            Transaction tx = session.beginTransaction();
             dataList = session.createCriteria(Class.forName(bean)).list();
             tx.commit();
         } catch (Exception ex) {

@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.RollbackException;
 import java.util.List;
 
 @Aspect
@@ -70,7 +71,7 @@ public class SyncDatabaseAspect {
                     try {
                         // 更新时，执行此代码，但是新建时会报错
                         dbDataRes.saveOrUpdate(data);
-                    } catch (StaleStateException ex) {
+                    } catch (RollbackException ex) {
                         // 报错的情况下，执行此代码
                         dbDataRes.save(data);
                     }
