@@ -31,7 +31,7 @@
 ## 产品演示
 - 坐席工作台
 
-[http://cc.chatopera.com/](http://cc.chatopera.com/)
+[https://cc.chatopera.com/](https://cc.chatopera.com/)
 
 | **登录账号** | **密码**  |
 | ------------ | --------- |
@@ -39,7 +39,7 @@
 
 - 网页端访客程序
 
-[http://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
+[https://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
 
 ## 基础模块
 
