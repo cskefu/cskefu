@@ -28,6 +28,15 @@
 | [立即部署](https://github.com/chatopera/cosin#%E7%AB%8B%E5%8D%B3%E9%83%A8%E7%BD%B2) | [鸣谢](https://github.com/chatopera/cosin#%E9%B8%A3%E8%B0%A2)                                             | [开源许可协议](https://github.com/chatopera/cosin#%E5%BC%80%E6%BA%90%E8%AE%B8%E5%8F%AF%E5%8D%8F%E8%AE%AE) |
 
 
+## 产品演示
+- 坐席工作台
+[http://cc.chatopera.com/](http://cc.chatopera.com/)
+| **登录账号** | **密码**  |
+| ------------ | --------- |
+| admin        | admin1234 |
+- 网页端访客程序
+[http://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
+
 ## 基础模块
 
 春松客服提供多个开箱即用的供企业免费使用的模块：
