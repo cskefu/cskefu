@@ -15,7 +15,7 @@
 
 **开源项目地址：** [https://github.com/chatopera/cosin](https://github.com/chatopera/cosin)
 
-**开发环境搭建：** [https://github.com/chatopera/cosin/wiki/春松客服：开发环境](https://github.com/chatopera/cosin/wiki/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%EF%BC%9A%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83)
+**开发环境搭建：** [https://docs.chatopera.com/products/cskefu/engineering.html](https://docs.chatopera.com/products/cskefu/engineering.html)
 
 **春松客服团队博客:** [https://blog.chatopera.com/](https://blog.chatopera.com/)
 
@@ -23,12 +23,12 @@
 
 |                                                                                     |                                                                                                           |                                                                                                           |
 | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| [产品文档](https://github.com/chatopera/cosin#%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3) | [在线培训课程](https://github.com/chatopera/cosin#%E5%9C%A8%E7%BA%BF%E5%9F%B9%E8%AE%AD%E8%AF%BE%E7%A8%8B) | [用户案例](https://github.com/chatopera/cosin#%E7%94%A8%E6%88%B7%E6%A1%88%E4%BE%8B)                       |
-| [开发文档](https://github.com/chatopera/cosin#%E5%BC%80%E5%8F%91%E6%96%87%E6%A1%A3) | [产品截图](https://github.com/chatopera/cosin#%E4%BA%A7%E5%93%81%E6%88%AA%E5%9B%BE)                       | [产品体系](https://github.com/chatopera/cosin#%E4%BA%A7%E5%93%81%E4%BD%93%E7%B3%BB)                       |
+| [产品文档](https://docs.chatopera.com/products/cskefu/index.html)                   | [在线培训课程](https://github.com/chatopera/cosin#%E5%9C%A8%E7%BA%BF%E5%9F%B9%E8%AE%AD%E8%AF%BE%E7%A8%8B) | [用户案例](https://github.com/chatopera/cosin#%E7%94%A8%E6%88%B7%E6%A1%88%E4%BE%8B)                       |
+| [开发文档](https://github.com/chatopera/cosin#%E5%BC%80%E5%8F%91%E6%96%87%E6%A1%A3) | [产品截图](https://github.com/chatopera/cosin#%E4%BA%A7%E5%93%81%E6%88%AA%E5%9B%BE)                       | [产品演示](https://github.com/chatopera/cosin#%E4%BA%A7%E5%93%81%E6%BC%94%E7%A4%BA)                       |
 | [立即部署](https://github.com/chatopera/cosin#%E7%AB%8B%E5%8D%B3%E9%83%A8%E7%BD%B2) | [鸣谢](https://github.com/chatopera/cosin#%E9%B8%A3%E8%B0%A2)                                             | [开源许可协议](https://github.com/chatopera/cosin#%E5%BC%80%E6%BA%90%E8%AE%B8%E5%8F%AF%E5%8D%8F%E8%AE%AE) |
 
-
 ## 产品演示
+
 - 坐席工作台
 
 [https://cc.chatopera.com/](https://cc.chatopera.com/)
@@ -77,13 +77,13 @@
 
 ## 在线培训课程
 
-[春松客服大讲堂](https://ke.qq.com/course/464050)是面向企业 CTO、客服主管、客服及客服系统开发运维人员的在线培训课程，由浅入深的介绍春松客服上线企业智能客服系统、运营客服工作和二次开发的知识。
+[春松客服大讲堂](https://docs.chatopera.com/products/cskefu/training.html)是面向企业 CTO、客服主管、客服及客服系统开发运维人员的在线培训课程，由浅入深的介绍春松客服上线企业智能客服系统、运营客服工作和二次开发的知识。
 
-详情查看[课程介绍及优惠方案](https://github.com/chatopera/cosin/wiki/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82)。
+详情查看[课程介绍及优惠方案](https://docs.chatopera.com/products/cskefu/training.html)。
 
 <p align="center">
-  <b><a href="https://github.com/chatopera/cosin/wiki/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82" target="_blank">主讲老师介绍</a></b><br>
-  <a href="https://github.com/chatopera/cosin/wiki/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82" target="_blank">
+  <b><a href="https://docs.chatopera.com/products/cskefu/training.html" target="_blank">主讲老师介绍</a></b><br>
+  <a href="https://docs.chatopera.com/products/cskefu/training.html" target="_blank">
       <img src="https://user-images.githubusercontent.com/3538629/71793716-fd2cc580-3078-11ea-99b1-d86dba4475ae.png" width="800">
   </a>
 </p>
@@ -100,28 +100,28 @@
 ## 社区这样评价春松客服
 
 ```
-项目代码写的挺好的，容易维护，是不错的开源项目。
+The collaboration is efficient, very professional. The software is steady with high quality services.
 ```
 
--- 海洋 (深圳银之杰项目经理)
+-- Michael, Founder & CEO, [麥睿資訊](https://www.maideax.com/)
 
 ```
-贵公司是我碰到的最有爱的公司啦，这么好的产品授权竟然是Apache。
+系统功能强大，免费且响应及时，太赞了！贵公司是我碰到的最有爱的公司啦，这么好的产品授权竟然是Apache。
 ```
 
--- 上海某特种气体公司 IT 部客服系统负责人
+-- 小赵，技术员，上海某特种气体公司 IT 部客服系统负责人
 
 ```
-我要在APP内集成，我看了好多项目了，就你们这个最好，基本就是一个商用化的项目。
+技术支持力度大，产品更新很快！
 ```
 
--- Engine X (某二手车出售平台技术负责人)
+-- 阿伟，电商客服技术总监，某跨境电商企业
 
 ## 开发文档
 
 <p align="center">
-  <b><a href="https://github.com/chatopera/cosin/wiki" target="_blank">开发文档</a></b><br>
-  <a href="https://github.com/chatopera/cosin/wiki" target="_blank">
+  <b><a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">开发文档</a></b><br>
+  <a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">
       <img src="https://user-images.githubusercontent.com/3538629/44992890-38be0800-afcb-11e8-8fde-a5a671d29764.png" width="300">
   </a>
 </p>
@@ -168,21 +168,11 @@
   <img src="https://user-images.githubusercontent.com/3538629/44916014-28a5ee80-ad67-11e8-936a-a2cdbe62f529.png" width="900">
 </p>
 
-## 产品体系
-
-<p align="center">
-  <b>观看视频介绍</b><br>
-  <a href="https://pan.baidu.com/s/1tqxqfYSvtjDGhh6bDQ-Vog" target="_blank">
-      <img src="https://user-images.githubusercontent.com/3538629/45403926-6a039b80-b68f-11e8-86e2-5d1f04e3a7c7.png" width="900">
-  </a>
-</p>
-
 ## 立即部署
-
 
 - 私有部署版
 
-参考部署[开源社区版本文档](https://github.com/chatopera/cosin/wiki/%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2)。
+参考部署[开源社区版本文档](https://docs.chatopera.com/products/cskefu/deploy.html)。
 
 ## 鸣谢
 
