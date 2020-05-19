@@ -54,6 +54,10 @@ public class ApplicationController extends Handler {
     @Autowired
     private Cache cache;
 
+    @Value("${tongji.baidu.sitekey}")
+    private String tongjiBaiduSiteKey;
+
+
     @RequestMapping("/")
     public ModelAndView admin(HttpServletRequest request) {
 //        logger.info("[admin] path {} queryString {}", request.getPathInfo(),request.getQueryString());
@@ -85,6 +89,12 @@ public class ApplicationController extends Handler {
             }
         }
         view.addObject("agentStatus", cache.findOneAgentStatusByAgentnoAndOrig(logined.getId(), logined.getOrgi()));
+
+        if (StringUtils.isNotBlank(tongjiBaiduSiteKey) && !StringUtils.equalsIgnoreCase(tongjiBaiduSiteKey, "placeholder")) {
+            logger.info("tongjiBaiduSiteKey: {}", tongjiBaiduSiteKey);
+            view.addObject("tongjiBaiduSiteKey", tongjiBaiduSiteKey);
+        }
+
         return view;
     }
 
