@@ -52,6 +52,7 @@ services:
       - BOT_THRESHOLD_FAQ_SUGG_REPLY=${BOT_THRESHOLD_FAQ_SUGG_REPLY:-0.3}
       - CSKEFU_SETTINGS_WEBIM_VISITOR_SEPARATE=false
       - TONGJI_BAIDU_SITEKEY=${TONGJI_BAIDU_SITEKEY:-placeholder}
+      - ADS_LOGIN_BANNER=${ADS_LOGIN_BANNER:-off}
     depends_on:
       - mysql
       - redis
