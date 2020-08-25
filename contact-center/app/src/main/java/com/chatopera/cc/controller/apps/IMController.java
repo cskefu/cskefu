@@ -281,7 +281,7 @@ public class IMController extends Handler {
                     /**
                      * 查询坐席 ， 缓存？
                      */
-                    view.addObject("agentList", OnlineUserProxy.agents(MainContext.SYSTEM_ORGI, true));
+                    view.addObject("agentList", OnlineUserProxy.agents(MainContext.SYSTEM_ORGI));
                 }
 
                 view.addObject("traceid", userHistory.getId());

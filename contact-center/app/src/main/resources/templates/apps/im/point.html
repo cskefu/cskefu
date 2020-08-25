@@ -268,7 +268,7 @@ var cskefu = {
 						<#if inviteData.consult_skill_numbers == 0 || skill_index lt inviteData.consult_skill_numbers >
 							<#assign skillNum = 0 >
 							<#list agentList as agent>
-								<#if agent.organ?? && agent.organ == skill.id>
+								<#if agent.skills?? && agent.skills[skill.id]??>
 								<#assign skillNum = skillNum+1 >
 								</#if>
 							</#list>

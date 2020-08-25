@@ -100,7 +100,7 @@ public class StatsController extends Handler {
         /**
          * 查询坐席 ， 缓存？
          */
-        map.addAttribute("agentList", OnlineUserProxy.agents(super.getOrgi(request), true));
+        map.addAttribute("agentList", OnlineUserProxy.agents(super.getOrgi(request)));
 
         return request(super.createAppsTempletResponse("/apps/service/stats/coment"));
     }
@@ -154,7 +154,7 @@ public class StatsController extends Handler {
         /**
          * 查询坐席 ， 缓存？
          */
-        map.addAttribute("agentList", OnlineUserProxy.agents(super.getOrgi(request), true));
+        map.addAttribute("agentList", OnlineUserProxy.agents(super.getOrgi(request)));
 
         return request(super.createAppsTempletResponse("/apps/service/stats/consult"));
     }
