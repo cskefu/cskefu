@@ -84,7 +84,7 @@
 <p align="center">
   <b><a href="https://docs.chatopera.com/products/cskefu/training.html" target="_blank">主讲老师介绍</a></b><br>
   <a href="https://docs.chatopera.com/products/cskefu/training.html" target="_blank">
-      <img src="https://static-public.chatopera.com/assets/images/71793716-fd2cc580-3078-11ea-99b1-d86dba4475ae.png" width="800">
+      <img src="https://static-public.chatopera.com/assets/images/djt-teacher-hain.jpg" width="800">
   </a>
 </p>
 
