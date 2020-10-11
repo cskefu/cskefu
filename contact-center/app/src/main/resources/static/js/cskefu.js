@@ -382,14 +382,24 @@ var Proxy = {
 							if(result.data.length>0){
 								type == "agent" ? $("#quickReplyBox").html("") : $("#ccaQuickReplyBox").html("") ;
 								$.each(sortByKey(result.data,'score'),function(i,n){
-									var li = ' <li class="ukefu-agentservice-list" onclick="chooseAnswer(\''+result.data[i].reply_plain_text+'\')">\n' +
-										'                  <div class="nowrap" title="'+result.data[i].post+'">问题：'+result.data[i].post+'</div>\n' +
-										'                    <div style="color: #333">\n' +
-										'                       <p class="nowrap" title="'+result.data[i].reply_plain_text+'"  style="float: left ">答案：'+result.data[i].reply_plain_text+'</p>\n' +
-										'                       <button style="float: right" class="layui-btn layui-btn-mini" onclick="chooseAnswer(\''+result.data[i].reply_plain_text+'\')">选择</button>\n' +
-										'                   </div>\n' +
-										'      </li>'
-									type == "agent" ? $("#quickReplyBox").append(li) : $("#ccaQuickReplyBox").append(li) ;
+									var answerList =  result.data[i].replies;
+									var answer;
+									for(var i = 0; i < answerList.length; i++) {
+										if(answerList[i].rtype == 'plain' && answerList[i].enabled==true) {
+											answer=answerList[i]
+											break;
+										}
+									}
+									if(answer) {
+										var li = ' <li class="ukefu-agentservice-list" onclick="chooseAnswer(\'' + answer.content + '\')">\n' +
+											'                  <div class="nowrap" title="' + result.data[i].post + '">问题：' + result.data[i].post + '</div>\n' +
+											'                    <div style="color: #333">\n' +
+											'                       <p class="nowrap" title="' + answer.content + '"  style="float: left ">答案：' + answer.content + '</p>\n' +
+											'                       <button style="float: right" class="layui-btn layui-btn-mini" onclick="chooseAnswer(\'' + answer.content + '\')">选择</button>\n' +
+											'                   </div>\n' +
+											'      </li>'
+										type == "agent" ? $("#quickReplyBox").append(li) : $("#ccaQuickReplyBox").append(li);
+									}
 									if(i>4){
 										return false;
 									}
