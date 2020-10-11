@@ -126,12 +126,28 @@ The collaboration is efficient, very professional. The software is steady with h
   </a>
 </p>
 
+## 寻找开发者
+
+寻找开发者合作智能客服项目，社区共建，携手共赢！
+
+* 组织或个人，在春松客服主页展示为认证开发者
+* 春松客服官方推荐项目机会
+* 专访并通过官方渠道曝光
+
+填写申请：[https://www.wjx.top/jq/93397428.aspx](https://www.wjx.top/jq/93397428.aspx)
+
 ## 产品截图
 
 <p align="center">
   <b>欢迎页</b><br>
   <img src="https://static-public.chatopera.com/assets/images/44915395-6bff5d80-ad65-11e8-817a-8abb812fb5ee.png" width="900">
 </p>
+
+
+
+<details>
+<summary>展开查看更多产品截图</summary>
+<p>
 
 <p align="center">
   <b>坐席工作台</b><br>
@@ -167,6 +183,9 @@ The collaboration is efficient, very professional. The software is steady with h
   <b>更多功能，敬请期待 ...</b><br>
   <img src="https://static-public.chatopera.com/assets/images/44916014-28a5ee80-ad67-11e8-936a-a2cdbe62f529.png" width="900">
 </p>
+
+</p>
+</details>
 
 ## 立即部署
 
