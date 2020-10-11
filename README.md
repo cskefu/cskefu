@@ -19,14 +19,6 @@
 
 **春松客服团队博客:** [https://blog.chatopera.com/](https://blog.chatopera.com/)
 
-## 内容结构
-
-|                                                                                    |                                                                                                          |                                                                                                          |
-| ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| [产品文档](https://docs.chatopera.com/products/cskefu/index.html)                  | [在线培训课程](https://gitee.com/chatopera/cosin#%E5%9C%A8%E7%BA%BF%E5%9F%B9%E8%AE%AD%E8%AF%BE%E7%A8%8B) | [用户案例](https://gitee.com/chatopera/cosin#%E7%94%A8%E6%88%B7%E6%A1%88%E4%BE%8B)                       |
-| [开发文档](https://gitee.com/chatopera/cosin#%E5%BC%80%E5%8F%91%E6%96%87%E6%A1%A3) | [产品截图](https://gitee.com/chatopera/cosin#%E4%BA%A7%E5%93%81%E6%88%AA%E5%9B%BE)                       | [产品演示](https://gitee.com/chatopera/cosin#%E4%BA%A7%E5%93%81%E6%BC%94%E7%A4%BA)                       |
-| [立即部署](https://gitee.com/chatopera/cosin#%E7%AB%8B%E5%8D%B3%E9%83%A8%E7%BD%B2) | [鸣谢](https://gitee.com/chatopera/cosin#%E9%B8%A3%E8%B0%A2)                                             | [开源许可协议](https://gitee.com/chatopera/cosin#%E5%BC%80%E6%BA%90%E8%AE%B8%E5%8F%AF%E5%8D%8F%E8%AE%AE) |
-
 ## 产品演示
 
 - 坐席工作台
