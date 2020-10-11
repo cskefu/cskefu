@@ -175,6 +175,23 @@ The collaboration is efficient, very professional. The software is steady with h
 参考部署[开源社区版本文档](https://docs.chatopera.com/products/cskefu/deploy.html)。
 
 
+## 鸣谢
+
+[FreeSWITCH 中国社区](http://www.freeswitch.org.cn/)
+
+## 开源许可协议
+
+Copyright (2018-2020) <a href="https://www.chatopera.com/" target="_blank">北京华夏春松科技有限公司</a>
+
+[Apache License Version 2.0](https://gitee.com/chatopera/cosin/blob/master/LICENSE)
+
+[![chatoper banner][co-banner-image]][co-url]
+
+[co-banner-image]: https://static-public.chatopera.com/assets/images/42383104-da925942-8168-11e8-8195-868d5fcec170.png
+[co-url]: https://www.chatopera.com
+
+
+
 ## Chatopera 云服务
 
 [https://bot.chatopera.com/](https://bot.chatopera.com/)
@@ -242,18 +259,3 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
       <img src="https://static-public.chatopera.com/assets/images/64531083-3199aa80-d341-11e9-86cd-3a3ed860b14b.png" width="800">
   </a>
 </p>
-
-## 鸣谢
-
-[FreeSWITCH 中国社区](http://www.freeswitch.org.cn/)
-
-## 开源许可协议
-
-Copyright (2018-2020) <a href="https://www.chatopera.com/" target="_blank">北京华夏春松科技有限公司</a>
-
-[Apache License Version 2.0](https://gitee.com/chatopera/cosin/blob/master/LICENSE)
-
-[![chatoper banner][co-banner-image]][co-url]
-
-[co-banner-image]: https://static-public.chatopera.com/assets/images/42383104-da925942-8168-11e8-8195-868d5fcec170.png
-[co-url]: https://www.chatopera.com
