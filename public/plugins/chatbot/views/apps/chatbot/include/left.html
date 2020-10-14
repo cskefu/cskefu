@@ -10,7 +10,7 @@
         <dl class="layui-nav-child">
             <#list chatbots as chatbot>
             <dd style="text-align: center;border-bottom:thin solid #F5F5F5; list-style: none;" <#if currentbotid?? && chatbot.id == currentbotid>class="layui-this"</#if>>
-                <a href="/apps/chatbot/${chatbot.robottype}.html?chatbotid=${chatbot.id}">${chatbot.name}</a>
+                <a href="/apps/chatbot/index.html?chatbotid=${chatbot.id}">${chatbot.name}</a>
             </dd>
             </#list>
         </dl>

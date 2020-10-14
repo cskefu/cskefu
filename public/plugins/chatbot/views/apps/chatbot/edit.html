@@ -1,4 +1,4 @@
-
+<script src="/js/utils.js"></script>
 <script src="/js/CSKeFu_Rest_Request.v1.js"></script>
 <style>
     #create {
@@ -11,203 +11,68 @@
         width: 400px;
     }
 </style>
-<link rel="stylesheet" href="/layui/css/layui.css">
 <div class="row">
     <div class="col-lg-12">
         <div id="create">
-            <div class="layui-tab" lay-filter="robottype">
-                <ul class="layui-tab-title" >
-                    <li class="layui-this">春松客服</li>
-                    <li>腾讯智能对话</li>
-                    <li>Rasa NLU</li>
-                </ul>
-                <div class="layui-tab-content">
-                    <div class="layui-tab-item layui-show">
-                                    <form class="layui-form uk-form" style="width: 700px;margin: auto;">
-                                        <input id="id" type="hidden" name="id" value="${id}">
-                                        <div class="layui-form-item">
-                                            <label class="layui-form-label">网站渠道</label>
-                                            <div class="layui-input-inline">
-                                                <#if id!=null>
-                                                <input type="text" name="snsurl" required lay-verify="required" value="${snsurl}"
-                                                       autocomplete="off" class="layui-input" disabled>
-                                                <#else>
-                                                <select id="snsid" name="snsid" lay-verify="required">
-                                                    <option></option>
-                                                </select>
-                                                </#if>
-                                            </div>
-                                            <div class="layui-form-mid layui-word-aux">智能机器人服务的渠道标识</div>
-                                        </div>
-                                        <div class="layui-form-item">
-                                            <label class="layui-form-label">ClientId</label>
-                                            <div class="layui-input-inline">
-                                                <input type="text" name="clientId" required lay-verify="required" placeholder="请输入ClientId" autocomplete="off"
-                                                    class="layui-input" value="${bot.clientId}">
-                                            </div>
-                                            <div class="layui-form-mid layui-word-aux">智能机器人ClientId.<a href="${botServiecProvider}/dashboard" target="_blank">春松客服创建！</a></div>
-                                        </div>
-
-                                        <div class="layui-form-item" id="secret" style="display:" >
-                                            <label class="layui-form-label">Secret</label>
-                                            <div class="layui-input-inline">
-                                                <input type="password" name="secret"  required lay-verify="required" placeholder="请输入Secret" autocomplete="off"
-                                               class="layui-input" value="${bot.secret}">
-                                            </div>
-                                            <div class="layui-form-mid layui-word-aux">智能机器人Secret</div>
-                                        </div>
-                                        <div class="layui-form-item">
-                                        <label class="layui-form-label">工作模式</label>
-                                            <div class="layui-input-inline">
-                                                <select name="workmode" lay-verify="required">
-                                                    <option <#if bot.workmode=="机器人客服优先">selected="selected"</#if>>机器人客服优先</option>
-                                                    <option <#if bot.workmode=="人工客服优先"></#if>>人工客服优先</option>
-                                                    <option <#if bot.workmode=="仅机器人客服"></#if>>仅机器人客服</option>
-                                                </select>
-                                            </div>
-                                            <div class="layui-form-mid layui-word-aux">来自访客的会话默认以什么方式接待</div>
-                                            </div>
-                                        <div class="layui-form-item">
-                                            <div class="layui-input-inline">
-                                            <button class="layui-btn" lay-submit lay-filter="save">保存</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                    <div class="layui-tab-item">
-                        <form class="layui-form uk-form" style="width: 700px;margin: auto;">
-                            <input id="id-Tencent" type="hidden" name="id-Tencent" value="${id}">
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">网站渠道</label>
-                                <div class="layui-input-inline">
-                                    <#if id!=null>
-                                    <input type="text" name="snsurl" required lay-verify="required" value="${snsurl}"
-                                           autocomplete="off" class="layui-input" disabled>
-                                    <#else>
-                                    <select id="snsid-Tencent" name="snsid" lay-verify="required">
-                                        <option></option>
-                                    </select>
-                                </#if>
-                                </div>
-                                <div class="layui-form-mid layui-word-aux">智能机器人服务的渠道标识</div>
-                            </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">BotId</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" name="BotId" required lay-verify="required" placeholder="请输入BotId" autocomplete="off"
-                                    class="layui-input" value="${bot.BotId }">
-                                </div>
-                            </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">SecretId</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" name="SecretId" required lay-verify="required" placeholder="请输入SecretId" autocomplete="off"
-                                           class="layui-input" value="${bot.SecretId}">
-                                </div>
-                            </div>
-                            <div class="layui-form-item" id="secretkey" >
-                                <label class="layui-form-label">SecretKey</label>
-                                <div class="layui-input-inline">
-                                    <input type="password" name="SecretKey"  required lay-verify="required" placeholder="请输入Secretkey" autocomplete="off"
-                                           class="layui-input" value="${bot.secretkey}">
-                                </div>
-                                <div class="layui-form-mid layui-word-aux">智能机器人Secret</div>
-                            </div>
-                            <div class="layui-form-item"  id="BotEnv" >
-                                <label class="layui-form-label">BotEnv</label>
-                                <div class="layui-input-inline">
-                                    <select name="BotEnv" lay-verify="">
-                                        <option value="dev">调试版本</option>
-                                        <option value="release">线上版本</option>
-                                    </select>
-                                </div>
-                                <div class="layui-form-mid layui-word-aux">调试/线上 版本</div>
-                            </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">TerminalId</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" name="TerminalId" required lay-verify="required" placeholder="请输入TerminalId" autocomplete="off"
-                                           class="layui-input" value="${bot.TerminalId }">
-                                </div>
-                            </div>
-
-                            <div class="layui-form-item">
-                                <div class="layui-input-inline">
-                                <button class="layui-btn" lay-submit lay-filter="save">保存</button>
-                                </div>
-                            </div>
-                        </form>
+            <form class="layui-form uk-form" style="width: 700px;margin: auto;">
+                <input id="id" type="hidden" name="id" value="${id}">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">网站渠道</label>
+                    <div class="layui-input-inline">
+                        <#if id!=null>
+                            <input type="text" name="snsurl" required lay-verify="required" value="${snsurl}"
+                                autocomplete="off" class="layui-input" disabled>
+                            <#else>
+                                <select id="snsid" name="snsid" lay-verify="required">
+                                    <option></option>
+                                </select>
+                        </#if>
                     </div>
-                    <div class="layui-tab-item">
-                        <form class="layui-form uk-form" style="width: 700px;margin: auto;">
-                        <div class="layui-form-item">
-                            <input id="id" type="hidden" name="id" value="${id}">
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">网站渠道</label>
-                                <div class="layui-input-inline">
-                                    <#if id!=null>
-                                    <input type="text" name="snsurl" required lay-verify="required" value="${snsurl}"
-                                           autocomplete="off" class="layui-input" disabled>
-                                    <#else>
-                                    <select id="snsid-RASA" name="snsid" lay-verify="required">
-                                        <option></option>
-                                    </select>
-                                </#if>
-                            </div>
-                            <div class="layui-form-mid layui-word-aux">智能机器人服务的渠道网址</div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">RASA-ID</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="BotId" required lay-verify="required"
-                                       placeholder="请输入RASA ID" autocomplete="off"
-                                       class="layui-input" value="${bot.BotId }">
-                            </div>
-                        </div>
-
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">RASA-Url</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="BotUrl" required lay-verify="required"
-                                       placeholder="请输入RASA URL" autocomplete="off"
-                                       class="layui-input" value="${bot.BotUrl }">
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">RASA Secret</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="SecretId" required lay-verify="required" placeholder="请输入RASA Secret" autocomplete="off"
-                                       class="layui-input" value="${bot.SecretId}">
-                            </div>
-                        </div>
-
-                            <div class="layui-form-item">
-                                <div class="layui-input-inline">
-                                    <button class="layui-btn" lay-submit lay-filter="save">保存</button>
-                                </div>
-                            </div>
-                        </form>
+                    <div class="layui-form-mid layui-word-aux">智能机器人服务的渠道标识</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">ClientId</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="clientId" required lay-verify="required" placeholder="请输入ClientId" autocomplete="off"
+                            class="layui-input" value="${bot.clientId}">
                     </div>
+                    <div class="layui-form-mid layui-word-aux">智能机器人ClientId，还没有？<a href="${botServiecProvider}/dashboard" target="_blank">现在去创建！</a></div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">Secret</label>
+                    <div class="layui-input-inline">
+                        <input type="password" name="secret" required lay-verify="required" placeholder="请输入Secret" autocomplete="off"
+                               class="layui-input" value="${bot.secret}">
                     </div>
-            </div>
+                    <div class="layui-form-mid layui-word-aux">智能机器人Secret</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工作模式</label>
+                    <div class="layui-input-inline">
+                        <select name="workmode" lay-verify="required">
+                            <option <#if bot.workmode=="机器人客服优先">selected="selected"</#if>>机器人客服优先</option>
+                            <option <#if bot.workmode=="人工客服优先">selected="selected"</#if>>人工客服优先</option>
+                            <option <#if bot.workmode=="仅机器人客服">selected="selected"</#if>>仅机器人客服</option>
+                        </select>
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">来自访客的会话默认以什么方式接待</div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        <button class="layui-btn" lay-submit lay-filter="save">保存</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 <script>
-    layui.use(['form', 'upload','code'], function(){ //加载code模块
-        var form = layui.form()
-            ,upload = layui.upload;
-        layui.code(); //引用code方法
-    });
-
-
-
     // 保存成功，刷新页面
     function submitChatbotSucc(bot) {
         if(bot.rc != 0){
             submitChatbotFail(bot);
         } else {
-            parent.location.href = "/apps/chatbot/"+bot.data.robottype+".html?chatbotid="+bot.data.id;
+            parent.location.href = "/apps/chatbot/index.html?chatbotid="+bot.data.id;
         }
     }
 
@@ -223,54 +88,11 @@
             // 取消方法
         });
     }
-    layui.use('element', function(){
-        var element = layui.element();
-        element.on('tab(robottype)', function(data){
-            console.log(data);
-        });
-    });
 
-
-    layui.use(['element','form'], function () {
-        var $=layui.jquery,element = layui.element();
-        var type = "cosin"
-        element.on('tab(robottype)', function(data){
-
-            switch (data.index) {
-                case 0:
-                    type = "cosin"
-                    break;
-                case 1:
-                    type = "tencent"
-                    //console.log(type)
-                    break;
-                case 2:
-                    type = "rasa"
-                    break;
-                default:
-            }
-            //console.log(type)
-        });
+    layui.use(['form'], function () {
         var form = layui.form();
-
-
         form.on('submit(save)', function (data) {
-            //if (typeof type == "undefined"){type = 'cosin'}
-            //console.log(type)
-            switch (type) {
-                case 'cosin':
-                    data.field.robottype='cosin';
-                    break;
-                case 'tencent':
-                    data.field.robottype='tencent';
-                    break;
-                case 'rasa':
-                    data.field.robottype='rasa';
-                    break;
-                default:
-            }
             var field = data.field;
-            //console.log(field);
             if (field.id) {
                 field.ops = 'update';
                 restApiRequest({
@@ -279,9 +101,7 @@
                     data: field
                 }).then(submitChatbotSucc, submitChatbotFail);
             } else {
-                console.log(field);
                 field.ops = 'create';
-
                 restApiRequest({
                     path: "chatbot",
                     data: field
@@ -290,7 +110,7 @@
             return false;
         });
 
-        if ((!$('#id').val())||(!$('#id-Tencent').val())) {
+        if (!$('#id').val()) {
             restApiRequest({
                 path: "chatbot",
                 silent: true,
@@ -304,8 +124,6 @@
                     });
 
                     $('#snsid').html(options);
-                    $('#snsid-Tencent').html(options);
-                    $('#snsid-RASA').html(options);
                     form.render('select');
                 }
             }, function(error){

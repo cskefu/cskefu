@@ -35,21 +35,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.internal.$Gson$Preconditions;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,22 +52,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.awt.*;
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.List;
-import com.tencentcloudapi.common.Credential;
-import com.tencentcloudapi.common.profile.ClientProfile;
-import com.tencentcloudapi.common.profile.HttpProfile;
-import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 
-import com.tencentcloudapi.tbp.v20190627.TbpClient;
 
-import com.tencentcloudapi.tbp.v20190627.models.TextResetRequest;
-import com.tencentcloudapi.tbp.v20190627.models.TextResetResponse;
-import com.google.gson.Gson;
 /**
  * 聊天机器人
  * 请求聊天机器人服务
@@ -105,7 +80,7 @@ public class ApiChatbotController extends Handler {
 
     private final static String botServiecProvider = SystemEnvHelper.getenv(
             ChatbotConstants.BOT_PROVIDER, ChatbotConstants.DEFAULT_BOT_PROVIDER);
-    private final static String TencentbotServiecProvider = SystemEnvHelper.getenv(ChatbotConstants.BOT_PROVIDER,ChatbotConstants.DEFAULT_TENCENTBOT_PROVIDER);
+
     /**
      * 聊天机器人
      *
@@ -220,101 +195,12 @@ public class ApiChatbotController extends Handler {
 
         final String id = j.get("id").getAsString();
         Chatbot c = chatbotRes.findOne(id);
-        final String RobotType = c.getrobottype();
+
         if (c == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "该聊天机器人不存在。");
             return resp;
         }
-        switch (RobotType) {
-            case "cosin":
-                resp = enableCosin(j, c, isEnabled,resp);
-
-                break;
-            case "tencent":
-                resp = enableTencent(j, c, isEnabled,resp);
-                break;
-            case "rasa":
-                resp = enableRASA(j, c, isEnabled,resp);
-                break;
-        }
-
-        return resp;
-    }
-
-    private JsonObject enableTencent(JsonObject j,Chatbot c, boolean isEnabled,JsonObject resp)
-    {
-        String BotId = c.getBotId();
-        String TerminalId = c.getTerminalId();
-        String SecretId = c.getSecretId();
-        String SecretKey = c.getSecretKey();
-        String BotEnv = c.getBotEnv();
-
-        try {
-            JsonObject botRes = TextReset(SecretId,SecretKey,BotId,BotEnv,TerminalId);
-            if (!botRes.has("Error")) {
-                c.setEnabled(isEnabled);
-                chatbotRes.save(c);
-
-                // 更新访客网站配置
-                CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
-                invite.setAi(isEnabled);
-                consultInviteRes.save(invite);
-                OnlineUserProxy.cacheConsult(invite);
-
-                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
-                resp.addProperty(RestUtils.RESP_KEY_DATA, "完成。");
-            } else {
-                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_7);
-                resp.addProperty(RestUtils.RESP_KEY_ERROR, "智能问答引擎不存在该聊天机器人，未能正确设置。");
-            }
-        }
-         catch (Exception e) {
-
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
-            resp.addProperty(RestUtils.RESP_KEY_DATA, "设置不成功，智能问答引擎服务异常。");
-        }
-        return resp;
-    }
-    private JsonObject enableRASA(JsonObject j,Chatbot c, boolean isEnabled,JsonObject resp)
-    {
-
-        try {
-            JsonObject botRes = RasaTest(c.getBaseUrl());
-            //System.out.println(botRes);
-            if (!botRes.has("Error")) {
-                c.setEnabled(isEnabled);
-                chatbotRes.save(c);
-                // 更新访客网站配置
-                CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
-                invite.setAi(isEnabled);
-                consultInviteRes.save(invite);
-                OnlineUserProxy.cacheConsult(invite);
-
-                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
-                resp.addProperty(RestUtils.RESP_KEY_DATA, "完成。");
-            } else {
-                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_7);
-                resp.addProperty(RestUtils.RESP_KEY_ERROR, "智能问答引擎不存在该聊天机器人，未能正确设置。");
-            }
-        }
-        catch (Exception e) {
-
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
-            resp.addProperty(RestUtils.RESP_KEY_DATA, "设置不成功，智能问答引擎服务异常。");
-        }
-        System.out.println(resp);
-        return resp;
-    }
-
-
-
-    /**
-     *
-     */
-
-    private JsonObject enableCosin(JsonObject j,Chatbot c, boolean isEnabled,JsonObject resp)
-    {
 
         try {
             com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
@@ -345,6 +231,7 @@ public class ApiChatbotController extends Handler {
         }
         return resp;
     }
+
     /**
      * Enable Chatbot 智能回复
      *
@@ -588,10 +475,6 @@ public class ApiChatbotController extends Handler {
         return resp;
     }
 
-
-
-
-
     /**
      * 创建聊天机器人
      *
@@ -600,423 +483,13 @@ public class ApiChatbotController extends Handler {
      * @param orgi
      * @return
      */
-
-    private JsonObject create(final JsonObject j, final String creater, final String orgi) throws Exception
-    {   JsonObject resp = new JsonObject();
-        String RobotType = j.get("robottype").getAsString();
-        //System.out.println(RobotType);
-        switch (RobotType) {
-            case "cosin":
-                resp = createCosinRobot(j, creater, orgi);
-                break;
-            case "tencent":
-                resp = createTencentRobot(j, creater, orgi);
-                break;
-            case "rasa":
-                //System.out.println("RASA Robot");
-                resp = createRASARobot(j, creater, orgi);
-                break;
-        }
-        //System.out.println(resp);
-        return resp;
-    }
-
-
-
-    private JsonObject TextReset(final String SecretId, final String SecretKey, final String BotId,final String BotEnv,final String TerminalId ) {
-        JsonObject result = new JsonObject();
-        try{
-
-            Credential cred = new Credential(SecretId, SecretKey);
-
-            HttpProfile httpProfile = new HttpProfile();
-            httpProfile.setEndpoint("tbp.tencentcloudapi.com");
-            ClientProfile clientProfile = new ClientProfile();
-            clientProfile.setHttpProfile(httpProfile);
-
-            TbpClient client = new TbpClient(cred, "", clientProfile);
-
-            String params = "{\"BotId\":\""+BotId+"\",\"BotEnv\":\""+BotEnv+"\",\"TerminalId\":\""+TerminalId+"\"}";
-            TextResetRequest req = TextResetRequest.fromJsonString(params, TextResetRequest.class);
-
-            TextResetResponse resp = client.TextReset(req);
-
-            result =new JsonParser().parse(TextResetResponse.toJsonString(resp)).getAsJsonObject();
-            //System.out.println("hello"+result);
-            return result;
-
-        } catch (TencentCloudSDKException e) {
-            System.out.println(e.toString());
-        }
-
-        return result;
-
-    }
-
-
-    /**
-     *
-     */
-
-    private JsonObject createTencentRobot(final JsonObject j, final String creater, final String orgi)
-    {
-
-        JsonObject resp = new JsonObject();
-        String snsid = null;
-        String BotEnv = null;
-        String BotId = null;
-        String SecretId = null;
-        String SecretKey = null;
-        String TerminalId = null;
-
-        if ((!j.has("BotId")) || StringUtils.isBlank(j.get("BotId").getAsString())) {
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【BotId】。");
-            return resp;
-        } else {
-            BotId = j.get("BotId").getAsString();
-        }
-
-        if ((!j.has("TerminalId")) || StringUtils.isBlank(j.get("TerminalId").getAsString())) {
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【TerminalId】。");
-            return resp;
-        } else {
-            TerminalId = j.get("TerminalId").getAsString();
-        }
-
-        if ((!j.has("SecretId")) || StringUtils.isBlank(j.get("SecretId").getAsString())) {
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【SecretId】。");
-            return resp;
-        } else {
-            SecretId = j.get("SecretId").getAsString();
-        }
-
-        if ((!j.has("SecretKey")) || StringUtils.isBlank(j.get("SecretKey").getAsString())) {
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【SecretKey】。");
-            return resp;
-        } else {
-            SecretKey = j.get("SecretKey").getAsString();
-        }
-        if (!(j.has("BotEnv"))) {
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入有效【BotEnv】。");
-            return resp;
-        } else {
-            BotEnv = j.get("BotEnv").getAsString();
-        }
-
-        if ((!j.has("snsid")) || StringUtils.isBlank(j.get("snsid").getAsString())) {
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【snsid】。");
-            return resp;
-        } else {
-            snsid = j.get("snsid").getAsString();
-            // #TODO 仅支持webim
-            if (!snsAccountRes.existsBySnsidAndSnstypeAndOrgi(snsid, Constants.CHANNEL_TYPE_WEBIM, orgi)) {
-                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-                resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，不存在【snsid】对应的网站渠道。");
-                return resp;
-            }
-
-            if (chatbotRes.existsBySnsAccountIdentifierAndOrgi(snsid, orgi)) {
-                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-                resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，该渠道【snsid】已经存在聊天机器人。");
-                return resp;
-            }
-        }
-
-        if (chatbotRes.existsByClientIdAndOrgi(BotId, orgi)) {
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，数据库中存在该聊天机器人。");
-            return resp;
-        }
-
-        try {
-            logger.info("create bot with ", TencentbotServiecProvider );
-            JsonObject botRes = TextReset(SecretId,SecretKey,BotId,BotEnv,TerminalId);
-
-
-            if (!botRes.has("Error")) { // 该机器人存在，clientId 和 Secret配对成功
-                // 创建成功
-                Chatbot c = new Chatbot();
-                //JSONObject botDetails = bot.details();
-                c.setId(MainUtils.getUUID());
-                c.setSecretId(SecretId);
-                c.setSecretKey(SecretKey);
-                c.setBotId(BotId);
-                c.setName(BotId);
-                //c.setClientId(BotId);//ClientID 不能为空 暂时设定为一样的值
-                c.setBotEnv(BotEnv);
-                c.setTerminalId(TerminalId);
-                c.setWorkmode("机器人客服优先");
-                c.setBaseUrl(TencentbotServiecProvider);
-                /**
-                c.setDescription(botDetails.getJSONObject("data").getString("description"));
-                c.setFallback(botDetails.getJSONObject("data").getString("fallback"));
-                c.setPrimaryLanguage(botDetails.getJSONObject("data").getString("primaryLanguage"));
-                c.setName(botDetails.getJSONObject("data").getString("name"));
-                c.setWelcome(botDetails.getJSONObject("data").getString("welcome"));
-                 */
-                c.setCreater(creater);
-                c.setOrgi(orgi);
-                c.setChannel(Constants.CHANNEL_TYPE_WEBIM);
-                c.setSnsAccountIdentifier(snsid);
-                Date dt = new Date();
-                c.setCreatetime(dt);
-                c.setUpdatetime(dt);
-                c.setrobottype(j.get("robottype").getAsString());
-                // 默认不开启
-                boolean enabled = false;
-                c.setEnabled(enabled);
-
-                // 更新访客网站配置
-                CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
-                invite.setAi(enabled);
-                //invite.setAifirst(StringUtils.equals(Constants.CHATBOT_CHATBOT_FIRST, workmode));
-                invite.setAiid(c.getId());
-                invite.setAiname(c.getName());
-                invite.setAisuccesstip(c.getWelcome());
-
-                consultInviteRes.save(invite);
-                OnlineUserProxy.cacheConsult(invite);
-                chatbotRes.save(c);
-                JsonObject data = new JsonObject();
-                data.addProperty("id", c.getId());
-                data.addProperty("robottype", c.getrobottype());
-                resp.add(RestUtils.RESP_KEY_DATA, data);
-                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
-                return resp;
-            } else {
-                // 创建失败
-                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
-                resp.addProperty(
-                        RestUtils.RESP_KEY_ERROR, "Chatopera云服务：该机器人不存在，请先创建机器人, 登录 https://console.cloud.tencent.com/tbp");
-                return resp;
-            }
-        }
-         catch (Exception e){
-            System.out.println(e);
-            logger.error("bot create error");
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
-            resp.addProperty(
-                    RestUtils.RESP_KEY_ERROR,
-                    "无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】参数正确设置。");
-            return resp;
-        }
-
-
-
-    }
-
-    private JsonObject RasaTest(final String BotUrl)
-    {
-        String Url = BotUrl;
-        JsonObject result = new JsonObject();
-        result.addProperty("error",1);
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        try {
-            URIBuilder uriBuilder = new URIBuilder(Url);
-            uriBuilder.setParameter("content","查询广州明天的天气");
-
-            HttpGet httpGet = new HttpGet(uriBuilder.build());
-            RequestConfig requestConfig = RequestConfig.custom()
-                    .setConnectTimeout(5000) //连接超时时间
-                    .setConnectionRequestTimeout(5000) //请求超时时间
-                    .setSocketTimeout(5000) //socket读写超时时间
-                    .setRedirectsEnabled(true) //是否允许重定向
-                    .build();
-
-            httpGet.setConfig(requestConfig);
-            CloseableHttpResponse response = null;
-            response = httpClient.execute(httpGet);
-
-            if (response.getStatusLine().getStatusCode() == 200) {
-                String content = EntityUtils.toString(response.getEntity(), "utf8");
-                JsonArray tempArray = new JsonParser().parse(content).getAsJsonArray();
-
-                result = tempArray.get(0).getAsJsonObject();
-                //System.out.println(result);
-            }
-
-            //请求内容
-
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-
-    /**
-     * 创建 RASARobot
-     *
-     * */
-    private JsonObject createRASARobot(final JsonObject j, final String creater, final String orgi)
-    {
-
-        JsonObject resp = new JsonObject();
-        String snsid = null;
-        String BotId = null;
-        String BotUrl = null;
-        String workmode = "机器人客服优先";;
-        String SecretId = null;
-
-        if ((!j.has("BotId")) || StringUtils.isBlank(j.get("BotId").getAsString())) {
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【BotId】。");
-            return resp;
-        } else {
-            BotId = j.get("BotId").getAsString();
-        }
-        if ((!j.has("BotUrl")) || StringUtils.isBlank(j.get("BotUrl").getAsString())) {
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【BotUrl】。");
-            return resp;
-        } else {
-            BotUrl = j.get("BotUrl").getAsString();
-        }
-
-
-
-
-        if ((!j.has("SecretId")) || StringUtils.isBlank(j.get("SecretId").getAsString())) {
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【SecretId】。");
-            return resp;
-        } else {
-            SecretId = j.get("SecretId").getAsString();
-        }
-
-
-
-
-        if ((!j.has("snsid")) || StringUtils.isBlank(j.get("snsid").getAsString())) {
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【snsid】。");
-            return resp;
-        } else {
-            snsid = j.get("snsid").getAsString();
-            // #TODO 仅支持webim
-            if (!snsAccountRes.existsBySnsidAndSnstypeAndOrgi(snsid, Constants.CHANNEL_TYPE_WEBIM, orgi)) {
-                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-                resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，不存在【snsid】对应的网站渠道。");
-                return resp;
-            }
-
-            if (chatbotRes.existsBySnsAccountIdentifierAndOrgi(snsid, orgi)) {
-                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-                resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，该渠道【snsid】已经存在聊天机器人。");
-                return resp;
-            }
-        }
-
-        if (chatbotRes.existsByClientIdAndOrgi(BotId, orgi)) {
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，数据库中存在该聊天机器人。");
-            return resp;
-        }
-
-        try {
-            logger.info("create bot with ",BotUrl );
-            JsonObject botRes = RasaTest(BotUrl);
-
-            if (!botRes.has("Error")) { // 该机器人存在，clientId 和 Secret配对成功
-                // 创建成功
-                Chatbot c = new Chatbot();
-                //JSONObject botDetails = bot.details();
-                c.setId(MainUtils.getUUID());
-                c.setSecretId(SecretId);
-                c.setBotId(BotId);
-                c.setName(BotId);
-                c.setClientId(BotId);//ClientID 不能为空 暂时设定为一样的值
-                //c.setBotEnv(BotEnv);
-
-                c.setBaseUrl(BotUrl);
-                //c.setTerminalId(TerminalId);
-                /**
-                 c.setDescription(botDetails.getJSONObject("data").getString("description"));
-                 c.setFallback(botDetails.getJSONObject("data").getString("fallback"));
-                 c.setPrimaryLanguage(botDetails.getJSONObject("data").getString("primaryLanguage"));
-                 c.setName(botDetails.getJSONObject("data").getString("name"));
-                 c.setWelcome(botDetails.getJSONObject("data").getString("welcome"));
-                 */
-                c.setCreater(creater);
-                c.setOrgi(orgi);
-                c.setChannel(Constants.CHANNEL_TYPE_WEBIM);
-                c.setSnsAccountIdentifier(snsid);
-                Date dt = new Date();
-                c.setCreatetime(dt);
-                c.setUpdatetime(dt);
-                c.setrobottype(j.get("robottype").getAsString());
-                // 默认不开启
-                c.setWorkmode("机器人客服优先");
-                boolean enabled = false;
-                c.setEnabled(enabled);
-
-                // 更新访客网站配置
-                CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
-                invite.setAi(enabled);
-                invite.setAifirst(StringUtils.equals(Constants.CHATBOT_CHATBOT_FIRST, workmode));
-                invite.setAiid(c.getId());
-                invite.setAiname(c.getName());
-                invite.setAisuccesstip(c.getWelcome());
-                consultInviteRes.save(invite);
-                OnlineUserProxy.cacheConsult(invite);
-                chatbotRes.save(c);
-                JsonObject data = new JsonObject();
-                data.addProperty("id", c.getId());
-                data.addProperty("robottype", c.getrobottype());
-                resp.add(RestUtils.RESP_KEY_DATA, data);
-                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
-                return resp;
-            } else {
-                // 创建失败
-                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
-                resp.addProperty(
-                        RestUtils.RESP_KEY_ERROR, "Chatopera云服务：该机器人不存在，请先创建机器人, 登录 https://console.cloud.tencent.com/tbp");
-                return resp;
-            }
-        }
-        catch (Exception e){
-            System.out.println(e);
-            logger.error("bot create error");
-            resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
-            resp.addProperty(
-                    RestUtils.RESP_KEY_ERROR,
-                    "无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】参数正确设置。");
-            return resp;
-        }
-
-
-
-    }
-    /**
-     * 创建春松聊天机器人
-     *
-     * @param j
-     * @param creater
-     * @param orgi
-     * @return
-     */
-    private JsonObject createCosinRobot(final JsonObject j, final String creater, final String orgi) throws Exception {
+    private JsonObject create(final JsonObject j, final String creater, final String orgi) throws Exception {
         JsonObject resp = new JsonObject();
         String snsid = null;
         String workmode = null;
         String clientId = null;
         String secret = null;
 
-        if(!j.has("workmode"))
-        {
-            //System.out.println(j);
-            j.addProperty("workmode","机器人客服优先");
-        }
-        //System.out.println(j);
         if ((!j.has("clientId")) || StringUtils.isBlank(j.get("clientId").getAsString())) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，未传入【clientId】。");
@@ -1092,7 +565,7 @@ public class ApiChatbotController extends Handler {
                 c.setCreatetime(dt);
                 c.setUpdatetime(dt);
                 c.setWorkmode(workmode);
-                c.setrobottype(j.get("robottype").getAsString());
+
                 // 默认不开启
                 boolean enabled = false;
                 c.setEnabled(enabled);
@@ -1107,9 +580,9 @@ public class ApiChatbotController extends Handler {
                 consultInviteRes.save(invite);
                 OnlineUserProxy.cacheConsult(invite);
                 chatbotRes.save(c);
+
                 JsonObject data = new JsonObject();
                 data.addProperty("id", c.getId());
-                data.addProperty("robottype", c.getrobottype());
                 resp.add(RestUtils.RESP_KEY_DATA, data);
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
                 return resp;
