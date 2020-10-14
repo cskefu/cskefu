@@ -1,0 +1,25 @@
+language: "zh"
+
+pipeline:
+- name: "MitieNLP"
+  model: "data/total_word_feature_extractor_zh.dat"
+- name: "JiebaTokenizer"
+  dictionary_path: "data/dict"
+- name: "MitieEntityExtractor"
+- name: "EntitySynonymMapper"
+- name: "RegexFeaturizer"
+- name: "MitieFeaturizer"
+- name: "EmbeddingIntentClassifier"
+
+policies:
+  - name: FallbackPolicy
+    nlu_threshold: 0.5
+    ambiguity_threshold: 0.1
+    core_threshold: 0.5
+    fallback_action_name: 'action_default_fallback'
+  - name: MemoizationPolicy
+    max_history: 5
+  - name: FormPolicy
+  - name: MappingPolicy
+  - name: EmbeddingPolicy
+    epochs: 500

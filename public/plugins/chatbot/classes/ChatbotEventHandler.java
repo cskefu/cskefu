@@ -15,6 +15,7 @@
  */
 package com.chatopera.cc.plugins.chatbot;
 
+import com.chatopera.bot.exception.ChatbotException;
 import com.chatopera.cc.acd.ACDServiceRouter;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
@@ -44,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.util.Date;
 
 public class ChatbotEventHandler {
@@ -106,55 +108,11 @@ public class ChatbotEventHandler {
                 // send out welcome message
                 if (invite != null) {
                     Chatbot chatbot = getChatbotRes().findOne(invite.getAiid());
-                    com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
-                            chatbot.getClientId(), chatbot.getSecret(), chatbot.getBaseUrl());
-                    JSONObject details = bot.details();
+                    RobotsOnconnect(chatbot,client,invite);
 
-                    // 发送欢迎语
-                    if (details.has("rc") &&
-                            details.getInt("rc") == 0) {
-                        ChatMessage welcome = new ChatMessage();
-                        String welcomeTextMessage = details.getJSONObject("data").getString("welcome");
-                        if (StringUtils.isNotBlank(welcomeTextMessage)) {
-                            welcome.setCalltype(MainContext.CallType.OUT.toString());
-                            welcome.setAppid(appid);
-                            welcome.setOrgi(orgi);
-                            welcome.setAiid(aiid);
-                            welcome.setMessage(welcomeTextMessage);
-                            welcome.setTouser(user);
-                            welcome.setMsgtype(MainContext.MessageType.MESSAGE.toString());
-                            welcome.setUserid(user);
-                            welcome.setUsername(invite.getAiname());
-                            welcome.setUpdatetime(System.currentTimeMillis());
-                            client.sendEvent(MainContext.MessageType.MESSAGE.toString(), welcome);
-                        }
 
-                        // 发送常见问题列表
-                        JSONObject faqhotresp = bot.conversation(user, "__faq_hot_list");
-                        logger.info("faqhot {}", faqhotresp.toString());
-                        if (faqhotresp.getInt("rc") == 0) {
-                            JSONObject faqhotdata = faqhotresp.getJSONObject("data");
-                            if ((!faqhotdata.getBoolean("logic_is_fallback")) &&
-                                    faqhotdata.has("string") &&
-                                    faqhotdata.has("params")) {
-                                ChatMessage faqhotmsg = new ChatMessage();
-                                faqhotmsg.setCalltype(MainContext.CallType.OUT.toString());
-                                faqhotmsg.setAppid(appid);
-                                faqhotmsg.setOrgi(orgi);
-                                faqhotmsg.setAiid(aiid);
-                                faqhotmsg.setMessage(faqhotdata.getString("string"));
-                                faqhotmsg.setExpmsg(faqhotdata.getJSONArray("params").toString());
-                                faqhotmsg.setTouser(user);
-                                faqhotmsg.setMsgtype(MainContext.MessageType.MESSAGE.toString());
-                                faqhotmsg.setUserid(user);
-                                faqhotmsg.setUsername(invite.getAiname());
-                                faqhotmsg.setUpdatetime(System.currentTimeMillis());
-                                client.sendEvent(MainContext.MessageType.MESSAGE.toString(), faqhotmsg);
-                            }
-                        }
-                    }
                 }
-
+                //System.out.println("aiid:"+aiid);
                 InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress();
                 String ip = MainUtils.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString());
                 OnlineUser onlineUser = getOnlineUserRes().findOne(user);
@@ -224,6 +182,76 @@ public class ChatbotEventHandler {
             logger.info("[onConnect] error", e);
         }
     }
+
+    public void  RobotsOnconnect(Chatbot chatbot,SocketIOClient client,CousultInvite invite) throws ChatbotException, MalformedURLException {
+
+        String user = client.getHandshakeData().getSingleUrlParam("userid");
+        String nickname = client.getHandshakeData().getSingleUrlParam("nickname");
+        String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
+        String session = MainUtils.getContextID(client.getHandshakeData().getSingleUrlParam("session"));
+        String appid = client.getHandshakeData().getSingleUrlParam("appid");
+        String aiid = client.getHandshakeData().getSingleUrlParam("aiid");
+
+        String RobotType = chatbot.getrobottype();
+        switch (RobotType) {
+            case "cosin":
+                com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
+                        chatbot.getClientId(), chatbot.getSecret(), chatbot.getBaseUrl());
+                JSONObject details = bot.details();
+                // 发送欢迎语
+                if (details.has("rc") &&
+                        details.getInt("rc") == 0) {
+                    ChatMessage welcome = new ChatMessage();
+                    String welcomeTextMessage = details.getJSONObject("data").getString("welcome");
+                    if (StringUtils.isNotBlank(welcomeTextMessage)) {
+                        welcome.setCalltype(MainContext.CallType.OUT.toString());
+                        welcome.setAppid(appid);
+                        welcome.setOrgi(orgi);
+                        welcome.setAiid(aiid);
+                        welcome.setMessage(welcomeTextMessage);
+                        welcome.setTouser(user);
+                        welcome.setMsgtype(MainContext.MessageType.MESSAGE.toString());
+                        welcome.setUserid(user);
+                        welcome.setUsername(invite.getAiname());
+                        welcome.setUpdatetime(System.currentTimeMillis());
+                        client.sendEvent(MainContext.MessageType.MESSAGE.toString(), welcome);
+                    }
+
+                    // 发送常见问题列表
+                    JSONObject faqhotresp = bot.conversation(user, "__faq_hot_list");
+                    logger.info("faqhot {}", faqhotresp.toString());
+                    if (faqhotresp.getInt("rc") == 0) {
+                        JSONObject faqhotdata = faqhotresp.getJSONObject("data");
+                        if ((!faqhotdata.getBoolean("logic_is_fallback")) &&
+                                faqhotdata.has("string") &&
+                                faqhotdata.has("params")) {
+                            ChatMessage faqhotmsg = new ChatMessage();
+                            faqhotmsg.setCalltype(MainContext.CallType.OUT.toString());
+                            faqhotmsg.setAppid(appid);
+                            faqhotmsg.setOrgi(orgi);
+                            faqhotmsg.setAiid(aiid);
+                            faqhotmsg.setMessage(faqhotdata.getString("string"));
+                            faqhotmsg.setExpmsg(faqhotdata.getJSONArray("params").toString());
+                            faqhotmsg.setTouser(user);
+                            faqhotmsg.setMsgtype(MainContext.MessageType.MESSAGE.toString());
+                            faqhotmsg.setUserid(user);
+                            faqhotmsg.setUsername(invite.getAiname());
+                            faqhotmsg.setUpdatetime(System.currentTimeMillis());
+                            client.sendEvent(MainContext.MessageType.MESSAGE.toString(), faqhotmsg);
+                        }
+                    }
+                }
+                break;
+            case "tencent":
+                System.out.println("腾讯");
+                break;
+            case "rasa":
+                System.out.println("rasa");
+                break;
+        }
+    }
+
+
 
     // 添加 @OnDisconnect 事件，客户端断开连接时调用，刷新客户端信息
     @OnDisconnect
