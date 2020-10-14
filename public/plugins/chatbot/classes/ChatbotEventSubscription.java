@@ -59,10 +59,10 @@ public class ChatbotEventSubscription {
             ChatbotConstants.BOT_PROVIDER, ChatbotConstants.DEFAULT_BOT_PROVIDER);
 
     // FAQ最佳回复阀值
-    private final static double thresholdFaqBestReply = Double.parseDouble(SystemEnvHelper.getenv(
+    private final static double faqBestReplyThreshold = Double.parseDouble(SystemEnvHelper.getenv(
             ChatbotConstants.THRESHOLD_FAQ_BEST_REPLY, "0.8"));
     // FAQ建议回复阀值
-    private final static double thresholdFaqSuggReply = Double.parseDouble(SystemEnvHelper.getenv(
+    private final static double faqSuggReplyThreshold = Double.parseDouble(SystemEnvHelper.getenv(
             ChatbotConstants.THRESHOLD_FAQ_SUGG_REPLY, "0.6"));
 
     @Autowired
@@ -98,7 +98,7 @@ public class ChatbotEventSubscription {
         com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
                 c.getClientId(), c.getSecret(), botServiecProvider);
         JSONObject result = bot.conversation(
-                request.getUserid(), request.getMessage(), thresholdFaqBestReply, thresholdFaqSuggReply);
+                request.getUserid(), request.getMessage(), faqBestReplyThreshold, faqSuggReplyThreshold);
 
         // parse response
         if (result != null) {

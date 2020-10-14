@@ -7,15 +7,15 @@ $(document).ready(function(){
     var protocol = window.location.protocol.replace(/:/g,'');
     socket = io(protocol+'://'+hostname+':'+port+'/im/agent?orgi='+orgi+"&userid="+userid+"&session="+session+"&admin="+adminuser , {transports: ['websocket'], upgrade: false});
     socket.on('connect',function() {
-		console.log("连接初始化成功");
+		console.log("[IM] 连接初始化成功");
 		//请求服务端记录 当前用户在线事件
     }).on('disconnect',function() {
-		console.log("连接已断开");       
+		console.log("[IM] 连接已断开");
 		//请求服务端记录，当前用户离线
     });
 	
     socket.on('chatevent', function(data) {
-		console.log(data.messageType + " .....  message:"+data.message);          
+		// console.log(data.messageType + " .....  message:"+data.message);
     }).on('task', function(data) {
 		
     }).on('new', function(data) {
@@ -151,8 +151,8 @@ var WebIM = {
 		});
 	},
 	ping : function(){
-		loadURL("/message/ping.html") ;	
-		console.log("ping:" + new Date().getTime());
+		loadURL("/message/ping.html") ;
+		console.log("[IM] heartbeat: " + new Date().getTime())
 	},
 	audioplayer:function(id, file, loop) {
 	    var audioplayer = document.getElementById(id);

@@ -70,7 +70,7 @@ html { *overflow:auto; font-family:"Microsoft Yahei","Helvetica","Simsun","Arial
     background-repeat: no-repeat;
     background-position: 50%;
     background-size: 100%;
-    padding: 20px 0;
+    padding: 0 0;
     position: relative;
 }
 .login-box-body, .register-box-body{

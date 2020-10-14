@@ -39,6 +39,7 @@ import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -89,6 +90,12 @@ public class LoginController extends Handler {
 
     @Autowired
     private ACDWorkMonitor acdWorkMonitor;
+
+    @Value("${tongji.baidu.sitekey}")
+    private String tongjiBaiduSiteKey;
+
+    @Value("${ads.login.banner}")
+    private String adsLoginBanner;
 
     /**
      * 登录页面
@@ -149,6 +156,15 @@ public class LoginController extends Handler {
         if (systemConfig != null) {
             view.addObject("systemConfig", systemConfig);
         }
+
+        if (StringUtils.isNotBlank(tongjiBaiduSiteKey) && !StringUtils.equalsIgnoreCase(tongjiBaiduSiteKey, "placeholder")) {
+            view.addObject("tongjiBaiduSiteKey", tongjiBaiduSiteKey);
+        }
+
+        if(StringUtils.isNotBlank(adsLoginBanner) && StringUtils.equalsIgnoreCase(adsLoginBanner, "on")){
+            view.addObject("adsLoginBanner", "on");
+        }
+
         return view;
     }
 
@@ -211,14 +227,14 @@ public class LoginController extends Handler {
 
                             // 工作状态记录
                             acdWorkMonitor.recordAgentStatus(agentStatus.getAgentno(),
-                                                                   agentStatus.getUsername(),
-                                                                   agentStatus.getAgentno(),
-                                                                   user.isAdmin(), // 0代表admin
-                                                                   agentStatus.getAgentno(),
-                                                                   MainContext.AgentStatusEnum.OFFLINE.toString(),
-                                                                   MainContext.AgentStatusEnum.READY.toString(),
-                                                                   MainContext.AgentWorkType.MEIDIACHAT.toString(),
-                                                                   orgi, null);
+                                    agentStatus.getUsername(),
+                                    agentStatus.getAgentno(),
+                                    user.isAdmin(), // 0代表admin
+                                    agentStatus.getAgentno(),
+                                    MainContext.AgentStatusEnum.OFFLINE.toString(),
+                                    MainContext.AgentStatusEnum.READY.toString(),
+                                    MainContext.AgentWorkType.MEIDIACHAT.toString(),
+                                    orgi, null);
 
                         } catch (Exception e) {
                             logger.error("[login] set agent status", e);

@@ -355,7 +355,7 @@ public class CustomerController extends Handler {
                 values.add(MainUtils.transBean2Map(customer));
             }
 
-            response.setHeader("content-disposition", "attachment;filename=UCKeFu-EntCustomer-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
+            response.setHeader("content-disposition", "attachment;filename=CSKeFu-EntCustomer-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
 
             ExcelExporterProcess excelProcess = new ExcelExporterProcess(values, table, response.getOutputStream());
             excelProcess.process();
@@ -382,7 +382,7 @@ public class CustomerController extends Handler {
             values.add(MainUtils.transBean2Map(customer));
         }
 
-        response.setHeader("content-disposition", "attachment;filename=UCKeFu-EntCustomer-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
+        response.setHeader("content-disposition", "attachment;filename=CSKeFu-EntCustomer-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
 
         ExcelExporterProcess excelProcess = new ExcelExporterProcess(values, table, response.getOutputStream());
         excelProcess.process();
@@ -413,7 +413,7 @@ public class CustomerController extends Handler {
             values.add(MainUtils.transBean2Map(customer));
         }
 
-        response.setHeader("content-disposition", "attachment;filename=UCKeFu-EntCustomer-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
+        response.setHeader("content-disposition", "attachment;filename=CSKeFu-EntCustomer-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
 
         ExcelExporterProcess excelProcess = new ExcelExporterProcess(values, table, response.getOutputStream());
         excelProcess.process();

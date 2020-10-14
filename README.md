@@ -2,30 +2,22 @@
 
 <p align="center">
   <b>春松客服QQ交流群：185659917， <a href="https://jq.qq.com/?_wv=1027&k=5I1cJLP" target="_blank">点击链接加入群聊</a></b><br>
-  <img src="https://user-images.githubusercontent.com/3538629/44917177-432d9700-ad6a-11e8-9420-46b0281073e6.png" width="200">
+  <img src="https://static-public.chatopera.com/assets/images/44917177-432d9700-ad6a-11e8-9420-46b0281073e6.png" width="200">
 </p>
 
 # 春松客服: 多渠道智能客服
 
 春松客服帮助企业快速而低成本的获得好用的智能客服系统。
 
-<img src="https://user-images.githubusercontent.com/3538629/61031891-fc311900-a3f2-11e9-80cf-c8d0700538a0.png" width="600">
+<img src="https://static-public.chatopera.com/assets/images/61031891-fc311900-a3f2-11e9-80cf-c8d0700538a0.png" width="600">
 
 春松客服是 Chatopera 自主研发以及基于且增强其它开源软件的方式实现的，春松客服会不断增强客服系统的智能化，这包括利用自然语言处理、机器学习和语音识别等技术让客服工作更有效率、客服满意度更高、成本更低。
 
-**开源项目地址：** [https://github.com/chatopera/cosin](https://github.com/chatopera/cosin)
+**开源项目地址：** [https://gitee.com/chatopera/cosin](https://gitee.com/chatopera/cosin)
 
 **开发环境搭建：** [https://docs.chatopera.com/products/cskefu/engineering.html](https://docs.chatopera.com/products/cskefu/engineering.html)
 
 **春松客服团队博客:** [https://blog.chatopera.com/](https://blog.chatopera.com/)
-
-## 内容结构
-
-|                                                                                     |                                                                                                           |                                                                                                           |
-| ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| [产品文档](https://docs.chatopera.com/products/cskefu/index.html)                   | [在线培训课程](https://github.com/chatopera/cosin#%E5%9C%A8%E7%BA%BF%E5%9F%B9%E8%AE%AD%E8%AF%BE%E7%A8%8B) | [用户案例](https://github.com/chatopera/cosin#%E7%94%A8%E6%88%B7%E6%A1%88%E4%BE%8B)                       |
-| [开发文档](https://github.com/chatopera/cosin#%E5%BC%80%E5%8F%91%E6%96%87%E6%A1%A3) | [产品截图](https://github.com/chatopera/cosin#%E4%BA%A7%E5%93%81%E6%88%AA%E5%9B%BE)                       | [产品演示](https://github.com/chatopera/cosin#%E4%BA%A7%E5%93%81%E6%BC%94%E7%A4%BA)                       |
-| [立即部署](https://github.com/chatopera/cosin#%E7%AB%8B%E5%8D%B3%E9%83%A8%E7%BD%B2) | [鸣谢](https://github.com/chatopera/cosin#%E9%B8%A3%E8%B0%A2)                                             | [开源许可协议](https://github.com/chatopera/cosin#%E5%BC%80%E6%BA%90%E8%AE%B8%E5%8F%AF%E5%8D%8F%E8%AE%AE) |
 
 ## 产品演示
 
@@ -55,7 +47,7 @@
 
 - 坐席工作台：汇聚多渠道访客请求，坐席根据策略自动分配，自动弹屏，转接等
 
-- 机器人客服：集成 Chatopera 云服务，通过插件形式安装，插件也以开源形式提供，[查看插件源码](./public/plugins)。
+- 机器人客服：集成 [Chatopera 云服务](https://bot.chatopera.com)，利用 Chatopera 强大的聊天机器人解决方案，提升客户服务工作中的自动化、智能化；机器人客服插件既能通过知识库联想，知识库快捷支持坐席人员，也可以直接为访客提供查询、数据收集等功能；通过插件形式安装，插件也以开源形式提供，[查看插件源码](./public/plugins)。
 
 - 企业聊天：支持企业员工在春松客服系统中群聊和私聊
 
@@ -84,7 +76,7 @@
 <p align="center">
   <b><a href="https://docs.chatopera.com/products/cskefu/training.html" target="_blank">主讲老师介绍</a></b><br>
   <a href="https://docs.chatopera.com/products/cskefu/training.html" target="_blank">
-      <img src="https://user-images.githubusercontent.com/3538629/71793716-fd2cc580-3078-11ea-99b1-d86dba4475ae.png" width="800">
+      <img src="https://static-public.chatopera.com/assets/images/djt-teacher-hain.jpg" width="800">
   </a>
 </p>
 
@@ -93,11 +85,11 @@
 <p align="center">
   <b><a href="https://www.chatopera.com/customer.html" target="_blank">TA们都选择春松客服</a></b><br>
   <a href="https://www.chatopera.com/customer.html" target="_blank">
-      <img src="https://user-images.githubusercontent.com/3538629/71613944-f7039880-2be3-11ea-8287-9e82f09e436f.png" width="900">
+      <img src="https://static-public.chatopera.com/assets/images/71613944-f7039880-2be3-11ea-8287-9e82f09e436f.png" width="900">
   </a>
 </p>
 
-## 社区这样评价春松客服
+## 企业用户这样评价我们
 
 ```
 The collaboration is efficient, very professional. The software is steady with high quality services.
@@ -122,57 +114,77 @@ The collaboration is efficient, very professional. The software is steady with h
 <p align="center">
   <b><a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">开发文档</a></b><br>
   <a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">
-      <img src="https://user-images.githubusercontent.com/3538629/44992890-38be0800-afcb-11e8-8fde-a5a671d29764.png" width="300">
+      <img src="https://static-public.chatopera.com/assets/images/44992890-38be0800-afcb-11e8-8fde-a5a671d29764.png" width="300">
   </a>
 </p>
+
+## 寻找开发者
+
+寻找开发者合作智能客服项目，社区共建，携手共赢！
+
+* 组织或个人，在春松客服主页展示为认证开发者
+* 春松客服官方推荐项目机会
+* 专访并通过官方渠道曝光
+
+填写申请：[https://www.wjx.top/jq/93397428.aspx](https://www.wjx.top/jq/93397428.aspx)
 
 ## 产品截图
 
 <p align="center">
   <b>欢迎页</b><br>
-  <img src="https://user-images.githubusercontent.com/3538629/44915395-6bff5d80-ad65-11e8-817a-8abb812fb5ee.png" width="900">
+  <img src="https://static-public.chatopera.com/assets/images/44915395-6bff5d80-ad65-11e8-817a-8abb812fb5ee.png" width="900">
 </p>
+
+
+
+<details>
+<summary>展开查看更多产品截图</summary>
+<p>
 
 <p align="center">
   <b>坐席工作台</b><br>
-  <img src="https://user-images.githubusercontent.com/3538629/44915582-eb8d2c80-ad65-11e8-8876-86c8b5bb5cc7.png" width="900">
+  <img src="https://static-public.chatopera.com/assets/images/44915582-eb8d2c80-ad65-11e8-8876-86c8b5bb5cc7.png" width="900">
 </p>
 
 <p align="center">
   <b>坐席监控</b><br>
-  <img src="https://user-images.githubusercontent.com/3538629/44915711-432b9800-ad66-11e8-899b-1ea02244925d.png" width="900">
+  <img src="https://static-public.chatopera.com/assets/images/44915711-432b9800-ad66-11e8-899b-1ea02244925d.png" width="900">
 </p>
 
 <p align="center">
   <b>外呼计划</b><br>
-  <img src="https://user-images.githubusercontent.com/3538629/44915831-ab7a7980-ad66-11e8-88a5-a2cd23b8c689.png" width="900">
+  <img src="https://static-public.chatopera.com/assets/images/44915831-ab7a7980-ad66-11e8-88a5-a2cd23b8c689.png" width="900">
 </p>
 
 <p align="center">
   <b>通话记录</b><br>
-  <img src="https://user-images.githubusercontent.com/3538629/44915218-feebc800-ad64-11e8-90fc-36ce96b0c09a.png" width="900">
+  <img src="https://static-public.chatopera.com/assets/images/44915218-feebc800-ad64-11e8-90fc-36ce96b0c09a.png" width="900">
 </p>
 
 <p align="center">
   <b>集成客服机器人</b><br>
-  <img src="https://user-images.githubusercontent.com/3538629/51080565-4b82df00-1719-11e9-8cc4-dbbec0459224.png" width="900">
+  <img src="https://static-public.chatopera.com/assets/images/51080565-4b82df00-1719-11e9-8cc4-dbbec0459224.png" width="900">
 </p>
 
 <p align="center">
   <b>客服机器人应答</b><br>
-  <img src="https://user-images.githubusercontent.com/3538629/51080567-50479300-1719-11e9-85d8-d209370c9d10.png" width="900">
+  <img src="https://static-public.chatopera.com/assets/images/51080567-50479300-1719-11e9-85d8-d209370c9d10.png" width="900">
 </p>
 
 <p align="center">
   <b>更多功能，敬请期待 ...</b><br>
-  <img src="https://user-images.githubusercontent.com/3538629/44916014-28a5ee80-ad67-11e8-936a-a2cdbe62f529.png" width="900">
+  <img src="https://static-public.chatopera.com/assets/images/44916014-28a5ee80-ad67-11e8-936a-a2cdbe62f529.png" width="900">
 </p>
+
+</p>
+</details>
 
 ## 立即部署
 
 - 私有部署版
 
 参考部署[开源社区版本文档](https://docs.chatopera.com/products/cskefu/deploy.html)。
+
 
 ## 鸣谢
 
@@ -182,9 +194,79 @@ The collaboration is efficient, very professional. The software is steady with h
 
 Copyright (2018-2020) <a href="https://www.chatopera.com/" target="_blank">北京华夏春松科技有限公司</a>
 
-[Apache License Version 2.0](https://github.com/chatopera/cosin/blob/master/LICENSE)
+[Apache License Version 2.0](https://gitee.com/chatopera/cosin/blob/master/LICENSE)
 
 [![chatoper banner][co-banner-image]][co-url]
 
-[co-banner-image]: https://user-images.githubusercontent.com/3538629/42383104-da925942-8168-11e8-8195-868d5fcec170.png
+[co-banner-image]: https://static-public.chatopera.com/assets/images/42383104-da925942-8168-11e8-8195-868d5fcec170.png
 [co-url]: https://www.chatopera.com
+
+
+
+## Chatopera 云服务
+
+[https://bot.chatopera.com/](https://bot.chatopera.com/)
+
+[Chatopera 云服务](https://bot.chatopera.com)是一站式实现聊天机器人的云服务，按接口调用次数计费。Chatopera 云服务是 [Chatopera 机器人平台](https://docs.chatopera.com/products/chatbot-platform/index.html)的软件即服务实例。在云计算基础上，Chatopera 云服务属于**聊天机器人即服务**的云服务。
+
+Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音识别等组件，标准化聊天机器人开发，支持企业 OA 智能问答、HR 智能问答、智能客服和网络营销等场景。企业 IT 部门、业务部门借助 Chatopera 云服务快速让聊天机器人上线！
+
+<details>
+<summary>展开查看 Chatopera 云服务的产品截图</summary>
+<p>
+
+<p align="center">
+  <b>自定义词典</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/64530072-da92d600-d33e-11e9-8656-01c26caff4f9.png" width="800">
+</p>
+
+<p align="center">
+  <b>自定义词条</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/64530091-e41c3e00-d33e-11e9-9704-c07a2a02b84e.png" width="800">
+</p>
+
+<p align="center">
+  <b>创建意图</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/64530169-12018280-d33f-11e9-93b4-9db881cf4dd5.png" width="800">
+</p>
+
+<p align="center">
+  <b>添加说法和槽位</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/64530187-20e83500-d33f-11e9-87ec-a0241e3dac4d.png" width="800">
+</p>
+
+<p align="center">
+  <b>训练模型</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/64530235-33626e80-d33f-11e9-8d07-fa3ae417fd5d.png" width="800">
+</p>
+
+<p align="center">
+  <b>测试对话</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/64530253-3d846d00-d33f-11e9-81ea-86e6d47020d8.png" width="800">
+</p>
+
+<p align="center">
+  <b>机器人画像</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/64530312-6442a380-d33f-11e9-869c-85fb6a835a97.png" width="800">
+</p>
+
+<p align="center">
+  <b>系统集成</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/64530281-4ecd7980-d33f-11e9-8def-c53251f30138.png" width="800">
+</p>
+
+<p align="center">
+  <b>聊天历史</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/64530295-5856e180-d33f-11e9-94d4-db50481b2d8e.png" width="800">
+</p>
+
+</p>
+</details>
+
+
+<p align="center">
+  <b>立即使用</b><br>
+  <a href="https://bot.chatopera.com" target="_blank">
+      <img src="https://static-public.chatopera.com/assets/images/64531083-3199aa80-d341-11e9-86cd-3a3ed860b14b.png" width="800">
+  </a>
+</p>

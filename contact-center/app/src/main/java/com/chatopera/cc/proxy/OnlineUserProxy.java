@@ -63,6 +63,7 @@ public class OnlineUserProxy {
     private static AgentUserContactsRepository agentUserContactsRes;
     private static ContactsRepository contactsRes;
     private static UserProxy userProxy;
+    private static OrganRepository organRes;
 
     /**
      * @param id
@@ -325,47 +326,36 @@ public class OnlineUserProxy {
 
 
     /**
-     * @param orgi
-     * @param isJudgeShare
+     * @param orgi 一个坐席可以添加到多个组织，原租户共享功能废弃
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static List<User> agents(String orgi, boolean isJudgeShare) {
+    public static List<User> agents(String orgi) {
         String origOrig = orgi;
-        boolean isShare = false;
-        if (isJudgeShare) {
-            SystemConfig systemConfig = MainUtils.getSystemConfig();
-            if (systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantshare()) {
-                orgi = MainContext.SYSTEM_ORGI;
-                isShare = true;
-            }
-        }
-        List<User> agentList = getCache().findOneSystemByIdAndOrgi(Constants.CACHE_AGENT + origOrig, origOrig);
-        List<User> agentTempList = null;
-        if (agentList == null) {
-            agentList = getUserRes().findByOrgiAndAgentAndDatastatus(orgi, true, false);
-            agentTempList = new ArrayList<User>();
-            // 共享的话 查出绑定的组织
-            if (isShare) {
-                List<OrgiSkillRel> orgiSkillRelList = getOrgiSkillRelRes().findByOrgi(origOrig);
-                if (!orgiSkillRelList.isEmpty()) {
-                    for (User user : agentList) {
-                        // TODO 此处的查询处理比较多，应使用缓存
-                        // 一个用户可隶属于多个组织
-                        getUserProxy().attachOrgansPropertiesForUser(user);
-                        for (OrgiSkillRel rel : orgiSkillRelList) {
-                            if (user.getOrgans().size() > 0 && user.inAffiliates(rel.getSkillid())) {
-                                agentTempList.add(user);
-                            }
-                        }
+
+        List<User> agentList = getUserRes().findByOrgiAndAgentAndDatastatus(orgi, true, false);
+        List<User> agentTempList = new ArrayList<User>();
+        List<Organ> skillOrgansByOrgi = getOrganRes().findByOrgiAndSkill(origOrig, true);
+
+        if (!skillOrgansByOrgi.isEmpty()) {
+            for (User user : agentList) {
+                // 跳过管理员角色用户，不显示在技能组列表
+                if (user.isAdmin() || user.isSuperadmin()) continue;
+
+                // 只显示在线的客服，跳过离线的客服
+                if (getCache().findOneAgentStatusByAgentnoAndOrig(user.getId(), origOrig) == null) continue;
+
+                // 一个用户可隶属于多个组织
+                getUserProxy().attachOrgansPropertiesForUser(user);
+                for (Organ organ : skillOrgansByOrgi) {
+                    if (user.getOrgans().size() > 0 && user.inAffiliates(organ.getId())) {
+                        agentTempList.add(user);
                     }
                 }
-                agentList = agentTempList;
-            }
-            if (agentList.size() > 0) {
-                getCache().putSystemListByIdAndOrgi(Constants.CACHE_AGENT + origOrig, origOrig, agentList);
             }
         }
+        agentList = agentTempList;
+
         return agentList;
     }
 
@@ -508,7 +498,7 @@ public class OnlineUserProxy {
                     onlineUser.setOlduser("1");
                 }
                 onlineUser.setMobile(MobileDevice.isMobile(request
-                                                                   .getHeader("User-Agent")) ? "1" : "0");
+                        .getHeader("User-Agent")) ? "1" : "0");
 
                 // onlineUser.setSource(user.getId());
 
@@ -546,10 +536,10 @@ public class OnlineUserProxy {
                 onlineUser.setCity(ipdata.getCity());
                 onlineUser.setIsp(ipdata.getIsp());
                 onlineUser.setRegion(ipdata.toString() + "（"
-                                             + ip + "）");
+                        + ip + "）");
 
                 onlineUser.setDatestr(new SimpleDateFormat("yyyMMdd")
-                                              .format(now));
+                        .format(now));
 
                 onlineUser.setHostname(ip);
                 onlineUser.setSessionid(sessionid);
@@ -1028,6 +1018,13 @@ public class OnlineUserProxy {
             userRes = MainContext.getContext().getBean(UserRepository.class);
         }
         return userRes;
+    }
+
+    private static OrganRepository getOrganRes() {
+        if (organRes == null) {
+            organRes = MainContext.getContext().getBean(OrganRepository.class);
+        }
+        return organRes;
     }
 
     private static OrgiSkillRelRepository getOrgiSkillRelRes() {
