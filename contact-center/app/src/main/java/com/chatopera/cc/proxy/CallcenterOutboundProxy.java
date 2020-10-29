@@ -16,6 +16,7 @@
  */
 package com.chatopera.cc.proxy;
 
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.util.freeswitch.model.CallCenterAgent;
 import org.apache.commons.lang.StringUtils;
@@ -35,7 +36,7 @@ public class CallcenterOutboundProxy {
     @SuppressWarnings("unchecked")
     public static List<CallCenterAgent> service() {
         List<CallCenterAgent> agentList = new ArrayList<CallCenterAgent>();
-        final Map<String, CallCenterAgent> map = MainContext.getCache().findAllCallCenterAgentsByOrgi(MainContext.SYSTEM_ORGI);
+        final Map<String, CallCenterAgent> map = MainContext.getCache().findAllCallCenterAgentsByOrgi(Constants.SYSTEM_ORGI);
         for (Map.Entry<String, CallCenterAgent> entry : map.entrySet()) {
             if (StringUtils.equals(entry.getValue().getWorkstatus(), "callout")) {
                 agentList.add(entry.getValue());
@@ -53,7 +54,7 @@ public class CallcenterOutboundProxy {
     @SuppressWarnings("unchecked")
     public static List<CallCenterAgent> service(String sip) {
         List<CallCenterAgent> agentList = new ArrayList<CallCenterAgent>();
-        final Map<String, CallCenterAgent> map = MainContext.getCache().findAllCallCenterAgentsByOrgi(MainContext.SYSTEM_ORGI);
+        final Map<String, CallCenterAgent> map = MainContext.getCache().findAllCallCenterAgentsByOrgi(Constants.SYSTEM_ORGI);
         for (Map.Entry<String, CallCenterAgent> entry : map.entrySet()) {
             if (StringUtils.equals(entry.getValue().getSiptrunk(), sip)) {
                 agentList.add(entry.getValue());
@@ -71,7 +72,7 @@ public class CallcenterOutboundProxy {
     @SuppressWarnings("unchecked")
     public static List<CallCenterAgent> extention(String extno) {
         List<CallCenterAgent> agentList = new ArrayList<CallCenterAgent>();
-        Map<String, CallCenterAgent> map = MainContext.getCache().findAllCallCenterAgentsByOrgi(MainContext.SYSTEM_ORGI);
+        Map<String, CallCenterAgent> map = MainContext.getCache().findAllCallCenterAgentsByOrgi(Constants.SYSTEM_ORGI);
         for (Map.Entry<String, CallCenterAgent> entry : map.entrySet()) {
             if (StringUtils.equals(entry.getValue().getExtno(), extno)) {
                 agentList.add(entry.getValue());

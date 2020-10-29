@@ -2,6 +2,7 @@
 	<form class="layui-form uk-form" method="post" action="/setting/tag/update.html">
 		<input type="hidden" name="id" value="${tag.id!''}">
 		<input type="hidden" name="tagtype" value="${tagtype!''}">
+		<input type="hidden" id="initialColor" value="<#if tag??>${tag.color!''}</#if>">
 	  <div class="layui-form-item">
 	    <label class="layui-form-label">标签：</label>
 	    <div class="layui-input-inline">
@@ -44,7 +45,7 @@
 	  <div class="layui-form-button">
 	    <div class="layui-button-block">
 	      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
-	      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+	      <button type="reset" class="layui-btn layui-btn-primary" id="reset">重置</button>
 	    </div>
 	  </div>
 	</form>
@@ -76,5 +77,15 @@ $(document).ready(
 								$(this).addClass('ukefu-im-checked');
 								$('#color').val($(this).attr('data-value'));
 							});
-		});	
+		});
+
+	    $("#reset").click(function () {
+	    	var num = $("#initialColor").val()
+			$('.ukefu-im-ping-color .ukefu-im-item')
+					.removeClass(
+							'ukefu-im-checked');
+			$(".theme" + num).addClass('ukefu-im-checked');
+			$('#color').val(num)
+		})
+
 </script>

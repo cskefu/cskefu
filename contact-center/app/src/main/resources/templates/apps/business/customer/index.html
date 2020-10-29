@@ -58,32 +58,34 @@
 
                 <#if user?? && (user.roleAuthMap["A03_A01_A02_B010"]?? || user.admin) >
                 <div class="layui-btn-group ukefu-btn-group">
-                    <button class="layui-btn layui-btn-small dropdown-menu">
+                    <button class="layui-btn layui-btn-small dropdown-menu <#if !currentOrgan??>noexport</#if>">
                         <i class="kfont">&#xe672;</i> 导出
                         <i class="layui-icon">&#xe625;</i>
                     </button>
-                    <ul class="ukefu-dropdown-menu layui-anim layui-anim-upbit">
-                        <li>
-                            <a href="javascript:void(0)" id="batexp" title="导出客户" target="_blank">
-                                <i class="kfont">&#xe672;</i>
-                                导出选中结果
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/apps/customer/expsearch.html?1=1<#if q??>&q=${q!''}</#if><#if ekind??>&ekind=${ekind}</#if>&subtype=${subtype}"
-                               title="导出客户" target="_blank">
-                                <i class="kfont">&#xe672;</i>
-                                导出当前搜索结果
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/apps/customer/expall.html<#if ekind??>?ekind=${ekind}</#if>" title="导出客户"
-                               target="_blank">
-                                <i class="kfont">&#xe672;</i>
-                                导出全部数据
-                            </a>
-                        </li>
-                    </ul>
+                    <#if currentOrgan?? && currentOrgan != null>
+                        <ul class="ukefu-dropdown-menu layui-anim layui-anim-upbit">
+                            <li>
+                                <a href="javascript:void(0)" id="batexp" title="导出客户" target="_blank">
+                                    <i class="kfont">&#xe672;</i>
+                                    导出选中结果
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/apps/customer/expsearch.html?1=1<#if q??>&q=${q!''}</#if><#if ekind??>&ekind=${ekind}</#if>&subtype=${subtype}"
+                                   title="导出客户" target="_blank">
+                                    <i class="kfont">&#xe672;</i>
+                                    导出当前搜索结果
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/apps/customer/expall.html<#if ekind??>?ekind=${ekind}</#if>" title="导出客户"
+                                   target="_blank">
+                                    <i class="kfont">&#xe672;</i>
+                                    导出全部数据
+                                </a>
+                            </li>
+                        </ul>
+                    </#if>
                 </div>
             </#if>
         </div>
@@ -181,6 +183,11 @@
 </div>
 </div>
 </div>
+<style>
+    .noexport{
+        background:grey !important;
+    }
+</style>
 <script>
     $(document).ready(function(){
         layui.use('layer', function(){

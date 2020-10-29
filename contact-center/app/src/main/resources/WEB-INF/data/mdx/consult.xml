@@ -4,7 +4,7 @@
 		<View alias="agentservice">
 			<SQL>
 			<![CDATA[
-			select * from uk_agentservice where 1 = 1 <#if skill?? && skill!=""> AND agentskill = '${skill!''}'</#if> <#if agent?? && agent!=""> AND agentno = '${agent!''}'</#if> <#if orgi?? && orgi!=""> AND orgi = '${orgi!''}'</#if> <#if begin?? && begin!=""> AND createtime >= str_to_date('${begin!''}', '%Y-%m-%d %H:%i:%s')</#if> <#if end?? && end!=""> AND createtime <= str_to_date('${end!''} 23:59:59', '%Y-%m-%d %H:%i:%s')</#if>
+			select * from uk_agentservice where 1 = 1 <#if skill?? && skill!=""> AND agentskill IN (${skill!''})</#if> <#if agent?? && agent!=""> AND agentno = '${agent!''}'</#if> <#if orgi?? && orgi!=""> AND orgi = '${orgi!''}'</#if> <#if begin?? && begin!=""> AND createtime >= str_to_date('${begin!''}', '%Y-%m-%d %H:%i:%s')</#if> <#if end?? && end!=""> AND createtime <= str_to_date('${end!''} 23:59:59', '%Y-%m-%d %H:%i:%s')</#if>
 			]]>
 			</SQL>
 		</View>

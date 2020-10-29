@@ -17,6 +17,7 @@
 								<tr>
 								  <th>来源</th>
 								  <th>用户标识</th>
+								  <th>客服</th>
 								  <th>拉黑时间</th>
 								  <th>结束时间</th>
 								  <th>最后一次对话时长</th>
@@ -31,8 +32,10 @@
 								  <td>
 									${black.channel!''}
 								  </td>
-								  
 								  <td>${black.agentuser!''}（${black.userid!''}）</td>
+
+								  <td>${black.agentusername!''}</td>
+
 								  <td>${black.createtime?string("yyyy-MM-dd HH:mm:ss")}</td>
 								  <td><#if black.endtime??>${black.endtime?string("yyyy-MM-dd HH:mm:ss")}<#else>永久</#if></td>
 								  <td>

@@ -60,7 +60,8 @@ public class LogIntercreptorHandler implements org.springframework.web.servlet.H
         HandlerMethod handlerMethod = (HandlerMethod) arg2;
         Object hander = handlerMethod.getBean();
         RequestMapping obj = handlerMethod.getMethod().getAnnotation(RequestMapping.class);
-        if (StringUtils.isNotBlank(request.getRequestURI()) && !(request.getRequestURI().startsWith("/message/ping") || request.getRequestURI().startsWith("/res/css") || request.getRequestURI().startsWith("/error") || request.getRequestURI().startsWith("/im/"))) {
+        if (StringUtils.isNotBlank(request.getRequestURI()) &&
+                !(request.getRequestURI().startsWith("/message/ping") || request.getRequestURI().startsWith("/res/css") || request.getRequestURI().startsWith("/error") || request.getRequestURI().startsWith("/im/"))) {
             RequestLog log = new RequestLog();
             log.setEndtime(new Date());
 

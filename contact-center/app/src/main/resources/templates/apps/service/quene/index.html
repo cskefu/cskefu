@@ -41,7 +41,7 @@
 								${(agentUser.waittingtime/(1000*60*60))?string('00')}:${((agentUser.waittingtime%(1000*60*60))/(1000*60))?string('00')}:${((agentUser.waittingtime%(1000*60))/(1000))?string('00')}
 							</td>
 							<td style="width:1%" nowrap="nowrap">
-								<a href="/service/quene/clean.html?id=${agentUser.id!''}" data-toggle="tip" data-title="转队列后会随机分配坐席，请确认是否转队列或技能组？">
+								<a href="/service/quene/transfer.html?id=${agentUser.id!''}&skillid=${agentUser.skill}" data-toggle="ajax" data-width="550" data-height="350" title="转队列">
 									<i class="kfont">&#xe62c;</i>
 									转队列
 								</a>

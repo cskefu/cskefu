@@ -53,18 +53,24 @@ public class User implements java.io.Serializable {
     private String secureconf = "5";
     private boolean admin;                 // 是否是管理员
     private boolean superadmin = false;    // 是否是系统管理员
-
     private String orgi;
-    private String orgid;
-
     private String creater;
     private Date createtime = new Date();
     private Date passupdatetime = new Date();
     private Date updatetime = new Date();
     private String memo;
     private boolean agent;         // 是否开通坐席功能
+    // 呼叫中心相关
     private boolean callcenter;    // 是否启用呼叫中心 坐席功能
-    private String sipaccount;
+    private String pbxhostId;      // 语音平台 ID
+    private String extensionId;    // 分机号ID
+
+    @Transient
+    private PbxHost pbxHost;       // 语音平台
+
+    @Transient
+    private Extension extension;   // 分机
+
     private String city;           // 城市
     private String province;       // 省份
     private boolean login;         // 是否登录
@@ -368,14 +374,6 @@ public class User implements java.io.Serializable {
         this.province = province;
     }
 
-    public String getSipaccount() {
-        return sipaccount;
-    }
-
-    public void setSipaccount(String sipaccount) {
-        this.sipaccount = sipaccount;
-    }
-
     @Transient
     public boolean isLogin() {
         return login;
@@ -484,14 +482,6 @@ public class User implements java.io.Serializable {
         this.roleAuthMap = roleAuthMap;
     }
 
-    public String getOrgid() {
-        return orgid;
-    }
-
-    public void setOrgid(String orgid) {
-        this.orgid = orgid;
-    }
-
     public int getMaxuser() {
         return maxuser;
     }
@@ -529,5 +519,41 @@ public class User implements java.io.Serializable {
 
     public void setOrgans(final HashMap<String, Organ> organs) {
         this.organs = organs;
+    }
+
+    @Transient
+    public String getPbxhostId() {
+        return pbxhostId;
+    }
+
+    public void setPbxhostId(String pbxhostId) {
+        this.pbxhostId = pbxhostId;
+    }
+
+    @Transient
+    public String getExtensionId() {
+        return extensionId;
+    }
+
+    public void setExtensionId(String extensionId) {
+        this.extensionId = extensionId;
+    }
+
+    @Transient
+    public PbxHost getPbxHost() {
+        return pbxHost;
+    }
+
+    public void setPbxHost(PbxHost pbxHost) {
+        this.pbxHost = pbxHost;
+    }
+
+    @Transient
+    public Extension getExtension() {
+        return extension;
+    }
+
+    public void setExtension(Extension extension) {
+        this.extension = extension;
     }
 }

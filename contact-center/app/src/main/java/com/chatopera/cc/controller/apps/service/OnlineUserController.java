@@ -140,10 +140,11 @@ public class OnlineUserController extends Handler {
                         userid, orgi).ifPresent(p -> {
                     map.put("contacts", contactsRes.findOne(p.getContactsid()));
                 });
-
-                map.put(
-                        "tags",
-                        tagRes.findByOrgiAndTagtype(orgi, MainContext.ModelType.USER.toString()));
+                AgentService service = agentServiceRes.findByIdAndOrgi(agentservice, orgi);
+                if (service != null) {
+                    map.addAttribute(
+                            "tags", tagRes.findByOrgiAndTagtypeAndSkill(orgi, MainContext.ModelType.USER.toString(), service.getSkill()));
+                }
                 map.put(
                         "summaryTags",
                         tagRes.findByOrgiAndTagtype(orgi, MainContext.ModelType.SUMMARY.toString()));

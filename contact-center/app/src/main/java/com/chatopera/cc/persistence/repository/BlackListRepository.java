@@ -23,6 +23,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface BlackListRepository  extends JpaRepository<BlackEntity, String>{
 	
@@ -33,7 +34,9 @@ public interface BlackListRepository  extends JpaRepository<BlackEntity, String>
 	Page<BlackEntity> findByOrgi(String orgi, Pageable page);
 	
 	List<BlackEntity> findByOrgi(String orgi);
-	
+
+	Page<BlackEntity> findByOrgiAndSkillIn( String orgi, Set<String> organs, Pageable page);
+
 	int countByPhoneAndOrgi(String phone, String orgi) ;
 }
 

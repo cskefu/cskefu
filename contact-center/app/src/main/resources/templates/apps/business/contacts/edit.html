@@ -9,6 +9,7 @@
 		<input type="hidden" name="wlcompany_name" value="${contacts.wlcompany_name!''}">
 		<input type="hidden" name="wlsid" value="${contacts.wlsid!''}">
 		<input type="hidden" name="wlsystem_name" value="${contacts.wlsystem_name!''}">
+		<input type="hidden" name="shares" value="all">
 		<div class="layui-collapse">
 			<div class="layui-colla-item">
 				<h2 class="layui-colla-title">基本信息</h2>
@@ -35,21 +36,6 @@
 								</#if>
 							</div>
 						</div>
-					</div>
-					<div class="layui-form-item">
-						<div class="layui-inline">
-							<label class="layui-form-label">共享联系人：</label>
-							<div class="layui-input-inline" style="width:auto;">
-								<div class="layui-input-block">
-									<input type="radio" name="shares" value="none" title="不共享（仅创建人和直属上级可见）" <#if contacts?? && contacts.shares !='all'>checked</#if>> 
-									<input type="radio" name="shares" value="all" title="所有人" <#if contacts?? && contacts.shares =='all'>checked</#if>>
-									<!-- 
-									<input type="radio" name="shares" value="1" title="指定人员或部门" checked>
-									 -->
-								</div>
-							</div>
-						</div>
-						
 					</div>
 				</div>
 			</div>

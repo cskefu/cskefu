@@ -193,7 +193,7 @@ public class ChatbotEventHandler {
                         MainContext.ChannelType.WEBIM.toString(), // callout
                         onlineUser.getId(),
                         onlineUser.getUsername(),
-                        MainContext.SYSTEM_ORGI,
+                        Constants.SYSTEM_ORGI,
                         appid);
 
                 agentUser.setServicetime(now);

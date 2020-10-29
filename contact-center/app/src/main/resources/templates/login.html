@@ -13,7 +13,6 @@
 <link rel="stylesheet" href="/css/login.css">
 <link rel="stylesheet" href="/css/flexboxgrid.min.css">
 <script src="/layui.js"></script>
-
 <script language="javascript">
 	if((window.frameElement && window.frameElement.id || '') != ""){
 		top.location.href = "/login.html" ;
@@ -56,10 +55,10 @@
 </head>
 
 <body class="login">
-<#if adsLoginBanner??>
-<div style="width: 100%; height:50px; background-color: #2bd99e; padding-top: 0px;display: flex;">  <p style="color: white;margin: auto; font-size: 15px">商务洽谈：(+86)136-9149-0568; 售后技术支持：(+86)158-0121-3126; 云服务发票等：info@chatopera.com *本提示仅出现于演示环境</p> </div>
-</#if>
-<div class="login-box">
+	<#if adsLoginBanner??>
+	<div style="width: 100%; height:50px; background-color: #2bd99e; padding-top: 0px;display: flex;">  <p style="color: white;margin: auto; font-size: 15px">商务洽谈：(+86)136-9149-0568; 售后技术支持：(+86)158-0121-3126; 云服务发票等：info@chatopera.com *本提示仅出现于演示环境</p> </div>
+	</#if>
+	<div class="login-box">
 		<div class="login-logo">
 			<a> <img src="<#if systemConfig?? && systemConfig.loginlogo?? && systemConfig.loginlogo != ''>/res/image.html?id=${systemConfig.loginlogo?url}<#else>images/logo2.png</#if>" style="height:60px;width:220px;">
 			</a>

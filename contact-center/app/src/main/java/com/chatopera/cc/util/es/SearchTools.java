@@ -287,7 +287,7 @@ public class SearchTools {
 	 */
 	private static PageImpl<UKDataBean> search(BoolQueryBuilder queryBuilder , MetadataTable metadataTable , boolean loadRef , int p, int ps){
 		ESDataExchangeImpl esDataExchange = MainContext.getContext().getBean(ESDataExchangeImpl.class);
-		return esDataExchange.findPageResult(queryBuilder, Constants.SYSTEM_INDEX, metadataTable, new PageRequest(p, ps , Sort.Direction.ASC, "createtime") , loadRef) ;
+		return esDataExchange.findPageResult(queryBuilder, Constants.SYSTEM_ORGI, metadataTable, new PageRequest(p, ps , Sort.Direction.ASC, "createtime") , loadRef) ;
 	}
 	
 	/**

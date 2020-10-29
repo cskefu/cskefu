@@ -14,16 +14,16 @@ services:
       - contact-center
 
   contact-center:
-    image: chatopera/contact-center:develop
+    image: ${CC_IMAGE:-chatopera/contact-center:develop}
     restart: always
     ports:
       - "${CC_WEB_PORT:-8035}:8035"
-      - "8036:8036"
+      - "${CC_SOCKET_PORT:-8036}:8036"
     volumes:
       - ./contact-center/data:/data
       - ./contact-center/logs:/logs
     environment:
-      - JAVA_OPTS=-Xmx12288m -Xms2048m -XX:PermSize=256m -XX:MaxPermSize=1024m -Djava.net.preferIPv4Stack=true
+      - "JAVA_OPTS=-Xmx${CC_JAVA_XMX:-12288m} -Xms${CC_JAVA_XMS:-2048m} -XX:PermSize=256m -XX:MaxPermSize=1024m -Djava.net.preferIPv4Stack=true"
       - SERVER_PORT=8035
       - SERVER_LOG_PATH=/logs
       - SERVER_LOG_LEVEL=${LOG_LEVEL:-WARN}
@@ -50,7 +50,7 @@ services:
       - SKYPE_CHANNEL_CRM=${SKYPE_CHANNEL_CRM:-placeholder}
       - BOT_THRESHOLD_FAQ_BEST_REPLY=${BOT_THRESHOLD_FAQ_BEST_REPLY:-0.9}
       - BOT_THRESHOLD_FAQ_SUGG_REPLY=${BOT_THRESHOLD_FAQ_SUGG_REPLY:-0.3}
-      - CSKEFU_SETTINGS_WEBIM_VISITOR_SEPARATE=false
+      - CSKEFU_SETTINGS_WEBIM_VISITOR_SEPARATE=true
       - TONGJI_BAIDU_SITEKEY=${TONGJI_BAIDU_SITEKEY:-placeholder}
       - ADS_LOGIN_BANNER=${ADS_LOGIN_BANNER:-off}
     depends_on:

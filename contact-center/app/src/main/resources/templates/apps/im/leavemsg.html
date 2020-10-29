@@ -15,6 +15,9 @@
 	</head>
 	<body style="overflow:hidden;" class="<#if type?? && type='text'>ukefu-point-text</#if>">
 		<form action="/im/leavemsg/save.html?appid=${appid!''}" method="post">
+			<#if skill??>
+		      <input type="hidden" name="skillId" value="${skill!''}">
+		   </#if>
 		<div class="large ukefu-im-theme <#if type?? && type='text'>ukefu-theme-border-${inviteData.consult_dialog_color!''}</#if>">
 		    <div id="containter" class="clearfix">
 		    	<div id="header" class="theme${inviteData.consult_dialog_color!''}">

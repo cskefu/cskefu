@@ -114,7 +114,7 @@ color: #555;
 .layui-layout-admin .layui-body {
     top: 50px;
     bottom: 0px;
-	left:50px;
+	left:40px;
 	overflow:hidden;
     border-left: 10px solid #DEDEDE;
 }
@@ -410,7 +410,7 @@ body .site-ukefu-nav .layui-nav-item{line-height: 40px}
 }
 .product-content{
 	width: 100%;
-    height: calc(100% - 38px);
+    height: calc(100% - 76px);
     margin-top:0px;
     background-color: #e6e6e6;
     padding-left:0px;
@@ -1498,7 +1498,7 @@ ul.dialog-list li .dialog-info .news .badge {
 	position: absolute;
 	right:0px;  
 	top:0px;
-	line-height:35px;  
+	height:35px;
 }
 .ukefu-switch .layui-form-switch{
 	width: 50px;    
@@ -2909,8 +2909,7 @@ select{
 	position: absolute;
     top: 0px;
     height: 50px;
-    left: 150px;
-    background-color: rgba(0,0,0,.15);
+    right:0px;
     border-radius: 50px;
     <#if user?? && user.admin>
     width: 740px;
@@ -2927,11 +2926,11 @@ select{
 	user-select: none;
 }
 .ukefu-softphone .soft-function{
-	width:44px;
-	height:46px;
+	width:42px;
+	height:100%;
 	text-align:center;
 	border-radius: 3px;
-	margin:2px 3px 2px 3px;
+	margin:0 3px 0 3px;
 	float:left;
 	cursor: pointer;
 }
@@ -2954,18 +2953,14 @@ select{
 }
 
 .ukefu-softphone .status{
-	width:180px;
-	height:44px;
+	width:200px;
+	height:42px;
 	border-radius: 3px;
 	padding:5px 5px 3px 5px;
 	float:left;
 }
 .ukefu-softphone .status:hover{
 	background-color: rgba(0,0,0,.10);
-}
-
-.ukefu-softphone .status .text{
-	line-height:22px;
 }
 
 .ukefu-softphone .status.disabled{
@@ -3109,9 +3104,6 @@ select{
 }
 .ukefu-contacts-detail .layui-form-item .layui-input-inline {
     margin-top: 9px;
-}
-.ukefu-softphone .soft-function{
-	margin-top:3px;
 }
 .ukefu-softphone .soft-function .soft-function{
 	margin:0px !important;

@@ -43,8 +43,6 @@ public class MainContext {
 
     private static boolean imServerRunning = false;  // IM服务状态
 
-    public static String SYSTEM_ORGI = "cskefu";
-
     private static Set<String> modules = new HashSet<String>();
 
     public static Map<String, Class<?>> csKeFuResourceMap = new HashMap<String, Class<?>>();
@@ -61,12 +59,9 @@ public class MainContext {
 
     static {
         ConvertUtils.register(new DateConverter(), java.util.Date.class);
-        enableModule("report");
-
         csKeFuResourceMap.put(TaskType.ACTIVE.toString(), ActivityResource.class);
         csKeFuResourceMap.put(TaskType.BATCH.toString(), BatchResource.class);
     }
-
 
     public enum AskSectionType {
         DEFAULT;
@@ -435,7 +430,10 @@ public class MainContext {
         }
     }
 
-    public enum ExtentionType {
+    /**
+     * 分机类型
+     */
+    public enum ExtensionType {
         LINE,
         IVR,
         BUSINESS,
@@ -445,6 +443,15 @@ public class MainContext {
 
         public String toString() {
             return super.toString().toLowerCase();
+        }
+
+        public static ExtensionType toValue(final String str) {
+            for (final ExtensionType item : values()) {
+                if (StringUtils.equalsIgnoreCase(item.toString(), str)) {
+                    return item;
+                }
+            }
+            throw new IllegalArgumentException();
         }
     }
 

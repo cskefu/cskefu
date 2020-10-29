@@ -29,7 +29,7 @@ if [ -d $COSINEE_BASEDIR ]; then
     fi
 
     cd $PLUGINS_DIR
-    if [ -e $pluginName ]; then
+    if [ -L $pluginName ]; then
         rm -rf $pluginName
     fi
 
@@ -37,7 +37,7 @@ if [ -d $COSINEE_BASEDIR ]; then
         echo "[plugin] unlink views for channel"
         VIEW_ADMIN_CHANNEL=$COSINEE_BASEDIR/contact-center/app/src/main/resources/templates/admin/channel
 
-        if [ -d $VIEW_ADMIN_CHANNEL/$pluginName ]; then
+        if [ -L $VIEW_ADMIN_CHANNEL/$pluginName ]; then
             rm -rf $VIEW_ADMIN_CHANNEL/$pluginName
         fi
     fi
@@ -47,7 +47,7 @@ if [ -d $COSINEE_BASEDIR ]; then
         echo "[plugin] unlink views for apps"
         VIEW_ADMIN_APPS=$COSINEE_BASEDIR/contact-center/app/src/main/resources/templates/apps
 
-        if [ -d $VIEW_ADMIN_APPS/$pluginName ]; then
+        if [ -L $VIEW_ADMIN_APPS/$pluginName ]; then
             rm -rf $VIEW_ADMIN_APPS/$pluginName
         fi
     fi   

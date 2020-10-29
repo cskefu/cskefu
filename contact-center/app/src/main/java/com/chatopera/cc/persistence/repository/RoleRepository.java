@@ -28,10 +28,8 @@ public interface RoleRepository
 
   List<Role> findByOrgi(String orgi);
   
-  List<Role> findByOrgiAndOrgid(String orgi, String orgid);
+  List<Role> findByOrgi(String orgi, String orgid);
   
   Role findByNameAndOrgi(String paramString, String orgi);
-  
-  Role findByNameAndOrgiAndOrgid(String paramString, String orgi, String orgid);
 }
 

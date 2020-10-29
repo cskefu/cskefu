@@ -754,24 +754,24 @@ public class Cache {
      * Session Config 相关
      **************************/
 
-    public void putSessionConfigByOrgi(final SessionConfig sessionConfig, final String orgi) {
-        redisCommand.put(RedisKey.getSessionConfig(orgi), SerializeUtil.serialize(sessionConfig));
+    public void putSessionConfigByOrgi(final SessionConfig sessionConfig, String organid, final String orgi) {
+        redisCommand.put(RedisKey.getSessionConfig(organid, orgi), SerializeUtil.serialize(sessionConfig));
     }
 
-    public SessionConfig findOneSessionConfigByOrgi(final String orgi) {
-        String serialized = redisCommand.get(RedisKey.getSessionConfig(orgi));
+    public SessionConfig findOneSessionConfigByOrgi(String organid, final String orgi) {
+        String serialized = redisCommand.get(RedisKey.getSessionConfig(organid, orgi));
         if (StringUtils.isNotBlank(serialized)) {
             return (SessionConfig) SerializeUtil.deserialize(serialized);
         }
         return null;
     }
 
-    public void deleteSessionConfigByOrgi(final String orgi) {
-        redisCommand.delete(RedisKey.getSessionConfig(orgi));
+    public void deleteSessionConfigByOrgi(String organid, final String orgi) {
+        redisCommand.delete(RedisKey.getSessionConfig(organid, orgi));
     }
 
-    public boolean existSessionConfigByOrgi(final String orgi) {
-        return redisCommand.exists(RedisKey.getSessionConfig(orgi));
+    public boolean existSessionConfigByOrgi(String organid, final String orgi) {
+        return redisCommand.exists(RedisKey.getSessionConfig(organid, orgi));
     }
 
     public void putSessionConfigListByOrgi(final List<SessionConfig> lis, final String orgi) {

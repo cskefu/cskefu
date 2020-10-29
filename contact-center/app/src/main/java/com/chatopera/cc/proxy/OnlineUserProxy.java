@@ -16,7 +16,6 @@
  */
 package com.chatopera.cc.proxy;
 
-import com.chatopera.cc.acd.ACDServiceRouter;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
@@ -139,7 +138,7 @@ public class OnlineUserProxy {
         if (isJudgeShare) {
             SystemConfig systemConfig = MainUtils.getSystemConfig();
             if (systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantshare()) {
-                orgi = MainContext.SYSTEM_ORGI;
+                orgi = Constants.SYSTEM_ORGI;
                 isShare = true;
             }
         }
@@ -149,7 +148,7 @@ public class OnlineUserProxy {
             skillGroups = service.findByOrgiAndSkill(orgi, true);
             // 租户共享时 查出该租住要显的绑定的技能组
             if (isShare && !(StringUtils.equals(
-                    MainContext.SYSTEM_ORGI, (invite == null ? origOrig : invite.getOrgi())))) {
+                    Constants.SYSTEM_ORGI, (invite == null ? origOrig : invite.getOrgi())))) {
                 OrgiSkillRelRepository orgiSkillRelService = MainContext.getContext().getBean(
                         OrgiSkillRelRepository.class);
                 List<OrgiSkillRel> orgiSkillRelList = null;
@@ -324,9 +323,8 @@ public class OnlineUserProxy {
         return kt;
     }
 
-
     /**
-     * @param orgi 一个坐席可以添加到多个组织，原租户共享功能废弃
+     * @param orgi
      * @return
      */
     @SuppressWarnings("unchecked")
@@ -358,30 +356,6 @@ public class OnlineUserProxy {
 
         return agentList;
     }
-
-
-    public static void clean(final String orgi) {
-        // 共享 查出机构下所有产品
-        SystemConfig systemConfig = MainUtils.getSystemConfig();
-        if (systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantshare()) {
-            TenantRepository tenantRes = MainContext.getContext().getBean(TenantRepository.class);
-            Tenant tenant = tenantRes.findById(orgi);
-            if (tenant != null) {
-                List<Tenant> tenants = tenantRes.findByOrgid(tenant.getOrgid());
-                if (!tenants.isEmpty()) {
-                    for (Tenant t : tenants) {
-                        String orgiT = t.getId();
-                        getCache().deleteSystembyIdAndOrgi(Constants.CACHE_SKILL + orgiT, orgiT);
-                        getCache().deleteSystembyIdAndOrgi(Constants.CACHE_AGENT + orgiT, orgiT);
-                    }
-                }
-            }
-        } else {
-            getCache().deleteSystembyIdAndOrgi(Constants.CACHE_SKILL + orgi, orgi);
-            getCache().deleteSystembyIdAndOrgi(Constants.CACHE_AGENT + orgi, orgi);
-        }
-    }
-
 
     public static Contacts processContacts(
             final String orgi,
@@ -804,7 +778,7 @@ public class OnlineUserProxy {
         List<SceneType> sceneTypeList = cacheSceneType(
                 (DataExchangeInterface) MainContext.getContext().getBean("scenetype"), null, orgi);
         List<AreaType> areaTypeList = getCache().findOneSystemListByIdAndOrgi(
-                Constants.CSKEFU_SYSTEM_AREA, MainContext.SYSTEM_ORGI);
+                Constants.CSKEFU_SYSTEM_AREA, Constants.SYSTEM_ORGI);
         if (sceneTypeList != null && cate != null && !Constants.DEFAULT_TYPE.equals(cate)) {
             for (SceneType sceneType : sceneTypeList) {
                 if (cate.equals(sceneType.getId())) {
@@ -834,36 +808,36 @@ public class OnlineUserProxy {
         return result;
     }
 
-    public static List<OtherMessageItem> search(String q, String orgi, User user) throws IOException, TemplateException {
-        List<OtherMessageItem> otherMessageItemList = null;
-        String param = "";
-        SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(
-                orgi);
-        if (StringUtils.isNotBlank(sessionConfig.getOqrsearchurl())) {
-            Template templet = MainUtils.getTemplate(sessionConfig.getOqrsearchinput());
-            Map<String, Object> values = new HashMap<String, Object>();
-            values.put("q", q);
-            values.put("user", user);
-            param = MainUtils.getTemplet(templet.getTemplettext(), values);
-        }
-        String result = HttpClientUtil.doPost(sessionConfig.getOqrsearchurl(), param), text = null;
-        if (StringUtils.isNotBlank(result) && StringUtils.isNotBlank(
-                sessionConfig.getOqrsearchoutput()) && !result.equals("error")) {
-            Template templet = MainUtils.getTemplate(sessionConfig.getOqrsearchoutput());
-            @SuppressWarnings("unchecked")
-            Map<String, Object> jsonData = objectMapper.readValue(result, Map.class);
-            Map<String, Object> values = new HashMap<String, Object>();
-            values.put("q", q);
-            values.put("user", user);
-            values.put("data", jsonData);
-            text = MainUtils.getTemplet(templet.getTemplettext(), values);
-        }
-        if (StringUtils.isNotBlank(text)) {
-            JavaType javaType = getCollectionType(ArrayList.class, OtherMessageItem.class);
-            otherMessageItemList = objectMapper.readValue(text, javaType);
-        }
-        return otherMessageItemList;
-    }
+//    public static List<OtherMessageItem> search(String q, String orgi, User user) throws IOException, TemplateException {
+//        List<OtherMessageItem> otherMessageItemList = null;
+//        String param = "";
+//        SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(
+//                orgi);
+//        if (StringUtils.isNotBlank(sessionConfig.getOqrsearchurl())) {
+//            Template templet = MainUtils.getTemplate(sessionConfig.getOqrsearchinput());
+//            Map<String, Object> values = new HashMap<String, Object>();
+//            values.put("q", q);
+//            values.put("user", user);
+//            param = MainUtils.getTemplet(templet.getTemplettext(), values);
+//        }
+//        String result = HttpClientUtil.doPost(sessionConfig.getOqrsearchurl(), param), text = null;
+//        if (StringUtils.isNotBlank(result) && StringUtils.isNotBlank(
+//                sessionConfig.getOqrsearchoutput()) && !result.equals("error")) {
+//            Template templet = MainUtils.getTemplate(sessionConfig.getOqrsearchoutput());
+//            @SuppressWarnings("unchecked")
+//            Map<String, Object> jsonData = objectMapper.readValue(result, Map.class);
+//            Map<String, Object> values = new HashMap<String, Object>();
+//            values.put("q", q);
+//            values.put("user", user);
+//            values.put("data", jsonData);
+//            text = MainUtils.getTemplet(templet.getTemplettext(), values);
+//        }
+//        if (StringUtils.isNotBlank(text)) {
+//            JavaType javaType = getCollectionType(ArrayList.class, OtherMessageItem.class);
+//            otherMessageItemList = objectMapper.readValue(text, javaType);
+//        }
+//        return otherMessageItemList;
+//    }
 
     public static OtherMessageItem suggestdetail(AiConfig aiCofig, String id, String orgi, User user) throws IOException, TemplateException {
         OtherMessageItem otherMessageItem = null;
@@ -894,36 +868,36 @@ public class OnlineUserProxy {
         return otherMessageItem;
     }
 
-    public static OtherMessageItem detail(String id, String orgi, User user) throws IOException, TemplateException {
-        OtherMessageItem otherMessageItem = null;
-        String param = "";
-        SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(
-                orgi);
-        if (StringUtils.isNotBlank(sessionConfig.getOqrdetailinput())) {
-            Template templet = MainUtils.getTemplate(sessionConfig.getOqrdetailinput());
-            Map<String, Object> values = new HashMap<String, Object>();
-            values.put("id", id);
-            values.put("user", user);
-            param = MainUtils.getTemplet(templet.getTemplettext(), values);
-        }
-        if (StringUtils.isNotBlank(sessionConfig.getOqrdetailurl())) {
-            String result = HttpClientUtil.doPost(sessionConfig.getOqrdetailurl(), param), text = null;
-            if (StringUtils.isNotBlank(sessionConfig.getOqrdetailoutput()) && !result.equals("error")) {
-                Template templet = MainUtils.getTemplate(sessionConfig.getOqrdetailoutput());
-                @SuppressWarnings("unchecked")
-                Map<String, Object> jsonData = objectMapper.readValue(result, Map.class);
-                Map<String, Object> values = new HashMap<String, Object>();
-                values.put("id", id);
-                values.put("user", user);
-                values.put("data", jsonData);
-                text = MainUtils.getTemplet(templet.getTemplettext(), values);
-            }
-            if (StringUtils.isNotBlank(text)) {
-                otherMessageItem = objectMapper.readValue(text, OtherMessageItem.class);
-            }
-        }
-        return otherMessageItem;
-    }
+//    public static OtherMessageItem detail(String id, String orgi, User user) throws IOException, TemplateException {
+//        OtherMessageItem otherMessageItem = null;
+//        String param = "";
+//        SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(
+//                orgi);
+//        if (StringUtils.isNotBlank(sessionConfig.getOqrdetailinput())) {
+//            Template templet = MainUtils.getTemplate(sessionConfig.getOqrdetailinput());
+//            Map<String, Object> values = new HashMap<String, Object>();
+//            values.put("id", id);
+//            values.put("user", user);
+//            param = MainUtils.getTemplet(templet.getTemplettext(), values);
+//        }
+//        if (StringUtils.isNotBlank(sessionConfig.getOqrdetailurl())) {
+//            String result = HttpClientUtil.doPost(sessionConfig.getOqrdetailurl(), param), text = null;
+//            if (StringUtils.isNotBlank(sessionConfig.getOqrdetailoutput()) && !result.equals("error")) {
+//                Template templet = MainUtils.getTemplate(sessionConfig.getOqrdetailoutput());
+//                @SuppressWarnings("unchecked")
+//                Map<String, Object> jsonData = objectMapper.readValue(result, Map.class);
+//                Map<String, Object> values = new HashMap<String, Object>();
+//                values.put("id", id);
+//                values.put("user", user);
+//                values.put("data", jsonData);
+//                text = MainUtils.getTemplet(templet.getTemplettext(), values);
+//            }
+//            if (StringUtils.isNotBlank(text)) {
+//                otherMessageItem = objectMapper.readValue(text, OtherMessageItem.class);
+//            }
+//        }
+//        return otherMessageItem;
+//    }
 
     public static JavaType getCollectionType(Class<?> collectionClass, Class<?>... elementClasses) {
         return objectMapper.getTypeFactory().constructParametricType(collectionClass, elementClasses);

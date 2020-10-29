@@ -1,9 +1,6 @@
 # dev profile
 src/main/resources/application-dev.properties
 
-# ignore plugins source code
-src/main/java/com/chatopera/cc/plugins/
-
 # ignore channel views within plugins
 src/main/resources/templates/admin/channel/*
 !src/main/resources/templates/admin/channel/im
@@ -11,3 +8,5 @@ src/main/resources/templates/admin/channel/*
 # ignore app views within plugins
 src/main/resources/templates/apps/callout
 src/main/resources/templates/apps/chatbot
+src/main/resources/templates/apps/callcenter
+logs/

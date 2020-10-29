@@ -3,7 +3,7 @@
 		<h1 class="site-h1" style="background-color:#FFFFFF;">
 			用户列表<#if userList??>（${userList.totalElements!''}）</#if>
 			<span style="float:right;">
-				<button class="layui-btn layui-btn-small green" href="/admin/user/add.html" data-toggle="ajax" data-width="750" data-height="485" data-title="创建新用户">
+				<button class="layui-btn layui-btn-small green" href="/admin/user/add.html" data-toggle="ajax" data-width="750" data-height="540" data-title="创建新用户">
 					创建新用户
 				</button>
 			</span>
@@ -33,7 +33,7 @@
 					  <th width="12%">电子邮件</th>
 					  <th width="12%">手机</th>
 					  <th width="50px">多媒体</th>
-					  <#if models?seq_contains("callout")>
+					  <#if models?seq_contains("callcenter")>
 					  <th width="60px">呼叫中心</th>
 					  </#if>
 					  <th width="50px">管理员</th>
@@ -59,23 +59,29 @@
 					  <td>${user.mobile!''}</td>
 					  <td>
 					  	<#if user.agent>
-					  		<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
+					  		<i class="layui-icon" style="color:#19a55d;">&#xe605;</i>
+						<#else>
+						    <i class="layui-icon" style="color:#19a55d;">&#x1006;</i>
 					  	</#if>
 					  </td>
-					  <#if models?seq_contains("callout")>
+					  <#if models?seq_contains("callcenter")>
 					  <td>
 					  	<#if user.callcenter>
-					  		<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
+					  		<i class="layui-icon" style="color:#19a55d;">&#xe605;</i>
+						<#else>
+						  	<i class="layui-icon" style="color:#19a55d;">&#x1006;</i>
 					  	</#if>
 					  </td>
 					  </#if>
 					  <td>
 					  	<#if user.admin>
-					  		<i class="layui-icon" style="color:#19a55d;">&#xe618;</i>
+					  		<i class="layui-icon" style="color:#19a55d;">&#xe605;</i>
+						<#else>
+						  	<i class="layui-icon" style="color:#19a55d;">&#x1006;</i>
 					  	</#if>
 					  </td>
 					  <td style="white-space:nowrap;" nowrap="nowrap">
-					  		<a href="/admin/user/edit.html?id=${user.id!''}" data-toggle="ajax" data-width="750" data-height="485" data-title="编辑用户信息">
+					  		<a href="/admin/user/edit.html?id=${user.id!''}" data-toggle="ajax" data-width="750" data-height="540" data-title="编辑用户信息">
 					  			<i class="layui-icon">&#xe642;</i>
 					  			编辑
 					  		</a>

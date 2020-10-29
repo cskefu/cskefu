@@ -19,13 +19,11 @@ package com.chatopera.cc.controller.apps;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.exception.CSKefuException;
-import com.chatopera.cc.model.Contacts;
-import com.chatopera.cc.model.MetadataTable;
-import com.chatopera.cc.model.PropertiesEvent;
-import com.chatopera.cc.model.User;
+import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.es.ContactsRepository;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.proxy.ContactsProxy;
+import com.chatopera.cc.proxy.OrganProxy;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.PinYinTools;
 import com.chatopera.cc.util.PropertiesEventUtil;
@@ -60,6 +58,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
 @Controller
 @RequestMapping("/apps/contacts")
@@ -84,6 +83,12 @@ public class ContactsController extends Handler {
 
     @Autowired
     private OrganRepository organRes;
+
+    @Autowired
+    private OrganProxy organProxy;
+
+    @Autowired
+    private AgentServiceRepository agentServiceRes;
 
     @Autowired
     private AgentUserContactsRepository agentUserContactsRes;
@@ -112,11 +117,16 @@ public class ContactsController extends Handler {
             map.put("q", q);
         }
 
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
 
         if (StringUtils.isNotBlank(ckind)) {
             boolQueryBuilder.must(termQuery("ckind", ckind));
             map.put("ckind", ckind);
         }
+
+        map.addAttribute("currentOrgan",currentOrgan);
 
         Page<Contacts> contacts = contactsRes.findByCreaterAndSharesAndOrgi(
                 logined.getId(),
@@ -142,6 +152,11 @@ public class ContactsController extends Handler {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
+
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
             return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
         }
@@ -177,6 +192,11 @@ public class ContactsController extends Handler {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
+
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
             return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
         }
@@ -211,6 +231,11 @@ public class ContactsController extends Handler {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
+
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
             return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
         }
@@ -270,6 +295,7 @@ public class ContactsController extends Handler {
             @RequestParam(name = "idselflocation", required = false) String selflocation) {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
+        Organ currentOrgan = super.getOrgan(request);
         String skypeIDReplace = contactsProxy.sanitizeSkypeId(contacts.getSkypeid());
         String msg = "";
         List<Contacts> contact = contactsRes.findByskypeidAndDatastatus(skypeIDReplace, false);
@@ -279,6 +305,11 @@ public class ContactsController extends Handler {
             logger.info("[save] 数据库没有相同skypeid");
             contacts.setCreater(logined.getId());
             contacts.setOrgi(orgi);
+
+            if (currentOrgan != null && StringUtils.isBlank(contacts.getOrgan())) {
+                contacts.setOrgan(currentOrgan.getId());
+            }
+
             contacts.setPinyin(PinYinTools.getInstance().getFirstPinYin(contacts.getName()));
             if (StringUtils.isBlank(contacts.getCusbirthday())) {
                 contacts.setCusbirthday(null);
@@ -351,7 +382,7 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/update")
     @Menu(type = "contacts", subtype = "contacts")
-    public ModelAndView update(HttpServletRequest request, @Valid Contacts contacts , @Valid String ckindId) {
+    public ModelAndView update(HttpServletRequest request, @Valid Contacts contacts, @Valid String ckindId) {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         Contacts data = contactsRes.findOne(contacts.getId());
@@ -400,6 +431,7 @@ public class ContactsController extends Handler {
 
         contacts.setSkypeid(contacts.getSkypeid());
         contacts.setCreater(data.getCreater());
+        contacts.setOrgan(data.getOrgan());
         contacts.setCreatetime(data.getCreatetime());
         contacts.setOrgi(logined.getOrgi());
         contacts.setPinyin(PinYinTools.getInstance().getFirstPinYin(contacts.getName()));
@@ -428,6 +460,9 @@ public class ContactsController extends Handler {
     public ModelAndView impsave(ModelMap map, HttpServletRequest request, @RequestParam(value = "cusfile", required = false) MultipartFile cusfile, @Valid String ckind) throws IOException {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
+        Organ currentOrgan = super.getOrgan(request);
+        String organId = currentOrgan != null ? currentOrgan.getId() : null;
+
         DSDataEvent event = new DSDataEvent();
         String fileName = "contacts/" + MainUtils.getUUID() + cusfile.getOriginalFilename().substring(
                 cusfile.getOriginalFilename().lastIndexOf("."));
@@ -443,6 +478,8 @@ public class ContactsController extends Handler {
             event.getDSData().setProcess(new ContactsProcess(contactsRes));
             event.setOrgi(orgi);
             event.getValues().put("creater", logined.getId());
+            event.getValues().put("organ", organId);
+            event.getValues().put("shares", "all");
             reporterRes.save(event.getDSData().getReport());
             new ExcelImportProecess(event).process();        //启动导入任务
         }
@@ -484,13 +521,23 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/expall")
     @Menu(type = "contacts", subtype = "contacts")
-    public void expall(ModelMap map, HttpServletRequest request, HttpServletResponse response) throws IOException, CSKefuException {
+    public void expall(ModelMap map, HttpServletRequest request, HttpServletResponse response, @Valid String ckind) throws IOException, CSKefuException {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
             return;
         }
+
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
+
+        if (StringUtils.isNotBlank(ckind)) {
+            boolQueryBuilder.must(termQuery("ckind", ckind));
+            map.put("ckind", ckind);
+        }
+
         boolQueryBuilder.must(termQuery("datastatus", false));        //只导出 数据删除状态 为 未删除的 数据
         Iterable<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndOrgi(
                 logined.getId(), logined.getId(), orgi, null, null,
@@ -514,16 +561,21 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/expsearch")
     @Menu(type = "contacts", subtype = "contacts")
-    public void expall(ModelMap map, HttpServletRequest request, HttpServletResponse response, @Valid String q, @Valid String ekind) throws IOException {
+    public void expall(ModelMap map, HttpServletRequest request, HttpServletResponse response, @Valid String q, @Valid String ckind) throws IOException {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
+
         if (StringUtils.isNotBlank(q)) {
             map.put("q", q);
         }
-        if (StringUtils.isNotBlank(ekind)) {
-            boolQueryBuilder.must(termQuery("ekind", ekind));
-            map.put("ekind", ekind);
+        if (StringUtils.isNotBlank(ckind)) {
+            boolQueryBuilder.must(termQuery("ckind", ckind));
+            map.put("ckind", ckind);
         }
 
         Iterable<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndOrgi(
@@ -549,7 +601,7 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/embed/index")
     @Menu(type = "customer", subtype = "embed")
-    public ModelAndView embed(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ckind, @Valid String msg, @Valid String userid) throws CSKefuException {
+    public ModelAndView embed(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ckind, @Valid String msg, @Valid String userid, @Valid String agentserviceid) throws CSKefuException {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
@@ -560,9 +612,16 @@ public class ContactsController extends Handler {
         if (StringUtils.isNotBlank(q)) {
             map.put("q", q);
         }
+        if (StringUtils.isNotBlank(agentserviceid)) {
+            map.put("agentserviceid", agentserviceid);
+        }
         if (StringUtils.isNotBlank(ckind)) {
             boolQueryBuilder.must(termQuery("ckind", ckind));
             map.put("ckind", ckind);
+        }
+        if (StringUtils.isNotBlank(agentserviceid)) {
+            AgentService service = agentServiceRes.findByIdAndOrgi(agentserviceid, orgi);
+            boolQueryBuilder.must(termQuery("organ", service.getSkill()));
         }
         Page<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndOrgi(
                 logined.getId(), logined.getId(), orgi, null, null, false, boolQueryBuilder, q,
@@ -582,15 +641,19 @@ public class ContactsController extends Handler {
 
     @RequestMapping("/embed/add")
     @Menu(type = "contacts", subtype = "embedadd")
-    public ModelAndView embedadd(ModelMap map, HttpServletRequest request) {
+    public ModelAndView embedadd(ModelMap map, HttpServletRequest request, @Valid String agentserviceid) {
+        if (StringUtils.isNotBlank(agentserviceid)) {
+            map.put("agentserviceid", agentserviceid);
+        }
         return request(super.createRequestPageTempletResponse("/apps/business/contacts/embed/add"));
     }
 
     @RequestMapping("/embed/save")
     @Menu(type = "contacts", subtype = "embedsave")
-    public ModelAndView embedsave(HttpServletRequest request, @Valid Contacts contacts) {
+    public ModelAndView embedsave(HttpServletRequest request, @Valid Contacts contacts, @Valid String agentserviceid) {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
+        Organ currentOrgan = super.getOrgan(request);
         String skypeIDReplace = contactsProxy.sanitizeSkypeId(contacts.getSkypeid());
         String msg = "";
         List<Contacts> contact = contactsRes.findByskypeidAndDatastatus(skypeIDReplace, false);
@@ -599,6 +662,12 @@ public class ContactsController extends Handler {
         if (contacts.getSkypeid() != null && contact.size() == 0) {
             contacts.setCreater(logined.getId());
             contacts.setOrgi(logined.getOrgi());
+
+            if (StringUtils.isNotBlank(agentserviceid)) {
+                AgentService agentService = agentServiceRes.findOne(agentserviceid);
+                contacts.setOrgan(agentService.getSkill());
+            }
+
             contacts.setPinyin(PinYinTools.getInstance().getFirstPinYin(contacts.getName()));
             if (StringUtils.isBlank(contacts.getCusbirthday())) {
                 contacts.setCusbirthday(null);
@@ -606,22 +675,25 @@ public class ContactsController extends Handler {
             contactsRes.save(contacts);
             msg = "new_contacts_success";
             return request(
-                    super.createRequestPageTempletResponse("redirect:/apps/contacts/embed/index.html?msg=" + msg));
+                    super.createRequestPageTempletResponse("redirect:/apps/contacts/embed/index.html?msg=" + msg + "&agentserviceid=" + agentserviceid));
         }
         msg = "new_contacts_fail";
-        return request(super.createRequestPageTempletResponse("redirect:/apps/contacts/embed/index.html?msg=" + msg));
+        return request(super.createRequestPageTempletResponse("redirect:/apps/contacts/embed/index.html?msg=" + msg + "&agentserviceid=" + agentserviceid));
     }
 
     @RequestMapping("/embed/edit")
     @Menu(type = "contacts", subtype = "embededit")
-    public ModelAndView embededit(ModelMap map, HttpServletRequest request, @Valid String id) {
+    public ModelAndView embededit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String agentserviceid) {
         map.addAttribute("contacts", contactsRes.findOne(id));
+        if (StringUtils.isNotBlank(agentserviceid)) {
+            map.addAttribute("agentserviceid", agentserviceid);
+        }
         return request(super.createRequestPageTempletResponse("/apps/business/contacts/embed/edit"));
     }
 
     @RequestMapping("/embed/update")
     @Menu(type = "contacts", subtype = "embedupdate")
-    public ModelAndView embedupdate(HttpServletRequest request, @Valid Contacts contacts) {
+    public ModelAndView embedupdate(HttpServletRequest request, @Valid Contacts contacts, @Valid String agentserviceid) {
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         Contacts data = contactsRes.findOne(contacts.getId());
@@ -642,13 +714,13 @@ public class ContactsController extends Handler {
                 msg = "edit_contacts_success";
             } else {
                 //无修改，直接点击确定
-                return request(super.createRequestPageTempletResponse("redirect:/apps/contacts/embed/index.html"));
+                return request(super.createRequestPageTempletResponse("redirect:/apps/contacts/embed/index.html?agentserviceid=" + agentserviceid));
             }
         } else {
             logger.info("[contacts edit] errer :The same skypeid exists");
             msg = "edit_contacts_fail";
             return request(
-                    super.createRequestPageTempletResponse("redirect:/apps/contacts/embed/index.html?msg=" + msg));
+                    super.createRequestPageTempletResponse("redirect:/apps/contacts/embed/index.html?msg=" + msg + "&agentserviceid=" + agentserviceid));
         }
 
         List<PropertiesEvent> events = PropertiesEventUtil.processPropertiesModify(
@@ -668,6 +740,7 @@ public class ContactsController extends Handler {
 
         contacts.setSkypeid(contacts.getSkypeid());
         contacts.setCreater(data.getCreater());
+        contacts.setOrgan(data.getOrgan());
         contacts.setCreatetime(data.getCreatetime());
         contacts.setOrgi(logined.getOrgi());
         contacts.setPinyin(PinYinTools.getInstance().getFirstPinYin(contacts.getName()));
@@ -680,6 +753,6 @@ public class ContactsController extends Handler {
         if (msg.equals("edit_contacts_success")) {
             contactsRes.save(contacts);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/apps/contacts/embed/index.html?msg=" + msg));
+        return request(super.createRequestPageTempletResponse("redirect:/apps/contacts/embed/index.html?msg=" + msg + "&agentserviceid=" + agentserviceid));
     }
 }

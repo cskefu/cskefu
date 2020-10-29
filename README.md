@@ -122,9 +122,9 @@ The collaboration is efficient, very professional. The software is steady with h
 
 寻找开发者合作智能客服项目，社区共建，携手共赢！
 
-* 组织或个人，在春松客服主页展示为认证开发者
-* 春松客服官方推荐项目机会
-* 专访并通过官方渠道曝光
+- 组织或个人，在春松客服主页展示为认证开发者
+- 春松客服官方推荐项目机会
+- 专访并通过官方渠道曝光
 
 填写申请：[https://www.wjx.top/jq/93397428.aspx](https://www.wjx.top/jq/93397428.aspx)
 
@@ -134,8 +134,6 @@ The collaboration is efficient, very professional. The software is steady with h
   <b>欢迎页</b><br>
   <img src="https://static-public.chatopera.com/assets/images/44915395-6bff5d80-ad65-11e8-817a-8abb812fb5ee.png" width="900">
 </p>
-
-
 
 <details>
 <summary>展开查看更多产品截图</summary>
@@ -185,7 +183,6 @@ The collaboration is efficient, very professional. The software is steady with h
 
 参考部署[开源社区版本文档](https://docs.chatopera.com/products/cskefu/deploy.html)。
 
-
 ## 鸣谢
 
 [FreeSWITCH 中国社区](http://www.freeswitch.org.cn/)
@@ -200,8 +197,6 @@ Copyright (2018-2020) <a href="https://www.chatopera.com/" target="_blank">北�
 
 [co-banner-image]: https://static-public.chatopera.com/assets/images/42383104-da925942-8168-11e8-8195-868d5fcec170.png
 [co-url]: https://www.chatopera.com
-
-
 
 ## Chatopera 云服务
 
@@ -262,7 +257,6 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 
 </p>
 </details>
-
 
 <p align="center">
   <b>立即使用</b><br>

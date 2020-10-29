@@ -25,6 +25,18 @@ function processUserAddOrUpdateResult(responsecode, cb){
             // 清空SIP
             $('input[name="sipaccount"]').val("");
             break;
+        case 'extension_binded':
+            layer.msg('分机号已经被其他用户绑定',{icon: 2, time: 3000});
+            $('input[name="extensionid"]').val("");
+            break;
+        case 'extension_not_exist':
+            layer.msg('绑定分机不存在',{icon: 2, time: 3000});
+            $('input[name="extensionid"]').val("");
+            break;
+        case 'pbxhost_not_exist':
+            layer.msg('指定的呼叫中心语音平台不存在',{icon: 2, time: 3000});
+            $('input[name="pbxhostid"]').val("");
+            break;
         case 't1':
             layer.msg('当前用户坐席就绪或对话未结束，不能切换为非坐席',{icon: 2, time: 3000});
             break;

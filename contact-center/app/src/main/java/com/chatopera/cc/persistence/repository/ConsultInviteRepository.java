@@ -21,15 +21,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ConsultInviteRepository
-  extends JpaRepository<CousultInvite, String>
-{
-  @Query(value = "SELECT * from uk_consult_invite WHERE snsaccountid = ?1 AND orgi = ?2 LIMIT 1", nativeQuery = true)
-  CousultInvite findBySnsaccountidAndOrgi(@Param("snsaccountid") String Snsaccountid, @Param("orgi") String orgi);
+        extends JpaRepository<CousultInvite, String> {
+    @Query(value = "SELECT * from uk_consult_invite WHERE snsaccountid = ?1 AND orgi = ?2 LIMIT 1", nativeQuery = true)
+    CousultInvite findBySnsaccountidAndOrgi(@Param("snsaccountid") String Snsaccountid, @Param("orgi") String orgi);
 
-  List<CousultInvite> findByOrgi(String orgi);
+    @Query(value = "select ci.`snsaccountid` from  `uk_consult_invite` ci  where ci.`orgi` = ?1 and ci.`consult_skill_fixed_id` in (?2)", nativeQuery = true)
+    List<String> findSNSIdByOrgiAndSkill(String orgi, Collection<String> skills);
+
+    List<CousultInvite> findByOrgi(String orgi);
 }
 
 

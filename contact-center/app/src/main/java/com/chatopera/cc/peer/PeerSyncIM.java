@@ -18,12 +18,10 @@
 package com.chatopera.cc.peer;
 
 import com.chatopera.cc.basic.Constants;
-import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainContext.ChannelType;
 import com.chatopera.cc.basic.MainContext.MessageType;
 import com.chatopera.cc.basic.MainContext.ReceiverType;
 import com.chatopera.cc.basic.plugins.PluginRegistry;
-import com.chatopera.cc.basic.plugins.PluginsLoader;
 import com.chatopera.cc.peer.im.ComposeMw1;
 import com.chatopera.cc.peer.im.ComposeMw2;
 import com.chatopera.cc.peer.im.ComposeMw3;
@@ -57,6 +55,9 @@ public class PeerSyncIM implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
     @Autowired
+    private PluginRegistry pluginRegistry;
+
+    @Autowired
     private ComposeMw1 imMw1;
 
     @Autowired
@@ -79,11 +80,10 @@ public class PeerSyncIM implements ApplicationContextAware {
         composer.use(imMw2);
 
         // 通过Skype发送消息
-        if (MainContext.hasModule(Constants.CSKEFU_MODULE_SKYPE)) {
+        pluginRegistry.getPlugin(Constants.CSKEFU_MODULE_SKYPE).ifPresent(p -> {
             composer.use((Middleware) applicationContext.getBean(
-                    PluginsLoader.getPluginName(
-                            PluginRegistry.PLUGIN_ENTRY_SKYPE) + PluginRegistry.PLUGIN_CHANNEL_MESSAGER_SUFFIX));
-        }
+                    p.getPluginId() + PluginRegistry.PLUGIN_CHANNEL_MESSAGER_SUFFIX));
+        });
 
         composer.use(imMw3);
 
@@ -108,7 +108,7 @@ public class PeerSyncIM implements ApplicationContextAware {
             final String touser,
             final Message outMessage,
             final boolean distribute
-                    ) {
+    ) {
         logger.info(
                 "[send] instant message \n msgType {}, \n channelType {}, \n appId {}, \n receiverType {}, \n touser {}, \n distribute {} \n",
                 msgType.toString(), channelType.toString(), appid, receiverType.toString(), touser,

@@ -93,8 +93,17 @@ public class SessionConfig implements java.io.Serializable{
 	private String quenetimeoutmsg ;	//访客排队超时提示消息
 	
 	private String servicename ;		//无坐席的时候 回复消息的 昵称
-	
-	
+
+	private String skill ;			//组织机构ID
+
+	public String getSkill() {
+		return skill;
+	}
+
+	public void setSkill(String skill) {
+		this.skill = skill;
+	}
+
 	@Id
 	@Column(length = 32)
 	@GeneratedValue(generator = "system-uuid")

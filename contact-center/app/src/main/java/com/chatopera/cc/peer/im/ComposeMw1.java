@@ -113,16 +113,6 @@ public class ComposeMw1 implements Middleware<PeerContext> {
                         agentUserTask.getAgentreplyinterval() / agentUserTask.getAgentreplys());
             }
 
-            agentUserTask.setLastgetmessage(ctx.getCreatetime());
-            agentUserTask.setWarnings("0");
-            agentUserTask.setWarningtime(null);
-
-            /**
-             * 去掉坐席超时回复消息提醒
-             */
-            agentUserTask.setReptime(null);
-            agentUserTask.setReptimes("0");
-
             agentUserTask.setLastmsg(
                     received.getMessage().length() > 100 ? received.getMessage().substring(
                             0,

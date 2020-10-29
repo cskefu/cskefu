@@ -16,12 +16,17 @@
  */
 package com.chatopera.cc.controller.admin;
 
+import com.chatopera.cc.basic.Constants;
+import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.model.Organ;
+import com.chatopera.cc.model.OrganUser;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.model.UserRole;
-import com.chatopera.cc.persistence.repository.UserRepository;
-import com.chatopera.cc.persistence.repository.UserRoleRepository;
+import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.proxy.OnlineUserProxy;
+import com.chatopera.cc.proxy.OrganProxy;
+import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +42,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 程序猿DD
@@ -54,24 +60,49 @@ public class UsersController extends Handler {
     @Autowired
     private UserRoleRepository userRoleRes;
 
+    @Autowired
+    OrganProxy organProxy;
+
+    @Autowired
+    UserProxy userProxy;
+
+    @Autowired
+    private OrganUserRepository organUserRes;
+
+    @Autowired
+    private PbxHostRepository pbxHostRes;
+
+    @Autowired
+    private ExtensionRepository extensionRes;
+
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "user")
     public ModelAndView index(ModelMap map, HttpServletRequest request) throws IOException {
-        map.addAttribute(
-                "userList",
-                userRepository.findByDatastatusAndOrgiAndOrgidAndSuperadminNot(
-                        false,
-                        super.getOrgiByTenantshare(request),
-                        super.getOrgid(request),
-                        true,
-                        new PageRequest(
-                                super.getP(request),
-                                super.getPs(request),
-                                Sort.Direction.ASC,
-                                "createtime"
-                        )
-                                                                              )
-                        );
+        User logined = super.getUser(request);
+        if (!logined.isSuperadmin()) {
+            Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
+            map.addAttribute("userList", userProxy.findUserInOrgans(organs.keySet(), new PageRequest(
+                    super.getP(request),
+                    super.getPs(request),
+                    Sort.Direction.ASC,
+                    "createtime"
+            )));
+        } else {
+            map.addAttribute(
+                    "userList",
+                    userRepository.findByDatastatusAndOrgiAndSuperadminNot(
+                            false,
+                            super.getOrgi(),
+                            true,
+                            new PageRequest(
+                                    super.getP(request),
+                                    super.getPs(request),
+                                    Sort.Direction.ASC,
+                                    "createtime"
+                            )
+                    )
+            );
+        }
         return request(super.createAdminTempletResponse("/admin/user/index"));
     }
 
@@ -85,7 +116,20 @@ public class UsersController extends Handler {
     @Menu(type = "admin", subtype = "user")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
         ModelAndView view = request(super.createRequestPageTempletResponse("/admin/user/edit"));
-        view.addObject("userData", userRepository.findByIdAndOrgi(id, super.getOrgiByTenantshare(request)));
+        User user = userRepository.findById(id);
+        if (user != null && MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER)) {
+            // 加载呼叫中心信息
+            extensionRes.findByAgentnoAndOrgi(user.getId(), user.getOrgi()).ifPresent(p -> {
+                user.setExtensionId(p.getId());
+                user.setExtension(p);
+
+                pbxHostRes.findById(p.getHostid()).ifPresent(b -> {
+                    user.setPbxhostId(b.getId());
+                    user.setPbxHost(b);
+                });
+            });
+        }
+        view.addObject("userData", user);
         return view;
     }
 
@@ -94,12 +138,19 @@ public class UsersController extends Handler {
     public ModelAndView delete(HttpServletRequest request, @Valid User user) {
         String msg = "admin_user_delete";
         if (user != null) {
-            List<UserRole> userRole = userRoleRes.findByOrgiAndUser(super.getOrgiByTenantshare(request), user);
-            userRoleRes.delete(userRole);    //删除用户的时候，同时删除用户对应的
-            user = userRepository.getOne(user.getId());
-            user.setDatastatus(true);
-            userRepository.save(user);
-            OnlineUserProxy.clean(super.getOrgi(request));
+            User dbUser = userRepository.getOne(user.getId());
+            if (dbUser.isSuperadmin()) {
+                msg = "admin_user_abandoned";
+            } else {
+                // 删除用户的时候，同时删除用户对应的权限数据
+                List<UserRole> userRole = userRoleRes.findByOrgiAndUser(super.getOrgi(), user);
+                userRoleRes.delete(userRole);
+                // 删除用户对应的组织机构关系
+                List<OrganUser> organUsers = organUserRes.findByUserid(user.getId());
+                organUserRes.delete(organUsers);
+
+                userRepository.delete(dbUser);
+            }
         } else {
             msg = "admin_user_not_exist";
         }

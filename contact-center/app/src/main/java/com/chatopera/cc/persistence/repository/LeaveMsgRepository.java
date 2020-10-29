@@ -20,15 +20,21 @@ import com.chatopera.cc.model.LeaveMsg;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Set;
 
-public interface LeaveMsgRepository  extends JpaRepository<LeaveMsg, String>
-{
-	Page<LeaveMsg> findByOrgi(String orgi, Pageable page);
-	
-	List<LeaveMsg> findByOrgiAndMobile(String orgi, String mobile) ;
-	
-	List<LeaveMsg> findByOrgiAndUserid(String orgi, String userid) ;
+public interface LeaveMsgRepository extends JpaRepository<LeaveMsg, String> {
+    Page<LeaveMsg> findByOrgi(String orgi, Pageable page);
+
+    @Query(value = "SELECT o.name as skill,m.* FROM uk_leavemsg m LEFT JOIN uk_organ o ON m.skill=o.id WHERE m.skill IN (?1) AND m.orgi = ?2 ORDER BY ?#{#pageable}",
+			countQuery = "SELECT count(*) FROM uk_leavemsg WHERE skill IN (?1) AND orgi = ?2 ORDER BY ?#{#pageable}",
+			nativeQuery = true)
+    Page<LeaveMsg> findBySkillAndOrgi(Set<String> skill , String orgi , Pageable page);
+
+    List<LeaveMsg> findByOrgiAndMobile(String orgi, String mobile);
+
+    List<LeaveMsg> findByOrgiAndUserid(String orgi, String userid);
 }
 

@@ -24,8 +24,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface AgentUserRepository extends JpaRepository<AgentUser, String> {
     AgentUser findByIdAndOrgi(String paramString, String orgi);
@@ -46,6 +48,10 @@ public interface AgentUserRepository extends JpaRepository<AgentUser, String> {
 
     Page<AgentUser> findByOrgiAndStatus(String orgi, String status, Pageable page);
 
+    Page<AgentUser> findByOrgiAndStatusAndSkillIn(String orgi, String status, Set<String> agentskill, Pageable page);
+
+    int countByOrgiAndStatusAndSkillIn(String orgi, String status, Set<String> agentskill);
+
     List<AgentUser> findByOrgiAndStatus(final String orgi, final String status, final Sort sort);
 
     List<AgentUser> findByOrgiAndStatusAndAgentnoIsNot(final String orgi, final String status, final String agentno, final Sort sort);
@@ -56,12 +62,16 @@ public interface AgentUserRepository extends JpaRepository<AgentUser, String> {
 
     List<AgentUser> findByOrgiAndStatusAndSkillAndAgentnoIsNot(final String orgi, final String status, final String skill, final String agentno, final Sort sort);
 
+    List<AgentUser> findByOrgiAndStatusAndSkillInAndAgentnoIsNot(final String orgi, final String status, final Collection<String> skill, final String agentno, final Sort sort);
+
     List<AgentUser> findByOrgiAndStatusAndAgentno(final String orgi, final String status, final String agentno, final Sort defaultSort);
 
     @Query(value = "SELECT a FROM AgentUser a WHERE a.userid in(:userids)")
     List<AgentUser> findAllByUserids(@Param("userids") List<String> userids);
 
     int countByAgentnoAndStatusAndOrgi(String agentno, String status, String orgi);
+
+    int countByAgentnoAndStatusAndOrgiAndSkill(String agentno, String status, String orgi, String skill);
 
     AgentUser findOneByAgentnoAndStatusAndOrgi(String id, String status, String orgi);
 

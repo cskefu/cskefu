@@ -18,19 +18,29 @@ package com.chatopera.cc.persistence.repository;
 
 import com.chatopera.cc.model.SipTrunk;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SipTrunkRepository extends JpaRepository<SipTrunk, String> {
-	
-	SipTrunk findByIdAndOrgi(String id, String orgi);
-	List<SipTrunk> findByHostidAndOrgi(String hostid, String orgi);
-	List<SipTrunk> findByOrgi(String orgi);
-	int countByNameAndOrgi(String name, String orgi);
-	
-	List<SipTrunk> findByName(String name);
-	
-	List<SipTrunk> findByDefaultsipAndOrgi(boolean def, String orgi);
-	
-	List<SipTrunk> findByDefaultsip(boolean def);
+
+    SipTrunk findByIdAndOrgi(String id, String orgi);
+
+    List<SipTrunk> findByHostidAndOrgi(String hostid, String orgi);
+
+    @Query(value = "SELECT * FROM uk_callcenter_siptrunk WHERE hostid = ?1 AND orgi = ?2 AND name <> ?3 LIMIT 1", nativeQuery = true)
+    Optional<SipTrunk> findOneByHostidAndOrgiAndNameNot(final String hostid, final String orgi, final String name);
+
+    int countByHostidAndOrgi(final String hostid, final String orgi);
+
+    List<SipTrunk> findByOrgi(String orgi);
+
+    int countByNameAndOrgi(String name, String orgi);
+
+    List<SipTrunk> findByName(String name);
+
+    List<SipTrunk> findByDefaultsipAndOrgi(boolean def, String orgi);
+
+    List<SipTrunk> findByDefaultsip(boolean def);
 }

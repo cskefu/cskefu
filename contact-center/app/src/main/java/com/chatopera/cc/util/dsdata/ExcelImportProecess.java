@@ -51,47 +51,47 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExcelImportProecess extends DataProcess{
 	private DecimalFormat format = new DecimalFormat("###");
-	private AtomicInteger pages = new AtomicInteger() , errors = new AtomicInteger(); 
-	
+	private AtomicInteger pages = new AtomicInteger() , errors = new AtomicInteger();
+
 	public ExcelImportProecess(DSDataEvent event){
 		super(event);
 	}
-	
+
 	@Override
 	public void process() {
 		processExcel(event);
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void processExcel(final DSDataEvent event){
-		InputStream is = null;  
+		InputStream is = null;
     	try {
     		event.getDSData().getReport().setTableid(event.getDSData().getTask().getId());
     		if(event.getDSData().getUser()!=null){
     			event.getDSData().getReport().setUserid(event.getDSData().getUser().getId());
     			event.getDSData().getReport().setUsername(event.getDSData().getUser().getUsername());
     		}
-    		
-            try {  
-                is = new FileInputStream(event.getDSData().getFile());  
-            } catch (FileNotFoundException ex) {  
+
+            try {
+                is = new FileInputStream(event.getDSData().getFile());
+            } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
-            }  
-            boolean isExcel2003 = true;  
-            if (isExcel2007(event.getDSData().getFile().getName())) {  
-                isExcel2003 = false;  
             }
-            
-            Workbook wb = null;  
-            try {  
-                wb = isExcel2003 ? new HSSFWorkbook(is) : new XSSFWorkbook(is);  
-            } catch (IOException ex) {  
+            boolean isExcel2003 = true;
+            if (isExcel2007(event.getDSData().getFile().getName())) {
+                isExcel2003 = false;
+            }
+
+            Workbook wb = null;
+            try {
+                wb = isExcel2003 ? new HSSFWorkbook(is) : new XSSFWorkbook(is);
+            } catch (IOException ex) {
                 ex.printStackTrace();
-            }  
-            Sheet sheet = wb.getSheetAt(0);  
+            }
+            Sheet sheet = wb.getSheetAt(0);
             Row titleRow = sheet.getRow(0);
             Row valueRow = sheet.getRow(1);
-            int totalRows = sheet.getPhysicalNumberOfRows(); 
+            int totalRows = sheet.getPhysicalNumberOfRows();
             int colNum = titleRow.getPhysicalNumberOfCells();
             for(int i=2 ; i<totalRows && valueRow == null ; i++){
             	valueRow = sheet.getRow(i);
@@ -111,7 +111,7 @@ public class ExcelImportProecess extends DataProcess{
             		refValues.put(tp.getFieldname(), exchange.getListDataByIdAndOrgi(null, null, event.getOrgi())) ;
             	}
             }
-            
+
             for(int i=1 ; i<totalRows; i++){
             	Row row = sheet.getRow(i) ;
             	Object data = null ;
@@ -204,7 +204,7 @@ public class ExcelImportProecess extends DataProcess{
 										}else {
 											values.put(tp.getFieldname(), MainUtils.simpleDateFormat.format(MainUtils.dateFormate.parse(valuestr)));
 										}
-										
+
 									}
 								}
 							}
@@ -214,12 +214,13 @@ public class ExcelImportProecess extends DataProcess{
 		            		exchange.process(data, event.getOrgi());
 		            	}
 		            }
-					
+
 					if(!values.containsKey("orgi")) {
 						skipDataVal = true ;
 					}
 					event.getDSData().getReport().setTotal(pages.intValue());
 					values.put("creater", event.getValues().get("creater")) ;
+					values.put("organ", event.getValues().get("organ")) ;
 					if(data!=null && skipDataVal == false) {
 						MainUtils.populate(data, values);
 						pages.incrementAndGet() ;
@@ -237,24 +238,24 @@ public class ExcelImportProecess extends DataProcess{
 						}
 						values.put("status", MainContext.NamesDisStatusType.NOT.toString()) ;
 						values.put("batid", event.getBatid()) ;
-						
+
 						values.put("createtime", System.currentTimeMillis()) ;
 						values.put("callstatus", MainContext.NameStatusType.NOTCALL.toString()) ;
 						values.put("execid", event.getDSData().getReport().getId()) ;
-						
+
 						if(i%500 == 0) {
 							MainContext.getContext().getBean(ReporterRepository.class).save(event.getDSData().getReport()) ;
 						}
-						
+
 						if(values.get("cusid")==null) {
 							/**
-							 * 
+							 *
 							 */
 							values.put("cusid", values.get("id"))  ;
 						}
 						pages.incrementAndGet() ;
 						event.getDSData().getProcess().process(values);
-						
+
 						/**
 						 * 访客信息表
 						 */
@@ -265,7 +266,7 @@ public class ExcelImportProecess extends DataProcess{
 					}
             	}
 			}
-            
+
             event.setTimes(System.currentTimeMillis() - start);
             event.getDSData().getReport().setEndtime(new Date());
             event.getDSData().getReport().setAmount(String.valueOf((float)event.getTimes()/1000f));
@@ -308,7 +309,7 @@ public class ExcelImportProecess extends DataProcess{
 			event.getDSData().getProcess().end();
 		}
 	}
-	
+
 	private String getRefid(TableProperties tp , List<Object> dataList , String value) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		String id = "" ;
 		for(Object data : dataList){
@@ -326,13 +327,13 @@ public class ExcelImportProecess extends DataProcess{
 				}
 			}
 			if(StringUtils.isBlank(id) && PropertyUtils.isReadable(data, "title")){
-				target = BeanUtils.getProperty(data, "title") ; 
+				target = BeanUtils.getProperty(data, "title") ;
 				if(target!=null && target.equals(value)){
 					id = BeanUtils.getProperty(data, "id") ;
 				}
 			}
 			if(StringUtils.isBlank(id)){
-				target = BeanUtils.getProperty(data, "id") ; 
+				target = BeanUtils.getProperty(data, "id") ;
 				if(target!=null && target.equals(value)){
 					id = target.toString() ;
 				}
@@ -340,9 +341,9 @@ public class ExcelImportProecess extends DataProcess{
 		}
 		return id ;
 	}
-	
+
 	private TableProperties getTableProperties(DSDataEvent event , String title){
-		TableProperties tableProperties = null ; 
+		TableProperties tableProperties = null ;
 		for(TableProperties tp : event.getDSData().getTask().getTableproperty()){
 			if(tp.getName().equals(title) || tp.getFieldname().equals(title)){
 				tableProperties = tp ; break ;
@@ -350,10 +351,10 @@ public class ExcelImportProecess extends DataProcess{
 		}
 		return tableProperties;
 	}
-	
-	private boolean isExcel2007(String fileName) {  
-        return fileName.matches("^.+\\.(?i)(xlsx)$");  
-    } 
+
+	private boolean isExcel2007(String fileName) {
+        return fileName.matches("^.+\\.(?i)(xlsx)$");
+    }
 	@SuppressWarnings("deprecation")
 	private String getValue(Cell cell){
 		String strCell = "";
@@ -371,28 +372,28 @@ public class ExcelImportProecess extends DataProcess{
 		            break;
 		        case HSSFCell.CELL_TYPE_NUMERIC:
 		        	if (HSSFDateUtil.isCellDateFormatted(cell)) {
-		        		SimpleDateFormat sdf = null;  
-		                if (cell.getCellStyle().getDataFormat() == HSSFDataFormat.getBuiltinFormat("h:mm")) {  
-		                    sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-		                } else {// 日期  
-		                    sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-		                }  
-		                strCell = sdf.format(cell.getDateCellValue());  
-		        	} else if (cell.getCellStyle().getDataFormat() == 58) {  
-		                // 处理自定义日期格式：m月d日(通过判断单元格的格式id解决，id的值是58)  
-		                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-		                double value = cell.getNumericCellValue();  
-		                strCell = sdf.format(org.apache.poi.ss.usermodel.DateUtil.getJavaDate(value));  
+		        		SimpleDateFormat sdf = null;
+		                if (cell.getCellStyle().getDataFormat() == HSSFDataFormat.getBuiltinFormat("h:mm")) {
+		                    sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		                } else {// 日期
+		                    sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		                }
+		                strCell = sdf.format(cell.getDateCellValue());
+		        	} else if (cell.getCellStyle().getDataFormat() == 58) {
+		                // 处理自定义日期格式：m月d日(通过判断单元格的格式id解决，id的值是58)
+		                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		                double value = cell.getNumericCellValue();
+		                strCell = sdf.format(org.apache.poi.ss.usermodel.DateUtil.getJavaDate(value));
 		            }else{
-		            	
+
 		            	if (HSSFDateUtil.isCellDateFormatted(cell)) {
-		            		SimpleDateFormat sdf = null;  
-			                if (cell.getCellStyle().getDataFormat() == HSSFDataFormat.getBuiltinFormat("h:mm")) {  
-			                    sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-			                } else {// 日期  
-			                    sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-			                }  
-			                strCell = sdf.format(cell.getDateCellValue());  
+		            		SimpleDateFormat sdf = null;
+			                if (cell.getCellStyle().getDataFormat() == HSSFDataFormat.getBuiltinFormat("h:mm")) {
+			                    sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			                } else {// 日期
+			                    sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			                }
+			                strCell = sdf.format(cell.getDateCellValue());
 			        	}else{
 			            	boolean isNumber = isNumberFormat(dt) ;
 			        		if(isNumber){
@@ -419,7 +420,7 @@ public class ExcelImportProecess extends DataProcess{
 			        	}
 		        	}catch(Exception ex){
 		        		ex.printStackTrace();
-		        		strCell = cell.getRichStringCellValue().getString();  
+		        		strCell = cell.getRichStringCellValue().getString();
 		        	}
 	                break;
 	            }
@@ -433,7 +434,7 @@ public class ExcelImportProecess extends DataProcess{
 		}
         return strCell;
 	}
-	
+
 	@SuppressWarnings({ "deprecation", "unused" })
 	private String getDataType(Cell cell){
 		String dataType = "string";
@@ -448,12 +449,12 @@ public class ExcelImportProecess extends DataProcess{
 		            break;
 		        case HSSFCell.CELL_TYPE_BLANK:
 		        	if (HSSFDateUtil.isCellDateFormatted(cell)) {
-		        		if (cell.getCellStyle().getDataFormat() == HSSFDataFormat.getBuiltinFormat("h:mm")) {  
-		        			dataType = "datetime" ;  
-		                } else {// 日期  
-		                	dataType = "datetime" ;  
-		                }  
-		        		
+		        		if (cell.getCellStyle().getDataFormat() == HSSFDataFormat.getBuiltinFormat("h:mm")) {
+		        			dataType = "datetime" ;
+		                } else {// 日期
+		                	dataType = "datetime" ;
+		                }
+
 		        	} else if (cell.getCellStyle().getDataFormat() == 58){
 		        		dataType = "datetime" ;
 		        	}else{
@@ -467,21 +468,21 @@ public class ExcelImportProecess extends DataProcess{
 		            break;
 		        case HSSFCell.CELL_TYPE_NUMERIC:
 		        	if (HSSFDateUtil.isCellDateFormatted(cell)) {
-		        		if (cell.getCellStyle().getDataFormat() == HSSFDataFormat.getBuiltinFormat("h:mm")) {  
-		        			dataType = "datetime" ;  
-		                } else {// 日期  
-		                	dataType = "datetime" ;  
-		                }  
-		        		
+		        		if (cell.getCellStyle().getDataFormat() == HSSFDataFormat.getBuiltinFormat("h:mm")) {
+		        			dataType = "datetime" ;
+		                } else {// 日期
+		                	dataType = "datetime" ;
+		                }
+
 		        	} else if (cell.getCellStyle().getDataFormat() == 58){
 		        		dataType = "datetime" ;
 		        	}else{
 		        		if (HSSFDateUtil.isCellDateFormatted(cell)) {
-			        		if (cell.getCellStyle().getDataFormat() == HSSFDataFormat.getBuiltinFormat("h:mm")) {  
-			        			dataType = "datetime" ;  
-			                } else {// 日期  
-			                	dataType = "datetime" ;  
-			                }  
+			        		if (cell.getCellStyle().getDataFormat() == HSSFDataFormat.getBuiltinFormat("h:mm")) {
+			        			dataType = "datetime" ;
+			                } else {// 日期
+			                	dataType = "datetime" ;
+			                }
 			        	}else{
 			        		boolean isNumber = isNumberFormat(dt) ;
 			        		if(isNumber){
@@ -506,11 +507,11 @@ public class ExcelImportProecess extends DataProcess{
 		        	dataType = "string";
 		            break;
 	        }
-	       
+
 		}
         return dataType;
 	}
-	
+
 	private DecimalFormat getNumberFormat(String dataformat){
 		DecimalFormat numberFormat = null ;
 		int index = dataformat.indexOf("_") > 0 ?  dataformat.indexOf("_") : dataformat.indexOf(";") ;
@@ -520,38 +521,38 @@ public class ExcelImportProecess extends DataProcess{
 				numberFormat = new DecimalFormat(format);
 			}
 		}
-		
+
 		return numberFormat ;
 	}
-	
+
 	private boolean isNumberFormat(short dataType){
 		boolean number = false ;
 		switch(dataType){
-			case 180 : number = true  ; break; 
-			case 181 : number = true  ; break; 
+			case 180 : number = true  ; break;
+			case 181 : number = true  ; break;
 			case 182 : number = true  ; break;
 			case 178 : number = true  ; break;
 			case 177 : number = true  ; break;
 			case 176 : number = true  ; break;
-			case 183 : number = true  ; break; 
-			case 185 : number = true  ; break; 
+			case 183 : number = true  ; break;
+			case 185 : number = true  ; break;
 			case 186 : number = true  ; break;
 			case 179 : number = true  ; break;
-			case 187 : number = true  ; break; 
-			case 7 : number = true  ; break; 
-			case 8 : number = true  ; break; 
-			case 44 : number = true  ; break; 
-			case 10 : number = true  ; break; 
-			case 12 : number = true  ; break; 
-			case 13 : number = true  ; break; 
-			case 188 : number = true  ; break; 
-			case 189 : number = true  ; break; 
-			case 190 : number = true  ; break; 
-			case 191 : number = true  ; break; 
-			case 192 : number = true  ; break; 
-			case 193 : number = true  ; break; 
-			case 194 : number = true  ; break; 
-			case 11 : number = true  ; break; 
+			case 187 : number = true  ; break;
+			case 7 : number = true  ; break;
+			case 8 : number = true  ; break;
+			case 44 : number = true  ; break;
+			case 10 : number = true  ; break;
+			case 12 : number = true  ; break;
+			case 13 : number = true  ; break;
+			case 188 : number = true  ; break;
+			case 189 : number = true  ; break;
+			case 190 : number = true  ; break;
+			case 191 : number = true  ; break;
+			case 192 : number = true  ; break;
+			case 193 : number = true  ; break;
+			case 194 : number = true  ; break;
+			case 11 : number = true  ; break;
 
 		}
 		return number ;

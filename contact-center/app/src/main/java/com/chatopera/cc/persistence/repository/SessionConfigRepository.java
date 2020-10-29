@@ -19,8 +19,11 @@ package com.chatopera.cc.persistence.repository;
 import com.chatopera.cc.model.SessionConfig;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface SessionConfigRepository  extends JpaRepository<SessionConfig, String>
-{
-	SessionConfig findByOrgi(String orgi);
+import java.util.Set;
+
+public interface SessionConfigRepository extends JpaRepository<SessionConfig, String> {
+    SessionConfig findByOrgi(String orgi);
+
+    SessionConfig findByOrgiAndSkill(String orgi, String skill);
 }
 

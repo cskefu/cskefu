@@ -16,6 +16,7 @@
  */
 package com.chatopera.cc.model;
 
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.cache.RedisKey;
 import com.chatopera.cc.util.SerializeUtil;
@@ -47,7 +48,7 @@ public class Dict<K, V> extends HashMap<K, V> {
         logger.debug("[get] key {}", keystr);
         Object result = null;
 
-        String serialized = MainContext.getRedisCommand().getHashKV(RedisKey.getSysDicHashKeyByOrgi(MainContext.SYSTEM_ORGI), keystr);
+        String serialized = MainContext.getRedisCommand().getHashKV(RedisKey.getSysDicHashKeyByOrgi(Constants.SYSTEM_ORGI), keystr);
 
         if (StringUtils.isNotBlank(serialized)) {
             Object obj = SerializeUtil.deserialize(serialized);
@@ -58,9 +59,9 @@ public class Dict<K, V> extends HashMap<K, V> {
             }
         } else if (keystr.endsWith(".subdic") && keystr.lastIndexOf(".subdic") > 0) {
             String id = keystr.substring(0, keystr.lastIndexOf(".subdic"));
-            SysDic dic = MainContext.getCache().findOneSysDicByIdAndOrgi(id, MainContext.SYSTEM_ORGI);
+            SysDic dic = MainContext.getCache().findOneSysDicByIdAndOrgi(id, Constants.SYSTEM_ORGI);
             if (dic != null) {
-                SysDic sysDic = MainContext.getCache().findOneSysDicByIdAndOrgi(dic.getDicid(), MainContext.SYSTEM_ORGI);
+                SysDic sysDic = MainContext.getCache().findOneSysDicByIdAndOrgi(dic.getDicid(), Constants.SYSTEM_ORGI);
                 result = getDic(sysDic.getCode(), dic.getParentid());
             }
         }
@@ -71,7 +72,7 @@ public class Dict<K, V> extends HashMap<K, V> {
     @SuppressWarnings("unchecked")
     public List<SysDic> getDic(final String code) {
         List<SysDic> result = new ArrayList<SysDic>();
-        String serialized = MainContext.getRedisCommand().getHashKV(RedisKey.getSysDicHashKeyByOrgi(MainContext.SYSTEM_ORGI), code);
+        String serialized = MainContext.getRedisCommand().getHashKV(RedisKey.getSysDicHashKeyByOrgi(Constants.SYSTEM_ORGI), code);
 
         if (StringUtils.isNotBlank(serialized)) {
             Object obj = SerializeUtil.deserialize(serialized);
@@ -104,7 +105,7 @@ public class Dict<K, V> extends HashMap<K, V> {
     @SuppressWarnings("unchecked")
     public List<SysDic> getDic(final String code, final String id) {
         List<SysDic> result = new ArrayList<SysDic>();
-        String serialized = MainContext.getRedisCommand().getHashKV(RedisKey.getSysDicHashKeyByOrgi(MainContext.SYSTEM_ORGI), code);
+        String serialized = MainContext.getRedisCommand().getHashKV(RedisKey.getSysDicHashKeyByOrgi(Constants.SYSTEM_ORGI), code);
 
         if (StringUtils.isNotBlank(serialized)) {
             Object obj = SerializeUtil.deserialize(serialized);
@@ -138,7 +139,7 @@ public class Dict<K, V> extends HashMap<K, V> {
      */
     @SuppressWarnings("unchecked")
     public List<SysDic> getSysDic(String code) {
-        return MainContext.getCache().getSysDicItemsByCodeAndOrgi(code, MainContext.SYSTEM_ORGI);
+        return MainContext.getCache().getSysDicItemsByCodeAndOrgi(code, Constants.SYSTEM_ORGI);
     }
 
     /**
@@ -148,6 +149,6 @@ public class Dict<K, V> extends HashMap<K, V> {
      * @return
      */
     public SysDic getDicItem(String code) {
-        return MainContext.getCache().findOneSysDicByCodeAndOrgi(code, MainContext.SYSTEM_ORGI);
+        return MainContext.getCache().findOneSysDicByCodeAndOrgi(code, Constants.SYSTEM_ORGI);
     }
 }

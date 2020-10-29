@@ -46,7 +46,6 @@ public class BlackEntityProxy {
     @Autowired
     private AgentServiceRepository agentServiceRes;
 
-
     /**
      * 更新或创建黑名单记录
      *
@@ -77,6 +76,11 @@ public class BlackEntityProxy {
 
         blackEntityUpdated.setAgentid(owner.getId());
         blackEntityUpdated.setAgentserviceid(agentserviceid);
+        if (agentserviceid != null){
+            AgentService service = agentServiceRes.findByIdAndOrgi(agentserviceid, orgi);
+            blackEntityUpdated.setSkill(service.getSkill());
+            blackEntityUpdated.setAgentusername(service.getAgentusername());
+        }
         blackEntityUpdated.setControltime(pre.getControltime());
 
         if (StringUtils.isNotBlank(pre.getDescription())) {

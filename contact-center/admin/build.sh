@@ -30,3 +30,10 @@ docker build --build-arg VCS_REF=$PACKAGE_VERSION \
     --build-arg APPLICATION_CUSTOMER_ENTITY=$APPLICATION_CUSTOMER_ENTITY \
     --no-cache \
     --force-rm=true --tag $registryName/$imagename:$PACKAGE_VERSION .
+
+if [ $? -eq 0 ]; then
+    docker tag $registryName/$imagename:$PACKAGE_VERSION $registryName/$imagename:develop
+else 
+    echo "Build contact-center failure."
+    exit 1
+fi

@@ -16,7 +16,7 @@
  */
 package com.chatopera.cc.util.freeswitch.model;
 
-import com.chatopera.cc.model.Extention;
+import com.chatopera.cc.model.Extension;
 
 import java.util.Date;
 
@@ -36,7 +36,7 @@ public class CallCenterAgent implements java.io.Serializable{
 	
 	private String eventid ;
 	
-	private Extention extention ;
+	private Extension extension;
 	
 	private String nameid ;
 	
@@ -87,12 +87,12 @@ public class CallCenterAgent implements java.io.Serializable{
 		this.eventid = eventid;
 	}
 
-	public Extention getExtention() {
-		return extention;
+	public Extension getExtension() {
+		return extension;
 	}
 
-	public void setExtention(Extention extention) {
-		this.extention = extention;
+	public void setExtension(Extension extension) {
+		this.extension = extension;
 	}
 
 	public String getWorkstatus() {

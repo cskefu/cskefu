@@ -45,7 +45,10 @@ $(document).ready(function(){
 		}
 	}).on('status', function(data) {
 		if(orgi == data.orgi){
-			$('#agents_status').html("服务中的人数："+data.users+"人，当前排队人数："+data.inquene+"人，在线坐席数："+data.agents+"人，坐席忙："+data.busy+"人");
+			$.post('/lazyAgentStatus').success(function(html){
+				$('#agents_status').html(html);
+			});
+			// $('#agents_status').html("服务中的人数："+data.users+"人，当前排队人数："+data.inquene+"人，在线坐席数："+data.agents+"人，坐席忙："+data.busy+"人");
 		}
 	}).on('message', function(data) {
 		if($('#multiMediaDialogWin').length > 0 && multiMediaDialogWin != null && multiMediaDialogWin.$ && multiMediaDialogWin.$('#agentusers').length > 0){
@@ -84,7 +87,8 @@ $(document).ready(function(){
 		}
 	}).on('audit_new', function(data){
 		// 会话监控：新建
-		if($('#customerChatAudit').length > 0 && customerChatAudit != null && customerChatAudit.$){
+		console.log();
+		if(skills.indexOf(data.skill)>-1 && $('#customerChatAudit').length > 0 && customerChatAudit != null && customerChatAudit.$){
 			customerChatAudit.Proxy.newAgentUserService(data,"cca");
 			if(data.type == 'message'){
 				WebIM.audioplayer('audioplane', newmessage, false); // 播放
@@ -151,8 +155,8 @@ var WebIM = {
 		});
 	},
 	ping : function(){
-		loadURL("/message/ping.html") ;
-		console.log("[IM] heartbeat: " + new Date().getTime())
+		loadURL("/message/ping.html");
+		console.log("[IM] heartbeat:" + new Date().getTime());
 	},
 	audioplayer:function(id, file, loop) {
 	    var audioplayer = document.getElementById(id);

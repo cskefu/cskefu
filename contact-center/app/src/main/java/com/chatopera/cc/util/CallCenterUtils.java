@@ -52,11 +52,11 @@ public class CallCenterUtils {
      * @param extRes
      * @return
      */
-    public static SipTrunk siptrunk(String extno, SipTrunkRepository sipTrunkRes, ExtentionRepository extRes) {
+    public static SipTrunk siptrunk(String extno, SipTrunkRepository sipTrunkRes, ExtensionRepository extRes) {
         SipTrunk sipTrunk = null;
-        List<Extention> extList = extRes.findByExtention(extno);
+        List<Extension> extList = extRes.findByExtension(extno);
         if (extList.size() > 0) {
-            Extention ext = extList.get(0);
+            Extension ext = extList.get(0);
             if (StringUtils.isNotBlank(ext.getSiptrunk())) {
                 sipTrunk = MainContext.getCache().findOneSystemByIdAndOrgi(ext.getSiptrunk(), ext.getOrgi());
                 if (sipTrunk == null) {

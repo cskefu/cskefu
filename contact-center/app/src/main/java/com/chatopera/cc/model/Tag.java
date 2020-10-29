@@ -36,6 +36,16 @@ public class Tag {
 	
 	private String tagtype ;
 
+	private String skill ;			//组织机构ID
+
+	public String getSkill() {
+		return skill;
+	}
+
+	public void setSkill(String skill) {
+		this.skill = skill;
+	}
+
 	@Id
 	@Column(length = 32)
 	@GeneratedValue(generator = "system-uuid")

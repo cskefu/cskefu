@@ -45,27 +45,29 @@
                         </#if>
                         <#if user?? && (user.roleAuthMap[ "A02_A01_A02_B09"]?? || user.admin)>
                             <div class="layui-btn-group ukefu-btn-group">
-                                <button class="layui-btn layui-btn-small dropdown-menu">
+                                <button class="layui-btn layui-btn-small dropdown-menu <#if !currentOrgan??>noexport</#if>">
                                     <i class="kfont">&#xe672;</i> 导出
                                     <i class="layui-icon">&#xe625;</i>
 							    </button>
-                                <ul class="ukefu-dropdown-menu layui-anim layui-anim-upbit">
-                                    <li>
-                                        <a href="javascript:void(0)" id="batexp" title="导出联系人" target="_blank">
-                                            <i class="kfont">&#xe672;</i> 导出选中结果
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/apps/contacts/expsearch.html?1=1<#if q??>&q=${q!''}</#if><#if ckind??>&ckind=${ckind}</#if>&subtype=${subtype}" title="导出联系人" target="_blank">
-                                            <i class="kfont">&#xe672;</i> 导出当前搜索结果
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/apps/contacts/expall.html<#if ckind??>?ckind=${ckind}</#if>" title="导出联系人" target="_blank">
-                                            <i class="kfont">&#xe672;</i> 导出全部数据
-                                        </a>
-                                    </li>
-                                </ul>
+                                <#if currentOrgan?? && currentOrgan != null>
+                                    <ul class="ukefu-dropdown-menu layui-anim layui-anim-upbit">
+                                        <li>
+                                            <a href="javascript:void(0)" id="batexp" title="导出联系人" target="_blank">
+                                                <i class="kfont">&#xe672;</i> 导出选中结果
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/apps/contacts/expsearch.html?1=1<#if q??>&q=${q!''}</#if><#if ckind??>&ckind=${ckind}</#if>&subtype=${subtype}" title="导出联系人" target="_blank">
+                                                <i class="kfont">&#xe672;</i> 导出当前搜索结果
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/apps/contacts/expall.html<#if ckind??>?ckind=${ckind}</#if>" title="导出联系人" target="_blank">
+                                                <i class="kfont">&#xe672;</i> 导出全部数据
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </#if>
                             </div>
                         </#if>
                     </div>
@@ -177,6 +179,12 @@
         </div>
     </div>
 </div>
+
+<style>
+    .noexport{
+        background:grey !important;
+    }
+</style>
 
 <script src="/js/CSKeFu_Rest_Request.v1.js"></script>
 <script>

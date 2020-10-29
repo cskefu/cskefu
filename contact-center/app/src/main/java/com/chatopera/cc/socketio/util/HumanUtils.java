@@ -23,17 +23,21 @@ import com.chatopera.cc.basic.MainContext.MessageType;
 import com.chatopera.cc.basic.MainContext.ReceiverType;
 import com.chatopera.cc.model.AgentService;
 import com.chatopera.cc.model.AgentUser;
+import com.chatopera.cc.model.AgentUserTask;
 import com.chatopera.cc.persistence.repository.AgentServiceRepository;
+import com.chatopera.cc.persistence.repository.AgentUserTaskRepository;
 import com.chatopera.cc.socketio.message.ChatMessage;
 import com.chatopera.cc.socketio.message.Message;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
+
 public class HumanUtils {
     private final static Logger logger = LoggerFactory.getLogger(HumanUtils.class);
     private static AgentServiceRepository agentServiceRes;
-
+    private static AgentUserTaskRepository agentUserTaskRes;
 
     /**
      * 发送文本消息
@@ -55,7 +59,7 @@ public class HumanUtils {
     protected static void processMessage(final ChatMessage chatMessage, final String msgtype, final String userid) {
         logger.info("[processMessage] userid {}, msgtype {}", userid, msgtype);
         AgentUser agentUser = MainContext.getCache().findOneAgentUserByUserIdAndOrgi(
-                userid, MainContext.SYSTEM_ORGI).orElse(null);
+                userid, Constants.SYSTEM_ORGI).orElse(null);
 
         Message outMessage = new Message();
 
@@ -113,6 +117,18 @@ public class HumanUtils {
             outMessage.setChannel(agentUser.getChannel());
             outMessage.setAgentUser(agentUser);
             outMessage.setCreatetime(Constants.DISPLAY_DATE_FORMATTER.format(chatMessage.getCreatetime()));
+
+            if (StringUtils.equals(chatMessage.getType(), "message")) {
+                // 处理超时回复
+                AgentUserTask agentUserTask = getAgentUserTaskRes().getOne(agentUser.getId());
+                agentUserTask.setLastgetmessage(new Date());
+                agentUserTask.setWarnings("1");
+                agentUserTask.setWarningtime(null);
+
+                agentUserTask.setReptime(null);
+                agentUserTask.setReptimes("0");
+                getAgentUserTaskRes().save(agentUserTask);
+            }
         }
 
         outMessage.setChannelMessage(chatMessage);
@@ -121,23 +137,23 @@ public class HumanUtils {
         if (StringUtils.isNotBlank(chatMessage.getUserid()) && MainContext.MessageType.MESSAGE.toString().equals(
                 chatMessage.getType())) {
             MainContext.getPeerSyncIM().send(ReceiverType.VISITOR, ChannelType.toValue(outMessage.getChannel()),
-                                             outMessage.getAppid(), MessageType.MESSAGE, chatMessage.getUserid(),
-                                             outMessage, true);
+                    outMessage.getAppid(), MessageType.MESSAGE, chatMessage.getUserid(),
+                    outMessage, true);
             if (statusMessage != null) {
                 MainContext.getPeerSyncIM().send(ReceiverType.VISITOR, ChannelType.toValue(outMessage.getChannel()),
-                                                 outMessage.getAppid(), MessageType.STATUS, chatMessage.getUserid(),
-                                                 statusMessage, true);
+                        outMessage.getAppid(), MessageType.STATUS, chatMessage.getUserid(),
+                        statusMessage, true);
             }
         }
 
         // 将消息发送给 坐席
         if (agentUser != null && StringUtils.isNotBlank(agentUser.getAgentno())) {
             MainContext.getPeerSyncIM().send(ReceiverType.AGENT,
-                                             ChannelType.WEBIM,
-                                             agentUser.getAppid(),
-                                             MessageType.MESSAGE,
-                                             agentUser.getAgentno(),
-                                             outMessage, true);
+                    ChannelType.WEBIM,
+                    agentUser.getAppid(),
+                    MessageType.MESSAGE,
+                    agentUser.getAgentno(),
+                    outMessage, true);
         }
     }
 
@@ -148,5 +164,10 @@ public class HumanUtils {
         return agentServiceRes;
     }
 
-
+    private static AgentUserTaskRepository getAgentUserTaskRes() {
+        if (agentUserTaskRes == null) {
+            agentUserTaskRes = MainContext.getContext().getBean(AgentUserTaskRepository.class);
+        }
+        return agentUserTaskRes;
+    }
 }

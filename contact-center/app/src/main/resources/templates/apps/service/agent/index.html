@@ -36,7 +36,9 @@
 							<td>
 								${agentStatus.users!''}
 							</td>
-							<td>${agentStatus.maxusers!''}</td>
+							<td>
+								${agentStatus.maxusers!''}
+							</td>
 							
 							<td><#if agentStatus.logindate??>${agentStatus.logindate?string('yyyy-MM-dd HH:mm:ss')}</#if></td>
 							<td>
@@ -51,7 +53,7 @@
 						</#list>
 						<#else>
 							<tr>
-								<td colspan="20" style="height:400px;">
+								<td colspan="6" style="height:400px;">
 									<div class="ukefu-empty" style="background: none">
 										<i class="layui-icon">&#xe63a;</i>
 										<div style="">当前没有在线坐席</div>

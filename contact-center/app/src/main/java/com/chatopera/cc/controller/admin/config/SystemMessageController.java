@@ -20,11 +20,14 @@ import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.Dict;
+import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.model.SystemMessage;
+import com.chatopera.cc.persistence.repository.OrganRepository;
 import com.chatopera.cc.persistence.repository.SystemMessageRepository;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -35,135 +38,148 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
 public class SystemMessageController extends Handler {
-	
-	@Autowired
-	private SystemMessageRepository systemMessageRepository;
-	
+
+    @Autowired
+    private SystemMessageRepository systemMessageRepository;
+
+    @Autowired
+    private OrganRepository organRes;
+
     @RequestMapping("/email/index")
-    @Menu(type = "setting" , subtype = "email")
-    public ModelAndView index(ModelMap map , HttpServletRequest request) throws IOException {
-    	map.addAttribute("emailList", systemMessageRepository.findByMsgtypeAndOrgi("email" , super.getOrgi(request) , new PageRequest(super.getP(request), super.getPs(request))));
-    	return request(super.createAdminTempletResponse("/admin/email/index"));
+    @Menu(type = "setting", subtype = "email")
+    public ModelAndView index(ModelMap map, HttpServletRequest request) throws IOException {
+        Page<SystemMessage> emails = systemMessageRepository.findByMsgtypeAndOrgi("email", super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request)));
+        List<Organ> organs = organRes.findByOrgi(super.getOrgi(request));
+
+        emails.getContent().stream().forEach(p -> {
+            organs.stream().filter(o -> StringUtils.equals(p.getOrgan(), o.getId())).findAny().ifPresent(o -> p.setOrgan(o.getName()));
+        });
+
+        map.addAttribute("emailList", emails);
+        return request(super.createAdminTempletResponse("/admin/email/index"));
     }
-    
+
     @RequestMapping("/email/add")
-    @Menu(type = "admin" , subtype = "email")
-    public ModelAndView add(ModelMap map , HttpServletRequest request) {
+    @Menu(type = "admin", subtype = "email")
+    public ModelAndView add(ModelMap map, HttpServletRequest request) {
+        map.put("organList", organRes.findByOrgi(super.getOrgi(request)));
         return request(super.createRequestPageTempletResponse("/admin/email/add"));
     }
-    
+
     @RequestMapping("/email/save")
-    @Menu(type = "admin" , subtype = "user")
-    public ModelAndView save(HttpServletRequest request ,@Valid SystemMessage email) throws NoSuchAlgorithmException {
-    	email.setOrgi(super.getOrgi(request));
-    	email.setMsgtype(MainContext.SystemMessageType.EMAIL.toString());
-    	if(!StringUtils.isBlank(email.getSmtppassword())) {
-			email.setSmtppassword(MainUtils.encryption(email.getSmtppassword()));
-		}
-    	systemMessageRepository.save(email) ;
-    	return request(super.createRequestPageTempletResponse("redirect:/admin/email/index.html"));
+    @Menu(type = "admin", subtype = "user")
+    public ModelAndView save(HttpServletRequest request, @Valid SystemMessage email) throws NoSuchAlgorithmException {
+        email.setOrgi(super.getOrgi(request));
+        email.setMsgtype(MainContext.SystemMessageType.EMAIL.toString());
+        if (!StringUtils.isBlank(email.getSmtppassword())) {
+            email.setSmtppassword(MainUtils.encryption(email.getSmtppassword()));
+        }
+        systemMessageRepository.save(email);
+        return request(super.createRequestPageTempletResponse("redirect:/admin/email/index.html"));
     }
-    
+
     @RequestMapping("/email/edit")
-    @Menu(type = "admin" , subtype = "email")
-    public ModelAndView edit(ModelMap map , HttpServletRequest request , @Valid String id) {
-    	map.addAttribute("email", systemMessageRepository.findByIdAndOrgi(id, super.getOrgi(request))) ;
+    @Menu(type = "admin", subtype = "email")
+    public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
+        map.put("organList", organRes.findByOrgi(super.getOrgi(request)));
+        map.addAttribute("email", systemMessageRepository.findByIdAndOrgi(id, super.getOrgi(request)));
         return request(super.createRequestPageTempletResponse("/admin/email/edit"));
     }
-    
+
     @RequestMapping("/email/update")
-    @Menu(type = "admin" , subtype = "user" , admin = true)
-    public ModelAndView update(HttpServletRequest request ,@Valid SystemMessage email) throws NoSuchAlgorithmException {
-    	SystemMessage temp = systemMessageRepository.findByIdAndOrgi(email.getId(), super.getOrgi(request)) ;
-    	if(email!=null) {
-    		email.setCreatetime(temp.getCreatetime());
-    		email.setOrgi(temp.getOrgi());
-    		email.setMsgtype(MainContext.SystemMessageType.EMAIL.toString());
-    		if(!StringUtils.isBlank(email.getSmtppassword())) {
-    			email.setSmtppassword(MainUtils.encryption(email.getSmtppassword()));
-    		}else {
-    			email.setSmtppassword(temp.getSmtppassword());
-    		}
-    		systemMessageRepository.save(email) ;
-    	}
-    	return request(super.createRequestPageTempletResponse("redirect:/admin/email/index.html"));
+    @Menu(type = "admin", subtype = "user", admin = true)
+    public ModelAndView update(HttpServletRequest request, @Valid SystemMessage email) throws NoSuchAlgorithmException {
+        SystemMessage temp = systemMessageRepository.findByIdAndOrgi(email.getId(), super.getOrgi(request));
+        if (email != null) {
+            email.setCreatetime(temp.getCreatetime());
+            email.setOrgi(temp.getOrgi());
+            email.setMsgtype(MainContext.SystemMessageType.EMAIL.toString());
+            if (!StringUtils.isBlank(email.getSmtppassword())) {
+                email.setSmtppassword(MainUtils.encryption(email.getSmtppassword()));
+            } else {
+                email.setSmtppassword(temp.getSmtppassword());
+            }
+            systemMessageRepository.save(email);
+        }
+        return request(super.createRequestPageTempletResponse("redirect:/admin/email/index.html"));
     }
-    
+
     @RequestMapping("/email/delete")
-    @Menu(type = "admin" , subtype = "user")
-    public ModelAndView delete(HttpServletRequest request ,@Valid SystemMessage email) {
-    	SystemMessage temp = systemMessageRepository.findByIdAndOrgi(email.getId(), super.getOrgi(request)) ;
-    	if(email!=null) {
-    		systemMessageRepository.delete(temp);
-    	}
-    	return request(super.createRequestPageTempletResponse("redirect:/admin/email/index.html"));
+    @Menu(type = "admin", subtype = "user")
+    public ModelAndView delete(HttpServletRequest request, @Valid SystemMessage email) {
+        SystemMessage temp = systemMessageRepository.findByIdAndOrgi(email.getId(), super.getOrgi(request));
+        if (email != null) {
+            systemMessageRepository.delete(temp);
+        }
+        return request(super.createRequestPageTempletResponse("redirect:/admin/email/index.html"));
     }
-    
-    
+
+
     @RequestMapping("/sms/index")
-    @Menu(type = "setting" , subtype = "sms")
-    public ModelAndView smsindex(ModelMap map , HttpServletRequest request) throws IOException {
-    	map.addAttribute("smsList", systemMessageRepository.findByMsgtypeAndOrgi("sms" , super.getOrgi(request) , new PageRequest(super.getP(request), super.getPs(request))));
-    	return request(super.createAdminTempletResponse("/admin/sms/index"));
+    @Menu(type = "setting", subtype = "sms")
+    public ModelAndView smsindex(ModelMap map, HttpServletRequest request) throws IOException {
+        map.addAttribute("smsList", systemMessageRepository.findByMsgtypeAndOrgi("sms", super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request))));
+        return request(super.createAdminTempletResponse("/admin/sms/index"));
     }
-    
+
     @RequestMapping("/sms/add")
-    @Menu(type = "admin" , subtype = "sms")
-    public ModelAndView smsadd(ModelMap map , HttpServletRequest request) {
-    	
-    	map.addAttribute("smsType", Dict.getInstance().getDic("com.dic.sms.type")) ;
+    @Menu(type = "admin", subtype = "sms")
+    public ModelAndView smsadd(ModelMap map, HttpServletRequest request) {
+
+        map.addAttribute("smsType", Dict.getInstance().getDic("com.dic.sms.type"));
         return request(super.createRequestPageTempletResponse("/admin/sms/add"));
     }
-    
+
     @RequestMapping("/sms/save")
-    @Menu(type = "admin" , subtype = "sms")
-    public ModelAndView smssave(HttpServletRequest request ,@Valid SystemMessage sms) throws NoSuchAlgorithmException {
-    	sms.setOrgi(super.getOrgi(request));
-    	sms.setMsgtype(MainContext.SystemMessageType.SMS.toString());
-    	if(!StringUtils.isBlank(sms.getSmtppassword())) {
-    		sms.setSmtppassword(MainUtils.encryption(sms.getSmtppassword()));
-		}
-    	systemMessageRepository.save(sms) ;
-    	return request(super.createRequestPageTempletResponse("redirect:/admin/sms/index.html"));
+    @Menu(type = "admin", subtype = "sms")
+    public ModelAndView smssave(HttpServletRequest request, @Valid SystemMessage sms) throws NoSuchAlgorithmException {
+        sms.setOrgi(super.getOrgi(request));
+        sms.setMsgtype(MainContext.SystemMessageType.SMS.toString());
+        if (!StringUtils.isBlank(sms.getSmtppassword())) {
+            sms.setSmtppassword(MainUtils.encryption(sms.getSmtppassword()));
+        }
+        systemMessageRepository.save(sms);
+        return request(super.createRequestPageTempletResponse("redirect:/admin/sms/index.html"));
     }
-    
+
     @RequestMapping("/sms/edit")
-    @Menu(type = "admin" , subtype = "sms")
-    public ModelAndView smsedit(ModelMap map , HttpServletRequest request , @Valid String id) {
-    	map.addAttribute("smsType", Dict.getInstance().getDic("com.dic.sms.type")) ;
-    	map.addAttribute("sms", systemMessageRepository.findByIdAndOrgi(id, super.getOrgi(request))) ;
+    @Menu(type = "admin", subtype = "sms")
+    public ModelAndView smsedit(ModelMap map, HttpServletRequest request, @Valid String id) {
+        map.addAttribute("smsType", Dict.getInstance().getDic("com.dic.sms.type"));
+        map.addAttribute("sms", systemMessageRepository.findByIdAndOrgi(id, super.getOrgi(request)));
         return request(super.createRequestPageTempletResponse("/admin/sms/edit"));
     }
-    
+
     @RequestMapping("/sms/update")
-    @Menu(type = "admin" , subtype = "sms" , admin = true)
-    public ModelAndView smsupdate(HttpServletRequest request ,@Valid SystemMessage sms) throws NoSuchAlgorithmException {
-    	SystemMessage temp = systemMessageRepository.findByIdAndOrgi(sms.getId(), super.getOrgi(request)) ;
-    	if(sms!=null) {
-    		sms.setCreatetime(temp.getCreatetime());
-    		sms.setOrgi(temp.getOrgi());
-    		sms.setMsgtype(MainContext.SystemMessageType.SMS.toString());
-    		if(!StringUtils.isBlank(sms.getSmtppassword())) {
-    			sms.setSmtppassword(MainUtils.encryption(sms.getSmtppassword()));
-    		}else {
-    			sms.setSmtppassword(temp.getSmtppassword());
-    		}
-    		systemMessageRepository.save(sms) ;
-    	}
-    	return request(super.createRequestPageTempletResponse("redirect:/admin/sms/index.html"));
+    @Menu(type = "admin", subtype = "sms", admin = true)
+    public ModelAndView smsupdate(HttpServletRequest request, @Valid SystemMessage sms) throws NoSuchAlgorithmException {
+        SystemMessage temp = systemMessageRepository.findByIdAndOrgi(sms.getId(), super.getOrgi(request));
+        if (sms != null) {
+            sms.setCreatetime(temp.getCreatetime());
+            sms.setOrgi(temp.getOrgi());
+            sms.setMsgtype(MainContext.SystemMessageType.SMS.toString());
+            if (!StringUtils.isBlank(sms.getSmtppassword())) {
+                sms.setSmtppassword(MainUtils.encryption(sms.getSmtppassword()));
+            } else {
+                sms.setSmtppassword(temp.getSmtppassword());
+            }
+            systemMessageRepository.save(sms);
+        }
+        return request(super.createRequestPageTempletResponse("redirect:/admin/sms/index.html"));
     }
-    
+
     @RequestMapping("/sms/delete")
-    @Menu(type = "admin" , subtype = "sms")
-    public ModelAndView smsdelete(HttpServletRequest request ,@Valid SystemMessage sms) {
-    	SystemMessage temp = systemMessageRepository.findByIdAndOrgi(sms.getId(), super.getOrgi(request)) ;
-    	if(sms!=null) {
-    		systemMessageRepository.delete(temp);
-    	}
-    	return request(super.createRequestPageTempletResponse("redirect:/admin/sms/index.html"));
+    @Menu(type = "admin", subtype = "sms")
+    public ModelAndView smsdelete(HttpServletRequest request, @Valid SystemMessage sms) {
+        SystemMessage temp = systemMessageRepository.findByIdAndOrgi(sms.getId(), super.getOrgi(request));
+        if (sms != null) {
+            systemMessageRepository.delete(temp);
+        }
+        return request(super.createRequestPageTempletResponse("redirect:/admin/sms/index.html"));
     }
 }

@@ -1,0 +1,52 @@
+<form class="layui-form" action="/service/quene/transfer/save.html" method="post" >
+    <input type="hidden" name="id" value="${id!''}">
+    <div class="row" style="height:295px;">
+        <div class="col-lg-12">
+            <div class="box">
+                <div class="box-title">
+                    <h1 class="site-h1" style="background-color:#FFFFFF;margin:0px;padding:0 0 4px 20px;">
+                        请选择技能组
+                    </h1>
+                </div>
+                <div class="box-body" style="padding:0px 0px;position: relative;height:250px;overflow-y:auto;">
+                    <select multiple = "multiple" name="skillid" class="ukefu-form-multiple">
+                        <#if skillGroups??>
+                        <#list skillGroups as skill>
+                        <#assign agentNum = 0 >
+                        <#if userList??><#list userList as agent><#if agent.organs[skill.id]??><#assign agentNum = agentNum + 1 ></#if></#list></#if>
+                        <option  title="${skill.name!''}(${agentNum!''})" class="uk_role <#if skill.id == skillid>this</#if>" style="margin:0px;padding:7px 0 7px 20px;color: #32c24d" value="${skill.id}">
+                            <span style="max-width: 120px;text-overflow: ellipsis;white-space: nowrap; overflow: hidden;float: left;margin: 0 3px">${skill.name!''}</span>
+                            (${agentNum!''})
+                        </option>
+                        </#list>
+                        </#if>
+                    </select>
+                </div>
+             </div>
+        </div>
+        <div class="layui-form-button">
+            <div class="layui-button-block">
+                <button class="layui-btn" lay-submit lay-filter="contactsForm">转接</button>
+                <button type="button" class="layui-btn layui-btn-primary" onclick="closedPage()">关闭</button>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    function closedPage(){
+        layer.closeAll("page")
+    }
+    layui.use('form', function(){
+        var form = layui.form();
+        //监听提交
+        form.on('submit(contactsForm)', function(data){
+            if(!data.field.skillid){
+                layer.msg("请选择技能组");
+                return false
+            }
+        });
+    });
+
+
+</script>
+

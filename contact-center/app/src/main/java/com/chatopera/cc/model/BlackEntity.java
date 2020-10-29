@@ -49,7 +49,27 @@ public class BlackEntity implements java.io.Serializable{
 	private String agentserviceid ;	//agent service id		
 	private String description ;	//备注黑名单原因
 	private int times ;				//对话次数
-	private int chattime ;     //最后一次对话时长
+	private int chattime ;			//最后一次对话时长
+
+	private String agentusername ;  //客服
+
+	public String getAgentusername() {
+		return agentusername;
+	}
+
+	public void setAgentusername(String agentusername) {
+		this.agentusername = agentusername;
+	}
+
+	public String getSkill() {
+		return skill;
+	}
+
+	public void setSkill(String skill) {
+		this.skill = skill;
+	}
+
+	private String skill ;			//组织机构ID
 	
 	@Id
 	@Column(length = 32)

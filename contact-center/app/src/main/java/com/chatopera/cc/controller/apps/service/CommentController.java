@@ -18,7 +18,9 @@ package com.chatopera.cc.controller.apps.service;
 
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.AgentService;
+import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.persistence.repository.AgentServiceRepository;
+import com.chatopera.cc.proxy.OrganProxy;
 import com.chatopera.cc.util.Menu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,18 +32,23 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/service")
 public class CommentController extends Handler{
 	@Autowired
 	private AgentServiceRepository agentServiceRes ;
-	
-	
+
+	@Autowired
+	private OrganProxy organProxy;
+
 	@RequestMapping("/comment/index")
     @Menu(type = "service" , subtype = "comment" , admin= true)
     public ModelAndView index(ModelMap map , HttpServletRequest request , String userid , String agentservice , @Valid String channel) {
-		Page<AgentService> agentServiceList = agentServiceRes.findByOrgiAndSatisfaction(super.getOrgi(request) , true ,new PageRequest(super.getP(request), super.getPs(request))) ;
+		Organ currentOrgan = super.getOrgan(request);
+		Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+		Page<AgentService> agentServiceList = agentServiceRes.findByOrgiAndSatisfactionAndSkillIn(super.getOrgi(request) , true ,organs.keySet(),new PageRequest(super.getP(request), super.getPs(request))) ;
 		map.addAttribute("serviceList", agentServiceList) ;
 		return request(super.createAppsTempletResponse("/apps/service/comment/index"));
     }

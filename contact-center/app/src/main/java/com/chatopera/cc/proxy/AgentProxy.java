@@ -9,10 +9,7 @@ import com.chatopera.cc.exception.CSKefuException;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.peer.PeerSyncIM;
 import com.chatopera.cc.persistence.blob.JpaBlobHelper;
-import com.chatopera.cc.persistence.repository.AgentStatusRepository;
-import com.chatopera.cc.persistence.repository.AttachmentRepository;
-import com.chatopera.cc.persistence.repository.SNSAccountRepository;
-import com.chatopera.cc.persistence.repository.StreamingFileRepository;
+import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.socketio.message.ChatMessage;
 import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.util.HashMapUtils;
@@ -62,6 +59,8 @@ public class AgentProxy {
     @Autowired
     private AgentStatusRepository agentStatusRes;
 
+    @Autowired
+    private AgentUserTaskRepository agentUserTaskRes;
 
     /**
      * 设置一个坐席为就绪状态
@@ -82,8 +81,8 @@ public class AgentProxy {
         // TODO 对于busy的判断，其实可以和AgentStatus maxuser以及users结合
         // 现在为了配合前端的行为：从未就绪到就绪设置为置闲
         agentStatus.setBusy(busy);
-        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(agentStatus.getOrgi());
-        agentStatus.setMaxusers(sessionConfig.getMaxuser());
+//        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(agentStatus.getOrgi());
+//        agentStatus.setMaxusers(sessionConfig.getMaxuser());
 
         /**
          * 更新当前用户状态
@@ -125,6 +124,17 @@ public class AgentProxy {
         outMessage.setMessageType(chatMessage.getMsgtype());
         outMessage.setCreatetime(Constants.DISPLAY_DATE_FORMATTER.format(chatMessage.getCreatetime()));
         outMessage.setChannelMessage(chatMessage);
+
+        // 处理超时回复
+        AgentUserTask agentUserTask = agentUserTaskRes.getOne(agentUser.getId());
+        agentUserTask.setWarnings("0");
+        agentUserTask.setWarningtime(null);
+
+        agentUserTask.setReptime(null);
+        agentUserTask.setReptimes("1");
+        agentUserTask.setLastmessage(new Date());
+
+        agentUserTaskRes.save(agentUserTask);
 
         // 发送消息给在线访客(此处也会生成对话聊天历史和会话监控消息)
         peerSyncIM.send(
@@ -204,18 +214,18 @@ public class AgentProxy {
              */
             // 发送消息给访客
             peerSyncIM.send(MainContext.ReceiverType.VISITOR,
-                            MainContext.ChannelType.toValue(agentUser.getChannel()),
-                            agentUser.getAppid(), MainContext.MessageType.MESSAGE,
-                            agentUser.getUserid(),
-                            outMessage,
-                            true);
+                    MainContext.ChannelType.toValue(agentUser.getChannel()),
+                    agentUser.getAppid(), MainContext.MessageType.MESSAGE,
+                    agentUser.getUserid(),
+                    outMessage,
+                    true);
 
             // 发送给坐席自己
             peerSyncIM.send(MainContext.ReceiverType.AGENT,
-                            MainContext.ChannelType.WEBIM,
-                            agentUser.getAppid(),
-                            MainContext.MessageType.MESSAGE,
-                            agentUser.getAgentno(), outMessage, true);
+                    MainContext.ChannelType.WEBIM,
+                    agentUser.getAppid(),
+                    MainContext.MessageType.MESSAGE,
+                    agentUser.getAgentno(), outMessage, true);
 
         } else {
             logger.warn("[sendFileMessageByAgent] agent user chat is end, disable forward files.");

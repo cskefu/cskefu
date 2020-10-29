@@ -313,7 +313,7 @@ public class ApiContactNotesController extends Handler {
         JsonObject json = new JsonObject();
         HttpHeaders headers = RestUtils.header();
         j.addProperty("creater", super.getUser(request).getId());
-        j.addProperty("orgi", MainContext.SYSTEM_ORGI);
+        j.addProperty("orgi", Constants.SYSTEM_ORGI);
 
         if (!j.has("ops")) {
             json.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_1);

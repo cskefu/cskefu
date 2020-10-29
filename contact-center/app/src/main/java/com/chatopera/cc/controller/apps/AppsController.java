@@ -23,10 +23,8 @@ import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.es.ContactsRepository;
-import com.chatopera.cc.persistence.repository.OnlineUserRepository;
-import com.chatopera.cc.persistence.repository.OrgiSkillRelRepository;
-import com.chatopera.cc.persistence.repository.UserEventRepository;
-import com.chatopera.cc.persistence.repository.UserRepository;
+import com.chatopera.cc.persistence.repository.*;
+import com.chatopera.cc.proxy.OrganProxy;
 import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang.StringUtils;
@@ -46,6 +44,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class AppsController extends Handler {
@@ -75,20 +74,34 @@ public class AppsController extends Handler {
     @Autowired
     private UserProxy userProxy;
 
+    @Autowired
+    private OrganProxy organProxy;
+
+    @Autowired
+    private ConsultInviteRepository invite;
+
     @RequestMapping({"/apps/content"})
     @Menu(type = "apps", subtype = "content")
     public ModelAndView content(ModelMap map, HttpServletRequest request, @Valid String msg) {
         final User user = super.getUser(request);
         final String orgi = super.getOrgi(request);
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, orgi);
+        List<String> appids = new ArrayList<String>();
+        if (organs.size() > 0) {
+            appids = invite.findSNSIdByOrgiAndSkill(orgi, organs.keySet());
+        }
+
 
         /****************************
          * 获得在线访客列表
          ****************************/
 
 //        TODO 此处为从数据库加载
-        final Page<OnlineUser> onlineUserList = onlineUserRes.findByOrgiAndStatus(
+        final Page<OnlineUser> onlineUserList = onlineUserRes.findByOrgiAndStatusAndAppidIn(
                 super.getOrgi(request),
                 MainContext.OnlineUserStatusEnum.ONLINE.toString(),
+                appids,
                 new PageRequest(
                         super.getP(request),
                         super.getPs(request),
@@ -139,19 +152,33 @@ public class AppsController extends Handler {
     }
 
     private void aggValues(ModelMap map, HttpServletRequest request) {
-        map.put("agentReport", acdWorkMonitor.getAgentReport(super.getOrgi(request)));
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+
+        List<Object> onlineUsers = new ArrayList<>();
+        List<Object> userEvents = new ArrayList<>();
+        if (organs.size() > 0) {
+            List<String> appids = invite.findSNSIdByOrgiAndSkill(super.getOrgi(request), organs.keySet());
+
+            if (appids.size() > 0) {
+                onlineUsers = onlineUserRes.findByOrgiAndStatusAndInAppIds(
+                        super.getOrgi(request),
+                        MainContext.OnlineUserStatusEnum.ONLINE.toString(), appids);
+
+                userEvents = userEventRes.findByOrgiAndCreatetimeRangeAndInAppIds(super.getOrgi(request), MainUtils.getStartTime(),
+                        MainUtils.getEndTime(), appids);
+            }
+        }
+
+        map.put("agentReport", acdWorkMonitor.getAgentReport(currentOrgan != null ? currentOrgan.getId() : null, super.getOrgi(request)));
         map.put(
-                "webIMReport", MainUtils.getWebIMReport(
-                        userEventRes.findByOrgiAndCreatetimeRange(super.getOrgi(request), MainUtils.getStartTime(),
-                                MainUtils.getEndTime())));
+                "webIMReport", MainUtils.getWebIMReport(userEvents));
 
         // TODO 此处为什么不用agentReport中的agents？
         map.put("agents", getUsers(request).size());
 
         map.put(
-                "webIMInvite", MainUtils.getWebIMInviteStatus(onlineUserRes.findByOrgiAndStatus(
-                        super.getOrgi(request),
-                        MainContext.OnlineUserStatusEnum.ONLINE.toString())));
+                "webIMInvite", MainUtils.getWebIMInviteStatus(onlineUsers));
 
         map.put(
                 "inviteResult", MainUtils.getWebIMInviteResult(
@@ -254,7 +281,7 @@ public class AppsController extends Handler {
                 tempUser.setAgent(true);
             }
 
-            tempUser.setOrgi(super.getOrgiByTenantshare(request));
+            tempUser.setOrgi(super.getOrgi());
             final Date now = new Date();
             if (StringUtils.isNotBlank(user.getPassword())) {
                 tempUser.setPassword(MainUtils.md5(user.getPassword()));
@@ -299,19 +326,12 @@ public class AppsController extends Handler {
      * @return
      */
     private List<User> getUsers(HttpServletRequest request) {
-        List<User> userList;
-        if (super.isTenantshare()) {
-            List<String> organIdList = new ArrayList<>();
-            List<OrgiSkillRel> orgiSkillRelList = orgiSkillRelService.findByOrgi(super.getOrgi(request));
-            if (!orgiSkillRelList.isEmpty()) {
-                for (OrgiSkillRel rel : orgiSkillRelList) {
-                    organIdList.add(rel.getSkillid());
-                }
-            }
-            userList = userProxy.findByOrganInAndAgentAndDatastatus(organIdList, true, false);
-        } else {
-            userList = userRes.findByOrgiAndAgentAndDatastatus(super.getOrgi(request), true, false);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
+        List<User> userList = userProxy.findByOrganInAndAgentAndDatastatus(organs.keySet(), true, false);
+        if (userList == null) {
+            userList = new ArrayList<>();
         }
+
         return userList;
     }
 

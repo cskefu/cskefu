@@ -20,8 +20,12 @@ import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.AgentReport;
 import com.chatopera.cc.model.AgentStatus;
+import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.model.WorkMonitor;
+import com.chatopera.cc.persistence.repository.AgentServiceRepository;
+import com.chatopera.cc.persistence.repository.AgentUserRepository;
 import com.chatopera.cc.persistence.repository.WorkMonitorRepository;
+import com.chatopera.cc.proxy.OrganProxy;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +45,15 @@ public class ACDWorkMonitor {
 
     @Autowired
     private Cache cache;
+
+    @Autowired
+    private OrganProxy organProxy;
+
+    @Autowired
+    private AgentServiceRepository agentServiceRes;
+
+    @Autowired
+    private AgentUserRepository agentUserRes;
 
     /**
      * 获得 当前服务状态
@@ -96,16 +109,26 @@ public class ACDWorkMonitor {
         /**
          * 统计当前服务中的用户数量
          */
-        // 服务中
-        report.setUsers(cache.getInservAgentUsersSizeByOrgi(orgi));
-        // 等待中
-        report.setInquene(cache.getInqueAgentUsersSizeByOrgi(orgi));
+
+        if (organ != null) {
+            Organ currentOrgan = new Organ();
+            currentOrgan.setId(organ);
+            Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, orgi);
+
+            report.setUsers(agentServiceRes.countByOrgiAndStatusAndAgentskillIn(orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), organs.keySet()));
+            report.setInquene(agentUserRes.countByOrgiAndStatusAndSkillIn(orgi, MainContext.AgentUserStatusEnum.INQUENE.toString(), organs.keySet()));
+        } else {
+            // 服务中
+            report.setUsers(cache.getInservAgentUsersSizeByOrgi(orgi));
+            // 等待中
+            report.setInquene(cache.getInqueAgentUsersSizeByOrgi(orgi));
+        }
 
         // DEBUG
         logger.info(
                 "[getAgentReport] orgi {}, organ {}, agents {}, busy {}, users {}, inqueue {}", orgi, organ,
                 report.getAgents(), report.getBusy(), report.getUsers(), report.getInquene()
-                   );
+        );
         return report;
     }
 
@@ -129,7 +152,7 @@ public class ACDWorkMonitor {
             String worktype,
             String orgi,
             Date lasttime
-                                 ) {
+    ) {
         WorkMonitor workMonitor = new WorkMonitor();
         if (StringUtils.isNotBlank(agent) && StringUtils.isNotBlank(status)) {
             workMonitor.setAgent(agent);
@@ -149,7 +172,7 @@ public class ACDWorkMonitor {
                 int count = workMonitorRes.countByAgentAndDatestrAndStatusAndOrgi(
                         agent, MainUtils.simpleDateFormat.format(new Date()),
                         MainContext.AgentStatusEnum.READY.toString(), orgi
-                                                                                 );
+                );
                 if (count == 0) {
                     workMonitor.setFirsttime(true);
                 }

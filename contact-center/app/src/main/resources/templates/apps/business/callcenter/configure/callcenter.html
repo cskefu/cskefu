@@ -36,8 +36,8 @@
 	  <agents>
 	  	<#if skillExtentionList??>
 	  	<#list skillExtentionList as skillExtention>
-	  	<#if skillExtention.extention?? && skillExtention.extention!="">
-	  	<agent name="${skillExtention.extention}" type="callback" contact="[call_timeout=10]user/${skillExtention.extention}" status="Logged Out" max-no-answer="3" wrap-up-time="10" reject-delay-time="10" busy-delay-time="60" />
+	  	<#if skillExtention.extension?? && skillExtention.extension!="">
+	  	<agent name="${skillExtention.extension}" type="callback" contact="[call_timeout=10]user/${skillExtention.extension}" status="Logged Out" max-no-answer="3" wrap-up-time="10" reject-delay-time="10" busy-delay-time="60" />
 	  	</#if>
 	  	</#list>
 	  	</#if>
@@ -49,7 +49,7 @@
 	  	<#if skillGroups??>
 		<#list skillGroups as skill>
 		<#if skill.id == skillExtention.skillid>	  	
-	  	<tier agent="${skillExtention.extention}" queue="${skill.skill!''}" level="1" position="1"/>
+	  	<tier agent="${skillExtention.extension}" queue="${skill.skill!''}" level="1" position="1"/>
 	  	</#if>
 	  	</#list>
 	  	</#if>

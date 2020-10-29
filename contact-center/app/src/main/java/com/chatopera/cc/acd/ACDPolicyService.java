@@ -16,12 +16,14 @@
 
 package com.chatopera.cc.acd;
 
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.AgentStatus;
 import com.chatopera.cc.model.AgentUser;
 import com.chatopera.cc.model.SessionConfig;
+import com.chatopera.cc.persistence.repository.AgentUserRepository;
 import com.chatopera.cc.persistence.repository.OnlineUserRepository;
 import com.chatopera.cc.persistence.repository.SessionConfigRepository;
 import com.chatopera.cc.util.HashMapUtils;
@@ -33,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +55,9 @@ public class ACDPolicyService {
     @Autowired
     private OnlineUserRepository onlineUserRes;
 
+    @Autowired
+    private AgentUserRepository agentUserRes;
+
     /**
      * 载入坐席 ACD策略配置
      *
@@ -60,10 +66,10 @@ public class ACDPolicyService {
     @SuppressWarnings("unchecked")
     public List<SessionConfig> initSessionConfigList() {
         List<SessionConfig> sessionConfigList;
-        if ((sessionConfigList = cache.findOneSessionConfigListByOrgi(MainContext.SYSTEM_ORGI)) == null) {
+        if ((sessionConfigList = cache.findOneSessionConfigListByOrgi(Constants.SYSTEM_ORGI)) == null) {
             sessionConfigList = sessionConfigRes.findAll();
             if (sessionConfigList != null && sessionConfigList.size() > 0) {
-                cache.putSessionConfigListByOrgi(sessionConfigList, MainContext.SYSTEM_ORGI);
+                cache.putSessionConfigListByOrgi(sessionConfigList, Constants.SYSTEM_ORGI);
             }
         }
         return sessionConfigList;
@@ -75,14 +81,14 @@ public class ACDPolicyService {
      * @param orgi
      * @return
      */
-    public SessionConfig initSessionConfig(final String orgi) {
+    public SessionConfig initSessionConfig(String organid, final String orgi) {
         SessionConfig sessionConfig;
-        if ((sessionConfig = cache.findOneSessionConfigByOrgi(orgi)) == null) {
-            sessionConfig = sessionConfigRes.findByOrgi(orgi);
+        if ((sessionConfig = cache.findOneSessionConfigByOrgi(organid, orgi)) == null) {
+            sessionConfig = sessionConfigRes.findByOrgiAndSkill(orgi, organid);
             if (sessionConfig == null) {
                 sessionConfig = new SessionConfig();
             } else {
-                cache.putSessionConfigByOrgi(sessionConfig, orgi);
+                cache.putSessionConfigByOrgi(sessionConfig, organid, orgi);
             }
         }
 
@@ -113,14 +119,7 @@ public class ACDPolicyService {
      */
     public AgentStatus decideAgentStatusInAverage(final List<AgentStatus> agentStatuses) {
         // 查找最少人数的AgentStatus
-        AgentStatus x = null;
-        int min = 0;
-        for (final AgentStatus o : agentStatuses) {
-            if ((x == null) || (o.getUsers() < min)) {
-                x = o;
-                min = o.getUsers();
-            }
-        }
+        AgentStatus x = agentStatuses.stream().min(Comparator.comparingInt(AgentStatus::getUsers)).get();
 
         if (x != null) {
             logger.info("[decideAgentStatusWithIdleAgent] choose agentno {} in average.", x.getAgentno());
@@ -144,7 +143,7 @@ public class ACDPolicyService {
         logger.info(
                 "[filterOutAvailableAgentStatus] pre-conditions: agentUser.agentno {}, orgi {}, skill {}, onlineUser {}",
                 agentUser.getAgentno(), orgi, agentUser.getSkill(), agentUser.getUserid()
-                   );
+        );
         List<AgentStatus> agentStatuses = new ArrayList<>();
         Map<String, AgentStatus> map = cache.findAllReadyAgentStatusByOrgi(orgi);
 
@@ -155,10 +154,10 @@ public class ACDPolicyService {
             for (final Map.Entry<String, AgentStatus> f : map.entrySet()) {
                 sb.append(
                         String.format("   name %s, agentno %s, service %d/%d, status %s, busy %s, skills %s \n",
-                                      f.getValue().getUsername(),
-                                      f.getValue().getAgentno(), f.getValue().getUsers(), f.getValue().getMaxusers(),
-                                      f.getValue().getStatus(), f.getValue().isBusy(),
-                                      HashMapUtils.concatKeys(f.getValue().getSkills(), "|")));
+                                f.getValue().getUsername(),
+                                f.getValue().getAgentno(), f.getValue().getUsers(), f.getValue().getMaxusers(),
+                                f.getValue().getStatus(), f.getValue().isBusy(),
+                                HashMapUtils.concatKeys(f.getValue().getSkills(), "|")));
             }
             logger.info(sb.toString());
         } else {
@@ -198,7 +197,7 @@ public class ACDPolicyService {
             // 指定技能组
             for (final Map.Entry<String, AgentStatus> entry : map.entrySet()) {
                 if ((!entry.getValue().isBusy()) &&
-                        (entry.getValue().getUsers() < sessionConfig.getMaxuser()) &&
+                        (getAgentUsersBySkill(entry.getValue(), agentUser.getSkill()) < sessionConfig.getMaxuser()) &&
                         (entry.getValue().getSkills() != null &&
                                 entry.getValue().getSkills().containsKey(agentUser.getSkill()))) {
                     logger.info(
@@ -227,26 +226,28 @@ public class ACDPolicyService {
             /**
              * 在指定的坐席和技能组中未查到坐席
              * 接下来进行无差别查询
+             *
+             * TODO 指定技能组无用户，停止分配
              */
             // 对于该租户的所有客服
-            for (final Map.Entry<String, AgentStatus> entry : map.entrySet()) {
-                if ((!entry.getValue().isBusy()) && (entry.getValue().getUsers() < sessionConfig.getMaxuser())) {
-                    agentStatuses.add(entry.getValue());
-                    logger.info(
-                            "[filterOutAvailableAgentStatus] <Redundance> find ready agent {}, agentname {}, status {}, service {}/{}, skills {}",
-                            entry.getValue().getAgentno(), entry.getValue().getUsername(), entry.getValue().getStatus(),
-                            entry.getValue().getUsers(),
-                            entry.getValue().getMaxusers(),
-                            HashMapUtils.concatKeys(entry.getValue().getSkills(), "|"));
-                } else {
-                    logger.info(
-                            "[filterOutAvailableAgentStatus] <Redundance> skip ready agent {}, name {}, status {}, service {}/{}, skills {}",
-                            entry.getValue().getAgentno(), entry.getValue().getUsername(), entry.getValue().getStatus(),
-                            entry.getValue().getUsers(),
-                            entry.getValue().getMaxusers(),
-                            HashMapUtils.concatKeys(entry.getValue().getSkills(), "|"));
-                }
-            }
+            // for (final Map.Entry<String, AgentStatus> entry : map.entrySet()) {
+            //     if ((!entry.getValue().isBusy()) && (entry.getValue().getUsers() < sessionConfig.getMaxuser())) {
+            //         agentStatuses.add(entry.getValue());
+            //         logger.info(
+            //                 "[filterOutAvailableAgentStatus] <Redundance> find ready agent {}, agentname {}, status {}, service {}/{}, skills {}",
+            //                 entry.getValue().getAgentno(), entry.getValue().getUsername(), entry.getValue().getStatus(),
+            //                 entry.getValue().getUsers(),
+            //                 entry.getValue().getMaxusers(),
+            //                 HashMapUtils.concatKeys(entry.getValue().getSkills(), "|"));
+            //     } else {
+            //         logger.info(
+            //                 "[filterOutAvailableAgentStatus] <Redundance> skip ready agent {}, name {}, status {}, service {}/{}, skills {}",
+            //                 entry.getValue().getAgentno(), entry.getValue().getUsername(), entry.getValue().getStatus(),
+            //                 entry.getValue().getUsers(),
+            //                 entry.getValue().getMaxusers(),
+            //                 HashMapUtils.concatKeys(entry.getValue().getSkills(), "|"));
+            //     }
+            // }
         }
 
         logger.info("[filterOutAvailableAgentStatus] agent status list size: {}", agentStatuses.size());
@@ -292,11 +293,11 @@ public class ACDPolicyService {
             logger.info("[filterOutAgentStatusWithPolicies] check agent against chat history.");
             // 启用了历史坐席优先 ， 查找 历史服务坐席
             List<com.chatopera.cc.util.WebIMReport> webIMaggs = MainUtils.getWebIMDataAgg(
-                    onlineUserRes.findByOrgiForDistinctAgent(orgi, onlineUserId));
+                    onlineUserRes.findBySkillAndOrgiForDistinctAgent(sessionConfig.getSkill(), orgi, onlineUserId));
             for (WebIMReport report : webIMaggs) {
                 for (final AgentStatus o : agentStatuses) {
                     if (StringUtils.equals(
-                            o.getAgentno(), report.getData()) && o.getUsers() < sessionConfig.getMaxuser()) {
+                            o.getAgentno(), report.getData()) && getAgentUsersBySkill(o, sessionConfig.getSkill()) < sessionConfig.getMaxuser()) {
                         agentStatus = o;
                         logger.info(
                                 "[filterOutAgentStatusWithPolicies] choose agentno {} by chat history.",
@@ -347,6 +348,10 @@ public class ACDPolicyService {
         }
 
         return agentStatus;
+    }
+
+    public int getAgentUsersBySkill(AgentStatus agentStatus, String skill) {
+        return agentUserRes.countByAgentnoAndStatusAndOrgiAndSkill(agentStatus.getAgentno(), MainContext.AgentUserStatusEnum.INSERVICE.toString(), agentStatus.getOrgi(), skill);
     }
 
 }

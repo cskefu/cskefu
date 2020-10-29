@@ -19,4 +19,5 @@ backups/
 .env
 build.gradle
 .vscode/
+nohup.out
 private

@@ -72,7 +72,9 @@ public class AgentServiceSummary implements Serializable{
 	private String updateuser ;	//处理人
 	private Date updatetime ;	//处理时间
 	private String processmemo;	//处理备注
-	
+
+	private String skill;	//技能组
+
 	public String getAgentusername() {
 		return agentusername;
 	}
@@ -327,5 +329,13 @@ public class AgentServiceSummary implements Serializable{
 
 	public void setProcessmemo(String processmemo) {
 		this.processmemo = processmemo;
+	}
+
+	public String getSkill() {
+		return skill;
+	}
+
+	public void setSkill(String skill) {
+		this.skill = skill;
 	}
 }

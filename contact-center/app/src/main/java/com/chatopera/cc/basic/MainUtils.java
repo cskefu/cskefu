@@ -763,7 +763,7 @@ public class MainUtils {
     public static String processEmoti(String message) {
         Pattern pattern = Pattern.compile("\\[([\\d]*?)\\]");
         SystemConfig systemConfig = MainContext.getCache().findOneSystemByIdAndOrgi(
-                "systemConfig", MainContext.SYSTEM_ORGI);
+                "systemConfig", Constants.SYSTEM_ORGI);
 
         Matcher matcher = pattern.matcher(message);
         StringBuffer strb = new StringBuffer();
@@ -839,10 +839,10 @@ public class MainUtils {
      */
     public static SystemConfig getSystemConfig() {
         SystemConfig systemConfig = MainContext.getCache().findOneSystemByIdAndOrgi(
-                "systemConfig", MainContext.SYSTEM_ORGI);
+                "systemConfig", Constants.SYSTEM_ORGI);
         if (systemConfig == null) {
             SystemConfigRepository systemConfigRes = MainContext.getContext().getBean(SystemConfigRepository.class);
-            systemConfig = systemConfigRes.findByOrgi(MainContext.SYSTEM_ORGI);
+            systemConfig = systemConfigRes.findByOrgi(Constants.SYSTEM_ORGI);
         }
         return systemConfig;
     }
@@ -856,7 +856,7 @@ public class MainUtils {
         if (tpRes != null) {
             List<TableProperties> tpList = tpRes.findBySecfield(true);
             MainContext.getCache().putSystemListByIdAndOrgi(
-                    Constants.CSKEFU_SYSTEM_SECFIELD, MainContext.SYSTEM_ORGI, tpList);
+                    Constants.CSKEFU_SYSTEM_SECFIELD, Constants.SYSTEM_ORGI, tpList);
         }
     }
 
@@ -866,10 +866,10 @@ public class MainUtils {
      * @return
      */
     public static void initSystemArea() {
-        MainContext.getCache().deleteSystembyIdAndOrgi(Constants.CSKEFU_SYSTEM_AREA, MainContext.SYSTEM_ORGI);
+        MainContext.getCache().deleteSystembyIdAndOrgi(Constants.CSKEFU_SYSTEM_AREA, Constants.SYSTEM_ORGI);
         AreaTypeRepository areaTypeRes = MainContext.getContext().getBean(AreaTypeRepository.class);
         MainContext.getCache().putSystemListByIdAndOrgi(
-                Constants.CSKEFU_SYSTEM_AREA, MainContext.SYSTEM_ORGI, areaTypeRes.findAll());
+                Constants.CSKEFU_SYSTEM_AREA, Constants.SYSTEM_ORGI, areaTypeRes.findAll());
     }
 
     /**
@@ -877,19 +877,19 @@ public class MainUtils {
      *
      * @return
      */
-    public static void initAdv(String orgi) {
-        MainContext.getCache().deleteSystembyIdAndOrgi(Constants.CSKEFU_SYSTEM_ADV + "_" + orgi, orgi);
+    public static void initAdv(String orgi, String skill) {
+        MainContext.getCache().deleteSystembyIdAndOrgi(Constants.CSKEFU_SYSTEM_ADV + "_" + skill, orgi);
         AdTypeRepository adRes = MainContext.getContext().getBean(AdTypeRepository.class);
         MainContext.getCache().putSystemListByIdAndOrgi(
-                Constants.CSKEFU_SYSTEM_ADV + "_" + orgi, orgi, adRes.findByOrgi(orgi));
+                Constants.CSKEFU_SYSTEM_ADV + "_" + skill, orgi, adRes.findByOrgiAndSkill(orgi, skill));
     }
 
     public static Template getTemplate(String id) {
         Template templet = null;
-        if ((templet = MainContext.getCache().findOneSystemByIdAndOrgi(id, MainContext.SYSTEM_ORGI)) == null) {
+        if ((templet = MainContext.getCache().findOneSystemByIdAndOrgi(id, Constants.SYSTEM_ORGI)) == null) {
             TemplateRepository templateRes = MainContext.getContext().getBean(TemplateRepository.class);
-            templet = templateRes.findByIdAndOrgi(id, MainContext.SYSTEM_ORGI);
-            MainContext.getCache().putSystemByIdAndOrgi(id, MainContext.SYSTEM_ORGI, templet);
+            templet = templateRes.findByIdAndOrgi(id, Constants.SYSTEM_ORGI);
+            MainContext.getCache().putSystemByIdAndOrgi(id, Constants.SYSTEM_ORGI, templet);
         }
         return templet;
     }
@@ -901,15 +901,15 @@ public class MainUtils {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static AdType getPointAdv(String adpos, String orgi) {
+    public static AdType getPointAdv(String adpos, String skill, String orgi) {
         List<AdType> adTypeList = new ArrayList<AdType>();
         List<AdType> cacheAdTypeList = MainContext.getCache().findOneSystemListByIdAndOrgi(
-                Constants.CSKEFU_SYSTEM_ADV + "_" + orgi, orgi);
+                Constants.CSKEFU_SYSTEM_ADV + "_" + skill, orgi);
         if (cacheAdTypeList == null) {
             AdTypeRepository adRes = MainContext.getContext().getBean(AdTypeRepository.class);
-            cacheAdTypeList = adRes.findByOrgi(orgi);
+            cacheAdTypeList = adRes.findByOrgiAndSkill(orgi, skill);
             MainContext.getCache().putSystemListByIdAndOrgi(
-                    Constants.CSKEFU_SYSTEM_ADV + "_" + orgi, orgi, cacheAdTypeList);
+                    Constants.CSKEFU_SYSTEM_ADV + "_" + skill, orgi, cacheAdTypeList);
         }
         List<SysDic> sysDicList = Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_ADPOS_DIC);
         SysDic sysDic = null;

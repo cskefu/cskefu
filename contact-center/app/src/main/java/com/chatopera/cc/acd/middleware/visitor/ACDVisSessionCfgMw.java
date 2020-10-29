@@ -45,7 +45,7 @@ public class ACDVisSessionCfgMw implements Middleware<ACDComposeContext> {
 
     @Override
     public void apply(final ACDComposeContext ctx, final Functional next) {
-        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(
+        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(ctx.getOrganid(),
                 ctx.getOrgi());
 
         ctx.setSessionConfig(sessionConfig);

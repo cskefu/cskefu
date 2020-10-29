@@ -380,7 +380,7 @@ var Proxy = {
 					}).then(function(result){
 						if(result.rc === 0){
 							if(result.data.length>0){
-								type == "agent" ? $("#quickReplyBox").html("") : $("#ccaQuickReplyBox").html("") ;
+								type == "agent" ? $("#quickReplyBox").html("") : $("#ccaQuickReplyBox").html("");
 								$.each(sortByKey(result.data,'score'),function(i,n){
 									var answerList =  result.data[i].replies;
 									var answer;

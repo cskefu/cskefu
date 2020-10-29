@@ -291,21 +291,10 @@ public class WebIMController extends Handler {
      */
     private List<Organ> getSkillGroups(HttpServletRequest request) {
         List<Organ> skillgroups = new ArrayList<>();
-        if (super.isTenantshare()) {
-            List<String> organIdList = new ArrayList<>();
-            List<OrgiSkillRel> orgiSkillRelList = orgiSkillRelService.findByOrgi(super.getOrgi(request));
-            if (!orgiSkillRelList.isEmpty()) {
-                for (OrgiSkillRel rel : orgiSkillRelList) {
-                    organIdList.add(rel.getSkillid());
-                }
-            }
-            skillgroups = organRes.findAll(organIdList);
-        } else {
-            List<Organ> allgroups = organRes.findByOrgiAndOrgid(super.getOrgi(request), super.getOrgid(request));
-            for (Organ o : allgroups) {
-                if (o.isSkill()) {
-                    skillgroups.add(o);
-                }
+        List<Organ> allgroups = organRes.findByOrgi(super.getOrgi(request));
+        for (Organ o : allgroups) {
+            if (o.isSkill()) {
+                skillgroups.add(o);
             }
         }
         return skillgroups;
@@ -318,19 +307,7 @@ public class WebIMController extends Handler {
      * @return
      */
     private List<User> getUsers(HttpServletRequest request) {
-        List<User> userList;
-        if (super.isTenantshare()) {
-            List<String> organIdList = new ArrayList<>();
-            List<OrgiSkillRel> orgiSkillRelList = orgiSkillRelService.findByOrgi(super.getOrgi(request));
-            if (!orgiSkillRelList.isEmpty()) {
-                for (OrgiSkillRel rel : orgiSkillRelList) {
-                    organIdList.add(rel.getSkillid());
-                }
-            }
-            userList = userProxy.findByOrganInAndAgentAndDatastatus(organIdList, true, false);
-        } else {
-            userList = userRes.findByOrgiAndAgentAndDatastatus(super.getOrgi(request), true, false);
-        }
+        List<User> userList = userRes.findByOrgiAndAgentAndDatastatus(super.getOrgi(request), true, false);
         return userList;
     }
 }

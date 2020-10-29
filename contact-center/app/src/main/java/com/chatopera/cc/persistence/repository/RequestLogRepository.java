@@ -21,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RequestLogRepository  extends JpaRepository<RequestLog, String>{
-	Page<RequestLog> findByOrgi(String orgi, Pageable page);
-	Page<RequestLog> findByOrgiAndUsername(String orgi, String username, Pageable page);
+public interface RequestLogRepository extends JpaRepository<RequestLog, String> {
+    Page<RequestLog> findByOrgi(String orgi, Pageable page);
 }

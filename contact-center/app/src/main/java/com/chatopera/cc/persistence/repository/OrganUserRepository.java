@@ -23,29 +23,29 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 
-public interface OrganUserRepository extends JpaRepository<OrganUser, String>
-{
-	
-	List<OrganUser> findByOrgi(final String orgi);
+public interface OrganUserRepository extends JpaRepository<OrganUser, String> {
 
-	OrganUser findByUseridAndOrgan(final String userid, final String organ);
+    List<OrganUser> findByOrgi(final String orgi);
 
-	List<OrganUser> findByUserid(final String userid);
+    OrganUser findByUseridAndOrgan(final String userid, final String organ);
 
-	List<OrganUser> findByUseridAndOrgi(final String userid, final String orgi);
+    List<OrganUser> findByUserid(final String userid);
 
-	List<OrganUser> findByOrgan(final String organ);
+    List<OrganUser> findByUseridAndOrgi(final String userid, final String orgi);
 
-	List<OrganUser> findByOrganIn(final List<String> organs);
+    List<OrganUser> findByOrgan(final String organ);
 
-	List<OrganUser> findByOrganAndOrgi(final String organ, final String orgi);
+    List<OrganUser> findByOrganIn(final Collection<String> organs);
 
-	@Modifying
-	@Transactional
-	@Query(value = "DELETE FROM OrganUser o WHERE o.userid = :userid AND o.organ = :organ")
-	void deleteOrganUserByUseridAndOrgan(@Param("userid") final String userid,
-										 @Param("organ") final String organ);
+    List<OrganUser> findByOrganAndOrgi(final String organ, final String orgi);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM OrganUser o WHERE o.userid = :userid AND o.organ = :organ")
+    void deleteOrganUserByUseridAndOrgan(@Param("userid") final String userid,
+                                         @Param("organ") final String organ);
 }
 

@@ -4,7 +4,8 @@
         <h1 class="site-h1" style="background-color:#FFFFFF;">新建联系人</h1>
     </div>
 	<form class="layui-form" action="/agent/calloutcontact/save.html?agentuser=${curagentuser.id!''}" method="post">
-        <input hidden="true" name="calloutcontact"/>
+		<input hidden="true" name="calloutcontact"/>
+		<input type="hidden" name="shares" value="all">
 		<div class="layui-collapse">
 			<div class="layui-colla-item">
 				<h2 class="layui-colla-title">基本信息</h2>
@@ -28,21 +29,6 @@
 							</div>
                             <span><font color="red">*</font></span>
 						</div>
-					</div>
-					<div class="layui-form-item">
-						<div class="layui-inline">
-							<label class="layui-form-label">共享联系人：</label>
-							<div class="layui-input-inline" style="width:auto;">
-								<div class="layui-input-block">
-									<input type="radio" name="shares" value="none" title="不共享（仅创建人和直属上级可见）"> 
-									<input type="radio" name="shares" value="all" title="所有人" checked>
-									<!-- 
-									<input type="radio" name="shares" value="1" title="指定人员或部门" checked>
-									 -->
-								</div>
-							</div>
-						</div>
-						
 					</div>
 				</div>
 			</div>

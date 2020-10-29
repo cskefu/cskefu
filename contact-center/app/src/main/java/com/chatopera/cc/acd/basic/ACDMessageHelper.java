@@ -86,7 +86,7 @@ public class ACDMessageHelper {
         if (!MainContext.ChannelType.WEBIM.toString().equals(channel)) {
             queneTip = agentService.getAgentusername();
         }
-        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(orgi);
+        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(agentService.getSkill(), orgi);
         String successMsg = "坐席分配成功，" + queneTip + "为您服务。";
         if (StringUtils.isNotBlank(sessionConfig.getSuccessmsg())) {
             successMsg = sessionConfig.getSuccessmsg().replaceAll("\\{agent\\}", queneTip);
@@ -101,8 +101,8 @@ public class ACDMessageHelper {
      * @param orgi
      * @return
      */
-    public String getServiceFinishMessage(String channel, String orgi) {
-        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(orgi);
+    public String getServiceFinishMessage(String channel, String organid, String orgi) {
+        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(organid, orgi);
         String queneTip = "坐席已断开和您的对话";
         if (StringUtils.isNotBlank(sessionConfig.getFinessmsg())) {
             queneTip = sessionConfig.getFinessmsg();
@@ -118,8 +118,8 @@ public class ACDMessageHelper {
      * @param orgi
      * @return
      */
-    public String getServiceOffMessage(String channel, String orgi) {
-        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(orgi);
+    public String getServiceOffMessage(String channel, String organid, String orgi) {
+        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(organid, orgi);
         String queneTip = "坐席已断开和您的对话，刷新页面为您分配新的坐席";
         if (StringUtils.isNotBlank(sessionConfig.getFinessmsg())) {
             queneTip = sessionConfig.getFinessmsg();
@@ -127,7 +127,7 @@ public class ACDMessageHelper {
         return queneTip;
     }
 
-    public String getNoAgentMessage(int queneIndex, String channel, String orgi) {
+    public String getNoAgentMessage(int queneIndex, String channel, String organid, String orgi) {
         if (queneIndex < 0) {
             queneIndex = 0;
         }
@@ -135,7 +135,7 @@ public class ACDMessageHelper {
         if (!MainContext.ChannelType.WEBIM.toString().equals(channel)) {
             queneTip = String.valueOf(queneIndex);
         }
-        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(orgi);
+        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(organid, orgi);
         String noAgentTipMsg = "坐席全忙，已进入等待队列，您也可以在其他时间再来咨询。";
         if (StringUtils.isNotBlank(sessionConfig.getNoagentmsg())) {
             noAgentTipMsg = sessionConfig.getNoagentmsg().replaceAll("\\{num\\}", queneTip);
@@ -143,13 +143,13 @@ public class ACDMessageHelper {
         return noAgentTipMsg;
     }
 
-    public String getQueneMessage(int queneIndex, String channel, String orgi) {
+    public String getQueneMessage(int queneIndex, String channel, String organid, String orgi) {
 
         String queneTip = "<span id='queneindex'>" + queneIndex + "</span>";
         if (!MainContext.ChannelType.WEBIM.toString().equals(channel)) {
             queneTip = String.valueOf(queneIndex);
         }
-        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(orgi);
+        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(organid, orgi);
         String agentBusyTipMsg = "正在排队，请稍候,在您之前，还有  " + queneTip + " 位等待用户。";
         if (StringUtils.isNotBlank(sessionConfig.getAgentbusymsg())) {
             agentBusyTipMsg = sessionConfig.getAgentbusymsg().replaceAll("\\{num\\}", queneTip);

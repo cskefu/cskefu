@@ -59,6 +59,7 @@ public class ACDVisServiceMw implements Middleware<ACDComposeContext> {
                             acdMessageHelper.getQueneMessage(
                                     queueIndex,
                                     ctx.getChannel(),
+                                    ctx.getOrganid(),
                                     ctx.getOrgi()));
                     break;
                 case INSERVICE:

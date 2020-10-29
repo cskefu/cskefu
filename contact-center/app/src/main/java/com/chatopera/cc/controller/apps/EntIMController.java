@@ -172,7 +172,7 @@ public class EntIMController extends Handler {
     @Menu(type = "im", subtype = "entim", access = false)
     public ModelAndView chat(HttpServletRequest request, HttpServletResponse response, @Valid String userid) {
         ModelAndView view = request(super.createEntIMTempletResponse("/apps/entim/chat"));
-        User entImUser = userRes.findByIdAndOrgi(userid, super.getOrgi(request));
+        User entImUser = userRes.findById(userid);
 
         if (entImUser != null) {
             userProxy.attachOrgansPropertiesForUser(entImUser);

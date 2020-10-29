@@ -1,12 +1,12 @@
 {
-	"id":"${extention.id!''}",
-	"extention":"${extention.extention!''}",
-	"hostid":"${extention.hostid!''}",
-	"callout":"<#if models?seq_contains("callout")>${extention.callout!''}</#if>",
-	"webrtc":"<#if extention.enablewebrtc?? && extention.enablewebrtc == true && pbxhost?? && pbxhost.enablewebrtc?? && pbxhost.enablewebrtc == true>true<#else>false</#if>",
+	"id":"${extension.id!''}",
+	"extension":"${extension.extension!''}",
+	"hostid":"${extension.hostid!''}",
+	"callout":"<#if models?seq_contains("callout")>${extension.callout!''}</#if>",
+	"webrtc":"<#if extension.enablewebrtc?? && extension.enablewebrtc == true && pbxhost?? && pbxhost.enablewebrtc?? && pbxhost.enablewebrtc == true>true<#else>false</#if>",
 	"webrtchost":"<#if pbxhost??>${pbxhost.webrtcaddress!''}</#if>",
 	"webrtcport":"<#if pbxhost??>${pbxhost.webrtcport!''}</#if>",
 	"webrtcssl":"<#if pbxhost?? && pbxhost.webrtcssl == true>true<#else>false</#if>",
-	"orgi":"${extention.orgi!''}",
+	"orgi":"${extension.orgi!''}",
 	"userid":"${user.id!''}"
 }

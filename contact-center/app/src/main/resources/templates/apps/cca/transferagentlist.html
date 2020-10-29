@@ -18,7 +18,7 @@
     <tbody>
 	<#if userList?? && currentorgan??>
 	    <#list userList as agent>
-		<#if agent.affiliates?seq_contains(currentorgan)>
+	<#if agent.skills[currentorgan]??>
 		<tr class="ukefu-agentstatus">
 		    <td style="width:1px;padding:10px 0px 10px 10px;">
 				<input class="agentnoradio" type="radio" name="agentno" class="ctxid" value="${agent.id!''}" onclick="selectAgentnoWithRadioClick(this)" id="user_${agent.id}" style="display:block;">

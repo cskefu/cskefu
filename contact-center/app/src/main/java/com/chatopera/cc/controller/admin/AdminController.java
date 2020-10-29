@@ -79,7 +79,7 @@ public class AdminController extends Handler {
         map.put("onlineUserCache", cache.getOnlineUserSizeByOrgi(orgi));
         map.put("onlineUserClients", OnlineUserProxy.webIMClients.size());
         map.put("chatClients", NettyClients.getInstance().size());
-        map.put("systemCaches", cache.getSystemSizeByOrgi(MainContext.SYSTEM_ORGI));
+        map.put("systemCaches", cache.getSystemSizeByOrgi(Constants.SYSTEM_ORGI));
 
         map.put("agentReport", acdWorkMonitor.getAgentReport(orgi));
         map.put("webIMReport", MainUtils.getWebIMReport(userEventRes.findByOrgiAndCreatetimeRange(super.getOrgi(request), MainUtils.getStartTime(), MainUtils.getEndTime())));
@@ -107,12 +107,7 @@ public class AdminController extends Handler {
 
     private List<User> getAgent(HttpServletRequest request) {
         //获取当前产品or租户坐席数
-        List<User> userList = new ArrayList<>();
-        if (super.isEnabletneant()) {
-            userList = userRes.findByOrgidAndAgentAndDatastatus(super.getOrgid(request), true, false);
-        } else {
-            userList = userRes.findByOrgiAndAgentAndDatastatus(super.getOrgi(request), true, false);
-        }
+        List<User> userList = userRes.findByOrgiAndAgentAndDatastatus(super.getOrgi(request), true, false);
         return userList.isEmpty() ? new ArrayList<User>() : userList;
     }
 

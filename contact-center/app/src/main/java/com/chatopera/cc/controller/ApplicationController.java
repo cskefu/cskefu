@@ -17,9 +17,16 @@
 package com.chatopera.cc.controller;
 
 import com.chatopera.cc.acd.ACDWorkMonitor;
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
+import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
+import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.model.User;
+import com.chatopera.cc.persistence.repository.ExtensionRepository;
+import com.chatopera.cc.persistence.repository.OrganRepository;
+import com.chatopera.cc.persistence.repository.PbxHostRepository;
+import com.chatopera.cc.proxy.OrganProxy;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +34,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 @Controller
 public class ApplicationController extends Handler {
@@ -57,19 +71,39 @@ public class ApplicationController extends Handler {
     @Value("${tongji.baidu.sitekey}")
     private String tongjiBaiduSiteKey;
 
+    @Autowired
+    private OrganProxy organProxy;
+
+    @Autowired
+    private OrganRepository organRepository;
+
+    @Autowired
+    private PbxHostRepository pbxHostRes;
+
+    @Autowired
+    private ExtensionRepository extensionRes;
 
     @RequestMapping("/")
     public ModelAndView admin(HttpServletRequest request) {
 //        logger.info("[admin] path {} queryString {}", request.getPathInfo(),request.getQueryString());
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/index"));
         User logined = super.getUser(request);
+        Organ currentOrgan = super.getOrgan(request);
+
         TimeZone timezone = TimeZone.getDefault();
 
-        view.addObject("agentStatusReport", acdWorkMonitor.getAgentReport(logined.getOrgi()));
-        view.addObject("tenant", super.getTenant(request));
-        view.addObject("istenantshare", super.isEnabletneant());
-        view.addObject("timeDifference", timezone.getRawOffset());
+        List<Organ> organs = organProxy.findOrganInIds(logined.getAffiliates());
 
+        view.addObject(
+                "skills",
+                organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request)).keySet().stream().collect(Collectors.joining(","))
+        );
+
+        view.addObject("agentStatusReport", acdWorkMonitor.getAgentReport(currentOrgan != null ? currentOrgan.getId() : null, logined.getOrgi()));
+        view.addObject("istenantshare", false);
+        view.addObject("timeDifference", timezone.getRawOffset());
+        view.addObject("organList", organs);
+        view.addObject("currentOrgan", super.getOrgan(request));
 
         // 增加版本信息
         view.addObject("appBuildDate", appBuildDate);
@@ -77,18 +111,27 @@ public class ApplicationController extends Handler {
         view.addObject("appVersionNumber", appVersionNumber);
         view.addObject("appCustomerEntity", appCustomerEntity);
 
-        if (super.isEnabletneant()) {
-            // 多租户启用 非管理员 一定要选择租户才能进入界面
-            if (!logined.isAdmin() && StringUtils.isNotBlank(
-                    logined.getOrgid()) && super.isTenantconsole() && MainContext.SYSTEM_ORGI.equals(
-                    logined.getOrgi())) {
-                view = request(super.createRequestPageTempletResponse("redirect:/apps/tenant/index"));
-            }
-            if (StringUtils.isBlank(logined.getOrgid())) {
-                view = request(super.createRequestPageTempletResponse("redirect:/apps/organization/add.html"));
-            }
-        }
+        // 在线坐席状态信息
         view.addObject("agentStatus", cache.findOneAgentStatusByAgentnoAndOrig(logined.getId(), logined.getOrgi()));
+
+        // 呼叫中心信息
+        if (MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER) && logined.isCallcenter()) {
+            extensionRes.findByAgentnoAndOrgi(logined.getId(), logined.getOrgi()).ifPresent(ext -> {
+                pbxHostRes.findById(ext.getHostid()).ifPresent(pbx -> {
+                    Map<String, Object> webrtcData = new HashMap<>();
+                    webrtcData.put("callCenterWebrtcIP", pbx.getWebrtcaddress());
+                    webrtcData.put("callCenterWebRtcPort", pbx.getWebrtcport());
+                    webrtcData.put("callCenterExtensionNum", ext.getExtension());
+                    try {
+                        webrtcData.put("callCenterExtensionPassword", MainUtils.decryption(ext.getPassword()));
+                    } catch (NoSuchAlgorithmException e) {
+                        logger.error("[admin]", e);
+                        webrtcData.put("callCenterError", "Invalid data for callcenter agent.");
+                    }
+                    view.addObject("webrtc", webrtcData);
+                });
+            });
+        }
 
         if (StringUtils.isNotBlank(tongjiBaiduSiteKey) && !StringUtils.equalsIgnoreCase(tongjiBaiduSiteKey, "placeholder")) {
             logger.info("tongjiBaiduSiteKey: {}", tongjiBaiduSiteKey);
@@ -98,9 +141,25 @@ public class ApplicationController extends Handler {
         return view;
     }
 
+    @RequestMapping("/setorgan")
+    @ResponseBody
+    public String setOrgan(HttpServletRequest request, @Valid String organ) {
+        if (StringUtils.isNotBlank(organ)) {
+            Organ currentOrgan = organRepository.findByIdAndOrgi(organ, super.getOrgi(request));
+            if (currentOrgan != null) {
+                request.getSession(true).setAttribute(Constants.ORGAN_SESSION_NAME, currentOrgan);
+            }
+        }
+
+        return "ok";
+    }
+
     @RequestMapping("/lazyAgentStatus")
     public ModelAndView lazyAgentStatus(HttpServletRequest request) {
-        ModelAndView view = request(super.createRequestPageTempletResponse("/apps/index"));
+        ModelAndView view = request(super.createRequestPageTempletResponse("/public/agentstatustext"));
+        Organ currentOrgan = super.getOrgan(request);
+        view.addObject("agentStatusReport", acdWorkMonitor.getAgentReport(currentOrgan != null ? currentOrgan.getId() : null, super.getOrgi(request)));
+
         return view;
     }
 

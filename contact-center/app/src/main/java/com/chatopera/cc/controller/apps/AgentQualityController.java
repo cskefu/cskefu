@@ -62,7 +62,8 @@ public class AgentQualityController extends Handler {
     @RequestMapping(value = "/index")
     @Menu(type = "agent", subtype = "quality", access = false)
     public ModelAndView index(ModelMap map, HttpServletRequest request) {
-        map.addAttribute("sessionConfig", acdPolicyService.initSessionConfig(super.getOrgi(request)));
+        // TODO: mdx-organ clean
+//        map.addAttribute("sessionConfig", acdPolicyService.initSessionConfig(super.getOrgi(request)));
         map.addAttribute("qualityList", qualityRes.findByQualitytypeAndOrgi(MainContext.QualityType.CHAT.toString(), super.getOrgi(request)));
         map.addAttribute("tagList", tagRes.findByOrgiAndTagtype(super.getOrgi(request), MainContext.TagType.QUALITY.toString()));
         return request(super.createAppsTempletResponse("/apps/quality/index"));
@@ -72,7 +73,7 @@ public class AgentQualityController extends Handler {
     @RequestMapping(value = "/save")
     @Menu(type = "agent", subtype = "quality", access = false)
     public ModelAndView save(ModelMap map, HttpServletRequest request, @Valid QualityRequest qualityArray) {
-       String orgi = super.getOrgi(request);
+        String orgi = super.getOrgi(request);
 
         if (qualityArray != null && qualityArray.getTitle() != null) {
             List<Quality> qualityList = qualityRes.findByQualitytypeAndOrgi(MainContext.QualityType.CHAT.toString(), super.getOrgi(request));
@@ -94,18 +95,20 @@ public class AgentQualityController extends Handler {
             if (tempList.size() > 0) {
                 qualityRes.save(tempList);
             }
-            SessionConfig config = acdPolicyService.initSessionConfig(super.getOrgi(request));
-            if (config != null) {
-                if ("points".equals(request.getParameter("qualityscore"))) {
-                    config.setQualityscore("points");
-                } else {
-                    config.setQualityscore("score");
-                }
 
-                sessionConfigRes.save(config);
-                cache.putSessionConfigByOrgi(config, orgi);
-                cache.deleteSessionConfigListByOrgi(orgi);
-            }
+            // TODO: mdx-organ clean
+//            SessionConfig config = acdPolicyService.initSessionConfig(super.getOrgi(request));
+//            if (config != null) {
+//                if ("points".equals(request.getParameter("qualityscore"))) {
+//                    config.setQualityscore("points");
+//                } else {
+//                    config.setQualityscore("score");
+//                }
+//
+//                sessionConfigRes.save(config);
+//                cache.putSessionConfigByOrgi(config, orgi);
+//                cache.deleteSessionConfigListByOrgi(orgi);
+//            }
             if (qualityArray != null && qualityArray.getTag() != null && qualityArray.getTag().length > 0) {
                 List<Tag> tagList = tagRes.findByOrgiAndTagtype(super.getOrgi(request), MainContext.TagType.QUALITY.toString());
                 if (tagList.size() > 0) {

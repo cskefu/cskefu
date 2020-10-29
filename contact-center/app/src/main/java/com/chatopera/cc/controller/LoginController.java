@@ -21,17 +21,14 @@ import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.basic.auth.AuthToken;
-import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.AgentStatus;
 import com.chatopera.cc.model.SystemConfig;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.model.UserRole;
-import com.chatopera.cc.persistence.repository.AgentStatusRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.persistence.repository.UserRoleRepository;
 import com.chatopera.cc.proxy.AgentProxy;
 import com.chatopera.cc.proxy.AgentSessionProxy;
-import com.chatopera.cc.proxy.OnlineUserProxy;
 import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang.StringUtils;
@@ -72,12 +69,6 @@ public class LoginController extends Handler {
 
     @Autowired
     private AuthToken authToken;
-
-    @Autowired
-    private AgentStatusRepository agentStatusRes;
-
-    @Autowired
-    private Cache cache;
 
     @Autowired
     private AgentProxy agentProxy;
@@ -161,7 +152,7 @@ public class LoginController extends Handler {
             view.addObject("tongjiBaiduSiteKey", tongjiBaiduSiteKey);
         }
 
-        if(StringUtils.isNotBlank(adsLoginBanner) && StringUtils.equalsIgnoreCase(adsLoginBanner, "on")){
+        if (StringUtils.isNotBlank(adsLoginBanner) && StringUtils.equalsIgnoreCase(adsLoginBanner, "on")) {
             view.addObject("adsLoginBanner", "on");
         }
 
@@ -309,10 +300,6 @@ public class LoginController extends Handler {
             }
 
             super.setUser(request, loginUser);
-            // 当前用户 企业id为空 调到创建企业页面
-            if (StringUtils.isBlank(loginUser.getOrgid())) {
-                view = new ModelAndView("redirect:/apps/organization/add.html");
-            }
         }
         return view;
     }
@@ -378,21 +365,10 @@ public class LoginController extends Handler {
             if (StringUtils.isNotBlank(user.getPassword())) {
                 user.setPassword(MainUtils.md5(user.getPassword()));
             }
-            user.setOrgi(super.getOrgiByTenantshare(request));
-    		/*if(StringUtils.isNotBlank(super.getUser(request).getOrgid())) {
-    			user.setOrgid(super.getUser(request).getOrgid());
-    		}else {
-    			user.setOrgid(MainContext.SYSTEM_ORGI);
-    		}*/
+            user.setOrgi(super.getOrgi());
             userRepository.save(user);
-            OnlineUserProxy.clean(super.getOrgi(request));
-
         }
         ModelAndView view = this.processLogin(request, user, "");
-        //当前用户 企业id为空 调到创建企业页面
-        if (StringUtils.isBlank(user.getOrgid())) {
-            view = request(super.createRequestPageTempletResponse("redirect:/apps/organization/add.html"));
-        }
         return view;
     }
 

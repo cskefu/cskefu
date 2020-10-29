@@ -23,38 +23,41 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface SNSAccountRepository
-  extends JpaRepository<SNSAccount, String>
-{
-  SNSAccount findByIdAndOrgi(String paramString, String orgi);
+        extends JpaRepository<SNSAccount, String> {
+    SNSAccount findByIdAndOrgi(String paramString, String orgi);
 
-  boolean existsBySnsidAndSnstypeAndOrgi(String snsid, String snsType, String orgi);
+    boolean existsBySnsidAndSnstypeAndOrgi(String snsid, String snsType, String orgi);
 
-  @Query(value = "SELECT * FROM `uk_snsaccount` WHERE snsid = ?1 LIMIT 1", nativeQuery = true)
-  Optional<SNSAccount> findBySnsid(String snsid);
+    @Query(value = "SELECT * FROM `uk_snsaccount` WHERE snsid = ?1 LIMIT 1", nativeQuery = true)
+    Optional<SNSAccount> findBySnsid(String snsid);
 
-  SNSAccount findBySnsidAndOrgi(String snsid, String orgi);
+    SNSAccount findBySnsidAndOrgi(String snsid, String orgi);
 
-  List<SNSAccount> findByBaseURLAndOrgi(String baseurl, String orgi);
+    List<SNSAccount> findByBaseURLAndOrgi(String baseurl, String orgi);
 
-  int countBySnsidAndOrgi(String snsid, String orgi);
-  int countBySnstypeAndOrgi(final String snsType, final String orgi);
-  
-  List<SNSAccount> findBySnstypeAndOrgi(String snsType, String orgi);
+    int countBySnsidAndOrgi(String snsid, String orgi);
 
-  Page<SNSAccount> findBySnstypeAndOrgi(String paramString, String orgi, Pageable page);
+    int countBySnstypeAndOrgi(final String snsType, final String orgi);
 
-  @Query(value = "SELECT * FROM uk_snsaccount WHERE snstype = ?1 AND snsid = ?2 AND orgi = ?3 LIMIT 1", nativeQuery = true)
-  Optional<SNSAccount> findOneBySnsTypeAndSnsIdAndOrgi(final String snsType, final String snsId, final String orgi);
+    List<SNSAccount> findBySnstypeAndOrgi(String snsType, String orgi);
 
-  @Query(value = "SELECT * FROM uk_snsaccount WHERE snstype = ?1 AND orgi = ?2 LIMIT 1", nativeQuery = true)
-  SNSAccount findOneBySnstypeAndOrgi(final String snsType, final String orgi);
+    Page<SNSAccount> findBySnstypeAndOrgi(String paramString, String orgi, Pageable page);
 
+    @Query(value = "select s.* from `uk_snsaccount` s left join `uk_consult_invite` ci on ci.`snsaccountid`=s.`snsid` WHERE s.snstype = ?1 AND s.orgi = ?2 and ci.`consult_skill_fixed_id` in (?3) ORDER BY ?#{#pageable}",
+            countQuery = "select count(1) from `uk_snsaccount` s left join `uk_consult_invite` ci on ci.`snsaccountid`=s.`snsid` WHERE s.snstype = ?1 AND s.orgi = ?2 and ci.`consult_skill_fixed_id` in (?3)", nativeQuery = true)
+    Page<SNSAccount> findBySnstypeAndOrgiAndOrgan(String paramString, String orgi, Collection<String> organ, Pageable page);
 
+    @Query(value = "SELECT * FROM uk_snsaccount WHERE snstype = ?1 AND snsid = ?2 AND orgi = ?3 LIMIT 1", nativeQuery = true)
+    Optional<SNSAccount> findOneBySnsTypeAndSnsIdAndOrgi(final String snsType, final String snsId, final String orgi);
+
+    @Query(value = "SELECT * FROM uk_snsaccount WHERE snstype = ?1 AND orgi = ?2 LIMIT 1", nativeQuery = true)
+    SNSAccount findOneBySnstypeAndOrgi(final String snsType, final String orgi);
 
 
 }

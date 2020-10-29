@@ -171,8 +171,9 @@ public class AgentServiceProxy {
                 StatusEvent statusEvent = statusEventRes.findById(agentService.getOwner());
                 if (statusEvent != null) {
                     if (StringUtils.isNotBlank(statusEvent.getHostid())) {
-                        PbxHost pbxHost = pbxHostRes.findById(statusEvent.getHostid());
-                        view.addObject("pbxHost", pbxHost);
+                        pbxHostRes.findById(statusEvent.getHostid()).ifPresent(p -> {
+                            view.addObject("pbxHost", p);
+                        });
                     }
                     view.addObject("statusEvent", statusEvent);
                 }
@@ -181,7 +182,6 @@ public class AgentServiceProxy {
             }
         }
     }
-
 
     /**
      * 组装AgentUser的相关信息并封装在ModelView中
@@ -251,7 +251,10 @@ public class AgentServiceProxy {
             view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid()));
         }
 
-        view.addObject("tags", tagRes.findByOrgiAndTagtype(logined.getOrgi(), MainContext.ModelType.USER.toString()));
+        AgentService service = agentServiceRes.findByIdAndOrgi(agentUser.getAgentserviceid(), orgi);
+        if (service != null) {
+            view.addObject("tags", tagRes.findByOrgiAndTagtypeAndSkill(orgi, MainContext.ModelType.USER.toString(), service.getSkill()));
+        }
         view.addObject("quickReplyList", quickReplyRes.findByOrgiAndCreater(logined.getOrgi(), logined.getId(), null));
         List<QuickType> quickTypeList = quickTypeRes.findByOrgiAndQuicktype(
                 logined.getOrgi(), MainContext.QuickType.PUB.toString());

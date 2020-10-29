@@ -27,17 +27,23 @@ import java.util.List;
 
 public interface TagRepository  extends JpaRepository<Tag, String>
 {
-	
+
 	Tag findByOrgiAndTag(String orgi, String tag);
-	
+
+	Tag findByOrgiAndTagAndSkill(String orgi, String tag, String skill);
+
 	Tag findByOrgiAndId(String orgi, String id);
 
 	@Query(value = "select t from Tag t where (:tagtype is null or t.tagtype = :tagtype) " +
             "and t.orgi = :orgi")
     Page<Tag> findByOrgiAndTagtype(@Param("orgi") String orgi, @Param("tagtype") String tagtype, Pageable paramPageable);
-	
+
+	Page<Tag> findByOrgiAndTagtypeAndSkill(String orgi, String tagtype, String skill, Pageable paramPageable);
+
 	List<Tag> findByOrgi(String orgi);
 	
 	List<Tag> findByOrgiAndTagtype(String orgi, String tagtype);
+
+	List<Tag> findByOrgiAndTagtypeAndSkill(String orgi, String tagtype , String skill);
 }
 

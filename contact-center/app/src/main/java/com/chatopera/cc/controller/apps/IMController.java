@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2020 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/im")
@@ -207,7 +210,7 @@ public class IMController extends Handler {
             view.addObject("ip", MainUtils.md5(request.getRemoteAddr()));
             view.addObject("mobile", MobileDevice.isMobile(request.getHeader("User-Agent")));
 
-            CousultInvite invite = OnlineUserProxy.consult(id, MainContext.SYSTEM_ORGI);
+            CousultInvite invite = OnlineUserProxy.consult(id, Constants.SYSTEM_ORGI);
             if (invite != null) {
                 logger.info("[point] find CousultInvite {}", invite.getId());
                 view.addObject("inviteData", invite);
@@ -244,7 +247,7 @@ public class IMController extends Handler {
                 if (imUser != null) {
                     userHistory.setCreater(imUser.getId());
                     userHistory.setUsername(imUser.getUsername());
-                    userHistory.setOrgi(MainContext.SYSTEM_ORGI);
+                    userHistory.setOrgi(Constants.SYSTEM_ORGI);
                 }
 
                 if (StringUtils.isNotBlank(title)) {
@@ -277,11 +280,11 @@ public class IMController extends Handler {
                     /***
                      * 查询 技能组 ， 缓存？
                      */
-                    view.addObject("skillGroups", OnlineUserProxy.organ(MainContext.SYSTEM_ORGI, ipdata, invite, true));
+                    view.addObject("skillGroups", OnlineUserProxy.organ(Constants.SYSTEM_ORGI, ipdata, invite, true));
                     /**
                      * 查询坐席 ， 缓存？
                      */
-                    view.addObject("agentList", OnlineUserProxy.agents(MainContext.SYSTEM_ORGI));
+                    view.addObject("agentList", OnlineUserProxy.agents(Constants.SYSTEM_ORGI));
                 }
 
                 view.addObject("traceid", userHistory.getId());
@@ -291,12 +294,12 @@ public class IMController extends Handler {
 
                 view.addObject(
                         "pointAd",
-                        MainUtils.getPointAdv(MainContext.AdPosEnum.POINT.toString(), MainContext.SYSTEM_ORGI));
+                        MainUtils.getPointAdv(MainContext.AdPosEnum.POINT.toString(), invite.getConsult_skill_fixed_id(), Constants.SYSTEM_ORGI));
                 view.addObject(
                         "inviteAd",
-                        MainUtils.getPointAdv(MainContext.AdPosEnum.INVITE.toString(), MainContext.SYSTEM_ORGI));
+                        MainUtils.getPointAdv(MainContext.AdPosEnum.INVITE.toString(), invite.getConsult_skill_fixed_id(), Constants.SYSTEM_ORGI));
             } else {
-                logger.info("[point] invite id {}, orgi {} not found", id, MainContext.SYSTEM_ORGI);
+                logger.info("[point] invite id {}, orgi {} not found", id, Constants.SYSTEM_ORGI);
             }
         }
 
@@ -318,7 +321,7 @@ public class IMController extends Handler {
             if (data == null) {
                 data = new Contacts();
                 data.setCreater(gid);
-                data.setOrgi(MainContext.SYSTEM_ORGI);
+                data.setOrgi(Constants.SYSTEM_ORGI);
                 data.setWluid(uid);
                 data.setWlusername(username);
                 data.setWlcid(cid);
@@ -363,7 +366,7 @@ public class IMController extends Handler {
         sessionMessage.put("Sessionsystem_name", system_name);
         sessionMessage.put("sessionid", sessionid);
         sessionMessage.put("uid", uid);
-        cache.putSystemMapByIdAndOrgi(sessionid, MainContext.SYSTEM_ORGI, sessionMessage);
+        cache.putSystemMapByIdAndOrgi(sessionid, Constants.SYSTEM_ORGI, sessionMessage);
 
         OnlineUser onlineUser = onlineUserRes.findOne(userid);
         String updateusername;
@@ -381,9 +384,9 @@ public class IMController extends Handler {
         } else {
             if (!whitelist_mode) {
                 createContacts(userid,
-                               request,
-                               logined.getId(),
-                               uid, cid, sid, username, company_name, system_name);
+                        request,
+                        logined.getId(),
+                        uid, cid, sid, username, company_name, system_name);
             }
         }
 
@@ -396,7 +399,7 @@ public class IMController extends Handler {
     public void inlist(HttpServletRequest request, HttpServletResponse response, @PathVariable String id, @Valid String userid) throws IOException {
         response.setHeader("Content-Type", "text/html;charset=utf-8");
         if (StringUtils.isNotBlank(userid)) {
-            BlackEntity black = cache.findOneSystemByIdAndOrgi(userid, MainContext.SYSTEM_ORGI);
+            BlackEntity black = cache.findOneSystemByIdAndOrgi(userid, Constants.SYSTEM_ORGI);
             if ((black != null && (black.getEndtime() == null || black.getEndtime().after(new Date())))) {
                 response.getWriter().write("in");
             }
@@ -583,11 +586,12 @@ public class IMController extends Handler {
         }
 
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/im/index"));
-        Optional<BlackEntity> blackOpt = cache.findOneBlackEntityByUserIdAndOrgi(userid, MainContext.SYSTEM_ORGI);
+        Optional<BlackEntity> blackOpt = cache.findOneBlackEntityByUserIdAndOrgi(userid, Constants.SYSTEM_ORGI);
+        CousultInvite invite = OnlineUserProxy.consult(appid, orgi);
         if (StringUtils.isNotBlank(
                 appid) && ((!blackOpt.isPresent()) || (blackOpt.get().getEndtime() != null && blackOpt.get().getEndtime().before(
                 new Date())))) {
-            CousultInvite invite = OnlineUserProxy.consult(appid, orgi);
+
             String randomUserId; // 随机生成OnlineUser的用户名，使用了浏览器指纹做唯一性KEY
             if (StringUtils.isNotBlank(userid)) {
                 randomUserId = MainUtils.genIDByKey(userid);
@@ -610,7 +614,7 @@ public class IMController extends Handler {
             view.addObject("nickname", nickname);
 
             boolean consult = true;                //是否已收集用户信息
-            SessionConfig sessionConfig = acdPolicyService.initSessionConfig(orgi);
+            SessionConfig sessionConfig = acdPolicyService.initSessionConfig(skill, orgi);
 
             // 强制开启满意调查问卷
             sessionConfig.setSatisfaction(true);
@@ -890,13 +894,13 @@ public class IMController extends Handler {
 
                     map.addAttribute(
                             "chatMessageList", chatMessageRes.findByUsessionAndOrgi(userid, orgi, new PageRequest(0, 20,
-                                                                                                                  Direction.DESC,
-                                                                                                                  "updatetime")));
+                                    Direction.DESC,
+                                    "updatetime")));
                 }
                 view.addObject("commentList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_COMMENT_DIC));
                 view.addObject("commentItemList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_COMMENT_ITEM_DIC));
-                view.addObject("welcomeAd", MainUtils.getPointAdv(MainContext.AdPosEnum.WELCOME.toString(), orgi));
-                view.addObject("imageAd", MainUtils.getPointAdv(MainContext.AdPosEnum.IMAGE.toString(), orgi));
+                view.addObject("welcomeAd", MainUtils.getPointAdv(MainContext.AdPosEnum.WELCOME.toString(), skill, orgi));
+                view.addObject("imageAd", MainUtils.getPointAdv(MainContext.AdPosEnum.IMAGE.toString(), skill, orgi));
 
                 // 确定"接受邀请"被处理后，通知浏览器关闭弹出窗口
                 OnlineUserProxy.sendWebIMClients(userid, "accept");
@@ -923,6 +927,8 @@ public class IMController extends Handler {
             } else {
                 logger.info("[index] can not invite for appid {}, orgi {}", appid, orgi);
             }
+        } else {
+            view.addObject("inviteData", invite);
         }
 
         logger.info("[index] return view");
@@ -956,7 +962,7 @@ public class IMController extends Handler {
             @Valid String purl) throws Exception {
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/im/text"));
         CousultInvite invite = OnlineUserProxy.consult(
-                appid, StringUtils.isBlank(orgi) ? MainContext.SYSTEM_ORGI : orgi);
+                appid, StringUtils.isBlank(orgi) ? Constants.SYSTEM_ORGI : orgi);
 
         view.addObject("hostname", request.getServerName());
         view.addObject("port", request.getServerPort());
@@ -1023,17 +1029,22 @@ public class IMController extends Handler {
         return view;
     }
 
+
     @RequestMapping("/leavemsg/save")
     @Menu(type = "admin", subtype = "user")
-    public ModelAndView leavemsgsave(HttpServletRequest request, @Valid String appid, @Valid LeaveMsg msg) {
+    public ModelAndView leavemsgsave(HttpServletRequest request,
+                                     @Valid String appid,
+                                     @Valid LeaveMsg msg,
+                                     @Valid String skillId) {
         if (StringUtils.isNotBlank(appid)) {
-           snsAccountRepository.findBySnsid(appid).ifPresent(p -> {
-                CousultInvite invite = inviteRepository.findBySnsaccountidAndOrgi(appid, MainContext.SYSTEM_ORGI);
+            snsAccountRepository.findBySnsid(appid).ifPresent(p -> {
+                CousultInvite invite = inviteRepository.findBySnsaccountidAndOrgi(appid, Constants.SYSTEM_ORGI);
                 // TODO 增加策略防止恶意刷消息
                 //  List<LeaveMsg> msgList = leaveMsgRes.findByOrgiAndUserid(invite.getOrgi(), msg.getUserid());
                 // if(msg!=null && msgList.size() == 0){
                 if (msg != null) {
                     msg.setOrgi(invite.getOrgi());
+                    msg.setSkill(skillId);
                     msg.setChannel(p);
                     msg.setSnsId(appid);
                     leaveMsgRes.save(msg);
@@ -1170,7 +1181,7 @@ public class IMController extends Handler {
 
                     // 存储到本地硬盘
                     String id = processAttachmentFile(multipart,
-                                                      fileid, logined.getOrgi(), logined.getId());
+                            fileid, logined.getOrgi(), logined.getId());
                     upload = new UploadStatus("0", "/res/file.html?id=" + id);
                     String file = "/res/file.html?id=" + id;
 

@@ -8,9 +8,10 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.util.*;
 
 @Service
 public class OrganProxy {
@@ -21,6 +22,7 @@ public class OrganProxy {
 
     /**
      * 检查组织机构树
+     *
      * @param organ
      * @param organId
      * @param orgi
@@ -76,11 +78,31 @@ public class OrganProxy {
             tempOrgan.setParent(organ.getParent());
             tempOrgan.setArea(organ.getArea());
             organRes.save(tempOrgan);
-            OnlineUserProxy.clean(orgi);
         } else {
             msg = "admin_organ_update_not_exist";
         }
 
         return msg;
+    }
+
+    public List<Organ> findOrganInIds(Collection<String> organIds) {
+        return organRes.findAll(organIds);
+    }
+
+    private void processChild(Map<String, Organ> organs, String organId, String orgi) {
+        Organ organ = organRes.findByIdAndOrgi(organId, orgi);
+        if (organ != null) {
+            organs.put(organId, organ);
+            List<Organ> childOrgans = organRes.findByOrgiAndParent(orgi, organId);
+            childOrgans.stream().forEach(o -> processChild(organs, o.getId(), orgi));
+        }
+    }
+
+    public Map<String, Organ> findAllOrganByParentAndOrgi(Organ organ, String orgi) {
+        Map<String, Organ> result = new HashMap<>();
+        if (organ != null) {
+            processChild(result, organ.getId(), orgi);
+        }
+        return result;
     }
 }

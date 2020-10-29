@@ -18,7 +18,6 @@ package com.chatopera.cc.controller.apps;
 
 import com.alibaba.fastjson.JSONObject;
 import com.chatopera.cc.acd.ACDAgentService;
-import com.chatopera.cc.acd.ACDPolicyService;
 import com.chatopera.cc.acd.basic.ACDMessageHelper;
 import com.chatopera.cc.activemq.BrokerPublisher;
 import com.chatopera.cc.basic.Constants;
@@ -29,7 +28,6 @@ import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.exception.CSKefuException;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.peer.PeerSyncIM;
-import com.chatopera.cc.persistence.es.QuickReplyRepository;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.proxy.*;
 import com.chatopera.cc.socketio.message.Message;
@@ -49,7 +47,10 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/apps/cca")
@@ -58,9 +59,6 @@ public class AgentAuditController extends Handler {
 
     @Autowired
     private AgentUserProxy agentUserProxy;
-
-    @Autowired
-    private ACDPolicyService acdPolicyService;
 
     @Autowired
     private ACDMessageHelper acdMessageHelper;
@@ -96,9 +94,6 @@ public class AgentAuditController extends Handler {
     private OnlineUserRepository onlineUserRes;
 
     @Autowired
-    private PbxHostRepository pbxHostRes;
-
-    @Autowired
     private TagRepository tagRes;
 
     @Autowired
@@ -106,12 +101,6 @@ public class AgentAuditController extends Handler {
 
     @Autowired
     private PeerSyncIM peerSyncIM;
-
-    @Autowired
-    private QuickReplyRepository quickReplyRes;
-
-    @Autowired
-    private QuickTypeRepository quickTypeRes;
 
     @Autowired
     private TagRelationRepository tagRelationRes;
@@ -128,6 +117,9 @@ public class AgentAuditController extends Handler {
     @Autowired
     private ACDAgentService acdAgentService;
 
+    @Autowired
+    private OrganProxy organProxy;
+
     @RequestMapping(value = "/index")
     @Menu(type = "cca", subtype = "cca", access = true)
     public ModelAndView index(
@@ -136,10 +128,12 @@ public class AgentAuditController extends Handler {
             @Valid final String skill,
             @Valid final String agentno,
             @Valid String sort
-                             ) {
+    ) {
         final String orgi = super.getOrgi(request);
         final User logined = super.getUser(request);
         logger.info("[index] skill {}, agentno {}, logined {}", skill, agentno, logined.getId());
+
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
 
         ModelAndView view = request(super.createAppsTempletResponse("/apps/cca/index"));
         Sort defaultSort = null;
@@ -164,11 +158,13 @@ public class AgentAuditController extends Handler {
         }
 
         // 坐席对话列表
-        List<AgentUser> agentUsers;
+        List<AgentUser> agentUsers = new ArrayList<>();
 
         if (StringUtils.isBlank(skill) && StringUtils.isBlank(agentno)) {
-            agentUsers = agentUserRes.findByOrgiAndStatusAndAgentnoIsNot(
-                    orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), logined.getId(), defaultSort);
+            if (organs.size() > 0) {
+                agentUsers = agentUserRes.findByOrgiAndStatusAndSkillInAndAgentnoIsNot(
+                        orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), organs.keySet(), logined.getId(), defaultSort);
+            }
         } else if (StringUtils.isNotBlank(skill) && StringUtils.isNotBlank(agentno)) {
             view.addObject("skill", skill);
             view.addObject("agentno", agentno);
@@ -264,7 +260,7 @@ public class AgentAuditController extends Handler {
             HttpServletRequest request,
             String id,
             String channel
-                                 ) throws IOException, TemplateException {
+    ) throws IOException, TemplateException {
         String mainagentuser = "/apps/cca/mainagentuser";
         if (channel.equals("phone")) {
             mainagentuser = "/apps/cca/mainagentuser_callout";
@@ -300,11 +296,11 @@ public class AgentAuditController extends Handler {
             view.addObject(
                     "agentUserMessageList",
                     this.chatMessageRepository.findByUsessionAndOrgi(agentUser.getUserid(), orgi,
-                                                                     new PageRequest(0, 20, Sort.Direction.DESC,
-                                                                                     "updatetime"
-                                                                     )
-                                                                    )
-                          );
+                            new PageRequest(0, 20, Sort.Direction.DESC,
+                                    "updatetime"
+                            )
+                    )
+            );
             AgentService agentService = null;
             if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
                 agentService = this.agentServiceRes.findOne(agentUser.getAgentserviceid());
@@ -333,20 +329,24 @@ public class AgentAuditController extends Handler {
             }
             view.addObject("serviceCount", Integer
                     .valueOf(this.agentServiceRes
-                                     .countByUseridAndOrgiAndStatus(agentUser
-                                                                            .getUserid(), orgi,
-                                                                    MainContext.AgentUserStatusEnum.END
-                                                                            .toString())));
+                            .countByUseridAndOrgiAndStatus(agentUser
+                                            .getUserid(), orgi,
+                                    MainContext.AgentUserStatusEnum.END
+                                            .toString())));
             view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid()));
-        }
-        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
 
-        view.addObject("sessionConfig", sessionConfig);
-        if (sessionConfig.isOtherquickplay()) {
-            view.addObject("topicList", OnlineUserProxy.search(null, orgi, super.getUser(request)));
+//        TODO: mdx-organ clean
+//        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
+//
+//        view.addObject("sessionConfig", sessionConfig);
+//        if (sessionConfig.isOtherquickplay()) {
+//            view.addObject("topicList", OnlineUserProxy.search(null, orgi, super.getUser(request)));
+//        }
+            AgentService service = agentServiceRes.findByIdAndOrgi(agentUser.getAgentserviceid(), orgi);
+            if (service != null) {
+                view.addObject("tags", tagRes.findByOrgiAndTagtypeAndSkill(orgi, MainContext.ModelType.USER.toString(), service.getSkill()));
+            }
         }
-
-        view.addObject("tags", tagRes.findByOrgiAndTagtype(orgi, MainContext.ModelType.USER.toString()));
         return view;
     }
 
@@ -370,17 +370,21 @@ public class AgentAuditController extends Handler {
             final @Valid String agentserviceid,
             final @Valid String agentnoid,
             final @Valid String agentuserid
-                                ) {
+    ) {
         logger.info("[transfer] userId {}, agentUser {}", userid, agentuserid);
         final String orgi = super.getOrgi(request);
         final User logined = super.getUser(request);
+
+        Organ targetOrgan = super.getOrgan(request);
+        Map<String, Organ> ownOrgans = organProxy.findAllOrganByParentAndOrgi(targetOrgan, super.getOrgi(request));
         if (StringUtils.isNotBlank(userid) && StringUtils.isNotBlank(agentuserid)) {
             // 列出所有技能组
-            final List<Organ> skillGroups = OnlineUserProxy.organ(orgi, true);
+            List<Organ> skillGroups = organRes.findByOrgiAndIdInAndSkill(super.getOrgi(request), ownOrgans.keySet(), true);
 
             // 选择当前用户的默认技能组
-            Set<String> organs = super.getUser(request).getOrgans().keySet();
-            String currentOrgan = organs.size() > 0 ? (new ArrayList<String>(organs)).get(0) : null;
+            AgentService agentService = agentServiceRes.findByIdAndOrgi(agentserviceid, super.getOrgi(request));
+
+            String currentOrgan = agentService.getSkill();
 
             if (StringUtils.isBlank(currentOrgan)) {
                 if (!skillGroups.isEmpty()) {
@@ -389,9 +393,8 @@ public class AgentAuditController extends Handler {
             }
 
             // 列出所有在线的坐席，排除本身
-            final Map<String, AgentStatus> agentStatusMap = cache.findAllReadyAgentStatusByOrgi(orgi);
-
             List<String> userids = new ArrayList<>();
+            final Map<String, AgentStatus> agentStatusMap = cache.findAllReadyAgentStatusByOrgi(orgi);
 
             for (final String o : agentStatusMap.keySet()) {
                 if (!StringUtils.equals(o, agentnoid)) {
@@ -410,7 +413,7 @@ public class AgentAuditController extends Handler {
             map.addAttribute("userid", userid);
             map.addAttribute("agentserviceid", agentserviceid);
             map.addAttribute("agentuserid", agentuserid);
-            map.addAttribute("agentnoid", agentnoid);
+            map.addAttribute("agentno", agentnoid);
             map.addAttribute("skillGroups", skillGroups);
             map.addAttribute("agentservice", this.agentServiceRes.findByIdAndOrgi(agentserviceid, orgi));
             map.addAttribute("currentorgan", currentOrgan);
@@ -433,31 +436,28 @@ public class AgentAuditController extends Handler {
     public ModelAndView transferagent(
             ModelMap map,
             HttpServletRequest request,
-            @Valid String agentnoid,
+            @Valid String agentid,
             @Valid String organ
-                                     ) {
+    ) {
+        final User logined = super.getUser(request);
         final String orgi = super.getOrgi(request);
         if (StringUtils.isNotBlank(organ)) {
-            List<String> usersids = new ArrayList<String>();
-            final List<AgentStatus> agentStatusList = cache.getAgentStatusBySkillAndOrgi(organ, orgi);
-            if (agentStatusList.size() > 0) {
-                for (AgentStatus agentStatus : agentStatusList) {
-                    if (agentStatus != null && !StringUtils.equals(agentStatus.getAgentno(), agentnoid)) {
-                        usersids.add(agentStatus.getAgentno());
-                    }
-                }
-            }
-            List<User> userList = userRes.findAll(usersids);
-            for (User user : userList) {
-                userProxy.attachOrgansPropertiesForUser(user);
-                for (final AgentStatus as : agentStatusList) {
-                    if (StringUtils.equals(as.getAgentno(), user.getId())) {
-                        user.setAgentStatus(as);
-                        break;
-                    }
+            List<String> userids = new ArrayList<>();
+
+            final Map<String, AgentStatus> agentStatusMap = cache.findAllReadyAgentStatusByOrgi(orgi);
+
+            for (final String o : agentStatusMap.keySet()) {
+                if (!StringUtils.equals(o, agentid)) {
+                    userids.add(o);
                 }
             }
 
+            final List<User> userList = userRes.findAll(userids);
+            for (final User o : userList) {
+                o.setAgentStatus(agentStatusMap.get(o.getId()));
+                // find user's skills
+                userProxy.attachOrgansPropertiesForUser(o);
+            }
             map.addAttribute("userList", userList);
             map.addAttribute("currentorgan", organ);
         }
@@ -486,7 +486,7 @@ public class AgentAuditController extends Handler {
             @Valid final String currentAgentnoid,
             @Valid final String agentno,   // 会话转接给下一个坐席
             @Valid final String memo
-                                    ) throws CSKefuException {
+    ) throws CSKefuException {
         final String currentAgentno = currentAgentnoid; // 当前会话坐席的agentno
 
         final String orgi = super.getOrgi(request);
@@ -547,7 +547,7 @@ public class AgentAuditController extends Handler {
                                 agentUser.getUserid(),
                                 outMessage,
                                 true
-                                       );
+                        );
                     }
 
                     // 通知转接消息给新坐席
@@ -557,7 +557,7 @@ public class AgentAuditController extends Handler {
                             MainContext.ReceiverType.AGENT, MainContext.ChannelType.WEBIM,
                             agentUser.getAppid(), MainContext.MessageType.NEW, agentService.getAgentno(),
                             outMessage, true
-                                   );
+                    );
 
                 } catch (Exception ex) {
                     logger.error("[transfersave]", ex);

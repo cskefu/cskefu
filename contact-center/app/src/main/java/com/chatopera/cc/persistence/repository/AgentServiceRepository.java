@@ -26,31 +26,38 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 
 public interface AgentServiceRepository
-  extends JpaRepository<AgentService, String>
-{
-  AgentService findByIdAndOrgi(String paramString, String orgi);
-  
-  List<AgentService> findByUseridAndOrgiOrderByLogindateDesc(String paramString, String orgi);
+        extends JpaRepository<AgentService, String> {
+    AgentService findByIdAndOrgi(String paramString, String orgi);
 
-  @Query(value = "SELECT * FROM uk_agentservice WHERE userid= ?1 AND orgi = ?2 ORDER BY logindate DESC LIMIT 1", nativeQuery = true)
-  Optional<AgentService> findOneByUseridAndOrgiOrderByLogindateDesc(String userid, String orgi);
+    List<AgentService> findByUseridAndOrgiOrderByLogindateDesc(String paramString, String orgi);
 
-  AgentService findFirstByUserid(String userid);
+    @Query(value = "SELECT * FROM uk_agentservice WHERE userid= ?1 AND orgi = ?2 ORDER BY logindate DESC LIMIT 1", nativeQuery = true)
+    Optional<AgentService> findOneByUseridAndOrgiOrderByLogindateDesc(String userid, String orgi);
 
-  Page<AgentService> findByOrgi(String orgi, Pageable paramPageable);
-  
-  Page<AgentService> findByOrgiAndSatisfaction(String orgi, boolean satisfaction, Pageable paramPageable);
-  
-  Page<AgentService> findByOrgiAndStatus(String orgi, String status, Pageable paramPageable);
-  
-  List<AgentService> findByAgentnoAndStatusAndOrgi(String agentno, String status, String orgi);
-  
-  int countByUseridAndOrgiAndStatus(String userid, String orgi, String status);
-  
-  List<AgentService> findByUseridAndOrgiAndStatus(String userid, String orgi, String status, Sort sort);
-  
-  Page<AgentService> findAll(Specification<AgentService> spec, Pageable pageable);  //分页按条件查询
+    AgentService findFirstByUserid(String userid);
+
+    Page<AgentService> findByOrgi(String orgi, Pageable paramPageable);
+
+    Page<AgentService> findByOrgiAndSatisfaction(String orgi, boolean satisfaction, Pageable paramPageable);
+
+    Page<AgentService> findByOrgiAndSatisfactionAndSkillIn(String orgi, boolean satisfaction, Set<String> skill, Pageable paramPageable);
+
+    Page<AgentService> findByOrgiAndStatus(String orgi, String status, Pageable paramPageable);
+
+    Page<AgentService> findByOrgiAndStatusAndAgentskillIn(String orgi, String status, Set<String> agentskill, Pageable paramPageable);
+
+    int countByOrgiAndStatusAndAgentskillIn(String orgi, String status, Set<String> agentskill);
+
+    List<AgentService> findByAgentnoAndStatusAndOrgi(String agentno, String status, String orgi);
+
+    int countByUseridAndOrgiAndStatus(String userid, String orgi, String status);
+
+    List<AgentService> findByUseridAndOrgiAndStatus(String userid, String orgi, String status, Sort sort);
+
+    Page<AgentService> findAll(Specification<AgentService> spec, Pageable pageable);  //分页按条件查询
 
 }

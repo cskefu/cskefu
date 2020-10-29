@@ -1,6 +1,8 @@
 app/target
 !app/target/*.war.original
 !app/target/*.war
+!app/target/*.jar.original
+!app/target/*.jar
 logs/
 tmp/
 data/

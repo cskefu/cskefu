@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Set;
 
 public interface OrganRepository
   extends JpaRepository<Organ, String>
@@ -30,8 +31,6 @@ public interface OrganRepository
   
   Page<Organ> findByOrgi(String orgi, Pageable paramPageable);
 
-  Page<Organ> findByOrgiAndOrgid(String orgi, String orgid, Pageable paramPageable);
-  
   Organ findByNameAndOrgi(String paramString, String orgi);
   
   Organ findByNameAndOrgiAndOrgid(String paramString, String orgi, String orgid);
@@ -41,9 +40,9 @@ public interface OrganRepository
   List<Organ> findByOrgiAndParent(String orgi, String parent);
 
   List<Organ> findByOrgi(String orgi);
-  
-  List<Organ> findByOrgiAndOrgid(String orgi, String orgid);
-  
+
+  List<Organ> findByOrgiAndIdInAndSkill(String orgi, Set<String> id , boolean b);
+
   List<Organ> findByOrgiAndSkill(String orgi, boolean skill);
   
   List<Organ> findByOrgiAndSkillAndOrgid(String orgi, boolean skill, String orgid);

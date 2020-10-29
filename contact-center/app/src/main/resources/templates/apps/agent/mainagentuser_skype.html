@@ -26,7 +26,7 @@ word-break: break-all;"><#if curagentuser??>${curagentuser.username!''}<#if cura
     <#list agentUserMessageList.content?reverse as chatmessage>
     <div class="clearfix chat-block" name="${chatmessage.createtime}">
         <div class="<#if (chatmessage.calltype?? && chatmessage.calltype == '呼出')>chat-right<#else>chat-left</#if>">
-            <img alt="" src="<#if chatmessage.userid?? && chatmessage.userid == user.id>/images/im/user.png<#else><#if curagentuser.headimgurl?? && curagentuser.headimgurl !=''>${curagentuser.headimgurl}<#else>/images/im/user.png</#if></#if>" style="width:45px;height:45px;" class="user-img">
+            <img alt="" src="<#if (chatmessage.calltype?? && chatmessage.calltype == '呼出')>/images/agent.png<#else><#if curagentuser.headimgurl?? && curagentuser.headimgurl !=''>${curagentuser.headimgurl}<#else>/images/im/user.png</#if></#if>" style="width:45px;height:45px;" class="user-img">
             <div class="chat-message">
                         <span class="<#if (chatmessage.calltype?? && chatmessage.calltype == '呼出')>rateright<#else>rateleft</#if>">
                             <i class="layui-icon iconclick" id=${chatmessage.id}  name="<#if (chatmessage.islabel == true??)>yeslabe<#else>nolabe</#if>"  style="font-size: 30px;cursor: pointer; color:<#if (chatmessage.islabel == true??)>#46cad4;<#else>#aaaaaa;</#if>;"> <#if (chatmessage.islabel == true??)>&#xe616;<#else>&#x1005;</#if></i>

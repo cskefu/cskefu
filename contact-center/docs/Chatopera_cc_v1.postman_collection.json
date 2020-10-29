@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "fa86aeb9-fcf2-4843-ab4c-c97132a46f8f",
+		"_postman_id": "3aaf2976-1ea3-494c-95e6-1aebe008ed83",
 		"name": "Chatopera_cc_v1",
 		"description": "Chatopera Contact Center API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -688,7 +688,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"ops\": \"enable\",\n  \"id\": \"eb53580ddbe3473bb112ade4eeeb3b45\"\n}"
+					"raw": "{\n  \"ops\": \"enable\",\n  \"id\": \"f24e8282b1074ad192e7408c18b1f942\"\n}"
 				},
 				"url": {
 					"raw": "http://{{IP}}:{{PORT}}/api/chatbot",
@@ -1083,6 +1083,486 @@
 					"body": "{\n    \"rc\": 0\n}"
 				}
 			]
+		},
+		{
+			"name": "呼叫中心：创建账号，语音平台列表",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "{{AUTH}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ops\": \"my-pbxlist\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/callcenter",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"callcenter"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "坐席：撤退当前坐席",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{AUTH}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ops\": \"withdraw\"\n}"
+						},
+						"url": {
+							"raw": "http://{{IP}}:{{PORT}}/api/agentuser",
+							"protocol": "http",
+							"host": [
+								"{{IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"agentuser"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Set-Cookie",
+							"value": "JSESSIONID=925EDECC5F3B9D58D43C5A605F992A74; Path=/; HttpOnly"
+						},
+						{
+							"key": "X-Application-Context",
+							"value": "application:8035"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "POST, GET, OPTIONS, DELETE, PUT"
+						},
+						{
+							"key": "Access-Control-Max-Age",
+							"value": "3600"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "x-requested-with,accept,authorization,content-type"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 19 Sep 2019 14:13:46 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"rc\": 0\n}"
+				}
+			]
+		},
+		{
+			"name": "系统用户：创建账号",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "{{AUTH}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ops\": \"create\",\n    \"username\": \"foo1\",\n    \"uname\": \"foo1\",\n    \"email\": \"foo1@cc.com\",\n    \"password\": \"admin1234\",\n    \"mobile\": \"15800000000\",\n    \"agent\": \"1\",\n    \"callcenter\": \"1\",\n    \"pbxhostid\": \"402885e76f992509016f992e91720021\",\n    \"extensionid\": \"402885e76f992509016f992ee14c0027\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/user",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "系统用户：创建账号",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{AUTH}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ops\": \"create\",\n    \"username\": \"foo1\",\n    \"uname\": \"foo1\",\n    \"email\": \"foo1@cc.com\",\n    \"password\": \"admin1234\",\n    \"mobile\": \"15800000000\",\n    \"agent\": \"1\",\n    \"callcenter\": \"1\",\n    \"pbxhostid\": \"402885e76f992509016f992e91720021\",\n    \"extensionid\": \"402885e76f992509016f992ee14c0027\"\n}"
+						},
+						"url": {
+							"raw": "http://{{IP}}:{{PORT}}/api/user",
+							"protocol": "http",
+							"host": [
+								"{{IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Application-Context",
+							"value": "application,git:dev:8035"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "POST, GET, OPTIONS, DELETE, PUT"
+						},
+						{
+							"key": "Access-Control-Max-Age",
+							"value": "3600"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "x-requested-with,accept,authorization,content-type"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "34"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 12 Jan 2020 12:07:48 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"rc\": 0,\n    \"data\": \"new_user_success\"\n}"
+				}
+			]
+		},
+		{
+			"name": "系统用户：删除账号",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "{{AUTH}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ops\": \"delete\",\n    \"id\": \"402885e76f99b9ec016f99bd81f20002\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/user",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "系统用户：删除账号",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{AUTH}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ops\": \"delete\",\n    \"id\": \"402885e76f9987e7016f9991dcaf0002\"\n}"
+						},
+						"url": {
+							"raw": "http://{{IP}}:{{PORT}}/api/user",
+							"protocol": "http",
+							"host": [
+								"{{IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Application-Context",
+							"value": "application,git:dev:8035"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "POST, GET, OPTIONS, DELETE, PUT"
+						},
+						{
+							"key": "Access-Control-Max-Age",
+							"value": "3600"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "x-requested-with,accept,authorization,content-type"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "21"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 12 Jan 2020 12:07:33 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"rc\": 0,\n    \"msg\": \"done\"\n}"
+				}
+			]
+		},
+		{
+			"name": "系统用户：更新账号",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "{{AUTH}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ops\": \"update\",\n    \"id\": \"402885e76f99b9ec016f99c032090007\",\n    \"username\": \"foo1\",\n    \"uname\": \"foo1\",\n    \"email\": \"foo1@cc.com\",\n    \"password\": \"admin1234\",\n    \"mobile\": \"15800000011\",\n    \"agent\": \"1\",\n    \"callcenter\": \"1\",\n    \"pbxhostid\": \"402885e76f992509016f992e91720021\",\n    \"extensionid\": \"402885e76f992509016f992ee14c0027\"\n}"
+				},
+				"url": {
+					"raw": "http://{{IP}}:{{PORT}}/api/user",
+					"protocol": "http",
+					"host": [
+						"{{IP}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "系统用户：更新账号",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{AUTH}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ops\": \"update\",\n    \"id\": \"402885e76f99a660016f99a72f4a0002\",\n    \"username\": \"foo1\",\n    \"uname\": \"foo1\",\n    \"email\": \"foo1@cc.com\",\n    \"password\": \"admin1234\",\n    \"mobile\": \"15800000011\",\n    \"agent\": \"1\",\n    \"callcenter\": \"1\",\n    \"pbxhostid\": \"402885e76f992509016f992e91720021\",\n    \"extensionid\": \"402885e76f992509016f992ee14c0027\"\n}"
+						},
+						"url": {
+							"raw": "http://{{IP}}:{{PORT}}/api/user",
+							"protocol": "http",
+							"host": [
+								"{{IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Application-Context",
+							"value": "application,git:dev:8035"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "POST, GET, OPTIONS, DELETE, PUT"
+						},
+						{
+							"key": "Access-Control-Max-Age",
+							"value": "3600"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "x-requested-with,accept,authorization,content-type"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "35"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 12 Jan 2020 12:20:31 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"rc\": 0,\n    \"data\": \"edit_user_success\"\n}"
+				}
+			]
 		}
 	],
 	"event": [
@@ -1106,5 +1586,6 @@
 				]
 			}
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }

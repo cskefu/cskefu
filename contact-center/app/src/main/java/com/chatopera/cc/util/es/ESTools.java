@@ -77,7 +77,7 @@ public class ESTools {
             builder.endObject();
         }
         builder.endObject().endObject().endObject();
-        MainContext.getTemplet().putMapping(Constants.SYSTEM_INDEX, tb.getTablename(), builder);
+        MainContext.getTemplet().putMapping(Constants.SYSTEM_ORGI, tb.getTablename(), builder);
 
     }
 }

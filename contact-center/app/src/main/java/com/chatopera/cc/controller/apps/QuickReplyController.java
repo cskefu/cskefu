@@ -282,7 +282,7 @@ public class QuickReplyController extends Handler {
     			values.add(MainUtils.transBean2Map(topic)) ;
     		}
     		
-    		response.setHeader("content-disposition", "attachment;filename=CSKeFu-QuickReply-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
+    		response.setHeader("content-disposition", "attachment;filename=UCKeFu-QuickReply-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
     		if(table!=null){
     			ExcelExporterProcess excelProcess = new ExcelExporterProcess( values, table, response.getOutputStream()) ;
     			excelProcess.process();
@@ -303,7 +303,7 @@ public class QuickReplyController extends Handler {
 			values.add(MainUtils.transBean2Map(topic)) ;
 		}
 		
-		response.setHeader("content-disposition", "attachment;filename=CSKeFu-QuickReply-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
+		response.setHeader("content-disposition", "attachment;filename=UCKeFu-QuickReply-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
 		
 		if(table!=null){
 			ExcelExporterProcess excelProcess = new ExcelExporterProcess( values, table, response.getOutputStream()) ;
@@ -324,7 +324,7 @@ public class QuickReplyController extends Handler {
 			values.add(MainUtils.transBean2Map(topic)) ;
 		}
 		
-		response.setHeader("content-disposition", "attachment;filename=CSKeFu-QuickReply-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
+		response.setHeader("content-disposition", "attachment;filename=UCKeFu-QuickReply-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
 		
 		if(table!=null){
 			ExcelExporterProcess excelProcess = new ExcelExporterProcess( values, table, response.getOutputStream()) ;

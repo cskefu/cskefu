@@ -15,6 +15,7 @@
  */
 package com.chatopera.cc.socketio.util;
 
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.socketio.message.ChatMessage;
 import org.apache.commons.lang.StringUtils;
@@ -114,7 +115,7 @@ public class RichMediaUtils {
         data.setMsgtype(msgtype);
         data.setType(MainContext.MessageType.MESSAGE.toString());
 
-        MainContext.getCache().findOneAgentUserByUserIdAndOrgi(userid, MainContext.SYSTEM_ORGI).ifPresent(p -> {
+        MainContext.getCache().findOneAgentUserByUserIdAndOrgi(userid, Constants.SYSTEM_ORGI).ifPresent(p -> {
             data.setUserid(p.getUserid());
             data.setUsername(p.getUsername());
             data.setTouser(p.getAgentno());
@@ -164,7 +165,7 @@ public class RichMediaUtils {
 
         if (StringUtils.isNotBlank(userid)) {
             if (MainContext.getCache().findOneAgentUserByUserIdAndOrgi(
-                    userid, MainContext.SYSTEM_ORGI).filter(p -> StringUtils.equals(
+                    userid, Constants.SYSTEM_ORGI).filter(p -> StringUtils.equals(
                     p.getOpttype(), MainContext.OptType.CHATBOT.toString())).isPresent()) {
                 // TODO 给聊天机器人发送图片或文字
                 // #652 创建聊天机器人插件时去掉了对它的支持，需要将来实现

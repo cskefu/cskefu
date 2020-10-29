@@ -38,7 +38,7 @@ public class QuickReplyResourceController extends Handler{
 		if(q==null){
 			q = "" ;
 		}
-    	map.addAttribute("quickReplyList", OnlineUserProxy.search(q, super.getOrgi(request), super.getUser(request))) ;
+//    	map.addAttribute("quickReplyList", OnlineUserProxy.search(q, super.getOrgi(request), super.getUser(request))) ;
         return request(super.createRequestPageTempletResponse("/public/quickreply"));
     }
 }

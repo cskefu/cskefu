@@ -18,7 +18,6 @@
 
  import com.alibaba.fastjson.JSONObject;
  import com.chatopera.cc.acd.ACDAgentService;
- import com.chatopera.cc.acd.ACDPolicyService;
  import com.chatopera.cc.acd.ACDWorkMonitor;
  import com.chatopera.cc.activemq.BrokerPublisher;
  import com.chatopera.cc.basic.Constants;
@@ -67,7 +66,10 @@
  import java.io.IOException;
  import java.text.ParseException;
  import java.text.SimpleDateFormat;
- import java.util.*;
+ import java.util.ArrayList;
+ import java.util.Date;
+ import java.util.List;
+ import java.util.Map;
 
  @Controller
  @RequestMapping("/agent")
@@ -77,9 +79,6 @@
 
      @Autowired
      private ACDWorkMonitor acdWorkMonitor;
-
-     @Autowired
-     private ACDPolicyService acdPolicyService;
 
      @Autowired
      private ACDAgentService acdAgentService;
@@ -176,6 +175,12 @@
 
      @Autowired
      private UserProxy userProxy;
+
+     @Autowired
+     private OrganProxy organProxy;
+
+     @Autowired
+     private OrganRepository organRes;
 
      /**
       * 坐席从联系人列表进入坐席工作台和该联系人聊天
@@ -449,14 +454,14 @@
                      StatusEvent statusEvent = this.statusEventRes.findById(agentService.getOwner());
                      if (statusEvent != null) {
                          if (StringUtils.isNotBlank(statusEvent.getHostid())) {
-                             PbxHost pbxHost = pbxHostRes.findById(statusEvent.getHostid());
-                             view.addObject("pbxHost", pbxHost);
+                             pbxHostRes.findById(statusEvent.getHostid()).ifPresent(p -> {
+                                 view.addObject("pbxHost", p);
+                             });
                          }
                          view.addObject("statusEvent", statusEvent);
                      }
                  }
              }
-
 
              view.addObject("serviceCount", Integer
                      .valueOf(this.agentServiceRes
@@ -467,15 +472,17 @@
              view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid()));
          }
 
-         SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
+//         SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
+//
+//         view.addObject("sessionConfig", sessionConfig);
+//         if (sessionConfig.isOtherquickplay()) {
+//             view.addObject("topicList", OnlineUserProxy.search(null, orgi, super.getUser(request)));
+//         }
 
-         view.addObject("sessionConfig", sessionConfig);
-         if (sessionConfig.isOtherquickplay()) {
-             view.addObject("topicList", OnlineUserProxy.search(null, orgi, super.getUser(request)));
+         AgentService service = agentServiceRes.findByIdAndOrgi(agentUser.getAgentserviceid(), orgi);
+         if (service != null) {
+             view.addObject("tags", tagRes.findByOrgiAndTagtypeAndSkill(orgi, MainContext.ModelType.USER.toString(), service.getSkill()));
          }
-
-
-         view.addObject("tags", tagRes.findByOrgiAndTagtype(orgi, MainContext.ModelType.USER.toString()));
          view.addObject(
                  "quickReplyList", quickReplyRes.findByOrgiAndCreater(orgi, super.getUser(request).getId(), null));
          List<QuickType> quickTypeList = quickTypeRes.findByOrgiAndQuicktype(
@@ -488,31 +495,32 @@
          return view;
      }
 
-     @RequestMapping("/other/topic")
-     @Menu(type = "apps", subtype = "othertopic")
-     public ModelAndView othertopic(ModelMap map, HttpServletRequest request, String q) throws IOException, TemplateException {
-         SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
-
-         map.put("sessionConfig", sessionConfig);
-         if (sessionConfig.isOtherquickplay()) {
-             map.put("topicList", OnlineUserProxy.search(q, super.getOrgi(request), super.getUser(request)));
-         }
-
-         return request(super.createRequestPageTempletResponse("/apps/agent/othertopic"));
-     }
-
-     @RequestMapping("/other/topic/detail")
-     @Menu(type = "apps", subtype = "othertopicdetail")
-     public ModelAndView othertopicdetail(ModelMap map, HttpServletRequest request, String id) throws IOException, TemplateException {
-         SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
-
-         map.put("sessionConfig", sessionConfig);
-         if (sessionConfig.isOtherquickplay()) {
-             map.put("topic", OnlineUserProxy.detail(id, super.getOrgi(request), super.getUser(request)));
-         }
-
-         return request(super.createRequestPageTempletResponse("/apps/agent/topicdetail"));
-     }
+//     TODO: mdx-organ clean
+//     @RequestMapping("/other/topic")
+//     @Menu(type = "apps", subtype = "othertopic")
+//     public ModelAndView othertopic(ModelMap map, HttpServletRequest request, String q) throws IOException, TemplateException {
+//         SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
+//
+//         map.put("sessionConfig", sessionConfig);
+//         if (sessionConfig.isOtherquickplay()) {
+//             map.put("topicList", OnlineUserProxy.search(q, super.getOrgi(request), super.getUser(request)));
+//         }
+//
+//         return request(super.createRequestPageTempletResponse("/apps/agent/othertopic"));
+//     }
+//
+//     @RequestMapping("/other/topic/detail")
+//     @Menu(type = "apps", subtype = "othertopicdetail")
+//     public ModelAndView othertopicdetail(ModelMap map, HttpServletRequest request, String id) throws IOException, TemplateException {
+//         SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
+//
+//         map.put("sessionConfig", sessionConfig);
+//         if (sessionConfig.isOtherquickplay()) {
+//             map.put("topic", OnlineUserProxy.detail(id, super.getOrgi(request), super.getUser(request)));
+//         }
+//
+//         return request(super.createRequestPageTempletResponse("/apps/agent/topicdetail"));
+//     }
 
 
      @RequestMapping("/workorders/list")
@@ -992,10 +1000,12 @@
               * 更新OnlineUser
               */
              OnlineUser onlineUser = onlineUserRes.findOneByUseridAndOrgi(userid, agentUser.getOrgi());
-             onlineUser.setContactsid(contactsid);
-             onlineUser.setUsername(contacts.getName());
-             onlineUser.setUpdateuser(logined.getUname());
-             onlineUserRes.save(onlineUser);
+             if (onlineUser != null) {
+                 onlineUser.setContactsid(contactsid);
+                 onlineUser.setUsername(contacts.getName());
+                 onlineUser.setUpdateuser(logined.getUname());
+                 onlineUserRes.save(onlineUser);
+             }
 
              AgentService agentService = agentServiceRes.findOne(agentserviceid);
              if (agentService != null) {
@@ -1071,6 +1081,7 @@
              @Valid String agentserviceid,
              @Valid String agentuserid,
              @Valid String channel) {
+         final String orgi = super.getOrgi(request);
          if (StringUtils.isNotBlank(userid) && StringUtils.isNotBlank(agentuserid)) {
              AgentUser agentUser = this.agentUserRes.findByIdAndOrgi(agentuserid, super.getOrgi(request));
              if (agentUser != null && StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
@@ -1080,11 +1091,13 @@
                      map.addAttribute("summary", summaries.get(0));
                  }
              }
-
-             map.addAttribute(
-                     "tags", tagRes.findByOrgiAndTagtype(
-                             super.getOrgi(request),
-                             MainContext.ModelType.SUMMARY.toString()));
+             AgentService service = agentServiceRes.findByIdAndOrgi(agentserviceid, orgi);
+             if (service != null) {
+                 map.addAttribute(
+                         "tags", tagRes.findByOrgiAndTagtypeAndSkill(
+                                 super.getOrgi(request),
+                                 MainContext.ModelType.SUMMARY.toString(), service.getSkill()));
+             }
              map.addAttribute("userid", userid);
              map.addAttribute("agentserviceid", agentserviceid);
              map.addAttribute("agentuserid", agentuserid);
@@ -1112,6 +1125,7 @@
              AgentService service = agentServiceRes.findByIdAndOrgi(agentserviceid, orgi);
              summary.setAgent(service.getAgentno());
              summary.setAgentno(service.getAgentno());
+             summary.setSkill(service.getSkill());
              summary.setUsername(service.getUsername());
              summary.setAgentusername(service.getAgentusername());
              summary.setChannel(service.getChannel());
@@ -1148,24 +1162,18 @@
          logger.info("[transfer] userId {}, agentUser {}", userid, agentuserid);
          final String orgi = super.getOrgi(request);
          final User logined = super.getUser(request);
+
+         Organ targetOrgan = super.getOrgan(request);
+         Map<String, Organ> ownOrgans = organProxy.findAllOrganByParentAndOrgi(targetOrgan, super.getOrgi(request));
+
          if (StringUtils.isNotBlank(userid) && StringUtils.isNotBlank(agentuserid)) {
              // 列出所有技能组
-             final List<Organ> skillGroups = OnlineUserProxy.organ(orgi, true);
-
-             // DEBUG
-             StringBuffer sb = new StringBuffer();
-             for (final Organ organ : skillGroups) {
-                 sb.append(organ.getId());
-                 sb.append(":");
-                 sb.append(organ.getName());
-                 sb.append("\t");
-             }
-             logger.info("[transfer] skillGroups {}", sb.toString());
-
+             List<Organ> skillGroups = organRes.findByOrgiAndIdInAndSkill(super.getOrgi(request), ownOrgans.keySet(), true);
 
              // 选择当前用户的默认技能组
-             Set<String> organs = logined.getOrgans().keySet();
-             String currentOrgan = organs.size() > 0 ? (new ArrayList<String>(organs)).get(0) : null;
+             AgentService agentService = agentServiceRes.findByIdAndOrgi(agentserviceid, super.getOrgi(request));
+
+             String currentOrgan = agentService.getSkill();
 
              if (StringUtils.isBlank(currentOrgan)) {
                  if (!skillGroups.isEmpty()) {
@@ -1173,15 +1181,11 @@
                  }
              }
              logger.info("[transfer] set current organ as {}", currentOrgan);
-
-
              // 列出所有在线的坐席，排除本身
+             List<String> userids = new ArrayList<>();
              final Map<String, AgentStatus> agentStatusMap = cache.findAllReadyAgentStatusByOrgi(orgi);
 
-             List<String> userids = new ArrayList<>();
-
              for (final String o : agentStatusMap.keySet()) {
-//                 logger.info("[transfer] agent status ready {}, status {}", agentStatusMap.get(o).getAgentno(), agentStatusMap.get(o).getStatus());
                  if (!StringUtils.equals(o, logined.getId())) {
                      userids.add(o);
                  }
@@ -1201,6 +1205,7 @@
              map.addAttribute("agentserviceid", agentserviceid);
              map.addAttribute("agentuserid", agentuserid);
              map.addAttribute("skillGroups", skillGroups);
+             map.addAttribute("agentno", agentService.getAgentno());
              map.addAttribute("agentservice", this.agentServiceRes.findByIdAndOrgi(agentserviceid, orgi));
              map.addAttribute("currentorgan", currentOrgan);
          }
@@ -1221,28 +1226,26 @@
      public ModelAndView transferagent(
              ModelMap map,
              HttpServletRequest request,
-             @Valid String organ) {
+             @Valid String organ,
+             @Valid String agentid) {
          final User logined = super.getUser(request);
          final String orgi = super.getOrgi(request);
          if (StringUtils.isNotBlank(organ)) {
-             List<String> usersids = new ArrayList<String>();
-             final List<AgentStatus> agentStatusList = cache.getAgentStatusBySkillAndOrgi(organ, orgi);
-             if (agentStatusList.size() > 0) {
-                 for (AgentStatus agentStatus : agentStatusList) {
-                     if (agentStatus != null && !StringUtils.equals(agentStatus.getAgentno(), logined.getId())) {
-                         usersids.add(agentStatus.getAgentno());
-                     }
+             List<String> userids = new ArrayList<>();
+
+             final Map<String, AgentStatus> agentStatusMap = cache.findAllReadyAgentStatusByOrgi(orgi);
+
+             for (final String o : agentStatusMap.keySet()) {
+                 if (!StringUtils.equals(o, agentid)) {
+                     userids.add(o);
                  }
              }
-             List<User> userList = userRes.findAll(usersids);
-             for (User user : userList) {
-                 userProxy.attachOrgansPropertiesForUser(user);
-                 for (final AgentStatus as : agentStatusList) {
-                     if (StringUtils.equals(as.getAgentno(), user.getId())) {
-                         user.setAgentStatus(as);
-                         break;
-                     }
-                 }
+
+             final List<User> userList = userRes.findAll(userids);
+             for (final User o : userList) {
+                 o.setAgentStatus(agentStatusMap.get(o.getId()));
+                 // find user's skills
+                 userProxy.attachOrgansPropertiesForUser(o);
              }
              map.addAttribute("userList", userList);
              map.addAttribute("currentorgan", organ);
@@ -1457,7 +1460,7 @@
          AgentUserContacts auc = new AgentUserContacts();
          auc.setId(MainUtils.getUUID());
          auc.setUsername(au.getUsername());
-         auc.setOrgi(MainContext.SYSTEM_ORGI);
+         auc.setOrgi(Constants.SYSTEM_ORGI);
          auc.setUserid(au.getUserid());
          auc.setContactsid(contacts.getId());
          auc.setChannel(au.getChannel());

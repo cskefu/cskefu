@@ -13,14 +13,13 @@
 				</div>
 				<div class="box-body" style="padding:0px 0px;position: relative;height:250px;overflow-y:auto;">
 					<ul>
-
 						<#if skillGroups??>
 						<#list skillGroups as skill>
 						<#if skill.id == user.organ>
 						<#assign agentNum = 0 >
-						<#if userList??><#list userList as agent><#if agent.affiliates?seq_contains(skill.id)><#assign agentNum = agentNum + 1 ></#if></#list></#if>
+						<#if userList??><#list userList as agent><#if agent.organs[skill.id]??><#assign agentNum = agentNum + 1 ></#if></#list></#if>
 						<li title="${skill.name!''}(${agentNum!''})" class="uk_role <#if skill.id == currentorgan>this</#if>" style="margin:0px;padding:7px 0 7px 20px;" onclick="$('.uk_role.this').removeClass('this');$(this).addClass('this');"><a
-							href="/agent/transfer/agent.html?organ=${skill.id!''}" data-toggle="load" data-target="#skillAgentList">
+							href="/agent/transfer/agent.html?organ=${skill.id!''}&agentid=${agentservice.agentno!''}" data-toggle="load" data-target="#skillAgentList">
 							<i style="margin-top: 3px;float: left" class="kfont"></i><span style="max-width: 120px;text-overflow: ellipsis;white-space: nowrap; overflow: hidden;float: left;margin: 0 3px">${skill.name!''}</span>(${agentNum!''})
 						</a></li>
 						</#if>
@@ -31,9 +30,9 @@
 						<#list skillGroups as skill>
 						<#if skill.id != user.organ>
 						<#assign agentNum = 0 >
-						<#if userList??><#list userList as agent><#if agent.affiliates?seq_contains(skill.id)><#assign agentNum = agentNum + 1 ></#if></#list></#if>
+						<#if userList??><#list userList as agent><#if agent.organs[skill.id]??><#assign agentNum = agentNum + 1 ></#if></#list></#if>
 						<li title="${skill.name!''}${agentNum!''})" class="uk_role <#if skill.id == currentorgan>this</#if>" style="margin:0px;padding:7px 0 7px 20px;"  onclick="$('.uk_role.this').removeClass('this');$(this).addClass('this');"><a
-							href="/agent/transfer/agent.html?organ=${skill.id!''}" data-toggle="load" data-target="#skillAgentList">
+							href="/agent/transfer/agent.html?organ=${skill.id!''}&agentid=${agentservice.agentno!''}" data-toggle="load" data-target="#skillAgentList">
 							<i style="margin-top: 3px;float: left" class="kfont"></i><span style="max-width: 120px;text-overflow: ellipsis;white-space: nowrap; overflow: hidden;float: left;margin: 0 3px">${skill.name!''}</span>(${agentNum!''})
 						</a></li>
 						</#if>

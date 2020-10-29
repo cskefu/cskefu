@@ -83,20 +83,7 @@ public class UsersResourceController extends Handler {
     }
 
     private List<User> getUsers(HttpServletRequest request) {
-        List<User> list = null;
-        if (super.isTenantshare()) {
-            List<String> organIdList = new ArrayList<>();
-            List<OrgiSkillRel> orgiSkillRelList = orgiSkillRelService.findByOrgi(super.getOrgi(request));
-            if (!orgiSkillRelList.isEmpty()) {
-                for (OrgiSkillRel rel : orgiSkillRelList) {
-                    organIdList.add(rel.getSkillid());
-                }
-            }
-            list = userProxy.findByOrganInAndDatastatus(organIdList, false);
-        } else {
-            list = userRes.findByOrgiAndDatastatus(super.getOrgi(request), false);
-        }
-        return list;
+        return userRes.findByOrgiAndDatastatus(super.getOrgi(request), false);
     }
 
     /**
@@ -110,19 +97,7 @@ public class UsersResourceController extends Handler {
         if (q == null) {
             q = "";
         }
-        Page<User> list = null;
-        if (super.isTenantshare()) {
-            List<String> organIdList = new ArrayList<>();
-            List<OrgiSkillRel> orgiSkillRelList = orgiSkillRelService.findByOrgi(super.getOrgi(request));
-            if (!orgiSkillRelList.isEmpty()) {
-                for (OrgiSkillRel rel : orgiSkillRelList) {
-                    organIdList.add(rel.getSkillid());
-                }
-            }
-            list = userProxy.findByOrganInAndDatastatusAndUsernameLike(organIdList, false, "%" + q + "%", new PageRequest(0, 10));
-        } else {
-            list = userRes.findByDatastatusAndOrgiAndOrgidAndUsernameLike(false, super.getOrgi(request), super.getOrgid(request), "%" + q + "%", new PageRequest(0, 10));
-        }
+        Page<User> list = userRes.findByDatastatusAndOrgiAndUsernameLike(false, super.getOrgi(), "%" + q + "%", new PageRequest(0, 10));
         return list;
     }
 
@@ -133,19 +108,7 @@ public class UsersResourceController extends Handler {
      * @return
      */
     private List<Organ> getOrgans(HttpServletRequest request) {
-        List<Organ> list = null;
-        if (super.isTenantshare()) {
-            List<String> organIdList = new ArrayList<>();
-            List<OrgiSkillRel> orgiSkillRelList = orgiSkillRelService.findByOrgi(super.getOrgi(request));
-            if (!orgiSkillRelList.isEmpty()) {
-                for (OrgiSkillRel rel : orgiSkillRelList) {
-                    organIdList.add(rel.getSkillid());
-                }
-            }
-            list = organRes.findByIdInAndSkill(organIdList, true);
-        } else {
-            list = organRes.findByOrgiAndSkillAndOrgid(super.getOrgi(request), true, super.getOrgid(request));
-        }
+        List<Organ> list = organRes.findByOrgiAndSkill(super.getOrgi(request), true);
         return list;
     }
 }

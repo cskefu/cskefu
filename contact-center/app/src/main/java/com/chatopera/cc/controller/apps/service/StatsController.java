@@ -17,13 +17,14 @@
 package com.chatopera.cc.controller.apps.service;
 
 import com.chatopera.cc.basic.Constants;
-import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.Dict;
+import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.model.SysDic;
 import com.chatopera.cc.persistence.repository.CubeService;
 import com.chatopera.cc.persistence.repository.DataSourceService;
-import com.chatopera.cc.proxy.OnlineUserProxy;
+import com.chatopera.cc.proxy.OrganProxy;
+import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.bi.ReportData;
 import com.chatopera.cc.util.bi.UKExcelUtil;
@@ -42,9 +43,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+
 
 @Controller
 @RequestMapping("/service")
@@ -58,6 +59,13 @@ public class StatsController extends Handler {
     @Autowired
     private DataSourceService dataSource;
 
+    @Autowired
+    private OrganProxy organProxy;
+
+    @Autowired
+    private UserProxy userProxy;
+
+
     @RequestMapping("/stats/coment")
     @Menu(type = "service", subtype = "statcoment", admin = true)
     public ModelAndView statcoment(ModelMap map, HttpServletRequest request,
@@ -66,8 +74,22 @@ public class StatsController extends Handler {
                                    @Valid String begin,
                                    @Valid String end) throws Exception {
         logger.info("[statcoment] agent {}, skill {}, begin {}, end {}", agent, skill, begin, end);
-        Map<String, Object> mapR = MainUtils.getRequestParam(request);
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        Map<String, Object> mapR = new HashMap<>();
         mapR.put("orgi", super.getOrgi(request));
+        mapR.put("begin", begin);
+        mapR.put("agent", agent);
+        mapR.put("end", end);
+        if (StringUtils.isNotBlank(skill)) {
+            map.addAttribute("skill", skill);
+            map.addAttribute("agentList", userProxy.findUserInOrgans(Arrays.asList(skill)));
+            mapR.put("skill", "'" + skill + "'");
+        } else {
+            map.addAttribute("agentList", userProxy.findUserInOrgans(organs.keySet()));
+            mapR.put("skill", organs.keySet().stream().map(p -> "'" + p + "'").collect(Collectors.joining(",")));
+        }
+
         ReportData reportData = new CubeService("coment.xml", path, dataSource, mapR).execute("SELECT [comment].[满意度].members on columns , NonEmptyCrossJoin([time].[日期].members , NonEmptyCrossJoin([skill].[技能组].members,[agent].[坐席].members)) on rows  FROM [满意度]");
 
         List<SysDic> dicList = Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_COMMENT_DIC);
@@ -96,11 +118,7 @@ public class StatsController extends Handler {
         /***
          * 查询 技能组 ， 缓存？
          */
-        map.addAttribute("skillGroups", OnlineUserProxy.organ(super.getOrgi(request), true));
-        /**
-         * 查询坐席 ， 缓存？
-         */
-        map.addAttribute("agentList", OnlineUserProxy.agents(super.getOrgi(request)));
+        map.addAttribute("skillGroups", organs.values());
 
         return request(super.createAppsTempletResponse("/apps/service/stats/coment"));
     }
@@ -108,7 +126,17 @@ public class StatsController extends Handler {
     @RequestMapping("/stats/coment/exp")
     @Menu(type = "service", subtype = "statcoment", admin = true)
     public void statcomentexp(ModelMap map, HttpServletRequest request, HttpServletResponse response, @Valid String agent, @Valid String skill, @Valid String begin, @Valid String end) throws Exception {
-        Map<String, Object> mapR = MainUtils.getRequestParam(request);
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        Map<String, Object> mapR = new HashMap<>();
+        mapR.put("begin", begin);
+        mapR.put("agent", agent);
+        mapR.put("end", end);
+        if (StringUtils.isNotBlank(skill)) {
+            mapR.put("skill", "'" + skill + "'");
+        } else {
+            mapR.put("skill", organs.keySet().stream().map(p -> "'" + p + "'").collect(Collectors.joining(",")));
+        }
         mapR.put("orgi", super.getOrgi(request));
         ReportData reportData = new CubeService("coment.xml", path, dataSource, mapR).execute("SELECT [comment].[满意度].members on columns , NonEmptyCrossJoin([time].[日期].members , NonEmptyCrossJoin([skill].[技能组].members,[agent].[坐席].members)) on rows  FROM [满意度]");
 
@@ -121,7 +149,7 @@ public class StatsController extends Handler {
             }
         }
 
-        response.setHeader("content-disposition", "attachment;filename=CSKeFu-Report-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
+        response.setHeader("content-disposition", "attachment;filename=UCKeFu-Report-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
         new UKExcelUtil(reportData, response.getOutputStream(), "满意度统计").createFile();
 
         return;
@@ -130,16 +158,26 @@ public class StatsController extends Handler {
     @RequestMapping("/stats/agent")
     @Menu(type = "service", subtype = "statagent", admin = true)
     public ModelAndView statagent(ModelMap map, HttpServletRequest request, @Valid String agent, @Valid String skill, @Valid String begin, @Valid String end) throws Exception {
-        Map<String, Object> mapR = MainUtils.getRequestParam(request);
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        Map<String, Object> mapR = new HashMap<>();
+        mapR.put("begin", begin);
+        mapR.put("agent", agent);
+        mapR.put("end", end);
+        if (StringUtils.isNotBlank(skill)) {
+            map.addAttribute("skill", skill);
+            map.addAttribute("agentList", userProxy.findUserInOrgans(Arrays.asList(skill)));
+            mapR.put("skill", "'" + skill + "'");
+        } else {
+            map.addAttribute("agentList", userProxy.findUserInOrgans(organs.keySet()));
+            mapR.put("skill", organs.keySet().stream().map(p -> "'" + p + "'").collect(Collectors.joining(",")));
+        }
         mapR.put("orgi", super.getOrgi(request));
         ReportData reportData = new CubeService("consult.xml", path, dataSource, mapR).execute("SELECT {[Measures].[咨询数量],[Measures].[平均等待时长（秒）],[Measures].[平均咨询时长（秒）]} on columns , NonEmptyCrossJoin([time].[日期].members , NonEmptyCrossJoin([skill].[技能组].members,[agent].[坐席].members)) on rows  FROM [咨询]");
         map.addAttribute("reportData", reportData);
 
         if (StringUtils.isNotBlank(agent)) {
             map.addAttribute("agent", agent);
-        }
-        if (StringUtils.isNotBlank(skill)) {
-            map.addAttribute("skill", skill);
         }
         if (StringUtils.isNotBlank(begin)) {
             map.addAttribute("begin", begin);
@@ -150,24 +188,28 @@ public class StatsController extends Handler {
         /***
          * 查询 技能组 ， 缓存？
          */
-        map.addAttribute("skillGroups", OnlineUserProxy.organ(super.getOrgi(request), true));
-        /**
-         * 查询坐席 ， 缓存？
-         */
-        map.addAttribute("agentList", OnlineUserProxy.agents(super.getOrgi(request)));
-
+        map.addAttribute("skillGroups", organs.values());
         return request(super.createAppsTempletResponse("/apps/service/stats/consult"));
     }
 
     @RequestMapping("/stats/agent/exp")
     @Menu(type = "service", subtype = "statagent", admin = true)
     public void statagentexp(ModelMap map, HttpServletRequest request, HttpServletResponse response, @Valid String agent, @Valid String skill, @Valid String begin, @Valid String end) throws Exception {
-        Map<String, Object> mapR = MainUtils.getRequestParam(request);
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        Map<String, Object> mapR = new HashMap<>();
+        mapR.put("begin", begin);
+        mapR.put("agent", agent);
+        mapR.put("end", end);
+        if (StringUtils.isNotBlank(skill)) {
+            mapR.put("skill", "'" + skill + "'");
+        } else {
+            mapR.put("skill", organs.keySet().stream().map(p -> "'" + p + "'").collect(Collectors.joining(",")));
+        }
         mapR.put("orgi", super.getOrgi(request));
         ReportData reportData = new CubeService("consult.xml", path, dataSource, mapR).execute("SELECT {[Measures].[咨询数量],[Measures].[平均等待时长（秒）],[Measures].[平均咨询时长（秒）]} on columns , NonEmptyCrossJoin([time].[日期].members , NonEmptyCrossJoin([skill].[技能组].members,[agent].[坐席].members)) on rows  FROM [咨询]");
-        response.setHeader("content-disposition", "attachment;filename=CSKeFu-Report-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
+        response.setHeader("content-disposition", "attachment;filename=UCKeFu-Report-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
         new UKExcelUtil(reportData, response.getOutputStream(), "客服坐席统计").createFile();
-
         return;
     }
 }

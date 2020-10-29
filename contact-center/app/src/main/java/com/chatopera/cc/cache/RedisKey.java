@@ -238,9 +238,11 @@ public class RedisKey {
         return sb.toString();
     }
 
-    public static String getSessionConfig(final String orgi) {
+    public static String getSessionConfig(String organid, final String orgi) {
         StringBuffer sb = new StringBuffer();
         sb.append(orgi);
+        sb.append(":");
+        sb.append(organid);
         sb.append(":session:config");
         return sb.toString();
     }

@@ -24,7 +24,7 @@
 	    <div class="layui-input-inline">
 	      <input type="password" id="password" name="password" required lay-verify="required|pass" placeholder="请输入登录密码" autocomplete="off" class="layui-input">
 	    </div>
-	    <div class="layui-form-mid layui-word-aux" style="padding-top: 5px;">
+	    <div class="layui-form-mid layui-word-aux" style="padding-top: 5px;padding-bottom: 0px">
 	    	<input type="password" id="repassword" name="repassword" required lay-verify="repass" placeholder="请再次输入密码" autocomplete="off" class="layui-input">
 	    </div>
 	  </div>
@@ -40,7 +40,7 @@
 	    <div class="layui-input-inline">
 	      <input type="checkbox" name="admin" lay-skin="switch" lay-filter="admincheckbox" value="1" lay-text="是|否">
 	    </div>
-        <div class="layui-form-mid layui-word-aux">管理员具备访问和修改所有系统资源的权限，同时也设定为多媒体坐席</div>
+        <div class="layui-form-mid layui-word-aux" style="padding: 0 0; line-height: 20px">管理员具备访问和修改所有系统资源的权限，同时也设定为多媒体坐席</div>
 	  </div>
 	  <div class="layui-form-item"  id="agentDiv">
 	    <label class="layui-form-label">多媒体坐席：</label>
@@ -48,16 +48,36 @@
 	      <input type="checkbox" name="agent" lay-skin="switch" value="1" lay-filter="agent" lay-text="开启|关闭">
 	    </div>
 	  </div>
-	  <#if models?seq_contains("callout")>
-	  <div class="layui-form-item" id="callcenterDiv">
-	    <label class="layui-form-label">呼叫中心坐席：</label>
-	    <div class="layui-input-inline">
-	      <input type="checkbox" name="callcenter" lay-skin="switch"  value="1" lay-filter="callcenter" lay-text="开启|关闭">
+	  <#if models?seq_contains("callcenter")>
+<!--	  <div class="layui-form-item" id="callcenterDiv">-->
+<!--	    <label class="layui-form-label">呼叫中心坐席：</label>-->
+<!--	    <div class="layui-input-inline">-->
+<!--	      <input type="checkbox" name="callcenter" lay-skin="switch"  value="1" lay-filter="callcenter" lay-text="开启|关闭">-->
+<!--			</div>-->
+<!--			<div class="layui-form-mid layui-word-aux" id="sipAccountDiv">-->
+<!--				<input type="text" id="sipAccount" name="sipaccount" lay-verify="sip"  placeholder="请输入SIP地址" autocomplete="off" class="layui-input">-->
+<!--	    </div>-->
+<!--	  </div>-->
+
+		<div class="layui-form-item"  id="callcenter">
+			<label class="layui-form-label">呼叫中心坐席：</label>
+			<div class="layui-input-inline" style="margin-left:0px;">
+				<input type="checkbox" name="callcenter" lay-skin="switch"  lay-filter="callcenter" value="1" lay-text="开启|关闭">
 			</div>
-			<div class="layui-form-mid layui-word-aux" id="sipAccountDiv">
-				<input type="text" id="sipAccount" name="sipaccount" lay-verify="sip"  placeholder="请输入SIP地址" autocomplete="off" class="layui-input">
-	    </div>
-	  </div>
+		</div>
+		<div class="layui-form-item" id="bindext_tip">
+			<label class="layui-form-label">呼叫中心：</label>
+			<div class="layui-input-inline">
+				<select name="pbxhostid" lay-filter="hostid" id="callcenterhostid" lay-verify="callcenterhost" >
+					<option value="">请选择呼叫中心</option>
+				</select>
+			</div>
+			<div class="layui-form-mid" style="padding-top:5px !important;" id="extenttions">
+				<select name="extensionid"  lay-verify="callcenterext" id="callcenterExtid">
+					<option value="">请选择分机</option>
+				</select>
+			</div>
+		</div>
 	  </#if>
 	  <div class="layui-form-button">
 	    <div class="layui-button-block">
@@ -94,6 +114,16 @@ layui.use('form', function(){
 		  if (value.length > 100){
 			  return "用户姓名不能超过100字";
 		  }
+	  },
+	  callcenterhost:function (value) {
+		  if($("input[name=callcenter]:checked").length > 0 && value === ''){
+			  return '呼叫中心不能为空，请确认';
+		  }
+	  },
+	  callcenterext:function (value) {
+		  if($("input[name=callcenter]:checked").length > 0 && value === ''){
+			  return '分机不能为空，请确认';
+		  }
 	  }
 	});
 
@@ -113,32 +143,80 @@ layui.use('form', function(){
         }
     });
 
-	// 默认隐藏“呼叫中心坐席”
-	$('#callcenterDiv').hide();
-	$('#sipAccountDiv').hide();
+	$('#bindext_tip').hide();
+
+	form.on('switch(callcenter)', function(data){
+		if(data.elem.checked){
+			$('#bindext_tip').show();
+			restApiRequest({
+				silent: true,
+				path: 'callcenter',
+				data: {
+					ops: "my-pbxlist"
+				}
+			}).then(function(result){
+				if(result.rc == 0){
+					$("#callcenterhostid").html('<option value="">请选择呼叫中心</option>');
+					if(result.data.length > 0){
+						for (var i=0 ; i<result.data.length ; i++) {
+							$("#callcenterhostid").append('<option value="' + result.data[i].id + '">' + result.data[i].name + '</option>')
+						};
+						form.render("select");
+					}
+				}
+			}, function(err){
+				handleRestApiFail(err);
+			});
+		}else{
+			$('#bindext_tip').hide();
+		}
+	});
+
+	form.on('select(hostid)', function(data){
+		restApiRequest({
+			silent: true,
+			path: 'callcenter',
+			data: {
+				ops: "ext-dd-vacant",
+				id:data.value
+			}
+		}).then(function(result){
+			if(result.rc == 0){
+				if(result.data.length > 0){
+					$("#callcenterExtid").html('<option value="">请选择分机</option>');
+					for (var i=0 ; i<result.data.length ; i++) {
+						$("#callcenterExtid").append('<option value="' + result.data[i].id + '">' + result.data[i].extension + '</option>')
+					};
+					form.render("select");
+				}
+			}
+		}, function(err){
+			handleRestApiFail(err);
+		});
+	});
 
 	// 根据“多媒体坐席”显示“呼叫中心坐席”状态
-  	form.on('switch(agent)', function(data){
-        $("input[name=callcenter]").prop("checked", false);
-        form.render('checkbox','callcenter');
-		if(data.elem.checked){
-			$('#callcenterDiv').show();
-		}else{
-			$('#callcenterDiv').hide();
-		}
-        $('#sipAccount').val("");
-        $('#sipAccountDiv').hide();
-	});
+  	// form.on('switch(agent)', function(data){
+    //     $("input[name=callcenter]").prop("checked", false);
+    //     form.render('checkbox','callcenter');
+	// 	if(data.elem.checked){
+	// 		$('#callcenterDiv').show();
+	// 	}else{
+	// 		$('#callcenterDiv').hide();
+	// 	}
+    //     $('#sipAccount').val("");
+    //     $('#sipAccountDiv').hide();
+	// });
 
   	// 根据“呼叫中心坐席”状态 显示呼叫地址输入框
-  	form.on('switch(callcenter)', function(data){
-        $('#sipAccount').val("");
-		if(data.elem.checked){
-			$('#sipAccountDiv').show();
-		}else{
-			$('#sipAccountDiv').hide();
-		}
-	});
+  	// form.on('switch(callcenter)', function(data){
+    //     $('#sipAccount').val("");
+	// 	if(data.elem.checked){
+	// 		$('#sipAccountDiv').show();
+	// 	}else{
+	// 		$('#sipAccountDiv').hide();
+	// 	}
+	// });
 
   	form.on('submit(sys-user-create)', function (data) {
 		data.field['ops'] = 'create';
@@ -177,6 +255,10 @@ layui.use('form', function(){
                     $('input[name="uname"]').val("");
                     $('input[name="mobile"]').val("");
                     $('input[name="email"]').val("");
+					$('input[name="callcenter"]').attr('checked',false);
+					$('#bindext_tip').hide();
+					$("#callcenterExtid").html('<option value="">请选择分机</option>');
+					form.render('checkbox')
                 });
             }
         }, function(err){
@@ -185,4 +267,5 @@ layui.use('form', function(){
 		return false;
 	})
 });
+
 </script>

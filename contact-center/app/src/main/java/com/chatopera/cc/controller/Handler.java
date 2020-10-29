@@ -17,20 +17,18 @@
 package com.chatopera.cc.controller;
 
 import com.chatopera.cc.basic.Constants;
-import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.basic.Viewport;
 import com.chatopera.cc.basic.auth.AuthToken;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.api.QueryParams;
 import com.chatopera.cc.exception.CSKefuException;
+import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.model.StreamingFile;
 import com.chatopera.cc.model.SystemConfig;
-import com.chatopera.cc.model.Tenant;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.blob.JpaBlobHelper;
 import com.chatopera.cc.persistence.repository.StreamingFileRepository;
-import com.chatopera.cc.persistence.repository.TenantRepository;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -50,6 +48,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
@@ -59,9 +58,6 @@ import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 @SessionAttributes
 public class Handler {
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
-
-    @Autowired
-    private TenantRepository tenantRes;
 
     @Autowired
     private JpaBlobHelper jpaBlobHelper;
@@ -101,13 +97,40 @@ public class Handler {
                 user = new User();
                 user.setId(MainUtils.getContextID(request.getSession().getId()));
                 user.setUsername(Constants.GUEST_USER + "_" + MainUtils.genIDByKey(user.getId()));
-                user.setOrgi(MainContext.SYSTEM_ORGI);
+                user.setOrgi(Constants.SYSTEM_ORGI);
                 user.setSessionid(user.getId());
             }
         } else {
             user.setSessionid(MainUtils.getContextID(request.getSession().getId()));
         }
         return user;
+    }
+
+    /**
+     * 获得登录账号的当前导航的组织机构
+     * @param request
+     * @return
+     */
+    public Organ getOrgan(HttpServletRequest request) {
+        User user = getUser(request);
+        if (user.getOrgans() != null) {
+            ArrayList<Organ> organs = new ArrayList<>(user.getOrgans().values());
+
+            if (organs.size() == 0) {
+                return null;
+            }
+
+            Organ organ = (Organ) request.getSession(true).getAttribute(Constants.ORGAN_SESSION_NAME);
+            if (organ == null) {
+                if (organs.size() > 0) {
+                    organ = organs.get(0);
+                    request.getSession(true).setAttribute(Constants.ORGAN_SESSION_NAME, organ);
+                }
+            }
+            return organ;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -310,7 +333,7 @@ public class Handler {
                 user.setUsername(nickname);
             } else {
                 Map<String, String> sessionMessage = cache.findOneSystemMapByIdAndOrgi(
-                        request.getSession().getId(), MainContext.SYSTEM_ORGI);
+                        request.getSession().getId(), Constants.SYSTEM_ORGI);
                 if (sessionMessage != null) {
                     String struname = sessionMessage.get("username");
                     String strcname = sessionMessage.get("company_name");
@@ -340,7 +363,7 @@ public class Handler {
                 user.setUsername(nickname);
             } else {
                 Map<String, String> sessionMessage = cache.findOneSystemMapByIdAndOrgi(
-                        sessionid, MainContext.SYSTEM_ORGI);
+                        sessionid, Constants.SYSTEM_ORGI);
                 if (sessionMessage != null) {
                     String struname = sessionMessage.get("username");
                     String strcname = sessionMessage.get("company_name");
@@ -455,68 +478,13 @@ public class Handler {
         return pagesize;
     }
 
+    public String getOrgi() {
+        return Constants.SYSTEM_ORGI;
+    }
+
+    // FIXME: 保存此处是为了兼容之前到代码，宜去掉
     public String getOrgi(HttpServletRequest request) {
-        return getUser(request).getOrgi();
-    }
-
-    /**
-     * 机构id
-     *
-     * @param request
-     * @return
-     */
-    public String getOrgid(HttpServletRequest request) {
-        User u = getUser(request);
-        return u.getOrgid();
-    }
-
-    public Tenant getTenant(HttpServletRequest request) {
-        return tenantRes.findById(getOrgi(request));
-    }
-
-    /**
-     * 根据是否租户共享获取orgi
-     *
-     * @param request
-     * @return
-     */
-    public String getOrgiByTenantshare(HttpServletRequest request) {
-        SystemConfig systemConfig = MainUtils.getSystemConfig();
-        if (systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantshare()) {
-            User user = this.getUser(request);
-            return user.getOrgid();
-        }
-        return getOrgi(request);
-    }
-
-    /**
-     * 判断是否租户共享
-     *
-     * @return
-     */
-    public boolean isTenantshare() {
-        SystemConfig systemConfig = MainUtils.getSystemConfig();
-        return systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantshare();
-    }
-
-    /**
-     * 判断是否多租户
-     *
-     * @return
-     */
-    public boolean isEnabletneant() {
-        SystemConfig systemConfig = MainUtils.getSystemConfig();
-        return systemConfig != null && systemConfig.isEnabletneant();
-    }
-
-    /**
-     * 判断是否多租户
-     *
-     * @return
-     */
-    public boolean isTenantconsole() {
-        SystemConfig systemConfig = MainUtils.getSystemConfig();
-        return systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantconsole();
+        return getOrgi();
     }
 
     public long getStarttime() {

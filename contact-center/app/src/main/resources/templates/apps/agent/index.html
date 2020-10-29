@@ -7,7 +7,7 @@
 <script id="message_tpl" type="text/html">
 	<div class="clearfix chat-block" <%if(data.type == 'writing'){%>id="writing"<%}%>>
 		<div class="<% if(data.calltype == '呼出'){%>chat-right<%}else{%>chat-left<%}%>">
-			<img alt="" src="<% if(data.headimgurl && data.headimgurl !=''){%><%=data.headimgurl%><%}else{%>/im/img/user.png<%} %>" class="user-img" style="width:45px;height:45px;">
+			<img alt="" src="<% if(data.calltype == '呼出'){%>/images/agent.png<%}else{%>/im/img/user.png<%} %>" class="user-img" style="width:45px;height:45px;">
 			<div class="chat-message">
 				<% if(data.userid == '${user.id!''}') {%>
 				<span class="<% if(data.calltype == '呼出'){%>rateright<%}else{%>rateleft<%}%>"><i class="layui-icon iconclick" id=<%=data.id%>  name="nolabe" style="cursor:pointer;font-size: 30px; color: #aaaaaa;">&#x1005;</i></span>

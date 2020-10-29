@@ -165,8 +165,12 @@ public class AgentStatus implements java.io.Serializable, Comparable<AgentStatus
      */
     @Transient
     public int getMaxusers() {
-        SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(this.orgi);
-        return sessionConfig.getMaxuser();
+        int allMaxuser = this.skills.keySet().stream().mapToInt(k -> {
+            SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(k, this.orgi);
+            return sessionConfig != null ? sessionConfig.getMaxuser() : 0;
+        }).sum();
+
+        return allMaxuser;
     }
 
     public void setMaxusers(int maxusers) {
@@ -180,9 +184,11 @@ public class AgentStatus implements java.io.Serializable, Comparable<AgentStatus
      */
     @Transient
     public int getInitmaxusers() {
-        SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(
-                this.orgi);
-        return sessionConfig != null ? sessionConfig.getInitmaxuser() : getMaxusers();
+        int allInitmaxuser = this.skills.keySet().stream().mapToInt(k -> {
+            SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(k, this.orgi);
+            return sessionConfig != null ? sessionConfig.getInitmaxuser() : 0;
+        }).sum();
+        return allInitmaxuser > 0 ? allInitmaxuser : getMaxusers();
     }
 
     public void setInitmaxusers(int initmaxusers) {
@@ -224,20 +230,21 @@ public class AgentStatus implements java.io.Serializable, Comparable<AgentStatus
     @Override
     public int compareTo(AgentStatus o) {
         int retValue = 0;
-        SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(
-                this.orgi);
-        if (sessionConfig != null && !StringUtils.isBlank(
-                sessionConfig.getDistribution()) && sessionConfig.getDistribution().equals("0")) {
-            if (this.getUpdatetime() != null && o.getUpdatetime() != null) {
-                retValue = (int) (this.getUpdatetime().getTime() - o.getUpdatetime().getTime());
-            } else if (o.getUpdatetime() != null) {
-                retValue = -1;
-            } else {
-                retValue = 1;
-            }
-        } else {
-            retValue = this.users - o.users;
-        }
+        // TODO sessionConfig 组织机构
+//        SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(
+//                this.orgi);
+//        if (sessionConfig != null && !StringUtils.isBlank(
+//                sessionConfig.getDistribution()) && sessionConfig.getDistribution().equals("0")) {
+//            if (this.getUpdatetime() != null && o.getUpdatetime() != null) {
+//                retValue = (int) (this.getUpdatetime().getTime() - o.getUpdatetime().getTime());
+//            } else if (o.getUpdatetime() != null) {
+//                retValue = -1;
+//            } else {
+//                retValue = 1;
+//            }
+//        } else {
+        retValue = this.users - o.users;
+//        }
         return retValue;
     }
 

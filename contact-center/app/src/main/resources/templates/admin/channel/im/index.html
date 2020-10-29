@@ -3,9 +3,11 @@
 		<h1 class="site-h1" style="background-color:#FFFFFF;">
 			网站列表<#if snsAccountList??>（${snsAccountList.totalElements!''}）</#if>
 			<span style="float:right;">
+				<#if user.superadmin || user.admin>
 				<button class="layui-btn layui-btn-small green" href="/admin/im/add.html" data-toggle="ajax" data-width="550" data-height="300" data-title="创建新网站">
 					创建新网站
 				</button>
+				</#if>
 			</span>
 		</h1>
 		<div class="row" style="padding:5px;">
@@ -35,16 +37,21 @@
 							   <i class="layui-icon">&#xe632;</i>
                                接入
 						   </a>
+						  	<#if user.superadmin || user.admin>
 					  		<a href="/admin/im/edit.html?id=${snsAccount.id!''}" data-toggle="ajax"  data-width="550" data-height="300" data-title="编辑网站">
 					  			<i class="layui-icon">&#xe642;</i>
 					  			编辑
 					  		</a>
-					  		<#if !(snsAccount.admin) && snsAccount.datastatus != true >
+					  		</#if>
+
+					  		<#if (user.superadmin || user.admin) && snsAccount.datastatus != true >
 					  		<a href="/admin/im/delete.html?id=${snsAccount.id!''}" style="margin-left:10px;" data-toggle="tip"  <#if secret?? && secret.enable == true>data-confirm="请输入二次安全验证密码"</#if> title="删除网站需要进行二次密码验证，请确认是否删除？" >
 					  			<i class="layui-icon" style="color:red;">&#x1006;</i>
 					  			删除
 					  		</a>
 					  		</#if>
+
+
 					  </td>
 					</tr>
 					</#list>

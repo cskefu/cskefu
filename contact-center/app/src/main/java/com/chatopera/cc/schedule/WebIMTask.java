@@ -85,7 +85,7 @@ public class WebIMTask {
                             MainContext.AgentUserStatusEnum.INSERVICE.toString(), sessionConfig.getOrgi());
                     for (final AgentUserTask task : agentUserTask) {        // 超时未回复
                         cache.findOneAgentUserByUserIdAndOrgi(
-                                task.getUserid(), MainContext.SYSTEM_ORGI).ifPresent(p -> {
+                                task.getUserid(), Constants.SYSTEM_ORGI).ifPresent(p -> {
                             if (StringUtils.isNotBlank(p.getAgentno())) {
                                 AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
                                         p.getAgentno(), task.getOrgi());
@@ -124,7 +124,7 @@ public class WebIMTask {
                             MainContext.AgentUserStatusEnum.INSERVICE.toString(), sessionConfig.getOrgi());
                     for (final AgentUserTask task : agentUserTask) {        // 超时未回复
                         cache.findOneAgentUserByUserIdAndOrgi(
-                                task.getUserid(), MainContext.SYSTEM_ORGI).ifPresent(p -> {
+                                task.getUserid(), Constants.SYSTEM_ORGI).ifPresent(p -> {
                             AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
                                     p.getAgentno(), task.getOrgi());
                             if (agentStatus != null && task.getWarningtime() != null && MainUtils.getLastTime(
@@ -150,7 +150,7 @@ public class WebIMTask {
                             MainContext.AgentUserStatusEnum.INQUENE.toString(), sessionConfig.getOrgi());
                     for (final AgentUserTask task : agentUserTask) {        // 超时未回复
                         cache.findOneAgentUserByUserIdAndOrgi(
-                                task.getUserid(), MainContext.SYSTEM_ORGI).ifPresent(p -> {
+                                task.getUserid(), Constants.SYSTEM_ORGI).ifPresent(p -> {
                             /**
                              * 设置了超时,断开
                              */
@@ -182,7 +182,7 @@ public class WebIMTask {
                             MainContext.AgentUserStatusEnum.INSERVICE.toString(), sessionConfig.getOrgi());
                     for (final AgentUserTask task : agentUserTask) {        // 超时未回复
                         cache.findOneAgentUserByUserIdAndOrgi(
-                                task.getUserid(), MainContext.SYSTEM_ORGI).ifPresent(p -> {
+                                task.getUserid(), Constants.SYSTEM_ORGI).ifPresent(p -> {
                             AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
                                     p.getAgentno(), task.getOrgi());
                             if (agentStatus != null && (task.getReptimes() == null || task.getReptimes().equals("0"))) {

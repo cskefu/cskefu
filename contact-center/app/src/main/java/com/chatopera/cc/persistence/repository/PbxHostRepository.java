@@ -18,16 +18,27 @@ package com.chatopera.cc.persistence.repository;
 
 import com.chatopera.cc.model.PbxHost;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public interface PbxHostRepository extends JpaRepository<PbxHost, String> {
-	
-	PbxHost findByIdAndOrgi(String id, String orgi);
-	PbxHost findById(String id);
-	List<PbxHost> findByOrgi(String orgi);
-	List<PbxHost> findByHostnameOrIpaddr(String hostname, String ip);
-	
-	int countByHostnameAndOrgi(String hostname, String orgi) ;
-	
+    @Query(value = "SELECT * FROM uk_callcenter_pbxhost WHERE id = ?1 AND orgi = ?2 LIMIT 1", nativeQuery = true)
+    Optional<PbxHost> findByIdAndOrgi(String id, String orgi);
+
+    Optional<PbxHost> findById(final String id);
+
+    List<PbxHost> findByOrgi(String orgi);
+
+    List<PbxHost> findByHostnameOrIpaddr(String hostname, String ip);
+
+    int countByHostnameAndOrgi(String hostname, String orgi);
+
+    @Query(value = "SELECT * FROM uk_callcenter_pbxhost WHERE ipaddr = ?1 AND orgi = ?2 LIMIT 1", nativeQuery = true)
+    Optional<PbxHost> findByIpaddrAndOrgi(String ipaddr, String orgi);
+
+    List<PbxHost> findByOrganInAndOrgi(Set<String> organs, String orgi);
 }
+

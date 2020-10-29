@@ -16,6 +16,7 @@
 
 package com.chatopera.cc.controller.api;
 
+import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.controller.api.request.RestUtils;
@@ -197,7 +198,7 @@ public class ApiContactTagsController extends Handler {
         JsonObject json = new JsonObject();
         HttpHeaders headers = RestUtils.header();
         j.addProperty("creater", super.getUser(request).getId());
-        j.addProperty("orgi", MainContext.SYSTEM_ORGI);
+        j.addProperty("orgi", super.getOrgi(request));
 
         if (!j.has("ops")) {
             json.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_1);

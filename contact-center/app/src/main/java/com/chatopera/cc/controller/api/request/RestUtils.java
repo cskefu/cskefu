@@ -31,6 +31,19 @@ public class RestUtils {
     public final static int RESP_RC_FAIL_5 = 5;
     public final static int RESP_RC_FAIL_6 = 6;
     public final static int RESP_RC_FAIL_7 = 7;
+    public final static int RESP_RC_FAIL_8 = 8;
+    public final static int RESP_RC_FAIL_9 = 9;
+    public final static int RESP_RC_FAIL_10 = 10;
+    public final static int RESP_RC_FAIL_11 = 11;
+    public final static int RESP_RC_FAIL_12 = 12;
+    public final static int RESP_RC_FAIL_13 = 13;
+    public final static int RESP_RC_FAIL_14 = 14;
+    public final static int RESP_RC_FAIL_15 = 15;
+    public final static int RESP_RC_FAIL_16 = 16;
+    public final static int RESP_RC_FAIL_17 = 17;
+    public final static int RESP_RC_FAIL_18 = 18;
+    public final static int RESP_RC_FAIL_19 = 19;
+    public final static int RESP_RC_FAIL_20 = 20;
 
 //    /**
 //     * 复制请求处理结果
@@ -48,7 +61,7 @@ public class RestUtils {
 //        return target;
 //    }
 
-    public static HttpHeaders header(){
+    public static HttpHeaders header() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         return headers;

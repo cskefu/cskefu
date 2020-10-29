@@ -16,7 +16,6 @@
  */
 package com.chatopera.cc.interceptor;
 
-import com.chatopera.cc.acd.ACDServiceRouter;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
@@ -24,7 +23,6 @@ import com.chatopera.cc.config.MessagingServerConfigure;
 import com.chatopera.cc.model.Dict;
 import com.chatopera.cc.model.SystemConfig;
 import com.chatopera.cc.model.User;
-import com.chatopera.cc.proxy.AgentSessionProxy;
 import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang.StringUtils;
@@ -41,7 +39,6 @@ import javax.servlet.http.HttpServletResponse;
 public class UserInterceptorHandler extends HandlerInterceptorAdapter {
     private final static Logger logger = LoggerFactory.getLogger(UserInterceptorHandler.class);
     private static UserProxy userProxy;
-    private static AgentSessionProxy agentSessionProxy;
     private static Integer webimport;
 
     @Override
@@ -124,11 +121,6 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
 
             view.addObject("models", MainContext.getModules());
 
-            if (user != null) {
-                view.addObject(
-                        "agentStatusReport",
-                        ACDServiceRouter.getAcdWorkMonitor().getAgentReport(user.getOrgi()));
-            }
             /**
              * WebIM共享用户
              */
@@ -150,7 +142,7 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
             view.addObject(
                     "uKeFuSecField", MainContext.getCache().findOneSystemByIdAndOrgi(
                             Constants.CSKEFU_SYSTEM_SECFIELD,
-                            MainContext.SYSTEM_ORGI));    //处理系统 需要隐藏号码的字段， 启动的时候加载
+                            Constants.SYSTEM_ORGI));    //处理系统 需要隐藏号码的字段， 启动的时候加载
 
             if (systemConfig != null) {
                 view.addObject("systemConfig", systemConfig);
@@ -183,12 +175,4 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
         }
         return userProxy;
     }
-
-    private static AgentSessionProxy getAgentSessionProxy() {
-        if (agentSessionProxy == null) {
-            agentSessionProxy = MainContext.getContext().getBean(AgentSessionProxy.class);
-        }
-        return agentSessionProxy;
-    }
-
 }

@@ -133,7 +133,7 @@ public class AgentUserProxy {
 
             // 查找满足条件的 AgentUser
             final Optional<AgentUser> op = agentUserRes.findOneByContactIdAndChannelAndOrgi(contactid, channel,
-                                                                                            logined.getOrgi());
+                    logined.getOrgi());
             if (op.isPresent()) {
                 if (StringUtils.equals(op.get().getAgentno(), logined.getId())) {
                     agentUser = op.get();
@@ -159,11 +159,11 @@ public class AgentUserProxy {
             outMessage.setChannelMessage(agentUser);
             outMessage.setAgentUser(agentUser);
             peerSyncIM.send(MainContext.ReceiverType.AGENT,
-                            MainContext.ChannelType.WEBIM,
-                            agentUser.getAppid(),
-                            MainContext.MessageType.NEW,
-                            logined.getId(),
-                            outMessage, true);
+                    MainContext.ChannelType.WEBIM,
+                    agentUser.getAppid(),
+                    MainContext.MessageType.NEW,
+                    logined.getId(),
+                    outMessage, true);
         } else {
             logger.info("[figureAgentUserBeforeChatWithContactInfo] agent user is null");
         }
@@ -252,17 +252,16 @@ public class AgentUserProxy {
             agentUserList.add(agentUser);
         }
 
-        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(logined.getOrgi());
-
-        view.addObject("sessionConfig", sessionConfig);
-        if (sessionConfig.isOtherquickplay()) {
-            view.addObject("topicList", OnlineUserProxy.search(null, logined.getOrgi(), logined));
-        }
+//        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(agentUser.getSkill(), logined.getOrgi());
+//        view.addObject("sessionConfig", sessionConfig);
+//       if (sessionConfig.isOtherquickplay()) {
+//           view.addObject("topicList", OnlineUserProxy.search(null, logined.getOrgi(), logined));
+//       }
 
         if (agentUserList.size() > 0) {
             view.addObject("agentUserList", agentUserList);
             agentServiceProxy.bundleDialogRequiredDataInView(view,
-                                                             map, agentUserList.get(0), orgi, logined);
+                    map, agentUserList.get(0), orgi, logined);
         }
     }
 

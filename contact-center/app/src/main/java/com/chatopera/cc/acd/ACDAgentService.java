@@ -40,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -183,9 +184,9 @@ public class ACDAgentService {
 
         // 获得所有待服务访客的列表
         final Map<String, AgentUser> pendingAgentUsers = cache.getAgentUsersInQueByOrgi(orgi);
-        final SessionConfig sessionConfig = acdPolicyService.initSessionConfig(orgi);
+
         // 本次批量分配访客数目
-        int assigned = 0;
+        Map<String, Integer> assigned = new HashMap<>();
         int currentAssigned = cache.getInservAgentUsersSizeByAgentnoAndOrgi(
                 agentStatus.getAgentno(), agentStatus.getOrgi());
 
@@ -226,14 +227,15 @@ public class ACDAgentService {
             }
 
             // 坐席未达到最大咨询访客数量，并且单次批量分配小于坐席就绪时分配最大访客数量(initMaxuser)
-            if (((currentAssigned + assigned) < sessionConfig.getMaxuser()) && (assigned < sessionConfig.getInitmaxuser())) {
-                assigned++;
+            final SessionConfig sessionConfig = acdPolicyService.initSessionConfig(agentUser.getSkill(), orgi);
+            if ((ACDServiceRouter.getAcdPolicyService().getAgentUsersBySkill(agentStatus, agentUser.getSkill()) < sessionConfig.getMaxuser()) && (assigned.getOrDefault(agentUser.getSkill(), 0) < sessionConfig.getInitmaxuser())) {
+                assigned.merge(agentUser.getSkill(), 1, Integer::sum);
                 pickupAgentUserInQueue(agentUser, agentStatus);
             } else {
                 logger.info(
                         "[assignVisitors] agentno {} reach the max users limit {}/{} or batch assign limit {}/{}",
                         agentno,
-                        (currentAssigned + assigned),
+                        (currentAssigned + assigned.getOrDefault(agentUser.getSkill(), 0)),
                         sessionConfig.getMaxuser(), assigned, sessionConfig.getInitmaxuser());
                 break;
             }
@@ -282,6 +284,9 @@ public class ACDAgentService {
                 peerSyncIM.send(MainContext.ReceiverType.AGENT, MainContext.ChannelType.WEBIM,
                         agentUser.getAppid(),
                         MainContext.MessageType.NEW, agentUser.getAgentno(), outMessage, true);
+
+                // 通知更新在线数据
+                agentStatusProxy.broadcastAgentsStatus(agentUser.getOrgi(), "agent", "pickup", agentStatus.getAgentno());
             }
         } catch (Exception ex) {
             logger.warn("[assignVisitors] fail to process service", ex);
@@ -317,7 +322,7 @@ public class ACDAgentService {
             // 从缓存中删除agentUser缓存
             agentUserRes.save(agentUser);
 
-            final SessionConfig sessionConfig = acdPolicyService.initSessionConfig(orgi);
+            final SessionConfig sessionConfig = acdPolicyService.initSessionConfig(agentUser.getSkill(), orgi);
 
             /**
              * 坐席服务
@@ -384,7 +389,7 @@ public class ACDAgentService {
                     // 向访客发送消息
                     Message outMessage = new Message();
                     outMessage.setAgentStatus(agentStatus);
-                    outMessage.setMessage(acdMessageHelper.getServiceFinishMessage(agentUser.getChannel(), orgi));
+                    outMessage.setMessage(acdMessageHelper.getServiceFinishMessage(agentUser.getChannel(), agentUser.getSkill(), orgi));
                     outMessage.setMessageType(MainContext.AgentUserStatusEnum.END.toString());
                     outMessage.setCalltype(MainContext.CallType.IN.toString());
                     outMessage.setCreatetime(MainUtils.dateFormate.format(new Date()));
@@ -432,7 +437,7 @@ public class ACDAgentService {
 
             // 当前访客服务已经结束，为坐席寻找新访客
             if (agentStatus != null) {
-                if ((agentStatus.getUsers() - 1) < sessionConfig.getMaxuser()) {
+                if ((ACDServiceRouter.getAcdPolicyService().getAgentUsersBySkill(agentStatus, agentUser.getSkill()) - 1) < sessionConfig.getMaxuser()) {
                     assignVisitors(agentStatus.getAgentno(), orgi);
                 }
             }

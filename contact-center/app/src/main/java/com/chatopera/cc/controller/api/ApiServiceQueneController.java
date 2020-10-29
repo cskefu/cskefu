@@ -104,10 +104,10 @@ public class ApiServiceQueneController extends Handler {
                 p.setAgentno(logined.getId());
                 p.setLogindate(new Date());
 
-                SessionConfig sessionConfig = acdPolicyService.initSessionConfig(logined.getOrgi());
+//                SessionConfig sessionConfig = acdPolicyService.initSessionConfig(logined.getOrgi());
                 p.setUpdatetime(new Date());
                 p.setOrgi(super.getOrgi(request));
-                p.setMaxusers(sessionConfig.getMaxuser());
+//                p.setMaxusers(sessionConfig.getMaxuser());
                 return p;
             });
 

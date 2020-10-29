@@ -3,16 +3,37 @@
 		<input type="hidden" name="id" value="${email.id!''}">
 		<div class="layui-form-item" style="margin-top:10px;">
 			<div class="layui-inline">
+				<label class="layui-form-label" style="width:150px;">技能组：</label>
+				<div class="layui-input-inline">
+					<select name="organ" required lay-verify="required">
+						<#if organList?? && organList?size gt 0 >
+							<#list organList as o>
+								<option value="${o.id}" <#if email.organ == o.id>selected="selected"</#if>>${o.name}</option>
+							</#list>
+						<#else>
+							<option value="">请选择</option>
+						</#if>
+					</select>
+				</div>
+				<div class="layui-form-mid layui-word-aux">
+					<font color="red">*</font>
+				</div>
+			</div>
+		</div>
+
+		<div class="layui-form-item" style="margin-top:10px;">
+			<div class="layui-inline">
 				<label class="layui-form-label" style="width:150px;">邮件服务器名称：</label>
 				<div class="layui-input-inline">
 					<input type="text" name="name" required lay-verify="required" autocomplete="off"
-						class="layui-input" value="${email.name!''}">
+						   class="layui-input" value="${email.name!''}">
 				</div>
 				<div class="layui-form-mid layui-word-aux">
-	            	<font color="red">*</font> 
-	            </div>
+					<font color="red">*</font>
+				</div>
 			</div>
 		</div>
+
 		<div class="layui-form-item">
 			<div class="layui-inline">
 				<label class="layui-form-label" style="width:150px;">邮件服务器地址：</label>

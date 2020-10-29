@@ -3,6 +3,8 @@
 	<form class="layui-form" action="/apps/customer/update.html" method="post">
 		<input type="hidden" name="entcustomer.id" value="${entCustomer.id!''}">
 		<input type="hidden" name="ekindId" value="${ekindId!''}">
+		<input type="hidden" name="entcustomer.shares" value="all">
+		<input type="hidden" name="contacts.shares" value="all">
 		<div class="layui-collapse">
 			<div class="layui-colla-item">
 				<h2 class="layui-colla-title">基本信息</h2>
@@ -26,21 +28,6 @@
 								<input type="radio" name="entcustomer.etype" value="personal" title="个人客户" lay-filter="etype" <#if entCustomer.etype?? && entCustomer.etype == 'personal'>checked</#if>>
 							</div>
 						</div>
-					</div>
-					<div class="layui-form-item">
-						<div class="layui-inline">
-							<label class="layui-form-label">共享客户：</label>
-							<div class="layui-input-inline" style="width:auto;">
-								<div class="layui-input-block">
-									<input type="radio" name="entcustomer.shares" value="none" title="不共享（仅创建人和直属上级可见）"  <#if entCustomer?? && entCustomer.shares !='all'>checked</#if>> 
-									<input type="radio" name="entcustomer.shares" value="all" title="所有人" <#if entCustomer?? && entCustomer.shares =='all'>checked</#if>>
-									<!-- 
-									<input type="radio" name="entcustomer.shares" value="1" title="指定人员或部门" checked>
-									 -->
-								</div>
-							</div>
-						</div>
-						
 					</div>
 				</div>
 			</div>

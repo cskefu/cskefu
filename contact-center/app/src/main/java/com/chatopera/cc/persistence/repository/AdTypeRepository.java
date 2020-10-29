@@ -22,12 +22,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface AdTypeRepository extends JpaRepository<AdType, String> {
-	
-	AdType findByIdAndOrgi(String id, String orgi);
 
-	int countByNameAndOrgi(String name, String orgi);
-	
-	List<AdType> findByOrgi(String orgi);
-	
-	List<AdType> findByAdposAndOrgi(String adpos, String orgi);
+    AdType findByIdAndOrgi(String id, String orgi);
+
+    AdType findByIdAndOrgiAndSkill(String id, String orgi, String skill);
+
+    int countByNameAndOrgi(String name, String orgi);
+
+    List<AdType> findByOrgi(String orgi);
+
+    List<AdType> findByOrgiAndSkill(String orgi, String skill);
+
+    List<AdType> findByAdposAndOrgiAndSkill(String adpos, String orgi, String skill);
 }

@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -44,12 +45,17 @@ public interface OnlineUserRepository extends JpaRepository<OnlineUser, String> 
 
     Page<OnlineUser> findByOrgiAndStatus(String paramString1, String paramString2, Pageable paramPageable);
 
+    Page<OnlineUser> findByOrgiAndStatusAndAppidIn(String paramString1, String paramString2, Collection<String> appids, Pageable paramPageable);
+
     OnlineUser findByPhoneAndOrgi(String mobile, String orgi);
 
     OnlineUser findByPhoneAndOrgiAndStatus(String mobile, String orgi, String status);
 
     @Query("select invitestatus , count(id) as users from OnlineUser where orgi = ?1 and status = ?2 group by invitestatus")
     List<Object> findByOrgiAndStatus(String orgi, String status);
+
+    @Query("select invitestatus , count(id) as users from OnlineUser where orgi = ?1 and status = ?2 and appid in (?3) group by invitestatus")
+    List<Object> findByOrgiAndStatusAndInAppIds(String orgi, String status, Collection<String> appids);
 
     @Query("select result , count(id) as records from InviteRecord where orgi = ?1 and agentno = ?2 and createtime > ?3 and createtime < ?4 group by result")
     List<Object> findByOrgiAndAgentnoAndCreatetimeRange(String orgi, String agentno, Date start, Date end);
@@ -82,8 +88,8 @@ public interface OnlineUserRepository extends JpaRepository<OnlineUser, String> 
     @Query("select browser, count(id) as users from AgentService where orgi = ?1 and createtime > ?2 and createtime < ?3 and channel = ?4 group by browser")
     List<Object> findByOrgiAndCreatetimeRangeForBrowser(String orgi, Date start, Date end, String channel);
 
-    @Query("select agentno, count(id) as users from AgentService where orgi = ?1 and userid = ?2 group by agentno")
-    List<Object> findByOrgiForDistinctAgent(String orgi, String userid);
+    @Query("select agentno, count(id) as users from AgentService where skill = ?1 and  orgi = ?2 and userid = ?3 group by agentno")
+    List<Object> findBySkillAndOrgiForDistinctAgent(String skill, String orgi, String userid);
 
 
     @Query(value = "SELECT * from uk_onlineuser WHERE contactsid = ?1 and orgi = ?2 ORDER BY createtime DESC", nativeQuery = true)

@@ -12,6 +12,7 @@
 			<div class="col-lg-12">
 				<table class="layui-table" lay-skin="line">
 				  <colgroup>
+					  	<col width="10%">
 						<col width="10%">
 						<col width="15%">
 						<col width="10%">
@@ -21,6 +22,7 @@
 				  </colgroup>
 				  <thead>
 					<tr>
+					  <th>部门</th>
 					  <th>名称</th>
 					  <th>邮件服务器地址</th>
 					  <th>账号</th>
@@ -33,6 +35,9 @@
 					<#if emailList?? && emailList??>
 					<#list emailList.content as email>
 					<tr>
+						<td>
+							${email.organ!''}
+						</td>
 					  <td>
 							${email.name!''}
 					  </td>

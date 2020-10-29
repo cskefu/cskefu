@@ -194,8 +194,8 @@ public class SystemConfigController extends Handler {
             @Valid Secret secret) throws SQLException, IOException, NoSuchAlgorithmException {
     	/*SystemConfig systemConfig = systemConfigRes.findByOrgi(super.getOrgi(request)) ;
     	config.setOrgi(super.getOrgi(request));*/
-        SystemConfig systemConfig = systemConfigRes.findByOrgi(MainContext.SYSTEM_ORGI);
-        config.setOrgi(MainContext.SYSTEM_ORGI);
+        SystemConfig systemConfig = systemConfigRes.findByOrgi(Constants.SYSTEM_ORGI);
+        config.setOrgi(Constants.SYSTEM_ORGI);
         String msg = "0";
         if (StringUtils.isBlank(config.getJkspassword())) {
             config.setJkspassword(null);

@@ -27,6 +27,7 @@ import com.chatopera.cc.persistence.es.EntCustomerRepository;
 import com.chatopera.cc.persistence.repository.MetadataRepository;
 import com.chatopera.cc.persistence.repository.PropertiesEventRepository;
 import com.chatopera.cc.persistence.repository.ReporterRepository;
+import com.chatopera.cc.proxy.OrganProxy;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.PinYinTools;
 import com.chatopera.cc.util.PropertiesEventUtil;
@@ -60,6 +61,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
 @Controller
 @RequestMapping("/apps/customer")
@@ -81,6 +83,9 @@ public class CustomerController extends Handler {
     @Autowired
     private PropertiesEventRepository propertiesEventRes;
 
+    @Autowired
+    private OrganProxy organProxy;
+
     @Value("${web.upload-path}")
     private String path;
 
@@ -94,6 +99,11 @@ public class CustomerController extends Handler {
         logger.info("[index] query {}, ekind {}, msg {}", q, ekind, msg);
         final User logined = super.getUser(request);
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
+
         map.put("msg", msg);
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
             return request(super.createAppsTempletResponse("/apps/business/customer/index"));
@@ -106,6 +116,8 @@ public class CustomerController extends Handler {
             boolQueryBuilder.must(termQuery("ekind", ekind));
             map.put("ekind", ekind);
         }
+
+        map.addAttribute("currentOrgan",currentOrgan);
 
         map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(logined.getId(),
                 logined.getId(),
@@ -124,6 +136,10 @@ public class CustomerController extends Handler {
     @Menu(type = "customer", subtype = "today")
     public ModelAndView today(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ekind) throws CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
 
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
             return request(super.createAppsTempletResponse("/apps/business/customer/index"));
@@ -146,6 +162,11 @@ public class CustomerController extends Handler {
     @Menu(type = "customer", subtype = "week")
     public ModelAndView week(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ekind) throws CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
+
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
             return request(super.createAppsTempletResponse("/apps/business/customer/index"));
         }
@@ -166,6 +187,11 @@ public class CustomerController extends Handler {
     @Menu(type = "customer", subtype = "enterprise")
     public ModelAndView enterprise(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ekind) throws CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
+
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
             return request(super.createAppsTempletResponse("/apps/business/customer/index"));
         }
@@ -186,6 +212,11 @@ public class CustomerController extends Handler {
     @Menu(type = "customer", subtype = "personal")
     public ModelAndView personal(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ekind) throws CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
+
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
             return request(super.createAppsTempletResponse("/apps/business/customer/index"));
         }
@@ -208,6 +239,11 @@ public class CustomerController extends Handler {
     @Menu(type = "customer", subtype = "creater")
     public ModelAndView creater(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String ekind) throws CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
+
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
             return request(super.createAppsTempletResponse("/apps/business/customer/index"));
         }
@@ -243,9 +279,15 @@ public class CustomerController extends Handler {
         customerGroupForm.getEntcustomer().setOrgi(super.getOrgi(request));
 
         final User logined = super.getUser(request);
+        Organ currentOrgan = super.getOrgan(request);
 
 //    	customerGroupForm.getEntcustomer().setEtype(MainContext.CustomerTypeEnum.ENTERPRISE.toString());
         customerGroupForm.getEntcustomer().setPinyin(PinYinTools.getInstance().getFirstPinYin(customerGroupForm.getEntcustomer().getName()));
+        if (currentOrgan != null && StringUtils.isBlank(customerGroupForm.getEntcustomer().getOrgan())) {
+            customerGroupForm.getEntcustomer().setOrgan(currentOrgan.getId());
+            customerGroupForm.getContacts().setOrgan(currentOrgan.getId());
+        }
+
         entCustomerRes.save(customerGroupForm.getEntcustomer());
         if (customerGroupForm.getContacts() != null && StringUtils.isNotBlank(customerGroupForm.getContacts().getName())) {
             customerGroupForm.getContacts().setEntcusid(customerGroupForm.getEntcustomer().getId());
@@ -255,6 +297,7 @@ public class CustomerController extends Handler {
             if (StringUtils.isBlank(customerGroupForm.getContacts().getCusbirthday())) {
                 customerGroupForm.getContacts().setCusbirthday(null);
             }
+
             contactsRes.save(customerGroupForm.getContacts());
         }
         return request(super.createRequestPageTempletResponse("redirect:/apps/customer/index.html?ekind=" + customerGroupForm.getEntcustomer().getEkind() + "&msg=" + msg));
@@ -300,7 +343,7 @@ public class CustomerController extends Handler {
                 propertiesEventRes.save(event);
             }
         }
-
+        customerGroupForm.getEntcustomer().setOrgan(customer.getOrgan());
         customerGroupForm.getEntcustomer().setCreater(customer.getCreater());
         customerGroupForm.getEntcustomer().setCreatetime(customer.getCreatetime());
         customerGroupForm.getEntcustomer().setOrgi(logined.getOrgi());
@@ -326,6 +369,10 @@ public class CustomerController extends Handler {
         if (!excelFile.getParentFile().exists()) {
             excelFile.getParentFile().mkdirs();
         }
+
+        Organ currentOrgan = super.getOrgan(request);
+        String organId = currentOrgan != null ? currentOrgan.getId() : null;
+
         MetadataTable table = metadataRes.findByTablename("uk_entcustomer");
         if (table != null) {
             FileUtils.writeByteArrayToFile(new File(path, fileName), cusfile.getBytes());
@@ -337,6 +384,8 @@ public class CustomerController extends Handler {
 	    		exchange.getValues().put("ekind", ekind) ;
 	    	}*/
             event.getValues().put("creater", super.getUser(request).getId());
+            event.getValues().put("organ", organId);
+            event.getValues().put("shares", "all");
             reporterRes.save(event.getDSData().getReport());
             new ExcelImportProecess(event).process();        //启动导入任务
         }
@@ -355,7 +404,7 @@ public class CustomerController extends Handler {
                 values.add(MainUtils.transBean2Map(customer));
             }
 
-            response.setHeader("content-disposition", "attachment;filename=CSKeFu-EntCustomer-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
+            response.setHeader("content-disposition", "attachment;filename=UCKeFu-EntCustomer-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
 
             ExcelExporterProcess excelProcess = new ExcelExporterProcess(values, table, response.getOutputStream());
             excelProcess.process();
@@ -366,11 +415,20 @@ public class CustomerController extends Handler {
 
     @RequestMapping("/expall")
     @Menu(type = "customer", subtype = "customer")
-    public void expall(ModelMap map, HttpServletRequest request, HttpServletResponse response) throws IOException, CSKefuException {
+    public void expall(ModelMap map, HttpServletRequest request, HttpServletResponse response ,@Valid String ekind) throws IOException, CSKefuException {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
             // #TODO 提示没有部门
             return;
+        }
+
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
+
+        if (StringUtils.isNotBlank(ekind)) {
+            boolQueryBuilder.must(termQuery("ekind", ekind));
+            map.put("ekind", ekind);
         }
 
         boolQueryBuilder.must(termQuery("datastatus", false));        //只导出 数据删除状态 为 未删除的 数据
@@ -382,7 +440,7 @@ public class CustomerController extends Handler {
             values.add(MainUtils.transBean2Map(customer));
         }
 
-        response.setHeader("content-disposition", "attachment;filename=CSKeFu-EntCustomer-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
+        response.setHeader("content-disposition", "attachment;filename=UCKeFu-EntCustomer-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
 
         ExcelExporterProcess excelProcess = new ExcelExporterProcess(values, table, response.getOutputStream());
         excelProcess.process();
@@ -397,6 +455,10 @@ public class CustomerController extends Handler {
             // #TODO 提示没有部门
             return;
         }
+
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
 
         if (StringUtils.isNotBlank(q)) {
             map.put("q", q);
@@ -413,7 +475,7 @@ public class CustomerController extends Handler {
             values.add(MainUtils.transBean2Map(customer));
         }
 
-        response.setHeader("content-disposition", "attachment;filename=CSKeFu-EntCustomer-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
+        response.setHeader("content-disposition", "attachment;filename=UCKeFu-EntCustomer-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
 
         ExcelExporterProcess excelProcess = new ExcelExporterProcess(values, table, response.getOutputStream());
         excelProcess.process();

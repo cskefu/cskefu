@@ -31,8 +31,6 @@ import java.util.Date;
 @Table(name = "uk_log_request")
 @org.hibernate.annotations.Proxy(lazy = false)
 public class RequestLog implements java.io.Serializable  {
-	
-	
 	private static final long serialVersionUID = 1L;
 	private String id;
 	private String name;
@@ -56,8 +54,7 @@ public class RequestLog implements java.io.Serializable  {
 	private String reportdic;//报表目录
 	private String flowid ;	//请求标识ID
 	private Date createdate = new Date();	//创建时间
-	
-	
+
 	private String classname;//类名
 	private String methodname;//方法名
 	private String filename;//字段名

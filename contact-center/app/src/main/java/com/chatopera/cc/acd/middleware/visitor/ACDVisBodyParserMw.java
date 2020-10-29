@@ -182,6 +182,7 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
                         ctx.setMessage(acdMessageHelper.getQueneMessage(
                                 ctx.getAgentService().getQueneindex(),
                                 ctx.getAgentUser().getChannel(),
+                                ctx.getOrganid(),
                                 ctx.getOrgi()));
                     } else {
                         // TODO 什么是否返回 noAgentMessage, 是否在是 INQUENE 时 getQueneindex == 0
@@ -190,6 +191,7 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
                         ctx.setMessage(acdMessageHelper.getNoAgentMessage(
                                 ctx.getAgentService().getQueneindex(),
                                 ctx.getChannel(),
+                                ctx.getOrganid(),
                                 ctx.getOrgi()));
                     }
 

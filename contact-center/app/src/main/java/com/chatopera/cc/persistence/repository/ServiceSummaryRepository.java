@@ -24,6 +24,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ServiceSummaryRepository extends JpaRepository<AgentServiceSummary, String>{
 	
@@ -38,4 +39,8 @@ public interface ServiceSummaryRepository extends JpaRepository<AgentServiceSumm
 	Page<AgentServiceSummary> findByChannelAndOrgi(String string, String orgi, Pageable pageable);
 	
 	Page<AgentServiceSummary> findByChannelNotAndOrgi(String string, String orgi, Pageable pageable);
+
+	Page<AgentServiceSummary> findByChannelNotAndOrgiAndSkillIn(String string, String orgi, Set<String> agentskill , Pageable pageable);
+
+	Page<AgentServiceSummary> findByChannelNotAndOrgiAndProcessTrueAndSkillIn(String string, String orgi, Set<String> agentskill , Pageable pageable);
 }

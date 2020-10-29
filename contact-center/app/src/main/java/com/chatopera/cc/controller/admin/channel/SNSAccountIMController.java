@@ -19,13 +19,11 @@ package com.chatopera.cc.controller.admin.channel;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.controller.Handler;
-import com.chatopera.cc.model.CousultInvite;
-import com.chatopera.cc.model.SNSAccount;
-import com.chatopera.cc.model.Secret;
-import com.chatopera.cc.model.User;
+import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.repository.ConsultInviteRepository;
 import com.chatopera.cc.persistence.repository.SNSAccountRepository;
 import com.chatopera.cc.persistence.repository.SecretRepository;
+import com.chatopera.cc.proxy.OrganProxy;
 import com.chatopera.cc.util.Base62;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang.StringUtils;
@@ -42,9 +40,9 @@ import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
- *
  *
  */
 @Controller
@@ -60,11 +58,20 @@ public class SNSAccountIMController extends Handler {
     @Autowired
     private SecretRepository secRes;
 
+    @Autowired
+    private OrganProxy organProxy;
+
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "im", access = false, admin = true)
-    public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String execute,@RequestParam(name = "status",required = false) String status ) {
-        map.addAttribute("snsAccountList", snsAccountRes.findBySnstypeAndOrgi(MainContext.ChannelType.WEBIM.toString(), super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request))));
-        map.addAttribute("status",status);
+    public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String execute, @RequestParam(name = "status", required = false) String status) {
+        User logined = super.getUser(request);
+        if (logined.isSuperadmin()) {
+            map.addAttribute("snsAccountList", snsAccountRes.findBySnstypeAndOrgi(MainContext.ChannelType.WEBIM.toString(), super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request))));
+        } else {
+            Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
+            map.addAttribute("snsAccountList", snsAccountRes.findBySnstypeAndOrgiAndOrgan(MainContext.ChannelType.WEBIM.toString(), super.getOrgi(request), organs.keySet(), new PageRequest(super.getP(request), super.getPs(request))));
+        }
+        map.addAttribute("status", status);
         List<Secret> secretConfig = secRes.findByOrgi(super.getOrgi(request));
         if (secretConfig != null && secretConfig.size() > 0) {
             map.addAttribute("secret", secretConfig.get(0));

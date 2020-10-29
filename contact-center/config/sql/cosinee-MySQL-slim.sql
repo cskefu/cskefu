@@ -477,6 +477,7 @@ CREATE TABLE `uk_ad_position` (
   `ADTYPE` varchar(50) DEFAULT NULL COMMENT '广告类型',
   `STATUS` varchar(32) DEFAULT NULL COMMENT '广告状态',
   `ADPOS` varchar(32) DEFAULT NULL COMMENT '广告位置',
+  `skill` varchar(32) DEFAULT NULL COMMENT '组织机构ID',
   PRIMARY KEY (`ID`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='客服客户端广告位表';
 
@@ -828,6 +829,8 @@ CREATE TABLE `uk_blacklist` (
   `controltime` int(11) DEFAULT '1' COMMENT '开始时间',
   `endtime` datetime DEFAULT NULL COMMENT '结束时间',
   `agentuser` varchar(255) DEFAULT NULL COMMENT '访客',
+  `skill` varchar(32) DEFAULT NULL COMMENT '组织机构ID',
+  `agentusername` varchar(50) DEFAULT NULL COMMENT '客服',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='黑名单表';
 
@@ -1205,10 +1208,12 @@ CREATE TABLE `uk_callcenter_pbxhost` (
   `creater` varchar(32) DEFAULT NULL COMMENT '创建人',
   `createtime` datetime DEFAULT NULL COMMENT '创建时间',
   `updatetime` datetime DEFAULT NULL COMMENT '更新时间',
-  `name` varchar(100) DEFAULT NULL COMMENT '名称',
-  `orgi` varchar(100) DEFAULT NULL COMMENT '租户ID',
-  `hostname` varchar(100) DEFAULT NULL COMMENT '主机名',
-  `port` int(11) DEFAULT NULL COMMENT '端口',
+  `name` varchar(100) NOT NULL COMMENT '名称',
+  `orgi` varchar(100) NOT NULL COMMENT '租户ID',
+  `organ` varchar(32) NOT NULL COMMENT '所属组织机构',
+  `hostname` varchar(100) NOT NULL COMMENT '主机名',
+  `port` int(11) NOT NULL COMMENT 'FreeSWITCH ESL端口',
+  `apiport` int(11) NOT NULL COMMENT 'Chatopera Switch API端口',
   `password` varchar(100) DEFAULT NULL COMMENT '密码',
   `ipaddr` varchar(32) DEFAULT NULL COMMENT 'IP地址',
   `callbacknumber` varchar(50) DEFAULT NULL COMMENT '回呼号码',
@@ -1232,9 +1237,10 @@ CREATE TABLE `uk_callcenter_pbxhost` (
   `afterprocess` tinyint(4) DEFAULT '0' COMMENT '坐席通话后启用后处理功能',
   `enablewebrtc` tinyint(4) DEFAULT '0' COMMENT '启用WebRTC',
   `webrtcaddress` varchar(100) DEFAULT NULL COMMENT 'WebRTC地址',
-  `webrtcport` varchar(100) DEFAULT NULL COMMENT 'WebRTC端口',
+  `webrtcport` int(11) NOT NULL COMMENT 'WebRTC端口',
   `webrtcssl` tinyint(4) DEFAULT '0' COMMENT 'WebRTC启用SSL',
   `dissipphone` tinyint(4) DEFAULT '0' COMMENT '外呼隐藏话机上的号码',
+  `syncstatus` varchar(32) DEFAULT NULL COMMENT '同步执行状态',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='FS服务器信息';
 
@@ -2356,8 +2362,9 @@ CREATE TABLE `uk_leavemsg` (
   `msgstatus` varchar(20) DEFAULT NULL COMMENT '消息状态',
   `contactsid` varchar(32) DEFAULT NULL COMMENT '匹配联系人ID',
   `userid` varchar(32) DEFAULT NULL COMMENT '用户ID',
+  `skill` varchar(32) DEFAULT NULL COMMENT '技能组',
   `snsid` varchar(32) DEFAULT NULL COMMENT '渠道snsid',
-  PRIMARY KEY (`id`) USING BTREE
+   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='留言信息表';
 
 -- ----------------------------
@@ -2638,6 +2645,12 @@ CREATE TABLE `uk_organ` (
   PRIMARY KEY (`ID`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='部门表';
 
+-- ----------------------------
+-- Records of uk_organ
+-- ----------------------------
+BEGIN;
+INSERT INTO `uk_organ` VALUES ('4028a0866f9403f1016f9405a05d000e', '我的企业', NULL, NULL, NULL, NULL, 'cskefu', 'cskefu', NULL, '0', 0, '');
+COMMIT;
 
 -- ----------------------------
 -- Table structure for cs_organ_user
@@ -2653,6 +2666,13 @@ CREATE TABLE `cs_organ_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='部门人员表';
 
 alter table cs_organ_user add primary key (userid, organ);
+
+-- ----------------------------
+-- Records of cs_organ_user
+-- ----------------------------
+BEGIN;
+INSERT INTO `cs_organ_user` VALUES ('4028cac3614cd2f901614cf8be1f0324', '4028a0866f9403f1016f9405a05d000e', NULL, '4028cac3614cd2f901614cf8be1f0324', NULL, NULL);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for uk_organization
@@ -3317,6 +3337,7 @@ CREATE TABLE `uk_servicesummary` (
   `updateuser` varchar(32) DEFAULT NULL,
   `updatetime` datetime DEFAULT NULL,
   `processmemo` text,
+  `skill` varchar(32) DEFAULT NULL COMMENT '技能组',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='服务小结';
 
@@ -3374,6 +3395,7 @@ CREATE TABLE `uk_sessionconfig` (
   `ctrlenter` tinyint(4) DEFAULT '0' COMMENT '启用访客端CTRL+Enter发送消息',
   `enablequick` tinyint(32) DEFAULT '0' COMMENT '启用快捷回复功能',
   `otherssl` tinyint(4) DEFAULT '0' COMMENT '外部知识库启用SSL',
+  `skill` varchar(32) DEFAULT NULL COMMENT '组织机构ID',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='会话设置';
 
@@ -7179,7 +7201,14 @@ INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cefb4120590', '语音留�
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612ceffa060591', '漏话列表', 'pub', 'A10_A01_A06', NULL, 'auth', '402881ef612b1f5b01612cee4fbb058a', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:49:40', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/callcenter/misscall/index.html', 'webim', '3', NULL, 'left');
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cf03d740592', '在线坐席', 'pub', 'A10_A02_A01', NULL, 'auth', '402881ef612b1f5b01612cee80ed058b', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:49:57', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/callcenter/online/index.html', 'webim', '3', NULL, 'left');
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cf065f40593', '全部坐席', 'pub', 'A10_A02_A02', NULL, 'auth', '402881ef612b1f5b01612cee80ed058b', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:50:07', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/callcenter/agents/index.html', 'webim', '3', NULL, 'left');
+
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cf147810595', '系统管理', 'pub', 'B02', NULL, 'auth', '402888815d2fe37f015d2fe75cc80002', NULL, NULL, '<i class=\"layui-icon\" style=\"position: relative;\">&#xe631;</i>', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:51:05', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/admin/content.html', 'webim', '1', NULL, 'left');
+
+INSERT INTO `uk_sysdic` VALUES ('2c9580866e7993b3016e832ce1e71309', '用户账号', 'pub', 'B02_B01', 'cskefu', 'layui-icon', '402881ef612b1f5b01612cf147810595', '', NULL, '', '', NULL, '4028cac3614cd2f901614cf8be1f0324', '2019-11-19 18:19:47', NULL, 1, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `uk_sysdic` VALUES ('2c9580866e7993b3016e832d13f6130f', '系统角色', 'pub', 'B02_B02', 'cskefu', 'layui-icon', '402881ef612b1f5b01612cf147810595', '', NULL, '', '', NULL, '4028cac3614cd2f901614cf8be1f0324', '2019-11-19 18:19:59', NULL, 1, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `uk_sysdic` VALUES ('2c9580866e7993b3016e832d8bc61315', '组织机构', 'pub', 'B02_B03', 'cskefu', 'layui-icon', '402881ef612b1f5b01612cf147810595', '', NULL, '', '', NULL, '4028cac3614cd2f901614cf8be1f0324', '2019-11-19 18:20:30', NULL, 1, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `uk_sysdic` VALUES ('2c9580866e7993b3016e832de05c131c', '网站列表', 'pub', 'B02_B04', 'cskefu', 'layui-icon', '402881ef612b1f5b01612cf147810595', '', NULL, '', '', NULL, '4028cac3614cd2f901614cf8be1f0324', '2019-11-19 18:20:52', NULL, 1, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, NULL, NULL, NULL, NULL, NULL);
+
 INSERT INTO `uk_sysdic` VALUES ('402881fb61e49a9a0161e4a8a1260392', '过滤器类型', 'pub', 'com.dic.filter.modeltype', NULL, 'data', '0', '', NULL, NULL, NULL, NULL, '4028cac3614cd2f901614cf8be1f0324', '2018-03-02 11:01:52', NULL, 1, 0, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `uk_sysdic` VALUES ('402881fb61e49a9a0161e4a925a20393', '过滤器取值方式', 'pub', 'com.dic.filter.convalue', NULL, 'data', '0', '', NULL, NULL, NULL, NULL, '4028cac3614cd2f901614cf8be1f0324', '2018-03-02 11:02:25', NULL, 1, 0, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `uk_sysdic` VALUES ('402881fb61e49a9a0161e4a96f900394', '过滤器条件类型', 'pub', 'com.dic.filter.valuefiltertype', NULL, 'data', '0', '', NULL, NULL, NULL, NULL, '4028cac3614cd2f901614cf8be1f0324', '2018-03-02 11:02:44', NULL, 1, 0, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL);
@@ -7791,6 +7820,7 @@ CREATE TABLE `uk_system_message` (
   `SECLEV` varchar(50) DEFAULT NULL COMMENT '启用SSL',
   `SSLPORT` varchar(50) DEFAULT NULL COMMENT 'SSL端口',
   `ORGI` varchar(32) DEFAULT NULL COMMENT '租户ID',
+  `ORGAN` varchar(32) DEFAULT NULL COMMENT '组织ID',
   `URL` text DEFAULT NULL COMMENT 'URL',
   `smstype` varchar(32) DEFAULT NULL COMMENT '短信类型',
   `APPKEY` varchar(200) DEFAULT NULL COMMENT 'APPKEY',
@@ -8074,23 +8104,11 @@ CREATE TABLE `uk_tag` (
   `tagtype` varchar(32) DEFAULT NULL COMMENT '标签类型',
   `icon` varchar(50) DEFAULT NULL COMMENT '图标',
   `color` varchar(10) DEFAULT NULL COMMENT '颜色',
+  `skill` varchar(32) DEFAULT NULL COMMENT '组织机构ID',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='标签表';
 
--- ----------------------------
--- Records of uk_tag
--- ----------------------------
-BEGIN;
-INSERT INTO `uk_tag` VALUES ('2c938088650ce8ee01650d5b9be0057d', '准客户', 'cskefu', '2018-08-06 03:50:32', 0, '4028cac3614cd2f901614cf8be1f0324', 'callout', NULL, '4');
-INSERT INTO `uk_tag` VALUES ('2c938088650ce8ee01650db8de77068f', '白领', 'cskefu', '2018-08-06 12:38:57', 0, '4028cac3614cd2f901614cf8be1f0324', 'user', NULL, '1');
-INSERT INTO `uk_tag` VALUES ('2c938088650ce8ee01650db911570699', '工单', 'cskefu', '2018-08-06 05:32:37', 0, '4028cac3614cd2f901614cf8be1f0324', 'workorders', NULL, '1');
-INSERT INTO `uk_tag` VALUES ('2c938088650ce8ee01650db93ff8069f', '呼叫中心服务', 'cskefu', '2018-08-06 05:32:49', 0, '4028cac3614cd2f901614cf8be1f0324', 'ccsummary', NULL, '1');
-INSERT INTO `uk_tag` VALUES ('2c938088650ce8ee01650db9781306a6', '知识库', 'cskefu', '2018-08-06 05:33:03', 0, '4028cac3614cd2f901614cf8be1f0324', 'kbs', NULL, '');
-INSERT INTO `uk_tag` VALUES ('2c938088650ce8ee01650db9932606ac', '质检', 'cskefu', '2018-08-06 05:33:10', 0, '4028cac3614cd2f901614cf8be1f0324', 'quality', NULL, '');
-INSERT INTO `uk_tag` VALUES ('2c938088650ce8ee01650db9c08d06b2', '服务类型', 'cskefu', '2018-08-06 05:33:21', 0, '4028cac3614cd2f901614cf8be1f0324', 'summary', NULL, '');
-INSERT INTO `uk_tag` VALUES ('2c938088650f407301650f4393b604b0', '闲聊', 'cskefu', '2018-08-06 12:43:46', 0, '4028cac3614cd2f901614cf8be1f0324', 'user', NULL, '2');
-INSERT INTO `uk_tag` VALUES ('2c938088650f407301650f44145c04bb', '爱产品', 'cskefu', '2018-08-06 12:44:04', 0, '4028cac3614cd2f901614cf8be1f0324', 'user', NULL, '6');
-COMMIT;
+
 
 -- ----------------------------
 -- Table structure for uk_tagrelation
@@ -8104,15 +8122,6 @@ CREATE TABLE `uk_tagrelation` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='标签映射关系表';
 
--- ----------------------------
--- Records of uk_tagrelation
--- ----------------------------
-BEGIN;
-INSERT INTO `uk_tagrelation` VALUES ('2c938088650f21fa01650f3e9280047b', '2c938088650ce8ee01650db8de77068f', 'f749aa5ba5345ef7a4da8bdd037721bc', 'f749aa5ba5345ef7a4da8bdd037721bc');
-INSERT INTO `uk_tagrelation` VALUES ('2c938088650f407301650f4446b804c1', '2c938088650f407301650f4393b604b0', 'f749aa5ba5345ef7a4da8bdd037721bc', 'f749aa5ba5345ef7a4da8bdd037721bc');
-INSERT INTO `uk_tagrelation` VALUES ('2c938088650f407301650f44516704c3', '2c938088650f407301650f44145c04bb', 'f749aa5ba5345ef7a4da8bdd037721bc', 'f749aa5ba5345ef7a4da8bdd037721bc');
-INSERT INTO `uk_tagrelation` VALUES ('2c938088651795c7016518897d3e07a6', '2c938088650f407301650f4393b604b0', '6fe7570a9749a83aece9b3e27a9bce25', '6fe7570a9749a83aece9b3e27a9bce25');
-COMMIT;
 
 -- ----------------------------
 -- Table structure for uk_templet
@@ -8177,33 +8186,6 @@ INSERT INTO `uk_templet` VALUES ('402881fb6208a81f016208b2491e038f', '单选下�
 COMMIT;
 
 -- ----------------------------
--- Table structure for uk_tenant
--- ----------------------------
-DROP TABLE IF EXISTS `uk_tenant`;
-CREATE TABLE `uk_tenant` (
-  `id` varchar(32) NOT NULL DEFAULT '' COMMENT '租户ID',
-  `datasourceid` varchar(32) DEFAULT NULL COMMENT '数据源ID',
-  `tenantname` varchar(255) DEFAULT NULL COMMENT '租户名称',
-  `tenantcode` varchar(255) DEFAULT NULL COMMENT '租户代码',
-  `remark` varchar(200) DEFAULT NULL COMMENT '标签',
-  `lastmenutime` timestamp NULL DEFAULT NULL COMMENT '菜单创建时间',
-  `lastbasetime` timestamp NULL DEFAULT NULL COMMENT '数据库创建时间',
-  `tenantlogo` varchar(255) DEFAULT NULL COMMENT 'LOGO',
-  `tenantvalid` varchar(10) DEFAULT NULL COMMENT '验证',
-  `genpasstype` varchar(255) DEFAULT NULL COMMENT '自动生成密码',
-  `password` varchar(255) DEFAULT NULL COMMENT '密码',
-  `adminuser` varchar(255) DEFAULT NULL COMMENT '管理员用户',
-  `orgid` varchar(32) DEFAULT NULL COMMENT '企业ID',
-  `initdb` tinyint(4) DEFAULT '0' COMMENT '初始化DB',
-  `inites` tinyint(4) DEFAULT NULL COMMENT '初始化ES',
-  `inited` tinyint(4) DEFAULT '0' COMMENT '初始化完成',
-  `systemtenant` tinyint(4) DEFAULT '0' COMMENT '系统租户',
-  `createtime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-  `sign` text COMMENT '签名',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='租户表';
-
--- ----------------------------
 -- Table structure for cs_user
 -- ----------------------------
 DROP TABLE IF EXISTS `cs_user`;
@@ -8224,12 +8206,10 @@ CREATE TABLE `cs_user` (
   `rulename` varchar(255) DEFAULT NULL COMMENT '角色',
   `SEARCHPROJECTID` varchar(255) DEFAULT NULL COMMENT '备用',
   `orgi` varchar(32) DEFAULT NULL COMMENT '租户ID',
-  `orgid` varchar(32) DEFAULT NULL COMMENT '企业ID',
   `creater` varchar(32) DEFAULT NULL COMMENT '创建人',
   `createtime` datetime DEFAULT NULL COMMENT '创建时间',
   `memo` varchar(255) DEFAULT NULL COMMENT '备注',
   `updatetime` datetime DEFAULT NULL COMMENT '更新时间',
-  `organ` varchar(32) DEFAULT NULL COMMENT '部门',
   `mobile` varchar(32) DEFAULT NULL COMMENT '手机号',
   `passupdatetime` datetime DEFAULT NULL COMMENT '最后 一次密码修改时间',
   `sign` text COMMENT '签名',
@@ -8248,7 +8228,6 @@ CREATE TABLE `cs_user` (
   `title` varchar(50) DEFAULT NULL COMMENT '标题',
   `datastatus` tinyint(4) DEFAULT NULL COMMENT '数据状态',
   `callcenter` tinyint(4) DEFAULT NULL COMMENT '启用呼叫中心坐席',
-  `sipaccount` varchar(50) DEFAULT NULL COMMENT 'sip地址',
   `superadmin` tinyint(4) DEFAULT NULL COMMENT '系统管理员',
   `admin` tinyint(4) DEFAULT NULL COMMENT '管理员',
   `maxuser` int(11) DEFAULT '0' COMMENT '最大接入访客数量',
@@ -8260,7 +8239,7 @@ CREATE TABLE `cs_user` (
 -- Records of cs_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `cs_user` VALUES ('4028cac3614cd2f901614cf8be1f0324', NULL, 'admin', '5d80253b1cd5e5d4ca5ed539f4d72052', '5', 'admin@cc.com', NULL, NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, 'cskefu', 'cskefu', NULL, '2017-03-16 13:56:34', '北京', '2018-07-31 08:24:13', '4028811b63b028dc0163b032c3ed0590', '18888888888', NULL, NULL, 0, '系统管理员', 0, 1, '北京', '北京', 2, 1, 0, '2018-08-10 04:38:17', NULL, NULL, NULL, 0, 0, NULL, 1, 1, 0, NULL);
+INSERT INTO `cs_user` VALUES ('4028cac3614cd2f901614cf8be1f0324', NULL, 'admin', '5d80253b1cd5e5d4ca5ed539f4d72052', '5', 'admin@cc.com', NULL, NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, 'cskefu', NULL, '2017-03-16 13:56:34', '北京', '2018-07-31 08:24:13', '18888888888', NULL, NULL, 0, '系统管理员', 0, 1, '北京', '北京', 2, 1, 0, '2018-08-10 04:38:17', NULL, NULL, NULL, 0, 0, 1, 1, 0, NULL);
 COMMIT;
 
 -- ----------------------------

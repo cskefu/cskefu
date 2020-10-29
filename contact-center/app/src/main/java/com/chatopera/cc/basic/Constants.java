@@ -29,7 +29,9 @@ public class Constants {
     /**
      * 系统配置
      */
+    public static final String SYSTEM_ORGI = "cskefu";
     public static final String USER_SESSION_NAME = "user";
+    public static final String ORGAN_SESSION_NAME = "organ";
     public static final String GUEST_USER = "guest";
     public static final String IM_USER_SESSION_NAME = "im_user";
     public static final String CSKEFU_SYSTEM_DIC = "com.dic.system.template";
@@ -45,7 +47,6 @@ public class Constants {
     public static final String CSKEFU_SYSTEM_DIS_TIME = "distime";
     public static final String CSKEFU_SYSTEM_COOKIES_FLAG = "uk_flagid";
     public static final String CSKEFU_SYSTEM_NO_DAT = "NOTEXIST";
-    public static final String SYSTEM_INDEX = "cskefu";
     public static final String CSKEFU_SYSTEM_SECFIELD = "cskefu_sec_field";
 
     public static final String CSKEFU_SYSTEM_CALLCENTER = "callcenter";
@@ -92,6 +93,7 @@ public class Constants {
     public final static String CSKEFU_MODULE_ENTIM = "entim";
     public final static String CSKEFU_MODULE_WORKORDERS = "workorders";
     public final static String CSKEFU_MODULE_CALLCENTER = "callcenter";
+    public final static String CSKEFU_MODULE_REPORT = "report";
 
     /**
      * Formatter
@@ -136,6 +138,10 @@ public class Constants {
     /**
      * FreeSwitch Communication
      */
+    // callcenter
+    public final static String ACTIVEMQ_QUEUE_SWITCH_SYNC = "cskefu.callcenter.switch.sync";
+
+    // callout
     public final static String FS_SIP_STATUS = "pbx:%s:sips"; // 查询SIP状态
     public final static String FS_CHANNEL_CC_TO_FS = "pbx/%s/execute"; // 发送外呼执行信号
     public final static String FS_DIALPLAN_STATUS = "pbx:%s:status"; // 外呼执行状态存储

@@ -286,7 +286,7 @@ public class ReportController extends Handler{
     			values.add(MainUtils.transBean2Map(topic)) ;
     		}
     		
-    		response.setHeader("content-disposition", "attachment;filename=CSKeFu-Report-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
+    		response.setHeader("content-disposition", "attachment;filename=UCKeFu-Report-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
     		if(table!=null){
     			ExcelExporterProcess excelProcess = new ExcelExporterProcess( values, table, response.getOutputStream()) ;
     			excelProcess.process();
@@ -307,7 +307,7 @@ public class ReportController extends Handler{
 			values.add(MainUtils.transBean2Map(report)) ;
 		}
 		
-		response.setHeader("content-disposition", "attachment;filename=CSKeFu-Report-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
+		response.setHeader("content-disposition", "attachment;filename=UCKeFu-Report-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".xls");  
 		
 		if(table!=null){
 			ExcelExporterProcess excelProcess = new ExcelExporterProcess( values, table, response.getOutputStream()) ;
