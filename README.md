@@ -111,7 +111,7 @@ The collaboration is efficient, very professional. The software is steady with h
 
 <p align="center">
   <b>欢迎页</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/44915395-6bff5d80-ad65-11e8-817a-8abb812fb5ee.png" width="900">
+  <img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-screen-1.jpg" width="900">
 </p>
 
 <details>
