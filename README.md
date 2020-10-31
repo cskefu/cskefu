@@ -10,18 +10,17 @@
 
 春松客服是 Chatopera 自主研发以及基于且增强其它开源软件的方式实现的，春松客服会不断增强客服系统的智能化，这包括利用自然语言处理、机器学习和语音识别等技术让客服工作更有效率、客服满意度更高、成本更低。
 
-**开源项目地址：** [Gitee](https://gitee.com/chatopera/cosin) | [CodeChina](https://codechina.csdn.net/chatopera/cskefu) | [Github](https://github.com/chatopera/cskefu)
+**开源项目地址：** [Gitee](https://gitee.com/chatopera/cosin) | [CodeChina](https://codechina.csdn.net/chatopera/cskefu) | [GitHub](https://github.com/chatopera/cskefu)
 
 **开发环境搭建：** [https://docs.chatopera.com/products/cskefu/engineering.html](https://docs.chatopera.com/products/cskefu/engineering.html)
 
-**春松客服团队博客：** [https://blog.chatopera.com/](https://blog.chatopera.com/)
+**官方博客：** [https://blog.chatopera.com/](https://blog.chatopera.com/)
 
-<p align="center">
-  <b>春松客服 QQ 交流群：185659917， <a href="https://jq.qq.com/?_wv=1027&k=5I1cJLP" target="_blank">点击链接加入群聊</a></b><br>
-  <img src="https://static-public.chatopera.com/assets/images/44917177-432d9700-ad6a-11e8-9420-46b0281073e6.png" width="200">
-</p>
+**产品更新：** [日志](./CHANGELOG.md)
 
 ## 媒体报道
+
+<img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-gpv-2.png" height = "220" div align=right />
 
 - [GitHub 上获点赞最多的开源客服系统春松客服入驻 CODE CHINA](https://mp.weixin.qq.com/s/wGCFj9Hs1uVuTQCTqH0IWg)
 
@@ -29,7 +28,7 @@
 
 - [春松客服荣获 GVP 企业级开源项目认证](http://www.ctiforum.com/news/guonei/578988.html)
 
-<img src="https://static-public.chatopera.com/assets/images/cskefu/cskfu-gvp-cert.jpg" width="600">
+---
 
 ## 产品演示
 
@@ -108,39 +107,7 @@ The collaboration is efficient, very professional. The software is steady with h
 
 关于产品的具体使用说明，请参考[文档中心](https://docs.chatopera.com/products/cskefu/index.html)。
 
-## 开发文档
-
-<p align="center">
-  <b><a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">开发文档</a></b><br>
-  <a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">
-      <img src="https://static-public.chatopera.com/assets/images/44992890-38be0800-afcb-11e8-8fde-a5a671d29764.png" width="300">
-  </a>
-</p>
-
-## 运营及定制开发培训
-
-[春松客服大讲堂](https://docs.chatopera.com/products/cskefu/training.html)是面向企业 CTO、客服主管、客服及客服系统开发运维人员的在线培训课程，由浅入深的介绍春松客服上线企业智能客服系统、运营客服工作和二次开发的知识。
-
-详情查看[课程介绍及优惠方案](https://docs.chatopera.com/products/cskefu/training.html)。
-
-<p align="center">
-  <b><a href="https://docs.chatopera.com/products/cskefu/training.html" target="_blank">主讲老师介绍</a></b><br>
-  <a href="https://docs.chatopera.com/products/cskefu/training.html" target="_blank">
-      <img src="https://static-public.chatopera.com/assets/images/djt-teacher-hain.jpg" width="800">
-  </a>
-</p>
-
-## 寻找开发者
-
-寻找开发者合作智能客服项目，社区共建，携手共赢！
-
-- 组织或个人，在春松客服主页展示为认证开发者
-- 春松客服官方推荐项目机会
-- 专访并通过官方渠道曝光
-
-填写申请：[https://www.wjx.top/jq/93397428.aspx](https://www.wjx.top/jq/93397428.aspx)
-
-## 产品截图
+### 产品截图
 
 <p align="center">
   <b>欢迎页</b><br>
@@ -188,6 +155,43 @@ The collaboration is efficient, very professional. The software is steady with h
 
 </p>
 </details>
+
+## 运营及定制开发培训
+
+[春松客服大讲堂](https://docs.chatopera.com/products/cskefu/training.html)是面向企业 CTO、客服主管、客服及客服系统开发运维人员的在线培训课程，由浅入深的介绍春松客服上线企业智能客服系统、运营客服工作和二次开发的知识。
+
+详情查看[课程介绍及优惠方案](https://docs.chatopera.com/products/cskefu/training.html)。
+
+<p align="center">
+  <b><a href="https://docs.chatopera.com/products/cskefu/training.html" target="_blank">主讲老师介绍</a></b><br>
+  <a href="https://docs.chatopera.com/products/cskefu/training.html" target="_blank">
+      <img src="https://static-public.chatopera.com/assets/images/djt-teacher-hain.jpg" width="800">
+  </a>
+</p>
+
+## 开发文档
+
+<p align="center">
+  <b><a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">开发文档</a></b><br>
+  <a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">
+      <img src="https://static-public.chatopera.com/assets/images/44992890-38be0800-afcb-11e8-8fde-a5a671d29764.png" width="300">
+  </a>
+</p>
+
+## 开发者社区
+
+<p align="center">
+  <b>春松客服 QQ 交流群：185659917， <a href="https://jq.qq.com/?_wv=1027&k=5I1cJLP" target="_blank">点击链接加入群聊</a></b><br>
+  <img src="https://static-public.chatopera.com/assets/images/44917177-432d9700-ad6a-11e8-9420-46b0281073e6.png" width="200">
+</p>
+
+寻找开发者合作智能客服项目，社区共建，携手共赢！
+
+- 组织或个人，在春松客服主页展示为认证开发者
+- 春松客服官方推荐项目机会
+- 专访并通过官方渠道曝光
+
+填写申请：[https://www.wjx.top/jq/93397428.aspx](https://www.wjx.top/jq/93397428.aspx)
 
 ## 立即部署
 
