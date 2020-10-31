@@ -1,27 +1,39 @@
 [![Docker Layers](https://images.microbadger.com/badges/image/chatopera/contact-center:develop.svg)](https://microbadger.com/images/chatopera/contact-center:develop "Get your own image badge on microbadger.com") [![Docker Version](https://images.microbadger.com/badges/version/chatopera/contact-center:develop.svg)](https://microbadger.com/images/chatopera/contact-center:develop "Get your own version badge on microbadger.com") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg)](https://hub.docker.com/r/chatopera/contact-center/) [![Docker Stars](https://img.shields.io/docker/stars/chatopera/contact-center.svg)](https://hub.docker.com/r/chatopera/contact-center/) [![Docker Commit](https://images.microbadger.com/badges/commit/chatopera/contact-center:develop.svg)](https://microbadger.com/images/chatopera/contact-center:develop "Get your own commit badge on microbadger.com")
 
-<p align="center">
-  <b>春松客服QQ交流群：185659917， <a href="https://jq.qq.com/?_wv=1027&k=5I1cJLP" target="_blank">点击链接加入群聊</a></b><br>
-  <img src="https://static-public.chatopera.com/assets/images/44917177-432d9700-ad6a-11e8-9420-46b0281073e6.png" width="200">
-</p>
-
 # 春松客服: 多渠道智能客服
 
-春松客服帮助企业快速而低成本的获得好用的智能客服系统。
+[春松客服](https://github.com/chatopera/cskefu)帮助企业快速而低成本的获得好用的智能客服系统。
 
-<img src="https://static-public.chatopera.com/assets/images/61031891-fc311900-a3f2-11e9-80cf-c8d0700538a0.png" width="600">
+[CSKeFu](https://github.com/chatopera/cskefu) is a Customer Support System for Enterprises in a High Performance Low-Touch way, open source for the world by [Chatopera Inc](https://www.chatopera.com/).
+
+<img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-yellow-bg.png" width="600">
 
 春松客服是 Chatopera 自主研发以及基于且增强其它开源软件的方式实现的，春松客服会不断增强客服系统的智能化，这包括利用自然语言处理、机器学习和语音识别等技术让客服工作更有效率、客服满意度更高、成本更低。
 
-**开源项目地址：** [https://gitee.com/chatopera/cosin](https://gitee.com/chatopera/cosin)
+**开源项目地址：** [Gitee](https://gitee.com/chatopera/cosin) | [CodeChina](https://codechina.csdn.net/chatopera/cskefu) | [Github](https://github.com/chatopera/cskefu)
 
 **开发环境搭建：** [https://docs.chatopera.com/products/cskefu/engineering.html](https://docs.chatopera.com/products/cskefu/engineering.html)
 
-**春松客服团队博客:** [https://blog.chatopera.com/](https://blog.chatopera.com/)
+**春松客服团队博客：** [https://blog.chatopera.com/](https://blog.chatopera.com/)
+
+<p align="center">
+  <b>春松客服 QQ 交流群：185659917， <a href="https://jq.qq.com/?_wv=1027&k=5I1cJLP" target="_blank">点击链接加入群聊</a></b><br>
+  <img src="https://static-public.chatopera.com/assets/images/44917177-432d9700-ad6a-11e8-9420-46b0281073e6.png" width="200">
+</p>
+
+## 媒体报道
+
+- [GitHub 上获点赞最多的开源客服系统春松客服入驻 CODE CHINA](https://mp.weixin.qq.com/s/wGCFj9Hs1uVuTQCTqH0IWg)
+
+- [Coscon'19 中国开源年会春松客服主题分享](https://www.shangyexinzhi.com/article/351121.html)
+
+- [春松客服荣获 GVP 企业级开源项目认证](http://www.ctiforum.com/news/guonei/578988.html)
+
+<img src="https://static-public.chatopera.com/assets/images/cskefu/cskfu-gvp-cert.jpg" width="600">
 
 ## 产品演示
 
-- 坐席工作台
+### 坐席工作台
 
 [https://cc.chatopera.com/](https://cc.chatopera.com/)
 
@@ -29,9 +41,38 @@
 | ------------ | --------- |
 | admin        | admin1234 |
 
-- 网页端访客程序
+### 网页端访客程序
 
 [https://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
+
+## 用户案例
+
+<p align="center">
+  <b><a href="https://www.chatopera.com/customer.html" target="_blank">TA们都选择春松客服</a></b><br>
+  <a href="https://www.chatopera.com/customer.html" target="_blank">
+      <img src="https://static-public.chatopera.com/assets/images/71613944-f7039880-2be3-11ea-8287-9e82f09e436f.png" width="900">
+  </a>
+</p>
+
+## 企业用户这样评价我们
+
+```
+The collaboration is efficient, very professional. The software is steady with high quality services.
+```
+
+-- Michael, Founder & CEO, [麥睿資訊](https://www.maideax.com/)
+
+```
+系统功能强大，免费且响应及时，太赞了！贵公司是我碰到的最有爱的公司啦，这么好的产品授权竟然是Apache。
+```
+
+-- 小赵，技术员，上海某特种气体公司 IT 部客服系统负责人
+
+```
+技术支持力度大，产品更新很快！
+```
+
+-- 阿伟，电商客服技术总监，某跨境电商企业
 
 ## 基础模块
 
@@ -67,7 +108,16 @@
 
 关于产品的具体使用说明，请参考[文档中心](https://docs.chatopera.com/products/cskefu/index.html)。
 
-## 在线培训课程
+## 开发文档
+
+<p align="center">
+  <b><a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">开发文档</a></b><br>
+  <a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">
+      <img src="https://static-public.chatopera.com/assets/images/44992890-38be0800-afcb-11e8-8fde-a5a671d29764.png" width="300">
+  </a>
+</p>
+
+## 运营及定制开发培训
 
 [春松客服大讲堂](https://docs.chatopera.com/products/cskefu/training.html)是面向企业 CTO、客服主管、客服及客服系统开发运维人员的在线培训课程，由浅入深的介绍春松客服上线企业智能客服系统、运营客服工作和二次开发的知识。
 
@@ -77,44 +127,6 @@
   <b><a href="https://docs.chatopera.com/products/cskefu/training.html" target="_blank">主讲老师介绍</a></b><br>
   <a href="https://docs.chatopera.com/products/cskefu/training.html" target="_blank">
       <img src="https://static-public.chatopera.com/assets/images/djt-teacher-hain.jpg" width="800">
-  </a>
-</p>
-
-## 用户案例
-
-<p align="center">
-  <b><a href="https://www.chatopera.com/customer.html" target="_blank">TA们都选择春松客服</a></b><br>
-  <a href="https://www.chatopera.com/customer.html" target="_blank">
-      <img src="https://static-public.chatopera.com/assets/images/71613944-f7039880-2be3-11ea-8287-9e82f09e436f.png" width="900">
-  </a>
-</p>
-
-## 企业用户这样评价我们
-
-```
-The collaboration is efficient, very professional. The software is steady with high quality services.
-```
-
--- Michael, Founder & CEO, [麥睿資訊](https://www.maideax.com/)
-
-```
-系统功能强大，免费且响应及时，太赞了！贵公司是我碰到的最有爱的公司啦，这么好的产品授权竟然是Apache。
-```
-
--- 小赵，技术员，上海某特种气体公司 IT 部客服系统负责人
-
-```
-技术支持力度大，产品更新很快！
-```
-
--- 阿伟，电商客服技术总监，某跨境电商企业
-
-## 开发文档
-
-<p align="center">
-  <b><a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">开发文档</a></b><br>
-  <a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">
-      <img src="https://static-public.chatopera.com/assets/images/44992890-38be0800-afcb-11e8-8fde-a5a671d29764.png" width="300">
   </a>
 </p>
 
@@ -191,7 +203,7 @@ The collaboration is efficient, very professional. The software is steady with h
 
 Copyright (2018-2020) <a href="https://www.chatopera.com/" target="_blank">北京华夏春松科技有限公司</a>
 
-[Apache License Version 2.0](https://gitee.com/chatopera/cosin/blob/master/LICENSE)
+[Apache License Version 2.0](https://github.com/chatopera/cskefu/blob/master/LICENSE)
 
 [![chatoper banner][co-banner-image]][co-url]
 
