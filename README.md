@@ -53,7 +53,7 @@
   </a>
 </p>
 
-## 企业用户这样评价我们
+### 企业用户这样评价我们
 
 ```
 The collaboration is efficient, very professional. The software is steady with high quality services.
@@ -73,7 +73,9 @@ The collaboration is efficient, very professional. The software is steady with h
 
 -- 阿伟，电商客服技术总监，某跨境电商企业
 
-## 基础模块
+## 功能介绍
+
+### 基础模块
 
 春松客服提供多个开箱即用的供企业免费使用的模块：
 
@@ -93,7 +95,7 @@ The collaboration is efficient, very professional. The software is steady with h
 
 - 质检：历史会话、服务小结、服务反馈及相关报表
 
-## 付费模块
+### 付费模块
 
 **春松客服从 v5.0.0 版本开始提供如下付费模块：**
 
@@ -158,6 +160,17 @@ The collaboration is efficient, very professional. The software is steady with h
 
 ## 运营及定制开发培训
 
+### 开发文档
+
+<p align="center">
+  <b><a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">开发文档</a></b><br>
+  <a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">
+      <img src="https://static-public.chatopera.com/assets/images/44992890-38be0800-afcb-11e8-8fde-a5a671d29764.png" width="300">
+  </a>
+</p>
+
+### 在线培训视频
+
 [春松客服大讲堂](https://docs.chatopera.com/products/cskefu/training.html)是面向企业 CTO、客服主管、客服及客服系统开发运维人员的在线培训课程，由浅入深的介绍春松客服上线企业智能客服系统、运营客服工作和二次开发的知识。
 
 详情查看[课程介绍及优惠方案](https://docs.chatopera.com/products/cskefu/training.html)。
@@ -169,14 +182,23 @@ The collaboration is efficient, very professional. The software is steady with h
   </a>
 </p>
 
-## 开发文档
+## 认证开发者
 
-<p align="center">
-  <b><a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">开发文档</a></b><br>
-  <a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">
-      <img src="https://static-public.chatopera.com/assets/images/44992890-38be0800-afcb-11e8-8fde-a5a671d29764.png" width="300">
-  </a>
-</p>
+春松客服开发者是具备春松客服定制化开发智能客服系统技能，具备丰富的专业经验的软件工程师，由 Chatopera 通过访谈的形式确认其在某行业或某企业内完成春松客服上线、定制化春松客服。
+
+| Avatar                                                                                            | Name | GitHub                            | Talk                                                    | Intro.                                                                                                                                   |
+| ------------------------------------------------------------------------------------------------- | ---- | --------------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="https://static-public.chatopera.com/assets/images/cskefu/github_lecjy.jpg" width="100"> | 刘勇 | [lecjy](https://github.com/lecjy) | [报道](http://www.ctiforum.com/news/guonei/579599.html) | 目前工作于湖北武汉一个电商企业，曾就职于京东海外电商平台，负责客户系统维护，对于电商客服领域有丰富的工作经验，尤其是面向东南亚出海业务。 |
+
+寻找基于春松客服搭建智能客服系统的客户，包括但不限于部署、系统集成和定制开发等，可以优先考虑联系以上认证开发者，Chatopera 团队会持续维护基础模块、云服务和机器人客服，提升春松客服上利用人工智能、机器学习和自动化流程服务。
+
+**寻找开发者合作智能客服项目，社区共建，携手共赢！**
+
+- 组织或个人，在春松客服主页展示为认证开发者
+- 春松客服官方推荐项目机会
+- 专访并通过官方渠道曝光
+
+填写申请：[https://www.wjx.top/jq/93397428.aspx](https://www.wjx.top/jq/93397428.aspx)
 
 ## 开发者社区
 
@@ -184,14 +206,6 @@ The collaboration is efficient, very professional. The software is steady with h
   <b>春松客服 QQ 交流群：185659917， <a href="https://jq.qq.com/?_wv=1027&k=5I1cJLP" target="_blank">点击链接加入群聊</a></b><br>
   <img src="https://static-public.chatopera.com/assets/images/44917177-432d9700-ad6a-11e8-9420-46b0281073e6.png" width="200">
 </p>
-
-寻找开发者合作智能客服项目，社区共建，携手共赢！
-
-- 组织或个人，在春松客服主页展示为认证开发者
-- 春松客服官方推荐项目机会
-- 专访并通过官方渠道曝光
-
-填写申请：[https://www.wjx.top/jq/93397428.aspx](https://www.wjx.top/jq/93397428.aspx)
 
 ## 立即部署
 
