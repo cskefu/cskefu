@@ -381,8 +381,8 @@ var Proxy = {
 						if(result.rc === 0){
 							if(result.data.length>0){
 								type == "agent" ? $("#quickReplyBox").html("") : $("#ccaQuickReplyBox").html("");
-								$.each(sortByKey(result.data,'score'),function(i,n){
-									var answerList =  result.data[i].replies;
+								$.each(sortByKey(result.data,'score'),function(j,n){
+									var answerList =  result.data[j].replies;
 									var answer;
 									for(var i = 0; i < answerList.length; i++) {
 										if(answerList[i].rtype == 'plain' && answerList[i].enabled==true) {
@@ -392,7 +392,7 @@ var Proxy = {
 									}
 									if(answer) {
 										var li = ' <li class="ukefu-agentservice-list" onclick="chooseAnswer(\'' + answer.content + '\')">\n' +
-											'                  <div class="nowrap" title="' + result.data[i].post + '">问题：' + result.data[i].post + '</div>\n' +
+											'                  <div class="nowrap" title="' + result.data[j].post + '">问题：' + result.data[j].post + '</div>\n' +
 											'                    <div style="color: #333">\n' +
 											'                       <p class="nowrap" title="' + answer.content + '"  style="float: left ">答案：' + answer.content + '</p>\n' +
 											'                       <button style="float: right" class="layui-btn layui-btn-mini" onclick="chooseAnswer(\'' + answer.content + '\')">选择</button>\n' +

@@ -10,7 +10,7 @@
 
 春松客服是 Chatopera 自主研发以及基于且增强其它开源软件的方式实现的，春松客服会不断增强客服系统的智能化，这包括利用自然语言处理、机器学习和语音识别等技术让客服工作更有效率、客服满意度更高、成本更低。
 
-**开源项目地址：** [Gitee](https://gitee.com/chatopera/cosin) | [CodeChina](https://codechina.csdn.net/chatopera/cskefu) | [GitHub](https://github.com/chatopera/cskefu)
+**开源项目地址：** [Gitee](https://gitee.com/chatopera/cskefu) | [CodeChina](https://codechina.csdn.net/chatopera/cskefu) | [GitHub](https://github.com/chatopera/cskefu)
 
 **开发环境搭建：** [https://docs.chatopera.com/products/cskefu/engineering.html](https://docs.chatopera.com/products/cskefu/engineering.html)
 
