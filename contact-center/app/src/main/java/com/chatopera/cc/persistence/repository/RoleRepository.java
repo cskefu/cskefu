@@ -22,14 +22,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface RoleRepository
-  extends JpaRepository<Role, String>
-{
-  Role findByIdAndOrgi(String paramString, String orgi);
+        extends JpaRepository<Role, String> {
+    Role findByIdAndOrgi(String paramString, String orgi);
 
-  List<Role> findByOrgi(String orgi);
-  
-  List<Role> findByOrgi(String orgi, String orgid);
-  
-  Role findByNameAndOrgi(String paramString, String orgi);
+    List<Role> findByOrgi(String orgi);
+
+    List<Role> findByOrgiAndOrgan(String orgi, String organ);
+
+    List<Role> findByOrgi(String orgi, String orgid);
+
+    Role findByNameAndOrgi(String paramString, String orgi);
 }
 

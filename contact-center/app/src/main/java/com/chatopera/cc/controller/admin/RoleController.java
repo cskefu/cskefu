@@ -21,6 +21,8 @@ import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.repository.*;
+import com.chatopera.cc.proxy.OrganProxy;
+import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -36,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/role")
@@ -58,10 +61,18 @@ public class RoleController extends Handler {
     @Autowired
     private SysDicRepository sysDicRes;
 
+    @Autowired
+    OrganProxy organProxy;
+
+    @Autowired
+    UserProxy userProxy;
+
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "role")
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String role, @Valid String msg) {
-        List<Role> roleList = roleRepository.findByOrgi(super.getOrgi());
+        Organ currentOrgan = super.getOrgan(request);
+
+        List<Role> roleList = roleRepository.findByOrgiAndOrgan(super.getOrgi(),currentOrgan.getId());
         map.addAttribute("roleList", roleList);
         map.addAttribute("msg", msg);
         if (roleList.size() > 0) {
@@ -92,6 +103,7 @@ public class RoleController extends Handler {
     @RequestMapping("/save")
     @Menu(type = "admin", subtype = "role")
     public ModelAndView save(HttpServletRequest request, @Valid Role role) {
+        Organ currentOrgan = super.getOrgan(request);
         Role tempRole = roleRepository.findByNameAndOrgi(role.getName(), super.getOrgi());
         String msg = "admin_role_save_success";
         if (tempRole != null) {
@@ -101,6 +113,7 @@ public class RoleController extends Handler {
             role.setCreater(super.getUser(request).getId());
             role.setCreatetime(new Date());
             role.setUpdatetime(new Date());
+            role.setOrgan(currentOrgan.getId());
             roleRepository.save(role);
         }
         return request(super.createRequestPageTempletResponse("redirect:/admin/role/index.html?msg=" + msg));
@@ -109,13 +122,13 @@ public class RoleController extends Handler {
     @RequestMapping("/seluser")
     @Menu(type = "admin", subtype = "seluser", admin = true)
     public ModelAndView seluser(ModelMap map, HttpServletRequest request, @Valid String role) {
-        map.addAttribute("userList", userRepository.findByOrgiAndDatastatus(super.getOrgi(), false));
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
+        map.addAttribute("userList", userProxy.findUserInOrgans(organs.keySet()));
         Role roleData = roleRepository.findByIdAndOrgi(role, super.getOrgi());
         map.addAttribute("userRoleList", userRoleRes.findByOrgiAndRole(super.getOrgi(), roleData));
         map.addAttribute("role", roleData);
         return request(super.createRequestPageTempletResponse("/admin/role/seluser"));
     }
-
 
     @RequestMapping("/saveuser")
     @Menu(type = "admin", subtype = "saveuser", admin = true)

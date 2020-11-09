@@ -117,10 +117,10 @@
 	}
 
 	var zNodes =[
-	    { id:'0', pId:'00', name:"组织机构", open:true , topic : false}
+	    // { id:'0', pId:'00', name:"组织机构", open:true , topic : false}
 	    <#if organList??>
 	    <#list organList as organ>
-	    ,{ id:'${organ.id!''}', pId:'${organ.parent!'0'}', name:"${organ.name!''}", open:true , topic : true ,  <#if organ.area?? && organ.area != "">icon:"/images/area.png" <#else>icon:"/images/dept.png"</#if> }
+	    { id:'${organ.id!''}', pId:'${organ.parent!'0'}', name:"${organ.name!''}", open:true , topic : true ,  <#if organ.area?? && organ.area != "">icon:"/images/area.png" <#else>icon:"/images/dept.png"</#if> },
 	    </#list>
 	    </#if>
 	];
@@ -153,6 +153,8 @@
 			layer.msg('新建组织成功',{icon: 1, time: 1500})
 		<#elseif msg?? && msg == 'admin_organ_update_not_standard'>
 			layer.msg('修改无法完成，上级机构选择错误',{icon: 2, time: 1500})
+		<#elseif msg?? && msg == 'not_allow_remove_user'>
+			layer.msg('用户只有一个组织，不允许移除',{icon: 2, time: 1500})
 		</#if>
 
 

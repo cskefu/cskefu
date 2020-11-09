@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "/apps/cca")
@@ -197,7 +198,7 @@ public class AgentAuditController extends Handler {
         List<Organ> skills = organRes.findByOrgiAndSkill(orgi, true);
         List<User> agents = userRes.findByOrgiAndAgentAndDatastatusAndIdIsNot(orgi, true, false, logined.getId());
 
-        view.addObject("skillGroups", skills);
+        view.addObject("skillGroups", skills.stream().filter(s -> organs.containsKey(s.getId())).collect(Collectors.toList()));
         view.addObject("agentList", agents);
 
         return view;

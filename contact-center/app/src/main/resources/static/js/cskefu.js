@@ -391,11 +391,11 @@ var Proxy = {
 										}
 									}
 									if(answer) {
-										var li = ' <li class="ukefu-agentservice-list" onclick="chooseAnswer(\'' + answer.content + '\')">\n' +
+										var li = ' <li class="ukefu-agentservice-list chooseAnswer" data-title="'+answer.content+'">\n' +
 											'                  <div class="nowrap" title="' + result.data[j].post + '">问题：' + result.data[j].post + '</div>\n' +
 											'                    <div style="color: #333">\n' +
 											'                       <p class="nowrap" title="' + answer.content + '"  style="float: left ">答案：' + answer.content + '</p>\n' +
-											'                       <button style="float: right" class="layui-btn layui-btn-mini" onclick="chooseAnswer(\'' + answer.content + '\')">选择</button>\n' +
+											'                       <button style="float: right" class="layui-btn layui-btn-mini chooseAnswer" data-title="'+answer.content+'">选择</button>\n' +
 											'                   </div>\n' +
 											'      </li>'
 										type == "agent" ? $("#quickReplyBox").append(li) : $("#ccaQuickReplyBox").append(li);
@@ -431,6 +431,8 @@ var Proxy = {
 				}
 			}
 	},
+
+
 	endAgentUserService:function(data){
 		if($('#tip_message_'+data.userid).length >0){
             if(data.channel){

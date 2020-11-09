@@ -49,8 +49,8 @@ public interface SNSAccountRepository
 
     Page<SNSAccount> findBySnstypeAndOrgi(String paramString, String orgi, Pageable page);
 
-    @Query(value = "select s.* from `uk_snsaccount` s left join `uk_consult_invite` ci on ci.`snsaccountid`=s.`snsid` WHERE s.snstype = ?1 AND s.orgi = ?2 and ci.`consult_skill_fixed_id` in (?3) ORDER BY ?#{#pageable}",
-            countQuery = "select count(1) from `uk_snsaccount` s left join `uk_consult_invite` ci on ci.`snsaccountid`=s.`snsid` WHERE s.snstype = ?1 AND s.orgi = ?2 and ci.`consult_skill_fixed_id` in (?3)", nativeQuery = true)
+    @Query(value = "select s.* from `uk_snsaccount` s WHERE s.snstype = ?1 AND s.orgi = ?2 and s.`organ` in (?3) ORDER BY ?#{#pageable}",
+            countQuery = "select count(1) from `uk_snsaccount` s WHERE s.snstype = ?1 AND s.orgi = ?2 and s.`organ` in (?3)", nativeQuery = true)
     Page<SNSAccount> findBySnstypeAndOrgiAndOrgan(String paramString, String orgi, Collection<String> organ, Pageable page);
 
     @Query(value = "SELECT * FROM uk_snsaccount WHERE snstype = ?1 AND snsid = ?2 AND orgi = ?3 LIMIT 1", nativeQuery = true)

@@ -23,6 +23,7 @@ import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.controller.api.request.RestUtils;
 import com.chatopera.cc.model.*;
+import com.chatopera.cc.persistence.repository.OrganRepository;
 import com.chatopera.cc.persistence.repository.OrganUserRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.persistence.repository.UserRoleRepository;
@@ -71,6 +72,9 @@ public class ApiUserController extends Handler {
 
     @Autowired
     private OrganUserRepository organUserRes;
+
+    @Autowired
+    private OrganRepository organRes;
 
     @Autowired
     private UserRoleRepository userRoleRes;
@@ -156,11 +160,17 @@ public class ApiUserController extends Handler {
      */
     private JsonObject create(final HttpServletRequest request, final JsonObject payload) {
         logger.info("[create] payload {}", payload.toString());
+        String parent = payload.get("parent").getAsString();
+        Organ parentOrgan = super.getOrgan(request);
+        if (StringUtils.isNotEmpty(parent)) {
+            parentOrgan = organRes.getOne(parent);
+        }
+
         // 创建新用户时，阻止传入ID
         payload.remove("id");
         // 从payload中创建User
         User user = userProxy.parseUserFromJson(payload);
-        JsonObject resp = userProxy.createNewUser(user);
+        JsonObject resp = userProxy.createNewUser(user, parentOrgan);
         logger.info("[create] response {}", resp.toString());
         return resp;
     }

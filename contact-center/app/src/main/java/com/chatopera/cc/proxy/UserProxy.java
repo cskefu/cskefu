@@ -59,6 +59,10 @@ public class UserProxy {
     @Autowired
     private ExtensionRepository extensionRes;
 
+    public JsonObject createNewUser(final User user) {
+        return this.createNewUser(user, null);
+    }
+
     /**
      * 创建新用户
      * 支持多租户
@@ -67,7 +71,7 @@ public class UserProxy {
      * @param organ
      * @return
      */
-    public JsonObject createNewUser(final User user) {
+    public JsonObject createNewUser(final User user, Organ organ) {
         JsonObject result = new JsonObject();
         String msg = validUser(user);
         if (StringUtils.equalsIgnoreCase(msg, "new_user_success")) {
@@ -80,6 +84,14 @@ public class UserProxy {
                 user.setPassword(MainUtils.md5(user.getPassword()));
             }
             userRes.save(user);
+
+            if(organ!=null) {
+                OrganUser ou = new OrganUser();
+                ou.setUserid(user.getId());
+                ou.setOrgan(organ.getId());
+                organUserRes.save(ou);
+            }
+
         }
         // 新账号未通过验证，返回创建失败信息msg
         result.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);

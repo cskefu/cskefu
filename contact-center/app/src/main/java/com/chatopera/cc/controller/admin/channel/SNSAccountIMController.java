@@ -64,13 +64,9 @@ public class SNSAccountIMController extends Handler {
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "im", access = false, admin = true)
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String execute, @RequestParam(name = "status", required = false) String status) {
-        User logined = super.getUser(request);
-        if (logined.isSuperadmin()) {
-            map.addAttribute("snsAccountList", snsAccountRes.findBySnstypeAndOrgi(MainContext.ChannelType.WEBIM.toString(), super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request))));
-        } else {
-            Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
-            map.addAttribute("snsAccountList", snsAccountRes.findBySnstypeAndOrgiAndOrgan(MainContext.ChannelType.WEBIM.toString(), super.getOrgi(request), organs.keySet(), new PageRequest(super.getP(request), super.getPs(request))));
-        }
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
+        map.addAttribute("snsAccountList", snsAccountRes.findBySnstypeAndOrgiAndOrgan(MainContext.ChannelType.WEBIM.toString(), super.getOrgi(request), organs.keySet(), new PageRequest(super.getP(request), super.getPs(request))));
+
         map.addAttribute("status", status);
         List<Secret> secretConfig = secRes.findByOrgi(super.getOrgi(request));
         if (secretConfig != null && secretConfig.size() > 0) {
@@ -92,6 +88,7 @@ public class SNSAccountIMController extends Handler {
     @Menu(type = "admin", subtype = "weixin")
     public ModelAndView save(HttpServletRequest request,
                              @Valid SNSAccount snsAccount) throws NoSuchAlgorithmException {
+        Organ currentOrgan = super.getOrgan(request);
         String status = "new_webim_fail";
         if (StringUtils.isNotBlank(snsAccount.getBaseURL())) {
             snsAccount.setSnsid(Base62.encode(snsAccount.getBaseURL()).toLowerCase());
@@ -103,6 +100,7 @@ public class SNSAccountIMController extends Handler {
                 snsAccount.setCreatetime(new Date());
                 User curr = super.getUser(request);
                 snsAccount.setCreater(curr.getId());
+                snsAccount.setOrgan(currentOrgan.getId());
 
                 snsAccountRes.save(snsAccount);
 

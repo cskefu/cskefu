@@ -37,10 +37,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author 程序猿DD
@@ -83,11 +80,16 @@ public class OrganController extends Handler {
     @Autowired
     private UserProxy userProxy;
 
+    private Collection<Organ> getOwnOragans(HttpServletRequest request) {
+        Organ currentOrgan = super.getOrgan(request);
+        return organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi()).values();
+    }
+
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "organ")
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String organ, @Valid String msg) {
         List<Organ> organList = organRepository.findByOrgi(super.getOrgi());
-        map.addAttribute("organList", organList);
+        map.addAttribute("organList", getOwnOragans(request));
         if (organList.size() > 0) {
             Organ organData = null;
             if (!StringUtils.isBlank(organ) && !"null".equals(organ)) {
@@ -98,7 +100,7 @@ public class OrganController extends Handler {
                     }
                 }
             } else {
-                map.addAttribute("organData", organData = organList.get(0));
+                map.addAttribute("organData", organData = super.getOrgan(request));
             }
             if (organData != null) {
                 map.addAttribute(
@@ -125,7 +127,7 @@ public class OrganController extends Handler {
             map.addAttribute("area", areaRepository.findByIdAndOrgi(area, super.getOrgi()));
         }
 
-        map.addAttribute("organList", organRepository.findByOrgi(super.getOrgi()));
+        map.addAttribute("organList", getOwnOragans(request));
 
         return request(super.createRequestPageTempletResponse("/admin/organ/add"));
     }
@@ -159,8 +161,8 @@ public class OrganController extends Handler {
     @RequestMapping("/seluser")
     @Menu(type = "admin", subtype = "seluser", admin = true)
     public ModelAndView seluser(ModelMap map, HttpServletRequest request, @Valid String organ) {
-        map.addAttribute(
-                "userList", userRepository.findByOrgiAndDatastatus(super.getOrgi(), false));
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
+        map.addAttribute("userList", userProxy.findUserInOrgans(organs.keySet()));
         Organ organData = organRepository.findByIdAndOrgi(organ, super.getOrgi());
         map.addAttribute("userOrganList", userProxy
                 .findByOrganAndOrgiAndDatastatus(organ, super.getOrgi(), false));
@@ -249,7 +251,12 @@ public class OrganController extends Handler {
     ) {
         logger.info("[userroledelete] user id {}, organ {}", id, organ);
         if (id != null) {
-            organUserRes.deleteOrganUserByUseridAndOrgan(id, organ);
+            List<OrganUser> organUsers = organUserRes.findByUserid(id);
+            if (organUsers.size() > 1) {
+                organUserRes.deleteOrganUserByUseridAndOrgan(id, organ);
+            } else {
+                return request(super.createRequestPageTempletResponse("redirect:/admin/organ/index.html?organ=" + organ + "&msg=not_allow_remove_user"));
+            }
         }
         return request(super.createRequestPageTempletResponse("redirect:/admin/organ/index.html?organ=" + organ));
     }
@@ -258,10 +265,11 @@ public class OrganController extends Handler {
     @Menu(type = "admin", subtype = "organ")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
         ModelAndView view = request(super.createRequestPageTempletResponse("/admin/organ/edit"));
+        Organ currentOrgan = super.getOrgan(request);
         map.addAttribute("areaList", areaRepository.findByOrgi(super.getOrgi()));
         view.addObject("organData", organRepository.findByIdAndOrgi(id, super.getOrgi()));
-
-        map.addAttribute("organList", organRepository.findByOrgi(super.getOrgi()));
+        view.addObject("isRootOrgan", id.equals(currentOrgan.getId()));
+        map.addAttribute("organList", getOwnOragans(request));
         return view;
     }
 

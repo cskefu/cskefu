@@ -77,6 +77,16 @@
 			<dd <#if subtype?? && subtype == 'metadata'>class="layui-this"</#if>>
 				<a href="/admin/metadata/index.html">元数据</a>
 			</dd>
+            <#if models?seq_contains("chatbot")>
+				<#if user?? &&( user.roleAuthMap["A09"]?? || user.admin) >
+					<dd>
+						<a data-title="智能机器人" href="javascript:void(0)" onclick="openChatbot()" data-href="/apps/chatbot/index.html" class="iframe_btn" data-id="chatbotIntegrationWin" data-type="tabAdd">
+							智能机器人
+						</a>
+					</dd>
+				</#if>
+			</#if>
+
 			<dd <#if subtype?? && subtype == 'template'>class="layui-this"</#if>>
 				<a href="/admin/template/index.html">系统模板</a>
 			</dd>
@@ -91,3 +101,9 @@
 	</li>
 	</#if>
 </ul>
+
+<script>
+		function openChatbot(){
+			window.parent.active.tabAdd($(".iframe_btn").data('href') , $(".iframe_btn").data('title'), $(".iframe_btn").data('id'));
+		};
+</script>

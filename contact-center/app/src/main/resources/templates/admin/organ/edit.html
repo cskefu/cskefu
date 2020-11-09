@@ -2,17 +2,18 @@
 	<form class="layui-form uk-form" action="/admin/organ/update.html">
 	  <input type="hidden" name="id" value="${organData.id!''}">
 	  <input type="hidden" name="area" id="area" value="${organData.area!''}">
+	  <input type="hidden" id="parent" name="parent" value="<#if organData??>${organData.parent}<#else>0</#if>">
 	  <div class="layui-form-item">
 	    <label class="layui-form-label">部门：</label>
 	    <div class="layui-input-inline">
 	      <input type="text" name="name" lay-verify="requiredOrgiName" value="${organData.name!''}" placeholder="请输入部门名称" autocomplete="off" class="layui-input">
 	    </div>
 	  </div>
+	  <#if isRootOrgan!=true>
 	  <div class="layui-form-item">
 	  	<div class="layui-inline">
 				<label class="layui-form-label">上级机构：</label>
 				<div class="layui-input-inline" style="position: relative;">
-					<input type="hidden" id="parent" name="parent" value="<#if organData??>${organData.parent}<#else>0</#if>">
 					<input type="text" name="parentname" id="parentname" required value="<#if organData??>${organData.name}<#else>组织机构</#if>" lay-verify="requiredTwo" autocomplete="off" readOnly="readonly" onClick="showMenu();"
 						class="layui-input">
 					<i class="layui-icon" style="position: absolute;right: 3px;top: 6px;font-size: 25px;${systemConfig.color!'color:#0096C4;'}" onClick="showMenu()">&#xe631;</i>
@@ -22,6 +23,7 @@
 				</div>
 			</div>
 	  </div>
+	  </#if>
 	  <div class="layui-form-item">
 	    <label class="layui-form-label">启用技能组：</label>
 	    <div class="layui-input-block">
@@ -133,10 +135,10 @@ layui.use('form', function(){
 
 
 	var zNodes =[
-	    { id:'0', pId:'00', name:"组织机构", open:true , organ : true, type : "organ"}
+	    // { id:'0', pId:'00', name:"组织机构", open:true , organ : true, type : "organ"}
 	    <#if organList??>
 	    <#list organList as organ>
-	    ,{ id:'${organ.id!''}', pId:'${organ.parent!'0'}', name:"${organ.name!''}", open:true , organ : true , type : "organ",  icon:"/images/dept.png" }
+	    { id:'${organ.id!''}', pId:'${organ.parent!'0'}', name:"${organ.name!''}", open:true , organ : true , type : "organ",  icon:"/images/dept.png" },
 	    </#list>
 	    </#if>
 	];
@@ -144,8 +146,10 @@ layui.use('form', function(){
 		var ztree = $.fn.zTree.init($("#organTree"), setting, zNodes);
 		<#if organData??>
 		var node = ztree.getNodeByParam('id', '${organData.parent!''}');//获取id为1的点
-		ztree.selectNode(node);//选择点  
-		$("#parentname").attr("value", node.name);
+		ztree.selectNode(node);//选择点
+		if(node){
+			$("#parentname").attr("value", node.name);
+		}
 		<#if organData.area??>
 		<#list organData.area?split(",") as area>
 		var areanode_${area_index} = ztree.getNodeByParam('id', '${area}');//获取id为1的点

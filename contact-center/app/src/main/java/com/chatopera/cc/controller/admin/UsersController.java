@@ -79,37 +79,29 @@ public class UsersController extends Handler {
     @Menu(type = "admin", subtype = "user")
     public ModelAndView index(ModelMap map, HttpServletRequest request) throws IOException {
         User logined = super.getUser(request);
-        if (!logined.isSuperadmin()) {
-            Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
-            map.addAttribute("userList", userProxy.findUserInOrgans(organs.keySet(), new PageRequest(
-                    super.getP(request),
-                    super.getPs(request),
-                    Sort.Direction.ASC,
-                    "createtime"
-            )));
-        } else {
-            map.addAttribute(
-                    "userList",
-                    userRepository.findByDatastatusAndOrgiAndSuperadminNot(
-                            false,
-                            super.getOrgi(),
-                            true,
-                            new PageRequest(
-                                    super.getP(request),
-                                    super.getPs(request),
-                                    Sort.Direction.ASC,
-                                    "createtime"
-                            )
-                    )
-            );
-        }
+
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
+        map.addAttribute("userList", userProxy.findUserInOrgans(organs.keySet(), new PageRequest(
+                super.getP(request),
+                super.getPs(request),
+                Sort.Direction.ASC,
+                "createtime"
+        )));
+
+
         return request(super.createAdminTempletResponse("/admin/user/index"));
     }
 
     @RequestMapping("/add")
     @Menu(type = "admin", subtype = "user")
     public ModelAndView add(ModelMap map, HttpServletRequest request) {
-        return request(super.createRequestPageTempletResponse("/admin/user/add"));
+        ModelAndView view = request(super.createRequestPageTempletResponse("/admin/user/add"));
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        map.addAttribute("currentOrgan", currentOrgan);
+        map.addAttribute("organList", organs.values());
+
+        return view;
     }
 
     @RequestMapping("/edit")

@@ -125,10 +125,10 @@ layui.use('form', function(){
 
 
 	var zNodes =[
-	    { id:'0', pId:'00', name:"组织机构", open:true , organ : true, type : "organ"}
+	    // { id:'0', pId:'00', name:"组织机构", open:true , organ : true, type : "organ"}
 	    <#if organList??>
 	    <#list organList as organ>
-	    ,{ id:'${organ.id!''}', pId:'${organ.parent!'0'}', name:"${organ.name!''}", open:true , organ : true , type : "organ",  icon:"/images/dept.png" }
+	    { id:'${organ.id!''}', pId:'${organ.parent!'0'}', name:"${organ.name!''}", open:true , organ : true , type : "organ",  icon:"/images/dept.png" },
 	    </#list>
 	    </#if>
 	];
