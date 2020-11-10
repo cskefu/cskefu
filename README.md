@@ -16,7 +16,7 @@
 
 **官方博客：** [https://blog.chatopera.com/](https://blog.chatopera.com/)
 
-**产品更新：** [日志](./CHANGELOG.md)
+**产品更新：** [观看 v6 版本介绍视频](https://www.bilibili.com/video/BV1Tf4y1q7us/) | [其它更新日志](./CHANGELOG.md)
 
 ## 媒体报道
 
