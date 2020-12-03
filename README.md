@@ -200,11 +200,11 @@ The collaboration is efficient, very professional. The software is steady with h
 
 填写申请：[https://www.wjx.top/jq/93397428.aspx](https://www.wjx.top/jq/93397428.aspx)
 
-## 开发者社区
+## 用户交流群
 
 <p align="center">
-  <b>春松客服 QQ 交流群：185659917， <a href="https://jq.qq.com/?_wv=1027&k=5I1cJLP" target="_blank">点击链接加入群聊</a></b><br>
-  <img src="https://static-public.chatopera.com/assets/images/44917177-432d9700-ad6a-11e8-9420-46b0281073e6.png" width="200">
+  <b>在 Chatopera 客户群中也包括其他用户，请不要发送敏感信息。讨论与 Chatopera 产品和服务相关的事宜</b><br>
+<img src="https://static-public.chatopera.com/assets/images/Chatopera_wecom_customer_group_qr.png" width="600">
 </p>
 
 ## 立即部署
