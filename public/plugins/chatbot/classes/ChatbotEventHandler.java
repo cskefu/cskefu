@@ -15,6 +15,7 @@
  */
 package com.chatopera.cc.plugins.chatbot;
 
+import com.chatopera.bot.sdk.Response;
 import com.chatopera.cc.acd.ACDServiceRouter;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
@@ -31,6 +32,7 @@ import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.socketio.util.IMServiceUtils;
 import com.chatopera.cc.util.IP;
 import com.chatopera.cc.util.IPTools;
+import com.chatopera.cc.util.SystemEnvHelper;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -55,6 +57,9 @@ public class ChatbotEventHandler {
     private static OnlineUserRepository onlineUserRes;
     private static ChatbotRepository chatbotRes;
     private static ChatbotProxy chatbotProxy;
+
+    private final static String botServiecProvider = SystemEnvHelper.getenv(
+            ChatbotConstants.BOT_PROVIDER, ChatbotConstants.DEFAULT_BOT_PROVIDER);
 
     @Autowired
     public ChatbotEventHandler(SocketIOServer server) {
@@ -107,14 +112,15 @@ public class ChatbotEventHandler {
                 if (invite != null) {
                     Chatbot chatbot = getChatbotRes().findOne(invite.getAiid());
                     com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
-                            chatbot.getClientId(), chatbot.getSecret(), chatbot.getBaseUrl());
-                    JSONObject details = bot.details();
+                            chatbot.getClientId(), chatbot.getSecret(), botServiecProvider);
+
+                    Response result = bot.command("GET", "/");
 
                     // 发送欢迎语
-                    if (details.has("rc") &&
-                            details.getInt("rc") == 0) {
+                    if (result.getRc() == 0) {
                         ChatMessage welcome = new ChatMessage();
-                        String welcomeTextMessage = details.getJSONObject("data").getString("welcome");
+                        JSONObject details = (JSONObject) result.getData();
+                        String welcomeTextMessage = details.getString("welcome");
                         if (StringUtils.isNotBlank(welcomeTextMessage)) {
                             welcome.setCalltype(MainContext.CallType.OUT.toString());
                             welcome.setAppid(appid);

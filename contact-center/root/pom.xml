@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.chatopera.cc</groupId>
     <artifactId>cc-root</artifactId>
@@ -245,11 +245,11 @@
             <version>2.6.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
-		<dependency>
-		    <groupId>com.google.guava</groupId>
-		    <artifactId>guava</artifactId>
-		    <version>25.1-jre</version>
-		</dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>25.1-jre</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -379,14 +379,14 @@
         <dependency>
             <groupId>com.chatopera.bot</groupId>
             <artifactId>sdk</artifactId>
-            <version>3.1.0</version>
+            <version>3.3.1</version>
         </dependency>
     </dependencies>
     <repositories>
         <repository>
             <id>chatopera</id>
             <name>Chatopera Inc.</name>
-            <url>https://nexus.chatopera.com/repository/maven-public</url>
+            <url>https://nexus.cskefu.com/repository/maven-public</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -400,12 +400,12 @@
         <repository>
             <id>chatopera-releases</id>
             <name>Chatopera Nexus Releases</name>
-            <url>https://nexus.chatopera.com/repository/maven-releases/</url>
+            <url>https://nexus.cskefu.com/repository/maven-releases/</url>
         </repository>
         <snapshotRepository>
             <id>chatopera-snapshots</id>
             <name>Chatopera Nexus Snapshots</name>
-            <url>https://nexus.chatopera.com/repository/maven-snapshots/</url>
+            <url>https://nexus.cskefu.com/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 

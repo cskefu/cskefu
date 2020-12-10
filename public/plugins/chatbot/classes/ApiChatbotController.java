@@ -16,6 +16,7 @@
 package com.chatopera.cc.plugins.chatbot;
 
 import com.chatopera.bot.exception.ChatbotException;
+import com.chatopera.bot.sdk.Response;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.controller.Handler;
@@ -205,7 +206,9 @@ public class ApiChatbotController extends Handler {
         try {
             com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
                     c.getClientId(), c.getSecret(), botServiecProvider);
-            if (bot.exists()) {
+            Response result = bot.command("GET", "/");
+
+            if (result.getRc() == 0) {
                 c.setEnabled(isEnabled);
                 chatbotRes.save(c);
 
@@ -327,24 +330,28 @@ public class ApiChatbotController extends Handler {
         try {
             com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
                     c.getClientId(), c.getSecret(), botServiecProvider);
-            if (bot.exists()) {
+
+            Response result = bot.command("GET", "/");
+            logger.info("[update] bot details response {}", result.toJSON().toString());
+
+            if (result.getRc() == 0) {
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
                 JsonObject data = new JsonObject();
                 data.addProperty("id", c.getId());
                 resp.add(RestUtils.RESP_KEY_DATA, data);
                 resp.addProperty(RestUtils.RESP_KEY_MSG, "更新成功。");
-                JSONObject botDetails = bot.details();
-                c.setDescription(botDetails.getJSONObject("data").getString("description"));
-                c.setFallback(botDetails.getJSONObject("data").getString("fallback"));
-                c.setWelcome(botDetails.getJSONObject("data").getString("welcome"));
-                invite.setAisuccesstip(botDetails.getJSONObject("data").getString("welcome"));
-                c.setName(botDetails.getJSONObject("data").getString("name"));
+                JSONObject botDetails = (JSONObject) result.getData();
+                c.setDescription(botDetails.getString("description"));
+                c.setFallback(botDetails.getString("fallback"));
+                c.setWelcome(botDetails.getString("welcome"));
+                invite.setAisuccesstip(botDetails.getString("welcome"));
+                c.setName(botDetails.getString("name"));
                 invite.setAiname(c.getName());
             } else {
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
                 resp.addProperty(
                         RestUtils.RESP_KEY_ERROR,
-                        "Chatopera云服务：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。提示：该机器人不存在，请先创建机器人, 登录 https://bot.chatopera.com");
+                        "Chatopera 云服务：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。提示：该机器人不存在，请先创建机器人, 登录 https://bot.chatopera.com");
                 return resp;
             }
         } catch (ChatbotException e) {
@@ -352,7 +359,7 @@ public class ApiChatbotController extends Handler {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
             resp.addProperty(
                     RestUtils.RESP_KEY_ERROR,
-                    "Chatopera云服务：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。");
+                    "Chatopera 云服务：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。");
             return resp;
         } catch (MalformedURLException e) {
             logger.error("bot request error", e);
@@ -541,22 +548,25 @@ public class ApiChatbotController extends Handler {
         }
 
         try {
-            logger.info("create bot with url {}", botServiecProvider);
+            logger.info("[create] bot with url {}", botServiecProvider);
             com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(clientId, secret, botServiecProvider);
 
-            if (bot.exists()) { // 该机器人存在，clientId 和 Secret配对成功
+            Response result = bot.command("GET", "/");
+            logger.info("[create] bot details response {}", result.toJSON().toString());
+
+            if (result.getRc() == 0) { // 该机器人存在，clientId 和 Secret配对成功
                 // 创建成功
                 Chatbot c = new Chatbot();
-                JSONObject botDetails = bot.details();
+                JSONObject botDetails = (JSONObject) result.getData();
                 c.setId(MainUtils.getUUID());
                 c.setClientId(clientId);
                 c.setSecret(secret);
                 c.setBaseUrl(botServiecProvider);
-                c.setDescription(botDetails.getJSONObject("data").getString("description"));
-                c.setFallback(botDetails.getJSONObject("data").getString("fallback"));
-                c.setPrimaryLanguage(botDetails.getJSONObject("data").getString("primaryLanguage"));
-                c.setName(botDetails.getJSONObject("data").getString("name"));
-                c.setWelcome(botDetails.getJSONObject("data").getString("welcome"));
+                c.setDescription(botDetails.getString("description"));
+                c.setFallback(botDetails.getString("fallback"));
+                c.setPrimaryLanguage(botDetails.getString("primaryLanguage"));
+                c.setName(botDetails.getString("name"));
+                c.setWelcome(botDetails.getString("welcome"));
                 c.setCreater(creater);
                 c.setOrgi(orgi);
                 c.setChannel(Constants.CHANNEL_TYPE_WEBIM);
@@ -590,7 +600,7 @@ public class ApiChatbotController extends Handler {
                 // 创建失败
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
                 resp.addProperty(
-                        RestUtils.RESP_KEY_ERROR, "Chatopera云服务：该机器人不存在，请先创建机器人, 登录 https://bot.chatopera.com");
+                        RestUtils.RESP_KEY_ERROR, "Chatopera 云服务：该机器人不存在，请先创建机器人, 登录 https://bot.chatopera.com");
                 return resp;
             }
         } catch (ChatbotException e) {
@@ -598,12 +608,12 @@ public class ApiChatbotController extends Handler {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
             resp.addProperty(
                     RestUtils.RESP_KEY_ERROR,
-                    "Chatopera云服务：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。");
+                    "Chatopera 云服务：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。");
             return resp;
         } catch (MalformedURLException e) {
             logger.error("bot request error", e);
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
-            resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera云服务：不合法的聊天机器人服务URL。");
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera 云服务：不合法的聊天机器人服务URL。");
             return resp;
         }
     }
