@@ -367,14 +367,14 @@
         <dependency>
             <groupId>com.chatopera.bot</groupId>
             <artifactId>sdk</artifactId>
-            <version>3.3.1</version>
+            <version>3.3.2</version>
         </dependency>
     </dependencies>
     <repositories>
         <repository>
             <id>chatopera</id>
             <name>Chatopera Inc.</name>
-            <url>https://nexus.cskefu.com/repository/maven-public</url>
+            <url>https://nexus.chatopera.com/repository/maven-public</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -388,12 +388,12 @@
         <repository>
             <id>chatopera-releases</id>
             <name>Chatopera Nexus Releases</name>
-            <url>https://nexus.cskefu.com/repository/maven-releases/</url>
+            <url>https://nexus.chatopera.com/repository/maven-releases/</url>
         </repository>
         <snapshotRepository>
             <id>chatopera-snapshots</id>
             <name>Chatopera Nexus Snapshots</name>
-            <url>https://nexus.cskefu.com/repository/maven-snapshots/</url>
+            <url>https://nexus.chatopera.com/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 

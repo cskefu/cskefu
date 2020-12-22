@@ -119,7 +119,7 @@
         <repository>
             <id>chatopera</id>
             <name>Chatopera Inc.</name>
-            <url>https://nexus.cskefu.com/repository/maven-public/</url>
+            <url>https://nexus.chatopera.com/repository/maven-public/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
