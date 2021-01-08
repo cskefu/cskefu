@@ -2,13 +2,15 @@
 
 # 春松客服: 多渠道智能客服
 
-[春松客服](https://github.com/chatopera/cskefu)帮助企业快速而低成本的获得好用的智能客服系统。
+[https://www.cskefu.com](https://www.cskefu.com/)
+
+快速获得好用的开源智能客服系统。
 
 [CSKeFu](https://github.com/chatopera/cskefu) is a Customer Support System for Enterprises in a High Performance Low-Touch way, open source for the world by [Chatopera Inc](https://www.chatopera.com/).
 
 <img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-yellow-bg.png" width="600">
 
-春松客服是 Chatopera 自主研发以及基于且增强其它开源软件的方式实现的，春松客服会不断增强客服系统的智能化，这包括利用自然语言处理、机器学习和语音识别等技术让客服工作更有效率、客服满意度更高、成本更低。
+春松客服是 Chatopera 自主研发以及基于且增强其它开源软件的方式实现的，春松客服会不断增强客服系统的智能化，这包括利用自然语言处理、机器学习和语音识别等技术让客服工作更有效率、客服满意度更高。
 
 **开源项目地址：** [Gitee](https://gitee.com/chatopera/cskefu) | [CodeChina](https://codechina.csdn.net/chatopera/cskefu) | [GitHub](https://github.com/chatopera/cskefu)
 
