@@ -21,20 +21,17 @@ import com.chatopera.cc.acd.ACDVisitorDispatcher;
 import com.chatopera.cc.acd.basic.ACDComposeContext;
 import com.chatopera.cc.acd.basic.ACDMessageHelper;
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.basic.MainContext.CallType;
-import com.chatopera.cc.basic.MainContext.ChannelType;
-import com.chatopera.cc.basic.MainContext.MessageType;
-import com.chatopera.cc.basic.MainContext.ReceiverType;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.model.Contacts;
 import com.chatopera.cc.model.CousultInvite;
+import com.chatopera.cc.model.OnlineUser;
 import com.chatopera.cc.persistence.repository.AgentServiceRepository;
+import com.chatopera.cc.persistence.repository.OnlineUserRepository;
 import com.chatopera.cc.proxy.AgentUserProxy;
 import com.chatopera.cc.proxy.OnlineUserProxy;
 import com.chatopera.cc.socketio.client.NettyClients;
 import com.chatopera.cc.socketio.message.AgentStatusMessage;
 import com.chatopera.cc.socketio.message.ChatMessage;
-import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.socketio.util.HumanUtils;
 import com.chatopera.cc.socketio.util.IMServiceUtils;
 import com.chatopera.cc.util.IP;
@@ -50,6 +47,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class IMEventHandler {
@@ -63,7 +63,7 @@ public class IMEventHandler {
     static private AgentUserProxy agentUserProxy;
     static private AgentServiceRepository agentServiceRepository;
     static private ACDVisitorDispatcher acdVisitorDispatcher;
-
+    static private OnlineUserRepository onlineUserRepository;
     /**
      * 接入访客并未访客寻找坐席服务人员
      *
@@ -156,6 +156,43 @@ public class IMEventHandler {
                         MainContext.ChatInitiatorType.USER.toString());
                 getAcdVisitorDispatcher().enqueue(ctx);
                 ACDServiceRouter.getAcdAgentService().notifyAgentUserProcessResult(ctx);
+
+                OnlineUser onlineUser = new OnlineUser();
+                Date now = new Date();
+                if (StringUtils.isNotBlank(url)) {
+                    try {
+                        URL referer = new URL(url);
+                        onlineUser.setSource(referer.getHost());
+                    } catch (MalformedURLException e) {
+                        logger.info("[online] error when parsing URL", e);
+                    }
+                }
+                onlineUser.setId(user);
+                onlineUser.setAppid(appid);
+                onlineUser.setBrowser(browser);
+                onlineUser.setOpersystem(osname.toLowerCase());
+
+                onlineUser.setCity(ipdata.getCity());
+                onlineUser.setCountry(ipdata.getCountry());
+                onlineUser.setCreater(user);
+                onlineUser.setCreatetime(now);
+                onlineUser.setDatestr(new SimpleDateFormat("yyyyMMdd").format(now));
+                onlineUser.setHostname(ip);
+                onlineUser.setIp(ip);
+                onlineUser.setIsp(ipdata.getIsp());
+                onlineUser.setLogintime(now);
+                onlineUser.setOrgi(orgi);
+                onlineUser.setProvince(ipdata.getProvince());
+                onlineUser.setRegion(ipdata.toString() + "（"+ ip + "）");
+                onlineUser.setSessionid(session);
+                onlineUser.setStatus(MainContext.OnlineUserStatusEnum.ONLINE.toString());
+                onlineUser.setUpdatetime(now);
+                onlineUser.setUpdateuser(user);
+                onlineUser.setUrl(url);
+                onlineUser.setUseragent(agent);
+                onlineUser.setUserid(user);
+                onlineUser.setUsername(nickname);
+                getOnlineUserRepository().save(onlineUser);
             } else {
                 logger.warn("[onConnect] invalid connection, no user present.");
                 //非法链接
@@ -187,6 +224,7 @@ public class IMEventHandler {
             }
             NettyClients.getInstance().removeIMEventClient(
                     user, MainUtils.getContextID(client.getSessionId().toString()));
+            getOnlineUserRepository().delete(user);
         }
     }
 
@@ -270,4 +308,10 @@ public class IMEventHandler {
         return acdVisitorDispatcher;
     }
 
+    private static OnlineUserRepository getOnlineUserRepository() {
+        if (onlineUserRepository == null) {
+            onlineUserRepository = MainContext.getContext().getBean(OnlineUserRepository.class);
+        }
+        return onlineUserRepository;
+    }
 }

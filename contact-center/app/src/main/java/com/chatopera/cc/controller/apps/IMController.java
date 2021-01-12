@@ -569,7 +569,9 @@ public class IMController extends Handler {
             @Valid final String imgurl,
             @Valid final String pid,
             @Valid final String purl,
-            @Valid final boolean isInvite) throws Exception {
+            @Valid final boolean isInvite,
+            @Valid final String osname,
+            @Valid final String browser) throws Exception {
         logger.info(
                 "[index] orgi {}, skill {}, agent {}, traceid {}, isInvite {}, exchange {}", orgi, skill, agent,
                 traceid, isInvite, exchange);
@@ -932,6 +934,8 @@ public class IMController extends Handler {
         }
 
         logger.info("[index] return view");
+        view.addObject("osname", osname);
+        view.addObject("browser", browser);
         return view;
     }
 
@@ -1025,10 +1029,10 @@ public class IMController extends Handler {
                 view.addObject("aiid", invite.getAiid());
             }
         }
-
+        view.addObject("osname", BrowserInfoUtils.parseBrowserHostOSFromUserAgent(request.getHeader("User-Agent")));
+        view.addObject("browser", BrowserInfoUtils.parseBrowserFromUserAgent(request.getHeader("User-Agent")));
         return view;
     }
-
 
     @RequestMapping("/leavemsg/save")
     @Menu(type = "admin", subtype = "user")
