@@ -588,6 +588,7 @@ public class IMController extends Handler {
         }
 
         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/im/index"));
+        view.addObject("systemConfig", MainUtils.getSystemConfig());
         Optional<BlackEntity> blackOpt = cache.findOneBlackEntityByUserIdAndOrgi(userid, Constants.SYSTEM_ORGI);
         CousultInvite invite = OnlineUserProxy.consult(appid, orgi);
         if (StringUtils.isNotBlank(

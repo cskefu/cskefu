@@ -8,8 +8,7 @@
 		content="width=device-width, maximum-scale=1.0, initial-scale=1.0,initial-scale=1.0,user-scalable=no" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
     <title>在线咨询</title>
-    
-	<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?t=1489039620156"/>
+	<link rel="shortcut icon" type="image/x-icon" href="<#if systemConfig?? && systemConfig.favlogo?? && systemConfig.favlogo != ''>/res/image.html?id=${systemConfig.favlogo?url}<#else>/images/favicon.ico?t=${.now?long}</#if>"/>
     <link rel="stylesheet" type="text/css" href="/im/css/ukefu.css">
     <link rel="stylesheet" id="skin" type="text/css" href="/im/css/default/ukefu.css">
     <!-- kindeditor -->
