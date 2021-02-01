@@ -14,7 +14,7 @@
 
 **开源项目地址：** [Gitee](https://gitee.com/chatopera/cskefu) | [CodeChina](https://codechina.csdn.net/chatopera/cskefu) | [GitHub](https://github.com/chatopera/cskefu)
 
-**开发环境搭建：** [https://docs.chatopera.com/products/cskefu/engineering.html](https://docs.chatopera.com/products/cskefu/engineering.html)
+**开发环境搭建：** [https://docs.chatopera.com/products/cskefu/osc/engineering.html](https://docs.chatopera.com/products/cskefu/osc/engineering.html)
 
 **官方博客：** [https://blog.chatopera.com/](https://blog.chatopera.com/)
 
@@ -165,21 +165,21 @@ The collaboration is efficient, very professional. The software is steady with h
 ### 开发文档
 
 <p align="center">
-  <b><a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">开发文档</a></b><br>
-  <a href="https://docs.chatopera.com/products/cskefu/engineering.html" target="_blank">
+  <b><a href="https://docs.chatopera.com/products/cskefu/osc/engineering.html" target="_blank">开发文档</a></b><br>
+  <a href="https://docs.chatopera.com/products/cskefu/osc/engineering.html" target="_blank">
       <img src="https://static-public.chatopera.com/assets/images/44992890-38be0800-afcb-11e8-8fde-a5a671d29764.png" width="300">
   </a>
 </p>
 
 ### 在线培训视频
 
-[春松客服大讲堂](https://docs.chatopera.com/products/cskefu/training.html)是面向企业 CTO、客服主管、客服及客服系统开发运维人员的在线培训课程，由浅入深的介绍春松客服上线企业智能客服系统、运营客服工作和二次开发的知识。
+[春松客服大讲堂](https://docs.chatopera.com/products/cskefu/osc/training.html)是面向企业 CTO、客服主管、客服及客服系统开发运维人员的在线培训课程，由浅入深的介绍春松客服上线企业智能客服系统、运营客服工作和二次开发的知识。
 
-详情查看[课程介绍及优惠方案](https://docs.chatopera.com/products/cskefu/training.html)。
+详情查看[课程介绍及优惠方案](https://docs.chatopera.com/products/osc/cskefu/osc/training.html)。
 
 <p align="center">
-  <b><a href="https://docs.chatopera.com/products/cskefu/training.html" target="_blank">主讲老师介绍</a></b><br>
-  <a href="https://docs.chatopera.com/products/cskefu/training.html" target="_blank">
+  <b><a href="https://docs.chatopera.com/products/cskefu/osc/training.html" target="_blank">主讲老师介绍</a></b><br>
+  <a href="https://docs.chatopera.com/products/cskefu/osc/training.html" target="_blank">
       <img src="https://static-public.chatopera.com/assets/images/djt-teacher-hain.jpg" width="800">
   </a>
 </p>
