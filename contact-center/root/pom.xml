@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.chatopera.cc</groupId>
     <artifactId>cc-root</artifactId>
-    <version>6.1.0-SNAPSHOT</version>
+    <version>7.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>cc-root</name>
     <description>春松客服：多渠道智能客服系统</description>
