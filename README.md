@@ -101,9 +101,9 @@ The collaboration is efficient, very professional. The software is steady with h
 
 **春松客服从 v5.0.0 版本开始提供如下付费模块：**
 
-- 呼叫中心：全解决方案，包括呼入和呼出，可选的硬件语音网关，自动外呼，监听和报表等
+- Messenger 渠道：集成 [Facebook Messenger Platform](https://docs.chatopera.com/products/cskefu/channels/messenger/index.html)，在 Facebook 全家桶中连接亿万消费者、买家
 
-- Skype 渠道：通过 Skype 账号与用户进行沟通
+- 呼叫中心：全解决方案，包括呼入和呼出，可选的硬件语音网关，自动外呼，监听和报表等
 
 付费模块代码并不开源，并且使用插件的形式安装在源码中，[请联系“商务洽谈”](https://www.chatopera.com/mail.html)获得插件和商业支持。
 
@@ -221,9 +221,9 @@ The collaboration is efficient, very professional. The software is steady with h
 
 ## 开源许可协议
 
-Copyright (2018-2020) <a href="https://www.chatopera.com/" target="_blank">北京华夏春松科技有限公司</a>
+Copyright (2018-2021) <a href="https://www.chatopera.com/" target="_blank">北京华夏春松科技有限公司</a>
 
-[Apache License Version 2.0](https://github.com/chatopera/cskefu/blob/master/LICENSE)
+[Apache License Version 2.0](https://github.com/chatopera/cskefu/blob/osc/LICENSE)
 
 [![chatoper banner][co-banner-image]][co-url]
 
