@@ -18,7 +18,6 @@ package com.chatopera.cc.controller.apps;
 
 import com.chatopera.cc.acd.ACDPolicyService;
 import com.chatopera.cc.basic.Constants;
-import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
@@ -27,6 +26,8 @@ import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.proxy.OrganProxy;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -49,6 +50,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/setting")
 public class AgentSettingsController extends Handler {
+    private final static Logger logger = LoggerFactory.getLogger(AgentSettingsController.class);
 
     @Autowired
     private ACDPolicyService acdPolicyService;
@@ -90,8 +92,8 @@ public class AgentSettingsController extends Handler {
         if (sessionConfig == null) {
             sessionConfig = new SessionConfig();
         }
-        map.put("sessionConfig", sessionConfig);
 
+        map.put("sessionConfig", sessionConfig);
 
         List<SysDic> dicList = Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_DIC);
         SysDic inputDic = null, outputDic = null;
@@ -110,7 +112,7 @@ public class AgentSettingsController extends Handler {
             map.addAttribute("outputtemlet", templateRes.findByTemplettypeAndOrgi(outputDic.getId(), super.getOrgi(request)));
         }
 
-        return request(super.createAppsTempletResponse("/apps/setting/agent/index"));
+        return request(super.createView("/apps/setting/agent/index"));
     }
 
     @RequestMapping("/agent/sessionconfig/save")
@@ -119,7 +121,7 @@ public class AgentSettingsController extends Handler {
         Organ currentOrgan = super.getOrgan(request);
         String orgi = super.getOrgi(request);
         SessionConfig tempSessionConfig = sessionConfigRes.findByOrgiAndSkill(orgi, currentOrgan.getId());
-        
+
         if (tempSessionConfig == null) {
             tempSessionConfig = sessionConfig;
             tempSessionConfig.setCreater(super.getUser(request).getId());
@@ -141,7 +143,7 @@ public class AgentSettingsController extends Handler {
         acdPolicyService.initSessionConfigList();
         map.put("sessionConfig", tempSessionConfig);
 
-        return request(super.createRequestPageTempletResponse("redirect:/setting/agent/index.html"));
+        return request(super.createView("redirect:/setting/agent/index.html"));
     }
 
     @RequestMapping("/blacklist")
@@ -152,9 +154,10 @@ public class AgentSettingsController extends Handler {
 
         Page<BlackEntity> blackList = blackListRes.findByOrgiAndSkillIn(super.getOrgi(request), organs.keySet(), new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "endtime"));
 
+
         map.put("blackList", blackList);
         map.put("tagTypeList", Dict.getInstance().getDic("com.dic.tag.type"));
-        return request(super.createAppsTempletResponse("/apps/setting/agent/blacklist"));
+        return request(super.createView("/apps/setting/agent/blacklist"));
     }
 
     @RequestMapping("/blacklist/delete")
@@ -167,7 +170,7 @@ public class AgentSettingsController extends Handler {
                 cache.deleteSystembyIdAndOrgi(tempBlackEntity.getUserid(), Constants.SYSTEM_ORGI);
             }
         }
-        return request(super.createRequestPageTempletResponse("redirect:/setting/blacklist.html"));
+        return request(super.createView("redirect:/setting/blacklist.html"));
     }
 
     @RequestMapping("/tag")
@@ -194,14 +197,14 @@ public class AgentSettingsController extends Handler {
             map.put("tagList", tagRes.findByOrgiAndTagtypeAndSkill(super.getOrgi(request), tagType.getCode(), currentOrgan.getId(), new PageRequest(super.getP(request), super.getPs(request))));
         }
         map.put("tagTypeList", tagList);
-        return request(super.createAppsTempletResponse("/apps/setting/agent/tag"));
+        return request(super.createView("/apps/setting/agent/tag"));
     }
 
     @RequestMapping("/tag/add")
     @Menu(type = "setting", subtype = "tag", admin = false)
     public ModelAndView tagadd(ModelMap map, HttpServletRequest request, @Valid String tagtype) {
         map.addAttribute("tagtype", tagtype);
-        return request(super.createRequestPageTempletResponse("/apps/setting/agent/tagadd"));
+        return request(super.createView("/apps/setting/agent/tagadd"));
     }
 
     @RequestMapping("/tag/edit")
@@ -209,7 +212,7 @@ public class AgentSettingsController extends Handler {
     public ModelAndView tagedit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String tagtype) {
         map.put("tag", tagRes.findOne(id));
         map.addAttribute("tagtype", tagtype);
-        return request(super.createRequestPageTempletResponse("/apps/setting/agent/tagedit"));
+        return request(super.createView("/apps/setting/agent/tagedit"));
     }
 
     @RequestMapping("/tag/update")
@@ -228,7 +231,7 @@ public class AgentSettingsController extends Handler {
             tag.setSkill(currentOrgan.getId());
             tagRes.save(tag);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/setting/tag.html?code=" + tagtype));
+        return request(super.createView("redirect:/setting/tag.html?code=" + tagtype));
     }
 
     @RequestMapping("/tag/save")
@@ -242,14 +245,14 @@ public class AgentSettingsController extends Handler {
             tag.setSkill(currentOrgan.getId());
             tagRes.save(tag);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/setting/tag.html?code=" + tagtype));
+        return request(super.createView("redirect:/setting/tag.html?code=" + tagtype));
     }
 
     @RequestMapping("/tag/delete")
     @Menu(type = "setting", subtype = "tag", admin = false)
     public ModelAndView tagdelete(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String tagtype) {
         tagRes.delete(id);
-        return request(super.createRequestPageTempletResponse("redirect:/setting/tag.html?code=" + tagtype));
+        return request(super.createView("redirect:/setting/tag.html?code=" + tagtype));
     }
 
 
@@ -257,7 +260,7 @@ public class AgentSettingsController extends Handler {
     @Menu(type = "setting", subtype = "acd", admin = false)
     public ModelAndView acd(ModelMap map, HttpServletRequest request) {
         map.put("tagTypeList", Dict.getInstance().getDic("com.dic.tag.type"));
-        return request(super.createAppsTempletResponse("/apps/setting/agent/acd"));
+        return request(super.createView("/apps/setting/agent/acd"));
     }
 
 
@@ -288,14 +291,14 @@ public class AgentSettingsController extends Handler {
 
         map.put("advTypeList", Dict.getInstance().getDic("com.dic.adv.type"));
 
-        return request(super.createAppsTempletResponse("/apps/setting/agent/adv"));
+        return request(super.createView("/apps/setting/agent/adv"));
     }
 
     @RequestMapping("/adv/add")
     @Menu(type = "setting", subtype = "adv", admin = false)
     public ModelAndView advadd(ModelMap map, HttpServletRequest request, @Valid String adpos) {
         map.addAttribute("adpos", adpos);
-        return request(super.createRequestPageTempletResponse("/apps/setting/agent/adadd"));
+        return request(super.createView("/apps/setting/agent/adadd"));
     }
 
     @RequestMapping("/adv/save")
@@ -319,7 +322,7 @@ public class AgentSettingsController extends Handler {
 
         MainUtils.initAdv(super.getOrgi(request), adv.getSkill());
 
-        return request(super.createRequestPageTempletResponse("redirect:/setting/adv.html?adpos=" + adv.getAdpos()));
+        return request(super.createView("redirect:/setting/adv.html?adpos=" + adv.getAdpos()));
     }
 
     @RequestMapping("/adv/edit")
@@ -327,7 +330,7 @@ public class AgentSettingsController extends Handler {
     public ModelAndView advedit(ModelMap map, HttpServletRequest request, @Valid String adpos, @Valid String id) {
         map.addAttribute("adpos", adpos);
         map.put("ad", adTypeRes.findByIdAndOrgi(id, super.getOrgi(request)));
-        return request(super.createRequestPageTempletResponse("/apps/setting/agent/adedit"));
+        return request(super.createView("/apps/setting/agent/adedit"));
     }
 
     @RequestMapping("/adv/update")
@@ -356,7 +359,7 @@ public class AgentSettingsController extends Handler {
             adTypeRes.save(ad);
             MainUtils.initAdv(orgi, tempad.getSkill());
         }
-        return request(super.createRequestPageTempletResponse("redirect:/setting/adv.html?adpos=" + adpos));
+        return request(super.createView("redirect:/setting/adv.html?adpos=" + adpos));
     }
 
     @RequestMapping("/adv/delete")
@@ -368,6 +371,6 @@ public class AgentSettingsController extends Handler {
             adTypeRes.delete(id);
             MainUtils.initAdv(orgi, adType.getSkill());
         }
-        return request(super.createRequestPageTempletResponse("redirect:/setting/adv.html?adpos=" + adpos));
+        return request(super.createView("redirect:/setting/adv.html?adpos=" + adpos));
     }
 }

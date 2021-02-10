@@ -16,8 +16,10 @@
  */
 package com.chatopera.cc.controller.resource;
 
+import com.alibaba.fastjson.JSONObject;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.controller.api.request.RestUtils;
 import com.chatopera.cc.model.AttachmentFile;
 import com.chatopera.cc.model.StreamingFile;
 import com.chatopera.cc.model.UploadStatus;
@@ -32,6 +34,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -118,11 +123,11 @@ public class MediaController extends Handler {
 
     @RequestMapping("/image/upload")
     @Menu(type = "resouce", subtype = "imageupload", access = false)
-    public ModelAndView upload(ModelMap map,
-                               HttpServletRequest request,
-                               @RequestParam(value = "imgFile", required = false) MultipartFile multipart) throws IOException {
-        ModelAndView view = request(super.createRequestPageTempletResponse("/public/upload"));
-        UploadStatus notify = null;
+    public ResponseEntity<String> upload(ModelMap map,
+                                         HttpServletRequest request,
+                                         @RequestParam(value = "imgFile", required = false) MultipartFile multipart) throws IOException {
+        JSONObject result = new JSONObject();
+        HttpHeaders headers = RestUtils.header();
         if (multipart != null && multipart.getOriginalFilename().lastIndexOf(".") > 0) {
             File uploadDir = new File(path, "upload");
             if (!uploadDir.exists()) {
@@ -136,12 +141,15 @@ public class MediaController extends Handler {
             sf.setData(jpaBlobHelper.createBlob(multipart.getInputStream(), multipart.getSize()));
             streamingFileRes.save(sf);
             String fileURL = "/res/image.html?id=" + fileid;
-            notify = new UploadStatus("0", fileURL); //图片直接发送给 客户，不用返回
+            result.put("error", 0);
+            result.put("url", fileURL); //图片直接发送给 客户，不用返回
         } else {
-            notify = new UploadStatus("请选择图片文件");
+            result.put("error", 1);
+            result.put("message", "请选择图片文件");
         }
-        map.addAttribute("upload", notify);
-        return view;
+
+        return new ResponseEntity<>(result.toString(), headers, HttpStatus.OK);
+
     }
 
     @RequestMapping("/file")

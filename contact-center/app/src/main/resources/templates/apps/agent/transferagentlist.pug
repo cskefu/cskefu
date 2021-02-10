@@ -1,0 +1,34 @@
+table.layui-table(lay-skin='line', style='table-layout: fixed; word-break: break-all;')
+    colgroup
+        col(width='3%')
+        col(width='20%')
+        col(width='20%')
+        col(width='15%')
+        col(width='15%')
+    thead
+        tr
+            th
+            th 坐席
+            th 登陆时间
+            th 最大用户数
+            th 服务用户数
+    tbody
+        if userList && currentorgan
+            for agent in userList
+                if agent.skills[currentorgan]
+                    tr.ukefu-agentstatus
+                        td(style="width:1px;padding:10px 0px 10px 10px;")
+                            input.agentnoradio.ctxid(type="radio", name="agentno", value= agent.id, onclick="selectAgentnoWithRadioClick(this)", id="user_" + agent.id, style="display:block;")
+                        td(title= agent.username + "（" + agent.uname + "）", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;") #{agent.username}（#{agent.uname}）
+                        td #{agent.agentStatus && agent.agentStatus.logindate ? pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', agent.agentStatus.logindate) : ""}
+                        td #{agent.agentStatus.maxusers ? agent.agentStatus.maxusers : 0}
+                        td #{agent.agentStatus.users ? agent.agentStatus.users : 0}
+
+    script.
+        $(".agentnoradio").onclick = function (e) {
+            return false;
+        }
+
+        function selectAgentnoWithRadioClick(radiovalue) {
+            radiovalue.parentNode.click();
+        }

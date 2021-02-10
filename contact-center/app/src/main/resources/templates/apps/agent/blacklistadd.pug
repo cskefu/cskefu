@@ -1,0 +1,49 @@
+.uk-layui-form
+    form.layui-form(action='/agent/blacklist/save.html', method='post')
+        input(type='hidden', name='agentuserid', value=agentuserid)
+        input(type='hidden', name='agentserviceid', value=agentserviceid)
+        input(type='hidden', name='userid', value=userid)
+        .layui-collapse
+            .layui-colla-item
+                h2.layui-colla-title 黑名单信息
+                .layui-colla-content.layui-show
+                    .layui-form-item
+                        .layui-inline
+                            label.layui-form-label#cusname 拉黑方式：
+                            .layui-input-inline(style='margin-top:9px;')
+                                | 访客ID（#{userid}）
+                        .layui-inline.uckefu-inline
+                            label.layui-form-label#cusname 时长：
+                            .layui-input-inline.ukefu-limit-height
+                                select(name='controltime')
+                                    for i in pugHelper.range(1,24)
+                                        option(value=i)
+                                            | #{i}小时
+                                    for i in pugHelper.range(1,30)
+                                         option(value=i)
+                                             | #{i}天
+                                    for i in pugHelper.range(1,12)
+                                         option(value=i)
+                                             | #{i}月
+                                    option(value='0') 永久
+            .layui-colla-item
+                h2.layui-colla-title 扩展信息
+                .layui-colla-content.layui-show
+                    .layui-form-item
+                        .layui-inline
+                            label.layui-form-label 拉黑原因：
+                            .layui-input-inline(style='width: 664px;')
+                                textarea.layui-textarea(name='description', placeholder='拉黑原因', style='resize:none;', maxlength='255')
+        .layui-form-button
+            .layui-button-block
+                button.layui-btn(lay-submit, lay-filter='formDemo') 立即提交
+                button.layui-btn.layui-btn-original(type='reset') 重置
+script.
+    layui.use('form', function () {
+        var form = layui.form();
+        form.render(); //更新全部
+    });
+    layui.use('element', function () {
+        var element = layui.element();
+        element.init();
+    });

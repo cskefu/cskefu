@@ -33,6 +33,8 @@ public class PluginRegistry {
      */
     public final static String PLUGIN_CHANNEL_MESSAGER_SUFFIX = "ChannelMessager";
 
+    public final static String PLUGIN_CHATBOT_MESSAGER_SUFFIX = "ChatbotMessager";
+
     // 插件列表
     private final List<IPluginConfigurer> plugins = new ArrayList<>();
 

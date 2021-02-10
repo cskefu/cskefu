@@ -1,0 +1,39 @@
+table.layui-table.ukefu-report
+    thead
+        if reportData.col.title.size() > 0
+            for tlist in reportData.col.title
+                tr.sortableTr
+                    if reportData.col.title.size() > 1 && tlist_index == 0 && reportData.row.title.size() > 0
+                        td.s_blue(align="center", colspan= reportData.row.title.size(), rowspan= reportData.col.title.size() - 1)
+                    if (tlist_index + 1) == reportData.col.title.size() && reportData.row.firstTitle
+                        for first in reportData.row.firstTitle
+                            td(align="center", data-title= "#{first.name ? first.name : url}", data-flag="dim") #{first.rename ? first.rename : first.name}
+                                if first.description
+                                    img(style="cursor: pointer;", onclick="showHelpMsg(this)", title="维度描述", width="10", height="10", src="/assets/images/help.png")
+                                textarea(style="display: none") #{first.description}
+                    if tlist
+                        for tl in tlist
+                            td(align="center", rowspan= (tl.leveltype && tl.leveltype == "newcol" ? reportData.col.title.size() : "0"), colspan= tl.colspan) #{tl.rename ? tl.rename : tl.name}
+    tbody
+        if reportData.data.size() > 0
+            for values,index in reportData.data
+                tr.rowcell
+                    if reportData.row.title.size() > 0
+                        for tl in reportData.row.title
+                            - var rows = 0
+                            for title in tl
+                                if title
+                                    if rows == index && title.name != "TOTAL_TEMP"
+                                        if title.leveltype != "newrow_extend_sum"
+                                            td.blue_k(title= title.formatName, style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;", nowrap="nowrap", align="center", class=({"total": title.total == true}), rowspan= title.rowspan, colspan= (title.colspan > 1 ? title.colspan : 0)) #{title.formatName}
+                                        if title.valueData
+                                            for value in title.valueData
+                                                if value.merge == false
+                                                    td.measure(rowspan=value.rowspan, colspan=value.colspan align="center" class=value.vtclass, nowrap="nowrap", data-cellmerge=value.cellmergeid) #{value.valueStyle ? value.valueStyle : value.foramatValue}
+                                    - rows=rows + title.rowspan
+                    else
+                        for value in values
+                            td.row(style=({
+                                "text-align": "right",
+                                "background-color": (value.valueType && value.valueType == 'total' ? "#c5daed" : "")
+                            })) #{value.valueStyle ? value.valueStyle : value.foramatValue} uuuuu

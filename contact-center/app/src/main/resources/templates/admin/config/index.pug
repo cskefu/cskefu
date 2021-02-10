@@ -1,0 +1,539 @@
+extends /admin/include/layout.pug
+block content
+    form.layui-form(method='post', key='set-mine', enctype='multipart/form-data', action='/admin/config/save.html')
+        if systemConfig
+            input(type="hidden" name="id" value=systemConfig.id)
+        .row
+            .col-lg-12
+                .ukefu-customer-div.setting-wrapper
+                    .box.default-box
+                        .box-header
+                            h3.box-title 系统设置
+
+                        //- 主题索引 在 class 里引用
+                        - var ukefuThemeColorNum = '1'
+                        if systemConfig.theme == '01'
+                            - ukefuThemeColorNum = '1'
+                        else if systemConfig.theme == '02'
+                            - ukefuThemeColorNum = '2'
+                        else if systemConfig.theme == '03'
+                            - ukefuThemeColorNum = '3'
+                        .box-body.ukefu-im-theme
+                            .row
+                                .col-lg-8
+                                    .ukefu-webim-prop
+                                        .ukefu-webim-tl(style='clear:both;') 系统颜色风格选择
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 春松客服系统界面颜色风格
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 默认的配色是绿色，选择颜色可以在右侧预览风格，点击保存即可生效
+                                                .col-lg-4
+                                                    select(name='theme', lay-filter='sysconfig')
+                                                        option(value="01", selected= systemConfig.theme == '01' && "selected") 绿色
+                                                        option(value="02", selected= systemConfig.theme == '02' && "selected") 黑色
+                                                        option(value="03", selected= systemConfig.theme == '03' && "selected") 蓝色
+                                    .ukefu-webim-prop(hidden)
+                                        .ukefu-webim-tl(style='clear:both;') 请填写服务器的访问地址
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 服务器的访问地址，包含端口。
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 后台访问静态资源时需要使用
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        input.layui-input(type='text', name='iconstr', value= systemConfig.iconstr, autocomplete='off')
+                                    .ukefu-webim-prop
+                                        .ukefu-webim-tl(style='clear:both;') 产品登录界面和后台管理界面标题
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 登录页和产品后台页面显示标题
+                                                .col-lg-4(style='text-align:right;position: relative;')
+                                                    input.layui-input(type='text', name='title', value=systemConfig.title ? systemConfig.title: "春松客服-全渠道智能客服", autocomplete='off')
+                                    .ukefu-webim-prop
+                                        .ukefu-webim-tl(style='clear:both;') 登录页欢迎Logo图片
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 登录页显示的Logo图片，建议尺寸220*60。
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;')
+                                                        span.ukefu-logo
+                                                            img(src= systemConfig.loginlogo ? '/res/image.html?id=' + systemConfig.loginlogo: '/images/logo2.png', style='height:60px;')
+                                                .col-lg-4(style='text-align:right;position: relative;')
+                                                    .layui-input-block
+                                                        .layui-box.layui-upload-button
+                                                            input.layui-upload-file(type='file', name='loginlogo', accept='image/gif, image/jpeg, image/png', lay-ext='jpg|png|gif', onchange='$(\'#logo_img\').html($(this).val());')
+                                                            span.layui-upload-icon
+                                                                i.layui-icon 
+                                                                | 上传图片
+                                                    #logo_img(style='position:absolute;right: 20px;')
+                                    .ukefu-webim-prop
+                                        .ukefu-webim-tl(style='clear:both;') 产品后台管理界面Logo图片
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 登录页显示的Logo图片，建议尺寸280*80。
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;')
+                                                    .ukefu-console-logo(class='ukefu-system-theme' + ukefuThemeColorNum, style='width:140px;height:40px;padding:5px;')
+                                                        img(src= systemConfig.consolelogo ? '/res/image.html?id=' + systemConfig.consolelogo:  '/images/logo.png', style='height:40px;')
+                                                    p
+                                                .col-lg-4(style='text-align:right;position: relative;')
+                                                    .layui-input-block
+                                                        .layui-box.layui-upload-button
+                                                            input.layui-upload-file(type='file', name='consolelogo', accept='image/gif, image/jpeg, image/png', lay-ext='jpg|png|gif', onchange='$(\'#consolelogo_img\').html($(this).val());')
+                                                            span.layui-upload-icon
+                                                                i.layui-icon 
+                                                                | 上传图片
+                                                    #consolelogo_img(style='position:absolute;right: 20px;')
+                                    .ukefu-webim-prop
+                                        .ukefu-webim-tl(style='clear:both;') 产品标题栏缩略小图
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 产品登录页和后台管理页面的标题栏小缩略图，文件扩展名是ico格式
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;').
+                                                    .ukefu-console-logo(style='width:140px;height:40px;padding:5px;')
+                                                        img(src= systemConfig.favlogo ? '/res/image.html?id=' + systemConfig.favlogo:'/images/favicon.ico', style='height:40px;')
+                                                    p
+                                                .col-lg-4(style='text-align:right;position: relative;')
+                                                    .layui-input-block
+                                                        .layui-box.layui-upload-button
+                                                            input.layui-upload-file(type='file', name='favlogo', accept='image/ico, image/icon, image/gif, image/jpeg, image/png', lay-ext='jpg|png|ico|icon|gif', onchange='$(\'#favlogo_img\').html($(this).val());')
+                                                            span.layui-upload-icon
+                                                                i.layui-icon 
+                                                                | 上传图片
+                                                    #favlogo_img(style='position:absolute;right: 20px;')
+                                    .ukefu-webim-prop
+                                        .ukefu-webim-tl(style='clear:both;') 重启或停止对话服务
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p Netty SocketIO服务，服务端口：#{webimport}, 状态：
+                                                        if imServerStatus == true
+                                                            small.ukefu-label.theme4 服务中
+                                                        else
+                                                            small.ukefu-label.theme4(style="background-color:#FF5722;") 已停止
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 建议通过界面停止或启动对话服务，避免出现端口被占用的问题
+                                                .col-lg-4
+                                                    if imServerStatus == true
+                                                        a.layui-btn.layui-btn-small.layui-btn-danger(href="/admin/config/stopimserver.html", data-toggle="tip", title="停止对话服务后不能从Web界面再次启动，请确认是否退出？", data-confirm= secret.enable==true ? "请输入二次安全验证密码":null ) 停止对话服务
+                                    .ukefu-webim-prop
+                                        .ukefu-webim-tl(style='clear:both;') 启用企业聊天功能
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 启用企业聊天组件，右下角出现企业聊天窗口,当前状态：
+                                                        if entim == true
+                                                            small.ukefu-label.theme4 已启用
+                                                        else
+                                                            small.ukefu-label.theme4(style="background-color:#FF5722;") 已关闭
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 默认关闭企业聊天功能
+                                                .col-lg-4
+                                                    if entim == true
+                                                        a(href="/admin/config/stopentim.html" data-toggle="tip" title="请确认是否关闭企业聊天功能？" class="layui-btn layui-btn-small layui-btn-danger") 关闭企业聊天功能
+                                                    else
+                                                        a(href="/admin/config/startentim.html" data-toggle="tip" title="启用企业聊天功能" class="layui-btn layui-btn-small") 启用企业聊天功能
+                                    .ukefu-webim-prop
+                                        .ukefu-webim-tl(style='clear:both;') 启用权限数据采集功能功能
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 启用权限数据采集功能后，会进入数据采集模式,当前状态：
+                                                        if infoace == true
+                                                            small.ukefu-label.theme4 已启用
+                                                        else
+                                                            small.ukefu-label.theme4(style="background-color:#FF5722;") 已关闭
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 启用后，在春松客服界面上的任何链接点击操作都会触发数据收集功能
+                                                .col-lg-4
+                                                    if infoace == true
+                                                        a(href="/admin/auth/infoacq.html" target="parent" class="layui-btn layui-btn-small layui-btn-danger") 退出数据采集功能
+                                                    else
+                                                        a(href="/admin/auth/infoacq.html" target="parent" class="layui-btn layui-btn-small") 进入数据采集功能
+                                    .ukefu-webim-prop(hidden)
+                                        .ukefu-webim-tl(style='clear:both;') 停止春松客服系统
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 安全退出系统服务，停止服务调用JVM的退出指令
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 适用于Tomcat、Jetty等系统，WebLogic/WebSphere等中间件严禁使用
+                                                .col-lg-4
+                                                    a.layui-btn.layui-btn-small.layui-btn-danger(href="/admin/config/stop.html", data-toggle="tip", title="停止服务将会调用JVM退出指令，请确认是否退出？", data-confirm= secret.enable ? '请输入二次安全验证密码':null)  停止服务
+                                    .ukefu-webim-prop
+                                        .ukefu-webim-tl(style='clear:both;') 修改微信接收消息的日志级别
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 动态修改微信接收消息的日志级别
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 默认是INFO，调整到DEBUG能够方便微信消息排查错误
+                                                .col-lg-4
+                                                    select(name='loglevel', lay-filter='sysconfig')
+                                                        option(value="info", selected = (systemConfig.loglevel == 'info'?'selected' : false)) INFO
+                                                        option(value="debug", selected = (systemConfig.loglevel == 'debug'?'selected' : false)) DEBUG
+                                    .ukefu-webim-prop(hidden)
+                                        .ukefu-webim-tl(style='clear:both;') 启用服务SSL安全访问
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 启用 SSL 安全协议
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 启用后需要上传SSL证书和设置SSL证书密码
+                                                .col-lg-4(style='text-align:right;')
+                                                    input(type="checkbox" title="启用" name="enablessl" lay-filter="enablessl" value="1", checked=(systemConfig.enablessl?'checked':false))
+                                            .row.httpsconfig(style='margin-top:20px;display:' + (systemConfig.enablessl == false? "none;":"block;"))
+                                                .col-lg-8
+                                                    p
+                                                        | JKS 证书文件
+                                                        span(style='color:red;font-weight:bold;')= systemConfig.jksfile
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;').
+                                                        受信的SSL证书文件，请上传.JKS类型的证书文件
+                                                .col-lg-4(style='text-align:right;')
+                                                    span#jkstip
+                                                    .layui-box.layui-upload-button
+                                                        input.layui-upload-file(type='file', name='keyfile', accept='.jks', lay-ext='jks', onchange='$(\'#jkstip\').html($(this).val());')
+                                                        span.layui-upload-icon
+                                                            i.layui-icon 
+                                                            | 上传 JKS 文件
+                                            .row.httpsconfig(style='margin-top:20px;display:' + (systemConfig.enablessl == false ? 'none;':'block;'))
+                                                .col-lg-8
+                                                    p JKS证书密码
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;')
+                                                        | .JKS文件的证书密码，
+                                                        b(style='color:red;font-weight:bold;') 如无改变，不用填写
+                                                .col-lg-4(style='text-align:right;')
+                                                    input.layui-input(type='password', name='jkspassword', autocomplete='off')
+                                    .ukefu-webim-prop(hidden)
+                                        .ukefu-webim-tl(style='clear:both;') 启用涉及重要操作的二次验证密码
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 启用重要操作的二次密码验证
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 启用后重启服务器、关闭对话服务器和修改证书等操作将会进行二次安全验证
+                                                .col-lg-4(style='text-align:right;')
+                                                    input(type="checkbox", title="启用", name="enable", lay-filter="enable", value="1", checked = (secret.enable == true?'checked':false))
+                                                    if secret.enable == true
+                                                        .row.elablesec(style="margin-top:20px;display:" + (secret.enable == true?'block;':'none;'))
+                                                            .col-lg-8
+                                                                p 已设定的旧的密码
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 请填写已经保存的旧的密码，提交后会验证旧密码是否正确
+                                                            .col-lg-4(style="text-align:right;")
+                                                                input(type="password" name="oldpass" id="oldpass" value="" autocomplete="off" class="layui-input")
+                                            .row.elablesec(style='margin-top:20px;display:' + (secret.enable == true ? 'block;':'none;'))
+                                                .col-lg-8
+                                                    p 安全操作的二次验证新密码
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 首次设置密码无需验证旧密码
+                                                .col-lg-4(style='text-align:right;')
+                                                    input#password.layui-input(type='password', name='password', autocomplete='off')
+                                            .row.elablesec(style='margin-top:20px;display:' + (secret.enable == true ? 'block;':'none;'))
+                                                .col-lg-8
+                                                    p 再次确认安全操作的二次验证新密码
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;')
+                                                        b(style='color:red;font-weight:bold;') 请保证新密码两次输入相同
+                                                .col-lg-4(style='text-align:right;')
+                                                    input#repassword.layui-input(type='password', name='repassword', lay-verify='pass', autocomplete='off')
+                                    .ukefu-webim-prop
+                                        .ukefu-webim-tl(style='clear:both;') 百度地图的Key代码（AK）
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 用于调用百度地图的API
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 需要使用的API包括坐标转换和Javascript接口
+                                                .col-lg-4
+                                                    input.layui-input(type='text', name='mapkey', value=systemConfig.mapkey, autocomplete='off')
+                                    .ukefu-webim-prop(hidden)
+                                        .ukefu-webim-tl(style='clear:both;') 工单系统布局方式
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 启用三栏布局
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 工单系统默认采用的是两栏布局，启用此功能后，工单系统展现将采用三栏布局方式
+                                                .col-lg-4(style='text-align:right;')
+                                                    input(type="checkbox", title="启用", name="workorders", lay-filter="workorders", value="1", checked= (systemConfig.workorders ? 'checked': false))
+                                    .ukefu-webim-prop
+                                        .ukefu-webim-tl(style='clear:both;') 启用权限控制
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 系统菜单的权限控制
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 默认不启用权限控制，如果选择启用，用户需要授权才能访问需要授权的系统菜单功能，系统管理员账号（admin）不受控制
+                                                .col-lg-4(style='text-align:right;')
+                                                    input(type="checkbox", title="启用", name="auth", value="1", checked= (systemConfig.auth ? 'checked': false))
+                                    .ukefu-webim-prop(hidden)
+                                        .ukefu-webim-tl(style='clear:both;') 启用语音平台模板配置
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 启用语音接入平台上的模板配置功能
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 开启后语音平台能够从系统模板中的配置信息读取配置文件，具备热更新能力
+                                                .col-lg-4(style='text-align:right;')
+                                                    input(type="checkbox" title="启用" name="callcenter" lay-filter="callcenter", checked = (systemConfig.callcenter == true ? 'checked': false) )
+                                        .box-item#callcenter(style='position: relative;display:' + (systemConfig.callcenter == true ? 'block;':'none;'))
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p a、选择分机配置模板
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 语音平台的分机资源模板配置文件，用于配置分机号码资源
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        select(name='cc_extention')
+                                                            option(value) 请选择分机配置模板...
+                                                            if size(templateList) > 0
+                                                                for template in templateList
+                                                                    option(value=template.id, selected= ((systemConfig.cc_extention && template.id == systemConfig.cc_extention) ? 'selected': false))= template.name
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p b、呼叫中心配置
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 语音平台的呼叫中心配置模板
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        select(name='cc_quene')
+                                                            option(value) 请选择呼叫中心配置模板...
+                                                            if size(templateList) > 0
+                                                                for template in templateList
+                                                                    option(value=template.id, selected=((systemConfig.cc_quene && template.id == systemConfig.cc_quene) ? 'selected' : false))= template.name
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p c、拨号计划（路由规则）
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 系统拨号计划、路由规则配置模板
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        select(name='cc_router')
+                                                            option(value) 请选择路由规则模板...
+                                                            if size(templateList) > 0
+                                                                for template in templateList
+                                                                    option(value=template.id, selected=((systemConfig.cc_router && template.id == systemConfig.cc_router) ? 'selected' : false))= template.name
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p d、IVR导航语音配置模板
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 语音平台的IVR导航语音菜单配置
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        select(name='cc_ivr')
+                                                            option(value) 请选择IVR模板...
+                                                            if size(templateList) > 0
+                                                                for template in templateList
+                                                                    option(value=template.id, selected=((systemConfig.cc_ivr && template.id == systemConfig.cc_ivr) ? 'selected' : false))= template.name
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p e、访问列表控制（ACL）
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 语音平台的访问控制列表配置模板
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        select(name='cc_acl')
+                                                            option(value) 请选择ACL模板...
+                                                            if size(templateList) > 0
+                                                                for template in templateList
+                                                                    option(value=template.id, selected=((systemConfig.cc_acl && template.id == systemConfig.cc_acl) ? 'selected' : false))= template.name
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p f、语音网关配置（SPI中继）
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 语音平台的语音接入网关配置模板（SIP Trunk）
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        select(name='cc_siptrunk')
+                                                            option(value) 请选择SIP中继模板...
+                                                            if size(templateList) > 0
+                                                                for template in templateList
+                                                                    option(value=template.id, selected=((systemConfig.cc_siptrunk && template.id == systemConfig.cc_siptrunk) ? 'selected' : false))= template.name
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p g、启用号码外呼功能
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 点击联系人电话号码自动拨号
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        input(type="checkbox", title="启用" name="callout", checked=(systemConfig.callout == true?'checked':false))
+                                    .ukefu-webim-prop(hidden)
+                                        .ukefu-webim-tl(style='clear:both;') 启用工单系统的邮件通知
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 工单在流转到达的时候是否发送邮件通知
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 开启后工单状态变更的时候，会发送
+                                                .col-lg-4(style='text-align:right;')
+                                                    input(type="checkbox", title="启用", name="enablemail", lay-filter="email", checked=(systemConfig.enablemail == true?'checked':false))
+                                        .box-item#email(style='position: relative;display:' + (systemConfig.enablemail == true ? 'block;':'none;'))
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p a、发送邮件的服务器
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 选用发送邮件的邮件服务器配置信息
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        select(name='emailid')
+                                                            option(value) 请选择邮件服务器...
+                                                            if size(sysMessageList) > 0
+                                                                for server in sysMessageList
+                                                                    option(value=server.id, selected = ((systemConfig.emailid && systemConfig.emailid == server.id)? 'checked':false) )= server.name
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p b、默认邮件模板
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 发送邮件的时候，默认使用的邮件模板
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        select(name='emailworkordertp')
+                                                            option(value) 请选择邮件模板...
+                                                            if size(workOrderList)
+                                                                for template in workOrderList
+                                                                    option(value=template.id, checked=((systemConfig.emailworkordertp && systemConfig.emailworkordertp == template.id) ? 'checked':false))= template.name
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p c、创建工单的邮件模板
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 创建工单的时候，发送给发起人的邮件模板
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        select(name='mailcreatetp')
+                                                            option(value) 请选择邮件模板...
+                                                            if size(workOrderList)
+                                                                for template in workOrderList
+                                                                    option(value=template.id, selected=(template.id == systemConfig.mailcreatetp ? 'selected':false) )= template.name
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p d、工单有状态改变的模板
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 工单的状态发生改变时候，发送给当前处理人的邮件模板
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        select(name='mailupdatetp')
+                                                            option(value) 请选择邮件模板...
+                                                            if size(workOrderList) > 0
+                                                                for template in workOrderList
+                                                                    option(value=template.id, selected=(template.id == systemConfig.mailupdatetp ? 'selected' : false) )= template.name
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p e、工单有状态变更的时候发送邮件给创建人
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 工单的状态发生改变时候，发送给工单状态变更邮件给创建人
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        input(type="checkbox" title="启用" name="emailtocreater", checked=(systemConfig.emailtocreater == true?'checked':false) )
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p f、工单有状态变更的时候发送给创建人的邮件模板
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 工单的状态发生改变时候，发送给工单创建人的邮件模板
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        select(name='emailtocreatertp')
+                                                            option(value) 请选择邮件模板...
+                                                            if size(workOrderList)
+                                                                for template in workOrderList
+                                                                    option(value=template.id, selected=(template.id == systemConfig.emailtocreatertp?'selected': false) )= template.name
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p g、工单邮件是否显示邮件收件人名称
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 工单邮件是否显示邮件收件人名称
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        input(type="checkbox" title="启用" name="emailshowrecipient", checked=(systemConfig.emailshowrecipient== true?'checked':false))
+                                    .ukefu-webim-prop(hidden)
+                                        - var multiTenantsAlias = systemConfig.namealias ? systemConfig.namealias : '租户'
+                                        .ukefu-webim-tl(style='clear:both;')= '启用多' + multiTenantsAlias + '管理模式'
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p= '启用多' + multiTenantsAlias + '管理模式，运行系统中运行多个组织机构'
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;')= '开启后登录后首页会进入到' + multiTenantsAlias + '选择模式'
+                                                .col-lg-4(style='text-align:right;')
+                                                    input(type="checkbox" title="启用" name="enabletneant" lay-filter="tenant", checked=(systemConfig.enabletneant == true?'checked':false) )
+                                        .box-item#tenant(style='position: relative;display:' + (systemConfig.enabletneant == true? 'block;': 'none;'))
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p a、多#{multiTenantsAlias}模式下共享组织机构、角色和用户
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 系统的组织机构、角色和账号系统租户共享
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        input(type="checkbox" title="启用" name="tenantshare", checked=(systemConfig.tenantshare == true ? 'checked': false) )
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p b、多#{multiTenantsAlias}模式别称
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 多#{multiTenantsAlias}模式在业务种的名称别称。
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        input(type="text", name="namealias", value=(systemConfig.namealias ? systemConfig.namealias: "租户"), autocomplete="off", class="layui-input" )
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p c、登录后进入到#{multiTenantsAlias}选择界面
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 登录后进入到#{multiTenantsAlias}选择界面
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        input(type="checkbox" title="启用" name="tenantconsole", checked=(systemConfig.tenantconsole == true?'checked':false) )
+                                            .row(style='margin-bottom:20px;')
+                                                .col-lg-8
+                                                    p d、开启自助注册机构的功能
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 在登录界面上出现注册机构的功能，运行用户自助注册机构
+                                                .col-lg-4(style='text-align:right;')
+                                                    .layui-input-block
+                                                        input(type="checkbox" title="启用" name="enableregorgi", checked=(systemConfig.enableregorgi == true?'checked': false))
+                                .col-md-4
+                                    .ukefu-im-preview.ukefu-im-preview-dialog#pv(style='width:380px;position: fixed;background-color:#e6e6e6;')
+                                        .ukefu-im-preview-bar.ukefu-theme-color#ukefu-sys-preview(class='ukefu-system-theme' + ukefuThemeColorNum, style='padding:5px;')
+                                            img(src='/images/logo.png', style='height:22px;float:left;')
+                                        .ukefu-im-preview-menu
+                                        .ukefu-im-preview-top
+                                            ul.layui-tab-title
+                                                li.ukefu-home(lay-id='maincontent')
+                                                    i.kfont(style='position: relative;') 
+                                                    |  首页
+                                                li.layui-this(lay-id='admin') 系统管理
+                                                li(lay-id='multiMediaDialogWin') 坐席对话
+                                        .ukefu-im-preview-left
+                                        .ukefu-im-preview-right
+        .row
+            .col-lg-3
+            .col-lg-9
+                .layui-form-item
+                    .layui-input-block
+                        button.layui-btn(lay-submit, lay-filter='formDemo') 保存
+                        button.layui-btn.layui-btn-original(type='reset') 重置
+
+    if execute && execute == 'false'
+        script(language='javascript') top.layer.alert('二次 验证密码设置失败，输入的密码错误，请重新操作！', {icon: 2});
+    if msg
+        if msg == '1'
+            script(language='javascript') top.layer.alert('二次验证密码设置成功', {icon: 1});
+        else if msg == '2'
+            script(language='javascript') top.layer.alert('二次验证密码设置失败，请确认两次输入的密码一致', {icon: 2});
+        else if msg == '3'
+            script(language='javascript') top.layer.alert('二次验证密码设置失败，旧的密码验证失败，请输入正确的密码', {icon: 2});
+
+    script(language='javascript').
+        layui.use('form', function(){
+            var form = layui.form();
+            form.render('select'); //刷新select选择框渲染
+            form.on("checkbox(enablessl)" , function(data){
+                if(data.elem.checked == true){
+                    $('.httpsconfig').show();
+                }else{
+                    $('.httpsconfig').hide();
+                }
+            })
+            form.on("checkbox(enable)" , function(data){
+                if(data.elem.checked == true){
+                    $('.elablesec').show();
+                }else{
+                    $('.elablesec').hide();
+                }
+            })
+            form.on("checkbox(callcenter)" , function(data){
+                if(data.elem.checked == true){
+                    $('#callcenter').show();
+                }else{
+                    $('#callcenter').hide();
+                }
+            });
+            form.on("checkbox(email)" , function(data){
+                if(data.elem.checked == true){
+                    $('#email').show();
+                }else{
+                    $('#email').hide();
+                }
+            });
+            form.on("checkbox(tenant)" , function(data){
+                if(data.elem.checked == true){
+                    $('#tenant').show();
+                }else{
+                    $('#tenant').hide();
+                }
+            });
+            form.verify({
+                pass:function(value){
+                    if(value != $('#password').val()){
+                        return "请确认两次输入密码相同" ;
+                    }
+                }
+            });
+        });

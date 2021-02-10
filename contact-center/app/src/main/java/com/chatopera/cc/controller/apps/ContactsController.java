@@ -110,7 +110,7 @@ public class ContactsController extends Handler {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
-            return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
+            return request(super.createViewIncludedByFreemarkerTpl("/apps/contacts/index"));
         }
 
         if (StringUtils.isNotBlank(q)) {
@@ -143,7 +143,7 @@ public class ContactsController extends Handler {
 
         contactsProxy.bindContactsApproachableData(contacts, map, logined);
 
-        return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
+        return request(super.createView("/apps/contacts/index"));
     }
 
     @RequestMapping("/today")
@@ -158,7 +158,7 @@ public class ContactsController extends Handler {
         boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
 
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
-            return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
+            return request(super.createView("/apps/contacts/index"));
         }
 
         if (StringUtils.isNotBlank(q)) {
@@ -183,7 +183,7 @@ public class ContactsController extends Handler {
 
         contactsProxy.bindContactsApproachableData(contacts, map, logined);
 
-        return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
+        return request(super.createView("/apps/contacts/index"));
     }
 
     @RequestMapping("/week")
@@ -198,7 +198,7 @@ public class ContactsController extends Handler {
         boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
 
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
-            return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
+            return request(super.createView("/apps/contacts/index"));
         }
 
         if (StringUtils.isNotBlank(q)) {
@@ -222,7 +222,7 @@ public class ContactsController extends Handler {
         contactsProxy.bindContactsApproachableData(contacts, map, logined);
 
 
-        return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
+        return request(super.createView("/apps/contacts/index"));
     }
 
     @RequestMapping("/creater")
@@ -237,7 +237,7 @@ public class ContactsController extends Handler {
         boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
 
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
-            return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
+            return request(super.createView("/apps/contacts/index"));
         }
 
         boolQueryBuilder.must(termQuery("creater", logined.getId()));
@@ -262,7 +262,7 @@ public class ContactsController extends Handler {
         map.addAttribute(
                 "contactsList", contacts);
         contactsProxy.bindContactsApproachableData(contacts, map, logined);
-        return request(super.createAppsTempletResponse("/apps/business/contacts/index"));
+        return request(super.createView("/apps/contacts/index"));
     }
 
     @RequestMapping("/delete")
@@ -273,7 +273,7 @@ public class ContactsController extends Handler {
             contacts.setDatastatus(true);                            //客户和联系人都是 逻辑删除
             contactsRes.save(contacts);
         }
-        return request(super.createRequestPageTempletResponse(
+        return request(super.createView(
                 "redirect:/apps/contacts/index.html?p=" + p + "&ckind=" + ckind));
     }
 
@@ -281,7 +281,7 @@ public class ContactsController extends Handler {
     @Menu(type = "contacts", subtype = "add")
     public ModelAndView add(ModelMap map, HttpServletRequest request, @Valid String ckind) {
         map.addAttribute("ckind", ckind);
-        return request(super.createRequestPageTempletResponse("/apps/business/contacts/add"));
+        return request(super.createView("/apps/contacts/add"));
     }
 
 
@@ -317,11 +317,11 @@ public class ContactsController extends Handler {
             contactsRes.save(contacts);
             msg = "new_contacts_success";
 
-            return request(super.createRequestPageTempletResponse(
+            return request(super.createView(
                     "redirect:/apps/contacts/index.html?ckind=" + contacts.getCkind() + "&msg=" + msg));
         }
         msg = "new_contacts_fail";
-        return request(super.createRequestPageTempletResponse(
+        return request(super.createView(
                 "redirect:/apps/contacts/index.html?ckind=" + contacts.getCkind() + "&msg=" + msg));
     }
 
@@ -330,7 +330,7 @@ public class ContactsController extends Handler {
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String ckind) {
         map.addAttribute("contacts", contactsRes.findOne(id));
         map.addAttribute("ckindId", ckind);
-        return request(super.createRequestPageTempletResponse("/apps/business/contacts/edit"));
+        return request(super.createView("/apps/contacts/edit"));
     }
 
     @RequestMapping("/detail")
@@ -340,7 +340,8 @@ public class ContactsController extends Handler {
             return null; // id is required. Block strange requst anyway with g2.min, https://github.com/alibaba/BizCharts/issues/143
         }
         map.addAttribute("contacts", contactsRes.findOne(id));
-        return request(super.createAppsTempletResponse("/apps/business/contacts/detail"));
+
+        return request(super.createView("/apps/contacts/detail"));
 
     }
 
@@ -403,13 +404,13 @@ public class ContactsController extends Handler {
                 msg = "edit_contacts_success";
             } else {
                 //无修改，直接点击确定
-                return request(super.createRequestPageTempletResponse(
+                return request(super.createView(
                         "redirect:/apps/contacts/index.html?ckind=" + ckindId));
             }
         } else {
             logger.info("[contacts edit] errer :The same skypeid exists");
             msg = "edit_contacts_fail";
-            return request(super.createRequestPageTempletResponse(
+            return request(super.createView(
                     "redirect:/apps/contacts/index.html?ckind=" + ckindId + "&msg=" + msg));
         }
 
@@ -443,7 +444,7 @@ public class ContactsController extends Handler {
         if (msg.equals("edit_contacts_success")) {
             contactsRes.save(contacts);
         }
-        return request(super.createRequestPageTempletResponse(
+        return request(super.createView(
                 "redirect:/apps/contacts/index.html?ckind=" + ckindId + "&msg=" + msg));
     }
 
@@ -452,7 +453,7 @@ public class ContactsController extends Handler {
     @Menu(type = "contacts", subtype = "contacts")
     public ModelAndView imp(ModelMap map, HttpServletRequest request, @Valid String ckind) {
         map.addAttribute("ckind", ckind);
-        return request(super.createRequestPageTempletResponse("/apps/business/contacts/imp"));
+        return request(super.createView("/apps/contacts/imp"));
     }
 
     @RequestMapping("/impsave")
@@ -483,16 +484,7 @@ public class ContactsController extends Handler {
             reporterRes.save(event.getDSData().getReport());
             new ExcelImportProecess(event).process();        //启动导入任务
         }
-        return request(super.createRequestPageTempletResponse("redirect:/apps/contacts/index.html"));
-    }
-
-    @RequestMapping("/startmass")
-    @Menu(type = "contacts", subtype = "contacts")
-    public ModelAndView mass(ModelMap map, HttpServletRequest request, @Valid String ids) {
-        map.addAttribute("organList", organRes.findByOrgiAndSkill(super.getOrgi(request), true));
-
-        map.addAttribute("ids", ids);
-        return request(super.createRequestPageTempletResponse("/apps/business/contacts/mass"));
+        return request(super.createView("redirect:/apps/contacts/index.html"));
     }
 
     @RequestMapping("/expids")
@@ -607,7 +599,7 @@ public class ContactsController extends Handler {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         map.put("msg", msg);
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
-            return request(super.createAppsTempletResponse("/apps/business/contacts/embed/index"));
+            return request(super.createViewIncludedByFreemarkerTpl("/apps/contacts/embed/index"));
         }
         if (StringUtils.isNotBlank(q)) {
             map.put("q", q);
@@ -636,7 +628,7 @@ public class ContactsController extends Handler {
             });
         }
 
-        return request(super.createRequestPageTempletResponse("/apps/business/contacts/embed/index"));
+        return request(super.createView("/apps/contacts/embed/index"));
     }
 
     @RequestMapping("/embed/add")
@@ -645,7 +637,7 @@ public class ContactsController extends Handler {
         if (StringUtils.isNotBlank(agentserviceid)) {
             map.put("agentserviceid", agentserviceid);
         }
-        return request(super.createRequestPageTempletResponse("/apps/business/contacts/embed/add"));
+        return request(super.createView("/apps/contacts/embed/add"));
     }
 
     @RequestMapping("/embed/save")
@@ -675,10 +667,10 @@ public class ContactsController extends Handler {
             contactsRes.save(contacts);
             msg = "new_contacts_success";
             return request(
-                    super.createRequestPageTempletResponse("redirect:/apps/contacts/embed/index.html?msg=" + msg + "&agentserviceid=" + agentserviceid));
+                    super.createView("redirect:/apps/contacts/embed/index.html?msg=" + msg + "&agentserviceid=" + agentserviceid));
         }
         msg = "new_contacts_fail";
-        return request(super.createRequestPageTempletResponse("redirect:/apps/contacts/embed/index.html?msg=" + msg + "&agentserviceid=" + agentserviceid));
+        return request(super.createView("redirect:/apps/contacts/embed/index.html?msg=" + msg + "&agentserviceid=" + agentserviceid));
     }
 
     @RequestMapping("/embed/edit")
@@ -688,7 +680,7 @@ public class ContactsController extends Handler {
         if (StringUtils.isNotBlank(agentserviceid)) {
             map.addAttribute("agentserviceid", agentserviceid);
         }
-        return request(super.createRequestPageTempletResponse("/apps/business/contacts/embed/edit"));
+        return request(super.createView("/apps/contacts/embed/edit"));
     }
 
     @RequestMapping("/embed/update")
@@ -714,13 +706,13 @@ public class ContactsController extends Handler {
                 msg = "edit_contacts_success";
             } else {
                 //无修改，直接点击确定
-                return request(super.createRequestPageTempletResponse("redirect:/apps/contacts/embed/index.html?agentserviceid=" + agentserviceid));
+                return request(super.createView("redirect:/apps/contacts/embed/index.html?agentserviceid=" + agentserviceid));
             }
         } else {
             logger.info("[contacts edit] errer :The same skypeid exists");
             msg = "edit_contacts_fail";
             return request(
-                    super.createRequestPageTempletResponse("redirect:/apps/contacts/embed/index.html?msg=" + msg + "&agentserviceid=" + agentserviceid));
+                    super.createView("redirect:/apps/contacts/embed/index.html?msg=" + msg + "&agentserviceid=" + agentserviceid));
         }
 
         List<PropertiesEvent> events = PropertiesEventUtil.processPropertiesModify(
@@ -753,6 +745,6 @@ public class ContactsController extends Handler {
         if (msg.equals("edit_contacts_success")) {
             contactsRes.save(contacts);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/apps/contacts/embed/index.html?msg=" + msg + "&agentserviceid=" + agentserviceid));
+        return request(super.createView("redirect:/apps/contacts/embed/index.html?msg=" + msg + "&agentserviceid=" + agentserviceid));
     }
 }

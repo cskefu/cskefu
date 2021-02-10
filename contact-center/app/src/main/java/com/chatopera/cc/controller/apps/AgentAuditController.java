@@ -32,7 +32,7 @@ import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.proxy.*;
 import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.util.Menu;
-import freemarker.template.TemplateException;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,6 +121,9 @@ public class AgentAuditController extends Handler {
     @Autowired
     private OrganProxy organProxy;
 
+    @Autowired
+    private ChatbotRepository chatbotRes;
+
     @RequestMapping(value = "/index")
     @Menu(type = "cca", subtype = "cca", access = true)
     public ModelAndView index(
@@ -136,7 +139,7 @@ public class AgentAuditController extends Handler {
 
         Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
 
-        ModelAndView view = request(super.createAppsTempletResponse("/apps/cca/index"));
+        ModelAndView view = request(super.createView("/apps/cca/index"));
         Sort defaultSort = null;
 
         if (StringUtils.isNotBlank(sort)) {
@@ -207,7 +210,7 @@ public class AgentAuditController extends Handler {
     @RequestMapping("/query")
     @Menu(type = "apps", subtype = "cca")
     public ModelAndView query(HttpServletRequest request, String skill, String agentno) {
-        ModelAndView view = request(super.createRequestPageTempletResponse("/apps/cca/chatusers"));
+        ModelAndView view = request(super.createView("/apps/cca/chatusers"));
 
         final String orgi = super.getOrgi(request);
         final User logined = super.getUser(request);
@@ -240,7 +243,7 @@ public class AgentAuditController extends Handler {
     @RequestMapping("/agentusers")
     @Menu(type = "apps", subtype = "cca")
     public ModelAndView agentusers(HttpServletRequest request, String userid) {
-        ModelAndView view = request(super.createRequestPageTempletResponse("/apps/cca/agentusers"));
+        ModelAndView view = request(super.createView("/apps/cca/agentusers"));
         User logined = super.getUser(request);
         final String orgi = super.getOrgi(request);
         Sort defaultSort = new Sort(Sort.Direction.DESC, "status");
@@ -261,12 +264,12 @@ public class AgentAuditController extends Handler {
             HttpServletRequest request,
             String id,
             String channel
-    ) throws IOException, TemplateException {
+    ) throws IOException {
         String mainagentuser = "/apps/cca/mainagentuser";
         if (channel.equals("phone")) {
             mainagentuser = "/apps/cca/mainagentuser_callout";
         }
-        ModelAndView view = request(super.createRequestPageTempletResponse(mainagentuser));
+        ModelAndView view = request(super.createView(mainagentuser));
         final User logined = super.getUser(request);
         final String orgi = logined.getOrgi();
         AgentUser agentUser = agentUserRepository.findByIdAndOrgi(id, orgi);
@@ -274,10 +277,11 @@ public class AgentAuditController extends Handler {
         if (agentUser != null) {
             view.addObject("curagentuser", agentUser);
 
-            CousultInvite invite = OnlineUserProxy.consult(agentUser.getAppid(), agentUser.getOrgi());
-            if (invite != null) {
-                view.addObject("ccaAisuggest", invite.isAisuggest());
+            Chatbot c = chatbotRes.findBySnsAccountIdentifierAndOrgi(agentUser.getAppid(), agentUser.getOrgi());
+            if (c != null) {
+                view.addObject("ccaAisuggest", c.isAisuggest());
             }
+
             view.addObject("inviteData", OnlineUserProxy.consult(agentUser.getAppid(), agentUser.getOrgi()));
             List<AgentUserTask> agentUserTaskList = agentUserTaskRes.findByIdAndOrgi(id, orgi);
             if (agentUserTaskList.size() > 0) {
@@ -420,7 +424,7 @@ public class AgentAuditController extends Handler {
             map.addAttribute("currentorgan", currentOrgan);
         }
 
-        return request(super.createRequestPageTempletResponse("/apps/cca/transfer"));
+        return request(super.createView("/apps/cca/transfer"));
     }
 
 
@@ -462,7 +466,7 @@ public class AgentAuditController extends Handler {
             map.addAttribute("userList", userList);
             map.addAttribute("currentorgan", organ);
         }
-        return request(super.createRequestPageTempletResponse("/apps/cca/transferagentlist"));
+        return request(super.createView("/apps/cca/transferagentlist"));
     }
 
     /**
@@ -575,7 +579,7 @@ public class AgentAuditController extends Handler {
                 agentServiceRes.save(agentService);
             }
         }
-        return request(super.createRequestPageTempletResponse("redirect:/apps/cca/index.html"));
+        return request(super.createView("redirect:/apps/cca/index.html"));
 
     }
 
@@ -612,7 +616,7 @@ public class AgentAuditController extends Handler {
             }
         }
 
-        return request(super.createRequestPageTempletResponse("redirect:/apps/cca/index.html"));
+        return request(super.createView("redirect:/apps/cca/index.html"));
     }
 
     @RequestMapping({"/blacklist/add"})
@@ -623,7 +627,7 @@ public class AgentAuditController extends Handler {
         map.addAttribute("agentserviceid", agentserviceid);
         map.addAttribute("userid", userid);
         map.addAttribute("agentUser", agentUserRes.findByIdAndOrgi(userid, super.getOrgi(request)));
-        return request(super.createRequestPageTempletResponse("/apps/cca/blacklistadd"));
+        return request(super.createView("/apps/cca/blacklistadd"));
     }
 
     @RequestMapping({"/blacklist/save"})

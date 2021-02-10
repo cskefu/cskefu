@@ -1,0 +1,63 @@
+extends /apps/include/layout.pug
+block content
+    .layui-side.layui-bg-black
+        .layui-side-scroll
+            include /apps/setting/include/left.pug
+    .layui-body
+        .layui-side-scroll
+            .row
+                .col-lg-12
+                    h1.site-h1(style='background-color:#FFFFFF;')= "黑名单列表(" + blackList.getTotalElements() + ")"
+                    .row(style='padding:5px;')
+                        .col-lg-12
+                            table.layui-table(lay-skin='line')
+                                thead
+                                    tr
+                                        th 来源
+                                        th 用户标识
+                                        th 客服
+                                        th 拉黑时间
+                                        th 结束时间
+                                        th 最后一次对话时长
+                                        th 备注
+                                        th(style='white-space:nowrap;', nowrap) 操作
+                                tbody
+                                    if size(blackList.content) > 0
+                                        for black in blackList.content
+                                            tr
+                                                td= black.channel
+                                                td= black.agentuser + '' + black.userid + ')'
+                                                td= black.agentusername
+                                                td= pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', black.createtime)
+                                                td= black.endtime ? pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', black.endtime) : '永久'
+                                                td= pugHelper.padRight(black.chattime / (1000 * 60 * 60), '00') + ':' + pugHelper.padRight((black.chattime % (1000 * 60 * 60)) / (1000 * 60), '00') + ':' + pugHelper.padRight((black.chattime % (1000 * 60)) / 1000, '00')
+                                                td= black.description
+                                                td(style="white-space:nowrap;", nowrap="nowrap")
+                                                    a(href='/setting/blacklist/delete.html?id=' + black.id, style="margin-left:10px;" data-toggle="tip" data-title="请确认是否删除记录？")
+                                                        i.layui-icon(style="color:red;") &#x1006;
+                                                        | 删除
+                                    else
+                                        tr: td(colspan="20", style="height:400px;")
+                                            .ukefu-empty(style="background: none")
+                                                i.layui-icon &#xe63a;
+                                                div 还没有黑名单记录
+                    .row(style='padding:5px;')
+                        .col-lg-12#page(style='text-align:center;')
+    script.
+        layui.use(['laypage', 'layer'], function () {
+            var laypage = layui.laypage
+                , layer = layui.layer;
+
+            laypage({
+                cont: 'page'
+                , pages: #{blackList.totalPages} //总页数
+                , curr: #{blackList.number + 1}
+                , groups: 5 //连续显示分页数
+                , jump: function (data, first) {
+                    if (!first) {
+                        location.href = "/admin/blacklist.html?p=" + data.curr;
+                    }
+                }
+            });
+        });
+                

@@ -1,0 +1,169 @@
+extends /apps/include/layout.pug
+
+include /mixins/client.mixin.pug
+
+block content
+    .layui-side.layui-bg-black
+        .layui-side-scroll
+            include include/left.pug
+
+    .layui-body
+        .layui-side-scroll
+            .row
+                .col-lg-12
+                    h1.site-h1.ukefu-tab(style="border-top:1px solid #e6e6e6;height:26px;")
+                        span.ukefu-bt
+                            i.layui-icon.ukewo-btn(style="font-size:20px;") 
+                            .ukefu-bt-text
+                                .ukefu-bt-text-title
+                                    | 全部客户
+                        .ukefu-tab-title(style="margin-top: 26px")
+                            include top
+                        .ukefu-bt-text-content(style="position: absolute;right: 5px;top: 0px;padding-right:10px;")
+                            form.layui-form(name="search", action="/apps/customer/" + subtype + ".html", method="get", style="float: left;")
+                                if ekind
+                                    input(type="hidden", name="ekind", value=ekind)
+                                .layui-form-item
+                                    .layui-inline
+                                        .layui-input-inline(style="width: 218px")
+                                            input.layui-input(type="text", name="q", value=q, style="height: 30px;line-height: 30px;margin-top: 4px;border: 1px solid #32c24d;", placeholder="请输入联系人姓名或电话", autocomplete="off")
+                                            i.layui-icon(onclick="search.submit()", style="position: absolute;cursor: pointer;right: 3px;top: 4px;font-size: 20px;color:#32c24d;") 
+                            if user.roleAuthMap["A03_A01_A02_B06"] || user.admin
+                                .layui-btn-group.ukefu-btn-group(style="margin-right: 5px !important;")
+                                    a.layui-btn.layui-btn-small(href="/apps/customer/add.html" + (ekind ? "?ekind=" + ekind : ""), title="新建客户", data-toggle="ajax", data-width="950", data-height="600")
+                                        i.layui-icon 
+                                        |                                 新建客户
+                            if user.roleAuthMap["A03_A01_A02_B09"] || user.admin
+                                .layui-btn-group.ukefu-btn-group(style="margin-right: 5px !important;")
+                                    button.layui-btn.layui-btn-small(href="/apps/customer/imp.html" + (ekind ? "?ekind=" + ekind : ""), title="导入客户", data-toggle="ajax", data-width="950", data-height="600")
+                                        i.kfont 
+                                        |  导入
+                            if user.roleAuthMap["A03_A01_A02_B010"] || user.admin
+                                .layui-btn-group.ukefu-btn-group
+                                    button.layui-btn.layui-btn-small.dropdown-menu(class={noexport: !currentOrgan})
+                                        i.kfont 
+                                        |  导出
+                                        i.layui-icon 
+                                    if currentOrgan
+                                        ul.ukefu-dropdown-menu.layui-anim.layui-anim-upbit
+                                            li
+                                                a#batexp(href="javascript:void(0)", title="导出客户", target="_blank")
+                                                    i.kfont 
+                                                    |                                     导出选中结果
+                                            li
+                                                a(href="/apps/customer/expsearch.html?1=1" + (q ? "&q=" + q : "") + (ekind ? "&ekind=" + ekind : "") + "&subtype=" + subtype, title="导出客户", target="_blank")
+                                                    i.kfont 
+                                                    |                                     导出当前搜索结果
+                                            li
+                                                a(href="/apps/customer/expall.html" + (ekind ? "?ekind=" + ekind : ""), title="导出客户", target="_blank")
+                                                    i.kfont 
+                                                    |                                     导出全部数据
+
+                    table.layui-table(lay-skin="line", style="margin-top: 26px")
+                        thead
+                            tr.design-sortable-tr
+                                th
+                                    input#all(type="checkbox", onclick="$('.ids').prop('checked' , $(this).prop('checked'));")
+                                th 客户名称
+                                th 类型
+                                th 所在城市
+                                th 客户状态
+                                th 行业
+                                th 成熟度
+                                th 获得时间
+                                th 所有者
+                                th 操作
+                        tbody(style="table-layout: fixed; word-break: break-all;")
+                            if entCustomerList.content.empty()
+                                tr
+                                    td(colspan="20", style="height:400px;")
+                                        .ukefu-empty(style="background: none")
+                                            i.layui-icon 
+                                            div(style="") 还没有客户信息
+                            else
+                                for entCustomer in entCustomerList.content
+                                    .tdHasContorllor.design-dropable-td
+                                        tr.tdHasContorllor.design-dropable-td
+                                            td(style="width:1%;")
+                                                input.ids(type="checkbox", name="ids", value=entCustomer.id)
+                                            td.first_td_head(style="width: 90px")= entCustomer.name
+                                            td= uKeFuDic[entCustomer.ekind].name
+                                            td= uKeFuDic[entCustomer.city].name != '市辖区' && uKeFuDic[entCustomer.city].name != "县" ? uKeFuDic[entCustomer.city].name : uKeFuDic[entCustomer.province].name
+                                            td= uKeFuDic[entCustomer.validstatus].name
+                                            td= uKeFuDic[entCustomer.industry].name
+                                            td= uKeFuDic[entCustomer.maturity].name
+                                            td
+                                                if entCustomer.touchtime
+                                                    | #{pugHelper.formatDate('yyyy-MM-dd', entCustomer.touchtime)}
+                                            td
+                                                if entCustomer.user
+                                                    | #{entCustomer.user.username}
+                                            td(style="white-space:nowrap;width:1%;", nowrap="nowrap")
+                                                a(href="/apps/customer/edit.html?id=" + entCustomer.id + "&ekind=" + ekind, data-toggle="ajax", data-width="950", data-height="600", data-title="编辑用户信息")
+                                                    i.layui-icon 
+                                                    |                         编辑
+                                                a(href="/apps/customer/delete.html?id=" + entCustomer.id + "&ekind=" + ekind, style="margin-left:10px;", data-toggle="tip", data-title="请确认是否删除记录？")
+                                                    i.layui-icon(style="color:red;") ဆ
+                                                    |                     删除
+
+            .row(style="padding:5px;")
+                #page.col-lg-12(style="text-align:center;")
+
+    style.
+        .noexport {
+            background: grey !important;
+        }
+    script.
+        $(document).ready(function () {
+            layui.use('layer', function () {
+                var layer = layui.layer;
+                var msg = '#{msg}'
+                if (msg == 'new_entcustomer_success')
+                    layer.msg('客户新建成功', {icon: 1, time: 1000})
+                else if (msg == 'edit_entcustomer_success')
+                    layer.msg('客户编辑成功', {icon: 1, time: 1000})
+                else if (msg == 'mobile_exist')
+                    layer.msg('手机存在，请重新填写', {icon: 2, time: 3000})
+                else if (msg == 'sip_account_exist')
+                    layer.msg('SIP账号已经存在，请重新填写', {icon: 2, time: 3000})
+
+            });
+            $('#batexp').click(function () {
+                var ids = "";
+                var num = 0;
+                $('.ids').each(function () {
+                    if ($(this).prop("checked")) {
+                        if (ids != "") {
+                            ids += "&";
+                        }
+                        ids += "ids=" + $(this).val();
+                        num++;
+                    }
+                });
+                if (num > 0) {
+                    $('#batexp').attr('href', '/apps/customer/expids.html?' + ids);
+                } else {
+                    top.layer.alert("请先选择需要导出的客户信息");
+                    $('#batexp').attr("href", "javascript:void(0)");
+                }
+            });
+        });
+        layui.use('form', function () {
+            var form = layui.form();
+        });
+        layui.use(['laypage', 'layer'], function () {
+            var laypage = layui.laypage
+                , layer = layui.layer;
+            laypage({
+                cont: 'page'
+                , pages: #{entCustomerList.totalPages} //总页数
+                , curr: #{entCustomerList.number + 1}
+                , groups: 5 //连续显示分页数
+                , jump: function (data, first) {
+                    if (!first) {
+                        location.href = "/apps/customer/#{subtype ? subtype : 'index'}.html?p=" + data.curr + "&ekind=#{ekind}";
+                    }
+                }
+            });
+        });
+

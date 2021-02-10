@@ -1,0 +1,56 @@
+extends /apps/include/layout.pug
+
+block append head
+    link(rel='stylesheet', href='/js/ztree/zTreeStyle/zTreeStyle.css')
+    script(src='/js/ztree/jquery.ztree.all.min.js')
+    script(src='/js/lodash-4.17.4.min.js')
+    script(src='/js/CSKeFu_Rest_Request.v1.js')
+    script.
+        cususerid = '#{user.id}';
+// <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+block content
+    include templates/tpl.pug
+    #ccaIndex(style='height: 100%')
+        if !agentUserList.empty()
+            .layui-side.layui-bg-black.layui-left-black.cskefu-cca-leftside(style="height:100%")
+                #agentuserscca.layui-side-scroll
+                    include agentusers.pug
+            #ukefu-chat-agent.layui-body.ukefu-chat-agent
+                //if curagentuser.channel == "phone"
+                //    include mainagentuser_callout.pug
+                //else if curagentuser.channel == "skype"
+                //    include mainagentuser_skype.pug
+                //else
+                include mainagentuser.pug
+        else
+            .layui-layout.layui-layout-content(style='height: 100%;')
+                .box.default-box(style='height: 100%;')
+                    .box-body.ukefu-im-theme
+                        .ukefu-empty(style='background: none')
+                            i.layui-icon 
+                            div 还没有任何对话
+    if !agentUserList.empty()
+        script(language="javascript").
+            $(document).ready(function () {
+                $(document).bind("keydown", "Ctrl+return", function (ev) {
+                    sendMessage();
+                    return false;
+                })
+            });
+            function otherTopicSearch() {
+                console.log("otherTopicSearch")
+                loadURLWithTip("/agent/other/topic.html?q=" + encodeURIComponent($("#otherSearchQuery").val()), "#topiclist", null, false, true);
+            }
+            function otherTopicEnter() {
+                if (window.event.keyCode == 13) {
+                    otherTopicSearch();
+                }
+            }
+            function cleanTopMsgTip(tip) {
+                var lastMsgNum = $(tip).find('.last-msg').text();
+                if (lastMsgNum) {
+                    var num = Number.parseInt(lastMsgNum);
+                    Proxy.cleanTopMsgTip(num)
+                }
+            }
+

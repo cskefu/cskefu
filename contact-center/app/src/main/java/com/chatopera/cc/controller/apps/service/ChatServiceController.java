@@ -163,7 +163,7 @@ public class ChatServiceController extends Handler {
         map.put("deptlist", organs.values());
         map.put("userlist", userProxy.findUserInOrgans(organs.keySet()));
 
-        return request(super.createAppsTempletResponse("/apps/service/history/index"));
+        return request(super.createView("/apps/service/history/index"));
     }
 
     @RequestMapping("/current/index")
@@ -181,7 +181,7 @@ public class ChatServiceController extends Handler {
                                 super.getPs(request), Direction.DESC,
                                 "createtime")));
 
-        return request(super.createAppsTempletResponse("/apps/service/current/index"));
+        return request(super.createView("/apps/service/current/index"));
     }
 
     @RequestMapping("/current/trans")
@@ -224,7 +224,7 @@ public class ChatServiceController extends Handler {
             map.addAttribute("currentorgan", currentOrgan);
         }
 
-        return request(super.createRequestPageTempletResponse("/apps/service/current/transfer"));
+        return request(super.createView("/apps/service/current/transfer"));
     }
 
     @RequestMapping(value = "/transfer/save")
@@ -317,7 +317,7 @@ public class ChatServiceController extends Handler {
             }
         }
 
-        return request(super.createRequestPageTempletResponse("redirect:/service/current/index.html"));
+        return request(super.createView("redirect:/service/current/index.html"));
     }
 
     @RequestMapping("/current/end")
@@ -336,7 +336,7 @@ public class ChatServiceController extends Handler {
                 agentServiceRes.save(agentService);
             }
         }
-        return request(super.createRequestPageTempletResponse("redirect:/service/current/index.html"));
+        return request(super.createView("redirect:/service/current/index.html"));
     }
 
     /**
@@ -395,7 +395,7 @@ public class ChatServiceController extends Handler {
                 }
             }
         }
-        return request(super.createRequestPageTempletResponse("redirect:/service/current/index.html"));
+        return request(super.createView("redirect:/service/current/index.html"));
     }
 
 
@@ -429,7 +429,7 @@ public class ChatServiceController extends Handler {
         }
         map.put("agentUserList", agentUserList);
 
-        return request(super.createAppsTempletResponse("/apps/service/quene/index"));
+        return request(super.createView("/apps/service/quene/index"));
     }
 
     @RequestMapping("/quene/transfer")
@@ -469,7 +469,7 @@ public class ChatServiceController extends Handler {
             map.addAttribute("skillGroups", skillGroups);
             map.addAttribute("currentorgan", currentOrgan);
         }
-        return request(super.createRequestPageTempletResponse("/apps/service/quene/transfer"));
+        return request(super.createView("/apps/service/quene/transfer"));
     }
 
     @RequestMapping("/quene/transfer/save")
@@ -484,7 +484,7 @@ public class ChatServiceController extends Handler {
                     agentUser, false, MainContext.ChatInitiatorType.USER.toString());
             acdVisitorDispatcher.enqueue(ctx);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/service/quene/index.html"));
+        return request(super.createView("redirect:/service/quene/index.html"));
     }
 
     @RequestMapping("/quene/invite")
@@ -496,7 +496,7 @@ public class ChatServiceController extends Handler {
         if (agentUser != null && agentUser.getStatus().equals(MainContext.AgentUserStatusEnum.INQUENE.toString())) {
             acdAgentService.assignVisitorAsInvite(logined.getId(), agentUser, orgi);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/service/quene/index.html"));
+        return request(super.createView("redirect:/service/quene/index.html"));
     }
 
     /**
@@ -522,7 +522,7 @@ public class ChatServiceController extends Handler {
             }
         }
         map.put("agentStatusList", lis);
-        return request(super.createAppsTempletResponse("/apps/service/agent/index"));
+        return request(super.createView("/apps/service/agent/index"));
     }
 
     /**
@@ -546,7 +546,7 @@ public class ChatServiceController extends Handler {
         agentStatusProxy.broadcastAgentsStatus(
                 super.getOrgi(request), "agent", "offline", super.getUser(request).getId());
 
-        return request(super.createRequestPageTempletResponse("redirect:/service/agent/index.html"));
+        return request(super.createView("redirect:/service/agent/index.html"));
     }
 
     /**
@@ -576,7 +576,7 @@ public class ChatServiceController extends Handler {
 
         map.put("userList", userList);
         map.put("onlines", onlines);
-        return request(super.createAppsTempletResponse("/apps/service/user/index"));
+        return request(super.createView("/apps/service/user/index"));
     }
 
     @RequestMapping("/leavemsg/index")
@@ -593,7 +593,7 @@ public class ChatServiceController extends Handler {
         }
 
         map.put("leaveMsgList", leaveMsgs);
-        return request(super.createAppsTempletResponse("/apps/service/leavemsg/index"));
+        return request(super.createView("/apps/service/leavemsg/index"));
     }
 
     @RequestMapping("/leavemsg/delete")
@@ -602,6 +602,6 @@ public class ChatServiceController extends Handler {
         if (StringUtils.isNotBlank(id)) {
             leaveMsgRes.delete(id);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/service/leavemsg/index.html"));
+        return request(super.createView("redirect:/service/leavemsg/index"));
     }
 }

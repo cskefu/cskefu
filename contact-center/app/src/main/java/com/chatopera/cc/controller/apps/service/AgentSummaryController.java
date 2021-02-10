@@ -121,7 +121,7 @@ public class AgentSummaryController extends Handler{
 
 		map.addAttribute("tags", tagRes.findByOrgiAndTagtype(super.getOrgi(request) , MainContext.ModelType.SUMMARY.toString())) ;
 
-    	return request(super.createAppsTempletResponse("/apps/service/summary/index"));
+    	return request(super.createView("/apps/service/summary/index"));
     }
 	
 	@RequestMapping(value = "/process")
@@ -139,7 +139,7 @@ public class AgentSummaryController extends Handler{
 			}
 		}
 		
-		return request(super.createRequestPageTempletResponse("/apps/service/summary/process"));
+		return request(super.createView("/apps/service/summary/process"));
 	}
 	
 	@RequestMapping(value = "/save")
@@ -154,7 +154,7 @@ public class AgentSummaryController extends Handler{
 			serviceSummaryRes.save(oldSummary) ;
 		}
 		
-		return request(super.createRequestPageTempletResponse("redirect:/apps/agent/summary/index.html"));
+		return request(super.createView("redirect:/apps/agent/summary/index.html"));
 	}
 	
 	 @RequestMapping("/expids")

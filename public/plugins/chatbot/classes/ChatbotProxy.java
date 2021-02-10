@@ -37,7 +37,7 @@ import org.springframework.stereotype.Component;
 public class ChatbotProxy {
     private final static Logger logger = LoggerFactory.getLogger(ChatbotProxy.class);
 
-    private final static String botServiecProvider = SystemEnvHelper.getenv(
+    private final static String botServiceProvider = SystemEnvHelper.getenv(
             ChatbotConstants.BOT_PROVIDER, ChatbotConstants.DEFAULT_BOT_PROVIDER);
 
     @Autowired

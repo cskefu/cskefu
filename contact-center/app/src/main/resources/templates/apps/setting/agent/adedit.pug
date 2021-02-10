@@ -1,0 +1,94 @@
+.uk-layui-form
+    form.layui-form(action='/setting/adv/update.html', method='post', enctype='multipart/form-data')
+        input(type='hidden', name='adpos', value=adpos)
+        input(type='hidden', name='id', value=ad.id)
+        .layui-collapse
+            .layui-colla-item
+                h2.layui-colla-title 基本信息
+                .layui-colla-content.layui-show
+                    .layui-form-item
+                        .layui-inline
+                            label.layui-form-label#name 广告名称：
+                            .layui-input-inline
+                                input.layui-input(type='text', name='name', value=ad.name, required, lay-verify='required', autocomplete='off', maxlength='100')
+                            font(color='red') *
+                        .layui-inline.uckefu-inline
+                            label.layui-form-label#weight 权重：
+                            .layui-input-inline.ukefu-limit-height
+                                select(name='weight')
+                                    - var opt = 1
+                                    while opt <= 100
+                                        option(value=opt, selected= ad.weight == opt && 'selected')= opt
+                                        - opt++
+            .layui-colla-item
+                h2.layui-colla-title 扩展信息
+                .layui-colla-content.layui-show
+                    .layui-form-item
+                        .layui-inline
+                            label.layui-form-label 广告类型：
+                            .layui-input-inline.ukefu-limit-height(style='position: relative;padding-top:7px;')
+                                input(type="radio", name="adtype", value="image", lay-filter="image", title="图片", checked = ad.adtype == "image" && "checked")
+                                input(type="radio" name="adtype" value="text" lay-filter="text" title="文本", checked = ad.adtype == "text" && "checked" )
+                        .layui-inline.uckefu-inline
+                            label.layui-form-label#cusname 提示文本：
+                            .layui-input-inline.ukefu-limit-height
+                                input.layui-input(type='text', name='tiptext', required, lay-verify='required', value=ad.tiptext, autocomplete='off', maxlength='100')
+                    .layui-form-item
+                        .layui-inline
+                            label.layui-form-label 跳转地址：
+                            .layui-input-inline.ukefu-limit-height(style='position: relative;padding-top:7px;width:664px;')
+                                input.layui-input(type='text', name='url', required, lay-verify='required', value=ad.url, autocomplete='off', maxlength='100')
+                    //- just two types: image or text
+                    .layui-form-item#text(style='display:' + (ad.adtype == "text" ? 'block;' : 'none;'))
+                        .layui-inline
+                            label.layui-form-label 文本内容：
+                            .layui-input-inline(style='width: 664px;')
+                                textarea.layui-textarea(name='content', placeholder='请输入广告文本内容（支持HTML）', style='resize:none;', maxlength='180') !{ad.content}
+
+                    .layui-form-item#image(style='display:' + (ad.adtype == "image" ? 'block;' : 'none;'))
+                        .layui-inline
+                            label.layui-form-label 广告图片：
+                            .layui-input-inline(style='width: 670px;')
+                                input#imgtarget.layui-input(type='text', name='imgtarget', value=ad.imgurl, readonly, autocomplete='off', maxlength='100', onclick='$(\'#files\').click()', style='width:537px;float:left;margin-right:10px;')
+                                .layui-box.layui-upload-button(style='float:left;')
+                                    input#files.layui-upload-file(type='file', name='imgfile', accept='image/*', onchange='$(\'#imgtarget\').val($(this).val())')
+                                    span.layui-upload-icon
+                                        i.layui-icon 
+                                        span 上传附件
+        .layui-form-button
+            .layui-button-block
+                button.layui-btn(lay-submit, lay-filter='formDemo') 立即提交
+                button.layui-btn.layui-btn-original(type='reset') 重置
+script.
+    layui.use('form', function () {
+        var form = layui.form();
+        form.render(); //更新全部
+        form.on("radio(image)", function (data) {
+            if (data.elem.checked) {
+                $('#text').hide();
+                $('#image').show();
+            }
+        });
+        form.on("radio(text)", function (data) {
+            if (data.elem.checked) {
+                $('#image').hide();
+                $('#text').show();
+            }
+        });
+
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            if (data.field.content.length > 180) {
+                layer.msg("文本内容过长，最大长度为180个字符");
+                return false
+            }
+        });
+    });
+    layui.use('upload', function () {
+        var target = $(this).attr("data-target");
+    });
+    layui.use('element', function () {
+        var element = layui.element();
+        element.init();
+    });
+

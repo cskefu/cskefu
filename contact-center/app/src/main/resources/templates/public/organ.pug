@@ -1,0 +1,63 @@
+div(class="uk-layui-form")
+    div(class="row", style="height:100%;")
+        div(class="col-lg-3", style="height:100%;border-right:8px solid #F2F2F2;")
+            div(class="layui-form-item")
+                div(class="layui-input-inline", style="width:100%;margin-left:0px;margin-top:0px;")
+                    table(class="layui-table", lay-skin="line")
+                        colgroup
+                            col(width="1%")
+                            col(width="30%")
+                            col
+                        tbody
+                            for organ in organList
+                                tr
+                                   td(class="ukefu-checkbox")
+                                       input(class="id", type="checkbox", data-name=organ.name, name="id", value=organ.id, style="margin-top:0px;",checked=ids.contains(organ.id))
+                                       td(style="margin-left:0px;")= organ.name
+        div(class="col-lg-9")
+            table(class="layui-table", lay-skin="line")
+                colgroup
+                    col(width="1%")
+                    col(width="15%")
+                    col(width="15%")
+                thead
+                    tr
+                        th
+                        th(style="padding:9px 5px 5px 5px;") 用户
+                        th 姓名
+                tbody
+                    for user in usersList
+                        tr
+                            td(class="ukefu-checkbox", style="padding:9px 5px 5px 15px;")
+                                input(type="checkbox", class="id", id="user_"+user.id, checked=ids.contains(user.id), value=user.id, lay-filter="ids", lay-skin="primary", name="id", value=organ.id, style="margin-top:0px;")
+                                td(style="padding:9px 5px 5px 5px;")= user.username
+                            td= user.uname
+    div(class="layui-form-button")
+        div(class="layui-button-block")
+            button(class="layui-btn", lay-submit="", lay-filter="selUserOrgan") 立即提交
+            button(type="reset", class="layui-btn layui-btn-primary") 重置
+script.
+    //Demo
+    layui.use('form', function(){
+        var form = layui.form();
+        form.on('submit(selUserOrgan)', function(data){
+            var targetIFrame = eval(iframe);
+            var keys = "" , names = "" ;
+            $(".id").each(function(){
+                if($(this).prop("checked")){
+                    if(keys != ""){
+                        keys = keys+"," ;
+                    }
+                    keys = keys+$(this).val();
+                    if(names != ""){
+                        names = names+"," ;
+                    }
+                    names = names+$(this).data("name");
+                }
+            });
+            targetIFrame.Proxy.updateFormData("#dialogEditor" , names) ;
+            targetIFrame.Proxy.updateFormData("#dialogEditorValue" , keys) ;
+            top.layer.closeAll();
+            return false ;
+        });
+    });

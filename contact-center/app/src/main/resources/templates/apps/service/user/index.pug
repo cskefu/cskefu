@@ -1,0 +1,67 @@
+extends /apps/include/layout.pug
+
+block content
+    .layui-side.layui-bg-black
+        .layui-side-scroll
+            include /apps/service/include/left.pug
+    .layui-body
+        .layui-side-scroll
+            .row
+                .col-lg-12
+                    h1.site-h1(style='background-color:#FFFFFF;') 全部坐席 #{userList && userList.totalElements ? "（ " + userList.totalElements + "）": "（0）"}
+                    .row(style='padding:5px;')
+                        .col-lg-12
+                            table.layui-table(lay-skin='line')
+                                colgroup
+                                    col(width='20%')
+                                    col(width='15%')
+                                    col(width='25%')
+                                    col(width='15%')
+                                    col(width='10%')
+                                    col(width='15%')
+                                    col(width='1%')
+                                    col
+                                thead
+                                    tr
+                                        th 用户
+                                        th 姓名
+                                        th 电子邮件
+                                        th 手机
+                                        th 在线
+                                        th 注册时间
+                                tbody
+                                    if userList.content.size() > 0
+                                        for user in userList.content
+                                            tr
+                                                td
+                                                    a(href="")
+                                                        i.layui-icon.headimg &#xe612;
+                                                        div(style="margin-left:50px;margin-top:0px;") #{user.username}
+                                                            div(style="color:#aaaaaa;font-size:12px;")= pugHelper.formatDate("yyyy-MM-dd HH:mm:ss", user.updatetime)
+                                                td #{user.uname}
+                                                td #{user.email}
+                                                td #{user.mobile}
+                                                td
+                                                    if onlines[user.id] && onlines[user.id]
+                                                        i.layui-icon(style="color:#19a55d;") &#xe618;
+                                                td= pugHelper.formatDate("yyyy-MM-dd HH:mm:ss", user.createtime)
+                    .row(style='padding:5px;')
+                        .col-lg-12#page(style='text-align:center;')
+
+    script.
+        layui.use(['laypage', 'layer'], function(){
+                  var laypage = layui.laypage
+                  ,layer = layui.layer;
+
+                  laypage({
+                        cont: 'page'
+                        ,pages: #{userList ? userList.totalPages : 0} //总页数
+                        ,curr: #{userList ? userList.number + 1 : 0}
+                        ,groups: 5 //连续显示分页数
+                        ,jump:function(data , first){
+                            if(!first){
+                                location.href = "/service/user/index.html?p=" + data.curr;
+                            }
+                        }
+                   });
+                });

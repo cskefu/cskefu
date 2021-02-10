@@ -1,0 +1,45 @@
+if contacts
+    ul.info-list
+        li.ukefu-channel-tip
+            | 姓名：
+            span.tgreen #{contacts.name}
+        li
+            | 性别：
+            if contacts.gender && contacts.gender == '1'
+                | 男
+            if contacts.gender && contacts.gender == '0'
+                | 女
+            if contacts.gender && contacts.gender == '-1'
+                | 未知
+        li
+            | 生日：#{contacts.cusbirthday}
+        li
+            | 电话：
+            span.ukefu-phone-number #{contacts.phone}
+        li
+            | 手机：
+            span.ukefu-phone-number #{contacts.mobileno}
+        li
+            | 邮件：#{contacts.email}
+
+        li
+            | SkypeID: #{contacts.skypeid}
+
+        li
+            | 地址：#{contacts.address}
+
+        li
+            | 类型：#{contacts.ckind ? uKeFuDic[contacts.ckind].name : ""}
+
+
+        if contacts && contacts.touchtime
+            li
+                | 获得时间：#{pugHelper.formatDate('yyyy-MM-dd', contacts.touchtime)}
+        li
+            | 备注：#{contacts.memo}
+    if models.contains("workorders")
+    script(language="javascript").
+        $(document).ready(function(){
+            // loadURL("/agent/workorders/list.html?contactsid=#{contacts.id}", "#workorders");
+        });
+

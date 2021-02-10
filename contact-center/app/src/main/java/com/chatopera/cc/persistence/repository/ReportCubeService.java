@@ -21,7 +21,7 @@ import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.util.bi.ReportData;
-import freemarker.template.TemplateException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

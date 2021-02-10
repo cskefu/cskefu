@@ -1,0 +1,41 @@
+extends /apps/include/layout.pug
+
+block content
+        .layui-side.layui-bg-black
+            .layui-side-scroll
+                include /apps/service/include/left.pug
+        .layui-body
+            .layui-side-scroll
+                .row
+                    .col-lg-12
+                        h1.site-h1(style='border-top:1px solid #e6e6e6;')
+                            | 在线坐席 #{agentStatusList ? "（ " + agentStatusList.size() + "）": "（0）"}
+                        table.layui-table(lay-skin='line')
+                            thead
+                                tr.design-sortable-tr
+                                    th 用户名
+                                    th 技能组
+                                    th 接入用户数
+                                    th 最大用户数
+                                    th 在线时间
+                                    th 操作
+                            tbody(style='table-layout: fixed; word-break: break-all;')
+                                if agentStatusList.size() > 0
+                                    for agentStatus in agentStatusList
+                                        tr.tdHasContorllor.design-dropable-td
+                                            td.first_td_head(style="width: 150px")
+                                                a(href="javascript:void(0)") #{agentStatus.username}
+                                            td(style="width: 150px") #{agentStatus.skillname}
+                                            td #{agentStatus.users}
+                                            td #{agentStatus.maxusers}
+                                            td #{pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', agentStatus.logindate)}
+                                            td
+                                                if agentStatus.agentno != user.id && user.admin
+                                                    a(href="/service/agent/offline.html?id=" + agentStatus.id, data-toggle="tip", title="强制使登陆坐席离线，离线后，坐席不再分配访客，请确认是否操作？")
+                                                        i.layui-icon &#x1006; 强制离线
+                                else
+                                    tr
+                                        td(colspan="6" style="height:400px;")
+                                            .ukefu-empty(style="background: none")
+                                                i.layui-icon &#xe63a;
+                                                div(style="") 当前没有在线坐席

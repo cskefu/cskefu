@@ -61,14 +61,14 @@ public class SystemMessageController extends Handler {
         });
 
         map.addAttribute("emailList", emails);
-        return request(super.createAdminTempletResponse("/admin/email/index"));
+        return request(super.createView("/admin/email/index"));
     }
 
     @RequestMapping("/email/add")
     @Menu(type = "admin", subtype = "email")
     public ModelAndView add(ModelMap map, HttpServletRequest request) {
         map.put("organList", organRes.findByOrgi(super.getOrgi(request)));
-        return request(super.createRequestPageTempletResponse("/admin/email/add"));
+        return request(super.createView("/admin/email/add"));
     }
 
     @RequestMapping("/email/save")
@@ -80,7 +80,7 @@ public class SystemMessageController extends Handler {
             email.setSmtppassword(MainUtils.encryption(email.getSmtppassword()));
         }
         systemMessageRepository.save(email);
-        return request(super.createRequestPageTempletResponse("redirect:/admin/email/index.html"));
+        return request(super.createView("redirect:/admin/email/index.html"));
     }
 
     @RequestMapping("/email/edit")
@@ -88,7 +88,7 @@ public class SystemMessageController extends Handler {
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
         map.put("organList", organRes.findByOrgi(super.getOrgi(request)));
         map.addAttribute("email", systemMessageRepository.findByIdAndOrgi(id, super.getOrgi(request)));
-        return request(super.createRequestPageTempletResponse("/admin/email/edit"));
+        return request(super.createView("/admin/email/edit"));
     }
 
     @RequestMapping("/email/update")
@@ -106,7 +106,7 @@ public class SystemMessageController extends Handler {
             }
             systemMessageRepository.save(email);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/email/index.html"));
+        return request(super.createView("redirect:/admin/email/index.html"));
     }
 
     @RequestMapping("/email/delete")
@@ -116,7 +116,7 @@ public class SystemMessageController extends Handler {
         if (email != null) {
             systemMessageRepository.delete(temp);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/email/index.html"));
+        return request(super.createView("redirect:/admin/email/index.html"));
     }
 
 
@@ -124,15 +124,14 @@ public class SystemMessageController extends Handler {
     @Menu(type = "setting", subtype = "sms")
     public ModelAndView smsindex(ModelMap map, HttpServletRequest request) throws IOException {
         map.addAttribute("smsList", systemMessageRepository.findByMsgtypeAndOrgi("sms", super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request))));
-        return request(super.createAdminTempletResponse("/admin/sms/index"));
+        return request(super.createView("/admin/sms/index"));
     }
 
     @RequestMapping("/sms/add")
     @Menu(type = "admin", subtype = "sms")
     public ModelAndView smsadd(ModelMap map, HttpServletRequest request) {
-
         map.addAttribute("smsType", Dict.getInstance().getDic("com.dic.sms.type"));
-        return request(super.createRequestPageTempletResponse("/admin/sms/add"));
+        return request(super.createView("/admin/sms/add"));
     }
 
     @RequestMapping("/sms/save")
@@ -144,7 +143,7 @@ public class SystemMessageController extends Handler {
             sms.setSmtppassword(MainUtils.encryption(sms.getSmtppassword()));
         }
         systemMessageRepository.save(sms);
-        return request(super.createRequestPageTempletResponse("redirect:/admin/sms/index.html"));
+        return request(super.createView("redirect:/admin/sms/index.html"));
     }
 
     @RequestMapping("/sms/edit")
@@ -152,7 +151,7 @@ public class SystemMessageController extends Handler {
     public ModelAndView smsedit(ModelMap map, HttpServletRequest request, @Valid String id) {
         map.addAttribute("smsType", Dict.getInstance().getDic("com.dic.sms.type"));
         map.addAttribute("sms", systemMessageRepository.findByIdAndOrgi(id, super.getOrgi(request)));
-        return request(super.createRequestPageTempletResponse("/admin/sms/edit"));
+        return request(super.createView("/admin/sms/edit"));
     }
 
     @RequestMapping("/sms/update")
@@ -170,7 +169,7 @@ public class SystemMessageController extends Handler {
             }
             systemMessageRepository.save(sms);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/sms/index.html"));
+        return request(super.createView("redirect:/admin/sms/index.html"));
     }
 
     @RequestMapping("/sms/delete")
@@ -180,6 +179,6 @@ public class SystemMessageController extends Handler {
         if (sms != null) {
             systemMessageRepository.delete(temp);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/sms/index.html"));
+        return request(super.createView("redirect:/admin/sms/index.html"));
     }
 }

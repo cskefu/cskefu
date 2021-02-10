@@ -1,0 +1,43 @@
+ul
+    li.ukefu-entim-organ-open
+        h5.ukefu-entim-organ(lay-filter='spread', lay-type='true')
+            i.layui-icon 
+            span 我创建的群
+            - var curgroup = 0
+            if groupList
+                for imgroup in groupList
+                    - curgroup = curgroup+1
+            em
+                | (
+                cite.layim-count= curgroup
+                | )
+        ul.ukefu-user-list.ukefu-group
+            if groupList
+                for imgroup in groupList
+                    li(id="group_#{imgroup.id}")
+                        a(href="javascript:void(0)", onclick="openchat('/ent/im/group.html?id=#{imgroup.id}', '/images/imgroup.png' , '#{imgroup.name}' , '#{imgroup.id}' , '创建时间:#{pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', imgroup.createtime)}');")
+                            img(src="/images/imgroup.png")
+                            span= imgroup.name
+                        .ukefu-session-tip(class="cont_#{imgroup.id}")
+    li.ukefu-entim-organ-open
+        h5.ukefu-entim-organ(lay-filter='spread', lay-type='true')
+            i.layui-icon 
+            span 我加入的群
+            - var curgroup = 0
+            if joinGroupList
+            for imGroup in joinGroupList
+                if imGroup.imgroup && user.id != imGroup.creater
+                    - curgroup = curgroup+1
+            em
+                | (
+                cite.layim-count= curgroup
+                | )
+        ul.ukefu-user-list.ukefu-group
+            if joinGroupList
+                for imGroup in joinGroupList
+                    if imGroup.imgroup && user.id != imGroup.creater
+                        li(id="group_#{imGroup.imgroup.id}")
+                            a(href="javascript:void(0)", onclick="openchat('/ent/im/group.html?id=#{imGroup.imgroup.id}', '/images/imgroup.png' , '#{imGroup.imgroup.name}' , '#{imGroup.imgroup.id}' , '创建时间:#{pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', imGroup.imgroup.createtime)}');")
+                                img(src="/images/imgroup.png")
+                                span= imGroup.imgroup.name
+                            .ukefu-session-tip(class="cont_#{imGroup.imgroup.id}")

@@ -1,0 +1,322 @@
+extends /apps/include/layout.pug
+block content
+    .layui-side.layui-bg-black
+        .layui-side-scroll
+            include /apps/setting/include/left.pug
+    .layui-body
+        .layui-side-scroll
+            form.layui-form(method='post', key='set-mine' enctype='multipart/form-data' action='/setting/agent/sessionconfig/save.html')
+                input(type='hidden' name='satisfaction' value='1')
+                if sessionConfig
+                    input(type='hidden', name='id', value= sessionConfig.id)
+                .row
+                    .col-lg-12
+                        .ukefu-customer-div.setting-wrapper
+                            .box.default-box
+                                .box-header: h3.box-title 对话设置
+                                .box-body.ukefu-im-theme
+                                    .row: .col-lg-8
+                                        .ukefu-webim-prop 人工坐席接入欢迎消息（非WEBIM渠道适用）
+                                            .ukefu-webim-tl(style="clear:both;")
+                                            .box-item: .row: .col-lg-12
+                                                textarea(name="sessionmsg" id="sessionmsg" autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;")= sessionConfig.sessionmsg ? sessionConfig.sessionmsg : "欢迎您来咨询！欢迎使用春松客服！如需帮助请联系 info@chatopera.com"
+
+                                        .ukefu-webim-prop 无坐席在线提示消息
+                                            .ukefu-webim-tl(style="clear:both;")
+                                            .box-item: .row: .col-lg-12
+                                                textarea(name="noagentmsg" id="noagentmsg" autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;")= sessionConfig.noagentmsg ? sessionConfig.noagentmsg : "您好，当前无人工坐席在线。"
+
+                                        .ukefu-webim-prop 坐席忙时提示消息（排队位置请使用{num}替换）
+                                            .ukefu-webim-tl(style="clear:both;")
+                                            .box-item: .row: .col-lg-12
+                                                textarea(name="agentbusymsg" id="agentbusymsg" autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;")= sessionConfig.agentbusymsg ? sessionConfig.agentbusymsg : "坐席全忙，已进入等待队列，在您之前，还有 {num} 位等待用户。"
+
+                                        .ukefu-webim-prop 人工坐席分配成功提示消息（坐席使用{agent}替换）
+                                            .ukefu-webim-tl(style="clear:both;")
+                                            .box-item: .row: .col-lg-12
+                                                textarea(name="successmsg" id="successmsg" autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;")= sessionConfig.successmsg ? sessionConfig.successmsg : "坐席分配成功，{agent}为您服务。"
+
+                                        .ukefu-webim-prop 坐席服务结束提示消息
+                                            .ukefu-webim-tl(style="clear:both;")
+                                            .box-item: .row: .col-lg-12
+                                                textarea(name="finessmsg" id="finessmsg" autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;")= sessionConfig.finessmsg ? sessionConfig.finessmsg : "坐席已断开和您的对话"
+
+                                        .ukefu-webim-prop 坐席分配策略
+                                            .ukefu-webim-tl(style="clear:both;")
+                                            .box-item: .row
+                                                .col-lg-8
+                                                    p 新客户接入人工坐席的分配策略
+                                                    p(style="color:#888888;font-size:13px;margin-top:10px;") 空闲坐席优先：新客户接入人工坐席的时候，优先分配给对话数量最少的坐席
+                                                    p(style="color:#888888;font-size:13px;margin-top:10px;") 坐席平均分配：按照坐席轮流分配给未达到最大对话数量的坐席
+                                                .col-lg-4: select(name="distribution")
+                                                    option(value='0', selected= ((!sessionConfig.distribution) || sessionConfig.distribution == '0') && "selected") 空闲坐席优先
+                                                    option(value='1', selected= sessionConfig && sessionConfig.distribution == '1' && "selected") 坐席平均分配
+
+                                        .ukefu-webim-prop 坐席同时服务最多访客数
+                                            .ukefu-webim-tl(style="clear:both;")
+                                            .box-item: .row
+                                                .col-lg-8
+                                                    p 为坐席分配的同时服务访客数量的最大限制
+                                                    p(style="color:#888888;font-size:13px;margin-top:10px;") 分配过多用户会导致客户满意度降低
+                                                .col-lg-4: select(name="maxuser")
+                                                    option(value="1", selected= sessionConfig.maxuser == 1 && "selected") 1
+                                                    option(value="2", selected= sessionConfig.maxuser == 2 && "selected") 2
+                                                    option(value="3", selected= sessionConfig.maxuser == 3 && "selected") 3
+                                                    option(value="4", selected= sessionConfig.maxuser == 4 && "selected") 4
+                                                    option(value="5", selected= sessionConfig.maxuser == 5 && "selected") 5
+                                                    option(value="10", selected= (!sessionConfig.maxuser || sessionConfig.maxuser == 10) && "selected") 10
+                                                    option(value="15", selected= sessionConfig.maxuser == 15 && "selected") 15
+                                                    option(value="20", selected= sessionConfig.maxuser == 20 && "selected") 20
+                                                    option(value="30", selected= sessionConfig.maxuser == 30 && "selected") 30
+                                                    option(value="999", selected= sessionConfig.maxuser == 999 && "selected") 无限制
+
+                                        .ukefu-webim-prop 坐席批量分配最大访客数
+                                            .ukefu-webim-tl(style="clear:both;")
+                                            .box-item: .row
+                                                .col-lg-8
+                                                    p 单次分配访客的最大数量
+                                                    p(style="color:#888888;font-size:13px;margin-top:10px;") 为避免坐席就绪的时候突然涌入大量的咨询客户，设置此参数
+                                                .col-lg-4: select(name="initmaxuser")
+                                                    option(value="1", selected= sessionConfig.initmaxuser == 1 && "selected") 1
+                                                    option(value="2", selected= sessionConfig.initmaxuser == 2 && "selected") 2
+                                                    option(value="3", selected= sessionConfig.initmaxuser == 3 && "selected") 3
+                                                    option(value="4", selected= sessionConfig.initmaxuser == 4 && "selected") 4
+                                                    option(value="5", selected= (!sessionConfig.initmaxuser || sessionConfig.initmaxuser == 5) && "selected") 5
+                                                    option(value="10", selected= sessionConfig.initmaxuser == 10 && "selected") 10
+                                                    option(value="15", selected= sessionConfig.initmaxuser == 15 && "selected") 15
+                                                    option(value="20", selected= sessionConfig.initmaxuser == 20 && "selected") 20
+                                                    option(value="30", selected= sessionConfig.initmaxuser == 30 && "selected") 30
+                                                    option(value="999", selected= sessionConfig.initmaxuser == 999 && "selected") 无限制
+
+
+                                        .ukefu-webim-prop 历史服务坐席优先分配
+                                            .ukefu-webim-tl(style="clear:both;")
+                                            .box-item: .row
+                                                .col-lg-8
+                                                    p 启用此功能后，客户接入坐席的时候，会优先分配一起通话过的坐席进行分配
+                                                    p(style="color:#888888;font-size:13px;margin-top:10px;") 如果分配的坐席已达到最大服务用户数，则进入等待队列
+                                                .col-lg-4(style="text-align:right;"): input(type="checkbox" id="lastagent" name="lastagent" title="启用" checked= sessionConfig.lastagent == true && "checked")
+
+                                        .ukefu-webim-prop 客户超时提醒
+                                            .ukefu-webim-tl(style="clear:both;")
+                                            .box-item: .row
+                                                .col-lg-8
+                                                    p 客户与坐席对话的超时提醒功能
+                                                    p(style="color:#888888;font-size:13px;margin-top:10px;")
+                                                .col-lg-4(style="text-align:right;"): input(type="checkbox" title="启用" name="sessiontimeout" id="sessiontimeout" lay-filter="timeout" checked= sessionConfig.sessiontimeout == true && "checked")
+
+                                            #timeout_tip.box-item(style= 'display:' + (sessionConfig.sessiontimeout ? "block;" : "none;"))
+                                                .row
+                                                    .col-lg-8: p 超时时长（秒）
+                                                    .col-lg-4(style="text-align:right;"): input(type="text", name="timeout", id="timeout" lay-verify="number", value=(sessionConfig.timeout > 0 ? sessionConfig.timeout.toString() : '120'), autocomplete="off", class="layui-input", style="width:80px;display:inline;")
+                                                .row
+                                                    .col-lg-8: p 超时提示消息
+                                                .row(style="margin-top:10px;")
+                                                    .col-lg-12: textarea(name="timeoutmsg" id="timeoutmsg" autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;")= sessionConfig.timeoutmsg ? sessionConfig.timeoutmsg : "您好，您已经很长时间没有发送消息了，您是否还在线？"
+
+
+                                        .ukefu-webim-prop 客户超时提醒后再次超时
+                                            .ukefu-webim-tl(style="clear:both;")
+                                            .box-item: .row
+                                                .col-lg-8
+                                                    p 客户与坐席对话超时后再次超时后出策略
+                                                    p(style="color:#888888;font-size:13px;margin-top:10px;") 开启后，用户在指定时间内没有响应时，系统会在2分钟后自动结束对话
+                                                .col-lg-4(style="text-align:right;")
+                                                    input(type="checkbox", title="启用", id="resessiontimeout", name="resessiontimeout", lay-filter="retimeout", checked= (sessionConfig.resessiontimeout == true) && "checked")
+                                                #re_timeout_tip.box-item(style="display:" + (sessionConfig.resessiontimeout ? "display;" : "none;"))
+                                                    .row
+                                                        .col-lg-8: p 提醒后再次超时时长（秒）
+                                                        .col-lg-4(style="text-align:right;")
+                                                            input(type="text" name="retimeout", lay-verify="number", id="retimeout", value=(sessionConfig.retimeout > 0 ? sessionConfig.retimeout : '120'), autocomplete="off", class="layui-input", style="width:80px;display:inline;")
+                                                    .row
+                                                        .col-lg-8: p 提醒后再次超时后断开的提示消息
+                                                    .row(style="margin-top:10px;")
+                                                        .col-lg-12: textarea(name="retimeoutmsg" id="retimeoutmsg" autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;")= sessionConfig.retimeoutmsg ? sessionConfig.retimeoutmsg : "您好，欢迎下次咨询，再见？"
+
+                                        .ukefu-webim-prop 坐席回复超时
+                                            .ukefu-webim-tl(style="clear:both;")
+                                            .box-item: .row
+                                                .col-lg-8
+                                                    p 坐席回复客户消息的超时自动回复功能
+                                                    p(style="color:#888888;font-size:13px;margin-top:10px;") 开启后，坐席在指定时间内没有回复消息时，系统会自动回复用户消息
+                                                .col-lg-4(style="text-align:right;"): input(type="checkbox" title="启用" name="agentreplaytimeout" id="agentreplaytimeout" lay-filter="agentreplaytimeout" checked= sessionConfig.agentreplaytimeout == true && "checked")
+
+                                            #agentreplay.box-item(style="display:" + (sessionConfig.agentreplaytimeout ? "display;" : "none;"))
+                                                .row
+                                                    .col-lg-8: p 超时时长（秒）
+                                                    .col-lg-4(style="text-align:right;"): input(type="text", name="agenttimeout", lay-verify="number", id="agenttimeout", value=(sessionConfig.agenttimeout > 0 ? sessionConfig.agenttimeout : '120'), autocomplete="off" class="layui-input", style="width:80px;display:inline;")
+                                                .row
+                                                    .col-lg-8: p 超时提示消息
+                                                .row(style="margin-top:10px;")
+                                                    .col-lg-12: textarea(name="agenttimeoutmsg" id="agenttimeoutmsg" autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;")= sessionConfig.agenttimeoutmsg ? sessionConfig.agenttimeoutmsg : "欢迎咨询，我正在为您查询资料"
+
+
+                                        .ukefu-webim-prop 启用工作时间段设置
+                                            .ukefu-webim-tl(style="clear:both;")
+                                            .box-item: .row
+                                                .col-lg-8
+                                                    p 非工作时间段提醒功能
+                                                    p(style="color:#888888;font-size:13px;margin-top:10px;") 开启后，当前时间不在工作时间段内访问将会提示
+                                                .col-lg-4(style="text-align:right;"): input(type="checkbox", title="启用", name="hourcheck", id="hourcheck", lay-filter="hourcheck", checked= sessionConfig.hourcheck && "checked")
+                                            #hourcheck_tip.box-item(style="display:" + (sessionConfig.hourcheck ? "block;" : "none;"))
+                                                .row(style="margin-bottom:20px;")
+                                                    .col-lg-12
+                                                        p a、设置工作时间段
+                                                        p(style="color:#888888;font-size:13px;margin-top:10px;") 只有设置工作时间段之后，留言功能才生效
+
+                                                .row(style="margin-bottom:20px;")
+                                                    .col-lg-12
+                                                        #workhours
+                                                            if sessionConfig.workinghours
+                                                                - var workinghours = sessionConfig.workinghours.split(',')
+                                                                for wh in workinghours
+                                                                    small(id="wh_" + wh.replace('[:~]{1,}', ''), class="ukefu-timerange layui-btn layui-btn-normal")
+                                                                        | #{wh}
+                                                                        i.layui-icon &#x1006;
+                                                                        input(type='hidden' name='workinghours' value=wh)
+
+                                                .row(style="margin-bottom:20px;")
+                                                    .col-lg-12
+                                                        .layui-inline: .layui-input-inline(style="width: 70px;")
+                                                            select#wh_start_h
+                                                                - var hours = 0
+                                                                while hours < 24
+                                                                    - var hourVal = pugHelper.padRight(hours.toString(), '00')
+                                                                    option(value=hourVal, selected= hours == 8 && "selected")= hourVal
+                                                                    - hours++
+
+                                                        .layui-inline: .layui-input-inline(style="width: 3px;") :
+                                                        .layui-inline: .layui-input-inline(style="width: 70px;")
+                                                            select#wh_start_m
+                                                                - var mins = 0
+                                                                while mins < 60
+                                                                    - var minsVal = pugHelper.padRight(mins.toString(), '00')
+                                                                    option(value=minsVal, selected = mins == 30 && 'selected')= minsVal
+                                                                    - mins++
+                                                        .layui-inline: .layui-input-inline(style="width: 20px;") ~
+                                                        .layui-inline: .layui-input-inline(style="width: 70px;")
+                                                            select#wh_end_h
+                                                                - var hours = 0
+                                                                while hours < 24
+                                                                    - var hourVal = pugHelper.padRight(hours.toString(), '00')
+                                                                    option(value=hourVal, selected= hours == 8 && "selected")= hourVal
+                                                                    - hours++
+
+                                                        .layui-inline: .layui-input-inline(style="width: 3px;") :
+                                                        .layui-inline: .layui-input-inline(style="width: 70px;")
+                                                            select#wh_end_m
+                                                                - var mins = 0
+                                                                while mins < 60
+                                                                    - var minsVal = pugHelper.padRight(mins.toString(), '00')
+                                                                    option(value=minsVal, selected = mins == 30 && 'selected')= minsVal
+                                                                    - mins++
+                                                        .layui-inline.layui-input-inline(style="width: 70px;")
+                                                            button#wh_time_range(class="layui-btn layui-btn-original" type="button"): i.layui-icon &#xe608;
+
+                                                .row(style="margin-bottom:20px;")
+                                                    .col-lg-12
+                                                        p b、设置非工作时间段的提示信息
+                                                        p(style="color:#888888;font-size:13px;margin-top:10px;") 在微信渠道下使用或直接打开对话窗口的情况下使用
+
+                                                .row: .col-lg-12
+                                                    textarea(name="notinwhmsg" autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;")= sessionConfig.notinwhmsg ? sessionConfig.notinwhmsg : "您好，当前非工作时间段。"
+
+                                        .ukefu-webim-prop 排队超时设置
+                                            .ukefu-webim-tl(style="clear:both;")
+                                            .box-item: .row
+                                                .col-lg-8
+                                                    p 访客的最大排队等待时长
+                                                    p(style="color:#888888;font-size:13px;margin-top:10px;") 排队时间超过设置的时间后，自动断开访客链接
+                                                .col-lg-4(style="text-align:right;"): input(type="checkbox", title="启用", name="quene", id="quene", lay-filter="quene", checked= sessionConfig.quene && "checked")
+                                            #quene_tip.box-item(style="display:" + (sessionConfig.quene ? "block;" : "none;"))
+                                                .row
+                                                    .col-lg-8: p 排队超时时长（秒）
+                                                    .col-lg-4(style="text-align:right;")
+                                                        input(type="text", name="quenetimeout", id="quenetimeout", lay-verify="number", value=(sessionConfig.quenetimeout > 0 ? sessionConfig.quenetimeout : "120"), autocomplete="off", class="layui-input", style="display:inline;")
+                                                .row(style="margin-top:10px;")
+                                                    .col-lg-8: p 发送超时提醒消息的系统昵称
+                                                    .col-lg-4(style="text-align:right;")
+                                                        input(type="text", name="servicename", id="servicename", value=(sessionConfig.servicename ? sessionConfig.servicename : "系统客服"), autocomplete="off" class="layui-input" style="display:inline;")
+                                                .row
+                                                    .col-lg-8: p 排队超时后断开访客服务请求的提示消息
+                                                .row(style="margin-top:10px;")
+                                                    .col-lg-12: textarea(name="quenetimeoutmsg" id="quenetimeoutmsg" autocomplete="off" class="layui-input" resize="false" style="height:90px;line-height:22px;resize: none;")= sessionConfig.quenetimeoutms ? sessionConfig.quenetimeoutms : "感谢您的咨询，再见！"
+                .row
+                    .col-lg-3
+                    .col-lg-9
+                        .layui-form-item
+                            .layui-input-block
+                                button.layui-btn(lay-submit lay-filter='formDemo') 保存
+                                button.layui-btn.layui-btn-original(type='reset') 重置
+    script(language='javascript').
+        layui.use('form', function () {
+            var form = layui.form();
+            form.render('select'); // 刷新 select 选择框渲染
+            form.on("checkbox(timeout)", function (data) {
+                if (data.elem.checked == true) {
+                    $('#timeout_tip').show();
+                } else {
+                    $('#timeout_tip').hide();
+                }
+            });
+            form.on("checkbox(hourcheck)", function (data) {
+                if (data.elem.checked == true) {
+                    $('#hourcheck_tip').show();
+                } else {
+                    $('#hourcheck_tip').hide();
+                }
+            });
+            form.on("checkbox(retimeout)", function (data) {
+                if (data.elem.checked == true) {
+                    $('#re_timeout_tip').show();
+                } else {
+                    $('#re_timeout_tip').hide();
+                }
+            });
+            form.on("checkbox(agentreplaytimeout)", function (data) {
+                if (data.elem.checked == true) {
+                    $('#agentreplay').show();
+                } else {
+                    $('#agentreplay').hide();
+                }
+            });
+            form.on("checkbox(servicetimeoutlimit)", function (data) {
+                if (data.elem.checked == true) {
+
+                    $('#timeout_limit').show();
+                } else {
+
+                    $('#timeout_limit').hide();
+                }
+            });
+            form.on("checkbox(quene)", function (data) {
+                if (data.elem.checked == true) {
+                    $('#quene_tip').show();
+                } else {
+
+                    $('#quene_tip').hide();
+                }
+            });
+            form.on("checkbox(otherquickplay)", function (data) {
+                if (data.elem.checked == true) {
+                    $('#otherquickplay_op').show();
+                } else {
+
+                    $('#otherquickplay_op').hide();
+                }
+            });
+        });
+        $('#wh_time_range').on("click", function () {
+            var timerange = $("#wh_start_h").val() + ":" + $("#wh_start_m").val() + "~" + $("#wh_end_h").val() + ":" + $("#wh_end_m").val();
+            var id = "wh_" + $("#wh_start_h").val() + $("#wh_start_m").val() + $("#wh_end_h").val() + $("#wh_end_m").val();
+            if ($("#" + id).length == 0) {
+                $('#workhours').append("<small id='" + id + "' class='ukefu-timerange layui-btn layui-btn-normal'>" + timerange + " <i class='layui-icon'>&#x1006;</i><input type='hidden' name='workinghours' value='" + timerange + "'/></small>");
+            }
+        });
+        $(document).on("click", ".ukefu-timerange", function () {
+            var target = $(this);
+            var index = top.layer.confirm("请确认是否移除时间段？", {icon: 3, title: '提示'}, function (text, cindex) {
+                top.layer.close(index);
+                $(target).remove();
+            });
+        });

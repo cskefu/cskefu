@@ -78,6 +78,7 @@ public class Constants {
      * Channels
      */
     public static final String CHANNEL_TYPE_WEBIM = "webim";
+    public static final String CHANNEL_TYPE_MESSENGER = "messenger";
     public final static String IM_MESSAGE_TYPE_MESSAGE = "message";
     public final static String IM_MESSAGE_TYPE_WRITING = "writing";
     public final static String CHATBOT_EVENT_TYPE_CHAT = "chat";
@@ -89,6 +90,7 @@ public class Constants {
     public final static String CSKEFU_MODULE_CHATBOT = "chatbot";
     public final static String CSKEFU_MODULE_CONTACTS = "contacts";
     public final static String CSKEFU_MODULE_SKYPE = "skype";
+    public final static String CSKEFU_MODULE_MESSENGER = "messenger";
     public final static String CSKEFU_MODULE_CCA = "cca";
     public final static String CSKEFU_MODULE_ENTIM = "entim";
     public final static String CSKEFU_MODULE_WORKORDERS = "workorders";
@@ -121,7 +123,11 @@ public class Constants {
     // 发送给聊天机器人并处理返回结果
     public final static String INSTANT_MESSAGING_MQ_QUEUE_CHATBOT = "cskefu.outbound.chatbot";
     public static final String AUDIT_AGENT_MESSAGE = "cskefu.agent.audit";
+    // 机器人返回的结果数据来源为faq
+    public final static String PROVIDER_FAQ = "faq";
 
+    // Facebook OTN 发送
+    public final static String INSTANT_MESSAGING_MQ_QUEUE_FACEBOOK_OTN = "cskefu.outbound.faceboot.otn";
 
     /**
      * 登录用户的唯一登录会话管理

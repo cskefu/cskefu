@@ -1,0 +1,66 @@
+extends /admin/include/layout.pug
+block content
+    .row: .col-lg-12
+        h1.site-h1(style='background-color:#FFFFFF;')
+            | 邮件服务器列表 (#{emailList.totalElements})
+            span(style='float:right;')
+                button.layui-btn.layui-btn-small.green(href='/admin/email/add.html', data-toggle='ajax', data-width='550', data-height='450', data-title='创建新邮件服务器')
+                    | 创建新邮件服务器
+
+        .row(style='padding:5px;')
+            .col-lg-12
+                table.layui-table(lay-skin='line')
+                    colgroup
+                        col(width='10%')
+                        col(width='10%')
+                        col(width='15%')
+                        col(width='10%')
+                        col(width='15%')
+                        col(width='20%')
+                        col(width='1%')
+                    thead
+                        tr
+                            th 部门
+                            th 名称
+                            th 邮件服务器地址
+                            th 账号
+                            th 发件人
+                            th 创建时间
+                            th(style='white-space:nowrap;', nowrap) 操作
+                    tbody
+                        for email in emailList.content
+                            tr
+                                td= email.organ
+                                td= email.name
+                                td= email.smtpserver
+                                td= email.smtpuser
+                                td= email.mailfrom
+                                td= pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', email.createtime)
+                                td(style="white-space:nowrap;" nowrap="nowrap")
+                                    a(href="/admin/email/edit.html?id=" + email.id, data-toggle="ajax",  data-width="550", data-height="450", data-title="编辑邮件服务器")
+                                        i.layui-icon &#xe642;
+                                        span 编辑
+                                    a(href="/admin/email/delete.html?id=" + email.id style="margin-left:10px;" data-toggle="tip"  title="请确认是否删除邮件服务器？")
+                                        i.layui-icon(style="color:red;") &#x1006;
+                                        span 删除
+        .row(style='padding:5px;')
+            .col-lg-12#page(style='text-align:center;')
+
+    script.
+        layui.use(['laypage', 'layer'], function () {
+            var laypage = layui.laypage
+                , layer = layui.layer;
+
+            laypage({
+                cont: 'page'
+                , pages: #{emailList.totalPages} //总页数
+                , curr: #{emailList.number + 1}
+                , groups: 5 //连续显示分页数
+                , jump: function (data, first) {
+                    if (!first) {
+                        location.href = "/admin/email/index.html?p=" + data.curr;
+                    }
+                }
+            });
+        });
+

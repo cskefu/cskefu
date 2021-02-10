@@ -1,0 +1,74 @@
+.ukefu-chat-history
+    h1.site-h1(style="padding-bottom:0px;margin-bottom:0px;border-bottom:0px;")
+        ul.layui-tab-title
+            li#chat_his.layui-this 对话内容
+            if summary
+                li#summary
+                    | 服务小结
+    #chat_msg_list.chat-message.chat_msg_list
+        if agentUserMessageList && agentUserMessageList.content
+            for chatmessage in pugHelper.reverse(agentUserMessageList.content)
+                .clearfix.chat-block
+                    div(class=(chatmessage.userid && chatmessage.userid == user.id || chatmessage.calltype && chatmessage.calltype == '呼出' ? 'chat-right' : 'chat-left'))
+                        img.user-img(alt="", src=(chatmessage.calltype && chatmessage.calltype == '呼出' ? '/images/agent.png' : curagentuser.headimgurl && curagentuser.headimgurl != '' ? curagentuser.headimgurl : '/images/im/user.png'), style="width:45px;height:45px;")
+                        .chat-message
+                            span.user= chatmessage.username
+                            span.time
+                                | #{pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', chatmessage.createtime)}
+                        div(class=(chatmessage.userid && chatmessage.userid == user.id || chatmessage.calltype && chatmessage.calltype == '呼出' ? 'chatting-right' : 'chatting-left'))
+                            i.userarrow
+                            .chat-content
+                                include /apps/agent/media/message.pug
+        else if curagentuser
+            if curagentuser.status && curagentuser.status == "end"
+                #agentuser-curstatus.clearfix.chat-block.connect-end
+                    span.connect-message 用户“#{curagentuser.username}”已经离开
+            else
+                #agentuser-curstatus.clearfix.chat-block.connect-begin
+                    span.connect-message 用户“#{curagentuser.username}”开始对话
+    if summary
+        #summary_content.box(style="display:none;")
+            .box-body(style="padding:0px 10px;position: relative;padding-top:20px;")
+                ul.info-list
+                    li 记录时间：#{pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', summary.createtime)}
+                    if summary.username
+                        li 姓名：#{summary.username}
+                    if summary.phone
+                        li 电话：#{summary.phone}
+                    if summary.email
+                        li 邮件：#{summary.email}
+                    if summary.resion
+                        li 来访原因：#{summary.resion}
+                    li
+                        | 服务类型：
+                        if summary.servicetype
+                            for st in summary.servicetype.split(",")
+                                if summaryTags
+                                    for tag in summaryTags
+                                        if st == tag.id
+                                            if st_index > 0
+                                                | "，" + #{tag.tag}
+                    li
+                        | 是否预约：
+                        if summary.reservation
+                            i.layui-icon(style="color:#19a55d;") &#xe618;
+                    li 预约方式：#{uKeFuDic[summary.reservtype].name}
+                    li 预约时间：#{pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', summary.reservtime)}
+                    li
+                        | 当前状态：
+                        if summary.status && summary.status == "1"
+                            i.layui-icon(style="color:#19a55d;") 
+                            |  已处理
+                        else
+                            |  未处理
+                    li 服务小结：#{summary.summary}
+script(language='javascript').
+    $('#chat_his').click(function () {
+        $('#summary_content').hide();
+        $('#chat_msg_list').show();
+    })
+    $('#summary').click(function () {
+        $('#chat_msg_list').hide();
+        $('#summary_content').show();
+    })
+            

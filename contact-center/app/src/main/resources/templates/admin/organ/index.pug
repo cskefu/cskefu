@@ -1,0 +1,128 @@
+extends /admin/include/layout.pug
+
+block content
+    style.
+        .ztree li span {
+            display: inline-block !important;
+            white-space: pre-wrap;
+            width: 90px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    .row(style='height:100%;')
+        .col-lg-3(style='border-right:1px solid #e6e6e6;padding-right:0px;')
+            h1.site-h1(style='background-color:#FFFFFF;')
+                | 组织机构
+                span(style='float:right;')
+                    button.layui-btn.layui-btn-small.green#areaadd(href='/admin/organ/add.html?' + (organData ? 'parent=' + organData.id : ''), data-toggle='ajax', data-height='400', data-width='650', data-title='创建部门')
+                        | 创建部门
+            .row(style='padding:5px;')
+                .col-lg-12
+                    ul#organTree.ztree
+        span.col-lg-9
+            h1.site-h1(style='background-color:#FFFFFF;')
+                span(style='width:150px;display:inline-block;;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;')
+                    if organData
+                        | #{organData.name}
+                    else
+                        | 默认机构
+                    if userList
+                        | (#{userList.size()})
+                span(style='float:right;')
+                    if organData
+                        button.layui-btn.layui-btn-small.green(href="/admin/organ/seluser.html?organ=" + organData.id, data-toggle="ajax", data-width="750", data-title="添加用户到当前部门")
+                            | 添加用户到当前部门
+                        button.layui-btn.layui-btn-original.layui-btn-small(href="/admin/organ/area.html?id=" + organData.id, data-toggle="ajax", data-width="450", data-height="400", data-title="地区设置")
+                            | 地区设置
+                        button.layui-btn.layui-btn-original.layui-btn-small(href="/admin/organ/edit.html?id=" + organData.id, data-toggle="ajax", data-width="650", data-height="400", data-title="修改部门")
+                            | 修改部门
+                        button.layui-btn.layui-btn-danger.layui-btn-small(href="/admin/organ/delete.html?id=" + organData.id, data-toggle="tip", data-title="请确认是否删除该部门？")
+                            | 删除部门
+            .row(style='padding:5px;')
+                .col-lg-12
+                    table.layui-table(lay-skin='line')
+                        colgroup
+                            col(width='30%')
+                            col(width='20%')
+                            col(width='25%')
+                            col(width='24%')
+                            col(width='1%')
+                            col
+                        thead
+                            tr
+                                th 用户
+                                th 姓名
+                                th 电子邮件
+                                th 手机
+                                th(style='white-space:nowrap;', nowrap) 操作
+                        tbody(style='table-layout: fixed; word-break: break-all;')
+                            if userList
+                                for organUser in userList
+                                    tr
+                                        td(style="width:150px;")
+                                            a(href="")
+                                                | #{organUser.username}
+                                        td(style="width: 100px")= organUser.uname
+                                        td= organUser.email
+                                        td= organUser.mobile
+                                        td(style="white-space: nowrap;")
+                                            a(href="/admin/organ/user/delete.html?id=" + organUser.id + "&organ=" + organData.id, data-toggle="tip", data-title="请确认是否从坐席组中移除坐席？")
+                                                i.layui-icon(style="color:red;") ဆ
+                                                | 移除
+            .row(style='padding:5px;')
+                .col-lg-12#page(style='text-align:center;')
+    script(type='text/javascript').
+        var setting = {
+            data: {simpleData: {enable: true}},
+            callback: {onClick: onClick}
+        };
+        function onClick(e, treeId, treeNode) {
+            if (treeNode.topic) {
+                location.href = "/admin/organ/index.html?organ=" + treeNode.id;
+            } else if (treeNode.id == "0") {
+                location.href = "/admin/organ/index.html";
+            } else if (treeNode.area) {
+                $('#areaadd').attr("href", "/admin/organ/add.html?area=" + treeNode.id);
+            }
+        }
+        var zNodes = !{pugHelper.toJSON(organList)}
+        $.each(zNodes, function (i, o) {
+            o.id = o.id;
+            o.pId = o.parent ? o.parent : '0';
+            o.name = o.name;
+            o.open = true;
+            o.topic = true;
+            o.icon = (o.area && o.area != "") ? '/images/area.png' : '/images/dept.png'
+        });
+        $(document).ready(function () {
+            var ztree = $.fn.zTree.init($("#organTree"), setting, zNodes);
+            if ('#{organData}') {
+                var node = ztree.getNodeByParam('id', "#{organData.id}");//获取id为1的点
+                ztree.selectNode(node);//选择点 // </#if>
+            }
+            // var x = document.getElementById("node_Name");
+            // var y = x.getElementsByClassName("child");
+            // var i;
+            // for (i = 0; i < y.length; i++) {
+            // y[i].style.backgroundColor = "red";
+            // }
+        });
+        layui.use('layer', function () {
+            var layer = layui.layer;
+            var msg = '#{msg}';
+            if (msg == 'admin_organ_update_name_not') {
+                layer.msg('组织机构分类名已存在！', {icon: 2, time: 1500})
+            } else if (msg == 'admin_oran_not_delete') {
+                layer.msg('无法删除，因为存在子组织', {icon: 2, time: 1500})
+            } else if (msg == 'admin_organ_update_success') {
+                layer.msg('修改组织成功', {icon: 1, time: 1500})
+            } else if (msg == 'admin_organ_new_success') {
+                layer.msg('新建组织成功', {icon: 1, time: 1500})
+            } else if (msg == 'admin_organ_update_not_standard') {
+                layer.msg('修改无法完成，上级机构选择错误', {icon: 2, time: 1500})
+            } else if (msg == 'not_allow_remove_user') {
+                layer.msg('用户只有一个组织，不允许移除', {icon: 2, time: 1500})
+            }
+        });
+

@@ -22,7 +22,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "uk_xiaoe_config")
+@Table(name = "cs_chatbot_config")
 @org.hibernate.annotations.Proxy(lazy = false)
 public class AiConfig implements java.io.Serializable{
 	/**

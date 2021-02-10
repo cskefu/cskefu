@@ -1,0 +1,31 @@
+ul.tab-title
+    if user.roleAuthMap["A03_A01_A02_B01"] || user.admin
+        li(class={'layui-this': subtype == 'index'})
+            a(href="/apps/customer/index.html" + (ekind ? "?ekind=" + ekind : "")) 全部客户
+                if subtype == "index"
+                    | (#{entCustomerList.totalElements})
+    if user.roleAuthMap["A03_A01_A02_B02"] || user.admin
+        li(class={'layui-this': subtype == 'today'})
+            a(href="/apps/customer/today.html" + (ekind ? "?ekind=" + ekind : "")) 今日新增
+                if subtype == "today"
+                    | (#{entCustomerList.totalElements})
+    if user.roleAuthMap["A03_A01_A02_B03"] || user.admin
+        li(class={'layui-this': subtype == 'week'})
+            a(href="/apps/customer/week.html" + (ekind ? "?ekind=" + ekind : "")) 本周新增
+                if subtype == "week"
+                    | (#{entCustomerList.totalElements})
+    if user.roleAuthMap["A03_A01_A02_B04"] || user.admin
+        li(class={'layui-this': subtype == 'enterprise'})
+            a(href="/apps/customer/enterprise.html" + (ekind ? "?ekind=" + ekind : "")) 企业客户
+                if subtype == "enterprise"
+                    | (#{entCustomerList.totalElements})
+    if user.roleAuthMap["A03_A01_A02_B05"] || user.admin
+        li(class={'layui-this': subtype == 'personal'})
+            a(href="/apps/customer/personal.html" + (ekind ? "?ekind=" + ekind : "")) 个人客户
+                if subtype == "personal"
+                    | (#{entCustomerList.totalElements})
+    li(class={'layui-this': subtype == 'creater'})
+        a(href="/apps/customer/creater.html" + (ekind ? "?ekind=" + ekind : "")) 我的客户
+            if subtype == "creater"
+                | (#{entCustomerList.totalElements})
+

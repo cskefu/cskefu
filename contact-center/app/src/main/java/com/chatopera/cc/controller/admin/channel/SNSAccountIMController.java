@@ -75,13 +75,13 @@ public class SNSAccountIMController extends Handler {
         if (StringUtils.isNotBlank(execute) && execute.equals("false")) {
             map.addAttribute("execute", execute);
         }
-        return request(super.createAdminTempletResponse("/admin/channel/im/index"));
+        return request(super.createView("/admin/channel/im/index"));
     }
 
     @RequestMapping("/add")
     @Menu(type = "admin", subtype = "send", access = false, admin = true)
     public ModelAndView add(ModelMap map, HttpServletRequest request) {
-        return request(super.createRequestPageTempletResponse("/admin/channel/im/add"));
+        return request(super.createView("/admin/channel/im/add"));
     }
 
     @RequestMapping("/save")
@@ -123,7 +123,7 @@ public class SNSAccountIMController extends Handler {
                 }
             }
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/im/index.html?status=" + status));
+        return request(super.createView("redirect:/admin/im/index.html?status=" + status));
     }
 
     @RequestMapping("/delete")
@@ -141,14 +141,14 @@ public class SNSAccountIMController extends Handler {
             }
         }
 
-        return request(super.createRequestPageTempletResponse("redirect:/admin/im/index.html?execute=" + execute));
+        return request(super.createView("redirect:/admin/im/index.html?execute=" + execute));
     }
 
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "send", access = false, admin = true)
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
         map.addAttribute("snsAccount", snsAccountRes.findByIdAndOrgi(id, super.getOrgi(request)));
-        return request(super.createRequestPageTempletResponse("/admin/channel/im/edit"));
+        return request(super.createView("/admin/channel/im/edit"));
     }
 
     @RequestMapping("/update")
@@ -180,6 +180,6 @@ public class SNSAccountIMController extends Handler {
             oldSnsAccount.setSnstype(MainContext.ChannelType.WEBIM.toString());
             snsAccountRes.save(oldSnsAccount);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/im/index.html"));
+        return request(super.createView("redirect:/admin/im/index.html"));
     }
 }

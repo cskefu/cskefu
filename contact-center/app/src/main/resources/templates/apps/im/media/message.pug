@@ -1,0 +1,20 @@
+if chatMessage.msgtype == "image"
+    a(href=chatMessage.message + "&original=true", target="_blank")
+        img.ukefu-media-image(src=chatMessage.message)
+else if chatMessage.msgtype == "cooperation"
+    a(href="javascript:void(0)", onclick='acceptInvite("' + chatMessage.message + '","' + chatMessage.attachmentid + '"') 您收到一个协作邀请，点击进入协作
+else if chatMessage.msgtype == "file"
+    .ukefu-message-file
+        .ukefu-file-icon
+            img(src="/im/img/file.png")
+        .ukefu-file-desc
+            a(href=chatMessage.message, target="_blank")
+                div= chatMessage.filename
+                div #{chatMessage.filesize / 1024}Kb
+else
+    | !{chatMessage.message}
+    if chatMessage.suggestmsg && chatMessage.suggestmsg != ""
+        .info-list
+            for item in chatMessage.suggest
+                li.ukefu-suggest-item
+                    a.suggestitem(href="javascript:void(0)", onclick="sendMessageTextWithID('" + item.title + "','" + item.id + "')")= item.title

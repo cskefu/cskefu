@@ -17,7 +17,6 @@
 package com.chatopera.cc.controller.admin;
 
 import com.chatopera.cc.basic.Constants;
-import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.repository.*;
@@ -91,13 +90,13 @@ public class RoleController extends Handler {
                 map.addAttribute("userRoleList", userRoleRes.findByOrgiAndRole(super.getOrgi(), roleData, new PageRequest(super.getP(request), super.getPs(request))));
             }
         }
-        return request(super.createAdminTempletResponse("/admin/role/index"));
+        return request(super.createView("/admin/role/index"));
     }
 
     @RequestMapping("/add")
     @Menu(type = "admin", subtype = "role")
     public ModelAndView add(ModelMap map, HttpServletRequest request) {
-        return request(super.createRequestPageTempletResponse("/admin/role/add"));
+        return request(super.createView("/admin/role/add"));
     }
 
     @RequestMapping("/save")
@@ -116,7 +115,7 @@ public class RoleController extends Handler {
             role.setOrgan(currentOrgan.getId());
             roleRepository.save(role);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/role/index.html?msg=" + msg));
+        return request(super.createView("redirect:/admin/role/index.html?msg=" + msg));
     }
 
     @RequestMapping("/seluser")
@@ -127,7 +126,7 @@ public class RoleController extends Handler {
         Role roleData = roleRepository.findByIdAndOrgi(role, super.getOrgi());
         map.addAttribute("userRoleList", userRoleRes.findByOrgiAndRole(super.getOrgi(), roleData));
         map.addAttribute("role", roleData);
-        return request(super.createRequestPageTempletResponse("/admin/role/seluser"));
+        return request(super.createView("/admin/role/seluser"));
     }
 
     @RequestMapping("/saveuser")
@@ -154,7 +153,7 @@ public class RoleController extends Handler {
                 }
             }
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/role/index.html?role=" + role));
+        return request(super.createView("redirect:/admin/role/index.html?role=" + role));
     }
 
     @RequestMapping("/user/delete")
@@ -163,13 +162,13 @@ public class RoleController extends Handler {
         if (role != null) {
             userRoleRes.delete(id);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/role/index.html?role=" + role));
+        return request(super.createView("redirect:/admin/role/index.html?role=" + role));
     }
 
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "role")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
-        ModelAndView view = request(super.createRequestPageTempletResponse("/admin/role/edit"));
+        ModelAndView view = request(super.createView("/admin/role/edit"));
         view.addObject("roleData", roleRepository.findByIdAndOrgi(id, super.getOrgi()));
         return view;
     }
@@ -188,7 +187,7 @@ public class RoleController extends Handler {
         } else if (!role.getId().equals(tempRoleExist.getId())) {
             msg = "admin_role_update_not_exist";
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/role/index.html?msg=" + msg));
+        return request(super.createView("redirect:/admin/role/index.html?msg=" + msg));
     }
 
     @RequestMapping("/delete")
@@ -201,7 +200,7 @@ public class RoleController extends Handler {
         } else {
             msg = "admin_role_not_exist";
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/role/index.html?msg=" + msg));
+        return request(super.createView("redirect:/admin/role/index.html?msg=" + msg));
     }
 
     @RequestMapping("/auth")
@@ -216,7 +215,7 @@ public class RoleController extends Handler {
         Role role = roleRepository.findByIdAndOrgi(id, super.getOrgi());
         map.addAttribute("role", role);
         map.addAttribute("roleAuthList", roleAuthRes.findByRoleidAndOrgi(role.getId(), super.getOrgi()));
-        return request(super.createRequestPageTempletResponse("/admin/role/auth"));
+        return request(super.createView("/admin/role/auth"));
     }
 
     @RequestMapping("/auth/save")
@@ -250,6 +249,6 @@ public class RoleController extends Handler {
                 }
             }
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/role/index.html?role=" + id));
+        return request(super.createView("redirect:/admin/role/index.html?role=" + id));
     }
 }

@@ -26,7 +26,7 @@ import java.util.Date;
 @Entity
 @Table(name = "uk_onlineuser")
 @Proxy(lazy = false)
-public class OnlineUser implements java.io.Serializable  {
+public class OnlineUser implements java.io.Serializable {
     /**
      *
      */
@@ -75,13 +75,21 @@ public class OnlineUser implements java.io.Serializable  {
     private String useragent;
     private String phone;
     private String contactsid;
-
+    private String headimgurl;
 
     private int invitetimes; // 邀请次数
     private String invitestatus; // 邀请状态
     private int refusetimes;
 
     private Contacts contacts;
+
+    public String getHeadimgurl() {
+        return headimgurl;
+    }
+
+    public void setHeadimgurl(String headimgurl) {
+        this.headimgurl = headimgurl;
+    }
 
     public String getCreater() {
         return this.creater;
@@ -463,4 +471,6 @@ public class OnlineUser implements java.io.Serializable  {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+
 }

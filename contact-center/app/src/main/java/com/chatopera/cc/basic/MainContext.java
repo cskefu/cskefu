@@ -635,6 +635,7 @@ public class MainContext {
         WEBIM,
         PHONE,
         SKYPE,
+        MESSENGER,
         EMAIL,
         AI;
 
@@ -904,6 +905,7 @@ public class MainContext {
         APP,
         TELECOM,
         SKYPE,
+        MESSENGER,
         OTHER,
         WEIBO;
 
@@ -1011,6 +1013,15 @@ public class MainContext {
     public enum FilteFunType {
         FILTER,
         RANK;
+
+        public String toString() {
+            return super.toString().toLowerCase();
+        }
+    }
+
+    public enum FbMessengerStatus {
+        ENABLED,
+        DISABLED;
 
         public String toString() {
             return super.toString().toLowerCase();

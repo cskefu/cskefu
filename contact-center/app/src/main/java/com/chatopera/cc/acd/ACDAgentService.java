@@ -117,6 +117,7 @@ public class ACDAgentService {
              * 发送消息给访客
              */
             Message outMessage = new Message();
+            outMessage.setAgentUser(ctx.getAgentUser());
             outMessage.setMessage(ctx.getMessage());
             outMessage.setMessageType(MainContext.MessageType.MESSAGE.toString());
             outMessage.setCalltype(MainContext.CallType.IN.toString());
@@ -127,7 +128,8 @@ public class ACDAgentService {
             }
 
             MainContext.getPeerSyncIM().send(MainContext.ReceiverType.VISITOR,
-                    MainContext.ChannelType.WEBIM, ctx.getAppid(),
+                    MainContext.ChannelType.toValue(ctx.getChannel()),
+                    ctx.getAppid(),
                     MainContext.MessageType.NEW, ctx.getOnlineUserId(), outMessage, true);
 
 
@@ -380,6 +382,8 @@ public class ACDAgentService {
                 agentStatusRes.save(agentStatus);
             }
 
+            Message outMessage = new Message();
+
             /**
              * 发送到访客端的通知
              */
@@ -387,7 +391,6 @@ public class ACDAgentService {
                 case WEBIM:
                     // WebIM 发送对话结束事件
                     // 向访客发送消息
-                    Message outMessage = new Message();
                     outMessage.setAgentStatus(agentStatus);
                     outMessage.setMessage(acdMessageHelper.getServiceFinishMessage(agentUser.getChannel(), agentUser.getSkill(), orgi));
                     outMessage.setMessageType(MainContext.AgentUserStatusEnum.END.toString());
@@ -417,6 +420,30 @@ public class ACDAgentService {
                             "[finishAgentService] send notify to callout channel agentno {}", agentUser.getAgentno());
                     NettyClients.getInstance().sendCalloutEventMessage(
                             agentUser.getAgentno(), MainContext.MessageType.END.toString(), agentUser);
+                    break;
+                case MESSENGER:
+                    outMessage.setAgentStatus(agentStatus);
+                    outMessage.setMessage(acdMessageHelper.getServiceFinishMessage(agentUser.getChannel(), agentUser.getSkill(), orgi));
+                    outMessage.setMessageType(MainContext.AgentUserStatusEnum.END.toString());
+                    outMessage.setCalltype(MainContext.CallType.IN.toString());
+                    outMessage.setCreatetime(MainUtils.dateFormate.format(new Date()));
+                    outMessage.setAgentUser(agentUser);
+
+                    // 向访客发送消息
+                    peerSyncIM.send(
+                            MainContext.ReceiverType.VISITOR,
+                            MainContext.ChannelType.toValue(agentUser.getChannel()), agentUser.getAppid(),
+                            MainContext.MessageType.STATUS, agentUser.getUserid(), outMessage, true
+                    );
+
+                    if (agentStatus != null) {
+                        // 坐席在线，通知结束会话
+                        outMessage.setChannelMessage(agentUser);
+                        outMessage.setAgentUser(agentUser);
+                        peerSyncIM.send(MainContext.ReceiverType.AGENT, MainContext.ChannelType.MESSENGER,
+                                agentUser.getAppid(),
+                                MainContext.MessageType.END, agentUser.getAgentno(), outMessage, true);
+                    }
                     break;
                 default:
                     logger.info(

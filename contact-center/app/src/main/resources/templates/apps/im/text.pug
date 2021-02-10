@@ -1,0 +1,65 @@
+script(language='javascript').
+    var data ;
+    var config = {} ;
+
+if inviteData
+    script(language='javascript')
+        include fingerprint.js
+
+    script(language='javascript').
+        var cskefuOnlineUserId;
+        var ukefu = {
+            time: new Date().getTime(),
+            chat: "/im/index.html?appid=#{appid}!{id?'&id='+id:''}!{aiid?'&aiid='+aiid:''}!{exchange?'&exchange='+exchange:''}!{name?'&name='+name:''}!{email?'&email='+email:''}!{phone?'&phone='+phone:''}&orgi=#{orgi}&client=#{client}&type=text!{skill?'&skill='+skill:''}!{agent?'&agent='+agent:''}",
+            config: function (d) {
+                data = d;
+                if (d.id != null && d.id != '') {
+                    cskefuOnlineUserId = d.id;
+                }
+            },
+            openChatDialog: function () {
+                var url = ukefu.chat;
+                if (data) {
+                    if (data.id) {
+                        url = url + "&id=" + data.id;
+                    }
+                    if (data.name) {
+                        url = url + "&name=" + encodeURIComponent(data.name);
+                    }
+                    if (data.email) {
+                        url = url + "&email=" + encodeURIComponent(data.email);
+                    }
+                    if (data.phone) {
+                        url = url + "&phone=" + encodeURIComponent(data.phone);
+                    }
+                }
+                window.location.replace(url + "&t=" + new Date().getTime());
+            }
+        }
+        Fingerprint2.get({extraComponents: [!{ channelVisitorSeparate == true?'{key: "cskefuAppId", getData: function(done, options){done("'+appid+'")}},':''}
+        {
+            key: "rndId",
+                getData(done, options)
+            {
+                var rnd = '';
+                if (localStorage) {
+                    rnd = localStorage.finger;
+                    if (!rnd) {
+                        rnd = Math.random();
+                        localStorage.finger = rnd;
+                    }
+                }
+
+                done(rnd);
+            }
+        }
+        ]}, function (components) {
+            var glue = components.map(function (component) {
+                return component.value
+            })
+            cskefuOnlineUserId = Fingerprint2.x64hash128(glue.join(''), 31)
+            var userid = '#{userid}';
+            ukefu.chat = ukefu.chat + "&userid="+ (userid || cskefuOnlineUserId) + "&sessionid=#{sessionid}!{ai?'&ai='+ai:''}!{title?'&title='+title:''}!{traceid?'&url='+url:''}!{traceid?'&traceid='+traceid:''}";
+            ukefu.openChatDialog();
+        });
+        

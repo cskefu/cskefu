@@ -9,7 +9,7 @@
     <parent>
         <groupId>com.chatopera.cc</groupId>
         <artifactId>cc-root</artifactId>
-        <version>6.0.0-SNAPSHOT</version>
+        <version>6.1.0-SNAPSHOT</version>
         <!-- for Chatopera Nexus reference if file is available with latest version -->
         <!-- <relativePath/> -->
         <!-- for local reference if file is available with latest version -->
@@ -130,10 +130,10 @@
     </repositories>
     <developers>
         <developer>
-            <id>hain</id>
-            <name>Hai Liang Wang</name>
-            <email>hain@chatopera.com</email>
-            <url>https://github.com/Samurais</url>
+            <id>chatopera</id>
+            <name>Chatopera</name>
+            <email>info@chatopera.com</email>
+            <url>https://www.chatopera.com</url>
             <organization>Chatopera Inc.</organization>
             <organizationUrl>https://www.chatopera.com</organizationUrl>
             <roles>

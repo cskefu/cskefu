@@ -32,7 +32,6 @@ import com.chatopera.cc.socketio.message.Message;
 import com.chatopera.cc.socketio.util.IMServiceUtils;
 import com.chatopera.cc.util.IP;
 import com.chatopera.cc.util.IPTools;
-import com.chatopera.cc.util.SystemEnvHelper;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -57,9 +56,6 @@ public class ChatbotEventHandler {
     private static OnlineUserRepository onlineUserRes;
     private static ChatbotRepository chatbotRes;
     private static ChatbotProxy chatbotProxy;
-
-    private final static String botServiecProvider = SystemEnvHelper.getenv(
-            ChatbotConstants.BOT_PROVIDER, ChatbotConstants.DEFAULT_BOT_PROVIDER);
 
     @Autowired
     public ChatbotEventHandler(SocketIOServer server) {
@@ -112,14 +108,13 @@ public class ChatbotEventHandler {
                 if (invite != null) {
                     Chatbot chatbot = getChatbotRes().findOne(invite.getAiid());
                     com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
-                            chatbot.getClientId(), chatbot.getSecret(), botServiecProvider);
-
+                            chatbot.getClientId(), chatbot.getSecret(), chatbot.getBaseUrl());
                     Response result = bot.command("GET", "/");
 
                     // 发送欢迎语
                     if (result.getRc() == 0) {
-                        ChatMessage welcome = new ChatMessage();
                         JSONObject details = (JSONObject) result.getData();
+                        ChatMessage welcome = new ChatMessage();
                         String welcomeTextMessage = details.getString("welcome");
                         if (StringUtils.isNotBlank(welcomeTextMessage)) {
                             welcome.setCalltype(MainContext.CallType.OUT.toString());
@@ -379,5 +374,4 @@ public class ChatbotEventHandler {
 
         return chatbotRes;
     }
-
 }

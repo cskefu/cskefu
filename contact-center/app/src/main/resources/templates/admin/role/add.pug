@@ -1,0 +1,22 @@
+.uk-layui-form
+    form.layui-form.uk-form(action='/admin/role/save.html')
+        .layui-form-item
+            label.layui-form-label 角色：
+            .layui-input-inline
+                input.layui-input(type='text', name='name', required, lay-verify='required_name', placeholder='请输入角色名称', autocomplete='off')
+        .layui-form-button
+            .layui-button-block
+                button.layui-btn(lay-submit, lay-filter='formDemo') 立即提交
+                button.layui-btn.layui-btn-original(type='reset') 重置
+script.
+    layui.use('form', function () {
+        var form = layui.form();
+        form.verify({
+            required_name: function (value) {
+                if (value.length > 50) {
+                    return "角色名称不能超过50字";
+                }
+            }
+        });
+    });
+            

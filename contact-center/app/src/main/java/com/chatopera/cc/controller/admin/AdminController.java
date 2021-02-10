@@ -67,7 +67,7 @@ public class AdminController extends Handler {
 
     @RequestMapping("/admin")
     public ModelAndView index(ModelMap map, HttpServletRequest request) {
-        ModelAndView view = request(super.createRequestPageTempletResponse("redirect:/"));
+        ModelAndView view = request(super.createView("redirect:/"));
         User user = super.getUser(request);
         view.addObject("agentStatusReport", acdWorkMonitor.getAgentReport(user.getOrgi()));
         view.addObject("agentStatus", cache.findOneAgentStatusByAgentnoAndOrig(user.getId(), user.getOrgi()));
@@ -115,7 +115,7 @@ public class AdminController extends Handler {
     @Menu(type = "admin", subtype = "content")
     public ModelAndView content(ModelMap map, HttpServletRequest request) {
         aggValues(map, request);
-        return request(super.createAdminTempletResponse("/admin/content"));
+        return request(super.createView("/admin/content"));
     	/*if(super.getUser(request).isSuperuser()) {
     		aggValues(map, request);
         	return request(super.createAdminTempletResponse("/admin/content"));
@@ -133,49 +133,6 @@ public class AdminController extends Handler {
         } else {
             request.getSession().setAttribute(Constants.CSKEFU_SYSTEM_INFOACQ, "true");
         }
-        return request(super.createRequestPageTempletResponse("redirect:/"));
+        return request(super.createView("redirect:/"));
     }
-
-    @RequestMapping("/admin/auth/event")
-    @Menu(type = "admin", subtype = "authevent")
-    public ModelAndView authevent(ModelMap map, HttpServletRequest request, @Valid String title, @Valid String url, @Valid String iconstr, @Valid String icontext) {
-        map.addAttribute("title", title);
-        map.addAttribute("url", url);
-        if (StringUtils.isNotBlank(iconstr) && StringUtils.isNotBlank(icontext)) {
-            map.addAttribute("iconstr", iconstr.replaceAll(icontext, "&#x" + MainUtils.string2HexString(icontext) + ";"));
-        }
-        return request(super.createRequestPageTempletResponse("/admin/system/auth/exchange"));
-    }
-
-    @RequestMapping("/admin/auth/save")
-    @Menu(type = "admin", subtype = "authsave")
-    public ModelAndView authsave(ModelMap map, HttpServletRequest request, @Valid String title, @Valid SysDic dic) {
-        SysDic sysDic = sysDicRes.findByCode(Constants.CSKEFU_SYSTEM_AUTH_DIC);
-        boolean newdic = false;
-        if (sysDic != null && StringUtils.isNotBlank(dic.getName())) {
-            if (StringUtils.isNotBlank(dic.getParentid())) {
-                if (dic.getParentid().equals("0")) {
-                    dic.setParentid(sysDic.getId());
-                    newdic = true;
-                } else {
-                    List<SysDic> dicList = sysDicRes.findByDicid(sysDic.getId());
-                    for (SysDic temp : dicList) {
-                        if (temp.getCode().equals(dic.getParentid()) || temp.getName().equals(dic.getParentid())) {
-                            dic.setParentid(temp.getId());
-                            newdic = true;
-                        }
-                    }
-                }
-            }
-            if (newdic) {
-                dic.setCreater(super.getUser(request).getId());
-                dic.setCreatetime(new Date());
-                dic.setCtype("auth");
-                dic.setDicid(sysDic.getId());
-                sysDicRes.save(dic);
-            }
-        }
-        return request(super.createRequestPageTempletResponse("/public/success"));
-    }
-
 }

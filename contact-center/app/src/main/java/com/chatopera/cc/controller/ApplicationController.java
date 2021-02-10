@@ -86,7 +86,7 @@ public class ApplicationController extends Handler {
     @RequestMapping("/")
     public ModelAndView admin(HttpServletRequest request) {
 //        logger.info("[admin] path {} queryString {}", request.getPathInfo(),request.getQueryString());
-        ModelAndView view = request(super.createRequestPageTempletResponse("/apps/index"));
+        ModelAndView view = request(super.createView("/apps/index"));
         User logined = super.getUser(request);
         Organ currentOrgan = super.getOrgan(request);
 
@@ -156,7 +156,7 @@ public class ApplicationController extends Handler {
 
     @RequestMapping("/lazyAgentStatus")
     public ModelAndView lazyAgentStatus(HttpServletRequest request) {
-        ModelAndView view = request(super.createRequestPageTempletResponse("/public/agentstatustext"));
+        ModelAndView view = request(super.createView("/public/agentstatustext"));
         Organ currentOrgan = super.getOrgan(request);
         view.addObject("agentStatusReport", acdWorkMonitor.getAgentReport(currentOrgan != null ? currentOrgan.getId() : null, super.getOrgi(request)));
 

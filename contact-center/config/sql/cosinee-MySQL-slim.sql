@@ -762,6 +762,53 @@ CREATE TABLE `uk_ai_snsaccount` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='AI列表';
 
+DROP TABLE IF EXISTS `cs_fb_messenger`;
+CREATE TABLE `cs_fb_messenger` (
+  `id` varchar(32) NOT NULL,
+  `page_id` varchar(100) NOT NULL,
+  `token` varchar(300) NOT NULL,
+  `verify_token` varchar(100) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `status` varchar(100) NOT NULL,
+  `organ` varchar(32) NOT NULL,
+  `aiid` varchar(32) DEFAULT NULL,
+  `ai` tinyint(4) DEFAULT '0' COMMENT '启用AI',
+  `aisuggest` tinyint(4) DEFAULT '0' COMMENT '启用智能建议',
+  `config` VARCHAR(1000) NULL DEFAULT NULL COMMENT '文案配置',
+  `createtime` datetime NOT NULL,
+  `updatetime` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='FB渠道';
+
+DROP TABLE IF EXISTS `cs_fb_otn`;
+CREATE TABLE `cs_fb_otn` (
+	`id` VARCHAR(32) NOT NULL,
+	`name` VARCHAR(100) NOT NULL,
+	`page_id` VARCHAR(100) NOT NULL,
+	`pre_sub_message` VARCHAR(500) NULL DEFAULT NULL,
+	`sub_message` VARCHAR(500) NOT NULL,
+	`success_message` VARCHAR(500) NULL DEFAULT NULL,
+	`otn_message` VARCHAR(1000) NOT NULL,
+	`status` VARCHAR(50) NOT NULL,
+	`createtime` DATETIME NOT NULL,
+	`updatetime` DATETIME NOT NULL,
+	`sendtime` DATETIME NULL DEFAULT NULL,
+  `sub_num` INT(11) NOT NULL,
+	PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='FB OTN';
+
+DROP TABLE IF EXISTS `cs_fb_otn_follow`;
+CREATE TABLE `cs_fb_otn_follow` (
+	`id` VARCHAR(32) NOT NULL,
+	`page_id` VARCHAR(32) NOT NULL,
+	`otn_id` VARCHAR(32) NOT NULL,
+	`user_id` VARCHAR(300) NOT NULL,
+	`otn_token` VARCHAR(300) NOT NULL,
+	`createtime` DATETIME NOT NULL,
+	`updatetime` DATETIME NOT NULL,
+	`sendtime` DATETIME NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='FB OTN 订阅';
+
 -- ----------------------------
 -- Table structure for uk_area_type
 -- ----------------------------
@@ -2260,89 +2307,6 @@ CREATE TABLE `uk_jobdetailproduct` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='活动产品表';
 
--- ----------------------------
--- Table structure for uk_kbs_expert
--- ----------------------------
-DROP TABLE IF EXISTS `uk_kbs_expert`;
-CREATE TABLE `uk_kbs_expert` (
-  `id` varchar(32) NOT NULL COMMENT '主键ID',
-  `user_id` varchar(32) DEFAULT NULL COMMENT '用户ID',
-  `kbstype` varchar(32) DEFAULT NULL COMMENT '知识库分类',
-  `creater` varchar(32) DEFAULT NULL COMMENT '创建人',
-  `createtime` datetime DEFAULT NULL COMMENT '创建时间',
-  `orgi` varchar(32) DEFAULT NULL COMMENT '租户ID',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='知识库';
-
--- ----------------------------
--- Table structure for uk_kbs_topic
--- ----------------------------
-DROP TABLE IF EXISTS `uk_kbs_topic`;
-CREATE TABLE `uk_kbs_topic` (
-  `id` varchar(32) NOT NULL COMMENT '主键ID',
-  `sessionid` varchar(32) DEFAULT NULL COMMENT '会话ID',
-  `title` varchar(255) DEFAULT NULL COMMENT '主题',
-  `content` text COMMENT '知识库内容',
-  `keyword` text COMMENT '关键词',
-  `summary` text COMMENT '摘要',
-  `anonymous` tinyint(4) DEFAULT NULL COMMENT '允许匿名访问',
-  `begintime` datetime DEFAULT NULL COMMENT '有效期开始时间',
-  `endtime` datetime DEFAULT NULL COMMENT '有效期结束时间',
-  `top` tinyint(4) DEFAULT NULL COMMENT '是否置顶',
-  `essence` tinyint(4) DEFAULT NULL COMMENT '精华',
-  `accept` tinyint(4) DEFAULT NULL COMMENT '允许评论',
-  `finish` tinyint(4) DEFAULT NULL COMMENT '已结束',
-  `answers` int(11) DEFAULT NULL COMMENT '回答数量',
-  `sviews` int(11) DEFAULT NULL COMMENT '预览次数',
-  `followers` int(11) DEFAULT NULL COMMENT '关注人数',
-  `collections` int(11) DEFAULT NULL COMMENT '引用次数',
-  `comments` int(11) DEFAULT NULL COMMENT '回复数',
-  `mobile` tinyint(4) DEFAULT NULL COMMENT '移动端支持',
-  `status` varchar(32) DEFAULT NULL COMMENT '状态',
-  `tptype` varchar(32) DEFAULT NULL COMMENT '分类ID',
-  `cate` varchar(32) DEFAULT NULL COMMENT '分类ID',
-  `username` varchar(32) DEFAULT NULL COMMENT '用户名',
-  `orgi` varchar(32) DEFAULT NULL COMMENT '租户ID',
-  `creater` varchar(32) DEFAULT NULL COMMENT '创建人',
-  `createtime` datetime DEFAULT NULL COMMENT '创建时间',
-  `updatetime` datetime DEFAULT NULL COMMENT '修改时间',
-  `memo` varchar(32) DEFAULT NULL COMMENT '备注',
-  `price` int(11) DEFAULT NULL COMMENT '权重',
-  `organ` varchar(32) DEFAULT NULL COMMENT '组织机构',
-  `sms` varchar(255) DEFAULT NULL COMMENT '短信模板',
-  `tts` varchar(255) DEFAULT NULL COMMENT 'TTS模板',
-  `email` text COMMENT '邮件模板',
-  `weixin` text COMMENT '微信回复模板',
-  `tags` text COMMENT '标签',
-  `attachment` text COMMENT '附件',
-  `approval` tinyint(4) DEFAULT NULL COMMENT '是否审批通过'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='知识库内容表';
-
--- ----------------------------
--- Table structure for uk_kbs_type
--- ----------------------------
-DROP TABLE IF EXISTS `uk_kbs_type`;
-CREATE TABLE `uk_kbs_type` (
-  `ID` varchar(32) NOT NULL COMMENT '主键ID',
-  `NAME` varchar(50) DEFAULT NULL COMMENT '名称',
-  `CODE` varchar(50) DEFAULT NULL COMMENT '代码',
-  `CREATETIME` datetime DEFAULT NULL COMMENT '创建时间',
-  `CREATER` varchar(32) DEFAULT NULL COMMENT '创建人',
-  `UPDATETIME` datetime DEFAULT NULL COMMENT '更新时间',
-  `ORGI` varchar(32) DEFAULT NULL COMMENT '租户ID',
-  `USERNAME` varchar(50) DEFAULT NULL COMMENT '创建人姓名',
-  `PARENTID` varchar(32) DEFAULT NULL COMMENT '知识库分类上级ID',
-  `APPROVAL` tinyint(4) DEFAULT NULL COMMENT '是否启用审批',
-  `BPMID` varchar(32) DEFAULT NULL COMMENT '审批流程ID',
-  `PC` varchar(32) DEFAULT NULL COMMENT '负责人',
-  `INX` int(11) DEFAULT NULL COMMENT '分类排序序号',
-  `STARTDATE` datetime DEFAULT NULL COMMENT '有效期开始时间',
-  `ENDDATE` datetime DEFAULT NULL COMMENT '有效期结束时间',
-  `ENABLE` tinyint(4) DEFAULT NULL COMMENT '分类状态',
-  `DESCRIPTION` varchar(255) DEFAULT NULL COMMENT '分类描述',
-  `BPM` tinyint(4) DEFAULT NULL COMMENT '是否需要流程审批',
-  PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='知识分类表';
 
 -- ----------------------------
 -- Table structure for uk_leavemsg
@@ -2521,6 +2485,7 @@ CREATE TABLE `uk_onlineuser` (
   `channel` varchar(32) DEFAULT NULL COMMENT '渠道',
   `appid` varchar(32) DEFAULT NULL COMMENT 'SNSID',
   `contactsid` varchar(32) DEFAULT NULL COMMENT '联系人ID',
+  `headimgurl` varchar(300) DEFAULT NULL COMMENT '访客头像',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `onlineuser_userid` (`userid`) USING BTREE,
   KEY `onlineuser_orgi` (`orgi`) USING BTREE
@@ -2922,45 +2887,6 @@ CREATE TABLE `uk_que_survey_question` (
   `errorvoiceup` varchar(32) DEFAULT NULL COMMENT '回答错误语-挂断提示语（语音ID）',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='问卷调查-问题表';
-
--- ----------------------------
--- Table structure for uk_quick_type
--- ----------------------------
-DROP TABLE IF EXISTS `uk_quick_type`;
-CREATE TABLE `uk_quick_type` (
-  `ID` varchar(32) NOT NULL COMMENT '主键ID',
-  `NAME` varchar(50) DEFAULT NULL COMMENT '名称',
-  `CODE` varchar(50) DEFAULT NULL COMMENT '代码',
-  `CREATETIME` datetime DEFAULT NULL COMMENT '创建时间',
-  `CREATER` varchar(32) DEFAULT NULL COMMENT '创建人',
-  `UPDATETIME` datetime DEFAULT NULL COMMENT '更新时间',
-  `ORGI` varchar(32) DEFAULT NULL COMMENT '租户ID',
-  `USERNAME` varchar(50) DEFAULT NULL COMMENT '用户名',
-  `PARENTID` varchar(32) DEFAULT NULL COMMENT '知识库分类上级ID',
-  `INX` int(11) DEFAULT NULL COMMENT '分类排序序号',
-  `STARTDATE` datetime DEFAULT NULL COMMENT '有效期开始时间',
-  `ENDDATE` datetime DEFAULT NULL COMMENT '有效期结束时间',
-  `ENABLE` tinyint(4) DEFAULT NULL COMMENT '分类状态',
-  `DESCRIPTION` varchar(255) DEFAULT NULL COMMENT '分类描述',
-  `QUICKTYPE` varchar(32) DEFAULT NULL COMMENT '类型（公共/个人）',
-  PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='质检项分类';
-
--- ----------------------------
--- Table structure for uk_quickreply
--- ----------------------------
-DROP TABLE IF EXISTS `uk_quickreply`;
-CREATE TABLE `uk_quickreply` (
-  `id` varchar(32) NOT NULL DEFAULT '' COMMENT '主键ID',
-  `title` varchar(255) DEFAULT NULL COMMENT '标题',
-  `content` text COMMENT '内容',
-  `type` varchar(10) DEFAULT NULL COMMENT '类型',
-  `creater` varchar(32) DEFAULT NULL COMMENT '创建人',
-  `createtime` datetime DEFAULT NULL COMMENT '创建时间',
-  `cate` varchar(32) DEFAULT NULL COMMENT '分类',
-  `orgi` varchar(32) DEFAULT NULL COMMENT '租户ID',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='快捷回复表';
 
 -- ----------------------------
 -- Table structure for uk_recentuser
@@ -7148,9 +7074,7 @@ INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cc529b20540', '全部客�
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cc551ac0541', '工单管理', 'pub', 'A04', NULL, 'auth', '402888815d2fe37f015d2fe75cc80002', NULL, NULL, '<i class=\"kfont\" style=\"position: relative;\">&#xe607;</i>', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:03:04', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/workorders/index.html', 'webim', '1', NULL, 'left');
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cc580cc0542', '业务流程', 'pub', 'A05', NULL, 'auth', '402888815d2fe37f015d2fe75cc80002', NULL, NULL, '<i class=\"kfont\" style=\"position: relative;\">&#xe636;</i>', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:03:16', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/bpm/index.html', 'webim', '1', NULL, 'left');
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cc5a2040543', '客服设置', 'pub', 'A06', NULL, 'auth', '402888815d2fe37f015d2fe75cc80002', NULL, NULL, '<i class=\"layui-icon\" style=\"position: relative;\">&#xe614;</i>', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:03:25', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/setting/agent/index.html', 'webim', '1', NULL, 'left');
-INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cc5bd810544', '快捷回复', 'pub', 'A07', NULL, 'auth', '402888815d2fe37f015d2fe75cc80002', NULL, NULL, '<i class=\"layui-icon\" style=\"position: relative;\">&#xe609;</i>', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:03:32', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/setting/quickreply/index.html', 'webim', '1', NULL, 'left');
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cc5d9710545', '会话历史', 'pub', 'A08', NULL, 'auth', '402888815d2fe37f015d2fe75cc80002', NULL, NULL, '<i class=\"kfont\" style=\"position: relative;\">&#xe7eb;</i>', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:03:39', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/service/history/index.html', 'webim', '1', NULL, 'left');
-INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cc602450546', '智能机器人', 'pub', 'A09', NULL, 'auth', '402888815d2fe37f015d2fe75cc80002', NULL, NULL, '<i class=\"kfont\" style=\"position: relative;\">&#xe63a;</i>', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:03:49', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/xiaoe/index.html', 'webim', '1', NULL, 'left');
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cc626f90547', '语音渠道', 'pub', 'A10', NULL, 'auth', '402888815d2fe37f015d2fe75cc80002', NULL, NULL, '<i class=\"kfont\" style=\"position: relative;\">&#xe625;</i>', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:03:59', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/callcenter/service/index.html', 'webim', '1', NULL, 'left');
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cc78f570548', '联系人', 'pub', 'A02_A01', NULL, 'auth', '402881ef612b1f5b01612cc4ffb1053f', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:05:31', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, 'javascript:;', 'webim', '2', NULL, 'left');
 INSERT INTO `uk_sysdic` VALUES ('402881ef612b1f5b01612cc817fb0549', '全部联系人', 'pub', 'A02_A01_A01', NULL, 'auth', '402881ef612b1f5b01612cc78f570548', NULL, NULL, '&#x756e646566696e6564;', NULL, NULL, '297e8c7b455798280145579c73e501c1', '2018-01-25 18:06:06', NULL, 0, 0, '402888815d2fe37f015d2fe75cc80002', 0, 0, '/apps/contacts/index.html', 'webim', '3', NULL, 'left');
@@ -7223,7 +7147,6 @@ INSERT INTO `uk_sysdic` VALUES ('402881fb61e49a9a0161e4ace76a039b', '比较', 'p
 INSERT INTO `uk_sysdic` VALUES ('402881fb61e49a9a0161e4ace777039c', '范围', 'pub', 'range', 'cskefu', 'layui-icon', '402881fb61e49a9a0161e4a96f900394', '', NULL, '', '', NULL, '4028cac3614cd2f901614cf8be1f0324', '2018-03-02 11:06:32', '2018-03-02 11:06:32', 0, 2, '402881fb61e49a9a0161e4a96f900394', 0, 1, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `uk_sysdic` VALUES ('402881fb61e49a9a0161e4ad727d039d', '相等（IN）', 'pub', 'equal', 'cskefu', 'layui-icon', '402881fb61e49a9a0161e4a9b6f80395', '', NULL, '', '', NULL, '4028cac3614cd2f901614cf8be1f0324', '2018-03-02 11:07:07', '2018-03-02 11:07:07', 0, 1, '402881fb61e49a9a0161e4a9b6f80395', 0, 1, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `uk_sysdic` VALUES ('402881fb61e49a9a0161e4ade5d6039e', '不等（NOT IN）', 'pub', 'not', 'cskefu', 'layui-icon', '402881fb61e49a9a0161e4a9b6f80395', '', NULL, '', '', NULL, '4028cac3614cd2f901614cf8be1f0324', '2018-03-02 11:07:37', NULL, 1, 0, '402881fb61e49a9a0161e4a9b6f80395', 0, 1, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `uk_sysdic` VALUES ('402881fb621cfbce01621d07bade03cd', '快捷回复分类', 'pub', 'quicktypedata', 'cskefu', 'layui-icon', '402888815e097729015e0999f26e0002', '', NULL, '', '', NULL, '4028cac3614cd2f901614cf8be1f0324', '2018-03-13 09:44:28', NULL, 1, 0, '402888815e097729015e0999f26e0002', 0, 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `uk_sysdic` VALUES ('402881fb621cfbce01621d1b9eb003cf', '单位性质', 'pub', 'com.dic.customer.etype', 'cskefu', 'data', '0', '', NULL, NULL, NULL, NULL, '4028cac3614cd2f901614cf8be1f0324', '2018-03-13 10:06:12', NULL, 1, 0, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `uk_sysdic` VALUES ('402881fb621cfbce01621d1c25c703d0', '企业客户', 'pub', 'enterprise', 'cskefu', 'layui-icon', '402881fb621cfbce01621d1b9eb003cf', '', NULL, '', '', NULL, '4028cac3614cd2f901614cf8be1f0324', '2018-03-13 10:06:46', '2018-03-13 10:06:46', 0, 1, '402881fb621cfbce01621d1b9eb003cf', 0, 1, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `uk_sysdic` VALUES ('402881fb621cfbce01621d1c25d603d1', '个人客户', 'pub', 'personal', 'cskefu', 'layui-icon', '402881fb621cfbce01621d1b9eb003cf', '', NULL, '', '', NULL, '4028cac3614cd2f901614cf8be1f0324', '2018-03-13 10:06:46', '2018-03-13 10:06:46', 0, 2, '402881fb621cfbce01621d1b9eb003cf', 0, 1, NULL, NULL, NULL, NULL, NULL);
@@ -7694,8 +7617,6 @@ INSERT INTO `uk_sysdic` VALUES ('4028838b5b565caf015b56689012000f', '紧急', 'p
 INSERT INTO `uk_sysdic` VALUES ('4028838b5b565caf015b566d11d80010', '标签类型', 'pub', 'com.dic.tag.type', NULL, 'data', '0', '', NULL, NULL, NULL, NULL, '297e8c7b455798280145579c73e501c1', '2017-04-10 13:54:00', NULL, 1, 0, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `uk_sysdic` VALUES ('4028838b5b565caf015b566de3180011', '联系人', 'pub', 'user', 'cskefu', 'layui-icon', '4028838b5b565caf015b566d11d80010', '', NULL, '', '', NULL, '297e8c7b455798280145579c73e501c1', '2017-04-10 13:54:53', '2017-04-10 13:54:53', 0, 1, '4028838b5b565caf015b566d11d80010', 0, 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `uk_sysdic` VALUES ('4028838b5b565caf015b566de32a0012', '工单', 'pub', 'workorders', 'cskefu', 'layui-icon', '4028838b5b565caf015b566d11d80010', '', NULL, '', '', NULL, '297e8c7b455798280145579c73e501c1', '2017-04-10 13:54:53', '2017-04-10 13:54:53', 0, 2, '4028838b5b565caf015b566d11d80010', 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `uk_sysdic` VALUES ('402888815c2e2f66015c2f07827e0002', '智能机器人输入条件', 'pub', 'com.dic.xiaoe.input', NULL, 'data', '0', '', NULL, NULL, NULL, NULL, '297e8c7b455798280145579c73e501c1', '2017-05-22 15:20:40', NULL, 1, 0, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `uk_sysdic` VALUES ('402888815c2e2f66015c2f07c6190003', '智能机器人输出条件', 'pub', 'com.dic.xiaoe.output', NULL, 'data', '0', '', NULL, NULL, NULL, NULL, '297e8c7b455798280145579c73e501c1', '2017-05-22 15:20:57', NULL, 1, 0, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `uk_sysdic` VALUES ('402888815c2e2f66015c2f083d010004', '姓名', 'pub', '01', 'cskefu', NULL, '402888815c2e2f66015c2f07827e0002', NULL, NULL, NULL, NULL, NULL, '297e8c7b455798280145579c73e501c1', '2017-05-22 15:21:28', '2017-05-22 15:21:28', 0, 1, '402888815c2e2f66015c2f07827e0002', 0, 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `uk_sysdic` VALUES ('402888815c2e2f66015c2f083d180005', '性别', 'pub', '02', 'cskefu', NULL, '402888815c2e2f66015c2f07827e0002', NULL, NULL, NULL, NULL, NULL, '297e8c7b455798280145579c73e501c1', '2017-05-22 15:21:28', '2017-05-22 15:21:28', 0, 2, '402888815c2e2f66015c2f07827e0002', 0, 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `uk_sysdic` VALUES ('402888815c2e2f66015c2f083d250006', '年龄', 'pub', '03', 'cskefu', NULL, '402888815c2e2f66015c2f07827e0002', NULL, NULL, NULL, NULL, NULL, '297e8c7b455798280145579c73e501c1', '2017-05-22 15:21:28', '2017-05-22 15:21:28', 0, 3, '402888815c2e2f66015c2f07827e0002', 0, 0, NULL, NULL, NULL, NULL, NULL);
@@ -8084,6 +8005,7 @@ CREATE TABLE `uk_tabletask` (
   `CREATETIME` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`ID`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='元数据信息表';
+
 
 INSERT INTO `uk_tabletask` (`ID`, `NAME`, `SECURE`, `TASKSTATUS`, `TABLEDIRID`, `DBID`, `CODE`, `GROUPID`, `CREATER`, `CREATERNAME`, `TASKTYPE`, `TASKNAME`, `TASKPLAN`, `CONFIGURE`, `SECURECONF`, `USERID`, `PREVIEWTEMPLET`, `LISTBLOCKTEMPLET`, `TABLENAME`, `TABLETYPE`, `STARTINDEX`, `UPDATETIME`, `UPDATETIMENUMBER`, `DATASQL`, `DATABASETASK`, `DRIVERPLUGIN`, `ORGI`, `WORKFLOW`, `FROMDB`, `tabtype`, `pid`, `secmenuid`, `reportid`, `eventname`, `tltemplet`, `timeline`, `tbversion`, `LASTUPDATE`, `CREATETIME`)
 VALUES
@@ -8568,10 +8490,10 @@ CREATE TABLE `uk_wxmpevent` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='微信事件记录';
 
 -- ----------------------------
--- Table structure for uk_xiaoe_config
+-- Table structure for cs_chatbot_config
 -- ----------------------------
-DROP TABLE IF EXISTS `uk_xiaoe_config`;
-CREATE TABLE `uk_xiaoe_config` (
+DROP TABLE IF EXISTS `cs_chatbot_config`;
+CREATE TABLE `cs_chatbot_config` (
   `id` varchar(32) NOT NULL COMMENT '主键ID',
   `orgi` varchar(32) DEFAULT NULL COMMENT '租户ID',
   `creater` varchar(32) DEFAULT NULL COMMENT '创建人',
@@ -8616,200 +8538,5 @@ CREATE TABLE `uk_xiaoe_config` (
   `othersuggestmsg` text COMMENT '命中结果的推荐的提示信息',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='机器人配置';
-
--- ----------------------------
--- Table structure for uk_xiaoe_kbs_type
--- ----------------------------
-DROP TABLE IF EXISTS `uk_xiaoe_kbs_type`;
-CREATE TABLE `uk_xiaoe_kbs_type` (
-  `ID` varchar(32) NOT NULL COMMENT '主键ID',
-  `NAME` varchar(50) DEFAULT NULL COMMENT '名称',
-  `CODE` varchar(50) DEFAULT NULL COMMENT '代码',
-  `CREATETIME` datetime DEFAULT NULL COMMENT '创建时间',
-  `CREATER` varchar(32) DEFAULT NULL COMMENT '创建人',
-  `UPDATETIME` datetime DEFAULT NULL COMMENT '更新时间',
-  `ORGI` varchar(32) DEFAULT NULL COMMENT '租户ID',
-  `USERNAME` varchar(50) DEFAULT NULL COMMENT '用户名',
-  `area` text COMMENT '区域',
-  `parentid` varchar(32) DEFAULT '0' COMMENT '上级ID',
-  `typeid` varchar(32) DEFAULT NULL COMMENT '类型ID',
-  PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='知识库分类';
-
--- ----------------------------
--- Table structure for uk_xiaoe_scene
--- ----------------------------
-DROP TABLE IF EXISTS `uk_xiaoe_scene`;
-CREATE TABLE `uk_xiaoe_scene` (
-  `id` varchar(32) NOT NULL COMMENT '主键ID',
-  `sessionid` varchar(32) DEFAULT NULL COMMENT '会话ID',
-  `title` varchar(255) DEFAULT NULL COMMENT '标题',
-  `content` text COMMENT '内容',
-  `keyword` varchar(100) DEFAULT NULL COMMENT '关键词',
-  `summary` varchar(255) DEFAULT NULL COMMENT '摘要',
-  `anonymous` tinyint(4) DEFAULT NULL COMMENT '匿名访问',
-  `begintime` datetime DEFAULT NULL COMMENT '有效期开始时间',
-  `endtime` datetime DEFAULT NULL COMMENT '有效期结束时间',
-  `top` tinyint(4) DEFAULT NULL COMMENT '置顶',
-  `essence` tinyint(4) DEFAULT NULL COMMENT '启用场景',
-  `accept` tinyint(4) DEFAULT NULL COMMENT '启用',
-  `finish` tinyint(4) DEFAULT NULL COMMENT '是否结束',
-  `answers` int(11) DEFAULT NULL COMMENT '回答数量',
-  `sviews` int(11) DEFAULT NULL,
-  `followers` int(11) DEFAULT NULL COMMENT '关注数量',
-  `collections` int(11) DEFAULT NULL COMMENT '回复数量',
-  `comments` int(11) DEFAULT NULL COMMENT '评论数量',
-  `mobile` tinyint(4) DEFAULT NULL COMMENT '移动端',
-  `status` varchar(32) DEFAULT NULL COMMENT '状态',
-  `tptype` varchar(32) DEFAULT NULL COMMENT '类型',
-  `cate` varchar(32) DEFAULT NULL COMMENT '分类',
-  `username` varchar(32) DEFAULT NULL COMMENT '用户名',
-  `orgi` varchar(32) DEFAULT NULL COMMENT '租户ID',
-  `creater` varchar(32) DEFAULT NULL COMMENT '创建人',
-  `createtime` datetime DEFAULT NULL COMMENT '创建时间',
-  `updatetime` datetime DEFAULT NULL COMMENT '修改时间',
-  `memo` varchar(32) DEFAULT NULL COMMENT '备注',
-  `price` int(11) DEFAULT NULL COMMENT '价格',
-  `organ` varchar(32) DEFAULT NULL COMMENT '部门',
-  `replaytype` varchar(32) DEFAULT NULL COMMENT '回复类型',
-  `allowask` tinyint(4) DEFAULT NULL COMMENT '允许提问',
-  `inputcon` varchar(255) DEFAULT NULL COMMENT '输入条件',
-  `outputcon` varchar(255) DEFAULT NULL COMMENT '输出条件',
-  `userinput` text COMMENT '用户输入',
-  `aireply` text COMMENT 'AI回复内容（首条）',
-  `frommobile` tinyint(4) DEFAULT '0' COMMENT '移动端接入',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='机器人场景';
-
--- ----------------------------
--- Table structure for uk_xiaoe_scene_type
--- ----------------------------
-DROP TABLE IF EXISTS `uk_xiaoe_scene_type`;
-CREATE TABLE `uk_xiaoe_scene_type` (
-  `ID` varchar(32) NOT NULL COMMENT '主键ID',
-  `NAME` varchar(50) DEFAULT NULL COMMENT '名称',
-  `CODE` varchar(50) DEFAULT NULL COMMENT '代码',
-  `CREATETIME` datetime DEFAULT NULL COMMENT '创建时间',
-  `CREATER` varchar(32) DEFAULT NULL COMMENT '创建人',
-  `UPDATETIME` datetime DEFAULT NULL COMMENT '更新时间',
-  `ORGI` varchar(32) DEFAULT NULL COMMENT '租户ID',
-  `USERNAME` varchar(50) DEFAULT NULL COMMENT '用户名',
-  `area` text COMMENT '区域',
-  `parentid` varchar(32) DEFAULT '0' COMMENT '父级ID',
-  `typeid` varchar(32) DEFAULT NULL COMMENT '类型ID',
-  PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='机器人场景类型';
-
--- ----------------------------
--- Table structure for uk_xiaoe_sceneitem
--- ----------------------------
-DROP TABLE IF EXISTS `uk_xiaoe_sceneitem`;
-CREATE TABLE `uk_xiaoe_sceneitem` (
-  `id` varchar(32) NOT NULL COMMENT '主键ID',
-  `content` varchar(255) DEFAULT NULL COMMENT '回复内容',
-  `orgi` varchar(32) DEFAULT NULL COMMENT '租户ID',
-  `creater` varchar(32) DEFAULT NULL COMMENT '创建人',
-  `createtime` datetime DEFAULT NULL COMMENT '创建时间',
-  `updatetime` datetime DEFAULT NULL COMMENT '更新时间',
-  `sceneid` varchar(32) DEFAULT NULL COMMENT '场景ID',
-  `inx` int(11) DEFAULT NULL COMMENT '序号',
-  `itemtype` varchar(32) DEFAULT NULL COMMENT '类型',
-  `replaytype` varchar(32) DEFAULT NULL COMMENT '回复类型',
-  `allowask` tinyint(4) DEFAULT NULL COMMENT '允许主动提问',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='机器人场景子项';
-
--- ----------------------------
--- Table structure for uk_xiaoe_topic
--- ----------------------------
-DROP TABLE IF EXISTS `uk_xiaoe_topic`;
-CREATE TABLE `uk_xiaoe_topic` (
-  `id` varchar(32) NOT NULL COMMENT '主键ID',
-  `sessionid` varchar(32) DEFAULT NULL COMMENT '会话ID',
-  `title` varchar(255) DEFAULT NULL COMMENT '主题',
-  `content` text COMMENT '知识库内容',
-  `keyword` varchar(100) DEFAULT NULL COMMENT '关键词',
-  `summary` varchar(255) DEFAULT NULL COMMENT '摘要',
-  `anonymous` tinyint(4) DEFAULT NULL COMMENT '允许匿名访问',
-  `begintime` datetime DEFAULT NULL COMMENT '有效期开始时间',
-  `endtime` datetime DEFAULT NULL COMMENT '有效期结束时间',
-  `top` tinyint(4) DEFAULT NULL COMMENT '是否置顶',
-  `essence` tinyint(4) DEFAULT NULL COMMENT '精华',
-  `accept` tinyint(4) DEFAULT NULL COMMENT '允许评论',
-  `finish` tinyint(4) DEFAULT NULL COMMENT '已结束',
-  `answers` int(11) DEFAULT NULL COMMENT '回答数量',
-  `sviews` varchar(32) DEFAULT NULL,
-  `followers` int(11) DEFAULT NULL COMMENT '关注人数',
-  `collections` int(11) DEFAULT NULL COMMENT '引用次数',
-  `comments` int(11) DEFAULT NULL COMMENT '回复数',
-  `mobile` tinyint(4) DEFAULT NULL COMMENT '移动端支持',
-  `status` varchar(32) DEFAULT NULL COMMENT '状态',
-  `tptype` varchar(32) DEFAULT NULL COMMENT '分类',
-  `cate` varchar(32) DEFAULT NULL COMMENT '分类ID',
-  `username` varchar(32) DEFAULT NULL COMMENT '用户名',
-  `orgi` varchar(32) DEFAULT NULL COMMENT '租户ID',
-  `creater` varchar(32) DEFAULT NULL COMMENT '创建人',
-  `createtime` datetime DEFAULT NULL COMMENT '创建时间',
-  `updatetime` datetime DEFAULT NULL COMMENT '修改时间',
-  `memo` varchar(32) DEFAULT NULL COMMENT '备注',
-  `price` int(11) DEFAULT NULL COMMENT '权重',
-  `organ` varchar(32) DEFAULT NULL COMMENT '组织机构',
-  `sms` varchar(255) DEFAULT NULL COMMENT '短信模板',
-  `tts` varchar(255) DEFAULT NULL COMMENT 'TTS模板',
-  `email` text COMMENT '邮件模板',
-  `weixin` text COMMENT '微信回复模板',
-  `silimar` text COMMENT '类似问题',
-  `aiid` varchar(32) DEFAULT NULL COMMENT '机器人ID',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='知识库';
-
--- ----------------------------
--- Table structure for uk_xiaoe_topic_item
--- ----------------------------
-DROP TABLE IF EXISTS `uk_xiaoe_topic_item`;
-CREATE TABLE `uk_xiaoe_topic_item` (
-  `id` varchar(32) NOT NULL DEFAULT '' COMMENT 'ID',
-  `topicid` varchar(255) DEFAULT NULL COMMENT '知识id',
-  `title` varchar(255) DEFAULT NULL COMMENT '问题',
-  `orgi` varchar(255) DEFAULT NULL COMMENT '产品id',
-  `creater` varchar(255) DEFAULT NULL COMMENT '创建人',
-  `createtime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='知识库类似问题';
-
--- ----------------------------
--- Table structure for uk_xiaoe_words
--- ----------------------------
-DROP TABLE IF EXISTS `uk_xiaoe_words`;
-CREATE TABLE `uk_xiaoe_words` (
-  `ID` varchar(32) NOT NULL COMMENT '主键ID',
-  `KEYWORD` varchar(50) DEFAULT NULL COMMENT '关键词',
-  `CONTENT` text COMMENT '内容',
-  `CREATETIME` datetime DEFAULT NULL COMMENT '创建时间',
-  `CREATER` varchar(32) DEFAULT NULL COMMENT '创建人',
-  `UPDATETIME` datetime DEFAULT NULL COMMENT '更新时间',
-  `ORGI` varchar(32) DEFAULT NULL COMMENT '租户ID',
-  `USERNAME` varchar(50) DEFAULT NULL COMMENT '用户名',
-  `SUPERORDINATE` varchar(50) DEFAULT NULL COMMENT '上位词',
-  `PARTOFSPEECH` varchar(50) DEFAULT NULL COMMENT '词性',
-  `CATE` varchar(32) DEFAULT NULL COMMENT '分类',
-  PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='关键词';
-
--- ----------------------------
--- Table structure for uk_xiaoe_words_type
--- ----------------------------
-DROP TABLE IF EXISTS `uk_xiaoe_words_type`;
-CREATE TABLE `uk_xiaoe_words_type` (
-  `ID` varchar(32) NOT NULL COMMENT '主键ID',
-  `NAME` varchar(50) DEFAULT NULL COMMENT '分类名称',
-  `CODE` varchar(50) DEFAULT NULL COMMENT '分类代码',
-  `CREATETIME` datetime DEFAULT NULL COMMENT '创建时间',
-  `CREATER` varchar(32) DEFAULT NULL COMMENT '创建人ID',
-  `UPDATETIME` datetime DEFAULT NULL COMMENT '更新时间',
-  `ORGI` varchar(32) DEFAULT NULL COMMENT '租户ID',
-  `USERNAME` varchar(50) DEFAULT NULL COMMENT '用户名',
-  PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='词库类型';
 
 SET FOREIGN_KEY_CHECKS = 1;

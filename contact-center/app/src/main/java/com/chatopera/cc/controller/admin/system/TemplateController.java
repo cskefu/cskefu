@@ -60,7 +60,7 @@ public class TemplateController extends Handler{
     @Menu(type = "admin" , subtype = "template" , access = false , admin = true)
     public ModelAndView index(ModelMap map , HttpServletRequest request) {
     	map.addAttribute("sysDicList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_DIC));
-        return request(super.createAdminTempletResponse("/admin/system/template/index"));
+        return request(super.createView("/admin/system/template/index"));
     }
     
     @RequestMapping("/expall")
@@ -75,7 +75,7 @@ public class TemplateController extends Handler{
     @RequestMapping("/imp")
     @Menu(type = "admin" , subtype = "template" , access = false , admin = true)
     public ModelAndView imp(ModelMap map , HttpServletRequest request) {
-        return request(super.createRequestPageTempletResponse("/admin/system/template/imp"));
+        return request(super.createView("/admin/system/template/imp"));
     }
     
     @SuppressWarnings("unchecked")
@@ -91,7 +91,7 @@ public class TemplateController extends Handler{
     			}
     		}
     	}
-    	return request(super.createRequestPageTempletResponse("redirect:/admin/template/index.html"));
+    	return request(super.createView("redirect:/admin/template/index.html"));
     }
     
     @RequestMapping("/list")
@@ -99,14 +99,14 @@ public class TemplateController extends Handler{
     public ModelAndView list(ModelMap map , HttpServletRequest request ,@Valid String type) {
     	map.addAttribute("sysDic", dicRes.findById(type));
     	map.addAttribute("templateList", templateRes.findByTemplettypeAndOrgi(type, super.getOrgi(request)));
-        return request(super.createAdminTempletResponse("/admin/system/template/list"));
+        return request(super.createView("/admin/system/template/list"));
     }
     
     @RequestMapping("/add")
     @Menu(type = "admin" , subtype = "template" , access = false , admin = true)
     public ModelAndView add(ModelMap map , HttpServletRequest request ,@Valid String type) {
     	map.addAttribute("sysDic", dicRes.findById(type));
-        return request(super.createRequestPageTempletResponse("/admin/system/template/add"));
+        return request(super.createView("/admin/system/template/add"));
     }
     
     @RequestMapping(  "/save")
@@ -121,7 +121,7 @@ public class TemplateController extends Handler{
 		}
     	templateRes.save(template) ;
     	
-		return request(super.createRequestPageTempletResponse("redirect:/admin/template/list.html?type="+template.getTemplettype()));
+		return request(super.createView("redirect:/admin/template/list.html?type="+template.getTemplettype()));
     }
     
     @RequestMapping("/edit")
@@ -129,7 +129,7 @@ public class TemplateController extends Handler{
     public ModelAndView edit(ModelMap map , HttpServletRequest request , @Valid String id, @Valid String type) {
     	map.addAttribute("sysDic", dicRes.findById(type));
     	map.addAttribute("template", templateRes.findByIdAndOrgi(id, super.getOrgi(request))) ;
-        return request(super.createRequestPageTempletResponse("/admin/system/template/edit"));
+        return request(super.createView("/admin/system/template/edit"));
     }
     
     @RequestMapping(  "/update")
@@ -153,7 +153,7 @@ public class TemplateController extends Handler{
     		
     		cache.deleteSystembyIdAndOrgi(template.getId(), super.getOrgi(request));
     	}
-		return request(super.createRequestPageTempletResponse("redirect:/admin/template/list.html?type="+template.getTemplettype()));
+		return request(super.createView("redirect:/admin/template/list.html?type="+template.getTemplettype()));
     }
     
     @RequestMapping("/code")
@@ -161,7 +161,7 @@ public class TemplateController extends Handler{
     public ModelAndView code(ModelMap map , HttpServletRequest request , @Valid String id, @Valid String type) {
     	map.addAttribute("sysDic", dicRes.findById(type));
     	map.addAttribute("template", templateRes.findByIdAndOrgi(id, super.getOrgi(request))) ;
-        return request(super.createRequestPageTempletResponse("/admin/system/template/code"));
+        return request(super.createView("/admin/system/template/code"));
     }
     
     @RequestMapping(  "/codesave")
@@ -175,7 +175,7 @@ public class TemplateController extends Handler{
     		
     		cache.deleteSystembyIdAndOrgi(template.getId(), super.getOrgi(request));
     	}
-		return request(super.createRequestPageTempletResponse("redirect:/admin/template/list.html?type="+template.getTemplettype()));
+		return request(super.createView("redirect:/admin/template/list.html?type="+template.getTemplettype()));
     }
     
     @RequestMapping("/delete")
@@ -186,7 +186,7 @@ public class TemplateController extends Handler{
     		
     		cache.deleteSystembyIdAndOrgi(template.getId(), super.getOrgi(request));
     	}
-    	return request(super.createRequestPageTempletResponse("redirect:/admin/template/list.html?type="+template.getTemplettype()));
+    	return request(super.createView("redirect:/admin/template/list.html?type="+template.getTemplettype()));
     }
     
 }

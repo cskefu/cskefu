@@ -1,0 +1,106 @@
+.uk-layui-form
+    form.layui-form.uk-form(action='/admin/organ/area/update.html')
+        input(type='hidden', name='id', value=organData.id)
+        input#area(type='hidden', name='area', value=organData.area)
+        .layui-form-item
+            .layui-inline
+                .layui-input-inline(style='position: relative;')
+                    ul#areaTree.ztree
+        .layui-form-button
+            .layui-button-block
+                button.layui-btn(lay-submit, lay-filter='formDemo') 立即提交
+                button#reset.layui-btn.layui-btn-original(type='reset') 重置
+script.
+    //Demo
+    layui.use('form', function () {
+        var form = layui.form();
+        form.render(); //更新全部
+        form.on("switch(area)", function (data) {
+            if (data.elem.checked) {
+                $('#area').show();
+            } else {
+                $('#area').hide();
+            }
+        });
+    });
+
+script(type='text/javascript').
+    var setting = {check: {enable: true}, data: {simpleData: {enable: true}}, callback: {onCheck: zTreeOnCheck}};
+    //获取所有选中节点的值
+    function zTreeOnCheck() {
+        var treeObj = $.fn.zTree.getZTreeObj("areaTree");
+        var root = treeObj.getNodesByParam("id", "#{sysarea.id}");
+        var nodes = root[0].children;
+        var msg = "";
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            var check = true;
+            var children = node.children;
+            var citys = "";
+            if (children && children.length > 0) {
+                for (j = 0; j < children.length; j++) {
+                    if (children[j].checked == false) {
+                        check = false;
+                    } else {
+                        if (citys != "") {
+                            citys += ",";
+                        }
+                        citys = citys + children[j].name;
+                    }
+                }
+            } else if (nodes[i].checked == false) {
+                check = false;
+            }
+            if (check == true) {
+                if (msg != '' && nodes[i].name != '') {
+                    msg = msg + ",";
+                }
+                msg += nodes[i].name;
+            } else {
+                if (msg != '' && citys != '') {
+                    msg = msg + ",";
+                }
+                msg += citys;
+            }
+        }
+        $("#area").val(msg);
+    }
+    var _cacheList = !{pugHelper.toJSON(cacheList)}
+    $.each(_cacheList, function (i, c) {
+        c.id = c.id;
+        c.checked = ('#{organData.area}'.indexOf(c.name) >= 0 ? true : false);
+        c.pId = c.parentid;
+        c.name = c.name;
+        c.city = false;
+        c.open = false;
+        if ('#{areaList}' && c.name.indexOf('市') < 0) {
+            var _areaList = !{pugHelper.toJSON(areaList)}
+            $.each(_areaList, function (u, a) {
+                if (a.parentid == c.id) {
+                    a.id = a.id;
+                    a.pId = a.parentid;
+                    a.name = a.name;
+                    a.city = true;
+                    a.open = false;
+                    a.checked = ('#{organData.area}'.indexOf(a.name) > 0 ? true : false);
+                    _cacheList.push(a)
+                }
+            })
+        }
+    });
+    _cacheList.unshift(
+        {
+            id: "#{sysarea.id ? sysarea.id : ''}",
+            pId: '0',
+            name: "地区",
+            open: true,
+            value: ""
+        }
+    )
+    var zNodes = _cacheList;
+    $(document).ready(function () {
+        $.fn.zTree.init($("#areaTree"), setting, zNodes);
+    }); $("#reset").on('click', function () {
+        $.fn.zTree.init($("#areaTree"), setting, zNodes);
+    })
+            

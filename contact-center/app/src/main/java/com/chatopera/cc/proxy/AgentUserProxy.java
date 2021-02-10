@@ -25,7 +25,7 @@ import com.chatopera.cc.peer.PeerSyncIM;
 import com.chatopera.cc.persistence.es.ContactsRepository;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.socketio.message.Message;
-import freemarker.template.TemplateException;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,7 +183,6 @@ public class AgentUserProxy {
      * @param logined
      * @param orgi
      * @throws IOException
-     * @throws TemplateException
      */
     public void buildIndexViewWithModels(
             final ModelAndView view,
@@ -193,7 +192,7 @@ public class AgentUserProxy {
             String sort,
             final User logined,
             final String orgi,
-            final AgentUser agentUser) throws IOException, TemplateException {
+            final AgentUser agentUser) throws IOException {
         Sort defaultSort = null;
         if (StringUtils.isBlank(sort)) {
             Cookie[] cookies = request.getCookies();// 这样便可以获取一个cookie数组

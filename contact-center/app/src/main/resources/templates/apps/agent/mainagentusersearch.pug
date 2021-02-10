@@ -1,0 +1,72 @@
+p
+    span#numSearches
+        | #{agentUserMessageList.totalElements}
+    | 条记录
+
+for chatmessage in pugHelper.reverse(agentUserMessageList.content)
+    .clearfix.chatblock(id=chatmessage.id,name=pugHelper.formatDate("yyyy-MM-dd HH:mm:ss", chatmessage.createtime))
+        .chat-left
+            //         <img alt=""
+            //              src="<#if chatmessage.userid?? && chatmessage.userid == user.id>/images/im/user.png<#else><#if curagentuser.headimgurl?? && curagentuser.headimgurl !=''>${curagentuser.headimgurl}<#else>/images/im/user.png</#if></#if>"
+            //              style="width:25px;height:25px;" class="user-img">
+            .chat-message
+                span(class="user #{chatmessage.calltype && chatmessage.calltype == '呼出' ? 'ratemy' : 'rateyou'}")
+                    if chatmessage && chatmessage.calltype && chatmessage.calltype == '呼出'
+                        if chatmessage.intervented
+                            | #{chatmessage.supervisorname}
+                        else
+                            | #{chatmessage.username}
+                    else
+                        | #{chatmessage.username}
+                span(class="time #{chatmessage.calltype && chatmessage.calltype == '呼出' ? 'ratemy' : 'rateyou'}")
+                    | #{pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', chatmessage.createtime)}
+                span.rateright
+                    i.layui-icon.iconclick(id=chatmessage.id,name=(chatmessage.islabel == true ? "yeslabe" : "nolabe"),style="font-size: 15px; color: #{chatmessage.islabel == true ? '#46cad4' : '#aaaaaa'}")
+                        | #{chatmessage.islabel == true ? '' : 'စ'}
+            .chatting
+                .chat-content
+                    include /apps/agent/media/message.pug
+style.
+    .chatblock {
+        padding: 10px 0;
+    }
+
+    .chatblock:hover {
+        background: #f5f7fa;
+    }
+
+    .chat-left .chat-message {
+        margin-left: 10px !important;
+    }
+
+    .chatting {
+        padding-right: 5px;
+        padding-left: 10px;
+        float: left;
+        min-width: 25px;
+        word-break: break-all;
+        border: none;
+        margin-top: 5px;
+    }
+
+    .chatting .chat-content {
+        color: #000;
+        font-size: 20px;
+        width: 280px;
+        overflow: hidden;
+    }
+
+    .chat-content img {
+        border: 1px solid #ccc;
+    }
+
+    .ratemy {
+        color: #7e8790 !important;
+        font-size: 18px;
+    }
+
+    .rateyou {
+        color: #258dee !important;
+        font-size: 18px;
+    }
+            

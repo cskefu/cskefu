@@ -9,4 +9,7 @@ src/main/resources/templates/admin/channel/*
 src/main/resources/templates/apps/callout
 src/main/resources/templates/apps/chatbot
 src/main/resources/templates/apps/callcenter
+
+# ignore system views for chatbot
+src/main/resources/templates/admin/system/chatbot
 logs/

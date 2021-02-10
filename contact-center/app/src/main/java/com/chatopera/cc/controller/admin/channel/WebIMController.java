@@ -20,7 +20,6 @@ import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.CousultInvite;
 import com.chatopera.cc.model.Organ;
-import com.chatopera.cc.model.OrgiSkillRel;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.proxy.OnlineUserProxy;
@@ -86,10 +85,10 @@ public class WebIMController extends Handler {
             map.addAttribute("inviteData", coultInvite);
             map.addAttribute("skillGroups", getSkillGroups(request));
             map.addAttribute("agentList", getUsers(request));
-            map.addAttribute("import", request.getServerPort());
+            map.addAttribute("port", request.getServerPort());
             map.addAttribute("snsAccount", snsAccountRes.findBySnsidAndOrgi(snsid, super.getOrgi(request)));
         }
-        return request(super.createAdminTempletResponse("/admin/webim/index"));
+        return request(super.createView("/admin/webim/index"));
     }
 
     /**
@@ -134,7 +133,7 @@ public class WebIMController extends Handler {
         }
         inviteRes.save(inviteData);
         cache.putConsultInviteByOrgi(inviteData.getOrgi(), inviteData);
-        return request(super.createRequestPageTempletResponse("redirect:/admin/webim/index.html?snsid=" + inviteData.getSnsaccountid()));
+        return request(super.createView("redirect:/admin/webim/index.html?snsid=" + inviteData.getSnsaccountid()));
     }
 
     @RequestMapping("/profile")
@@ -151,7 +150,7 @@ public class WebIMController extends Handler {
         map.addAttribute("snsAccount", snsAccountRes.findBySnsidAndOrgi(snsid, super.getOrgi(request)));
 
         map.put("serviceAiList", serviceAiRes.findByOrgi(super.getOrgi(request)));
-        return request(super.createAdminTempletResponse("/admin/webim/profile"));
+        return request(super.createView("/admin/webim/profile"));
     }
 
     @RequestMapping("/profile/save")
@@ -236,7 +235,7 @@ public class WebIMController extends Handler {
         }
 
         cache.putConsultInviteByOrgi(orgi, inviteData);
-        return request(super.createRequestPageTempletResponse("redirect:/admin/webim/profile.html?snsid=" + inviteData.getSnsaccountid()));
+        return request(super.createView("redirect:/admin/webim/profile.html?snsid=" + inviteData.getSnsaccountid()));
     }
 
     @RequestMapping("/invote")
@@ -250,7 +249,7 @@ public class WebIMController extends Handler {
         }
         map.addAttribute("import", request.getServerPort());
         map.addAttribute("snsAccount", snsAccountRes.findBySnsidAndOrgi(snsid, super.getOrgi(request)));
-        return request(super.createAdminTempletResponse("/admin/webim/invote"));
+        return request(super.createView("/admin/webim/invote"));
     }
 
     @RequestMapping("/invote/save")
@@ -280,7 +279,7 @@ public class WebIMController extends Handler {
             inviteRes.save(inviteData);
         }
         cache.putConsultInviteByOrgi(inviteData.getOrgi(), inviteData);
-        return request(super.createRequestPageTempletResponse("redirect:/admin/webim/invote.html?snsid=" + inviteData.getSnsaccountid()));
+        return request(super.createView("redirect:/admin/webim/invote.html?snsid=" + inviteData.getSnsaccountid()));
     }
 
     /**

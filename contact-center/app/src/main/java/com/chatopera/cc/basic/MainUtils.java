@@ -34,8 +34,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.googlecode.aviator.AviatorEvaluator;
-import freemarker.template.Configuration;
-import freemarker.template.TemplateException;
+import de.neuland.pug4j.Pug4J;
+import de.neuland.pug4j.PugConfiguration;
+import de.neuland.pug4j.expression.JexlExpressionHandler;
+import de.neuland.pug4j.parser.Parser;
+import de.neuland.pug4j.parser.node.Node;
+import de.neuland.pug4j.template.PugTemplate;
+import de.neuland.pug4j.template.ReaderTemplateLoader;
 import io.netty.handler.codec.http.HttpHeaders;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.beanutils.BeanUtilsBean;
@@ -59,6 +64,7 @@ import org.springframework.util.ClassUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -748,7 +754,7 @@ public class MainUtils {
 
     public static File processImage(final File destFile, final File imageFile) throws IOException {
         if (imageFile != null && imageFile.exists()) {
-            Thumbnails.of(imageFile).width(460).keepAspectRatio(true).toFile(destFile);
+            Thumbnails.of(imageFile).imageType(BufferedImage.TYPE_INT_ARGB).width(460).keepAspectRatio(true).toFile(destFile);
         }
         return destFile;
     }
@@ -973,25 +979,32 @@ public class MainUtils {
         return hexString.toString();
     }
 
+    private static PugTemplate getPugTemplate(String name, String templet) throws IOException {
+        Reader reader = new StringReader(templet);
+        ReaderTemplateLoader loader = new ReaderTemplateLoader(reader, name);
+        JexlExpressionHandler expressionHandler = new JexlExpressionHandler();
+        Parser parser = new Parser(name, loader, expressionHandler);
+        Node root = parser.parse();
+        PugTemplate template = new PugTemplate();
+        template.setExpressionHandler(expressionHandler);
+        template.setTemplateLoader(loader);
+        template.setRootNode(root);
+        return template;
+    }
+
     /**
      * @throws IOException
-     * @throws TemplateException
      */
     @SuppressWarnings("deprecation")
-    public static String getTemplet(String templet, Map<String, Object> values) throws IOException, TemplateException {
-        StringWriter writer = new StringWriter();
-        Configuration cfg = null;
-        freemarker.template.Template template = null;
-        String retValue = templet;
-        if (templet != null && templet.length() > 0 && templet.indexOf("$") >= 0) {
-            cfg = new Configuration();
-            TempletLoader loader = new TempletLoader(templet);
-            cfg.setTemplateLoader(loader);
-            cfg.setDefaultEncoding("UTF-8");
-            template = cfg.getTemplate("");
-            template.process(values, writer);
-            retValue = writer.toString();
-        }
+    public static String getTemplet(String templet, Map<String, Object> values) throws IOException {
+        PugTemplate template = getPugTemplate("templet.pug", templet);
+
+        PugConfiguration config = new PugConfiguration();
+        config.setCaching(false);
+        config.setMode(Pug4J.Mode.XML);
+        config.setPrettyPrint(true);
+        String retValue = config.renderTemplate(template,values);
+
         return retValue;
     }
 

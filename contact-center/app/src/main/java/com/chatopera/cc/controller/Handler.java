@@ -25,7 +25,6 @@ import com.chatopera.cc.controller.api.QueryParams;
 import com.chatopera.cc.exception.CSKefuException;
 import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.model.StreamingFile;
-import com.chatopera.cc.model.SystemConfig;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.blob.JpaBlobHelper;
 import com.chatopera.cc.persistence.repository.StreamingFileRepository;
@@ -392,7 +391,7 @@ public class Handler {
      * @param page
      * @return
      */
-    public Viewport createAdminTempletResponse(String page) {
+    public Viewport createViewIncludedByFreemarkerTplForAdmin(String page) {
         return new Viewport("/admin/include/tpl", page);
     }
 
@@ -402,7 +401,7 @@ public class Handler {
      * @param page
      * @return
      */
-    public Viewport createAppsTempletResponse(String page) {
+    public Viewport createViewIncludedByFreemarkerTpl(String page) {
         return new Viewport("/apps/include/tpl", page);
     }
 
@@ -412,11 +411,11 @@ public class Handler {
      * @param page
      * @return
      */
-    public Viewport createEntIMTempletResponse(final String page) {
+    public Viewport createViewIncludedByFreemarkerTplForEntIM(final String page) {
         return new Viewport("/apps/entim/include/tpl", page);
     }
 
-    public Viewport createRequestPageTempletResponse(final String page) {
+    public Viewport createView(final String page) {
         return new Viewport(page);
     }
 
@@ -425,7 +424,7 @@ public class Handler {
      * @return
      */
     public ModelAndView request(Viewport data) {
-        return new ModelAndView(data.getTemplet() != null ? data.getTemplet() : data.getPage(), "data", data);
+        return new ModelAndView(data.getTemplate() != null ? data.getTemplate() : data.getPage(), "data", data);
     }
 
     public int getP(HttpServletRequest request) {

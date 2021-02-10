@@ -1,0 +1,12 @@
+.uk-layui-form
+    form.layui-form.uk-form(action='/admin/metadata/imptbsave.html')
+        input(type='hidden', name='role', value=role.id)
+        .layui-form-item
+            .layui-input-inline
+                select.ukefu-form-multiple(multiple, name='tables')
+                    for table in tablesList
+                        option(value=table.name)= table.name
+        .layui-form-button
+            .layui-button-block
+                button.layui-btn(lay-submit, lay-filter='formDemo') 立即提交
+                button.layui-btn.layui-btn-original(type='reset') 重置

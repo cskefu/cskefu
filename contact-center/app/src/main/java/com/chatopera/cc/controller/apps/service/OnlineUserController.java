@@ -174,11 +174,12 @@ public class OnlineUserController extends Handler {
 
             cache.findOneAgentUserByUserIdAndOrgi(userid, orgi).ifPresent(agentUser -> {
                 map.put("agentUser", agentUser);
+                map.put("curagentuser", agentUser);
             });
 
 
         }
-        return request(super.createAppsTempletResponse("/apps/service/online/index"));
+        return request(super.createView("/apps/service/online/index"));
     }
 
     @RequestMapping("/online/chatmsg")
@@ -187,7 +188,7 @@ public class OnlineUserController extends Handler {
         AgentService agentService = agentServiceRes.getOne(id);
         map.put("curAgentService", agentService);
         cache.findOneAgentUserByUserIdAndOrgi(agentService.getUserid(), super.getOrgi(request)).ifPresent(p -> {
-            map.put("curragentuser", p);
+            map.put("curagentuser", p);
         });
 
         if (StringUtils.isNotBlank(title)) {
@@ -213,7 +214,7 @@ public class OnlineUserController extends Handler {
                         new PageRequest(0, 50, Direction.DESC,
                                 "updatetime")));
 
-        return request(super.createRequestPageTempletResponse("/apps/service/online/chatmsg"));
+        return request(super.createView("/apps/service/online/chatmsg"));
     }
 
     @RequestMapping("/trace")
@@ -228,6 +229,6 @@ public class OnlineUserController extends Handler {
                     "traceHisList", userEventRes.findBySessionidAndOrgi(sessionid, super.getOrgi(request),
                             new PageRequest(0, 100)));
         }
-        return request(super.createRequestPageTempletResponse("/apps/service/online/trace"));
+        return request(super.createView("/apps/service/online/trace"));
     }
 }

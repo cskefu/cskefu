@@ -1,0 +1,20 @@
+.uk-layui-form
+    form.layui-form.uk-form(action='/admin/role/saveuser.html')
+        input(type='hidden', name='role', value=role.id)
+        .layui-form-item
+            .layui-input-inline
+                select.ukefu-form-multiple(multiple, name='users')
+                    if userList
+                        for curruser in userList
+                            - var has = false
+                            if userRoleList
+                                for userRole in userRoleList
+                                    if userRole.user && userRole.user.id == curruser.id
+                                        - has = true
+                            option(value=curruser.id,selected=has == true ? 'selected' : false)
+                                | #{curruser.username}（#{curruser.uname}）
+                            .layui-form-button
+        .layui-form-button
+            .layui-button-block
+                button.layui-btn(lay-submit, lay-filter='formDemo') 立即提交
+                button.layui-btn.layui-btn-original(type='reset') 重置

@@ -32,7 +32,7 @@ public class CSKeFuWebAppConfigurer
         // 多个拦截器组成一个拦截器链
         // addPathPatterns 用于添加拦截规则
         // excludePathPatterns 用户排除拦截
-        registry.addInterceptor(new UserInterceptorHandler()).addPathPatterns("/**").excludePathPatterns("/login.html","/im/**","/res/image*","/res/file*","/cs/**");
+        registry.addInterceptor(new UserInterceptorHandler()).addPathPatterns("/**").excludePathPatterns("/login.html","/im/**","/res/image*","/res/file*","/cs/**","/messenger/webhook/*");
         registry.addInterceptor(new CrossInterceptorHandler()).addPathPatterns("/**");
         registry.addInterceptor(new LogIntercreptorHandler()).addPathPatterns("/**");
         super.addInterceptors(registry);

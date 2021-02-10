@@ -90,7 +90,7 @@ public class StatsController extends Handler {
             mapR.put("skill", organs.keySet().stream().map(p -> "'" + p + "'").collect(Collectors.joining(",")));
         }
 
-        ReportData reportData = new CubeService("coment.xml", path, dataSource, mapR).execute("SELECT [comment].[满意度].members on columns , NonEmptyCrossJoin([time].[日期].members , NonEmptyCrossJoin([skill].[技能组].members,[agent].[坐席].members)) on rows  FROM [满意度]");
+        ReportData reportData = new CubeService("coment.pug", path, dataSource, mapR).execute("SELECT [comment].[满意度].members on columns , NonEmptyCrossJoin([time].[日期].members , NonEmptyCrossJoin([skill].[技能组].members,[agent].[坐席].members)) on rows  FROM [满意度]");
 
         List<SysDic> dicList = Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_COMMENT_DIC);
         for (Level title : reportData.getCol().getChilderen()) {
@@ -120,7 +120,7 @@ public class StatsController extends Handler {
          */
         map.addAttribute("skillGroups", organs.values());
 
-        return request(super.createAppsTempletResponse("/apps/service/stats/coment"));
+        return request(super.createView("/apps/service/stats/coment"));
     }
 
     @RequestMapping("/stats/coment/exp")
@@ -138,7 +138,7 @@ public class StatsController extends Handler {
             mapR.put("skill", organs.keySet().stream().map(p -> "'" + p + "'").collect(Collectors.joining(",")));
         }
         mapR.put("orgi", super.getOrgi(request));
-        ReportData reportData = new CubeService("coment.xml", path, dataSource, mapR).execute("SELECT [comment].[满意度].members on columns , NonEmptyCrossJoin([time].[日期].members , NonEmptyCrossJoin([skill].[技能组].members,[agent].[坐席].members)) on rows  FROM [满意度]");
+        ReportData reportData = new CubeService("coment.pug", path, dataSource, mapR).execute("SELECT [comment].[满意度].members on columns , NonEmptyCrossJoin([time].[日期].members , NonEmptyCrossJoin([skill].[技能组].members,[agent].[坐席].members)) on rows  FROM [满意度]");
 
         List<SysDic> dicList = Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_COMMENT_DIC);
         for (Level title : reportData.getCol().getChilderen()) {
@@ -173,7 +173,7 @@ public class StatsController extends Handler {
             mapR.put("skill", organs.keySet().stream().map(p -> "'" + p + "'").collect(Collectors.joining(",")));
         }
         mapR.put("orgi", super.getOrgi(request));
-        ReportData reportData = new CubeService("consult.xml", path, dataSource, mapR).execute("SELECT {[Measures].[咨询数量],[Measures].[平均等待时长（秒）],[Measures].[平均咨询时长（秒）]} on columns , NonEmptyCrossJoin([time].[日期].members , NonEmptyCrossJoin([skill].[技能组].members,[agent].[坐席].members)) on rows  FROM [咨询]");
+        ReportData reportData = new CubeService("consult.pug", path, dataSource, mapR).execute("SELECT {[Measures].[咨询数量],[Measures].[平均等待时长（秒）],[Measures].[平均咨询时长（秒）]} on columns , NonEmptyCrossJoin([time].[日期].members , NonEmptyCrossJoin([skill].[技能组].members,[agent].[坐席].members)) on rows  FROM [咨询]");
         map.addAttribute("reportData", reportData);
 
         if (StringUtils.isNotBlank(agent)) {
@@ -189,7 +189,7 @@ public class StatsController extends Handler {
          * 查询 技能组 ， 缓存？
          */
         map.addAttribute("skillGroups", organs.values());
-        return request(super.createAppsTempletResponse("/apps/service/stats/consult"));
+        return request(super.createView("/apps/service/stats/consult"));
     }
 
     @RequestMapping("/stats/agent/exp")
@@ -207,7 +207,7 @@ public class StatsController extends Handler {
             mapR.put("skill", organs.keySet().stream().map(p -> "'" + p + "'").collect(Collectors.joining(",")));
         }
         mapR.put("orgi", super.getOrgi(request));
-        ReportData reportData = new CubeService("consult.xml", path, dataSource, mapR).execute("SELECT {[Measures].[咨询数量],[Measures].[平均等待时长（秒）],[Measures].[平均咨询时长（秒）]} on columns , NonEmptyCrossJoin([time].[日期].members , NonEmptyCrossJoin([skill].[技能组].members,[agent].[坐席].members)) on rows  FROM [咨询]");
+        ReportData reportData = new CubeService("consult.pug", path, dataSource, mapR).execute("SELECT {[Measures].[咨询数量],[Measures].[平均等待时长（秒）],[Measures].[平均咨询时长（秒）]} on columns , NonEmptyCrossJoin([time].[日期].members , NonEmptyCrossJoin([skill].[技能组].members,[agent].[坐席].members)) on rows  FROM [咨询]");
         response.setHeader("content-disposition", "attachment;filename=UCKeFu-Report-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
         new UKExcelUtil(reportData, response.getOutputStream(), "客服坐席统计").createFile();
         return;

@@ -205,6 +205,13 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
                 default:
             }
             ctx.setChannelMessage(ctx.getAgentUser());
+        } else {
+            ctx.setNoagent(true);
+            ctx.setMessage(acdMessageHelper.getNoAgentMessage(
+                    0,
+                    ctx.getChannel(),
+                    ctx.getOrganid(),
+                    ctx.getOrgi()));
         }
 
         logger.info(

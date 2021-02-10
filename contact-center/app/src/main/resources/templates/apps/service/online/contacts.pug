@@ -1,0 +1,22 @@
+if contacts
+    ul.info-list
+        li.ukefu-channel-tip
+            | 姓名：
+            span.tgreen #{contacts.name}
+        li
+            | 性别：
+            if contacts.gender && contacts.gender == '1'
+                | 男
+            if contacts.gender && contacts.gender == '0'
+                | 女
+            if contacts.gender && contacts.gender == '-1'
+                | 未知
+        li 生日：#{contacts.cusbirthday}
+        li 电话：#{contacts.phone}
+        li 手机：#{contacts.mobile}
+        li 邮件：#{contacts.email}
+        li 地址：#{contacts.address}
+        li 类型：#{uKeFuDic[contacts.ckind].name}
+        if contacts && contacts.touchtime
+            li 获得时间：#{pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', contacts.touchtime)}
+        li 备注：#{contacts.memo}

@@ -1,0 +1,155 @@
+extends /apps/include/layout.pug
+
+block append head
+    script(src='/js/utils.js')
+    script(src='/js/CSKeFu_Rest_Request.v1.js')
+    style.
+        #create {
+            margin: 10px;
+            border-top: 1px solid #EEEEEE;
+            padding-top: 5px;
+        }
+
+        .uk-form .layui-form-label {
+            line-height: 38px;
+            width: 150px;
+        }
+
+        .uk-form .layui-form-mid {
+            line-height: 38px;
+            width: 240px;
+            padding: 5px 0;
+        }
+
+        .selectChannelBox .layui-form-select .layui-input {
+            border: none;
+            text-align: right;
+        }
+
+        .selectChannelBox .layui-form-select dl dd {
+            text-align: right;
+        }
+block content
+    .uk-layui-form
+        form.layui-form.uk-form
+            input#id(type='hidden', name='id', value='#{id}')
+            #create
+                .layui-form-item
+                    if id
+                        input(type='hidden', name='snstype', value='#{snstype}')
+                        label.layui-form-label #{snstype == 'webim' ? '网站渠道' : snstype == 'messenger' ? 'Messenger渠道' : ''}
+                    else
+                        .layui-input-inline.selectChannelBox(style="width: 150px;margin-left: 15px;margin-right: 5px;")
+                            select#snstype(name="snstype", lay-filter="snstype", lay-verify="required")
+                                option(value="webim" selected) 网站渠道
+                                option(value="messenger") Messenger渠道
+                    .layui-input-inline
+                        if id
+                            input(type="text" name="snsurl" required lay-verify="required" value="#{snsurl}" autocomplete="off" class="layui-input" disabled)
+                        else
+                            select(id="snsid" name="snsid" lay-verify="required")
+                                option
+                    .layui-form-mid.layui-word-aux 智能机器人服务的渠道标识
+                .layui-form-item
+                    label.layui-form-label ClientId
+                    .layui-input-inline
+                        input.layui-input(type='text', name='clientId', required, lay-verify='required', placeholder='请输入ClientId', autocomplete='off', value='#{bot.clientId}')
+                    .layui-form-mid.layui-word-aux
+                        | 智能机器人ClientId，还没有？
+                        a(href='#{botServiceProvider}/dashboard', target='_blank') 现在去创建！
+                .layui-form-item
+                    label.layui-form-label Secret
+                    .layui-input-inline
+                        input.layui-input(type='password', name='secret', required, lay-verify='required', placeholder='请输入Secret', autocomplete='off', value='#{bot.secret}')
+                    .layui-form-mid.layui-word-aux 智能机器人Secret
+                .layui-form-item
+                    label.layui-form-label 工作模式
+                    .layui-input-inline
+                        select(name='workmode', lay-verify='required')
+                            option(selected=(bot.workmode == "机器人客服优先" ? 'selected' : false) ) 机器人客服优先
+                            option(selected=(bot.workmode == "人工客服优先" ? 'selected' : false) ) 人工客服优先
+                            option(selected=(bot.workmode == "仅机器人客服" ? 'selected' : false) ) 仅机器人客服
+                    .layui-form-mid.layui-word-aux 来自访客的会话默认以什么方式接待
+                .layui-form-button(style="left:0")
+                    .layui-button-block
+                        button.layui-btn(lay-submit, lay-filter='save') 保存
+
+    script.
+        // 保存成功，刷新页面
+        function submitChatbotSucc(bot) {
+            if (bot.rc != 0) {
+                submitChatbotFail(bot);
+            } else {
+                parent.location.href = "/admin/system/chatbot/index.html?chatbotid=" + bot.data.id;
+            }
+        }
+
+        // 保存失败
+        function submitChatbotFail(err) {
+            layer.confirm(err.data || err.error, {
+                btn: ['关闭'],
+                icon: 2,
+                title: '提示'
+            }, function (popup, layero) {
+                layer.close(popup)
+            }, function (popup) {
+                // 取消方法
+            });
+        }
+
+
+        layui.use(['form'], function () {
+            var form = layui.form();
+            form.on('submit(save)', function (data) {
+                var field = data.field;
+                if (field.id) {
+                    field.ops = 'update';
+                    restApiRequest({
+                        silent: true,
+                        path: "chatbot",
+                        data: field
+                    }).then(submitChatbotSucc, submitChatbotFail);
+                } else {
+                    field.ops = 'create';
+                    restApiRequest({
+                        path: "chatbot",
+                        data: field
+                    }).then(submitChatbotSucc, submitChatbotFail);
+                }
+                return false;
+            });
+
+            function getChannel(type) {
+                if (!$('#id').val()) {
+                    restApiRequest({
+                        path: "chatbot",
+                        silent: true,
+                        data: {
+                            ops: "vacant",
+                            snstype: type
+                        }
+                    }).then(function (data) {
+                        if (data.rc == 0) {
+                            if (data.data.length > 0) {
+                                var options = $.map(data.data, function (r) {
+                                    return '<option value="' + r.snsid + '">' + r.snsurl + '</option>';
+                                });
+                                $('#snsid').html(options);
+                            } else {
+                                $('#snsid').html('<option value="">无</option>');
+                            }
+
+                            form.render('select');
+                        }
+                    }, function (error) {
+                        console.log("error", error);
+                    })
+                }
+            }
+
+            getChannel('webim')
+            form.on('select(snstype)', function (data) {
+                getChannel(data.value)
+            });
+        })
+

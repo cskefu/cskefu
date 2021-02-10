@@ -50,6 +50,6 @@ public class CommentController extends Handler{
 		Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
 		Page<AgentService> agentServiceList = agentServiceRes.findByOrgiAndSatisfactionAndSkillIn(super.getOrgi(request) , true ,organs.keySet(),new PageRequest(super.getP(request), super.getPs(request))) ;
 		map.addAttribute("serviceList", agentServiceList) ;
-		return request(super.createAppsTempletResponse("/apps/service/comment/index"));
+		return request(super.createView("/apps/service/comment/index"));
     }
 }

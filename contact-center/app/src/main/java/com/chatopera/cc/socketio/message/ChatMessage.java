@@ -119,10 +119,6 @@ public class ChatMessage implements java.io.Serializable {
         return userid;
     }
 
-    public String getUserid(String userid) {
-        return userid;
-    }
-
     public void setUserid(String userid) {
         this.userid = userid;
     }

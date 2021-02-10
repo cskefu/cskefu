@@ -1,0 +1,49 @@
+include /mixins/dic.mixin.pug
+
+.uk-layui-form
+    form.layui-form.uk-form(action='/admin/metadata/update.html')
+        input(type='hidden', name='id', value=metadata.id)
+        .layui-form-item
+            label.layui-form-label 标题：
+            .layui-input-inline
+                input.layui-input(type='text', name='name', value=metadata.name, required, lay-verify='required', placeholder='标题', autocomplete='off')
+
+        .layui-form-item
+            label.layui-form-label 选项：
+            .layui-input-inline
+                input(type="checkbox", name="fromdb", title="ES数据", lay-skin="primary", lay-filter="es", checked=(metadata.fromdb ? 'checked' : false) )
+
+        .layui-form-item.es(style="display:" + (metadata.fromdb == false ? 'none;' : 'block;'))
+            label.layui-form-label ES资源：
+            .layui-input-inline
+                +sysDicSelect('com.dic.es.type','listblocktemplet',metadata.listblocktemplet,"lay-ignore required lay-verify='required' ")
+
+        .layui-form-item.es(style="display:" + (metadata.fromdb == false ? 'none;' : 'block;'))
+            label.layui-form-label JAVABean：
+            .layui-input-inline
+                +sysDicSelect('com.dic.db.type','previewtemplet',metadata.previewtemplet,"lay-ignore required lay-verify='required' ")
+
+        .layui-form-button
+            .layui-button-block
+                button.layui-btn(lay-submit, lay-filter='formDemo') 立即提交
+                button.layui-btn.layui-btn-original(type='reset') 重置
+script.
+    layui.use('form', function () {
+        var form = layui.form();
+        form.render(); //更新全部
+        form.on("checkbox(es)", function (data) {
+            if (data.elem.checked == true) {
+                $('.es').show();
+            } else {
+                $('.es').hide();
+            }
+        });
+        form.verify({
+            repass: function (value) {
+                if (value != $('#password').val()) {
+                    return '两次输入的密码不一致，请确认';
+                }
+            }
+        });
+    });
+

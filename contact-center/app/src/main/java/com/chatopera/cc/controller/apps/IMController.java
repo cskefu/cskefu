@@ -17,6 +17,7 @@
 
 package com.chatopera.cc.controller.apps;
 
+import com.alibaba.fastjson.JSONObject;
 import com.chatopera.cc.acd.ACDPolicyService;
 import com.chatopera.cc.acd.ACDWorkMonitor;
 import com.chatopera.cc.basic.Constants;
@@ -24,6 +25,7 @@ import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.controller.api.request.RestUtils;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.blob.JpaBlobHelper;
 import com.chatopera.cc.persistence.es.ContactsRepository;
@@ -31,7 +33,7 @@ import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.proxy.OnlineUserProxy;
 import com.chatopera.cc.socketio.util.RichMediaUtils;
 import com.chatopera.cc.util.*;
-import freemarker.template.TemplateException;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -41,6 +43,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -152,6 +157,42 @@ public class IMController extends Handler {
     private void init() {
     }
 
+    @RequestMapping("/{id}")
+    @Menu(type = "im", subtype = "point", access = true)
+    public ModelAndView loader(
+            HttpServletRequest request, HttpServletResponse response,
+            @PathVariable String id,
+            @Valid String userid,
+            @Valid String title,
+            @Valid String aiid) {
+        ModelAndView view = request(super.createView("/apps/im/loader"));
+
+        view.addObject("hostname", request.getServerName());
+        SystemConfig systemConfig = MainUtils.getSystemConfig();
+        if (systemConfig != null && systemConfig.isEnablessl()) {
+            view.addObject("schema", "https");
+            if (request.getServerPort() == 80) {
+                view.addObject("port", 443);
+            } else {
+                view.addObject("port", request.getServerPort());
+            }
+        } else {
+            view.addObject("schema", request.getScheme());
+            String header = request.getHeader("X-Forwarded-Proto");
+            if (header != null) {
+                view.addObject("schema", header);
+            }
+            view.addObject("port", request.getServerPort());
+        }
+
+        view.addObject("appid", id);
+        view.addObject("userid", userid);
+        view.addObject("title", title);
+        view.addObject("aiid", aiid);
+
+        return view;
+    }
+
     /**
      * 在客户或第三方网页内，写入聊天控件
      *
@@ -163,7 +204,7 @@ public class IMController extends Handler {
      * @param aiid
      * @return
      */
-    @RequestMapping("/{id}")
+    @RequestMapping("/point/{id}")
     @Menu(type = "im", subtype = "point", access = true)
     public ModelAndView point(
             HttpServletRequest request, HttpServletResponse response,
@@ -171,7 +212,7 @@ public class IMController extends Handler {
             @Valid String userid,
             @Valid String title,
             @Valid String aiid) {
-        ModelAndView view = request(super.createRequestPageTempletResponse("/apps/im/point"));
+        ModelAndView view = request(super.createView("/apps/im/point"));
         view.addObject("channelVisitorSeparate", channelWebIMVisitorSeparate);
 
         final String sessionid = MainUtils.getContextID(request.getSession().getId());
@@ -352,8 +393,8 @@ public class IMController extends Handler {
             String sid,
             String system_name,
             Boolean whitelist_mode,
-            @RequestParam String sessionid) throws IOException, TemplateException {
-        ModelAndView view = request(super.createRequestPageTempletResponse("/apps/im/point"));
+            @RequestParam String sessionid) throws IOException {
+        ModelAndView view = request(super.createView("/apps/im/point"));
         final User logined = super.getUser(request);
 
         request.getSession().setAttribute("Sessionuid", uid);
@@ -575,6 +616,8 @@ public class IMController extends Handler {
                 traceid, isInvite, exchange);
         Map<String, String> sessionMessageObj = cache.findOneSystemMapByIdAndOrgi(sessionid, orgi);
 
+        map.put("pugHelper", new PugHelper());
+
         if (sessionMessageObj != null) {
             request.getSession().setAttribute("Sessionusername", sessionMessageObj.get("username"));
             request.getSession().setAttribute("Sessioncid", sessionMessageObj.get("cid"));
@@ -585,7 +628,7 @@ public class IMController extends Handler {
             request.getSession().setAttribute("Sessionuid", sessionMessageObj.get("uid"));
         }
 
-        ModelAndView view = request(super.createRequestPageTempletResponse("/apps/im/index"));
+        ModelAndView view = request(super.createView("/apps/im/index"));
         Optional<BlackEntity> blackOpt = cache.findOneBlackEntityByUserIdAndOrgi(userid, Constants.SYSTEM_ORGI);
         CousultInvite invite = OnlineUserProxy.consult(appid, orgi);
         if (StringUtils.isNotBlank(
@@ -688,7 +731,7 @@ public class IMController extends Handler {
                     isLeavemsg = true;
                     boolean isInWorkingHours = MainUtils.isInWorkingHours(sessionConfig.getWorkinghours());
                     map.addAttribute("isInWorkingHours", isInWorkingHours);
-                    view = request(super.createRequestPageTempletResponse("/apps/im/leavemsg"));
+                    view = request(super.createView("/apps/im/leavemsg"));
                 } else if (invite.isConsult_info()) {    //启用了信息收集，从Request获取， 或从 Cookies 里去
                     // 验证 OnlineUser 信息
                     if (contacts != null && StringUtils.isNotBlank(
@@ -770,7 +813,7 @@ public class IMController extends Handler {
                         }
                         if (StringUtils.isBlank(contacts.getName())) {
                             consult = false;
-                            view = request(super.createRequestPageTempletResponse("/apps/im/collecting"));
+                            view = request(super.createView("/apps/im/collecting"));
                         }
                     }
                 } else {
@@ -877,10 +920,10 @@ public class IMController extends Handler {
                         if (chatbotConfig != null) {
                             map.addAttribute("chatbotConfig", chatbotConfig);
                         }
-                        view = request(super.createRequestPageTempletResponse("/apps/im/chatbot/index"));
+                        view = request(super.createView("/apps/im/chatbot/index"));
                         if (MobileDevice.isMobile(request.getHeader("User-Agent")) || StringUtils.isNotBlank(
                                 mobile)) {
-                            view = request(super.createRequestPageTempletResponse(
+                            view = request(super.createView(
                                     "/apps/im/chatbot/mobile"));        // 智能机器人 移动端
                         }
                     } else {
@@ -888,7 +931,7 @@ public class IMController extends Handler {
                         if (!isLeavemsg && (MobileDevice.isMobile(
                                 request.getHeader("User-Agent")) || StringUtils.isNotBlank(mobile))) {
                             view = request(
-                                    super.createRequestPageTempletResponse("/apps/im/mobile"));    // WebIM移动端。再次点选技能组？
+                                    super.createView("/apps/im/mobile"));    // WebIM移动端。再次点选技能组？
                         }
                     }
 
@@ -960,7 +1003,7 @@ public class IMController extends Handler {
             @Valid String imgurl,
             @Valid String pid,
             @Valid String purl) throws Exception {
-        ModelAndView view = request(super.createRequestPageTempletResponse("/apps/im/text"));
+        ModelAndView view = request(super.createView("/apps/im/text"));
         CousultInvite invite = OnlineUserProxy.consult(
                 appid, StringUtils.isBlank(orgi) ? Constants.SYSTEM_ORGI : orgi);
 
@@ -1051,7 +1094,7 @@ public class IMController extends Handler {
                 }
             });
         }
-        return request(super.createRequestPageTempletResponse("/apps/im/leavemsgsave"));
+        return request(super.createView("/apps/im/leavemsgsave"));
     }
 
     @RequestMapping("/refuse")
@@ -1098,7 +1141,7 @@ public class IMController extends Handler {
 
     @RequestMapping("/image/upload")
     @Menu(type = "im", subtype = "image", access = true)
-    public ModelAndView upload(
+    public ResponseEntity<String> upload(
             ModelMap map, HttpServletRequest request,
             @RequestParam(value = "imgFile", required = false) MultipartFile multipart,
             @Valid String channel,
@@ -1107,11 +1150,11 @@ public class IMController extends Handler {
             @Valid String appid,
             @Valid String orgi,
             @Valid String paste) throws IOException {
-        ModelAndView view = request(super.createRequestPageTempletResponse("/apps/im/upload"));
         final User logined = super.getUser(request);
 
-        UploadStatus upload = null;
         String fileName = null;
+        JSONObject result = new JSONObject();
+        HttpHeaders headers = RestUtils.header();
 //        String multipartLast = null;
 //        if ( multipart != null && multipart.getOriginalFilename() != null ){
 //            Number multipartLenght = multipart.getOriginalFilename().split("\\.").length - 1;
@@ -1156,7 +1199,8 @@ public class IMController extends Handler {
                     sf.setThumbnail(jpaBlobHelper.createBlobWithFile(thumbnail));
                     streamingFileRepository.save(sf);
                     String fileUrl = "/res/image.html?id=" + fileid;
-                    upload = new UploadStatus("0", fileUrl);
+                    result.put("error", 0);
+                    result.put("url", fileUrl);
 
                     if (paste == null) {
                         if (StringUtils.isNotBlank(channel)) {
@@ -1169,7 +1213,8 @@ public class IMController extends Handler {
                         }
                     }
                 } else {
-                    upload = new UploadStatus(invalid);
+                    result.put("error", 1);
+                    result.put("message", invalid);
                 }
             } else {
                 String invalid = StreamingFileUtil.getInstance().validate(
@@ -1182,7 +1227,8 @@ public class IMController extends Handler {
                     // 存储到本地硬盘
                     String id = processAttachmentFile(multipart,
                             fileid, logined.getOrgi(), logined.getId());
-                    upload = new UploadStatus("0", "/res/file.html?id=" + id);
+                    result.put("error", 0);
+                    result.put("url", "/res/file.html?id=" + id);
                     String file = "/res/file.html?id=" + id;
 
                     File tempFile = new File(multipart.getOriginalFilename());
@@ -1194,11 +1240,13 @@ public class IMController extends Handler {
                         RichMediaUtils.uploadFile(file, (int) multipart.getSize(), tempFile.getName(), userid, id);
                     }
                 } else {
-                    upload = new UploadStatus(invalid);
+                    result.put("error", 1);
+                    result.put("message", invalid);
                 }
             }
         } else {
-            upload = new UploadStatus("请选择文件");
+            result.put("error", 1);
+            result.put("message", "请选择文件");
         }
 //        }else {
 //                upload = new UploadStatus("请上传格式为jpg，png，jpeg，bmp类型图片");
@@ -1206,8 +1254,8 @@ public class IMController extends Handler {
 //        } else {
 //            upload = new UploadStatus("请上传格式为jpg，png，jpeg，bmp类型图片");
 //        }
-        map.addAttribute("upload", upload);
-        return view;
+
+        return new ResponseEntity<>(result.toString(), headers, HttpStatus.OK);
     }
 
 

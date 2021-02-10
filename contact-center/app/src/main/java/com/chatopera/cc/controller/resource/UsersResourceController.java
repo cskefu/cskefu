@@ -16,9 +16,11 @@
  */
 package com.chatopera.cc.controller.resource;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.model.Contacts;
 import com.chatopera.cc.model.Organ;
-import com.chatopera.cc.model.OrgiSkillRel;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.OrganRepository;
 import com.chatopera.cc.persistence.repository.OrgiSkillRelRepository;
@@ -31,11 +33,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -55,12 +57,21 @@ public class UsersResourceController extends Handler {
 
     @RequestMapping("/users")
     @Menu(type = "res", subtype = "users")
-    public ModelAndView add(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String id) {
+    @ResponseBody
+    public String add(ModelMap map, HttpServletRequest request, @Valid String q, @Valid String id) {
         if (q == null) {
             q = "";
         }
-        map.addAttribute("usersList", getUsers(request, q));
-        return request(super.createRequestPageTempletResponse("/public/users"));
+        Page<User> usersList = getUsers(request, q);
+        JSONArray result = new JSONArray();
+        for (User user : usersList.getContent()) {
+            JSONObject item = new JSONObject();
+            item.put("id", user.getId());
+            item.put("text", user.getUsername() + "(" + user.getUname() + ")");
+            result.add(item);
+        }
+
+        return result.toJSONString();
     }
 
     @RequestMapping("/bpm/users")
@@ -70,7 +81,7 @@ public class UsersResourceController extends Handler {
             q = "";
         }
         map.addAttribute("usersList", getUsers(request, q));
-        return request(super.createRequestPageTempletResponse("/public/bpmusers"));
+        return request(super.createView("/public/bpmusers"));
     }
 
     @RequestMapping("/bpm/organ")
@@ -79,7 +90,7 @@ public class UsersResourceController extends Handler {
         map.addAttribute("organList", getOrgans(request));
         map.addAttribute("usersList", getUsers(request));
         map.addAttribute("ids", ids);
-        return request(super.createRequestPageTempletResponse("/public/organ"));
+        return request(super.createView("/public/organ"));
     }
 
     private List<User> getUsers(HttpServletRequest request) {

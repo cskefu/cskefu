@@ -127,7 +127,7 @@ public class LoginController extends Handler {
                                 }
                             } catch (EncryptionOperationNotPossibleException e) {
                                 logger.error("[login] error:", e);
-                                view = request(super.createRequestPageTempletResponse("/public/clearcookie"));
+                                view = request(super.createView("/public/clearcookie"));
                                 return view;
                             } catch (NoSuchAlgorithmException e) {
                                 logger.error("[login] error:", e);
@@ -232,7 +232,7 @@ public class LoginController extends Handler {
                         }
                     }
                 } else {
-                    view = request(super.createRequestPageTempletResponse("/login"));
+                    view = request(super.createView("/login"));
                     if (StringUtils.isNotBlank(referer)) {
                         view.addObject("referer", referer);
                     }
@@ -342,9 +342,9 @@ public class LoginController extends Handler {
     @RequestMapping(value = "/register")
     @Menu(type = "apps", subtype = "user", access = true)
     public ModelAndView register(HttpServletRequest request, HttpServletResponse response, @Valid String msg) {
-        ModelAndView view = request(super.createRequestPageTempletResponse("redirect:/"));
+        ModelAndView view = request(super.createView("redirect:/"));
         if (request.getSession(true).getAttribute(Constants.USER_SESSION_NAME) == null) {
-            view = request(super.createRequestPageTempletResponse("/register"));
+            view = request(super.createView("/register"));
         }
         if (StringUtils.isNotBlank(msg)) {
             view.addObject("msg", msg);
@@ -358,7 +358,7 @@ public class LoginController extends Handler {
         String msg = "";
         msg = validUser(user);
         if (StringUtils.isNotBlank(msg)) {
-            return request(super.createRequestPageTempletResponse("redirect:/register.html?msg=" + msg));
+            return request(super.createView("redirect:/register.html?msg=" + msg));
         } else {
             user.setUname(user.getUsername());
             user.setAdmin(true);

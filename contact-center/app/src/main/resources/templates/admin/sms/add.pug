@@ -1,0 +1,74 @@
+include /mixins/dic.mixin.pug
+
+.uk-layui-form
+    form.layui-form(action='/admin/sms/save.html', method='post')
+        .layui-form-item(style='margin-top:10px;')
+            .layui-inline
+                label.layui-form-label(style='width:150px;') 短信网关名称：
+                .layui-input-inline
+                    input.layui-input(type='text', name='name', required, lay-verify='required', autocomplete='off')
+                .layui-form-mid.layui-word-aux
+                    font(color='red') *
+        .layui-form-item(style='margin-top:10px;')
+            .layui-inline
+                label.layui-form-label(style='width:150px;') 短信网关地址：
+                .layui-input-inline
+                    input.layui-input(type='text', name='url', required, lay-verify='required', autocomplete='off')
+                .layui-form-mid.layui-word-aux
+                    font(color='red') *
+        .layui-form-item(style='margin-top:10px;')
+            .layui-inline
+                label.layui-form-label(style='width:150px;') 短信网关类型：
+                .layui-input-inline
+                    +sysDicSelect('com.dic.sms.type','smstype','',"lay-verify='required' ", '')
+                .layui-form-mid.layui-word-aux
+                    font(color='red') *
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label(style='width:150px;') 签名：
+                .layui-input-inline
+                    input.layui-input(type='text', name='sign', required, lay-verify='required', autocomplete='off')
+                .layui-form-mid.layui-word-aux
+                    font(color='red') *
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label(style='width:150px;') 模板ID：
+                .layui-input-inline
+                    input.layui-input(type='text', name='tpcode', required, lay-verify='required', autocomplete='off')
+                .layui-form-mid.layui-word-aux
+                    font(color='red') *
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label(style='width:150px;') AppKey：
+                .layui-input-inline
+                    input.layui-input(type='text', name='appkey', required, lay-verify='required', autocomplete='off')
+                .layui-form-mid.layui-word-aux
+                    font(color='red') *
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label(style='width:150px;') AppSec：
+                .layui-input-inline
+                    input.layui-input(type='password', name='appsec', required, lay-verify='required', autocomplete='off')
+                .layui-form-mid.layui-word-aux
+                    font(color='red') *
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label(style='width:150px;') 其他参数：
+                .layui-input-inline
+                    textarea.layui-textarea(name='moreparam', placeholder='请输入参数')
+                .layui-form-mid.layui-word-aux
+                    font(color='red') *
+        .layui-form-button
+            .layui-button-block
+                button.layui-btn(lay-submit, lay-filter='formDemo') 立即提交
+                button.layui-btn.layui-btn-original(type='reset') 重置
+
+script.
+    layui.use('form', function() {
+            var form = layui.form();
+            form.render(); //更新全部
+        });
+        layui.use('element', function(){
+            var element = layui.element();
+        });
+

@@ -106,7 +106,7 @@ public class CustomerController extends Handler {
 
         map.put("msg", msg);
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
-            return request(super.createAppsTempletResponse("/apps/business/customer/index"));
+            return request(super.createView("/apps/customer/index"));
         }
 
         if (StringUtils.isNotBlank(q)) {
@@ -129,7 +129,7 @@ public class CustomerController extends Handler {
                 q,
                 new PageRequest(super.getP(request), super.getPs(request))));
 
-        return request(super.createAppsTempletResponse("/apps/business/customer/index"));
+        return request(super.createView("/apps/customer/index"));
     }
 
     @RequestMapping("/today")
@@ -142,7 +142,7 @@ public class CustomerController extends Handler {
         boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
 
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
-            return request(super.createAppsTempletResponse("/apps/business/customer/index"));
+            return request(super.createView("/apps/customer/index"));
         }
 
         if (StringUtils.isNotBlank(q)) {
@@ -155,7 +155,7 @@ public class CustomerController extends Handler {
         }
         map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), MainUtils.getStartTime(), null, false, boolQueryBuilder, q, new PageRequest(super.getP(request), super.getPs(request))));
 
-        return request(super.createAppsTempletResponse("/apps/business/customer/index"));
+        return request(super.createView("/apps/customer/index"));
     }
 
     @RequestMapping("/week")
@@ -168,7 +168,7 @@ public class CustomerController extends Handler {
         boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
 
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
-            return request(super.createAppsTempletResponse("/apps/business/customer/index"));
+            return request(super.createView("/apps/customer/index"));
         }
 
         if (StringUtils.isNotBlank(q)) {
@@ -180,7 +180,7 @@ public class CustomerController extends Handler {
         }
         map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), MainUtils.getWeekStartTime(), null, false, boolQueryBuilder, q, new PageRequest(super.getP(request), super.getPs(request))));
 
-        return request(super.createAppsTempletResponse("/apps/business/customer/index"));
+        return request(super.createView("/apps/customer/index"));
     }
 
     @RequestMapping("/enterprise")
@@ -193,7 +193,7 @@ public class CustomerController extends Handler {
         boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
 
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
-            return request(super.createAppsTempletResponse("/apps/business/customer/index"));
+            return request(super.createView("/apps/customer/index"));
         }
 
         boolQueryBuilder.must(termQuery("etype", MainContext.CustomerTypeEnum.ENTERPRISE.toString()));
@@ -205,7 +205,7 @@ public class CustomerController extends Handler {
             map.put("q", q);
         }
         map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), null, null, false, boolQueryBuilder, q, new PageRequest(super.getP(request), super.getPs(request))));
-        return request(super.createAppsTempletResponse("/apps/business/customer/index"));
+        return request(super.createView("/apps/customer/index"));
     }
 
     @RequestMapping("/personal")
@@ -218,7 +218,7 @@ public class CustomerController extends Handler {
         boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
 
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
-            return request(super.createAppsTempletResponse("/apps/business/customer/index"));
+            return request(super.createView("/apps/customer/index"));
         }
 
         boolQueryBuilder.must(termQuery("etype", MainContext.CustomerTypeEnum.PERSONAL.toString()));
@@ -232,7 +232,7 @@ public class CustomerController extends Handler {
             map.put("q", q);
         }
         map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), null, null, false, boolQueryBuilder, q, new PageRequest(super.getP(request), super.getPs(request))));
-        return request(super.createAppsTempletResponse("/apps/business/customer/index"));
+        return request(super.createView("/apps/customer/index"));
     }
 
     @RequestMapping("/creater")
@@ -245,7 +245,7 @@ public class CustomerController extends Handler {
         boolQueryBuilder.must(termsQuery("organ", organs.keySet()));
 
         if (!super.esOrganFilter(request, boolQueryBuilder)) {
-            return request(super.createAppsTempletResponse("/apps/business/customer/index"));
+            return request(super.createView("/apps/customer/index"));
         }
 
         boolQueryBuilder.must(termQuery("creater", super.getUser(request).getId()));
@@ -259,14 +259,14 @@ public class CustomerController extends Handler {
         }
 
         map.addAttribute("entCustomerList", entCustomerRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), null, null, false, boolQueryBuilder, q, new PageRequest(super.getP(request), super.getPs(request))));
-        return request(super.createAppsTempletResponse("/apps/business/customer/index"));
+        return request(super.createView("/apps/customer/index"));
     }
 
     @RequestMapping("/add")
     @Menu(type = "customer", subtype = "customer")
     public ModelAndView add(ModelMap map, HttpServletRequest request, @Valid String ekind) {
         map.addAttribute("ekind", ekind);
-        return request(super.createRequestPageTempletResponse("/apps/business/customer/add"));
+        return request(super.createView("/apps/customer/add"));
     }
 
     @RequestMapping("/save")
@@ -300,7 +300,7 @@ public class CustomerController extends Handler {
 
             contactsRes.save(customerGroupForm.getContacts());
         }
-        return request(super.createRequestPageTempletResponse("redirect:/apps/customer/index.html?ekind=" + customerGroupForm.getEntcustomer().getEkind() + "&msg=" + msg));
+        return request(super.createView("redirect:/apps/customer/index.html?ekind=" + customerGroupForm.getEntcustomer().getEkind() + "&msg=" + msg));
     }
 
     @RequestMapping("/delete")
@@ -311,7 +311,7 @@ public class CustomerController extends Handler {
             entCustomer.setDatastatus(true);                            //客户和联系人都是 逻辑删除
             entCustomerRes.save(entCustomer);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/apps/customer/index.html?p=" + p + "&ekind=" + ekind));
+        return request(super.createView("redirect:/apps/customer/index.html?p=" + p + "&ekind=" + ekind));
     }
 
     @RequestMapping("/edit")
@@ -319,7 +319,7 @@ public class CustomerController extends Handler {
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String ekind) {
         map.addAttribute("entCustomer", entCustomerRes.findOne(id));
         map.addAttribute("ekindId", ekind);
-        return request(super.createRequestPageTempletResponse("/apps/business/customer/edit"));
+        return request(super.createView("/apps/customer/edit"));
     }
 
     @RequestMapping("/update")
@@ -350,14 +350,14 @@ public class CustomerController extends Handler {
         customerGroupForm.getEntcustomer().setPinyin(PinYinTools.getInstance().getFirstPinYin(customerGroupForm.getEntcustomer().getName()));
         entCustomerRes.save(customerGroupForm.getEntcustomer());
 
-        return request(super.createRequestPageTempletResponse("redirect:/apps/customer/index.html?ekind=" + ekindId + "&msg=" + msg));
+        return request(super.createView("redirect:/apps/customer/index.html?ekind=" + ekindId + "&msg=" + msg));
     }
 
     @RequestMapping("/imp")
     @Menu(type = "customer", subtype = "customer")
     public ModelAndView imp(ModelMap map, HttpServletRequest request, @Valid String ekind) {
         map.addAttribute("ekind", ekind);
-        return request(super.createRequestPageTempletResponse("/apps/business/customer/imp"));
+        return request(super.createView("/apps/customer/imp"));
     }
 
     @RequestMapping("/impsave")
@@ -390,7 +390,7 @@ public class CustomerController extends Handler {
             new ExcelImportProecess(event).process();        //启动导入任务
         }
 
-        return request(super.createRequestPageTempletResponse("redirect:/apps/customer/index.html"));
+        return request(super.createView("redirect:/apps/customer/index.html"));
     }
 
     @RequestMapping("/expids")

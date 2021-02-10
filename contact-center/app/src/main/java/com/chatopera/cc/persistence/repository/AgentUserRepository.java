@@ -94,5 +94,13 @@ public interface AgentUserRepository extends JpaRepository<AgentUser, String> {
             "ORDER BY u.createtime DESC LIMIT 1", nativeQuery = true)
     Optional<AgentUser> findOneByContactIdAndChannelAndOrgi(final String contactid, final String channel, final String orgi);
 
+    @Query(value = "SELECT * FROM uk_agentuser AS u " +
+            "WHERE u.userid = ?1 " +
+            "AND u.channel = ?3 AND NOT u.status = ?2 AND u.orgi = ?4 " +
+            "ORDER BY u.createtime DESC LIMIT 1", nativeQuery = true)
+    Optional<AgentUser> findOneByUseridAndStatusNotAndChannelAndOrgi(final String userid, final String status, final String channel, final String orgi);
+
+    AgentUser findOneByUseridAndStatusAndChannelAndOrgi(String userid, String status, String channel, String orgi);
+
 
 }

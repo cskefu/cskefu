@@ -17,12 +17,10 @@
 package com.chatopera.cc.controller.admin;
 
 import com.chatopera.cc.basic.Constants;
-import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.repository.*;
-import com.chatopera.cc.proxy.OnlineUserProxy;
 import com.chatopera.cc.proxy.OrganProxy;
 import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
@@ -113,7 +111,7 @@ public class OrganController extends Handler {
         map.addAttribute("areaList", areaRepository.findByOrgi(super.getOrgi()));
         map.addAttribute("roleList", roleRepository.findByOrgi(super.getOrgi()));
         map.put("msg", msg);
-        return request(super.createAdminTempletResponse("/admin/organ/index"));
+        return request(super.createView("/admin/organ/index"));
     }
 
     @RequestMapping("/add")
@@ -129,7 +127,7 @@ public class OrganController extends Handler {
 
         map.addAttribute("organList", getOwnOragans(request));
 
-        return request(super.createRequestPageTempletResponse("/admin/organ/add"));
+        return request(super.createView("/admin/organ/add"));
     }
 
     @RequestMapping("/save")
@@ -146,7 +144,7 @@ public class OrganController extends Handler {
 
             organRepository.save(organ);
         }
-        return request(super.createRequestPageTempletResponse(
+        return request(super.createView(
                 "redirect:/admin/organ/index.html?msg=" + msg + "&organ=" + firstId));
     }
 
@@ -167,7 +165,7 @@ public class OrganController extends Handler {
         map.addAttribute("userOrganList", userProxy
                 .findByOrganAndOrgiAndDatastatus(organ, super.getOrgi(), false));
         map.addAttribute("organ", organData);
-        return request(super.createRequestPageTempletResponse("/admin/organ/seluser"));
+        return request(super.createView("/admin/organ/seluser"));
     }
 
 
@@ -239,7 +237,7 @@ public class OrganController extends Handler {
             userRepository.save(organUserList);
         }
 
-        return request(super.createRequestPageTempletResponse("redirect:/admin/organ/index.html?organ=" + organ));
+        return request(super.createView("redirect:/admin/organ/index.html?organ=" + organ));
     }
 
     @RequestMapping("/user/delete")
@@ -255,16 +253,16 @@ public class OrganController extends Handler {
             if (organUsers.size() > 1) {
                 organUserRes.deleteOrganUserByUseridAndOrgan(id, organ);
             } else {
-                return request(super.createRequestPageTempletResponse("redirect:/admin/organ/index.html?organ=" + organ + "&msg=not_allow_remove_user"));
+                return request(super.createView("redirect:/admin/organ/index.html?organ=" + organ + "&msg=not_allow_remove_user"));
             }
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/organ/index.html?organ=" + organ));
+        return request(super.createView("redirect:/admin/organ/index.html?organ=" + organ));
     }
 
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "organ")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
-        ModelAndView view = request(super.createRequestPageTempletResponse("/admin/organ/edit"));
+        ModelAndView view = request(super.createView("/admin/organ/edit"));
         Organ currentOrgan = super.getOrgan(request);
         map.addAttribute("areaList", areaRepository.findByOrgi(super.getOrgi()));
         view.addObject("organData", organRepository.findByIdAndOrgi(id, super.getOrgi()));
@@ -277,7 +275,7 @@ public class OrganController extends Handler {
     @Menu(type = "admin", subtype = "organ")
     public ModelAndView update(HttpServletRequest request, @Valid Organ organ) {
         String msg = organProxy.updateOrgan(organ, super.getOrgi(request), super.getUser(request));
-        return request(super.createRequestPageTempletResponse(
+        return request(super.createView(
                 "redirect:/admin/organ/index.html?msg=" + msg + "&organ=" + organ.getId()));
     }
 
@@ -293,7 +291,7 @@ public class OrganController extends Handler {
         map.addAttribute("cacheList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_AREA_DIC));
 
         map.addAttribute("organData", organRepository.findByIdAndOrgi(id, super.getOrgi()));
-        return request(super.createRequestPageTempletResponse("/admin/organ/area"));
+        return request(super.createView("/admin/organ/area"));
     }
 
 
@@ -308,7 +306,7 @@ public class OrganController extends Handler {
         } else {
             msg = "admin_organ_update_not_exist";
         }
-        return request(super.createRequestPageTempletResponse(
+        return request(super.createView(
                 "redirect:/admin/organ/index.html?msg=" + msg + "&organ=" + organ.getId()));
     }
 
@@ -328,7 +326,7 @@ public class OrganController extends Handler {
         } else {
             msg = "admin_organ_not_exist";
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/organ/index.html?msg=" + msg));
+        return request(super.createView("redirect:/admin/organ/index.html?msg=" + msg));
     }
 
     @RequestMapping("/auth/save")
@@ -356,6 +354,6 @@ public class OrganController extends Handler {
             }
         }
         return request(
-                super.createRequestPageTempletResponse("redirect:/admin/organ/index.html?organ=" + organData.getId()));
+                super.createView("redirect:/admin/organ/index.html?organ=" + organData.getId()));
     }
 }

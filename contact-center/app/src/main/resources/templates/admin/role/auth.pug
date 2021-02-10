@@ -1,0 +1,67 @@
+.uk-layui-form
+    form.layui-form.uk-form(action='/admin/role/auth/save.html')
+        input(type='hidden', name='id', value=role.id)
+        - var roleAuthString=[]
+        if roleAuthList
+            for i, index in roleAuthList
+                if index>0
+                    - roleAuthString.push(i.dicid)
+        input#menus(type='hidden', name='menus', value=roleAuthString)
+        .layui-form-item
+            .layui-input-inline
+                ul#roleTree.ztree
+        .layui-form-button
+            .layui-button-block
+                button.layui-btn(lay-submit, lay-filter='formDemo') 立即提交
+                button#reset.layui-btn.layui-btn-original(type='reset', href='/admin/role/auth.html?id=${role.id}') 重置
+script(type='text/javascript').
+    var setting = {
+        check: {enable: true},
+        data: {simpleData: {enable: true}},
+        callback: {onCheck: zTreeOnCheck}
+    };
+    //获取所有选中节点的值
+    function zTreeOnCheck() {
+        var treeObj = $.fn.zTree.getZTreeObj("roleTree");
+        var nodes = treeObj.getCheckedNodes(true);
+        var msg = "";
+        for (var i = 0; i < nodes.length; i++) {
+            if (msg != '' && nodes[i].id != '') {
+                msg = msg + ",";
+            }
+            msg += nodes[i].id;
+        }
+        $("#menus").val(msg);
+    }
+    var _resourceList = !{pugHelper.toJSON(resourceList)}
+    var _roleAuthList = !{pugHelper.toJSON(roleAuthList)}
+    $.each(_resourceList, function (i, r) {
+        r.id = r.id;
+        r.pId = r.parentid;
+        $.each(_roleAuthList, function (u, o) {
+            if (o.dicid == r.id) {
+                r.checked = true
+            }
+        })
+        r.name = r.name;
+        r.value = r.code;
+        r.open = true;
+        r.icon = r.level && (r.level == '1' || r.level == '2') ? '/images/dir.png' : '/images/menu.png';
+    });
+    _resourceList.unshift(
+        {
+            id: "#{sysDic.id ? sysDic.id : ''}",
+            pId: '0',
+            name: "菜单资源",
+            open: true,
+            value: ""
+        }
+    )
+    var zNodes = _resourceList;
+    $(document).ready(function () {
+        $.fn.zTree.init($("#roleTree"), setting, zNodes);
+    });
+    $("#reset").on('click', function () {
+        $.fn.zTree.init($("#roleTree"), setting, zNodes);
+    })
+            

@@ -1,0 +1,13 @@
+ul.tab-title
+    if user.roleAuthMap["A02_A01_A02_B01"] || user.admin
+        li(class={'layui-this': subtype == 'index'})
+            a(href="/apps/contacts/index.html" + (ckind ? '?ckind=' + (ckind) : ""))= "全部联系人" + (subtype == 'index' ? "（" + (contactsList ? contactsList.totalElements : 0) + "）" : "")
+    if user.roleAuthMap["A02_A01_A02_B02"] || user.admin
+        li(class={'layui-this': subtype == 'today'})
+            a(href="/apps/contacts/today.html" + (ckind ? '?ckind=' + (ckind) : ""))= "今日新增" + (subtype == 'today' ? "（" + (contactsList ? contactsList.totalElements : 0) + "）" : "")
+    if user.roleAuthMap["A02_A01_A02_B03"] || user.admin
+        li(class={'layui-this': subtype == 'week'})
+            a(href="/apps/contacts/week.html" + (ckind ? '?ckind=' + (ckind) : ""))= "本周新增" + (subtype == 'week' ? "（" + (contactsList ? contactsList.totalElements : 0) + "）" : "")
+    if user.roleAuthMap["A02_A01_A02_B04"] || user.admin
+        li(class={'layui-this': subtype == 'creater'})
+            a(href="/apps/contacts/creater.html" + (ckind ? '?ckind=' + (ckind) : ""))= "我的联系人" + (subtype == 'creater' ? "（" + (contactsList ? contactsList.totalElements : 0) + "）" : "")

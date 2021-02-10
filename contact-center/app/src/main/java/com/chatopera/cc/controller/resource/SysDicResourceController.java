@@ -53,7 +53,7 @@ public class SysDicResourceController extends Handler{
     	map.addAttribute("name", name) ;
     	map.addAttribute("attr", attr) ;
     	map.addAttribute("style", style) ;
-    	return request(super.createRequestPageTempletResponse("/public/select"));
+    	return request(super.createView("/public/select"));
     }
     
 }

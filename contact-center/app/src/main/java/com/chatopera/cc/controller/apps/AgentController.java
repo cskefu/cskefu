@@ -25,13 +25,13 @@
  import com.chatopera.cc.basic.MainUtils;
  import com.chatopera.cc.cache.Cache;
  import com.chatopera.cc.controller.Handler;
+ import com.chatopera.cc.controller.api.request.RestUtils;
  import com.chatopera.cc.exception.CSKefuException;
  import com.chatopera.cc.model.*;
  import com.chatopera.cc.peer.PeerSyncIM;
  import com.chatopera.cc.persistence.blob.JpaBlobHelper;
  import com.chatopera.cc.persistence.es.ChatMessageEsRepository;
  import com.chatopera.cc.persistence.es.ContactsRepository;
- import com.chatopera.cc.persistence.es.QuickReplyRepository;
  import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
  import com.chatopera.cc.persistence.repository.*;
  import com.chatopera.cc.proxy.*;
@@ -40,7 +40,7 @@
  import com.chatopera.cc.util.Menu;
  import com.chatopera.cc.util.PinYinTools;
  import com.chatopera.cc.util.PropertiesEventUtil;
- import freemarker.template.TemplateException;
+
  import org.apache.commons.lang.StringUtils;
  import org.slf4j.Logger;
  import org.slf4j.LoggerFactory;
@@ -50,6 +50,9 @@
  import org.springframework.data.domain.PageRequest;
  import org.springframework.data.domain.Sort;
  import org.springframework.data.domain.Sort.Direction;
+ import org.springframework.http.HttpHeaders;
+ import org.springframework.http.HttpStatus;
+ import org.springframework.http.ResponseEntity;
  import org.springframework.stereotype.Controller;
  import org.springframework.ui.ModelMap;
  import org.springframework.util.FileCopyUtils;
@@ -123,12 +126,6 @@
      private TagRelationRepository tagRelationRes;
 
      @Autowired
-     private QuickReplyRepository quickReplyRes;
-
-     @Autowired
-     private QuickTypeRepository quickTypeRes;
-
-     @Autowired
      private AgentUserTaskRepository agentUserTaskRes;
 
      @Autowired
@@ -182,6 +179,9 @@
      @Autowired
      private OrganRepository organRes;
 
+     @Autowired
+     private ChatbotRepository chatbotRes;
+
      /**
       * 坐席从联系人列表进入坐席工作台和该联系人聊天
       *
@@ -203,11 +203,11 @@
              HttpServletResponse response,
              @Valid String sort,
              @Valid String channels,
-             @RequestParam(name = "contactid", required = false) String contactid) throws IOException, TemplateException, CSKefuException {
+             @RequestParam(name = "contactid", required = false) String contactid) throws IOException, CSKefuException {
 
          if (StringUtils.isBlank(contactid)) {
              logger.info("[chat] empty contactid, fast return error page.");
-             return request(super.createRequestPageTempletResponse("/public/error"));
+             return request(super.createView("/public/error"));
          }
 
          logger.info(
@@ -230,7 +230,7 @@
          // TODO 在agentUser没有得到的情况下，传回的前端信息增加提示，提示放在modelview中
 
          // 处理原聊天数据
-         ModelAndView view = request(super.createAppsTempletResponse("/apps/agent/index"));
+         ModelAndView view = request(super.createView("/apps/agent/index"));
          agentUserProxy.buildIndexViewWithModels(view, map, request, response, sort, logined, orgi, agentUser);
          return view;
      }
@@ -253,10 +253,10 @@
              ModelMap map,
              HttpServletRequest request,
              HttpServletResponse response,
-             @Valid String sort) throws IOException, TemplateException {
+             @Valid String sort) throws IOException {
          final User logined = super.getUser(request);
          final String orgi = logined.getOrgi();
-         ModelAndView view = request(super.createAppsTempletResponse("/apps/agent/index"));
+         ModelAndView view = request(super.createView("/apps/agent/index"));
          agentUserProxy.buildIndexViewWithModels(view, map, request, response, sort, logined, orgi, null);
          return view;
      }
@@ -264,7 +264,7 @@
      @RequestMapping("/agentusers")
      @Menu(type = "apps", subtype = "agent")
      public ModelAndView agentusers(HttpServletRequest request, String userid) {
-         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/agent/agentusers"));
+         ModelAndView view = request(super.createView("/apps/agent/agentusers"));
          User logined = super.getUser(request);
          view.addObject(
                  "agentUserList", agentUserRes.findByAgentnoAndOrgi(logined.getId(), logined.getOrgi(),
@@ -283,9 +283,9 @@
              HttpServletRequest request,
              String id,
              Integer page,
-             Integer current) throws IOException, TemplateException {
+             Integer current) throws IOException {
          String mainagentuserconter = "/apps/agent/mainagentuserconter";
-         ModelAndView view = request(super.createRequestPageTempletResponse(mainagentuserconter));
+         ModelAndView view = request(super.createView(mainagentuserconter));
          AgentUser agentUser = agentUserRes.findByIdAndOrgi(id, super.getOrgi(request));
          if (agentUser != null) {
              view.addObject("curagentuser", agentUser);
@@ -300,9 +300,9 @@
      public ModelAndView agentuserLabel(
              ModelMap map,
              HttpServletRequest request,
-             String iconid) throws IOException, TemplateException {
+             String iconid) throws IOException {
          String mainagentuserconter = "/apps/agent/mainagentuserconter";
-         ModelAndView view = request(super.createRequestPageTempletResponse(mainagentuserconter));
+         ModelAndView view = request(super.createView(mainagentuserconter));
          ChatMessage labelid = this.chatMessageRes.findById(iconid);
          if (labelid != null) {
              if (labelid.isIslabel() == false) {
@@ -323,9 +323,9 @@
              String id,
              String search,
              String condition
-     ) throws IOException, TemplateException {
+     ) throws IOException {
          String mainagentuserconter = "/apps/agent/mainagentusersearch";
-         ModelAndView view = request(super.createRequestPageTempletResponse(mainagentuserconter));
+         ModelAndView view = request(super.createView(mainagentuserconter));
          AgentUser agentUser = agentUserRes.findByIdAndOrgi(id, super.getOrgi(request));
 
          if (agentUser != null) {
@@ -350,9 +350,9 @@
              HttpServletRequest request,
              String id,
              String createtime,
-             String thisid) throws IOException, TemplateException, ParseException {
+             String thisid) throws IOException, ParseException {
          String mainagentuserconter = "/apps/agent/mainagentuserconter";
-         ModelAndView view = request(super.createRequestPageTempletResponse(mainagentuserconter));
+         ModelAndView view = request(super.createView(mainagentuserconter));
          AgentUser agentUser = agentUserRes.findByIdAndOrgi(id, super.getOrgi(request));
          if (agentUser != null) {
              SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -373,10 +373,13 @@
              ModelMap map,
              HttpServletRequest request,
              String id,
-             String channel) throws IOException, TemplateException {
+             String channel) throws IOException {
          // set default Value as WEBIM
          String mainagentuser = "/apps/agent/mainagentuser";
          switch (MainContext.ChannelType.toValue(channel)) {
+             case MESSENGER:
+                 mainagentuser = "/apps/agent/mainagentuser_messenger";
+                 break;
              case PHONE:
                  mainagentuser = "/apps/agent/mainagentuser_callout";
                  break;
@@ -385,7 +388,7 @@
                  break;
          }
 
-         ModelAndView view = request(super.createRequestPageTempletResponse(mainagentuser));
+         ModelAndView view = request(super.createView(mainagentuser));
          final User logined = super.getUser(request);
          final String orgi = logined.getOrgi();
          AgentUser agentUser = agentUserRes.findByIdAndOrgi(id, orgi);
@@ -393,10 +396,11 @@
          if (agentUser != null) {
              view.addObject("curagentuser", agentUser);
 
-             CousultInvite invite = OnlineUserProxy.consult(agentUser.getAppid(), agentUser.getOrgi());
-             if (invite != null) {
-                 view.addObject("aisuggest", invite.isAisuggest());
+             Chatbot c = chatbotRes.findBySnsAccountIdentifierAndOrgi(agentUser.getAppid(), agentUser.getOrgi());
+             if (c != null) {
+                 view.addObject("aisuggest", c.isAisuggest());
              }
+
              view.addObject("inviteData", OnlineUserProxy.consult(agentUser.getAppid(), agentUser.getOrgi()));
              List<AgentUserTask> agentUserTaskList = agentUserTaskRes.findByIdAndOrgi(id, orgi);
              if (agentUserTaskList.size() > 0) {
@@ -472,56 +476,12 @@
              view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid()));
          }
 
-//         SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
-//
-//         view.addObject("sessionConfig", sessionConfig);
-//         if (sessionConfig.isOtherquickplay()) {
-//             view.addObject("topicList", OnlineUserProxy.search(null, orgi, super.getUser(request)));
-//         }
-
          AgentService service = agentServiceRes.findByIdAndOrgi(agentUser.getAgentserviceid(), orgi);
          if (service != null) {
              view.addObject("tags", tagRes.findByOrgiAndTagtypeAndSkill(orgi, MainContext.ModelType.USER.toString(), service.getSkill()));
          }
-         view.addObject(
-                 "quickReplyList", quickReplyRes.findByOrgiAndCreater(orgi, super.getUser(request).getId(), null));
-         List<QuickType> quickTypeList = quickTypeRes.findByOrgiAndQuicktype(
-                 orgi, MainContext.QuickType.PUB.toString());
-         List<QuickType> priQuickTypeList = quickTypeRes.findByOrgiAndQuicktypeAndCreater(
-                 orgi, MainContext.QuickType.PRI.toString(), super.getUser(request).getId());
-         quickTypeList.addAll(priQuickTypeList);
-         view.addObject("pubQuickTypeList", quickTypeList);
-
          return view;
      }
-
-//     TODO: mdx-organ clean
-//     @RequestMapping("/other/topic")
-//     @Menu(type = "apps", subtype = "othertopic")
-//     public ModelAndView othertopic(ModelMap map, HttpServletRequest request, String q) throws IOException, TemplateException {
-//         SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
-//
-//         map.put("sessionConfig", sessionConfig);
-//         if (sessionConfig.isOtherquickplay()) {
-//             map.put("topicList", OnlineUserProxy.search(q, super.getOrgi(request), super.getUser(request)));
-//         }
-//
-//         return request(super.createRequestPageTempletResponse("/apps/agent/othertopic"));
-//     }
-//
-//     @RequestMapping("/other/topic/detail")
-//     @Menu(type = "apps", subtype = "othertopicdetail")
-//     public ModelAndView othertopicdetail(ModelMap map, HttpServletRequest request, String id) throws IOException, TemplateException {
-//         SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
-//
-//         map.put("sessionConfig", sessionConfig);
-//         if (sessionConfig.isOtherquickplay()) {
-//             map.put("topic", OnlineUserProxy.detail(id, super.getOrgi(request), super.getUser(request)));
-//         }
-//
-//         return request(super.createRequestPageTempletResponse("/apps/agent/topicdetail"));
-//     }
-
 
      @RequestMapping("/workorders/list")
      @Menu(type = "apps", subtype = "workorderslist")
@@ -537,7 +497,7 @@
              }
              map.addAttribute("contactsid", contactsid);
          }
-         return request(super.createRequestPageTempletResponse("/apps/agent/workorders"));
+         return request(super.createView("/apps/agent/workorders"));
      }
 
      /**
@@ -569,7 +529,7 @@
                  MainContext.AgentWorkType.MEIDIACHAT.toString(),
                  orgi, null);
 
-         return request(super.createRequestPageTempletResponse("/public/success"));
+         return request(super.createView("/public/success"));
      }
 
      /**
@@ -607,7 +567,7 @@
                  MainContext.AgentWorkType.MEIDIACHAT.toString(),
                  orgi, null);
 
-         return request(super.createRequestPageTempletResponse("/public/success"));
+         return request(super.createView("/public/success"));
      }
 
      /**
@@ -642,7 +602,7 @@
 
          agentStatusProxy.broadcastAgentsStatus(super.getOrgi(request), "agent", "busy", logined.getId());
 
-         return request(super.createRequestPageTempletResponse("/public/success"));
+         return request(super.createView("/public/success"));
      }
 
      /**
@@ -686,7 +646,7 @@
          // 重新分配访客给坐席
          acdAgentService.assignVisitors(agentStatus.getAgentno(), super.getOrgi(request));
 
-         return request(super.createRequestPageTempletResponse("/public/success"));
+         return request(super.createView("/public/success"));
      }
 
      @RequestMapping(value = "/clean")
@@ -709,7 +669,7 @@
          }
          agentServiceRes.save(agentServiceList);
          return request(super
-                 .createRequestPageTempletResponse("redirect:/agent/index.html"));
+                 .createView("redirect:/agent/index.html"));
      }
 
 
@@ -747,7 +707,7 @@
          }
 
          return request(super
-                 .createRequestPageTempletResponse("redirect:/agent/index.html"));
+                 .createView("redirect:/agent/index.html"));
      }
 
      @RequestMapping({"/readmsg"})
@@ -759,7 +719,7 @@
              agentUserTask.setTokenum(0);
              agentUserTaskRes.save(agentUserTask);
          }
-         return request(super.createRequestPageTempletResponse("/public/success"));
+         return request(super.createView("/public/success"));
      }
 
      @RequestMapping({"/blacklist/add"})
@@ -770,7 +730,7 @@
          map.addAttribute("agentserviceid", agentserviceid);
          map.addAttribute("userid", userid);
          map.addAttribute("agentUser", agentUserRes.findByIdAndOrgi(userid, super.getOrgi(request)));
-         return request(super.createRequestPageTempletResponse("/apps/agent/blacklistadd"));
+         return request(super.createView("/apps/agent/blacklistadd"));
      }
 
      @RequestMapping({"/blacklist/save"})
@@ -823,7 +783,7 @@
          } else {
              tagRelationRes.delete(tagRelation);
          }
-         return request(super.createRequestPageTempletResponse("/public/success"));
+         return request(super.createView("/public/success"));
      }
 
      /**
@@ -839,7 +799,7 @@
       */
      @RequestMapping("/image/upload")
      @Menu(type = "im", subtype = "image", access = false)
-     public ModelAndView upload(
+     public ResponseEntity<String> upload(
              ModelMap map,
              HttpServletRequest request,
              @RequestParam(value = "imgFile", required = false) MultipartFile multipart,
@@ -848,8 +808,9 @@
          logger.info("[upload] image file, agentUser id {}, paste {}", id, paste);
          final User logined = super.getUser(request);
          final String orgi = super.getOrgi(request);
-         ModelAndView view = request(super.createRequestPageTempletResponse("/apps/agent/upload"));
-         UploadStatus notify;
+
+         JSONObject result = new JSONObject();
+         HttpHeaders headers = RestUtils.header();
          final AgentUser agentUser = agentUserRes.findByIdAndOrgi(id, orgi);
 
          if (multipart != null && multipart.getOriginalFilename().lastIndexOf(".") > 0) {
@@ -859,15 +820,17 @@
                  if (!paste) {
                      agentProxy.sendFileMessageByAgent(logined, agentUser, multipart, sf);
                  }
-                 notify = new UploadStatus("0", sf.getFileUrl());
+                 result.put("error", 0);
+                 result.put("url", sf.getFileUrl());
              } catch (CSKefuException e) {
-                 notify = new UploadStatus("请选择文件");
+                 result.put("error", 1);
+                 result.put("message", "请选择文件");
              }
          } else {
-             notify = new UploadStatus("请选择图片文件");
+             result.put("error", 1);
+             result.put("message", "请选择图片文件");
          }
-         map.addAttribute("upload", notify);
-         return view;
+         return new ResponseEntity<>(result.toString(), headers, HttpStatus.OK);
      }
 
      @RequestMapping("/message/image")
@@ -880,7 +843,7 @@
     		map.addAttribute("t", t) ;
     	}*/
          map.addAttribute("t", true);
-         return request(super.createRequestPageTempletResponse("/apps/agent/media/messageimage"));
+         return request(super.createView("/apps/agent/media/messageimage"));
      }
 
      @RequestMapping("/message/image/upload")
@@ -945,7 +908,7 @@
                  }
              }
          }
-         return request(super.createRequestPageTempletResponse("/public/success"));
+         return request(super.createView("/public/success"));
      }
 
 
@@ -1031,7 +994,7 @@
                  agentUserContactsRes.save(agentUserContacts);
              }
          }
-         return request(super.createRequestPageTempletResponse("/apps/agent/contacts"));
+         return request(super.createView("/apps/agent/contacts"));
      }
 
 
@@ -1047,7 +1010,7 @@
              }
          }
 
-         return request(super.createRequestPageTempletResponse("/apps/agent/contacts"));
+         return request(super.createView("/apps/agent/contacts"));
      }
 
      @ResponseBody
@@ -1103,7 +1066,7 @@
              map.addAttribute("agentuserid", agentuserid);
              map.addAttribute("channel", channel);
          }
-         return request(super.createRequestPageTempletResponse("/apps/agent/summary"));
+         return request(super.createView("/apps/agent/summary"));
      }
 
      @RequestMapping(value = "/summary/save")
@@ -1137,7 +1100,7 @@
              serviceSummaryRes.save(summary);
          }
 
-         return request(super.createRequestPageTempletResponse(
+         return request(super.createView(
                  "redirect:/agent/agentuser.html?id=" + agentuserid + "&channel=" + channel));
      }
 
@@ -1210,7 +1173,7 @@
              map.addAttribute("currentorgan", currentOrgan);
          }
 
-         return request(super.createRequestPageTempletResponse("/apps/agent/transfer"));
+         return request(super.createView("/apps/agent/transfer"));
      }
 
      /**
@@ -1250,188 +1213,15 @@
              map.addAttribute("userList", userList);
              map.addAttribute("currentorgan", organ);
          }
-         return request(super.createRequestPageTempletResponse("/apps/agent/transferagentlist"));
+         return request(super.createView("/apps/agent/transferagentlist"));
      }
 
-
-     @RequestMapping("/quicklist")
-     @Menu(type = "setting", subtype = "quickreply", admin = true)
-     public ModelAndView quicklist(ModelMap map, HttpServletRequest request, @Valid String typeid) {
-         map.addAttribute(
-                 "quickReplyList",
-                 quickReplyRes.findByOrgiAndCreater(super.getOrgi(request), super.getUser(request).getId(), null));
-         List<QuickType> quickTypeList = quickTypeRes.findByOrgiAndQuicktype(
-                 super.getOrgi(request), MainContext.QuickType.PUB.toString());
-         List<QuickType> priQuickTypeList = quickTypeRes.findByOrgiAndQuicktypeAndCreater(
-                 super.getOrgi(request), MainContext.QuickType.PRI.toString(), super.getUser(request).getId());
-         quickTypeList.addAll(priQuickTypeList);
-         map.addAttribute("pubQuickTypeList", quickTypeList);
-
-         if (StringUtils.isNotBlank(typeid)) {
-             map.addAttribute("quickType", quickTypeRes.findByIdAndOrgi(typeid, super.getOrgi(request)));
-         }
-
-         return request(super.createRequestPageTempletResponse("/apps/agent/quicklist"));
-     }
-
-     @RequestMapping("/quickreply/add")
-     @Menu(type = "setting", subtype = "quickreplyadd", admin = true)
-     public ModelAndView quickreplyadd(ModelMap map, HttpServletRequest request, @Valid String parentid) {
-         if (StringUtils.isNotBlank(parentid)) {
-             map.addAttribute("quickType", quickTypeRes.findByIdAndOrgi(parentid, super.getOrgi(request)));
-         }
-         map.addAttribute(
-                 "quickTypeList", quickTypeRes.findByOrgiAndQuicktypeAndCreater(
-                         super.getOrgi(request),
-                         MainContext.QuickType.PRI.toString(),
-                         super.getUser(request).getId()));
-         return request(super.createRequestPageTempletResponse("/apps/agent/quickreply/add"));
-     }
-
-     @RequestMapping("/quickreply/save")
-     @Menu(type = "setting", subtype = "quickreply", admin = true)
-     public ModelAndView quickreplysave(ModelMap map, HttpServletRequest request, @Valid QuickReply quickReply) {
-         if (StringUtils.isNotBlank(quickReply.getTitle()) && StringUtils.isNotBlank(quickReply.getContent())) {
-             quickReply.setOrgi(super.getOrgi(request));
-             quickReply.setCreater(super.getUser(request).getId());
-             quickReply.setType(MainContext.QuickType.PRI.toString());
-             quickReplyRes.save(quickReply);
-         }
-         return request(super.createRequestPageTempletResponse(
-                 "redirect:/agent/quicklist.html?typeid=" + quickReply.getCate()));
-     }
-
-     @RequestMapping("/quickreply/delete")
-     @Menu(type = "setting", subtype = "quickreply", admin = true)
-     public ModelAndView quickreplydelete(ModelMap map, HttpServletRequest request, @Valid String id) {
-         QuickReply quickReply = quickReplyRes.findOne(id);
-         if (quickReply != null) {
-             quickReplyRes.delete(quickReply);
-         }
-         return request(super.createRequestPageTempletResponse(
-                 "redirect:/agent/quicklist.html?typeid=" + quickReply.getCate()));
-     }
-
-     @RequestMapping("/quickreply/edit")
-     @Menu(type = "setting", subtype = "quickreply", admin = true)
-     public ModelAndView quickreplyedit(ModelMap map, HttpServletRequest request, @Valid String id) {
-         QuickReply quickReply = quickReplyRes.findOne(id);
-         map.put("quickReply", quickReply);
-         if (quickReply != null) {
-             map.put("quickType", quickTypeRes.findByIdAndOrgi(quickReply.getCate(), super.getOrgi(request)));
-         }
-         map.addAttribute(
-                 "quickTypeList", quickTypeRes.findByOrgiAndQuicktype(
-                         super.getOrgi(request),
-                         MainContext.QuickType.PUB.toString()));
-         return request(super.createRequestPageTempletResponse("/apps/agent/quickreply/edit"));
-     }
-
-     @RequestMapping("/quickreply/update")
-     @Menu(type = "setting", subtype = "quickreply", admin = true)
-     public ModelAndView quickreplyupdate(ModelMap map, HttpServletRequest request, @Valid QuickReply quickReply) {
-         if (StringUtils.isNotBlank(quickReply.getId())) {
-             QuickReply temp = quickReplyRes.findOne(quickReply.getId());
-             quickReply.setOrgi(super.getOrgi(request));
-             quickReply.setCreater(super.getUser(request).getId());
-             if (temp != null) {
-                 quickReply.setCreatetime(temp.getCreatetime());
-             }
-             quickReply.setType(MainContext.QuickType.PUB.toString());
-             quickReplyRes.save(quickReply);
-         }
-         return request(super.createRequestPageTempletResponse(
-                 "redirect:/agent/quicklist.html?typeid=" + quickReply.getCate()));
-     }
-
-     @RequestMapping({"/quickreply/addtype"})
-     @Menu(type = "apps", subtype = "kbs")
-     public ModelAndView addtype(ModelMap map, HttpServletRequest request, @Valid String typeid) {
-         map.addAttribute(
-                 "quickTypeList", quickTypeRes.findByOrgiAndQuicktypeAndCreater(
-                         super.getOrgi(request),
-                         MainContext.QuickType.PRI.toString(),
-                         super.getUser(request).getId()));
-         if (StringUtils.isNotBlank(typeid)) {
-             map.addAttribute("quickType", quickTypeRes.findByIdAndOrgi(typeid, super.getOrgi(request)));
-         }
-         return request(super.createRequestPageTempletResponse("/apps/agent/quickreply/addtype"));
-     }
-
-     @RequestMapping("/quickreply/type/save")
-     @Menu(type = "apps", subtype = "kbs")
-     public ModelAndView typesave(HttpServletRequest request, @Valid QuickType quickType) {
-         int count = quickTypeRes.countByOrgiAndNameAndParentid(
-                 super.getOrgi(request), quickType.getName(), quickType.getParentid());
-         if (count == 0) {
-             quickType.setOrgi(super.getOrgi(request));
-             quickType.setCreater(super.getUser(request).getId());
-             quickType.setCreatetime(new Date());
-             quickType.setQuicktype(MainContext.QuickType.PRI.toString());
-             quickTypeRes.save(quickType);
-         }
-         return request(super.createRequestPageTempletResponse(
-                 "redirect:/agent/quicklist.html?typeid=" + quickType.getParentid()));
-     }
-
-     @RequestMapping({"/quickreply/edittype"})
-     @Menu(type = "apps", subtype = "kbs")
-     public ModelAndView edittype(ModelMap map, HttpServletRequest request, String id) {
-         map.addAttribute("quickType", quickTypeRes.findByIdAndOrgi(id, super.getOrgi(request)));
-         map.addAttribute(
-                 "quickTypeList", quickTypeRes.findByOrgiAndQuicktypeAndCreater(
-                         super.getOrgi(request),
-                         MainContext.QuickType.PRI.toString(),
-                         super.getUser(request).getId()));
-         return request(super.createRequestPageTempletResponse("/apps/agent/quickreply/edittype"));
-     }
-
-     @RequestMapping("/quickreply/type/update")
-     @Menu(type = "apps", subtype = "kbs")
-     public ModelAndView typeupdate(HttpServletRequest request, @Valid QuickType quickType) {
-         QuickType tempQuickType = quickTypeRes.findByIdAndOrgi(quickType.getId(), super.getOrgi(request));
-         if (tempQuickType != null) {
-             tempQuickType.setName(quickType.getName());
-             tempQuickType.setDescription(quickType.getDescription());
-             tempQuickType.setInx(quickType.getInx());
-             tempQuickType.setParentid(quickType.getParentid());
-             quickTypeRes.save(tempQuickType);
-         }
-         return request(
-                 super.createRequestPageTempletResponse("redirect:/agent/quicklist.html?typeid=" + quickType.getId()));
-     }
-
-     @RequestMapping({"/quickreply/deletetype"})
-     @Menu(type = "apps", subtype = "kbs")
-     public ModelAndView deletetype(ModelMap map, HttpServletRequest request, @Valid String id) {
-         QuickType tempQuickType = quickTypeRes.findByIdAndOrgi(id, super.getOrgi(request));
-         if (tempQuickType != null) {
-             quickTypeRes.delete(tempQuickType);
-
-             Page<QuickReply> quickReplyList = quickReplyRes.getByOrgiAndCate(
-                     super.getOrgi(request), id, null, new PageRequest(0, 10000));
-
-             quickReplyRes.delete(quickReplyList.getContent());
-         }
-         return request(super.createRequestPageTempletResponse(
-                 "redirect:/agent/quicklist.html" + (tempQuickType != null ? "?typeid=" + tempQuickType.getParentid() : "")));
-     }
-
-     @RequestMapping({"/quickreply/content"})
-     @Menu(type = "apps", subtype = "quickreply")
-     public ModelAndView quickreplycontent(ModelMap map, HttpServletRequest request, @Valid String id) {
-         QuickReply quickReply = quickReplyRes.findOne(id);
-         if (quickReply != null) {
-             map.addAttribute("quickReply", quickReply);
-         }
-         return request(super.createRequestPageTempletResponse("/apps/agent/quickreplycontent"));
-     }
 
      @RequestMapping("/calloutcontact/add")
      @Menu(type = "apps", subtype = "calloutcontact", admin = true)
      public ModelAndView add(ModelMap map, HttpServletRequest request, @Valid String ckind) {
          map.addAttribute("ckind", ckind);
-         return request(super.createRequestPageTempletResponse("/apps/agent/calloutcontact/add"));
+         return request(super.createView("/apps/agent/calloutcontact/add"));
      }
 
      @RequestMapping(value = "/calloutcontact/save")
@@ -1468,7 +1258,7 @@
          auc.setAppid(au.getAppid());
          auc.setCreater(logined.getId());
          agentUserContactsRes.save(auc);
-         return request(super.createRequestPageTempletResponse("redirect:/agent/index.html"));
+         return request(super.createView("redirect:/agent/index.html"));
      }
 
      @RequestMapping("/calloutcontact/update")
@@ -1503,6 +1293,6 @@
              contactsRes.save(contacts);
          }
 
-         return request(super.createRequestPageTempletResponse("redirect:/agent/index.html"));
+         return request(super.createView("redirect:/agent/index.html"));
      }
  }

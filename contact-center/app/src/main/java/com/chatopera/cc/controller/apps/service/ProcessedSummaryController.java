@@ -125,7 +125,7 @@ public class ProcessedSummaryController extends Handler {
 
         map.addAttribute("tags", tagRes.findByOrgiAndTagtype(super.getOrgi(request), MainContext.ModelType.SUMMARY.toString()));
 
-        return request(super.createAppsTempletResponse("/apps/service/processed/index"));
+        return request(super.createView("/apps/service/processed/index"));
     }
 
 
@@ -144,7 +144,7 @@ public class ProcessedSummaryController extends Handler {
             }
         }
 
-        return request(super.createRequestPageTempletResponse("/apps/service/processed/process"));
+        return request(super.createView("/apps/service/processed/process"));
     }
 
     @RequestMapping(value = "/save")
@@ -159,7 +159,7 @@ public class ProcessedSummaryController extends Handler {
             serviceSummaryRes.save(oldSummary);
         }
 
-        return request(super.createRequestPageTempletResponse("redirect:/apps/agent/processed/index.html"));
+        return request(super.createView("redirect:/apps/agent/processed/index.html"));
     }
 
     @RequestMapping("/expids")

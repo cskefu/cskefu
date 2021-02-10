@@ -1,0 +1,197 @@
+extends /apps/include/layout.pug
+block content
+    .layui-side.layui-bg-black
+        .layui-side-scroll
+            include /apps/service/include/left.pug
+    .layui-body
+        .layui-side-scroll
+            .row
+                .col-lg-12
+                    h1.site-h1(style='border-top:1px solid #e6e6e6;') 历史会话
+                        | #{agentServiceList.totalElements ? "（" + agentServiceList.totalElements + "）" : "（0）"}
+                    span
+                        form.layui-form#search(name='search', action='/service/history/index.html', method='get', style='float: left;margin-right:5px')
+                            .layui-form-item(style='width: 700px;padding-left: 5px')
+                                .layui-inline
+                                    .layui-input-inline(style='width: auto;margin-right:0px;')
+                                        label.layui-form-label(style='width:80px; padding-left: 0px;text-align: left') 用户名：
+                                        .layui-input-inline(style='width: auto;margin-right:0px;')
+                                            input.layui-input.ukefu-input(type='text', name='username', placeholder='请输入用户名', autocomplete='off', value=username)
+                                .layui-inline
+                                    .layui-input-inline(style='width: auto;margin-right:0px;')
+                                        .layui-input-inline(style='width: auto;margin-right:0px;')
+                                            label.layui-form-label(style='width: auto;') 时间：
+                                            select.layui-input.ukefu-input(name='servicetimetype', lay-ignore)
+                                                option(value='logindate') 咨询时间
+                                                if servicetimetype == "servicetime"
+                                                    option(value='servicetime', selected) 服务时间
+                                                else
+                                                    option(value='servicetime') 服务时间
+                                        label.layui-form-label(style='width: auto;') =
+                                        .layui-input-inline(style='width: auto;margin-right:0px;')
+                                            input.layui-input.ukefu-input#begin(type='text', name='begin', value= begin, placeholder='开始时间')
+                                        label.layui-form-label(style='width: auto;') ~
+                                        .layui-input-inline(style='width: auto;margin-right:0px;')
+                                            input.layui-input.ukefu-input#end(type='text', name='end', value=end, placeholder='结束时间')
+                                .layui-inline
+                                    .layui-input-inline(style='width: auto;margin-right:0px;')
+                                        label.layui-form-label(style='width:80px; padding-left: 0px;text-align: left') 接入渠道：
+                                        .layui-input-inline(style='width: auto;margin-right:0px;')
+                                            input.layui-input.ukefu-input(type='text', name='channel', placeholder='请输入接入渠道', autocomplete='off', value= channel)
+                                .layui-inline(style='margin-right:105px;')
+                                    .layui-input-inline(style='width: auto;margin-right:0px;')
+                                        label.layui-form-label(style='width: auto;') 分类：
+                                        .layui-input-inline(style='width: auto;margin-right:0px;')
+                                            select#servicetype.layui-input.ukefu-input(name='servicetype', onchange="deptorservice(this.value)", lay-ignore)
+                                                option(value) 请选择分类
+                                                if servicetype == "agentno"
+                                                    option(value="agentno" selected= (true ? 'selected' : false)) 服务坐席
+                                                    option(value="skill") 技能组
+                                                else if servicetype == "skill"
+                                                    option(value="agentno") 服务坐席
+                                                    option(value="skill" selected= (true ? 'selected' : false)) 技能组
+                                                else
+                                                    option(value="agentno") 服务坐席
+                                                    option(value="skill") 技能组
+                                            label= ' ~ '
+                                            select#allocation.layui-input.ukefu-input(name='allocation', lay-ignore)
+                                                option(value) 请先选择分类
+                                                if servicetype == "agentno"
+                                                    if userlist
+                                                        for user in userlist
+                                                            if allocation
+                                                                option(value= user.id, selected= (allocation == user.id && 'selected' ? 'selected' : false)) #{user.uname}
+                                                            else
+                                                                option(value= user.id) #{user.uname}
+                                                else if  servicetype == "skill"
+                                                    if deptlist
+                                                        for dept in deptlist
+                                                            if allocation
+                                                                option(value= dept.id, selected= (allocation == dept.id && 'selected' ? 'selected' : false)) #{dept.name}
+                                                            else
+                                                                option(value= dept.id) #{dept.name}
+                                .layui-inline(style='margin-right:0px;')
+                                    .layui-input-inline(style='width: auto;margin-right:0px;')
+                                        .layui-input-inline(style='width: auto;margin-right:0px;')
+                                            button.layui-btn.layui-btn-small.layui-btn-original(style='color:#ffffff;')
+                                                i.layui-icon 
+                    table.layui-table(lay-skin='line', style='table-layout: fixed')
+                        thead
+                            tr.design-sortable-tr
+                                th(width='11%') 用户名
+                                th(width='10%') 接入渠道
+                                th(width='14.5%') 服务坐席
+                                th(width='13.5%') 咨询时间
+                                th(width='13.5%') 服务时间
+                                th(width='13.5%') 等待时长
+                                th(width='13.5%') 服务时长
+                                th 地域
+                        tbody(style='table-layout: fixed; word-break: break-all;')
+                            if agentServiceList.content.size() > 0
+                                for agentService in agentServiceList.content
+                                    tr.tdHasContorllor.design-dropable-td
+                                        td.first_td_head(title= agentService.username, style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")
+                                            a(href="/service/online/index.html?userid=" + agentService.userid + "&agentservice=" + agentService.id) #{agentService.username}
+                                        td #{agentService.channel}
+                                        td(title= agentService.agentusername, style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;") #{agentService.agentusername}
+                                        td #{pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', agentService.logindate)}
+                                        td #{pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', agentService.servicetime)}
+                                        td #{pugHelper.padRight(agentService.waittingtime / (1000 * 60 * 60), "00")}:#{pugHelper.padRight(agentService.waittingtime % (1000 * 60 * 60) / (1000 * 60), "00")}:#{pugHelper.padRight(agentService.waittingtime % (1000 * 60) / 1000, "00")}
+                                        td #{pugHelper.padRight(agentService.sessiontimes / (1000 * 60 * 60), '00')}:#{pugHelper.padRight(agentService.sessiontimes % (1000 * 60 * 60) / (1000 * 60), "00")}:#{pugHelper.padRight(agentService.sessiontimes % (1000 * 60) / 1000, "00")}
+                                        td #{agentService.region}
+                            else
+                                tr
+                                    td(colspan="8" style="height:400px;")
+                                        .ukefu-empty(style="background: none")
+                                            i.layui-icon &#xe63a;
+                                            div(style="") "还没有历史会话"
+            .row(style='padding:5px;')
+                .col-lg-12#page(style='text-align:center;')
+
+    script.
+        layui.use('form', function () {
+            var form = layui.form();
+            form.render(); //更新全部
+        });
+        var searchData = $("#search :input").serializeArray()
+        var searchCondition = "";
+        $.each(searchData, function () {
+            searchCondition += '&' + this.name + '=' + this.value
+        });
+        layui.use(['laypage', 'layer'], function () {
+            var laypage = layui.laypage
+                , layer = layui.layer;
+            laypage({
+                cont: 'page'
+                , pages: #{agentServiceList ? agentServiceList.totalPages : 0} //总页数
+                , curr: #{agentServiceList ? agentServiceList.number + 1 : 0}
+                , groups: 5 //连续显示分页数
+                , jump: function (data, first) {
+                    if (!first) {
+                        location.href = "/service/history/index.html?p=" + data.curr + searchCondition;
+                    }
+                }
+            });
+        });
+
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+        });
+        function getNowFormatDate() {
+            var date = new Date();
+            var seperator = "-";
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var strDate = date.getDate();
+            if (month >= 1 && month <= 9) {
+                month = "0" + month;
+            }
+            if (strDate >= 0 && strDate <= 9) {
+                strDate = "0" + strDate;
+            }
+            var currentdate = year + seperator + month + seperator + strDate;
+            return currentdate;
+        }
+        var start = {
+            format: 'YYYY-MM-DD',
+            max: getNowFormatDate(),//默认最大值为当前日期
+            istoday: true,
+            choose: function (datas) {
+                end.min = datas; //开始日选好后，重置结束日的最小日期
+            }
+        };
+        var end = {
+            format: 'YYYY-MM-DD',
+            max: getNowFormatDate(),//默认最大值为当前日期
+            istoday: true,
+            choose: function (datas) {
+                start.max = datas; //结束日选好后，重置开始日的最大日期
+            }
+        };
+        document.getElementById('begin').onclick = function () {
+            start.elem = this;
+            laydate(start);
+        };
+        document.getElementById('end').onclick = function () {
+            end.elem = this;
+            laydate(end);
+        };
+
+        function deptorservice(data) {
+            $('#allocation').html("");
+            if (data == "agentno") {
+                var userlist = !{pugHelper.toJSON(userlist)};
+                $("#allocation").append("<option value=\"\">请选择坐席</option>");
+                $("#allocation").append($.map(userlist, function (user) {
+                    return '<option value="' + user.id + '">' + user.uname + '</option>';
+                }));
+            } else if (data == "skill") {
+                var deptlist = !{pugHelper.toJSON(deptlist)};
+                $("#allocation").append("<option value=\"\">请选择技能组</option>");
+                $("#allocation").append($.map(deptlist, function (dept) {
+                    return '<option value="' + dept.id + '">' + dept.name + '</option>';
+                }));
+            } else {
+                $("#allocation").append("<option value=\"\">请先选择分类</option>");
+            }
+        }

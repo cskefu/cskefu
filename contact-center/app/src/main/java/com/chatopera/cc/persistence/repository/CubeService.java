@@ -23,7 +23,7 @@ import com.chatopera.cc.util.bi.CubeReportData;
 import com.chatopera.cc.util.bi.model.FirstTitle;
 import com.chatopera.cc.util.bi.model.Level;
 import com.chatopera.cc.util.bi.model.ValueData;
-import freemarker.template.TemplateException;
+
 import mondrian.olap.*;
 import mondrian.rolap.RolapCubeLevel;
 import mondrian.rolap.RolapLevel;
@@ -40,9 +40,8 @@ public class CubeService {
 	
 	private String SCHEMA_DATA_PATH = "WEB-INF/data/mdx/";
 	private File schemaFile = null ;
-	
-	
-	public CubeService(String xml , String path , DataSourceService dataSource , Map<String,Object> requestValues) throws IOException, TemplateException {
+
+	public CubeService(String xml , String path , DataSourceService dataSource , Map<String,Object> requestValues) throws IOException {
 		this.dataSource = dataSource ;
 		File mdxFileDir = new File(path , "mdx") ;
 		if(!mdxFileDir.exists()){
@@ -54,7 +53,7 @@ public class CubeService {
 		FileUtils.write(schemaFile, MainUtils.getTemplet(writer.toString(), requestValues) , "UTF-8");	//使用系统默认编码
 	}
 	
-	public CubeService(String xml , String path , DataSourceService dataSource , Map<String,Object> requestValues,boolean isContentStr) throws IOException, TemplateException {
+	public CubeService(String xml , String path , DataSourceService dataSource , Map<String,Object> requestValues,boolean isContentStr) throws IOException {
 		this.dataSource = dataSource ;
 		File mdxFileDir = new File(path , "mdx") ;
 		if(!mdxFileDir.exists()){

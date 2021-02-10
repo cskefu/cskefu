@@ -1,0 +1,371 @@
+extends /apps/include/layout.pug
+block content
+    .layui-side.layui-bg-black
+        .layui-side-scroll
+            include /apps/contacts/include/left.pug
+    .layui-body
+        .layui-side-scroll
+            .box-header
+                h1.site-h1(style='background-color:#FFFFFF;')
+                    span.ukefu-bt
+                        i.layui-icon.ukewo-btn(style='font-size:20px;text-align: center;') 
+                        | 联系人详情
+                .row
+                    .col-lg-6(style='padding-right: 10px;')
+                        .box-body.ukefu-im-theme
+                            .uk-layui-form
+                                .layui-collapse
+                                    .layui-colla-item
+                                        h2.layui-colla-title 标签
+                                        .layui-colla-content.layui-show
+                                            .layui-form-item
+                                                .layui-inline
+                                                    label.layui-form-label(style='text-align: left;') 已有标签：
+                                                    #contactTags.layui-input-inline(style='width: 100%;').
+                        .box-body.ukefu-im-theme
+                            .uk-layui-form
+                                .layui-collapse
+                                    .layui-colla-item
+                                        h2.layui-colla-title 笔记
+                                        .layui-colla-content.layui-show
+                                            .layui-form-item
+                                                label.layui-form-label 笔记分类：
+                                                .layui-input-inline
+                                                    select#notesCategory(name='notesCategory', lay-filter='category', required, lay-verify='required', style='display: inline')
+                                                        option(value='webim') 网页
+                                                        option(value='callout') 外呼
+                                                        option(value='callin') 呼入
+                                            .layui-form-item
+                                                .layui-inline
+                                                    label.layui-form-label 内容：
+                                                    .layui-input-inline
+                                                        textarea#notesContent.layui-textarea(name='notes')
+                                                .layui-button-block
+                                                    button.layui-btn#notesAddBtn(lay-submit, lay-filter='notesbtn') 立即添加
+                        .box-body.ukefu-im-theme
+                            .uk-layui-form
+                                .layui-collapse
+                                    .layui-colla-item
+                                        h2.layui-colla-title 往来历史
+                                        .layui-colla-content.layui-show
+                                            #timeline.timeline-container(type='text', style='height: 617px; overflow-y: auto;').
+                    .col-lg-6
+                        .box-body.ukefu-im-theme
+                            .uk-layui-form
+                                input#contactsId(hidden, value= (contacts.id))
+                                input#creater(hidden, value= (contacts.creater))
+                                .layui-collapse#basic
+                                    .layui-colla-item
+                                        h2.layui-colla-title 基本信息
+                                        .layui-colla-content.layui-show
+                                            .layui-form-item
+                                                .layui-inline
+                                                    label.layui-form-label 获得时间：
+                                                    .layui-input-inline(style='line-height: 2.5em;') #{pugHelper.formatDate('yyyy-MM-dd', contacts.touchtime)}
+                                            .layui-form-item
+                                                .layui-inline
+                                                    label.layui-form-label 类型：
+                                                    .layui-input-inline(style='line-height: 2.5em;') #{contacts.ckind ? uKeFuDic[contacts.ckind].name : ""}
+                                    .layui-colla-item
+                                        h2.layui-colla-title 联系人信息
+                                        .layui-colla-content.layui-show
+                                            .layui-form-item
+                                                .layui-inline
+                                                    label.layui-form-label#cusname 联系人名称：
+                                                    .layui-input-inline(style='line-height: 2.5em;') #{contacts.name}
+                                            .layui-form-item
+                                                .layui-inline
+                                                    label.layui-form-label 性别：
+                                                    .layui-input-inline(style='line-height: 2.5em;')
+                                                        if contacts.gender == '1'
+                                                            | 男
+                                                        if contacts.gender == '0'
+                                                            | 女
+                                                        if contacts.gender == '-1'
+                                                            | 未知
+                                            .layui-form-item
+                                                .layui-inline
+                                                    label.layui-form-label 生日：
+                                                    .layui-input-inline(style='line-height: 2.5em;') #{contacts.cusbirthday}
+                                            .layui-form-item
+                                                .layui-inline
+                                                    label.layui-form-label 联系电话：
+                                                    .layui-input-inline(style='line-height: 2.5em;') #{contacts.phone}
+                                            .layui-form-item
+                                                .layui-inline
+                                                    label.layui-form-label 手机号：
+                                                    .layui-input-inline(style='line-height: 2.5em;') #{contacts.mobileno}
+                                            .layui-form-item
+                                                .layui-inline
+                                                    label.layui-form-label skype账号：
+                                                    .layui-input-inline(style='line-height: 2.5em') #{contacts.skypeid}
+                                            .layui-form-item
+                                                .layui-inline
+                                                    label.layui-form-label 城市：
+                                                    .layui-input-inline(style='width:80px;line-height: 2.5em;') #{contacts.province ? uKeFuDic[contacts.province].name : ""}
+                                                .layui-inline
+                                                    .layui-input-inline#contacts_city(style='width:80px; line-height: 2.5em;') #{contacts.city ? uKeFuDic[contacts.city].name : ""}
+                                            .layui-form-item
+                                                .layui-inline
+                                                    label.layui-form-label 电子邮件：
+                                                    .layui-input-inline(style='margin-left:5px;line-height: 2.5em;') #{contacts.email}
+                                                     if contacts.wlusername || contacts.wluid
+                                                         .layui-form-item
+                                                            .layui-inline
+                                                            label.layui-form-label 用户名(id)：
+                                                            .layui-input-inline(style="margin-left:5px;line-height: 2.5em;") #{contacts.wlusername}
+                                                                span "(" + #{contacts.wluid} + ")"
+                                                     if contacts.wlcompany_name || contacts.wlcid
+                                                         .layui-form-item
+                                                            .layui-inline
+                                                                label.layui-form-label 公司名称(id)：
+                                                                .layui-input-inline(style="margin-left:5px;line-height: 2.5em;") #{contacts.wlcompany_name}
+                                                                    span "(" + #{contacts.wlcid} + ")"
+                                                    if contacts.wlcompany_name || contacts.wlcid
+                                                        .layui-form-item
+                                                            .layui-inline
+                                                                label.layui-form-label 子系统名称(id)：
+                                                                .layui-input-inline(style="margin-left:5px;line-height: 2.5em;") #{contacts.wlsystem_name}
+                                                                    span "(" + #{contacts.wlcid} + ")"
+                                            .layui-form-item
+                                                .layui-inline
+                                                    label.layui-form-label 联系人地址：
+                                                    .layui-input-inline(style='width: 159%;')
+                                                        input.layui-input(type='text', name='address', readonly, value= contacts.address, style='width: 425px;')
+                                            .layui-form-item
+                                                .layui-inline
+                                                    label.layui-form-label 联系人说明：
+                                                    .layui-input-inline(style='width: 149%;')
+                                                        textarea.layui-textarea(name='memo', readonly, style='width: 425px;') #{contacts.memo}
+    script(src='/js/CSKeFu_Rest_Request.v1.js')
+    style.
+        .unselectedClass {
+                display: inline-block;
+                font-weight: 400;
+                color: #000000;
+                text-align: center;
+                white-space: nowrap;
+                vertical-align: baseline;
+                border-radius: .25em;
+                background-color: #FFFFFF !important;
+                height: 22px;
+                line-height: 22px;
+                padding: 0 5px;
+                font-size: 14px;
+                border: solid 1px #CCCCCC;
+            }
+
+        .card {
+            /* Add shadows to create the "card" effect */
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            transition: 0.3s;
+            margin-top: 5px;
+        }
+
+        /* On mouse-over, add a deeper shadow */
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+
+        /* Add some padding inside the card container */
+        .container {
+            width: 100%;
+            word-break: break-all;
+        }
+
+        #basic .layui-form-label{
+            width: 115px;
+        }
+        #basic .layui-input-inline{
+            width: 270px;
+        }
+
+    script.
+        function getNotesByContactId () {
+                // 获取数据
+                var id = $('#contactsId').val();
+                var payload = {
+                    path: 'contacts/notes',
+                    data: { ops: "fetch", contactid: id },
+                    silent: true
+                };
+                restApiRequest(payload).then(function (data) {
+                    // remove a click exchange and set color to gray
+                    // AUTH_ERROR
+                    if(data.status && data.status === "AUTH_ERROR"){
+                        handleRestApiFail(data.status);
+                        return;
+                    }
+
+                    if(data.rc === 0){
+                        if(data.totalElements > 0) {
+                            for(var item of data.data){
+                                $("#timeline").append('<div class="card">' +
+                                    '<div class="container">' +
+                                    '<h4>时间：' + item.updatetime + '</h4>' +
+                                    '<h5>笔记者：' + item.creatername + '</h5>' +
+                                    '<h5>事件类型：' + item.category + '</h5>' +
+                                    '<div>笔记：' + item.content + '</div>' +
+                                    '</div>' +
+                                    '</div>');
+                            }
+                        }
+                    } else {
+                    }
+                }, function (err) {
+                    console.log(err)
+                });
+            }
+
+            // unselect tag
+            function unOrselectTag(id) {
+                var el = $("#tag_" + id);
+                var xid = el.attr("name");
+
+                if(xid){
+                    // unselected tag
+                    var payload = {
+                        path: 'contacts/tags',
+                        data: {
+                            ops: "remove",
+                            xid: xid,
+
+                        },
+                        silent: true
+                    };
+                    restApiRequest(payload).then(function (data) {
+                        if(data.status && data.status === "AUTH_ERROR"){
+                            handleRestApiFail(data.status);
+                            return;
+                        }
+
+                        if(data.rc === 0){
+                            console.log(data.data);
+                            el.removeClass("ukefu-label").addClass("unselectedClass").attr("name", "");
+                        } else {
+                        }
+                    }, function (err) {
+                        console.log(err)
+                    });
+                } else  {
+                    // select tag
+                    var contactid = $('#contactsId').val();
+                    var payload = {
+                        path: 'contacts/tags',
+                        data: {
+                            ops: "create",
+                            contactid: contactid,
+                            tagId: id,
+                        },
+                        silent: true
+                    };
+
+                    restApiRequest(payload).then(function (data) {
+                        if(data.status && data.status === "AUTH_ERROR"){
+                            handleRestApiFail(data.status);
+                            return;
+                        }
+
+                        if(data.rc === 0){
+                            console.log(data.data);
+                            el.removeClass("unselectedClass").addClass("ukefu-label").attr("name", data.data.id);
+                        } else {
+                        }
+                    }, function (err) {
+                        console.log(err)
+                    });
+                }
+            }
+
+            // get tags
+            function getTags(){
+                var id = $('#contactsId').val();
+                var payload = {
+                    path: 'contacts/tags',
+                    data: {
+                        ops: "fetch",
+                        contactid: id,
+                    },
+                    silent: true
+                };
+                restApiRequest(payload).then(function (data) {
+                    if(data.status && data.status === "AUTH_ERROR"){
+                        handleRestApiFail(data.status);
+                        return;
+                    }
+
+                    if(data.rc === 0){
+                        var tagsData = data.data;
+
+                        for (var item of tagsData){
+                            if(item.tagged){
+                                $("#contactTags").append(
+                                    '<small name="' + item.xid + '" id="tag_' + item.id + '" class="ukefu-label" style="margin: 0 6px 5px 0;cursor: pointer;" onclick="unOrselectTag(\'' + item.id + '\')">' + item.name + '</small>'
+                                );
+                            } else  {
+                                $("#contactTags").append(
+                                    '<small name="" id="tag_' + item.id + '" class="unselectedClass" style="margin: 0 6px 5px 0; cursor: pointer;" onclick="unOrselectTag(\'' + item.id + '\')">' + item.name + '</small>'
+                                );
+                            }
+                        }
+                    } else {
+                    }
+                }, function (err) {
+                    console.log(err)
+                });
+            }
+
+            layui.use('layer', function() {
+                layer = layui.layer;
+
+                // get all notes by contact id.
+                getNotesByContactId();
+
+                // get tags
+                getTags()
+
+                // add notes
+                $('#notesAddBtn').on('click', function(){
+                    var content = $('#notesContent').val() || '';
+                    if(!content) return;
+
+                    var id = $('#contactsId').val();
+                    var category = $("#notesCategory option:selected").text();
+
+                    var payload = {
+                        path: 'contacts/notes',
+                        data: {
+                            ops: "create",
+                            contactid: id,
+                            category: category,
+                            content: content,
+                            agentuser: '',
+                            onlineuser: ''
+                        },
+                        silent: true
+                    };
+                    restApiRequest(payload).then(function (data) {
+                        if(data.status && data.status === "AUTH_ERROR"){
+                            handleRestApiFail(data.status);
+                            return;
+                        }
+
+                        if(data.rc === 0){
+                            $('#notesContent').val('').change();
+                            var item = data.data;
+                            // get all notes by contact id.
+                            $("#timeline").prepend('<div class="card">' +
+                                '<div class="container">' +
+                                '<h4><b>时间：' + item.updatetime + '</b></h4>' +
+                                '<h5>笔记者：' + item.creatername + '</h5>' +
+                                '<h5>事件类型：' + category + '</h5>' +
+                                '<div>笔记：' + content + '</div>' +
+                                '</div>' +
+                                '</div>');
+                        } else {
+                        }
+                    }, function (err) {
+                        console.log(err)
+                    });
+                });
+            });

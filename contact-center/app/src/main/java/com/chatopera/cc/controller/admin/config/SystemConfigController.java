@@ -93,9 +93,11 @@ public class SystemConfigController extends Handler {
         map.addAttribute("server", server);
         map.addAttribute("imServerStatus", MainContext.getIMServerStatus());
         List<Secret> secretConfig = secRes.findByOrgi(super.getOrgi(request));
+        // check out secretConfig
         if (secretConfig != null && secretConfig.size() > 0) {
             map.addAttribute("secret", secretConfig.get(0));
         }
+
         List<SysDic> dicList = Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_DIC);
         SysDic callCenterDic = null, workOrderDic = null, smsDic = null;
         for (SysDic dic : dicList) {
@@ -133,7 +135,7 @@ public class SystemConfigController extends Handler {
         if (StringUtils.isNotBlank(request.getParameter("msg"))) {
             map.addAttribute("msg", request.getParameter("msg"));
         }
-        return request(super.createAdminTempletResponse("/admin/config/index"));
+        return request(super.createView("/admin/config/index"));
     }
 
     @RequestMapping("/stopimserver")
@@ -144,21 +146,21 @@ public class SystemConfigController extends Handler {
             server.stop();
             MainContext.setIMServerStatus(false);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/config/index.html?execute=" + execute));
+        return request(super.createView("redirect:/admin/config/index.html?execute=" + execute));
     }
 
     @RequestMapping("/startentim")
     @Menu(type = "admin", subtype = "startentim", access = false, admin = true)
     public ModelAndView startentim(ModelMap map, HttpServletRequest request) throws SQLException {
         MainContext.enableModule(Constants.CSKEFU_MODULE_ENTIM);
-        return request(super.createRequestPageTempletResponse("redirect:/admin/config/index.html"));
+        return request(super.createView("redirect:/admin/config/index.html"));
     }
 
     @RequestMapping("/stopentim")
     @Menu(type = "admin", subtype = "stopentim", access = false, admin = true)
     public ModelAndView stopentim(ModelMap map, HttpServletRequest request) throws SQLException {
         MainContext.removeModule(Constants.CSKEFU_MODULE_ENTIM);
-        return request(super.createRequestPageTempletResponse("redirect:/admin/config/index.html"));
+        return request(super.createView("redirect:/admin/config/index.html"));
     }
 
     /**
@@ -178,7 +180,7 @@ public class SystemConfigController extends Handler {
             MainContext.setIMServerStatus(false);
             System.exit(0);
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/config/index.html?execute=" + execute));
+        return request(super.createView("redirect:/admin/config/index.html?execute=" + execute));
     }
 
 
@@ -277,6 +279,6 @@ public class SystemConfigController extends Handler {
         MainContext.getCache().putSystemByIdAndOrgi("systemConfig", super.getOrgi(request), systemConfig);
         map.addAttribute("imServerStatus", MainContext.getIMServerStatus());
 
-        return request(super.createRequestPageTempletResponse("redirect:/admin/config/index.html?msg=" + msg));
+        return request(super.createView("redirect:/admin/config/index.html?msg=" + msg));
     }
 }

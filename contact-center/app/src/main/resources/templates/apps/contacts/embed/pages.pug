@@ -1,0 +1,23 @@
+if contactsList && contactsList.content && contactsList.content.size() > 0
+    for contacts in contactsList.content
+        tr.tdHasContorllor.design-dropable-td.ukefu-contacts
+            td(style="width:1px;padding:10px 0px 10px 10px;")
+                input(type="checkbox",name="id" class="ctxid" value=contacts.id, id="contacts_#{contacts.id}")
+            td.first_td_head
+                | #{contacts.name}
+            td
+                | #{contacts.mobileno}
+            td
+                | #{contacts.email}
+            td
+                if contacts.gender && contacts.gender == '1'
+                    | 男
+                if contacts.gender && contacts.gender == '0'
+                    | 女
+                if contacts.gender && contacts.gender == '-1'
+                    | 未知
+            td
+                | #{uKeFuDic[contacts.ckind].name}
+            td(style="white-space:nowrap;width:1%;" nowrap="nowrap")
+                a(href="/apps/contacts/embed/edit.pug?id=" + (contacts.id ? contacts.id : ""), data-toggle="ajax" data-width="950" data-height="600" data-title="编辑联系人信息")
+                    i.layui-icon &#xe642; 编辑

@@ -16,6 +16,8 @@
  */
 package com.chatopera.cc.controller.resource;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.User;
@@ -27,6 +29,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -41,43 +44,54 @@ import java.util.List;
 
 @Controller
 public class CallAgentResourceController extends Handler {
-	
-	@Autowired
-	private UserRepository userRes ;
-	
-	@RequestMapping("/res/agent")
-    @Menu(type = "res" , subtype = "agent")
-    public ModelAndView add(ModelMap map , HttpServletRequest request , @Valid String q) {
-		if(q==null){
-			q = "" ;
-		}
-		final String search = q;
-		final String orgi = super.getOrgi(request);
-		final List<String> organList = CallCenterUtils.getExistOrgan(super.getUser(request));
-		map.put("owneruserList", userRes.findAll(new Specification<User>(){
-			@Override
-			public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query,
-					CriteriaBuilder cb) {
-				List<Predicate> list = new ArrayList<Predicate>();  
-				In<Object> in = cb.in(root.get("organ"));
-				
-				list.add(cb.equal(root.get("orgi").as(String.class),orgi ));
-				
-				list.add(cb.or(cb.like(root.get("username").as(String.class),"%"+search+"%" ),cb.like(root.get("uname").as(String.class),"%"+search+"%" )));
-				
-				if(organList.size() > 0){
-					
-					for(String id : organList){
-						in.value(id) ;
-					}
-				}else{
-					in.value(Constants.CSKEFU_SYSTEM_NO_DAT) ;
-				}
-				list.add(in) ;
-				
-				Predicate[] p = new Predicate[list.size()];  
-				return cb.and(list.toArray(p));   
-			}}));
-		return request(super.createRequestPageTempletResponse("/public/agent"));
+
+    @Autowired
+    private UserRepository userRes;
+
+    @RequestMapping("/res/agent")
+    @Menu(type = "res", subtype = "agent")
+    @ResponseBody
+    public String add(ModelMap map, HttpServletRequest request, @Valid String q) {
+        if (q == null) {
+            q = "";
+        }
+        final String search = q;
+        final String orgi = super.getOrgi(request);
+        final List<String> organList = CallCenterUtils.getExistOrgan(super.getUser(request));
+        List<User> owneruserList = userRes.findAll(new Specification<User>() {
+            @Override
+            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query,
+                                         CriteriaBuilder cb) {
+                List<Predicate> list = new ArrayList<Predicate>();
+                In<Object> in = cb.in(root.get("organ"));
+
+                list.add(cb.equal(root.get("orgi").as(String.class), orgi));
+
+                list.add(cb.or(cb.like(root.get("username").as(String.class), "%" + search + "%"), cb.like(root.get("uname").as(String.class), "%" + search + "%")));
+
+                if (organList.size() > 0) {
+
+                    for (String id : organList) {
+                        in.value(id);
+                    }
+                } else {
+                    in.value(Constants.CSKEFU_SYSTEM_NO_DAT);
+                }
+                list.add(in);
+
+                Predicate[] p = new Predicate[list.size()];
+                return cb.and(list.toArray(p));
+            }
+        });
+
+        JSONArray result = new JSONArray();
+        for (User owneruser : owneruserList) {
+            JSONObject item = new JSONObject();
+            item.put("id", owneruser.getId());
+            item.put("text", owneruser.getUsername());
+            result.add(item);
+        }
+
+        return result.toJSONString();
     }
 }

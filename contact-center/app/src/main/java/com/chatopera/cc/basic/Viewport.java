@@ -18,10 +18,10 @@ package com.chatopera.cc.basic;
 
 public class Viewport {
     private String page;
-    private String templet;
+    private String template;
 
-    public Viewport(String templet, String page) {
-        this.templet = templet;
+    public Viewport(String template, String page) {
+        this.template = template;
         this.page = page;
     }
 
@@ -37,11 +37,11 @@ public class Viewport {
         this.page = page;
     }
 
-    public String getTemplet() {
-        return templet;
+    public String getTemplate() {
+        return template;
     }
 
-    public void setTemplet(String templet) {
-        this.templet = templet;
+    public void setTemplate(String template) {
+        this.template = template;
     }
 }

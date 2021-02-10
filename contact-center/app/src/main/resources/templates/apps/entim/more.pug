@@ -1,0 +1,48 @@
+if chatMessageList && chatMessageList.content
+    for chatMessage in pugHelper.reverse(chatMessageList.content)
+        if chatMessage.calltype == "呼出"
+            .clearfix.chat-block
+                .chat-right
+                    img.user-img(src='/im/img/user.png', alt)
+                    .chat-message
+                        label.time= pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', chatMessage.createtime)
+                        label.user= user.uname
+                    .chatting-right
+                        i.arrow
+                        .chat-content
+                            if chatMessage.msgtype && chatMessage.msgtype == "image"
+                                a(href="!{chatMessage.message}&original=true", target="_blank")
+                                    img.ukefu-media-image(src="!{chatMessage.message}")
+                            else if chatMessage.msgtype && chatMessage.msgtype == "file"
+                                .ukefu-message-file
+                                    .ukefu-file-icon
+                                        img(src="/im/img/file.png")
+                                    .ukefu-file-desc
+                                        a(href="#{chatMessage.message}", target="_blank")
+                                            div= chatMessage.filename
+                                            div #{chatMessage.filesize / 1024}kb
+                            else
+                                | !{chatMessage.message}
+        else
+            .clearfix.chat-block
+                .chat-left
+                    img.user-img(src='/im/img/user.png', alt)
+                    .chat-message
+                        label.user= entimuser.uname
+                        label.time= pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', chatMessage.createtime)
+                    .chatting-left
+                        i.arrow
+                        .chat-content
+                            if chatMessage.msgtype && chatMessage.msgtype == "image"
+                                a(href="!{chatMessage.message}&original=true", target="_blank")
+                                    img.ukefu-media-image(src="!{chatMessage.message}")
+                            else if chatMessage.msgtype && chatMessage.msgtype == "file"
+                                .ukefu-message-file
+                                    .ukefu-file-icon
+                                        img(src="/im/img/file.png")
+                                    .ukefu-file-desc
+                                        a(href=chatMessage.message, target="_blank")
+                                            div= chatMessage.filename
+                                            div #{chatMessage.filesize / 1024}kb
+                            else
+                                | !{chatMessage.message}

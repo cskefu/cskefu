@@ -22,13 +22,12 @@ import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.es.ContactsRepository;
-import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.socketio.message.OtherMessageItem;
 import com.chatopera.cc.util.*;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import freemarker.template.TemplateException;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -210,117 +209,6 @@ public class OnlineUserProxy {
             }
         }
         return atList;
-    }
-
-    /**
-     * 只要有一级 地区命中就就返回
-     *
-     * @param orgi
-     * @param ipdata
-     * @param topicTypeList
-     * @return
-     */
-    public static List<KnowledgeType> topicType(String orgi, IP ipdata, List<KnowledgeType> topicTypeList) {
-        List<KnowledgeType> tempTopicTypeList = new ArrayList<KnowledgeType>();
-        for (KnowledgeType topicType : topicTypeList) {
-            if (getParentArea(ipdata, topicType, topicTypeList) != null) {
-                tempTopicTypeList.add(topicType);
-            }
-        }
-        return tempTopicTypeList;
-    }
-
-    /**
-     * @param topicType
-     * @param topicTypeList
-     * @return
-     */
-    private static KnowledgeType getParentArea(IP ipdata, KnowledgeType topicType, List<KnowledgeType> topicTypeList) {
-        KnowledgeType area = null;
-        if (StringUtils.isNotBlank(topicType.getArea())) {
-            if ((topicType.getArea().indexOf(ipdata.getProvince()) >= 0 || topicType.getArea().indexOf(
-                    ipdata.getCity()) >= 0)) {
-                area = topicType;
-            }
-        } else {
-            if (StringUtils.isNotBlank(topicType.getParentid()) && !topicType.getParentid().equals("0")) {
-                for (KnowledgeType temp : topicTypeList) {
-                    if (temp.getId().equals(topicType.getParentid())) {
-                        if (StringUtils.isNotBlank(temp.getArea())) {
-                            if ((temp.getArea().indexOf(ipdata.getProvince()) >= 0 || temp.getArea().indexOf(
-                                    ipdata.getCity()) >= 0)) {
-                                area = temp;
-                                break;
-                            } else {
-                                break;
-                            }
-                        } else {
-                            area = getParentArea(ipdata, temp, topicTypeList);
-                        }
-                    }
-                }
-            } else {
-                area = topicType;
-            }
-        }
-        return area;
-    }
-
-    public static List<Topic> topic(String orgi, List<KnowledgeType> topicTypeList, List<Topic> topicList) {
-        List<Topic> tempTopicList = new ArrayList<Topic>();
-        if (topicList != null) {
-            for (Topic topic : topicList) {
-                if (StringUtils.isBlank(topic.getCate()) || Constants.DEFAULT_TYPE.equals(
-                        topic.getCate()) || getTopicType(topic.getCate(), topicTypeList) != null) {
-                    tempTopicList.add(topic);
-                }
-            }
-        }
-        return tempTopicList;
-    }
-
-    /**
-     * 根据热点知识找到 非空的 分类
-     *
-     * @param topicTypeList
-     * @param topicList
-     * @return
-     */
-    public static List<KnowledgeType> filterTopicType(List<KnowledgeType> topicTypeList, List<Topic> topicList) {
-        List<KnowledgeType> tempTopicTypeList = new ArrayList<KnowledgeType>();
-        if (topicTypeList != null) {
-            for (KnowledgeType knowledgeType : topicTypeList) {
-                boolean hasTopic = false;
-                for (Topic topic : topicList) {
-                    if (knowledgeType.getId().equals(topic.getCate())) {
-                        hasTopic = true;
-                        break;
-                    }
-                }
-                if (hasTopic) {
-                    tempTopicTypeList.add(knowledgeType);
-                }
-            }
-        }
-        return tempTopicTypeList;
-    }
-
-    /**
-     * 找到知识点对应的 分类
-     *
-     * @param cate
-     * @param topicTypeList
-     * @return
-     */
-    private static KnowledgeType getTopicType(String cate, List<KnowledgeType> topicTypeList) {
-        KnowledgeType kt = null;
-        for (KnowledgeType knowledgeType : topicTypeList) {
-            if (knowledgeType.getId().equals(cate)) {
-                kt = knowledgeType;
-                break;
-            }
-        }
-        return kt;
     }
 
     /**
@@ -730,116 +618,7 @@ public class OnlineUserProxy {
         }
     }
 
-    public static void resetHotTopic(DataExchangeInterface dataExchange, User user, String orgi, String aiid) {
-        getCache().deleteSystembyIdAndOrgi("xiaoeTopic", orgi);
-        cacheHotTopic(dataExchange, user, orgi, aiid);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static List<Topic> cacheHotTopic(DataExchangeInterface dataExchange, User user, String orgi, String aiid) {
-        List<Topic> topicList = null;
-        if ((topicList = getCache().findOneSystemListByIdAndOrgi("xiaoeTopic", orgi)) == null) {
-            topicList = (List<Topic>) dataExchange.getListDataByIdAndOrgi(aiid, null, orgi);
-            getCache().putSystemListByIdAndOrgi("xiaoeTopic", orgi, topicList);
-        }
-        return topicList;
-    }
-
-    public static void resetHotTopicType(DataExchangeInterface dataExchange, User user, String orgi, String aiid) {
-        if (getCache().existSystemByIdAndOrgi("xiaoeTopicType" + "." + orgi, orgi)) {
-            getCache().deleteSystembyIdAndOrgi("xiaoeTopicType" + "." + orgi, orgi);
-        }
-        cacheHotTopicType(dataExchange, user, orgi, aiid);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static List<KnowledgeType> cacheHotTopicType(DataExchangeInterface dataExchange, User user, String orgi, String aiid) {
-        List<KnowledgeType> topicTypeList = null;
-        if ((topicTypeList = getCache().findOneSystemListByIdAndOrgi("xiaoeTopicType" + "." + orgi, orgi)) == null) {
-            topicTypeList = (List<KnowledgeType>) dataExchange.getListDataByIdAndOrgi(aiid, null, orgi);
-            getCache().putSystemListByIdAndOrgi("xiaoeTopicType" + "." + orgi, orgi, topicTypeList);
-        }
-        return topicTypeList;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static List<SceneType> cacheSceneType(DataExchangeInterface dataExchange, User user, String orgi) {
-        List<SceneType> sceneTypeList = null;
-        if ((sceneTypeList = getCache().findOneSystemListByIdAndOrgi("xiaoeSceneType", orgi)) == null) {
-            sceneTypeList = (List<SceneType>) dataExchange.getListDataByIdAndOrgi(null, null, orgi);
-            getCache().putSystemListByIdAndOrgi("xiaoeSceneType", orgi, sceneTypeList);
-        }
-        return sceneTypeList;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static boolean filterSceneType(String cate, String orgi, IP ipdata) {
-        boolean result = false;
-        List<SceneType> sceneTypeList = cacheSceneType(
-                (DataExchangeInterface) MainContext.getContext().getBean("scenetype"), null, orgi);
-        List<AreaType> areaTypeList = getCache().findOneSystemListByIdAndOrgi(
-                Constants.CSKEFU_SYSTEM_AREA, Constants.SYSTEM_ORGI);
-        if (sceneTypeList != null && cate != null && !Constants.DEFAULT_TYPE.equals(cate)) {
-            for (SceneType sceneType : sceneTypeList) {
-                if (cate.equals(sceneType.getId())) {
-                    if (StringUtils.isNotBlank(sceneType.getArea())) {
-                        if (ipdata != null) {
-                            List<AreaType> atList = getAreaTypeList(
-                                    sceneType.getArea(), areaTypeList);    //找到技能组配置的地区信息
-                            for (AreaType areaType : atList) {
-                                if (areaType.getArea().indexOf(ipdata.getProvince()) >= 0 || areaType.getArea().indexOf(
-                                        ipdata.getCity()) >= 0) {
-                                    result = true;
-                                    break;
-                                }
-                            }
-                        }
-                    } else {
-                        result = true;
-                    }
-                }
-                if (result) {
-                    break;
-                }
-            }
-        } else {
-            result = true;
-        }
-        return result;
-    }
-
-//    public static List<OtherMessageItem> search(String q, String orgi, User user) throws IOException, TemplateException {
-//        List<OtherMessageItem> otherMessageItemList = null;
-//        String param = "";
-//        SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(
-//                orgi);
-//        if (StringUtils.isNotBlank(sessionConfig.getOqrsearchurl())) {
-//            Template templet = MainUtils.getTemplate(sessionConfig.getOqrsearchinput());
-//            Map<String, Object> values = new HashMap<String, Object>();
-//            values.put("q", q);
-//            values.put("user", user);
-//            param = MainUtils.getTemplet(templet.getTemplettext(), values);
-//        }
-//        String result = HttpClientUtil.doPost(sessionConfig.getOqrsearchurl(), param), text = null;
-//        if (StringUtils.isNotBlank(result) && StringUtils.isNotBlank(
-//                sessionConfig.getOqrsearchoutput()) && !result.equals("error")) {
-//            Template templet = MainUtils.getTemplate(sessionConfig.getOqrsearchoutput());
-//            @SuppressWarnings("unchecked")
-//            Map<String, Object> jsonData = objectMapper.readValue(result, Map.class);
-//            Map<String, Object> values = new HashMap<String, Object>();
-//            values.put("q", q);
-//            values.put("user", user);
-//            values.put("data", jsonData);
-//            text = MainUtils.getTemplet(templet.getTemplettext(), values);
-//        }
-//        if (StringUtils.isNotBlank(text)) {
-//            JavaType javaType = getCollectionType(ArrayList.class, OtherMessageItem.class);
-//            otherMessageItemList = objectMapper.readValue(text, javaType);
-//        }
-//        return otherMessageItemList;
-//    }
-
-    public static OtherMessageItem suggestdetail(AiConfig aiCofig, String id, String orgi, User user) throws IOException, TemplateException {
+    public static OtherMessageItem suggestdetail(AiConfig aiCofig, String id, String orgi, User user) throws IOException {
         OtherMessageItem otherMessageItem = null;
         String param = "";
         if (StringUtils.isNotBlank(aiCofig.getOqrdetailinput())) {

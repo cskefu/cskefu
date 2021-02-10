@@ -80,14 +80,14 @@ public class MetadataController extends Handler {
     @Menu(type = "admin", subtype = "metadata", admin = true)
     public ModelAndView index(ModelMap map, HttpServletRequest request) throws SQLException {
         map.addAttribute("metadataList", metadataRes.findAll(new PageRequest(super.getP(request), super.getPs(request))));
-        return request(super.createAdminTempletResponse("/admin/system/metadata/index"));
+        return request(super.createView("/admin/system/metadata/index"));
     }
 
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "metadata", admin = true)
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
         map.addAttribute("metadata", metadataRes.findById(id));
-        return request(super.createRequestPageTempletResponse("/admin/system/metadata/edit"));
+        return request(super.createView("/admin/system/metadata/edit"));
     }
 
     @RequestMapping("/update")
@@ -99,7 +99,7 @@ public class MetadataController extends Handler {
         table.setListblocktemplet(metadata.getListblocktemplet());
         table.setPreviewtemplet(metadata.getPreviewtemplet());
         metadataRes.save(table);
-        return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/index.html"));
+        return request(super.createView("redirect:/admin/metadata/index.html"));
     }
 
     @RequestMapping("/properties/edit")
@@ -109,7 +109,7 @@ public class MetadataController extends Handler {
         map.addAttribute("sysdicList", sysDicRes.findByParentid("0"));
         map.addAttribute("dataImplList", Dict.getInstance().getDic("com.dic.data.impl"));
 
-        return request(super.createRequestPageTempletResponse("/admin/system/metadata/tpedit"));
+        return request(super.createView("/admin/system/metadata/tpedit"));
     }
 
     @RequestMapping("/properties/update")
@@ -134,7 +134,7 @@ public class MetadataController extends Handler {
         tableProperties.setImpfield(tp.isImpfield());
 
         tablePropertiesRes.save(tableProperties);
-        return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/table.html?id=" + tableProperties.getDbtableid()));
+        return request(super.createView("redirect:/admin/metadata/table.html?id=" + tableProperties.getDbtableid()));
     }
 
     @RequestMapping("/delete")
@@ -142,7 +142,7 @@ public class MetadataController extends Handler {
     public ModelAndView delete(ModelMap map, HttpServletRequest request, @Valid String id) throws SQLException {
         MetadataTable table = metadataRes.findById(id);
         metadataRes.delete(table);
-        return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/index.html"));
+        return request(super.createView("redirect:/admin/metadata/index.html"));
     }
 
     @RequestMapping("/batdelete")
@@ -151,7 +151,7 @@ public class MetadataController extends Handler {
         if (ids != null && ids.length > 0) {
             metadataRes.delete(metadataRes.findAll(Arrays.asList(ids)));
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/index.html"));
+        return request(super.createView("redirect:/admin/metadata/index.html"));
     }
 
     @RequestMapping("/properties/delete")
@@ -159,7 +159,7 @@ public class MetadataController extends Handler {
     public ModelAndView propertiesdelete(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String tbid) throws SQLException {
         TableProperties prop = tablePropertiesRes.findById(id);
         tablePropertiesRes.delete(prop);
-        return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/table.html?id=" + (!StringUtils.isBlank(tbid) ? tbid : prop.getDbtableid())));
+        return request(super.createView("redirect:/admin/metadata/table.html?id=" + (!StringUtils.isBlank(tbid) ? tbid : prop.getDbtableid())));
     }
 
     @RequestMapping("/properties/batdelete")
@@ -168,7 +168,7 @@ public class MetadataController extends Handler {
         if (ids != null && ids.length > 0) {
             tablePropertiesRes.delete(tablePropertiesRes.findAll(Arrays.asList(ids)));
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/table.html?id=" + tbid));
+        return request(super.createView("redirect:/admin/metadata/table.html?id=" + tbid));
     }
 
     @RequestMapping("/table")
@@ -177,7 +177,7 @@ public class MetadataController extends Handler {
         map.addAttribute("propertiesList", tablePropertiesRes.findByDbtableid(id));
         map.addAttribute("tbid", id);
         map.addAttribute("table", metadataRes.findById(id));
-        return request(super.createAdminTempletResponse("/admin/system/metadata/table"));
+        return request(super.createView("/admin/system/metadata/table"));
     }
 
     @RequestMapping("/imptb")
@@ -197,7 +197,7 @@ public class MetadataController extends Handler {
         });
 
         return request(super
-                .createRequestPageTempletResponse("/admin/system/metadata/imptb"));
+                .createView("/admin/system/metadata/imptb"));
     }
 
     @RequestMapping("/imptbsave")
@@ -236,7 +236,7 @@ public class MetadataController extends Handler {
 
         }
 
-        return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/index.html"));
+        return request(super.createView("redirect:/admin/metadata/index.html"));
     }
 
     private MetadataTable processMetadataTable(UKTableMetaData metaData, MetadataTable table) {
@@ -293,7 +293,7 @@ public class MetadataController extends Handler {
                 }
             }
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/index.html"));
+        return request(super.createView("redirect:/admin/metadata/index.html"));
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -324,7 +324,7 @@ public class MetadataController extends Handler {
                 }
             }
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/index.html"));
+        return request(super.createView("redirect:/admin/metadata/index.html"));
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -351,7 +351,7 @@ public class MetadataController extends Handler {
                 }
             }
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/metadata/index.html"));
+        return request(super.createView("redirect:/admin/metadata/index.html"));
     }
 
 }

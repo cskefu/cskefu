@@ -21,14 +21,8 @@ import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.controller.api.request.RestUtils;
-import com.chatopera.cc.model.Chatbot;
-import com.chatopera.cc.model.CousultInvite;
-import com.chatopera.cc.model.SNSAccount;
-import com.chatopera.cc.model.User;
-import com.chatopera.cc.persistence.repository.ChatbotRepository;
-import com.chatopera.cc.persistence.repository.ConsultInviteRepository;
-import com.chatopera.cc.persistence.repository.SNSAccountRepository;
-import com.chatopera.cc.persistence.repository.UserRepository;
+import com.chatopera.cc.model.*;
+import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.proxy.OnlineUserProxy;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.SystemEnvHelper;
@@ -77,9 +71,12 @@ public class ApiChatbotController extends Handler {
     private UserRepository userRes;
 
     @Autowired
+    private FbMessengerRepository fbMessengerRepository;
+
+    @Autowired
     private ConsultInviteRepository consultInviteRes;
 
-    private final static String botServiecProvider = SystemEnvHelper.getenv(
+    private final static String botServiceProvider = SystemEnvHelper.getenv(
             ChatbotConstants.BOT_PROVIDER, ChatbotConstants.DEFAULT_BOT_PROVIDER);
 
     /**
@@ -161,7 +158,7 @@ public class ApiChatbotController extends Handler {
             return resp;
         }
 
-        List<SNSAccount> records = snsAccountRes.findBySnstypeAndOrgi(Constants.CHANNEL_TYPE_WEBIM, orgi);
+        List<SNSAccount> records = snsAccountRes.findBySnstypeAndOrgi(j.get("snstype").getAsString(), orgi);
         JsonArray ja = new JsonArray();
 
         for (SNSAccount r : records) {
@@ -170,7 +167,7 @@ public class ApiChatbotController extends Handler {
                 o.addProperty("id", r.getId());
                 o.addProperty("snsid", r.getSnsid());
                 o.addProperty("snsType", r.getSnstype());
-                o.addProperty("snsurl", r.getBaseURL());
+                o.addProperty("snsurl", isWebIMChannelBySnsType(j) ? r.getBaseURL() : r.getName());
                 ja.add(o);
             }
         }
@@ -205,18 +202,23 @@ public class ApiChatbotController extends Handler {
 
         try {
             com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
-                    c.getClientId(), c.getSecret(), botServiecProvider);
-            Response result = bot.command("GET", "/");
-
-            if (result.getRc() == 0) {
+                    c.getClientId(), c.getSecret(), botServiceProvider);
+            if (bot.exists()) {
                 c.setEnabled(isEnabled);
                 chatbotRes.save(c);
 
-                // 更新访客网站配置
-                CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
-                invite.setAi(isEnabled);
-                consultInviteRes.save(invite);
-                OnlineUserProxy.cacheConsult(invite);
+                if (c.getChannel().equals(Constants.CHANNEL_TYPE_WEBIM)) {
+                    // 更新访客网站配置
+                    CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
+                    invite.setAi(isEnabled);
+                    consultInviteRes.save(invite);
+                    OnlineUserProxy.cacheConsult(invite);
+                } else if (c.getChannel().equals(Constants.CHANNEL_TYPE_MESSENGER)) {
+                    FbMessenger fbMessenger = fbMessengerRepository.findOneByPageId(c.getSnsAccountIdentifier());
+                    fbMessenger.setAi(isEnabled);
+                    fbMessengerRepository.save(fbMessenger);
+                }
+
 
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
                 resp.addProperty(RestUtils.RESP_KEY_DATA, "完成。");
@@ -261,11 +263,17 @@ public class ApiChatbotController extends Handler {
         c.setAisuggest(isEnabled);
         chatbotRes.save(c);
 
-        // 更新访客网站配置
-        CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
-        invite.setAisuggest(isEnabled);
-        consultInviteRes.save(invite);
-        OnlineUserProxy.cacheConsult(invite);
+        if (c.getChannel().equals(Constants.CHANNEL_TYPE_WEBIM)) {
+            // 更新访客网站配置
+            CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
+            invite.setAisuggest(isEnabled);
+            consultInviteRes.save(invite);
+            OnlineUserProxy.cacheConsult(invite);
+        } else if (c.getChannel().equals(Constants.CHANNEL_TYPE_MESSENGER)) {
+            FbMessenger fbMessenger = fbMessengerRepository.findOneByPageId(c.getSnsAccountIdentifier());
+            fbMessenger.setAisuggest(isEnabled);
+            fbMessengerRepository.save(fbMessenger);
+        }
 
         resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
         resp.addProperty(RestUtils.RESP_KEY_DATA, "完成。");
@@ -318,21 +326,26 @@ public class ApiChatbotController extends Handler {
 
         if (j.has("workmode") && Constants.CHATBOT_VALID_WORKMODELS.contains(j.get("workmode").getAsString())) {
             c.setWorkmode(j.get("workmode").getAsString());
-            invite.setAifirst(!StringUtils.equals(Constants.CHATBOT_HUMAN_FIRST, c.getWorkmode()));
+            if (isWebIMChannelBySnsType(j)) {
+                invite.setAifirst(!StringUtils.equals(Constants.CHATBOT_HUMAN_FIRST, c.getWorkmode()));
+            }
         }
 
         if (j.has("enabled")) {
             boolean enabled = j.get("enabled").getAsBoolean();
             c.setEnabled(enabled);
-            invite.setAi(enabled);
+            if (isWebIMChannelBySnsType(j)) {
+                invite.setAi(enabled);
+            }
         }
 
         try {
+            logger.info("[update] BOT_PROVIDER {}", botServiceProvider);
             com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
-                    c.getClientId(), c.getSecret(), botServiecProvider);
+                    c.getClientId(), c.getSecret(), botServiceProvider);
 
             Response result = bot.command("GET", "/");
-            logger.info("[update] bot details response {}", result.toJSON().toString());
+            logger.info("[update] bot details response", result.toJSON().toString());
 
             if (result.getRc() == 0) {
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
@@ -344,9 +357,12 @@ public class ApiChatbotController extends Handler {
                 c.setDescription(botDetails.getString("description"));
                 c.setFallback(botDetails.getString("fallback"));
                 c.setWelcome(botDetails.getString("welcome"));
-                invite.setAisuccesstip(botDetails.getString("welcome"));
+                if (isWebIMChannelBySnsType(j)) {
+                    invite.setAisuccesstip(botDetails.getString("welcome"));
+                    invite.setAiname(c.getName());
+                }
                 c.setName(botDetails.getString("name"));
-                invite.setAiname(c.getName());
+
             } else {
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
                 resp.addProperty(
@@ -370,9 +386,10 @@ public class ApiChatbotController extends Handler {
 
         c.setUpdatetime(new Date());
         chatbotRes.save(c);
-        consultInviteRes.save(invite);
-        OnlineUserProxy.cacheConsult(invite);
-
+        if (isWebIMChannelBySnsType(j)) {
+            consultInviteRes.save(invite);
+            OnlineUserProxy.cacheConsult(invite);
+        }
         return resp;
     }
 
@@ -464,18 +481,25 @@ public class ApiChatbotController extends Handler {
             return resp;
         }
 
-        // 更新访客网站配置
-        CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
-        if (invite != null) {
-            invite.setAi(false);
-            invite.setAiname(null);
-            invite.setAisuccesstip(null);
-            invite.setAifirst(false);
-            invite.setAiid(null);
-            invite.setAisuggest(false);
-            consultInviteRes.save(invite);
-            OnlineUserProxy.cacheConsult(invite);
+        if (c.getChannel().equals(Constants.CHANNEL_TYPE_WEBIM)) {
+            // 更新访客网站配置
+            CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
+            if (invite != null) {
+                invite.setAi(false);
+                invite.setAiname(null);
+                invite.setAisuccesstip(null);
+                invite.setAifirst(false);
+                invite.setAiid(null);
+                invite.setAisuggest(false);
+                consultInviteRes.save(invite);
+                OnlineUserProxy.cacheConsult(invite);
+            }
+        } else if (c.getChannel().equals(Constants.CHANNEL_TYPE_MESSENGER)) {
+            FbMessenger fbMessenger = fbMessengerRepository.findOneByPageId(c.getSnsAccountIdentifier());
+            fbMessenger.setAiid(null);
+            fbMessengerRepository.save(fbMessenger);
         }
+
         chatbotRes.delete(c);
         resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
         resp.addProperty(RestUtils.RESP_KEY_DATA, "删除成功。");
@@ -528,7 +552,7 @@ public class ApiChatbotController extends Handler {
         } else {
             snsid = j.get("snsid").getAsString();
             // #TODO 仅支持webim
-            if (!snsAccountRes.existsBySnsidAndSnstypeAndOrgi(snsid, Constants.CHANNEL_TYPE_WEBIM, orgi)) {
+            if (!snsAccountRes.existsBySnsidAndSnstypeAndOrgi(snsid, j.get("snstype").getAsString(), orgi)) {
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
                 resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，不存在【snsid】对应的网站渠道。");
                 return resp;
@@ -548,9 +572,8 @@ public class ApiChatbotController extends Handler {
         }
 
         try {
-            logger.info("[create] bot with url {}", botServiecProvider);
-            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(clientId, secret, botServiecProvider);
-
+            logger.info("[create] bot with url {}", botServiceProvider);
+            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(clientId, secret, botServiceProvider);
             Response result = bot.command("GET", "/");
             logger.info("[create] bot details response {}", result.toJSON().toString());
 
@@ -561,7 +584,7 @@ public class ApiChatbotController extends Handler {
                 c.setId(MainUtils.getUUID());
                 c.setClientId(clientId);
                 c.setSecret(secret);
-                c.setBaseUrl(botServiecProvider);
+                c.setBaseUrl(botServiceProvider);
                 c.setDescription(botDetails.getString("description"));
                 c.setFallback(botDetails.getString("fallback"));
                 c.setPrimaryLanguage(botDetails.getString("primaryLanguage"));
@@ -569,7 +592,7 @@ public class ApiChatbotController extends Handler {
                 c.setWelcome(botDetails.getString("welcome"));
                 c.setCreater(creater);
                 c.setOrgi(orgi);
-                c.setChannel(Constants.CHANNEL_TYPE_WEBIM);
+                c.setChannel(j.get("snstype").getAsString());
                 c.setSnsAccountIdentifier(snsid);
                 Date dt = new Date();
                 c.setCreatetime(dt);
@@ -581,14 +604,22 @@ public class ApiChatbotController extends Handler {
                 c.setEnabled(enabled);
 
                 // 更新访客网站配置
-                CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
-                invite.setAi(enabled);
-                invite.setAifirst(StringUtils.equals(Constants.CHATBOT_CHATBOT_FIRST, workmode));
-                invite.setAiid(c.getId());
-                invite.setAiname(c.getName());
-                invite.setAisuccesstip(c.getWelcome());
-                consultInviteRes.save(invite);
-                OnlineUserProxy.cacheConsult(invite);
+                if (isWebIMChannelBySnsType(j)) {
+                    CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
+                    invite.setAi(enabled);
+                    invite.setAifirst(StringUtils.equals(Constants.CHATBOT_CHATBOT_FIRST, workmode));
+                    invite.setAiid(c.getId());
+                    invite.setAiname(c.getName());
+                    invite.setAisuccesstip(c.getWelcome());
+                    consultInviteRes.save(invite);
+                    OnlineUserProxy.cacheConsult(invite);
+                } else if (j.get("snstype").getAsString().equals(Constants.CHANNEL_TYPE_MESSENGER)) {
+                    FbMessenger fbMessenger = fbMessengerRepository.findOneByPageId(c.getSnsAccountIdentifier());
+                    fbMessenger.setAi(enabled);
+                    fbMessenger.setAiid(c.getId());
+                    fbMessengerRepository.save(fbMessenger);
+                }
+
                 chatbotRes.save(c);
 
                 JsonObject data = new JsonObject();
@@ -640,7 +671,7 @@ public class ApiChatbotController extends Handler {
 
         try {
             com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
-                    c.getClientId(), c.getSecret(), botServiecProvider);
+                    c.getClientId(), c.getSecret(), botServiceProvider);
 
             JSONObject result = bot.faq(
                     userId,
@@ -669,5 +700,15 @@ public class ApiChatbotController extends Handler {
             resp.addProperty(RestUtils.RESP_KEY_DATA, "查询不成功，智能问答引擎服务异常。");
         }
         return resp;
+    }
+
+    /**
+     * 判断一个渠道是不是网页聊天
+     *
+     * @param p
+     * @return
+     */
+    private boolean isWebIMChannelBySnsType(final JsonObject p) {
+        return StringUtils.equals(p.get("snstype").getAsString(), Constants.CHANNEL_TYPE_WEBIM);
     }
 }

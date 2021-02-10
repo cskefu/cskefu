@@ -1,0 +1,137 @@
+include /mixins/dic.mixin.pug
+
+.uk-layui-form
+    form.layui-form(action="/apps/customer/update.html", method="post")
+        input(type="hidden", name="entcustomer.id", value=entCustomer.id)
+        input(type="hidden", name="ekindId", value=ekindId)
+        input(type="hidden", name="entcustomer.shares", value="all")
+        input(type="hidden", name="contacts.shares", value="all")
+        .layui-collapse
+            .layui-colla-item
+                h2.layui-colla-title 基本信息
+                .layui-colla-content.layui-show
+                    .layui-form-item
+                        .layui-inline
+                            label.layui-form-label 获得时间：
+                            .layui-input-inline
+                                input#getdate.layui-input(type="text", name="entcustomer.touchtime", readonly="readOnly", lay-verify="date", autocomplete="off", value=(entCustomer.touchtime ? pugHelper.formatDate('yyyy-MM-dd', entCustomer.touchtime) : ''))
+                                i.layui-icon(style="position: absolute;right: 3px;top: 6px;font-size: 25px;") 
+                        .layui-inline
+                            font(color="red") *（必填项）
+                            |  (您得到此客户的时间)
+                        .layui-inline
+                            label.layui-form-label(style="width:60px") 类型：
+                            .layui-input-inline(style="width:218px;margin-right:0px;padding-top:9px;")
+                                input(type="radio", name="entcustomer.etype", value="enterprise", title="企业客户", lay-filter="etype", checked= entcustomer.etype = 'enterprise')
+                                input(type="radio", name="entcustomer.etype", value="personal", title="个人客户", lay-filter="etype", checked= entcustomer.etype = 'personal')
+            .layui-colla-item
+                h2.layui-colla-title 企业信息
+                .layui-colla-content.layui-show
+                    .layui-form-item
+                        .layui-inline
+                            label#cusname.layui-form-label 客户名称：
+                            .layui-input-inline
+                                input.layui-input(type="text", name="entcustomer.name", required="", lay-verify="customer_username", autocomplete="off", value=entCustomer.name)
+                        .layui-inline
+                            font(color="red") *（必填项）
+                    .layui-form-item
+                        .layui-inline
+                            label.layui-form-label 联系电话：
+                            .layui-input-inline
+                                input.layui-input(type="text", name="entcustomer.phone", autocomplete="off", value=entCustomer.phone)
+                        .layui-inline.uckefu-inline
+                            label.layui-form-label 电子邮件：
+                            .layui-input-inline
+                                input.layui-input(type="text", name="entcustomer.email", lay-verify="entemail", autocomplete="off", value=entCustomer.email)
+                    .layui-form-item
+                        .layui-inline
+                            label.layui-form-label 省份：
+                            .layui-input-inline(style="width:80px;")
+                                +sysDicSelect('com.dic.address.area','entcustomer.province',entCustomer.province,{'lay-ignore': true},'width:85px;')
+                        .layui-inline
+                            #city.layui-input-inline(style="width:80px;")
+                                +sysDicSelect(entCustomer.city + '.subdic','entcustomer.city',entCustomer.city,{'lay-ignore': true},'width:86px;')
+                    .layui-form-item
+                        .layui-inline
+                            label.layui-form-label 客户地址：
+                            .layui-input-inline(style="width: 664px;")
+                                input.layui-input(type="text", name="entcustomer.address", autocomplete="off", value=entCustomer.address)
+                    .layui-form-item
+                        .layui-inline
+                            label.layui-form-label 客户类型：
+                            .layui-input-inline
+                                +sysDicSelect('com.dic.contacts.entype','entcustomer.ekind',entCustomer.ekind,{'lay-ignore': true})
+                        .layui-inline.uckefu-inline
+                            label.layui-form-label 客户级别：
+                            .layui-input-inline
+                                +sysDicSelect('com.dic.contacts.elevel','entcustomer.elevel',entCustomer.elevel,{'lay-ignore': true})
+                    .layui-form-item
+                        .layui-inline
+                            label.layui-form-label 客户来源：
+                            .layui-input-inline
+                                +sysDicSelect('com.dic.contacts.esource','entcustomer.esource',entCustomer.esource,{'lay-ignore': true})
+                        .layui-inline.uckefu-inline
+                            label.layui-form-label 成熟度：
+                            .layui-input-inline
+                                +sysDicSelect('com.dic.contacts.maturity','entcustomer.maturity',entCustomer.maturity,{'lay-ignore': true})
+                    .layui-form-item
+                        .layui-inline
+                            label.layui-form-label 行业：
+                            .layui-input-inline
+                                +sysDicSelect('com.dic.contacts.industry','entcustomer.industry',entCustomer.industry,{'lay-ignore': true})
+                        .layui-inline.uckefu-inline
+                            label.layui-form-label 客户状态：
+                            .layui-input-inline
+                                +sysDicSelect('com.dic.contacts.validstatus','entcustomer.validstatus',entCustomer.validstatus,{'lay-ignore': true})
+                    .layui-form-item
+                        .layui-inline
+                            label.layui-form-label 客户说明：
+                            .layui-input-inline(style="width: 664px;")
+                                textarea.layui-textarea(name="entcustomer.description", placeholder="请输入内容", style="resize:none;")= entCustomer.description
+        .layui-form-button
+            .layui-button-block
+                button.layui-btn(lay-submit="", lay-filter="formDemo") 立即提交
+                button.layui-btn.layui-btn-original(type="reset") 重置
+script.
+    //Demo
+    $('#entcustomer_province').change(function () {
+        loadURL('/res/dic.html?id=' + $(this).val() + "&name=entcustomer.city&attr=lay-ignore&style=width:85px;", '#entcustomer_city');
+    })
+    layui.use('form', function () {
+        var form = layui.form();
+        form.render(); //更新全部
+        form.verify({
+            entemail: function (value) {
+                if (value != "" && !new RegExp(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/).test(value)) {
+                    return '请输入正确的电子邮箱地址';
+                }
+            },
+            customer_username: function (value) {
+                if (value.length > 100) {
+                    return "用户姓名不能超过100字";
+                }
+            }
+        });
+        form.on("radio(etype)", function (data) {
+            if (data.value == "enterprise") {
+                $('#cusname').text("客户名称：");
+            } else {
+                $('#cusname').text("客户姓名：");
+            }
+        });
+    });
+    layui.use('element', function () {
+        var element = layui.element();
+    });
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+        var date = {
+            min: '2010-01-01 00:00:00',
+            max: laydate.now(),
+            istoday: false
+        };
+        document.getElementById('getdate').onclick = function () {
+            date.elem = this;
+            laydate(date);
+        }
+    });

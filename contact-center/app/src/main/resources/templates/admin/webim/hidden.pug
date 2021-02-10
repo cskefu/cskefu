@@ -1,0 +1,14 @@
+if inviteData
+    input(type="hidden", name="id", value=inviteData.id)
+    input(type="hidden", name="snsaccountid", value=inviteData.snsaccountid)
+    if inviteData.ai
+        input(type="hidden", name="ai", value=inviteData.ai ? 'true' : 'false')
+    else
+        input(type="hidden", name="ai", value="false")
+    if inviteData.aifirst
+        input(type="hidden", name="aifirst", value=inviteData.aifirst ? 'true' : 'false')
+    else
+        input(type="hidden", name="aifirst", value="false")
+    input(type="hidden", name="aisuccesstip", value=inviteData.aisuccesstip)
+    input(type="hidden", name="ainame", value=inviteData.ainame)
+    input(type="hidden", name="aiid", value=inviteData.aiid)

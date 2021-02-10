@@ -1,0 +1,408 @@
+extends /admin/include/layout.pug
+
+block content
+    include head
+    .layui-tab
+        .layui-tab-content
+            .layui-tab-item.layui-show
+                form.layui-form(method="post", key="set-mine", enctype="multipart/form-data", action="/admin/webim/profile/save.html")
+                    include hidden
+                    .row
+                        .col-lg-12
+                            .ukefu-customer-div.setting-wrapper
+                                .box.default-box
+                                    .box-header
+                                        h3.box-title 客服基本信息
+                                    .box-body.ukefu-im-theme
+                                        .row
+                                            .col-lg-7
+                                                .ukefu-webim-prop
+                                                    .ukefu-webim-tl(style="clear:both;") 1、企业/网站名称
+                                                    .box-item
+                                                        .row
+                                                            .col-lg-8
+                                                                p 信息提示区域显示的名称
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 默认显示信息 企业名称
+                                                            .col-lg-4
+                                                                input.layui-input(type="text", name="dialog_name", value=(inviteData.dialog_name ? inviteData.dialog_name : '春松客服'), autocomplete="off", oninput="$('#dialog_name').text($(this).val())", onchange="$('#dialog_name').text($(this).val())")
+                                                .ukefu-webim-prop
+                                                    .ukefu-webim-tl(style="clear:both;") 2、企业地址信息
+                                                    .box-item
+                                                        .row
+                                                            .col-lg-8
+                                                                p 信息提示区域显示的企业地址信息
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 默认提示文本是：空白
+                                                            .col-lg-4
+                                                                input.layui-input(type="text", name="dialog_address", value=inviteData.dialog_address, autocomplete="off", oninput="$('#dialog_address').text($(this).val())", onchange="$('#dialog_address').text($(this).val())")
+                                                .ukefu-webim-prop
+                                                    .ukefu-webim-tl(style="clear:both;") 3、联系电话
+                                                    .box-item
+                                                        .row
+                                                            .col-lg-8
+                                                                p 信息提示区域显示的企业联系电话
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 默认提示文本是：空白
+                                                            .col-lg-4
+                                                                input.layui-input(type="text", name="dialog_phone", value=inviteData.dialog_phone, oninput="$('#dialog_phone').text($(this).val())", onchange="$('#dialog_phone').text($(this).val())")
+                                                .ukefu-webim-prop
+                                                    .ukefu-webim-tl(style="clear:both;") 4、联系邮件
+                                                    .box-item
+                                                        .row
+                                                            .col-lg-8
+                                                                p 信息提示区域显示的企业联系邮箱地址
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 默认提示文本是：空白
+                                                            .col-lg-4
+                                                                input.layui-input(type="text", name="dialog_mail", value=inviteData.dialog_mail, autocomplete="off", oninput="$('#dialog_mail').text($(this).val())", onchange="$('#dialog_mail').text($(this).val())")
+                                                .ukefu-webim-prop
+                                                    .ukefu-webim-tl(style="clear:both;") 5、网站客服公告
+                                                    .box-item
+                                                        .row
+                                                            .col-lg-8
+                                                                p 信息提示区域显示的客服公告信息
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 默认提示文本是：空白
+                                                            .col-lg-4
+                                                                input.layui-input(type="text", name="dialog_introduction", value=inviteData.dialog_introduction, autocomplete="off", oninput="$('#dialog_introduction').text($(this).val())", onchange="$('#dialog_introduction').text($(this).val())")
+                                                .ukefu-webim-prop
+                                                    .ukefu-webim-tl(style="clear:both;") 6、对话欢迎语
+                                                    .box-item
+                                                        .row
+                                                            .col-lg-12
+                                                                textarea.layui-input(name="dialog_message", autocomplete="off", oninput="$('#dialog_message').text($(this).val())", style="height:60px;line-height:22px;")= inviteData.dialog_message ? inviteData.dialog_message : '欢迎使用春松客服！如需帮助请联系 info@chatopera.com'
+                                                .ukefu-webim-prop
+                                                    .ukefu-webim-tl 7、自定义形象图片 （建议尺寸：276*236）
+                                                    .box-item(style="position: relative;")
+                                                        - var dialog_ad = inviteData.dialog_ad?('/res/image.html?id='+inviteData.dialog_ad):'/im/img/pic01.jpg'
+                                                        span.ukefu-logo
+                                                            img#agent_show(src=dialog_ad, style="height:130px;")
+                                                        .layui-box.layui-upload-button(style="position:absolute;left: 290px;")
+                                                            input#dialogad.layui-upload-file(type="file", name="dialogad", accept="image/gif, image/jpeg, image/png", lay-ext="jpg|png|gif", onchange="$('#dialog_ad').html($(this).val());$('.agent_close').show()")
+                                                            span.layui-upload-icon
+                                                                i.layui-icon 
+                                                                | 上传图片
+                                                        div(style="margin-top: 20px;position: relative;")
+                                                            span#dialog_ad(style="float: left")
+                                                            i.layui-icon.agent_close(style="display: none;float: left;margin-top: -5px;cursor:pointer;", onclick=" $('#dialog_ad').html('');$('#agent_show').attr('src','" + dialog_ad + "');clearAgentheadimg(); $('.agent_close').hide()") ဆ
+                                                .ukefu-webim-prop
+                                                    .ukefu-webim-tl(style="clear:both;") 8、启用访客留言
+                                                    .box-item
+                                                        .row
+                                                            .col-lg-8
+                                                                p 坐席不在线或不在工作时间段内访客的留言功能
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 开启后，当前没有坐席在线或者不在工作时间段内访问将会弹出留言板
+                                                            .col-lg-4(style="text-align:right;")
+                                                                input#leavemessage(type="checkbox", title="启用", name="leavemessage", lay-filter="leavemessage", checked=inviteData.leavemessage == true)
+                                                    #leavemessage_tip.box-item(style=(inviteData.leavemessage == false ? 'display:none;' : ''))
+                                                        .row(style="margin-bottom:20px;")
+                                                            .col-lg-8
+                                                                p a、留言框弹出方式
+                                                                p
+                                                                    .layui-input-block
+                                                                        input(type="radio", name="lvmopentype", value="access", title="访问时弹出", checked= inviteData.lvmopentype == 'access')
+                                                                        input(type="radio", name="lvmopentype", value="click", title="点击入口按钮后弹出", checked= inviteData.lvmopentype != 'access')
+                                                        .row(style="margin-bottom:20px;")
+                                                            .col-lg-12
+                                                                p b、选择留言内容字段
+                                                                p
+                                                                    .layui-input-block
+                                                                        input(type="checkbox", name="lvmname", lay-skin="primary", title="姓名",checked=inviteData.lvmname)
+                                                                        input(type="checkbox", name="lvmphone", lay-skin="primary", title="电话", checked=inviteData.lvmphone)
+                                                                        input(type="checkbox", name="lvmemail", lay-skin="primary", title="邮件", checked=inviteData.lvmemail)
+                                                                        input(type="checkbox", name="lvmaddress", lay-skin="primary", title="地址",checked=inviteData.lvmaddress)
+                                                                        input(type="checkbox", name="lvmqq", lay-skin="primary", title="QQ", checked=inviteData.lvmqq)
+                                                .ukefu-webim-prop(style=(!(user.superadmin || user.admin) ? 'display: none' : ''))
+                                                    .ukefu-webim-tl(style="clear:both;") 9、启用技能组模式
+                                                    .box-item
+                                                        .row
+                                                            .col-lg-8
+                                                                p 坐席分组功能，访客能够直接选择服务的技能组或坐席
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 开启后，运行访客直接发起和坐席对话，如果坐席达到最大访客限制，则访客进入排队队列
+                                                            .col-lg-4(style="text-align:right;")
+                                                                input(type="checkbox", title="启用", name="skill", lay-filter="skill",checked=inviteData.skill == true)
+                                                            #skill.box-item(style="position: relative;" + (inviteData.skill == true ? '' : 'display:none;'))
+                                                                .row(style="margin-bottom:20px;")
+                                                                    .col-lg-8
+                                                                        p 绑定单一技能组
+                                                                        p(style="color:#888888;font-size:13px;margin-top:10px;") 开启后，该网站绑定到一个指定技能组
+                                                                    .col-lg-4(style="text-align:right;")
+                                                                        input(type="checkbox", title="启用", name="consult_skill_fixed", lay-filter="consult_skill_fixed", checked=inviteData.consult_skill_fixed == true)
+                                                                #skill_fixed.box-item(style="position: relative;" + (inviteData.consult_skill_fixed == true ? '' : 'display:none;'))
+                                                                    .row(style="margin-bottom:20px;")
+                                                                        .col-lg-8
+                                                                            p a、技能组
+                                                                            p(style="color:#888888;font-size:13px;margin-top:10px;") 指定服务于该网站渠道的技能组
+                                                                            .layui-input-block
+                                                                                select(name="consult_skill_fixed_id")
+                                                                                    if skillGroups.empty()
+                                                                                        option 请选择
+                                                                                    else
+                                                                                        for skill in skillGroups
+                                                                                            option(value=skill.id,selected=inviteData.consult_skill_fixed_id == skill.id)= skill.name
+
+                                                                #skill_group.box-item(style="position: relative;" + (inviteData.consult_skill_fixed == false ? '' : 'display:none;'))
+                                                                    .row(style="margin-bottom:20px;")
+                                                                        .col-lg-8
+                                                                            p a、坐席组窗口显示标题
+                                                                            p(style="color:#888888;font-size:13px;margin-top:10px;") 在访客邀请按钮的坐席分组窗口上显示的标题
+                                                                        .col-lg-4
+                                                                            .layui-input-block
+                                                                                input.layui-input(type="text", name="consult_skill_title", value=(inviteData.consult_skill_title ? inviteData.consult_skill_title : '春松客服'), autocomplete="off")
+                                                                    .row(style="margin-bottom:20px;")
+                                                                        .col-lg-8
+                                                                            p b、坐席组窗口底部显示内容
+                                                                            p(style="color:#888888;font-size:13px;margin-top:10px;") 在访客邀请按钮的坐席分组窗口底部显示的文本内容
+                                                                        .col-lg-4
+                                                                            .layui-input-block
+                                                                                input.layui-input(type="text", name="consult_skill_bottomtitle", value=(inviteData.consult_skill_bottomtitle ? inviteData.consult_skill_bottomtitle : '春松客服全渠道智能客服'), autocomplete="off")
+                                                                    .row(style="margin-bottom:20px;")
+                                                                        .col-lg-8
+                                                                            p c、最多显示技能组数
+                                                                            p(style="color:#888888;font-size:13px;margin-top:10px;") 在访客邀请按钮上显示的最大坐席分组数量
+                                                                        .col-lg-4
+                                                                            -
+                                                                                if (inviteData.consult_skill_numbers == 0) {
+                                                                                    inviteData.consult_skill_numbers = 5
+                                                                                }
+                                                                            .layui-input-block
+                                                                                select(name="consult_skill_numbers")
+                                                                                    for i in pugHelper.range(1,15)
+                                                                                        option(value=i,selected=inviteData.consult_skill_numbers == i)= i
+
+                                                                    .row(style="margin-bottom:20px;")
+                                                                        .col-lg-8
+                                                                            p d、是否显示技能组下的人工坐席
+                                                                            p(style="color:#888888;font-size:13px;margin-top:10px;") 开启后，将会允许访客直接选择坐席
+                                                                        .col-lg-4(style="text-align:right;")
+                                                                            input(type="checkbox", title="启用", name="consult_skill_agent", lay-filter="consult_skill_agent", checked=inviteData.consult_skill_agent == true)
+                                                                    .row(style="margin-bottom:20px;")
+                                                                        .col-lg-8
+                                                                            p e、每个坐席分组下显示的最大坐席数
+                                                                            p(style="color:#888888;font-size:13px;margin-top:10px;") 在访客邀请按钮的坐席分组下显示的最大坐席数量
+                                                                        .col-lg-4
+                                                                            .layui-input-block
+                                                                                select(name="consult_skill_maxagent")
+                                                                                    -
+                                                                                        if (invitedata.consult_skill_maxagent == 0) {
+                                                                                            invitedata.consult_skill_maxagent = 5
+                                                                                        }
+                                                                                    for i in pugHelper.range(1,15)
+                                                                                        option(value=i,selected=inviteData.consult_skill_maxagent == i)= i
+                                                                    .row(style="margin-bottom:20px;")
+                                                                        .col-lg-12
+                                                                            p f、坐席组窗口提示信息
+                                                                    .row(style="margin-bottom:20px;")
+                                                                        .col-lg-12
+                                                                            textarea.layui-input(name="consult_skill_msg", autocomplete="off", resize="false", style="height:90px;line-height:22px;resize: none;")
+                                                                                if inviteData.consult_skill_msg
+                                                                                    | #{inviteData.consult_skill_msg}
+                                                                                else
+                                                                                    | 工作时间
+                                                                                    br
+                                                                                    | 08:30~17:30
+
+                                                                    .row(style="margin-bottom:20px;")
+                                                                        .col-lg-8
+                                                                            p g、配置地区的时候，只显示访客所在地区的技能组
+                                                                            p(style="color:#888888;font-size:13px;margin-top:10px;") 默认不开启，开启后，访客端只显示当前地区内配置的技能组
+                                                                        .col-lg-4(style="text-align:right;")
+                                                                            input(type="checkbox", title="启用", name="onlyareaskill",checked = inviteData.onlyareaskill == true)
+                                                                            .row(style="margin-bottom:20px;")
+                                                                        .col-lg-12
+                                                                            p h、未配置地区技能组的提示消息
+                                                                    .row(style="margin-bottom:20px;")
+                                                                        .col-lg-12
+                                                                            textarea.layui-input(name="areaskilltipmsg", autocomplete="off", resize="false", style="height:90px;line-height:22px;resize: none;")= inviteData.areaskilltipmsg ? inviteData.areaskilltipmsg : '您好，您所在的地区没有在线客服人员！'
+                                                .ukefu-webim-prop
+                                                    .ukefu-webim-tl(style="clear:both;") 10、启用咨询前信息录入
+                                                    .box-item
+                                                        .row
+                                                            .col-lg-8
+                                                                p 启用咨询前用户录入个人信息
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 开启后会启用访客信息录入功能，访客需要填写姓名、电话、邮件、咨询原因等内容
+                                                            .col-lg-4(style="text-align:right;")
+                                                                input(type="checkbox", title="启用", name="consult_info", lay-filter="consult_info", checked=inviteData.consult_info == true)
+                                                    #consult_info.box-item(style="position: relative;" + (inviteData.consult_info == true ? "" : "display:none;"))
+                                                        .row(style="margin-bottom:20px;")
+                                                            .col-lg-8
+                                                                p a、输入访客姓名
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 默认的访客姓名是随机生成的，访客输入后，在坐席对话界面上将会显示访客输入的姓名
+                                                            .col-lg-4(style="text-align:right;")
+                                                                .layui-input-block
+                                                                    input(type="checkbox", title="启用", name="consult_info_name", checked=inviteData.consult_info_name == true)
+                                                        .row(style="margin-bottom:20px;")
+                                                            .col-lg-8
+                                                                p b、输入访客邮件地址
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 来访访客需要填写电子邮件信息后才能进入咨询
+                                                            .col-lg-4(style="text-align:right;")
+                                                                .layui-input-block
+                                                                    input(type="checkbox", title="启用", name="consult_info_email", checked=inviteData.consult_info_email == true)
+                                                        .row(style="margin-bottom:20px;")
+                                                            .col-lg-8
+                                                                p c、填写电话号码
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 来访访客需要填写电话号码后才能进入咨询
+                                                            .col-lg-4(style="text-align:right;")
+                                                                .layui-input-block
+                                                                    input(type="checkbox", title="启用", name="consult_info_phone", checked = inviteData.consult_info_phone == true)
+                                                        .row(style="margin-bottom:20px;")
+                                                            .col-lg-8
+                                                                p d、填写咨询原因或者问题
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 来访访客需要填写咨询原因或者问题后才能进入咨询
+                                                            .col-lg-4(style="text-align:right;")
+                                                                .layui-input-block
+                                                                    input(type="checkbox", title="启用", name="consult_info_resion", checked=inviteData.consult_info_resion == true)
+                                                        .row(style="margin-bottom:20px;")
+                                                            .col-lg-12
+                                                                p e、咨询信息录入窗口填写提示信息
+                                                        .row(style="margin-bottom:20px;")
+                                                            .col-lg-12
+                                                                textarea.layui-input(name="consult_info_message", autocomplete="off", resize="false", style="height:90px;line-height:22px;resize: none;")= inviteData.consult_info_message ? inviteData.consult_info_message : '您好，请填写以下信息，方便我们更好的为您服务！'
+                                                        .row(style="margin-bottom:20px;")
+                                                            .col-lg-8
+                                                                p f、使用Cookies临时存储用户信息
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 来访访客填写的用户信息临时存放在Cookies，默认有效期是3600秒，信息将会被加密后存储
+                                                            .col-lg-4(style="text-align:right;")
+                                                                .layui-input-block
+                                                                    input(type="checkbox", title="启用", name="consult_info_cookies", checked=inviteData.consult_info_cookies == true)
+                                                .ukefu-webim-prop
+                                                    .ukefu-webim-tl(style="clear:both;") 11、记录访客轨迹
+                                                    .box-item
+                                                        .row
+                                                            .col-lg-8
+                                                                p 是否记录访客访问页面历史信息
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 开启后，访客访问页面的信息会被记录下来
+                                                            .col-lg-4(style="text-align:right;")
+                                                                input#recordhis(type="checkbox", title="启用", name="recordhis",checked=inviteData.recordhis == true)
+                                                .ukefu-webim-prop
+                                                    .ukefu-webim-tl(style="clear:both;") 12、实时跟踪访客状态
+                                                    .box-item
+                                                        .row
+                                                            .col-lg-8
+                                                                p 是否对访客进行实时跟踪
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 开启后，访客信息会被实时写入数据记录，系统开启实时交互模式
+                                                            .col-lg-4(style="text-align:right;")
+                                                                input#traceuser(type="checkbox", title="启用", name="traceuser", checked=inviteData.traceuser == true)
+                                                .ukefu-webim-prop
+                                                    .ukefu-webim-tl(style="clear:both;") 13、允许访客端输入的最大文本字数
+                                                    .box-item
+                                                        .row
+                                                            .col-lg-8
+                                                                p 访客端文本字数输入限制
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 开启后，访客超过设定的字数后会被截断
+                                                            .col-lg-4(style="text-align:right;")
+                                                                input#maxwordsnum.layui-input(type="input", name="maxwordsnum", lay-verify="number", maxlength="5", value=inviteData.maxwordsnum)
+                                                .ukefu-webim-prop
+                                                    .ukefu-webim-tl(style="clear:both;") 14、启用访客端CTRL+Enter快捷键发送消息
+                                                    .box-item
+                                                        .row
+                                                            .col-lg-8
+                                                                p 访客对话界面上启用CTRL+Enter快捷键发送消息
+                                                                p(style="color:#888888;font-size:13px;margin-top:10px;") 默认是Enter快捷键发送消息，启用此功能后，快捷键变为 CTRL+Enter
+                                                            .col-lg-4(style="text-align:right;")
+                                                                input#ctrlenter(type="checkbox", title="启用", name="ctrlenter",checked=inviteData.ctrlenter == true)
+                                                .ukefu-webim-prop
+                                                    .ukefu-webim-tl(style="clear:both;") 15、白名单模式
+                                                    .box-item
+                                                        .row
+                                                            .col-lg-8
+                                                                p 联系人访问才显示在线客服按钮
+                                                            .col-lg-4(style="text-align:right;")
+                                                                input#whitelist_mode(type="checkbox", title="启用", name="whitelist_mode",checked=inviteData.whitelist_mode == true)
+                                            .col-md-5
+                                                #pv.ukefu-im-preview.ukefu-im-preview-dialog(style="width:380px;position: fixed;")
+                                                    -
+                                                        var invite_bg = inviteData.consult_invite_bg ? ('/res/image.html?id=' + inviteData.consult_invite_bg) : '/im/img/webwxgetmsgimg.jpg';
+                                                        var dialog_logo = inviteData.consult_dialog_logo ? ('/res/image.html?id=' + inviteData.consult_dialog_logo) : '/images/logo2.png';
+                                                        var dialog_headimg = inviteData.consult_dialog_headimg ? ('/res/image.html?id=' + inviteData.consult_dialog_headimg) : '/images/agent.png';
+                                                        var color_theme = "theme" + (inviteData.consult_dialog_color ? inviteData.consult_dialog_color : '1');
+
+                                                    .ukefu-im-preview-bar.ukefu-theme-color(class=color_theme, style="padding:5px;")
+                                                        img(src=dialog_logo, style="height:22px;float:left;")
+                                                        span(style="float:right;")
+                                                            i.layui-icon(style="font:size:12px;color:#ffffff;") ဆ
+                                                    .ukefu-im-preview-wrap(style="border:1px solid #EAEAEA")
+                                                        #dialog_message.ukefu-im-preview-tip(style="width:90%;height:5px;font-size:12px;height:32px;overflow:hidden;border-radius: 10px;padding: 2px 10px 2px 10px;")= inviteData.dialog_message ? inviteData.dialog_message : '欢迎您来咨询！欢迎使用春松客服！如需帮助请联系 info@chatopera.com'
+                                                        .ukefu-im-preview-customer
+                                                            i.layui-icon(style="color:#377FED;float:left;") 
+                                                            .ukefu-im-preview-customer-message.ukefu-im-preview-customer-arrow
+                                                        .ukefu-im-preview-user
+                                                            img(src=dialog_headimg, style="height:20px;float:right;")
+                                                            .ukefu-im-preview-user-message.ukefu-im-preview-user-arrow.ukefu-theme-color(class=color_theme, style="width:150px;")
+                                                        .ukefu-im-preview-user(style="height:60px;")
+                                                            img(src=dialog_headimg, style="height:20px;float:right;")
+                                                            .ukefu-im-preview-user-message.ukefu-im-preview-user-arrow.ukefu-theme-color(class=color_theme, style="width:100px;height:50px;")
+                                                        .ukefu-im-preview-hr
+                                                        .ukefu-im-preview-submit
+                                                            i.fa.fa-image(style="color:#dddddd;float:left;")
+                                                        .ukefu-im-preview-submit
+                                                            a.ukefu-im-theme-submit-btn.ukefu-theme-color(class=color_theme) 发送
+                                                    .ukefu-im-profile(style="width:130px;font-size:12px;")
+                                                        .ukefu-profile-title(style="clear:both;") 信息提示
+                                                        .box-item(style="padding:5px;white-space: nowrap;text-overflow: ellipsis;")
+                                                            | 名称：
+                                                            label#dialog_name=  inviteData.dialog_name ? inviteData.dialog_name : '春松客服'
+                                                        .box-item(style="padding:5px;white-space: nowrap;text-overflow: ellipsis;")
+                                                            | 地址：
+                                                            label#dialog_address= inviteData.dialog_address ? inviteData.dialog_address : '北京'
+                                                        .box-item(style="padding:5px;white-space: nowrap;text-overflow: ellipsis;")
+                                                            | 电话：
+                                                            label#dialog_phone= inviteData.dialog_phone ? inviteData.dialog_phone : '185-1935-7507'
+                                                        .box-item(style="padding:5px;white-space: nowrap;text-overflow: ellipsis;")
+                                                            | 邮件：
+                                                            label#dialog_mail= inviteData.dialog_mail ? inviteData.dialog_mail : 'info@chatopera.com'
+                                                        .box-item(style="padding:5px;text-indent: 25px;line-height:25px;")
+                                                            label#dialog_introduction= inviteData.dialog_introduction ? inviteData.dialog_introduction : '客服公告信息，内容在控制台设置。'
+                                                        .box-item(style="padding:5px;white-space: nowrap;text-overflow: ellipsis;text-align:center;border-top:1px solid #dedede;")
+                                                            img(src=dialog_ad, style="height:100px;")
+                    .row
+                        .col-lg-3
+                        .col-lg-9
+                            .layui-form-item
+                                .layui-input-block
+                                    button.layui-btn(lay-submit="", lay-filter="formDemo") 保存
+                                    button.layui-btn.layui-btn-original(type="reset") 重置
+    script(language="javascript").
+        function clearAgentheadimg() {
+            dialogad.outerHTML = dialogad.outerHTML;
+        }
+        layui.use('form', function () {
+            var form = layui.form();
+            form.render('select'); //刷新select选择框渲染
+            form.on("checkbox(leavemessage)", function (data) {
+                if (data.elem.checked == true) {
+                    $('#leavemessage_tip').show();
+                } else {
+                    $('#leavemessage_tip').hide();
+                }
+            });
+            form.on("checkbox(skill)", function (data) {
+                if (data.elem.checked == true) {
+                    $('#skill').show();
+                } else {
+                    $('#skill').hide();
+                }
+            });
+            form.on("checkbox(consult_skill_fixed)", function (data) {
+                if (data.elem.checked == false) {
+                    $('#skill_group').show();
+                    $('#skill_fixed').hide();
+                } else {
+                    $('#skill_fixed').show();
+                    $('#skill_group').hide();
+                }
+            });
+            form.on("checkbox(ai)", function (data) {
+                if (data.elem.checked == true) {
+                    $('#ai').show();
+                } else {
+                    $('#ai').hide();
+                }
+            });
+            form.on("checkbox(consult_info)", function (data) {
+                if (data.elem.checked == true) {
+                    $('#consult_info').show();
+                } else {
+                    $('#consult_info').hide();
+                }
+            });
+        });
+
+
+

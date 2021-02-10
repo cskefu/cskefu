@@ -1,0 +1,39 @@
+.uk-layui-form
+    form.layui-form.uk-form(action='/admin/sysdic/update.html')
+        input(type='hidden', name='id', value=sysDic.id)
+        input(type='hidden', name='p', value=p)
+        .layui-form-item
+            label.layui-form-label 名称：
+            .layui-input-inline
+                input.layui-input(type='text', name='name', required, lay-verify='required', placeholder='请输入名称', autocomplete='off', value=sysDic.name)
+        .layui-form-item
+            label.layui-form-label 代码：
+            .layui-input-inline
+                input.layui-input(type='text', name='code', required, lay-verify='required', placeholder='请输入代码', autocomplete='off', value=sysDic.code)
+        .layui-form-item
+            label.layui-form-label 类型：
+            .layui-input-inline
+                select(name='ctype', lay-verify)
+                    option(value="data", selected=(sysDic.ctype == 'data'?'selected': false)) 数据字典
+                    option(value="auth", selected=(sysDic.ctype == 'auth'?'selected': false)) 权限字典
+                    option(value="resu", selected=(sysDic.ctype == 'resu'?'selected': false)) 系统资源
+        .layui-form-item
+            label.layui-form-label 说明：
+            .layui-input-inline
+                textarea.layui-textarea(name='description', placeholder='请输入')= sysDic.description
+        .layui-form-button
+            .layui-button-block
+                button.layui-btn(lay-submit, lay-filter='formDemo') 立即提交
+                button.layui-btn.layui-btn-original(type='reset') 重置
+script.
+    layui.use('form', function(){
+      var form = layui.form();
+      form.render(); //更新全部
+      form.verify({
+          repass: function(value){
+            if(value != $('#password').val()){
+              return '两次输入的密码不一致，请确认';
+            }
+          }
+        });
+    });

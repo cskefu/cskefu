@@ -1,0 +1,82 @@
+include /mixins/dic.mixin.pug
+.uk-layui-form
+    form.layui-form(action='/agent/summary/save.html', data-toggle='ajax-form', data-close='true', data-inner='#ukefu-chat-agent', method='post')
+        if summary
+            input(type="hidden", name="id", value=summary.id)
+        input(type='hidden', name='userid', value=userid)
+        input(type='hidden', name='agentserviceid', value=agentserviceid)
+        input(type='hidden', name='agentuserid', value=agentuserid)
+        input(type='hidden', name='channel', value=channel)
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label#cusname 服务类型：
+                .layui-input-inline(style='width: 765px;')
+                    select.tags(name='servicetype', multiple, required, lay-verify='required', lay-ignore, style='width:100%;')
+                        if tags
+                            for tag in tags
+                                option(value=tag.id,selected=(summary && summary.servicetype && summary.servicetype.indexOf(tag.id) >= 0 ? 'selected' : false))= tag.tag
+            .layui-inline
+                font(color='red') *
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label 是否预约：
+                .layui-input-inline(style='width:150px;')
+                    .layui-input-block
+                        input(type="radio", name="reservation", lay-filter="reservation", value="1", title="是",checked=(summary && summary.reservation ? 'checked' : false))
+                        input(type="radio", name="reservation", lay-filter="reservation", value="0", title="否",checked=(!(summary && summary.reservation) ? 'checked' : false))
+            .layui-inline.ukefu_reservation(style=(summary && summary.reservation == true ? 'display:;' : 'display:none'))
+                label.layui-form-label(style='width: 80px;') 预约方式：
+                .layui-input-inline(style='width: 120px;')
+                    if summary && summary.reservtype
+                        +sysDicSelect('com.dic.summary.reservtype','reservtype',summary.reservtype,"lay-ignore width:120px;' ")
+                    else
+                        +sysDicSelect('com.dic.summary.reservtype','reservtype','',"lay-ignore width:120px;' ")
+            .layui-inline.ukefu_reservation(style=(summary && summary.reservation == true ? 'display:;' : 'display:none'))
+                label.layui-form-label(style='width: 80px;') 预约时间：
+                .layui-input-inline(style='width: 245px;')
+                    input#reservtime.layui-input(type='text', name='reservtime', autocomplete='off', value=(summary && summary.reservtime ? pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', summary.reservtime) : ''))
+                    i.layui-icon(style='position: absolute;right: 3px;top: 6px;font-size: 25px;') 
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label 服务小结：
+                .layui-input-inline(style='width: 765px;')
+                    textarea.layui-textarea(name="summary", placeholder="服务小结", style="resize:none;height:180px")
+                        if summary
+                            | #{summary.summary}
+        .layui-form-button
+            .layui-button-block
+                button.layui-btn(lay-submit, lay-filter='formDemo') 立即提交
+                button.layui-btn.layui-btn-original(type='reset', onclick='layer.close(layer.index);') 关闭
+script.
+    layui.use('form', function () {
+        var form = layui.form();
+        form.render(); //更新全部
+        form.on("radio(reservation)", function (data) {
+            if (data.value == '1') {
+                $('.ukefu_reservation').show();
+            } else {
+                $('.ukefu_reservation').hide();
+            }
+        });
+    });
+    layui.use('element', function () {
+        var element = layui.element();
+    });
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+        var date = {
+            min: laydate.now(),
+            istime: true,
+            format: "YYYY-MM-DD hh:mm:ss",
+            istoday: false
+        };
+
+        document.getElementById('reservtime').onclick = function () {
+            date.elem = this;
+            laydate(date);
+        }
+
+    });
+    $(".tags").select2();
+            

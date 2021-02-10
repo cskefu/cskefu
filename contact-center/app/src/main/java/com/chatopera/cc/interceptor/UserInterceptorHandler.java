@@ -25,6 +25,7 @@ import com.chatopera.cc.model.SystemConfig;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
+import com.chatopera.cc.util.PugHelper;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -153,6 +154,8 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
 
             view.addObject("advTypeList", Dict.getInstance().getDic("com.dic.adv.type"));
             view.addObject("ip", request.getRemoteAddr());
+
+            view.addObject("pugHelper", new PugHelper());
         }
     }
 

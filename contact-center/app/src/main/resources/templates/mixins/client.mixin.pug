@@ -1,0 +1,13 @@
+mixin opersystem(name)
+    if name == "windows"
+        i.kfont &#xe801;
+    else if name == "linux"
+        i.kfont &#xe726;
+    else if name == "mac"
+        i.kfont &#xe6be;
+
+mixin device(mobile)
+    if onlineuser.mobile == "1"
+        i.kfont &#xe603;
+    else
+        i.kfont &#xe601;

@@ -1,0 +1,118 @@
+extends /admin/include/layout.pug
+
+block content
+    .row
+        .col-lg-12
+            h1.site-h1(style='background-color:#FFFFFF;')
+                | 用户列表 (#{userList.totalElements?userList.totalElements:0})
+                span(style='float:right')
+                    button.layui-btn.layui-btn-small.green(href='/admin/user/add.html', data-toggle='ajax', data-width='750', data-height='540', data-title='创建新用户')
+                        | 创建新用户
+            .row(style='padding:5px;')
+                blockquote.layui-elem-quote.layui-quote-nm
+                    i.layui-icon(style="color:gray") &#xe60b;
+                    font(color="#999").layui-word-aux 除管理员外，账号必须在【组织结构】中关联一个部门，必须在【系统角色】中关联一个角色，才可以使用资源。设置后，该账号需重新登系统才能生效。
+                .col-lg-12
+                    table.layui-table(lay-skin='line', style='table-layout: fixed;word-break: break-all')
+                        colgroup
+                            col
+                            col
+                            col
+                            col
+                            col
+                            if models.contains("callout")
+                                col
+                            col
+                            col
+                            col
+                        thead
+                            tr
+                                th(width='18%') 用户
+                                th(width='10%') 注册时间
+                                th(width='15%') 姓名
+                                th(width='12%') 电子邮件
+                                th(width='12%') 手机
+                                th(width='50px') 多媒体
+                                if models.contains("callcenter")
+                                    th(width="60px") 呼叫中心
+                                th(width='50px') 管理员
+                                th(style='white-space:nowrap;width: 110px', nowrap) 操作
+                        tbody
+                            if size(userList.content) > 0
+                                for user in userList.content
+                                    tr
+                                        td
+                                            a(href='javascript:void(0)')
+                                                i.layui-icon.headimg(style='margin-right: 10px') &#xe612;
+                                                div(title=user.username, style="margin-top:10px;width: 90px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")
+                                                    = user.username
+                                                    if user.datastatus == true
+                                                        i(style="color:red") （已删除）
+                                        td
+                                            | #{pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', user.createtime)}
+                                        td(title=user.uname, style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")=user.uname
+                                        td= user.email
+                                        td= user.mobile
+                                        td
+                                            if user.agent
+                                                i.layui-icon(style="color:#19a55d") &#xe605;
+                                            else
+                                                i.layui-icon(style="color:#19a55d") &#x1006;
+                                        if models.contains("callcenter")
+                                            td
+                                                if user.callcenter
+                                                    i.layui-icon(style="color:#19a55d") &#xe605;
+                                                else
+                                                    i.layui-icon(style="color:#19a55d") &#x1006;
+                                        td
+                                            if user.admin
+                                                i.layui-icon(style="color:#19a55d") &#xe605;
+                                            else
+                                                i.layui-icon(style="color:#19a55d") &#x1006;
+                                        td(style="white-space:nowrap;" nowrap="nowrap")
+                                            a(href='/admin/user/edit.html?id=' + user.id, data-toggle="ajax" data-width="750" data-height="540" data-title="编辑用户信息")
+                                                i.layui-icon &#xe642;
+                                                | 编辑
+                                            if !user.admin && user.datastatus != true
+                                                a(href='/admin/user/delete.html?id=' + user.id, style="margin-left:10px;" data-toggle="tip" data-title="请确认是否删除记录？")
+                                                    i.layui-icon(style="color:red") &#x1006;
+                                                    | 删除
+            .row(style='padding:5px;')
+                .col-lg-12#page(style='text-align:center;')
+
+    script(language="javascript").
+        layui.use('layer', function(){
+              var layer = layui.layer;
+              var msg = '#{msg}';
+              if(msg == 'username_exist')
+                  layer.msg('用户名存在，请重新填写',{icon: 2, time: 3000})
+              else if(msg == 'email_exist')
+                  layer.msg('邮件存在，请重新填写',{icon: 2, time: 3000})
+              else if (msg == 'mobile_exist')
+                  layer.msg('手机存在，请重新填写', {icon: 2, time: 3000})
+              else if (msg == 'sip_account_exist')
+                  layer.msg('SIP地址已经存在，请重新填写', {icon: 2, time: 3000})
+              else if (msg == 't1')
+                  layer.msg('当前用户坐席就绪或对话未结束，不能切换为非坐席', {icon: 2, time: 3000})
+              else if (msg == 'new_user_success')
+                  layer.msg('新用户创建成功',{icon: 1, time: 1000})
+              else if (msg == 'edit_user_success')
+                  layer.msg('用户编辑成功', {icon: 1, time: 1000})
+            });
+            layui.use(['laypage', 'layer'], function(){
+                  var laypage = layui.laypage
+                  ,layer = layui.layer;
+
+                  laypage({
+                        cont: 'page'
+                        ,pages: #{userList.totalPages? userList.totalPages:0} //总页数
+                        ,curr: #{userList.number? userList.number+1:0}
+                        ,groups: 5 //连续显示分页数
+                        ,jump:function(data , first){
+                            if(!first){
+                                location.href = "/admin/user/index.html?p="+data.curr ;
+                            }
+                        }
+                   });
+                });
+

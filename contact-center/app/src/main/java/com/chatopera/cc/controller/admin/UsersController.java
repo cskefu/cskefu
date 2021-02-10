@@ -24,7 +24,6 @@ import com.chatopera.cc.model.OrganUser;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.model.UserRole;
 import com.chatopera.cc.persistence.repository.*;
-import com.chatopera.cc.proxy.OnlineUserProxy;
 import com.chatopera.cc.proxy.OrganProxy;
 import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
@@ -89,13 +88,13 @@ public class UsersController extends Handler {
         )));
 
 
-        return request(super.createAdminTempletResponse("/admin/user/index"));
+        return request(super.createView("/admin/user/index"));
     }
 
     @RequestMapping("/add")
     @Menu(type = "admin", subtype = "user")
     public ModelAndView add(ModelMap map, HttpServletRequest request) {
-        ModelAndView view = request(super.createRequestPageTempletResponse("/admin/user/add"));
+        ModelAndView view = request(super.createView("/admin/user/add"));
         Organ currentOrgan = super.getOrgan(request);
         Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
         map.addAttribute("currentOrgan", currentOrgan);
@@ -107,7 +106,7 @@ public class UsersController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "user")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
-        ModelAndView view = request(super.createRequestPageTempletResponse("/admin/user/edit"));
+        ModelAndView view = request(super.createView("/admin/user/edit"));
         User user = userRepository.findById(id);
         if (user != null && MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER)) {
             // 加载呼叫中心信息
@@ -146,7 +145,7 @@ public class UsersController extends Handler {
         } else {
             msg = "admin_user_not_exist";
         }
-        return request(super.createRequestPageTempletResponse("redirect:/admin/user/index.html?msg=" + msg));
+        return request(super.createView("redirect:/admin/user/index.html?msg=" + msg));
     }
 
 }

@@ -1,0 +1,21 @@
+.row(style="border-bottom: 10px solid #EFEFEF;padding:10px;")
+    .col-lg-8
+        .ukefu-measure
+            .ukefu-bt
+                .layui-icon.ukewo-btn.ukefu-content-ind
+                    img(src="/images/webim.png", style="width:60px;height:60px;")
+                .ukefu-bt-text
+                    .ukefu-bt-text-title(style="font-weight:400;font-size:24px;border-bottom:1px solid #dedede;")
+                        | #{snsAccount.name}
+                        span(style="font-size:15px;color:#AAAAAA;") 接入网站创建时间：#{pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', snsAccount.createtime)}
+                    .ukefu-bt-text-content(style="")= snsAccount.name
+.ukefu-tab-title(style="margin-left: 0px;")
+    ul.tab-title
+        .ukefu-tab-title(style="margin-left: 0px;")
+            ul.tab-title
+                li(class={'layui-this': subtype == 'webim'})
+                    a(href="/admin/webim/index.html?snsid=" + snsAccount.snsid) 基本设置
+                li(class={'layui-this': subtype == 'invote'})
+                    a(href="/admin/webim/invote.html?snsid=" + snsAccount.snsid) 邀请设置
+                li(class={'layui-this': subtype == 'profile'})
+                    a(href="/admin/webim/profile.html?snsid=" + snsAccount.snsid) 客服信息

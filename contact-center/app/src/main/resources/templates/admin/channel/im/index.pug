@@ -1,0 +1,77 @@
+extends /admin/include/layout.pug
+
+block content
+    .row
+        .col-lg-12
+            h1.site-h1(style="background-color:#FFFFFF;")
+                | 网站列表 (#{snsAccountList.totalElements})
+                span(style="float:right;")
+                    if user.superadmin || user.admin
+                        button.layui-btn.layui-btn-small.green(href="/admin/im/add.html", data-toggle="ajax", data-width="550", data-height="300", data-title="创建新网站") 创建新网站
+            .ror(style="padding:5px;")
+                .col-lg-12
+                    table.layui-table(lay-skin="line", style="table-layout: fixed; word-break: break-all")
+                        thead
+                            tr
+                                th 名称
+                                th 网站地址
+                                th(width="80px") 网站标识
+                                th 创建时间
+                                th(style="white-space:nowrap;", nowrap="nowrap") 操作
+                        tbody
+                            for snsAccount in snsAccountList.content
+                                tr
+                                    td(title="#{snsAccount.name}", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")= snsAccount.name
+                                    td(title="#{snsAccount.baseURL}", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")= snsAccount.baseURL
+                                    td= snsAccount.snsid
+                                    td= pugHelper.formatDate("yyyy-MM-dd HH:mm:ss", snsAccount.createtime)
+                                    td(style="white-space:nowrap;", nowrap="nowrap")
+                                        a(href="/admin/webim/index.html?snsid=" + snsAccount.snsid)
+                                            i.layui-icon 
+                                            |                                接入
+                                        if user.superadmin || user.admin
+                                            a(href="/admin/im/edit.html?id=" + snsAccount.id, data-toggle="ajax", data-width="550", data-height="300", data-title="编辑网站")
+                                                i.layui-icon 
+                                                |                                编辑
+                                        if (user.superadmin || user.admin) && snsAccount.datastatus != true
+                                            a(href="/admin/im/delete.html?id=" + snsAccount.id, style="margin-left:10px;", data-toggle="tip", data-confirm=(secret.enable ? "请输入二次安全验证密码" : false),title="删除网站需要进行二次密码验证，请确认是否删除？")
+                                                i.layui-icon(style="color:red;") ဆ
+                                                |                                删除
+            .row(style="padding:5px;")
+                #page.col-lg-12(style="text-align:center;")
+    script.
+        if ("#{execute}" == "false")
+            top.layer.alert('二次 验证密码设置失败，输入的密码错误，请重新操作！', {icon: 2});
+        var msg = '#{msg}';
+        if (msg == '1')
+            top.layer.alert('二次验证密码设置成功', {icon: 1});
+        else if (msg == '2')
+            top.layer.alert('二次验证密码设置失败，请确认两次输入的密码一致', {icon: 2});
+        else if (msg == '3')
+            top.layer.alert('二次验证密码设置失败，旧的密码验证失败，请输入正确的密码', {icon: 2});
+
+        layui.use('layer', function () {
+            var layer = layui.layer;
+            console.log(window.location.href)
+            var status = '#{status}';
+            if (status == 'new_webim_success')
+                layer.msg('网站添加成功', {icon: 1, time: 1000})
+            else if (status == 'new_webim_fail')
+                layer.msg('网站添加失败', {icon: 2, time: 3000})
+
+        });
+        layui.use(['laypage', 'layer'], function () {
+            var laypage = layui.laypage
+                , layer = layui.layer;
+            laypage({
+                cont: 'page'
+                , pages: #{snsAccountList.totalPages} //总页数
+                , curr: #{snsAccountList.number + 1}
+                , groups: 5 //连续显示分页数
+                , jump: function (data, first) {
+                    if (!first) {
+                        location.href = "/admin/im/index.html?p=" + data.curr;
+                    }
+                }
+            });
+        });

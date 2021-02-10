@@ -1,0 +1,34 @@
+.uk-layui-form
+    form.layui-form(action='/admin/template/impsave.html', enctype='multipart/form-data', method='post')
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label 数据文件：
+                .layui-input-inline
+                    .layui-box.layui-upload-button
+                        input.layui-upload-file(type='file', name='dataFile', required, lay-verify='required', onchange="$('#dataFile').html($(this).val());")
+                        |
+                        span.layui-upload-icon
+                            i.layui-icon 
+                            | 上传系统模板数据文件
+            .layui-inline
+                font(color='red') *（必填项）
+                |  (需要导入的系统模板数据文件，data格式文件)
+
+        .layui-form-item(style='height:40px;line-height:40px;')
+            .layui-inline
+                label.layui-form-label
+                .layui-input-inline#dataFile(style='width:500px;').
+
+        .layui-form-button
+            .layui-button-block
+                button.layui-btn(lay-submit, lay-filter='formDemo') 立即导入
+                button.layui-btn.layui-btn-original(type='reset') 重置
+script.
+    layui.use('upload', function () {
+        var target = $(this).attr("data-target");
+    });
+    layui.use('form', function () {
+        var form = layui.form();
+        form.render();
+    });
+

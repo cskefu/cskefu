@@ -40,7 +40,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Controller
-@RequestMapping(value = "/apps/chatbot")
+@RequestMapping(value = "/admin/system/chatbot")
 public class ChatbotController extends Handler {
 
     private final static Logger logger = LoggerFactory.getLogger(ChatbotController.class);
@@ -57,7 +57,7 @@ public class ChatbotController extends Handler {
     @Autowired
     private SNSAccountRepository snsAccountRepository;
 
-    private final static String botServiecProvider = SystemEnvHelper.getenv(
+    private final static String botServiceProvider = SystemEnvHelper.getenv(
             ChatbotConstants.BOT_PROVIDER, ChatbotConstants.DEFAULT_BOT_PROVIDER);
 
 
@@ -66,7 +66,7 @@ public class ChatbotController extends Handler {
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid final String chatbotid) throws CSKefuException {
         logger.info("[index] chatbot id {}", chatbotid);
 
-        ModelAndView view = request(super.createAppsTempletResponse("/apps/chatbot/index"));
+        ModelAndView view = request(super.createView("/admin/system/chatbot/index"));
         List<Chatbot> chatbots = chatbotRes.findByOrgi(super.getOrgi(request));
         Chatbot currentbot = null;
 
@@ -98,7 +98,7 @@ public class ChatbotController extends Handler {
             }
         }
 
-        view.addObject("botServiecProvider", botServiecProvider);
+        view.addObject("botServiceProvider", botServiceProvider);
 
         // 增加当前bot的更多信息
         if (currentbot != null) {
@@ -129,17 +129,18 @@ public class ChatbotController extends Handler {
     public ModelAndView eidt(ModelMap map, HttpServletRequest request, @Valid String id) {
         User curruser = super.getUser(request);
 
-        ModelAndView view = request(super.createAppsTempletResponse("/apps/chatbot/edit"));
+        ModelAndView view = request(super.createView("/admin/system/chatbot/edit"));
         if (id != null) {
             Chatbot c = chatbotRes.findOne(id);
             SNSAccount snsAccount = snsAccountRes.findBySnsidAndOrgi(c.getSnsAccountIdentifier(), curruser.getOrgi());
-            view.addObject("snsurl", snsAccount.getBaseURL());
+            view.addObject("snsurl", snsAccount.getSnstype() == "webim" ? snsAccount.getBaseURL() : snsAccount.getName());
             view.addObject("bot", c);
+            view.addObject("snstype", snsAccount.getSnstype());
 
         }
 
         view.addObject("id", id);
-        view.addObject("botServiecProvider", botServiecProvider);
+        view.addObject("botServiceProvider", botServiceProvider);
 
         return view;
     }

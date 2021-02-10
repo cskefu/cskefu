@@ -1,0 +1,38 @@
+extends /admin/include/layout.pug
+block content
+    .row
+        .col-lg-12
+            h1.site-h1(style='background-color:#FFFFFF;')
+                | 系统模板
+
+                span(style='float:right;')
+                    button.layui-btn.layui-btn-small.green(href='/admin/template/imp.html', data-toggle='ajax', data-width='750', data-height='220', data-title='导入系统模板')
+                        i.kfont &#xe641;
+                        span 导入系统模板
+
+                    a.layui-btn.layui-btn-small.green(href='/admin/template/expall.html', target='_blank')
+                        i.kfont &#xe672;
+                        span 导出系统模板
+
+            .row(style='padding:5px;')
+                .col-lg-12
+                    table.layui-table(lay-skin='line')
+                        colgroup
+                            col(width='15%')
+                            col(width='20%')
+                            col(width='20%')
+                            col
+                        thead
+                            tr
+                                th 分类名称
+                                th 分类代码
+                                th 创建时间
+                        tbody
+                            for dic in sysDicList
+                                tr
+                                    td: a(href="/admin/template/list.html?type=" + dic.id)= dic.name
+                                    td= dic.code
+                                    if dic.createtime
+                                        td= pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', dic.createtime)
+                                    else
+                                        td

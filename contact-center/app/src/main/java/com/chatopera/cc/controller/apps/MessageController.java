@@ -33,6 +33,6 @@ public class MessageController extends Handler{
     @RequestMapping("/ping")
     @Menu(type = "message" , subtype = "ping" , admin= true)
     public ModelAndView ping(ModelMap map , HttpServletRequest request) {
-        return request(super.createRequestPageTempletResponse("/apps/message/ping"));
+        return request(super.createView("/apps/message/ping"));
     }
 }

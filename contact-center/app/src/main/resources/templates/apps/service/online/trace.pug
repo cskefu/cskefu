@@ -1,0 +1,39 @@
+include /mixins/client.mixin.pug
+
+.uk-layui-form
+    .box
+        .box-body
+            table.layui-table(lay-skin="line")
+                thead
+                    tr.design-sortable-tr
+                        th 用户名
+                        th 终端/系统/浏览器
+                        th 访问时间
+                        th 离开时间
+                        th 地域
+                        th 标题
+                tbody
+                    if traceHisList && traceHisList.content && !traceHisList.content.empty()
+                        for traceHis in traceHisList.content
+                            tr.tdHasContorllor.design-dropable-td
+                                td.first_td_head= traceHis.username
+                                td.ukefu-online-client
+                                    +device(traceHis.mobile)
+                                    |
+                                    +opersystem(traceHis.ostype)
+                                    |  #{traceHis.browser}
+                                td= pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', traceHis.createtime)
+                                td= pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', traceHis.updatetime)
+                                td= traceHis.country
+                                td
+                                    a(href=traceHis.url, target="_blank", title=traceHis.title)= traceHis.title
+
+                    else
+                        tr
+                            td(colspan="20", style="height:400px;")
+                                .ukefu-empty(style="background: none")
+                                    i.layui-icon 
+                                    div 没有访问轨迹信息
+    .layui-form-button
+        .layui-button-block
+            button.layui-btn(lay-submit="", lay-filter="formDemo", onclick="layer.close(layerwin);") 关闭

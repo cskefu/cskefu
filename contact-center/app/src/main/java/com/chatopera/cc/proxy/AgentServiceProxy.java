@@ -20,7 +20,6 @@ import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.es.ContactsRepository;
-import com.chatopera.cc.persistence.es.QuickReplyRepository;
 import com.chatopera.cc.persistence.interfaces.DataExchangeInterface;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.util.mobile.MobileAddress;
@@ -69,12 +68,6 @@ public class AgentServiceProxy {
     private TagRepository tagRes;
 
     @Autowired
-    private QuickTypeRepository quickTypeRes;
-
-    @Autowired
-    private QuickReplyRepository quickReplyRes;
-
-    @Autowired
     private TagRelationRepository tagRelationRes;
 
     @Autowired
@@ -82,6 +75,9 @@ public class AgentServiceProxy {
 
     @Autowired
     private ContactsRepository contactsRes;
+
+    @Autowired
+    private ChatbotRepository chatbotRes;
 
     /**
      * 关联关系
@@ -200,10 +196,10 @@ public class AgentServiceProxy {
             final User logined) {
         view.addObject("curagentuser", agentUser);
 
-        CousultInvite invite = OnlineUserProxy.consult(agentUser.getAppid(), agentUser.getOrgi());
-        if (invite != null) {
-            view.addObject("aisuggest", invite.isAisuggest());
-            view.addObject("ccaAisuggest", invite.isAisuggest());
+        Chatbot c = chatbotRes.findBySnsAccountIdentifierAndOrgi(agentUser.getAppid(), agentUser.getOrgi());
+        if (c != null) {
+            view.addObject("aisuggest", c.isAisuggest());
+            view.addObject("ccaAisuggest", c.isAisuggest());
         }
 
         // 客服设置
@@ -255,14 +251,5 @@ public class AgentServiceProxy {
         if (service != null) {
             view.addObject("tags", tagRes.findByOrgiAndTagtypeAndSkill(orgi, MainContext.ModelType.USER.toString(), service.getSkill()));
         }
-        view.addObject("quickReplyList", quickReplyRes.findByOrgiAndCreater(logined.getOrgi(), logined.getId(), null));
-        List<QuickType> quickTypeList = quickTypeRes.findByOrgiAndQuicktype(
-                logined.getOrgi(), MainContext.QuickType.PUB.toString());
-        List<QuickType> priQuickTypeList = quickTypeRes.findByOrgiAndQuicktypeAndCreater(
-                logined.getOrgi(),
-                MainContext.QuickType.PRI.toString(),
-                logined.getId());
-        quickTypeList.addAll(priQuickTypeList);
-        view.addObject("pubQuickTypeList", quickTypeList);
     }
 }

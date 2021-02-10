@@ -1,0 +1,7 @@
+ul.layui-nav.layui-nav-tree(lay-filter='demo')
+    li.layui-nav-item.layui-nav-itemed
+        a.layui-nav-title(href='javascript:;') 营销中心
+        dl.layui-nav-child
+            if user.roleAuthMap["B02_B01"] || user.superadmin
+                dd(class='layui-this')
+                    a(href='/apps/messenger/otn/index.html') Messenger OTN

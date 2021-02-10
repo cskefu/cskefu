@@ -1,0 +1,13 @@
+ul.layui-nav.layui-nav-tree(lay-filter='setting')
+    li.layui-nav-item.layui-nav-itemed
+        if user.roleAuthMap["A02_A01"] || user.admin
+            a.layui-nav-title(href="javascript:;") 联系人
+            dl.layui-nav-child
+                if user.roleAuthMap["A02_A01_A01"] || user.admin
+                    dd(class={'layui-this': !ckind})
+                        a(href="/apps/contacts/index.html") 全部联系人
+                if user.roleAuthMap["A02_A01_A02"] || user.admin
+                    if uKeFuDic['com.dic.contacts.ckind']
+                        for dic in uKeFuDic['com.dic.contacts.ckind']
+                            dd(class={'layui-this': ckind && ckind == dic.id})
+                                a(href="/apps/contacts/" + (subtype ? subtype : "index") + ".html?ckind=" + dic.id)= dic.name

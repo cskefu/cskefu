@@ -1,0 +1,12 @@
+ul.layui-nav.layui-nav-tree(lay-filter="setting")
+    li.layui-nav-item.layui-nav-itemed
+        if user.roleAuthMap["A03_A01"] || user.admin
+            a.layui-nav-title(href="javascript:;") 全部客户
+        dl.layui-nav-child
+            if user.roleAuthMap["A03_A01_A01"] || user.admin
+                dd(class={'layui-this': !ekind})
+                    a(href="/apps/customer/index.html") 全部客户
+            if user.roleAuthMap["A03_A01_A02"] || user.admin
+                for dic in uKeFuDic['com.dic.contacts.entype']
+                    dd(class={'layui-this': ekind && ekind == dic.id})
+                        a(href="/apps/customer/" + (subtype ? subtype : 'index') + ".html?ekind=" + dic.id + (q ? '&q=' + q : ''))= dic.name

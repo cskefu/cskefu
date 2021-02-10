@@ -35,6 +35,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -68,6 +69,8 @@ public class PeerSyncIM implements ApplicationContextAware {
 
     @PostConstruct
     public void postConstruct() {
+        applicationContext.getBeansWithAnnotation(Configuration.class);
+
         composer = new Composer<>();
 
         /**
@@ -81,6 +84,11 @@ public class PeerSyncIM implements ApplicationContextAware {
 
         // 通过Skype发送消息
         pluginRegistry.getPlugin(Constants.CSKEFU_MODULE_SKYPE).ifPresent(p -> {
+            composer.use((Middleware) applicationContext.getBean(
+                    p.getPluginId() + PluginRegistry.PLUGIN_CHANNEL_MESSAGER_SUFFIX));
+        });
+
+        pluginRegistry.getPlugin(Constants.CSKEFU_MODULE_MESSENGER).ifPresent(p -> {
             composer.use((Middleware) applicationContext.getBean(
                     p.getPluginId() + PluginRegistry.PLUGIN_CHANNEL_MESSAGER_SUFFIX));
         });

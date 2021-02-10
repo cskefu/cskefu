@@ -1,0 +1,85 @@
+.uk-layui-form
+    form.layui-form(action='/admin/email/update.html', method='post')
+        input(type='hidden', name='id', value=email.id)
+        .layui-form-item(style='margin-top:10px;')
+            .layui-inline
+                label.layui-form-label(style='width:150px;') 技能组：
+                .layui-input-inline
+                    select(name='organ', required, lay-verify='required')
+                        if size(organList) > 0
+                            for o in organList
+                                option(value=o.id, selected=(email.organ == o.id ? 'selected' : false))= o.name
+                        else
+                            option(value="") 请选择
+                .layui-form-mid.layui-word-aux
+                    font(color='red') *
+
+        .layui-form-item(style='margin-top:10px;')
+            .layui-inline
+                label.layui-form-label(style='width:150px;') 邮件服务器名称：
+                .layui-input-inline
+                    input.layui-input(type='text', name='name', required, lay-verify='required', autocomplete='off', value=email.name)
+                .layui-form-mid.layui-word-aux
+                    font(color='red') *
+
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label(style='width:150px;') 邮件服务器地址：
+                .layui-input-inline
+                    input.layui-input(type='text', name='smtpserver', required, lay-verify='required', autocomplete='off', value=email.smtpserver)
+                .layui-form-mid.layui-word-aux
+                    font(color='red') *
+
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label(style='width:150px;') 账号：
+                .layui-input-inline
+                    input.layui-input(type='text', name='smtpuser', required, lay-verify='required', autocomplete='off', value=email.smtpuser)
+                .layui-form-mid.layui-word-aux
+                    font(color='red') *
+
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label(style='width:150px;') 密码：
+                .layui-input-inline
+                    input.layui-input(type='password', name='smtppassword', autocomplete='off')
+
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label(style='width:150px;') 邮件发件人：
+                .layui-input-inline
+                    input.layui-input(type='text', name='mailfrom', required, autocomplete='off', value=email.mailfrom)
+
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label(style='width:150px;') 邮件服务器启用SSL：
+                .layui-input-inline
+                    input(type="checkbox", title="启用", name="seclev", value="true", lay-filter="ssl", checked=(email.seclev == "true" ? 'checked' : false))
+
+        .layui-form-item(style="display:" + (email.seclev == "true" ? 'block;' : 'none;') )#sslport
+            .layui-inline
+                label.layui-form-label(style='width:150px;') SSL端口：
+                .layui-input-inline
+                    input.layui-input(type='text', name='sslport', autocomplete='off', value=email.sslport)
+
+        .layui-form-button
+            .layui-button-block
+                button.layui-btn(lay-submit, lay-filter='formDemo') 立即提交
+                button.layui-btn.layui-btn-original(type='reset') 重置
+script.
+    layui.use('form', function () {
+        var form = layui.form();
+        form.render(); //更新全部
+        form.on("checkbox(ssl)", function (data) {
+            if (data.elem.checked == true) {
+                $('#sslport').show();
+            } else {
+                $('#sslport').hide();
+                $("input[name=sslport]").val("");
+            }
+        });
+    });
+    layui.use('element', function () {
+        var element = layui.element();
+    });
+

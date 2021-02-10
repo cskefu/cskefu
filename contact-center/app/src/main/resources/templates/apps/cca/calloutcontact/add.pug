@@ -1,0 +1,144 @@
+//-
+    原始 Freemarker 文件位置：https://gitlab.chatopera.com/chatopera/cskefu/blob/760e130e770a96a43e8f6f2c8a1eb0885c0bbf90/contact-center/app/src/main/resources/templates/apps/cca/calloutcontact/add.html
+    该页面项目中暂时没有使用，此处是没有完全转化的 Pug 文件
+    如果提供这个页面，需要参考 Freemarker 原文件完成转化或参考实现
+
+// <#include "/public/macro.html">
+html
+    head
+    body
+        .uk-layui-form
+            .box-header(style='background-color: #f5f5f5;')
+                h1.site-h1(style='background-color:#FFFFFF;') 新建联系人
+            form.layui-form(action='/agent/calloutcontact/save.html?agentuser=${curagentuser.id!\'\'}', method='post')
+                input(hidden, name='calloutcontact')
+                input(type='hidden', name='shares', value='all')
+                .layui-collapse
+                    .layui-colla-item
+                        h2.layui-colla-title 基本信息
+                        .layui-colla-content.layui-show
+                            .layui-form-item
+                                .layui-inline
+                                    label.layui-form-label 获得时间：
+                                    .layui-input-inline
+                                        input#getdate.layui-input(type='text', name='touchtime', readonly, lay-verify='date', autocomplete='off')
+                                        i.layui-icon(style='position: absolute;right: 3px;top: 6px;font-size: 25px;') 
+                                    span
+                                        font(color='red') *
+                                        b(style='font-size: 10px;') (您得到此联系人的时间)
+                            .layui-form-item
+                                .layui-inline
+                                    label.layui-form-label 类型：
+                                    .layui-input-inline
+                                        // 								<@select "com.dic.contacts.ckind" "ckind" '4028838b5af1047e015af140df150003'!'' "lay-ignore required lay-verify='required' "/>
+                                    span
+                                        font(color='red') *
+                    .layui-colla-item
+                        h2.layui-colla-title 联系人信息
+                        .layui-colla-content.layui-show
+                            .layui-form-item
+                                .layui-inline
+                                    label.layui-form-label#cusname 联系人名称：
+                                    .layui-input-inline
+                                        input.layui-input(type='text', name='name', required, lay-verify='required', autocomplete='off')
+                                    span
+                                        font(color='red') *
+                            .layui-form-item
+                                .layui-inline
+                                    label.layui-form-label 性别：
+                                    .layui-input-inline
+                                        .layui-input-block(style='width: 113%;')
+                                            input(type='radio', name='gender', value='1', title='男')
+                                            input(type='radio', name='gender', value='0', title='女')
+                                            input(type='radio', name='gender', value='-1', title='未知', checked)
+                            .layui-form-item
+                                .layui-inline
+                                    label.layui-form-label 生日：
+                                    .layui-input-inline
+                                        input#cusbirthday.layui-input(type='text', name='cusbirthday', autocomplete='off')
+                                        i.layui-icon(style='position: absolute;right: 3px;top: 6px;font-size: 25px;') 
+                            .layui-form-item
+                                .layui-inline
+                                    label.layui-form-label 联系电话：
+                                    .layui-input-inline
+                                        input.layui-input(type='text', name='phone', lay-verify='entphone', autocomplete='off', value='${statusEvent.discalled!\'\'}')
+                            .layui-form-item
+                                .layui-inline
+                                    label.layui-form-label 手机号：
+                                    .layui-input-inline
+                                        input.layui-input(type='text', name='mobileno', lay-verify='entphone', autocomplete='off', value='${statusEvent.discalled!\'\'}')
+                            .layui-form-item
+                                .layui-inline
+                                    label.layui-form-label 城市：
+                                    .layui-input-inline
+                                        // 								<@select "com.dic.address.area" "province" mobileAddress.province "lay-ignore"/>
+                                .layui-inline
+                                    .layui-input-inline#contacts_city
+                                        // 								<@select "com.dic.address.area.city" "city" mobileAddress.city "lay-ignore"/>&lt;!&ndash; 二级字典，不存在的 CODE &ndash;&gt;
+                            .layui-form-item
+                                .layui-inline
+                                    label.layui-form-label 电子邮件：
+                                    .layui-input-inline
+                                        input.layui-input(type='text', name='email', lay-verify='entemail', autocomplete='off')
+                            .layui-form-item
+                                .layui-inline
+                                    label.layui-form-label 联系人地址：
+                                    .layui-input-inline
+                                        input.layui-input(type='text', name='address', autocomplete='off', style='width: 236%;')
+                            .layui-form-item
+                                .layui-inline
+                                    label.layui-form-label 联系人说明：
+                                    .layui-input-inline(style='width: 174%;')
+                                        textarea.layui-textarea(name='memo', placeholder='请输入内容')
+                .layui-form-button(style='position: inherit;')
+                    .layui-button-block
+                        button.layui-btn(lay-submit, lay-filter='formDemo') 立即提交
+                        button.layui-btn.layui-btn-original(type='reset') 重置
+        script(src='/js/moment.min.js')
+        script.
+            
+            //Demo
+                $('#province').change(function(){
+                    loadURL('/res/dic.html?id='+$(this).val()+"&name=city&attr=lay-ignore&style=width:85px;display:inline-block;" , '#contacts_city');
+                })
+                layui.use('form', function() {
+                    var form = layui.form();
+                    form.render(); //更新全部
+                    form.verify({
+                        entphone: function(value){
+                            if(value!="" && !new RegExp(/^1[3456789]\d{9}$/).test(value)){
+                              return '请输入正确的电话号码';
+                            }
+                        },
+                        entemail: function(value){
+                            if(value!="" && !new RegExp(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/).test(value)){
+                              return '请输入正确的电子邮箱地址';
+                            }
+                        }
+                    });  
+                });
+                layui.use('element', function(){
+                    var element = layui.element();
+                });
+            
+                $("#getdate").val(moment().format('YYYY-MM-DD'));
+                layui.use('laydate', function() {
+                    var laydate = layui.laydate;
+            
+                    var date = {
+                        min : '1950-01-01 00:00:00',
+                        max : laydate.now(),
+                        istoday : false
+                    };
+            
+                    document.getElementById('getdate').onclick = function() {
+                        date.elem = this;
+                        laydate(date);
+                    }
+                    
+                    document.getElementById('cusbirthday').onclick = function() {
+                        date.elem = this;
+                        laydate(date);
+                    }
+                });
+            

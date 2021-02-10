@@ -1,0 +1,14 @@
+.uk-layui-form
+    form.layui-form.uk-form(action='/admin/organ/saveuser.html')
+        input(type='hidden', name='organ', value=organ.id)
+        .layui-form-item
+            .layui-input-inline
+                select.ukefu-form-multiple(multiple, name='users')
+                    if userList
+                        for curruser in userList
+                            option(value=curruser.id, selected=curruser.organ && curruser.organ == organ.id?'selected':false)
+                                | #{curruser.username}（#{curruser.uname}）
+        .layui-form-button
+            .layui-button-block
+                button.layui-btn(lay-submit, lay-filter='formDemo') 立即提交
+                button.layui-btn.layui-btn-original(type='reset') 重置
