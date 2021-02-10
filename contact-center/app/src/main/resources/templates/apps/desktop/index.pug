@@ -89,8 +89,8 @@ block content
                                 th(width="100px") 操作
                         tbody
                             if onlineUserList && onlineUserList.content && !onlineUserList.content.isEmpty()
-                                tr.tdHasContorllor.design-dropable-td
-                                    for onlineuser in onlineUserList.content
+                                for onlineuser in onlineUserList.content
+                                    tr.tdHasContorllor.design-dropable-td
                                         td.first_td_head
                                             a(href="/service/online/index.html?userid=" + onlineuser.userid)
                                                 | #{onlineuser.username}
