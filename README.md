@@ -1,34 +1,30 @@
-[![Docker Layers](https://images.microbadger.com/badges/image/chatopera/contact-center:develop.svg)](https://microbadger.com/images/chatopera/contact-center:develop "Get your own image badge on microbadger.com") [![Docker Version](https://images.microbadger.com/badges/version/chatopera/contact-center:develop.svg)](https://microbadger.com/images/chatopera/contact-center:develop "Get your own version badge on microbadger.com") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg)](https://hub.docker.com/r/chatopera/contact-center/) [![Docker Stars](https://img.shields.io/docker/stars/chatopera/contact-center.svg)](https://hub.docker.com/r/chatopera/contact-center/) [![Docker Commit](https://images.microbadger.com/badges/commit/chatopera/contact-center:develop.svg)](https://microbadger.com/images/chatopera/contact-center:develop "Get your own commit badge on microbadger.com")
+<div align=right>
 
-# 春松客服: 多渠道智能客服
+[主页](https://www.cskefu.com/)　|　[成功案例](https://www.chatopera.com/customer.html)　|　[开发者文档](https://docs.chatopera.com/products/cskefu/osc/index.html)　|　[博客专栏](https://chatopera.blog.csdn.net/)　|　[更新日志](./CHANGELOG.md)　|　[帮助](https://github.com/chatopera/cskefu/issues)
+
+</div>
+
+# 春松客服: 快速获得好用的开源智能客服系统
+
+[![Docker Layers](https://images.microbadger.com/badges/image/chatopera/contact-center:develop.svg)](https://microbadger.com/images/chatopera/contact-center:develop "Get your own image badge on microbadger.com") [![Docker Version](https://images.microbadger.com/badges/version/chatopera/contact-center:develop.svg)](https://microbadger.com/images/chatopera/contact-center:develop "Get your own version badge on microbadger.com") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg)](https://hub.docker.com/r/chatopera/contact-center/) [![Docker Stars](https://img.shields.io/docker/stars/chatopera/contact-center.svg)](https://hub.docker.com/r/chatopera/contact-center/) [![Docker Commit](https://images.microbadger.com/badges/commit/chatopera/contact-center:develop.svg)](https://microbadger.com/images/chatopera/contact-center:develop "Get your own commit badge on microbadger.com")
 
 [https://www.cskefu.com](https://www.cskefu.com/)
 
-快速获得好用的开源智能客服系统。
-
-[CSKeFu](https://github.com/chatopera/cskefu) is a Customer Support System for Enterprises in a High Performance Low-Touch way, open source for the world by [Chatopera Inc](https://www.chatopera.com/).
+[CSKeFu](https://github.com/chatopera/cskefu) is a Customer Support System for Enterprises in a High Performance Low-Touch way, opensource for the world by [Chatopera](https://www.chatopera.com/).
 
 <img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-yellow-bg.png" width="600">
 
 春松客服是 Chatopera 自主研发以及基于且增强其它开源软件的方式实现的，春松客服会不断增强客服系统的智能化，这包括利用自然语言处理、机器学习和语音识别等技术让客服工作更有效率、客服满意度更高。
 
-**开源项目地址：** [Gitee](https://gitee.com/chatopera/cskefu) | [CodeChina](https://codechina.csdn.net/chatopera/cskefu) | [GitHub](https://github.com/chatopera/cskefu)
-
-**开发环境搭建：** [https://docs.chatopera.com/products/cskefu/osc/engineering.html](https://docs.chatopera.com/products/cskefu/osc/engineering.html)
-
-**官方博客：** [https://blog.chatopera.com/](https://blog.chatopera.com/)
-
-[**更新日志**](./CHANGELOG.md)
-
 ## 媒体报道
 
 <img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-gpv-2.png" height = "220" div align=right />
 
+- [春松客服荣获 GVP 企业级开源项目认证](http://www.ctiforum.com/news/guonei/578988.html)
+
 - [GitHub 上获点赞最多的开源客服系统春松客服入驻 CODE CHINA](https://mp.weixin.qq.com/s/wGCFj9Hs1uVuTQCTqH0IWg)
 
 - [Coscon'19 中国开源年会春松客服主题分享](https://www.shangyexinzhi.com/article/351121.html)
-
-- [春松客服荣获 GVP 企业级开源项目认证](http://www.ctiforum.com/news/guonei/578988.html)
 
 ---
 
@@ -175,7 +171,7 @@ The collaboration is efficient, very professional. The software is steady with h
 
 [春松客服大讲堂](https://docs.chatopera.com/products/cskefu/osc/training.html)是面向企业 CTO、客服主管、客服及客服系统开发运维人员的在线培训课程，由浅入深的介绍春松客服上线企业智能客服系统、运营客服工作和二次开发的知识。
 
-详情查看[课程介绍及优惠方案](https://docs.chatopera.com/products/osc/cskefu/osc/training.html)。
+详情查看[课程介绍及优惠方案](https://docs.chatopera.com/products/cskefu/osc/training.html)。
 
 <p align="center">
   <b><a href="https://docs.chatopera.com/products/cskefu/osc/training.html" target="_blank">主讲老师介绍</a></b><br>
