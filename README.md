@@ -109,6 +109,8 @@ The collaboration is efficient, very professional. The software is steady with h
 
 关于产品的具体使用说明，请参考[文档中心](https://docs.chatopera.com/products/cskefu/index.html)。
 
+<img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-yellow-bg.png" width="600">
+
 ### 产品截图
 
 <p align="center">
