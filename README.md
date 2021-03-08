@@ -12,9 +12,11 @@
 
 [CSKeFu](https://github.com/chatopera/cskefu) is a Customer Support System for Enterprises in a High Performance Low-Touch way, opensource for the world by [Chatopera](https://www.chatopera.com/).
 
-<img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-yellow-bg.png" width="600">
+![image](https://user-images.githubusercontent.com/3538629/110290682-01aa9080-8026-11eb-858c-8009c9ab7aa6.png)
 
 春松客服是 Chatopera 自主研发以及基于且增强其它开源软件的方式实现的，春松客服会不断增强客服系统的智能化，这包括利用自然语言处理、机器学习和语音识别等技术让客服工作更有效率、客服满意度更高。
+
+[新版本介绍：一山还有一山高，开源智能客服系统春松客服 v7 版本发布 | Chatopera](https://chatopera.blog.csdn.net/article/details/113786505)
 
 ## 媒体报道
 
