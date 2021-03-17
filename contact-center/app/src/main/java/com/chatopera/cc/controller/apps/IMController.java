@@ -696,7 +696,7 @@ public class IMController extends Handler {
                 map.addAttribute("title", title);
             }
             if (StringUtils.isNotBlank(traceid)) {
-                map.addAttribute("url", url);
+                map.addAttribute("url", URLEncoder.encode(url,"utf-8"));
             }
 
             map.addAttribute("cskefuport", request.getServerPort());

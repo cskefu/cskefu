@@ -10,7 +10,7 @@ ENV APPLICATION_CUSTOMER_ENTITY=$APPLICATION_CUSTOMER_ENTITY
 ENV APPLICATION_BUILD_DATESTR=$APPLICATION_BUILD_DATESTR
 
 LABEL org.label-schema.vcs-ref=$VCS_REF \
-          org.label-schema.vcs-url="https://github.com/chatopera/cosin"
+          org.label-schema.vcs-url="https://github.com/chatopera/cskefu"
 
 # COPY $PWD/assets/aliyun.sources.list /etc/apt/sources.list
 # install amazon jdk corretto
