@@ -97,15 +97,6 @@ public class MediaController extends Handler {
         }
     }
 
-    @RequestMapping("/voice")
-    @Menu(type = "resouce", subtype = "voice", access = true)
-    public void voice(HttpServletResponse response, @Valid String id) throws IOException {
-        File file = new File(path, id);
-        if (file.exists() && file.isFile()) {
-            response.getOutputStream().write(FileUtils.readFileToByteArray(new File(path, id)));
-        }
-    }
-
     @RequestMapping("/url")
     @Menu(type = "resouce", subtype = "image", access = true)
     public void url(HttpServletResponse response, @Valid String url) throws IOException {
