@@ -68,7 +68,7 @@ public class SystemEnvHelper {
      * @return
      */
     public static String parseFromApplicationProps(final String property) {
-        // 将 propert转化为环境变量
+        // 将 property 转化为环境变量
         String P = StringUtils.upperCase(property);
 
         P = StringUtils.replaceChars(P, "-", "_");
@@ -82,14 +82,26 @@ public class SystemEnvHelper {
     }
 
     /**
-     * 记载application.properties
+     * Get properties filename
+     * @return
+     */
+    private static String getPropsFileName() {
+        String profile = getenv("SPRING_PROFILES_ACTIVE", "");
+        if (StringUtils.isNotBlank(profile)) {
+            return "application-" + profile + ".properties";
+        }
+        return "application.properties";
+    }
+
+    /**
+     * 加载 application.properties
      *
      * @return
      */
     private static Properties getProps() {
         if (props == null) {
             try (InputStream input = SystemEnvHelper.class.getClassLoader().getResourceAsStream(
-                    "application.properties")) {
+                    getPropsFileName())) {
                 // load a properties file
                 props = new Properties();
                 props.load(input);
