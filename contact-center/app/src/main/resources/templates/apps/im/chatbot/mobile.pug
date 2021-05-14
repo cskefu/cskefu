@@ -360,7 +360,7 @@ html
                     content = createCard(message, expmsg);
                 }
 
-                var box = $('<div class="chat-left"> <img class="user-img" src="<#if inviteData?? && inviteData.consult_dialog_headimg??>/res/image.html?id=${inviteData.consult_dialog_headimg?url}<#else>/images/agent.png</#if>" alt=""><div class="chat-message"><label  class="user">' + username + '</label><label class="time">' + createtime + '</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content"></div></div>');
+                var box = $('<div class="chat-left"> <img class="user-img" src="#{dialog_headimg}" alt=""><div class="chat-message"><label  class="user">' + username + '</label><label class="time">' + createtime + '</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content"></div></div>');
 
                 box.find('.chat-content').append(content);
 
@@ -405,11 +405,11 @@ html
                     var regClick = function (key) {
                         btn.click(function () {
                             socket.emit('message', {
-                                appid: "${appid!''}",
-                                userid: "${userid!''}",
+                                appid: "#{appid}",
+                                userid: "#{userid}",
                                 type: "message",
-                                session: "${sessionid!''}",
-                                orgi: "${orgi!''}",
+                                session: "#{sessionid}",
+                                orgi: "#{orgi}",
                                 message: key
                             });
                         });

@@ -121,7 +121,7 @@ public class ChatbotEventSubscription {
                     JSONArray respParams = new JSONArray();
                     if (!StringUtils.equals(MainContext.ChannelType.WEBIM.toString(), c.getChannel())) {
                         if (data.getBoolean("logic_is_fallback")) {
-                            if (StringUtils.equals(Constants.CHATBOT_CHATBOT_FIRST, c.getWorkmode())) {
+                            if (!StringUtils.equals(Constants.CHATBOT_HUMAN_FIRST, c.getWorkmode())) {
                                 JSONArray faqReplies = data.getJSONArray("faq");
                                 JSONObject message = new JSONObject();
                                 JSONObject attachment = new JSONObject();
@@ -141,6 +141,10 @@ public class ChatbotEventSubscription {
                                         buttons.put(button);
                                     }
                                 } else {
+                                    if (StringUtils.equals(c.getWorkmode(), Constants.CHATBOT_CHATBOT_ONLY)) {
+                                        return;
+                                    }
+
                                     payload.put("text", data.getString("string"));
                                     JSONObject button = new JSONObject();
                                     button.put("type", "postback");
@@ -154,6 +158,10 @@ public class ChatbotEventSubscription {
                                 resp.setExpmsg(message.toString());
                             }
                         } else if (StringUtils.equals(Constants.PROVIDER_FAQ, data.getJSONObject("service").get("provider").toString())) {
+                            if (data.has("params")) {
+                                resp.setMessage(data.getJSONArray("params").getJSONObject(0).getString("content"));
+                            }
+
                             respHelp = creatChatMessage(request, c);
                             JSONObject message = new JSONObject();
                             JSONObject attachment = new JSONObject();
@@ -175,6 +183,7 @@ public class ChatbotEventSubscription {
                             payload.put("buttons", buttons);
                             attachment.put("payload", payload);
                             message.put("attachment", attachment);
+
                             respHelp.setExpmsg(message.toString());
                         } else if (data.has("params")) {
                             Object obj = data.get("params");
