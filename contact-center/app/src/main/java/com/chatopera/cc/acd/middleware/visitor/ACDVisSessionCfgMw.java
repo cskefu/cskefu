@@ -19,6 +19,7 @@ package com.chatopera.cc.acd.middleware.visitor;
 import com.chatopera.cc.acd.ACDPolicyService;
 import com.chatopera.cc.acd.ACDWorkMonitor;
 import com.chatopera.cc.acd.basic.ACDComposeContext;
+import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.model.AgentReport;
 import com.chatopera.cc.model.SessionConfig;
@@ -66,8 +67,12 @@ public class ACDVisSessionCfgMw implements Middleware<ACDComposeContext> {
             ctx.setMessage(sessionConfig.getNotinwhmsg());
         } else if (report.getAgents() == 0) {
             // 没有就绪的坐席
-            logger.info("[apply] find no agents, redirect to leave a message.");
-            ctx.setNoagent(true);
+            if (ctx.getChannel().equals(MainContext.ChannelType.MESSENGER.toString())) {
+                next.apply();
+            } else {
+                logger.info("[apply] find no agents, redirect to leave a message.");
+                ctx.setNoagent(true);
+            }
         } else {
             logger.info("[apply] find agents size {}, allocate agent in next.", report.getAgents());
             // 具备工作中的就绪坐席，进入筛选坐席

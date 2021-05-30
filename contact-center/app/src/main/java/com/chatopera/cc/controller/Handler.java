@@ -48,6 +48,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
@@ -107,6 +108,7 @@ public class Handler {
 
     /**
      * 获得登录账号的当前导航的组织机构
+     *
      * @param request
      * @return
      */
@@ -122,7 +124,19 @@ public class Handler {
             Organ organ = (Organ) request.getSession(true).getAttribute(Constants.ORGAN_SESSION_NAME);
             if (organ == null) {
                 if (organs.size() > 0) {
-                    organ = organs.get(0);
+                    ArrayList<String> organTree = new ArrayList();
+                    organs.stream().forEach(o -> {
+                        if (organTree.stream().filter(p -> StringUtils.equals(o.getParent(), p)).findFirst().isPresent()) {
+                            int index = organTree.indexOf(o.getParent());
+                            organTree.add(index + 1, o.getId());
+                        } else {
+                            organTree.add(0, o.getId());
+                        }
+                    });
+
+                    organ = organs.stream().filter(o ->
+                            StringUtils.equals(o.getId(), organTree.get(0))
+                    ).findFirst().orElse(organs.get(0));
                     request.getSession(true).setAttribute(Constants.ORGAN_SESSION_NAME, organ);
                 }
             }

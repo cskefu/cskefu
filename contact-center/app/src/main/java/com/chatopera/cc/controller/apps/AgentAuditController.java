@@ -166,7 +166,7 @@ public class AgentAuditController extends Handler {
 
         if (StringUtils.isBlank(skill) && StringUtils.isBlank(agentno)) {
             if (organs.size() > 0) {
-                agentUsers = agentUserRes.findByOrgiAndStatusAndSkillInAndAgentnoIsNot(
+                agentUsers = agentUserRes.findByOrgiAndStatusAndSkillInAndAgentnoIsNotAndChatbotopsIsFalse(
                         orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), organs.keySet(), logined.getId(), defaultSort);
             }
         } else if (StringUtils.isNotBlank(skill) && StringUtils.isNotBlank(agentno)) {

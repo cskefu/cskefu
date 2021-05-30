@@ -40,6 +40,7 @@ public class FbOTN implements Serializable {
     private Date createtime;
     private Date updatetime;
     private Date sendtime;
+    private Integer melinkNum;
     private Integer subNum;
 
     private FbMessenger fbMessenger;
@@ -150,6 +151,14 @@ public class FbOTN implements Serializable {
 
     public void setSubNum(Integer subNum) {
         this.subNum = subNum;
+    }
+
+    public Integer getMelinkNum() {
+        return melinkNum;
+    }
+
+    public void setMelinkNum(Integer melinkNum) {
+        this.melinkNum = melinkNum;
     }
 
     @ManyToOne(fetch = FetchType.EAGER)

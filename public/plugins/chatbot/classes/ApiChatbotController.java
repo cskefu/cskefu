@@ -497,6 +497,7 @@ public class ApiChatbotController extends Handler {
         } else if (c.getChannel().equals(Constants.CHANNEL_TYPE_MESSENGER)) {
             FbMessenger fbMessenger = fbMessengerRepository.findOneByPageId(c.getSnsAccountIdentifier());
             fbMessenger.setAiid(null);
+            fbMessenger.setAi(false);
             fbMessengerRepository.save(fbMessenger);
         }
 

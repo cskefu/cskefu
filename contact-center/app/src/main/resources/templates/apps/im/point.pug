@@ -54,7 +54,6 @@ else if  inviteData.consult_invite_color == "6"
     #ukefu-point-theme.ukefu-theme-color.theme1(class="ukefu-point-theme" + (inviteData.consult_vsitorbtn_model ? inviteData.consult_vsitorbtn_model : '1'), style=style + theme)
         #ukefu-im-point-text.ukefu-im-point-text(style='cursor: pointer;' + text + ';line-height: 23px;font-size: 15px;text-align: center;margin: 0 auto;')
             i(style="width:24px;height:24px;display: inline-block;font: normal normal normal 14px/1 FontAwesome;font-size: inherit;text-rendering: auto;-webkit-font-smoothing: antialiased;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAB60lEQVRIS7WV4TVsQRCEqyJABkSACBABLwJE8IjAigARIAMieCsCREAGjwja+eb03TO7O9ddrPm1Z29PV3dXdY31y8eL5I+ILUmbktYz/lXSs+2nofu9ABFBsjNJB5JWJT3MJNuR9CbpTtK5bUDnThMgIkaZnKSXtkkydyIC8BNJgI1sn88GzQFExI2kXUlHtsdDI+B7RBDPvUfbf+o7UwCZnHnv2qb9hU9EMEYKAuS4uzgByHapYqtvnkNoyRvE030Zaw0AScz7cijRZ9+Tv33b2xOAlOGjpLWvjmYWLEf1X9I2Mi4dRMRRtgVZ5WTgtaRX26cVmUj3lMtVzEPdeUTARVFfB4AsIbYG4Pe/0qbdxXERSaL7UapnKiYLIW5MTG8HGYjG6aAQlqNE+1RXVBYRUzH5H0SzF5MO2NqXJXHQ5dpAjbWKQL2jrSWo6MA2+zQlU2bOKOBi0MRaRVRq3OtcYHaT2YFDSQR8CSSTQ/itbXgpp+VFgCDbi5Z59ej+L6RKuqqTNwEqvWMbK2li97XxpSXwPhRTlPSOq7Zc99MHJxeQdt+6HcklYhdICmfonWKaZwgAh8RC8HmSXUjCjtcXtZQhAKrHGqiQUTynpTRfr1YLQwBomcq7HekdxbdG9JOF65XpMpLWOT4AygTtGd0Q7EsAAAAASUVORK5CYII=);")
-            br
             | #{inviteData.consult_vsitorbtn_content ? inviteData.consult_vsitorbtn_content : '在线客服'}
     if inviteData.skill == true && inviteData.consult_skill_fixed == false
         #ichatContent.ichat-content.ichat-float-left(style='width:152px;display: block;font-size:14px;' + theme + ';box-shadow: 0 0 10px #DDDDDD;border: 1px solid #DDDDDD;overflow: hidden;text-align: left;')
@@ -72,12 +71,17 @@ else if  inviteData.consult_invite_color == "6"
                 else
                     img(src=baseUrl + '/images/title.jpg', style='width:140px;margin:0 5px;vertical-align: middle;')
                 div(style="padding:10px 5px;text-align:center;color:#555;")= inviteData.skill == true && inviteData.consult_skill_fixed == false && inviteData.consult_skill_msg ? inviteData.consult_skill_msg : ''
+          
                 if skillGroups
                     for skill in skillGroups
                         - var skillNum = 0
                         for agent in agentList
-                            - skillNum = skillNum + 1
-                        | #{skillNum}
+                            if agent.skills[skill.id]
+                                - skillNum = skillNum + 1
+            
+                        div(style='padding:5px;color:#555;border:1px solid #dddddd;background-color:#efefef;')
+                            a(href=baseUrl + '/im/text/' + appid + '.html?skill=' + skill.id + '&orgi=' + orgi, onclick='return openAgentChatDialog(this.href)', style='color: #777;    text-decoration: none;') #{skill.name}（#{skillNum}）
+
                         if inviteData.consult_skill_agent && inviteData.consult_skill_agent == true
                             ul(class="ichat-list-ul", style="border: 0 none;list-style: none outside none;margin: 0;padding: 0;width: 150px;")
                                 if agentList

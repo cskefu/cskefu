@@ -62,7 +62,7 @@ public interface AgentUserRepository extends JpaRepository<AgentUser, String> {
 
     List<AgentUser> findByOrgiAndStatusAndSkillAndAgentnoIsNot(final String orgi, final String status, final String skill, final String agentno, final Sort sort);
 
-    List<AgentUser> findByOrgiAndStatusAndSkillInAndAgentnoIsNot(final String orgi, final String status, final Collection<String> skill, final String agentno, final Sort sort);
+    List<AgentUser> findByOrgiAndStatusAndSkillInAndAgentnoIsNotAndChatbotopsIsFalse(final String orgi, final String status, final Collection<String> skill, final String agentno, final Sort sort);
 
     List<AgentUser> findByOrgiAndStatusAndAgentno(final String orgi, final String status, final String agentno, final Sort defaultSort);
 

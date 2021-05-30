@@ -22,9 +22,11 @@ import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.AgentStatus;
 import com.chatopera.cc.model.AgentUser;
+import com.chatopera.cc.model.SNSAccount;
 import com.chatopera.cc.model.SessionConfig;
 import com.chatopera.cc.persistence.repository.AgentUserRepository;
 import com.chatopera.cc.persistence.repository.OnlineUserRepository;
+import com.chatopera.cc.persistence.repository.SNSAccountRepository;
 import com.chatopera.cc.persistence.repository.SessionConfigRepository;
 import com.chatopera.cc.util.HashMapUtils;
 import com.chatopera.cc.util.WebIMReport;
@@ -57,6 +59,9 @@ public class ACDPolicyService {
 
     @Autowired
     private AgentUserRepository agentUserRes;
+
+    @Autowired
+    private SNSAccountRepository snsAccountRes;
 
     /**
      * 载入坐席 ACD策略配置
@@ -229,25 +234,28 @@ public class ACDPolicyService {
              *
              * TODO 指定技能组无用户，停止分配
              */
+
+            SNSAccount snsAccount = snsAccountRes.findBySnsidAndOrgi(agentUser.getAppid(), orgi);
+
             // 对于该租户的所有客服
-            // for (final Map.Entry<String, AgentStatus> entry : map.entrySet()) {
-            //     if ((!entry.getValue().isBusy()) && (entry.getValue().getUsers() < sessionConfig.getMaxuser())) {
-            //         agentStatuses.add(entry.getValue());
-            //         logger.info(
-            //                 "[filterOutAvailableAgentStatus] <Redundance> find ready agent {}, agentname {}, status {}, service {}/{}, skills {}",
-            //                 entry.getValue().getAgentno(), entry.getValue().getUsername(), entry.getValue().getStatus(),
-            //                 entry.getValue().getUsers(),
-            //                 entry.getValue().getMaxusers(),
-            //                 HashMapUtils.concatKeys(entry.getValue().getSkills(), "|"));
-            //     } else {
-            //         logger.info(
-            //                 "[filterOutAvailableAgentStatus] <Redundance> skip ready agent {}, name {}, status {}, service {}/{}, skills {}",
-            //                 entry.getValue().getAgentno(), entry.getValue().getUsername(), entry.getValue().getStatus(),
-            //                 entry.getValue().getUsers(),
-            //                 entry.getValue().getMaxusers(),
-            //                 HashMapUtils.concatKeys(entry.getValue().getSkills(), "|"));
-            //     }
-            // }
+            for (final Map.Entry<String, AgentStatus> entry : map.entrySet()) {
+                if ((!entry.getValue().isBusy()) && (entry.getValue().getUsers() < sessionConfig.getMaxuser()) && entry.getValue().getSkills().containsKey(snsAccount.getOrgan())) {
+                    agentStatuses.add(entry.getValue());
+                    logger.info(
+                            "[filterOutAvailableAgentStatus] <Redundance> find ready agent {}, agentname {}, status {}, service {}/{}, skills {}",
+                            entry.getValue().getAgentno(), entry.getValue().getUsername(), entry.getValue().getStatus(),
+                            entry.getValue().getUsers(),
+                            entry.getValue().getMaxusers(),
+                            HashMapUtils.concatKeys(entry.getValue().getSkills(), "|"));
+                } else {
+                    logger.info(
+                            "[filterOutAvailableAgentStatus] <Redundance> skip ready agent {}, name {}, status {}, service {}/{}, skills {}",
+                            entry.getValue().getAgentno(), entry.getValue().getUsername(), entry.getValue().getStatus(),
+                            entry.getValue().getUsers(),
+                            entry.getValue().getMaxusers(),
+                            HashMapUtils.concatKeys(entry.getValue().getSkills(), "|"));
+                }
+            }
         }
 
         logger.info("[filterOutAvailableAgentStatus] agent status list size: {}", agentStatuses.size());

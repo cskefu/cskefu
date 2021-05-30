@@ -213,7 +213,7 @@ html
             .ukefu-func-tab
                 ul
                     if models.contains("chatbot") && inviteData.ai && inviteData.ai == true && aiid
-                        if !exchange || exchange == "true"
+                        if exchange || exchange == "true"
                             li
                                 a(href="/im/index.html?appid=" + appid + "&orgi=" + orgi + (aiid ? '&aiid=' + aiid : '') + "&ai=false" + (client ? '&client=' + client : '') + (type ? '&type=' + type : '') + (skill ? '&skill=' + skill : '') + (agent ? '&agent=' + agent : '') + "&userid=" + userid + "&sessionid=" + sessionid + "&t=" + pugHelper.currentTimeMillis()) 人工客服
                         li.cur

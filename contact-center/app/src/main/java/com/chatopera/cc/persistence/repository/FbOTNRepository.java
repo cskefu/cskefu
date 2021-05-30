@@ -41,4 +41,9 @@ public interface FbOTNRepository extends JpaRepository<FbOTN, String> {
     @Modifying
     @Query(nativeQuery = true, value = "update cs_fb_otn set sub_num = sub_num +1 where id = ?1")
     void incOneSubNumById(final String id);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "update cs_fb_otn set melink_num = melink_num +1 where id = ?1")
+    void incOneMelinkNumById(final String id);
 }

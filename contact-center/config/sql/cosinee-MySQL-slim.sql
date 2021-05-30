@@ -794,6 +794,7 @@ CREATE TABLE `cs_fb_otn` (
 	`updatetime` DATETIME NOT NULL,
 	`sendtime` DATETIME NULL DEFAULT NULL,
   `sub_num` INT(11) NOT NULL,
+  `melink_num` INT(11) NOT NULL,
 	PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='FB OTN';
 

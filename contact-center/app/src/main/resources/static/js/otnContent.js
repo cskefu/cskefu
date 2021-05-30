@@ -48,12 +48,14 @@
                     uploadText.hide();
                     json.url = data.url;
                     jsonInput.val(JSON.stringify(json));
+                    jsonInput.trigger("change");
                     img.css('height', '130px');
                 });
             });
             textInput.bind("input propertychange", function (event) {
                 json.content = textInput.val();
                 jsonInput.val(JSON.stringify(json));
+                jsonInput.trigger("change");
             });
             select.change(function () {
                 if (select.val() == 'image') {
@@ -66,8 +68,10 @@
                     json.type = 'text'
                 }
                 jsonInput.val(JSON.stringify(json));
+                jsonInput.trigger("change");
             })
             jsonInput.val(JSON.stringify(json));
+            jsonInput.trigger("change");
             $this.append(jsonInput)
             $this.append(select)
             $this.append(box)
