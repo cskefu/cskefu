@@ -70,9 +70,10 @@ block content
                                             else
                                                 i.layui-icon(style="color:#19a55d") &#x1006;
                                         td(style="white-space:nowrap;" nowrap="nowrap")
-                                            a(href='/admin/user/edit.html?id=' + user.id, data-toggle="ajax" data-width="750" data-height="540" data-title="编辑用户信息")
-                                                i.layui-icon &#xe642;
-                                                | 编辑
+                                            if !user.superadmin && user.datastatus != true
+                                                a(href='/admin/user/edit.html?id=' + user.id, data-toggle="ajax" data-width="750" data-height="540" data-title="编辑用户信息")
+                                                    i.layui-icon &#xe642;
+                                                    | 编辑
                                             if !user.admin && user.datastatus != true
                                                 a(href='/admin/user/delete.html?id=' + user.id, style="margin-left:10px;" data-toggle="tip" data-title="请确认是否删除记录？")
                                                     i.layui-icon(style="color:red") &#x1006;

@@ -55,10 +55,12 @@
         </dependency>
 
         <!-- pugjs, template engine surpass freemarker  https://pugjs.org/ -->
+        <!-- host with Chatopera Nexus -->
+        <!-- https://gitlab.chatopera.com/cskefu/spring-pug4j -->
         <dependency>
             <groupId>de.neuland-bfi</groupId>
             <artifactId>spring-pug4j</artifactId>
-            <version>2.0.0-alpha-2</version>
+            <version>2.0.0-alpha-4-SNAPSHOT</version>
         </dependency>
 
         <dependency>

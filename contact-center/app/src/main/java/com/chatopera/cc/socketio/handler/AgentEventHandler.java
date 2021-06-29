@@ -17,6 +17,7 @@
 package com.chatopera.cc.socketio.handler;
 
 import com.alibaba.fastjson.JSONObject;
+import com.chatopera.cc.acd.ACDAgentService;
 import com.chatopera.cc.activemq.BrokerPublisher;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
@@ -65,6 +66,7 @@ public class AgentEventHandler {
     private static AgentProxy agentProxy;
     private static AgentSessionProxy agentSessionProxy;
     private static UserProxy userProxy;
+    private static ACDAgentService acdAgentService;
 
     @OnConnect
     public void onConnect(SocketIOClient client) {
@@ -109,9 +111,14 @@ public class AgentEventHandler {
 
             workSessionRepository.save(
                     MainUtils.createWorkSession(userid, MainUtils.getContextID(client.getSessionId().toString()),
-                                                session, orgi, ip, address.getHostName(), admin, count == 0));
+                            session, orgi, ip, address.getHostName(), admin, count == 0));
 
             NettyClients.getInstance().putAgentEventClient(userid, client);
+
+            final AgentStatus agentStatus = MainContext.getCache().findOneAgentStatusByAgentnoAndOrig(userid, orgi);
+            if (agentStatus != null && agentStatus.isConnected() && StringUtils.equals(agentStatus.getStatus(), MainContext.AgentStatusEnum.READY.toString())) {
+                getACDAgentService().assignVisitors(userid, orgi);
+            }
         }
     }
 
@@ -151,8 +158,8 @@ public class AgentEventHandler {
             payload.put("orgi", orgi);
             payload.put("isAdmin", StringUtils.isNotBlank(admin) && admin.equalsIgnoreCase("true"));
             getBrokerPublisher().send(Constants.WEBIM_SOCKETIO_AGENT_DISCONNECT, payload.toJSONString(),
-                                      false,
-                                      Constants.WEBIM_SOCKETIO_AGENT_OFFLINE_THRESHOLD);
+                    false,
+                    Constants.WEBIM_SOCKETIO_AGENT_OFFLINE_THRESHOLD);
         }
     }
 
@@ -377,4 +384,12 @@ public class AgentEventHandler {
         }
         return userProxy;
     }
+
+    public static ACDAgentService getACDAgentService() {
+        if (acdAgentService == null) {
+            acdAgentService = MainContext.getContext().getBean(ACDAgentService.class);
+        }
+        return acdAgentService;
+    }
+
 }

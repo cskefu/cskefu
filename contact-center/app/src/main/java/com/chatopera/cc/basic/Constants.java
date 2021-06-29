@@ -116,7 +116,7 @@ public class Constants {
     // 黑名单
     public final static String WEBIM_SOCKETIO_ONLINE_USER_BLACKLIST = "cskefu.im.onlineuser.blacklist";
     // 坐席socketio断开到判定为离线的时长
-    public final static int WEBIM_SOCKETIO_AGENT_OFFLINE_THRESHOLD = 10;
+    public final static int WEBIM_SOCKETIO_AGENT_OFFLINE_THRESHOLD = 20;
     // 发送消息给访客: 接收来自路由的消息并判断渠道
     public final static String INSTANT_MESSAGING_MQ_TOPIC_VISITOR = "cskefu.outbound.visitor";
 
