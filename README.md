@@ -102,8 +102,6 @@ The collaboration is efficient, very professional. The software is steady with h
 
 - Messenger 渠道：集成 [Facebook Messenger Platform](https://docs.chatopera.com/products/cskefu/channels/messenger/index.html)，在 Facebook 全家桶中连接亿万消费者、买家
 
-- 呼叫中心：全解决方案，包括呼入和呼出，可选的硬件语音网关，自动外呼，监听和报表等
-
 付费模块代码并不开源，并且使用插件的形式安装在源码中，[请联系“商务洽谈”](https://www.chatopera.com/mail.html)获得插件和商业支持。
 
 ## 产品文档
@@ -129,16 +127,6 @@ The collaboration is efficient, very professional. The software is steady with h
 <p align="center">
   <b>坐席监控</b><br>
   <img src="https://static-public.chatopera.com/assets/images/44915711-432b9800-ad66-11e8-899b-1ea02244925d.png" width="900">
-</p>
-
-<p align="center">
-  <b>外呼计划</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/44915831-ab7a7980-ad66-11e8-88a5-a2cd23b8c689.png" width="900">
-</p>
-
-<p align="center">
-  <b>通话记录</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/44915218-feebc800-ad64-11e8-90fc-36ce96b0c09a.png" width="900">
 </p>
 
 <p align="center">
