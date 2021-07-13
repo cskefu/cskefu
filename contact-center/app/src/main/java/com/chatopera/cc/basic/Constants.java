@@ -84,6 +84,12 @@ public class Constants {
     public final static String CHATBOT_EVENT_TYPE_CHAT = "chat";
 
     /**
+     * Messenger Channels
+     */
+    public static final String MESSENGER_CHANNEL_ENABLED = "enabled";
+    public static final String MESSENGER_CHANNEL_DISABLED = "disabled";
+
+    /**
      * Modules
      */
     public final static String CSKEFU_MODULE_CALLOUT = "callout";
