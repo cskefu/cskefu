@@ -696,7 +696,7 @@ public class IMController extends Handler {
                 map.addAttribute("title", title);
             }
             if (StringUtils.isNotBlank(traceid)) {
-                map.addAttribute("url", URLEncoder.encode(url,"utf-8"));
+                map.addAttribute("url", URLEncoder.encode(url, "utf-8"));
             }
 
             map.addAttribute("cskefuport", request.getServerPort());
@@ -731,7 +731,11 @@ public class IMController extends Handler {
                     isLeavemsg = true;
                     boolean isInWorkingHours = MainUtils.isInWorkingHours(sessionConfig.getWorkinghours());
                     map.addAttribute("isInWorkingHours", isInWorkingHours);
-                    view = request(super.createView("/apps/im/leavemsg"));
+                    if (invite.isLeavemessage()) {
+                        view = request(super.createView("/apps/im/leavemsg"));
+                    } else {
+                        view = request(super.createView("/apps/im/noagent"));
+                    }
                 } else if (invite.isConsult_info()) {    //启用了信息收集，从Request获取， 或从 Cookies 里去
                     // 验证 OnlineUser 信息
                     if (contacts != null && StringUtils.isNotBlank(
