@@ -15,6 +15,7 @@
 Chatopera 将会不断的优化春松客服，应用领先科技，提升企业在客户服务、业务流程自动化、客户关系管理等环节的效率。春松客服是 Chatopera 发布的商业友好的开源客服系统，致力于为企业提供好用的开源客服系统。开发者也常用春松客服作为客服系统开发框架，用于满足企业客户独特的需求。
 
 ![image](https://user-images.githubusercontent.com/3538629/110291138-8b5a5e00-8026-11eb-8651-d3ce18d8dab1.png)
+
 <!-- pre post <img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-yellow-bg.png" width="600"> -->
 
 新版本介绍：[一山还有一山高，开源智能客服系统春松客服 v7 版本发布 | Chatopera](https://chatopera.blog.csdn.net/article/details/113786505)
@@ -30,20 +31,6 @@ Chatopera 将会不断的优化春松客服，应用领先科技，提升企业�
 - [Coscon'19 中国开源年会春松客服主题分享](https://www.shangyexinzhi.com/article/351121.html)
 
 ---
-
-## 产品演示
-
-### 坐席工作台
-
-[https://cc.chatopera.com/](https://cc.chatopera.com/)
-
-| **登录账号** | **密码**  |
-| ------------ | --------- |
-| admin        | admin1234 |
-
-### 网页端访客程序
-
-[https://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
 
 ## 用户案例
 
@@ -73,6 +60,20 @@ The collaboration is efficient, very professional. The software is steady with h
 ```
 
 -- 阿伟，电商客服技术总监，某跨境电商企业
+
+## 产品演示
+
+### 坐席工作台
+
+[https://cc.chatopera.com/](https://cc.chatopera.com/)
+
+| **登录账号** | **密码**  |
+| ------------ | --------- |
+| admin        | admin1234 |
+
+### 网页端访客程序
+
+[https://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
 
 ## 功能介绍
 
@@ -147,85 +148,19 @@ The collaboration is efficient, very professional. The software is steady with h
 </p>
 </details>
 
-## 运营及定制开发培训
+## 机器人客服
 
-### 开发文档
-
-<p align="center">
-  <b><a href="https://docs.chatopera.com/products/cskefu/osc/engineering.html" target="_blank">开发文档</a></b><br>
-  <a href="https://docs.chatopera.com/products/cskefu/osc/engineering.html" target="_blank">
-      <img src="https://static-public.chatopera.com/assets/images/44992890-38be0800-afcb-11e8-8fde-a5a671d29764.png" width="300">
-  </a>
-</p>
-
-### 在线培训视频
-
-[春松客服大讲堂](https://docs.chatopera.com/products/cskefu/osc/training.html)是面向企业 CTO、客服主管、客服及客服系统开发运维人员的在线培训课程，由浅入深的介绍春松客服上线企业智能客服系统、运营客服工作和二次开发的知识。
-
-详情查看[课程介绍及优惠方案](https://docs.chatopera.com/products/cskefu/osc/training.html)。
-
-<p align="center">
-  <b><a href="https://docs.chatopera.com/products/cskefu/osc/training.html" target="_blank">主讲老师介绍</a></b><br>
-  <a href="https://docs.chatopera.com/products/cskefu/osc/training.html" target="_blank">
-      <img src="https://static-public.chatopera.com/assets/images/djt-teacher-hain.jpg" width="800">
-  </a>
-</p>
-
-## 认证开发者
-
-春松客服开发者是具备春松客服定制化开发智能客服系统技能，具备丰富的专业经验的软件工程师，由 Chatopera 通过访谈的形式确认其在某行业或某企业内完成春松客服上线、定制化春松客服。
-
-| Avatar                                                                                            | Name | GitHub                            | Talk                                                    | Intro.                                                                                                                                   |
-| ------------------------------------------------------------------------------------------------- | ---- | --------------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| <img src="https://static-public.chatopera.com/assets/images/cskefu/github_lecjy.jpg" width="100"> | 刘勇 | [lecjy](https://github.com/lecjy) | [报道](http://www.ctiforum.com/news/guonei/579599.html) | 目前工作于湖北武汉一个电商企业，曾就职于京东海外电商平台，负责客户系统维护，对于电商客服领域有丰富的工作经验，尤其是面向东南亚出海业务。 |
-
-寻找基于春松客服搭建智能客服系统的客户，包括但不限于部署、系统集成和定制开发等，可以优先考虑联系以上认证开发者，Chatopera 团队会持续维护基础模块、云服务和机器人客服，提升春松客服上利用人工智能、机器学习和自动化流程服务。
-
-**寻找开发者合作智能客服项目，社区共建，携手共赢！**
-
-- 组织或个人，在春松客服主页展示为认证开发者
-- 春松客服官方推荐项目机会
-- 专访并通过官方渠道曝光
-
-填写申请：[http://chatopera.mikecrm.com/tMUtj1z](http://chatopera.mikecrm.com/tMUtj1z)
-
-## 用户交流群
-
-<p align="center">
-  <b>在 Chatopera 客户群中也包括其他用户，请不要发送敏感信息。讨论与 Chatopera 产品和服务相关的事宜</b><br>
-<img src="https://static-public.chatopera.com/assets/images/Chatopera_wecom_customer_group_qr.png" width="600">
-</p>
-
-## 立即部署
-
-- 私有部署版
-
-参考部署[开源社区版本文档](https://docs.chatopera.com/products/cskefu/deploy.html)。
-
-## 鸣谢
-
-[FreeSWITCH 中国社区](http://www.freeswitch.org.cn/)
-
-## 开源许可协议
-
-Copyright (2018-2021) <a href="https://www.chatopera.com/" target="_blank">北京华夏春松科技有限公司</a>
-
-[Apache License Version 2.0](https://github.com/chatopera/cskefu/blob/osc/LICENSE)
-
-[![chatoper banner][co-banner-image]][co-url]
-
-[co-banner-image]: https://static-public.chatopera.com/assets/images/42383104-da925942-8168-11e8-8195-868d5fcec170.png
-[co-url]: https://www.chatopera.com
-
-## Chatopera 云服务
-
-**超过 85% 的春松客服企业客户通过 Chatopera 云服务上线机器人客服！**
-
-[https://bot.chatopera.com/](https://bot.chatopera.com/)
-
-[Chatopera 云服务](https://bot.chatopera.com)是一站式实现聊天机器人的云服务，按接口调用次数计费。Chatopera 云服务是 [Chatopera 机器人平台](https://docs.chatopera.com/products/chatbot-platform/index.html)的软件即服务实例。在云计算基础上，Chatopera 云服务属于**聊天机器人即服务**的云服务。
+**超过 85% 的春松客服企业客户通过 Chatopera 云服务上线机器人客服！7x24 小时在线，接待访客，辅助人工坐席，提升 10 倍工作效率。**
 
 Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音识别等组件，标准化聊天机器人开发，支持企业 OA 智能问答、HR 智能问答、智能客服和网络营销等场景。企业 IT 部门、业务部门借助 Chatopera 云服务快速让聊天机器人上线！
+
+查看文档[《立即上线机器人客服》](https://docs.chatopera.com/products/cskefu/work-chatbot/bot-agent.html)。
+
+<p align="center">
+  <a href="https://docs.chatopera.com/products/cskefu/work-chatbot/bot-agent.html" target="_blank">
+      <img src="https://static-public.chatopera.com/assets/images/64531083-3199aa80-d341-11e9-86cd-3a3ed860b14b.png" width="800">
+  </a>
+</p>
 
 <details>
 <summary>展开查看 Chatopera 云服务的产品截图</summary>
@@ -279,9 +214,63 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 </p>
 </details>
 
+## 私有部署
+
+容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](https://docs.chatopera.com/products/cskefu/deploy.html)。
+
+## 用户交流群
+
 <p align="center">
-  <b>立即使用</b><br>
-  <a href="https://bot.chatopera.com" target="_blank">
-      <img src="https://static-public.chatopera.com/assets/images/64531083-3199aa80-d341-11e9-86cd-3a3ed860b14b.png" width="800">
+  <b>在 Chatopera 客户群中也包括其他用户，请不要发送敏感信息。讨论与 Chatopera 产品和服务相关的事宜</b><br>
+<img src="https://static-public.chatopera.com/assets/images/Chatopera_wecom_customer_group_qr.png" width="600">
+</p>
+
+## 运营及定制开发技能培训
+
+### 在线培训视频
+
+[春松客服大讲堂](https://docs.chatopera.com/products/cskefu/osc/training.html)是面向企业 CTO、客服主管、客服及客服系统开发运维人员的在线培训课程，由浅入深的介绍春松客服上线企业智能客服系统、运营客服工作和二次开发的知识。
+
+详情查看[课程介绍及优惠方案](https://docs.chatopera.com/products/cskefu/osc/training.html)。
+
+### 开发文档
+
+<p align="center">
+  <b><a href="https://docs.chatopera.com/products/cskefu/osc/engineering.html" target="_blank">开发文档</a></b><br>
+  <a href="https://docs.chatopera.com/products/cskefu/osc/engineering.html" target="_blank">
+      <img src="https://static-public.chatopera.com/assets/images/44992890-38be0800-afcb-11e8-8fde-a5a671d29764.png" width="300">
   </a>
 </p>
+
+### 认证开发者
+
+春松客服开发者是具备春松客服定制化开发智能客服系统技能，具备丰富的专业经验的软件工程师，由 Chatopera 通过访谈的形式确认其在某行业或某企业内完成春松客服上线、定制化春松客服。
+
+| Avatar                                                                                            | Name | GitHub                            | Talk                                                    | Intro.                                                                                                                                   |
+| ------------------------------------------------------------------------------------------------- | ---- | --------------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="https://static-public.chatopera.com/assets/images/cskefu/github_lecjy.jpg" width="100"> | 刘勇 | [lecjy](https://github.com/lecjy) | [报道](http://www.ctiforum.com/news/guonei/579599.html) | 目前工作于湖北武汉一个电商企业，曾就职于京东海外电商平台，负责客户系统维护，对于电商客服领域有丰富的工作经验，尤其是面向东南亚出海业务。 |
+
+寻找基于春松客服搭建智能客服系统的客户，包括但不限于部署、系统集成和定制开发等，可以优先考虑联系以上认证开发者，Chatopera 团队会持续维护基础模块、云服务和机器人客服，提升春松客服上利用人工智能、机器学习和自动化流程服务。
+
+**寻找开发者合作智能客服项目，社区共建，携手共赢！**
+
+- 组织或个人，在春松客服主页展示为认证开发者
+- 春松客服官方推荐项目机会
+- 专访并通过官方渠道曝光
+
+填写申请：[http://chatopera.mikecrm.com/tMUtj1z](http://chatopera.mikecrm.com/tMUtj1z)
+
+## 鸣谢
+
+[FreeSWITCH 中国社区](http://www.freeswitch.org.cn/)
+
+## 开源许可协议
+
+Copyright (2018-2021) <a href="https://www.chatopera.com/" target="_blank">北京华夏春松科技有限公司</a>
+
+[Apache License Version 2.0](https://github.com/chatopera/cskefu/blob/osc/LICENSE)
+
+[![chatoper banner][co-banner-image]][co-url]
+
+[co-banner-image]: https://static-public.chatopera.com/assets/images/42383104-da925942-8168-11e8-8195-868d5fcec170.png
+[co-url]: https://www.chatopera.com
