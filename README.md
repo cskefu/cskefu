@@ -32,7 +32,7 @@ Chatopera 将会不断的优化春松客服，应用领先科技，提升企业�
 
 ---
 
-## 用户案例
+## 客户案例
 
 <p align="center">
   <b><a href="https://www.chatopera.com/customer.html" target="_blank">TA们都选择春松客服</a></b><br>
@@ -41,7 +41,7 @@ Chatopera 将会不断的优化春松客服，应用领先科技，提升企业�
   </a>
 </p>
 
-### 企业用户这样评价我们
+### 用户这样评价春松客服
 
 ```
 The collaboration is efficient, very professional. The software is steady with high quality services.
@@ -225,13 +225,13 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 <img src="https://static-public.chatopera.com/assets/images/Chatopera_wecom_customer_group_qr.png" width="600">
 </p>
 
-## 运营及定制开发技能培训
+## 运营及定制开发
 
 ### 在线培训视频
 
-[春松客服大讲堂](https://docs.chatopera.com/products/cskefu/osc/training.html)是面向企业 CTO、客服主管、客服及客服系统开发运维人员的在线培训课程，由浅入深的介绍春松客服上线企业智能客服系统、运营客服工作和二次开发的知识。
+[春松客服大讲堂](https://docs.chatopera.com/products/cskefu/osc/training.html)是面向企业 CTO、客服主管、客服及客服系统开发运维人员的在线录播课程，由浅入深的介绍春松客服上线企业智能客服系统、运营客服工作和二次开发的知识。
 
-详情查看[课程介绍及优惠方案](https://docs.chatopera.com/products/cskefu/osc/training.html)。
+详情查看[课程介绍](https://docs.chatopera.com/products/cskefu/osc/training.html)。
 
 ### 开发文档
 
