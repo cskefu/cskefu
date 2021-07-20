@@ -12,7 +12,7 @@
 
 [CSKeFu](https://github.com/chatopera/cskefu) is a Customer Support System for Enterprises in a High Performance Low-Touch way, opensource for the world by [Chatopera](https://www.chatopera.com/).
 
-春松客服是 Chatopera 自主研发以及基于且增强其它开源软件的方式实现的，春松客服会不断增强客服系统的智能化，这包括利用自然语言处理、机器学习和语音识别等技术让客服工作更有效率、客服满意度更高。
+Chatopera 将会不断的优化春松客服，应用领先科技，提升企业在客户服务、业务流程自动化、客户关系管理等环节的效率。春松客服是 Chatopera 发布的商业友好的开源客服系统，致力于为企业提供好用的开源客服系统。开发者也常用春松客服作为客服系统开发框架，用于满足企业客户独特的需求。
 
 ![image](https://user-images.githubusercontent.com/3538629/110291138-8b5a5e00-8026-11eb-8651-d3ce18d8dab1.png)
 <!-- pre post <img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-yellow-bg.png" width="600"> -->
@@ -50,7 +50,7 @@
 <p align="center">
   <b><a href="https://www.chatopera.com/customer.html" target="_blank">TA们都选择春松客服</a></b><br>
   <a href="https://www.chatopera.com/customer.html" target="_blank">
-      <img src="https://static-public.chatopera.com/assets/images/71613944-f7039880-2be3-11ea-8287-9e82f09e436f.png" width="900">
+      <img src="./public/assets/customers-2021.jpg" width="900">
   </a>
 </p>
 
@@ -218,6 +218,8 @@ Copyright (2018-2021) <a href="https://www.chatopera.com/" target="_blank">北�
 [co-url]: https://www.chatopera.com
 
 ## Chatopera 云服务
+
+**超过 85% 的春松客服企业客户通过 Chatopera 云服务上线机器人客服！**
 
 [https://bot.chatopera.com/](https://bot.chatopera.com/)
 
