@@ -240,7 +240,7 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 
 [春松客服大讲堂](https://docs.chatopera.com/products/cskefu/osc/training.html)是面向企业 CTO、客服主管、客服及客服系统开发运维人员的在线培训课程，由浅入深的介绍春松客服上线企业智能客服系统、运营客服工作和二次开发的知识。
 
-详情查看[课程介绍及优惠方案](https://docs.chatopera.com/products/cskefu/osc/training.html)。
+详情查看[课程介绍](https://docs.chatopera.com/products/cskefu/osc/training.html)。
 
 ### 开发文档
 
