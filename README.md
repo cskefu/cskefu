@@ -4,15 +4,24 @@
 
 </div>
 
-# 春松客服: 快速获得好用的开源智能客服系统
+# 春松客服: 越是重视客户服务，越是好的企业
 
-[![GitHub stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&amp;label=Star&amp;maxAge=2592000)](https://github.com/chatopera/cskefu/stargazers) [![GitHub members](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&amp;label=Fork&amp;maxAge=2592000)](https://github.com/chatopera/cskefu/network/members) [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![Docker Tags](https://raw.githubusercontent.com/hailiang-wang/Rishit-dagli/master/badges/docker.svg)](https://hub.docker.com/repository/docker/chatopera/contact-center/tags?page=1&ordering=last_updated "Get Latest Docker Images") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) [![Docker Stars](https://img.shields.io/docker/stars/chatopera/contact-center.svg)](https://hub.docker.com/r/chatopera/contact-center/ "Docker Stars") 
+ [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&amp;label=Star&amp;maxAge=2592000)](https://github.com/chatopera/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&amp;label=Fork&amp;maxAge=2592000)](https://github.com/chatopera/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/blob/osc/LICENSE "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![Docker Tags](https://raw.githubusercontent.com/hailiang-wang/Rishit-dagli/master/badges/docker.svg)](https://hub.docker.com/repository/docker/chatopera/contact-center/tags?page=1&ordering=last_updated "Get Latest Docker Images") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) [![Docker Stars](https://img.shields.io/docker/stars/chatopera/contact-center.svg)](https://hub.docker.com/r/chatopera/contact-center/ "Docker Stars")
 
 [https://www.cskefu.com](https://www.cskefu.com/)
 
-[CSKeFu](https://github.com/chatopera/cskefu) is a Customer Support System for Enterprises in a High Performance Low-Touch way, opensource for the world by [Chatopera](https://www.chatopera.com/).
+春松客服是 [Chatopera](https://www.chatopera.com/) 发布的开源智能客服系统 / CSKeFu is a Customer Support System for Enterprises in a High Performance Low-Touch way, opensource for the world by [Chatopera](https://www.chatopera.com/).
 
-Chatopera 将会不断的优化春松客服，应用领先科技，提升企业在客户服务、业务流程自动化、客户关系管理等环节的效率。春松客服是 Chatopera 发布的商业友好的开源客服系统，致力于为企业提供好用的开源客服系统。开发者也常用春松客服作为客服系统开发框架，用于满足企业客户独特的需求。
+在 Chatopera，我们相信：**越是重视客户服务，越是好的企业 / the more you care about your customers, the better income you earn in return**。
+
+我们发布春松客服的愿景 / Our vision on CSKeFu:
+* 帮助企业快速获得开箱即用的智能客服系统 / Get Customer Support System in minutes
+* 成为开发者首选的客服系统开发框架 / To be Top 1 Framework for Customer Support System Customization
+
+我们对春松客服客户的承诺 / Our promise on CSKeFu:
+* 我们不发布垃圾 / We don't ship junk
+* 持续优化春松客服 / Keep on coming with great enhancements in the long term
+* 坚持开源，商业友好授权 / OpenSource for the world with license which is business friendly
 
 ![image](https://user-images.githubusercontent.com/3538629/110291138-8b5a5e00-8026-11eb-8651-d3ce18d8dab1.png)
 
@@ -35,13 +44,13 @@ Chatopera 将会不断的优化春松客服，应用领先科技，提升企业�
 ## 客户案例
 
 <p align="center">
-  <b><a href="https://www.chatopera.com/customer.html" target="_blank">TA们都选择春松客服</a></b><br>
+  <b>TA 们都选择春松客服</b><br>
   <a href="https://www.chatopera.com/customer.html" target="_blank">
       <img src="./public/assets/customers-2021.jpg" width="900">
   </a>
 </p>
 
-### 用户这样评价春松客服
+### TA 们这样评价春松客服
 
 ```
 The collaboration is efficient, very professional. The software is steady with high quality services.
@@ -225,13 +234,13 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 <img src="https://static-public.chatopera.com/assets/images/Chatopera_wecom_customer_group_qr.png" width="600">
 </p>
 
-## 运营及定制开发
+## 运营及定制开发技能培训
 
 ### 在线培训视频
 
-[春松客服大讲堂](https://docs.chatopera.com/products/cskefu/osc/training.html)是面向企业 CTO、客服主管、客服及客服系统开发运维人员的在线录播课程，由浅入深的介绍春松客服上线企业智能客服系统、运营客服工作和二次开发的知识。
+[春松客服大讲堂](https://docs.chatopera.com/products/cskefu/osc/training.html)是面向企业 CTO、客服主管、客服及客服系统开发运维人员的在线培训课程，由浅入深的介绍春松客服上线企业智能客服系统、运营客服工作和二次开发的知识。
 
-详情查看[课程介绍](https://docs.chatopera.com/products/cskefu/osc/training.html)。
+详情查看[课程介绍及优惠方案](https://docs.chatopera.com/products/cskefu/osc/training.html)。
 
 ### 开发文档
 
