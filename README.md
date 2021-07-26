@@ -10,15 +10,15 @@
 
 [https://www.cskefu.com](https://www.cskefu.com/)
 
-春松客服是 [Chatopera](https://www.chatopera.com/) 发布的开源智能客服系统 / CSKeFu is a Customer Support System for Enterprises in a High Performance Low-Touch way, opensource for the world by [Chatopera](https://www.chatopera.com/).
+:evergreen_tree: 春松客服是 [Chatopera](https://www.chatopera.com/) 发布的开源智能客服系统 / CSKeFu is a Customer Support System for Enterprises in a High Performance Low-Touch way, opensource for the world by [Chatopera](https://www.chatopera.com/).
 
 在 Chatopera，我们相信：**越是重视客户服务，越是好的企业 / the more you care about your customers, the better income you earn in return**。
 
-我们发布春松客服的愿景 / Our vision on CSKeFu:
+:hearts: 我们发布春松客服的愿景 / Our vision on CSKeFu:
 * 帮助企业快速获得开箱即用的智能客服系统 / Get Customer Support System in minutes
 * 成为开发者首选的客服系统开发框架 / To be Top 1 Framework for Customer Support System Customization
 
-我们对春松客服客户的承诺 / Our promise on CSKeFu:
+:innocent: 我们对春松客服客户的承诺 / Our promise on CSKeFu:
 * 我们不发布垃圾 / We don't ship junk
 * 持续优化春松客服 / Keep on coming with great enhancements in the long term
 * 坚持开源，商业友好授权 / OpenSource for the world with license which is business friendly
@@ -46,11 +46,11 @@
 <p align="center">
   <b>TA 们都选择春松客服</b><br>
   <a href="https://www.chatopera.com/customer.html" target="_blank">
-      <img src="./public/assets/customers-2021.jpg" width="900">
+      <img src="./public/assets/customers-202107.jpg" width="900">
   </a>
 </p>
 
-### TA 们这样评价春松客服
+### :yum: TA 们这样评价春松客服
 
 ```
 The collaboration is efficient, very professional. The software is steady with high quality services.
