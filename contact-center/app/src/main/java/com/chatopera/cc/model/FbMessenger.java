@@ -16,11 +16,14 @@
 
 package com.chatopera.cc.model;
 
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 @Entity
 @Table(name = "cs_fb_messenger")
@@ -151,7 +154,23 @@ public class FbMessenger implements Serializable {
         return config;
     }
 
+    /**
+     * Get config as map object
+     *
+     * @return
+     */
+    public Map<String, String> parseConfigMap() {
+        Map<String, String> configMap = (Map<String, String>) JSONObject.parse(StringUtils.isNotBlank(getConfig()) ? getConfig() : "{}");
+        return configMap;
+    }
+
     public void setConfig(String config) {
         this.config = config;
     }
+
+    public <K, V> void setConfigMap(Map<K, V> config) {
+        String data = JSONObject.toJSONString(config);
+        this.config = data;
+    }
+
 }

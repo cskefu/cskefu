@@ -17,10 +17,10 @@
 package com.chatopera.cc.plugins.chatbot;
 
 import com.chatopera.bot.exception.ChatbotException;
+import com.chatopera.bot.sdk.Response;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.cache.Cache;
-import com.chatopera.cc.controller.api.request.RestUtils;
 import com.chatopera.cc.model.Chatbot;
 import com.chatopera.cc.persistence.repository.AgentUserRepository;
 import com.chatopera.cc.persistence.repository.ChatMessageRepository;
@@ -105,21 +105,29 @@ public class ChatbotEventSubscription {
         // Get response from Conversational Engine.
         com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
                 c.getClientId(), c.getSecret(), botServiceProvider);
-        JSONObject result = bot.conversation(
-                request.getUserid(), request.getMessage(), faqBestReplyThreshold, faqSuggReplyThreshold);
+
+
+        JSONObject body = new JSONObject();
+        body.put("fromUserId", request.getUserid());
+        body.put("textMessage", request.getMessage());
+        body.put("faqBestReplyThreshold", faqBestReplyThreshold);
+        body.put("faqSuggReplyThreshold", faqSuggReplyThreshold);
+        Response result = bot.command("POST", "/conversation/query", body);
 
         // parse response
         if (result != null) {
             logger.info("[chat] chat response {}", result.toString());
-            if (result.getInt(RestUtils.RESP_KEY_RC) == 0) {
+            if (result.getRc() == 0) {
                 // reply
-                JSONObject data = result.getJSONObject("data");
+                JSONObject data = (JSONObject) result.getData();
                 if (data.has("logic_is_fallback")) {
                     ChatMessage resp = creatChatMessage(request, c);
                     resp.setMessage(data.getString("string"));
                     ChatMessage respHelp = new ChatMessage();
                     JSONArray respParams = new JSONArray();
                     if (!StringUtils.equals(MainContext.ChannelType.WEBIM.toString(), c.getChannel())) {
+                        // 非 WEBIM 情况，比如 Facebook Messenger，使用下面的方法
+                        // 如果在更多渠道下，此处可能仅适应于 Messenger，那么宜将检测条件调整为 ChannelType.MESSENGER
                         if (data.getBoolean("logic_is_fallback")) {
                             if (!StringUtils.equals(Constants.CHATBOT_HUMAN_FIRST, c.getWorkmode())) {
                                 JSONArray faqReplies = data.getJSONArray("faq");
@@ -156,6 +164,20 @@ public class ChatbotEventSubscription {
                                 attachment.put("payload", payload);
                                 message.put("attachment", attachment);
                                 resp.setExpmsg(message.toString());
+                            }
+                        } else if (StringUtils.equals(Constants.PROVIDER_FEEDBACK, data.getJSONObject("service").get("provider").toString())) {
+                            respHelp = null;
+                            // 反馈回复内容
+                            String sentiment = data.getJSONObject("service").get("sentiment").toString();
+                            if (StringUtils.equals(Constants.PROVIDER_FEEDBACK_EVAL_POSITIVE, sentiment)) {
+                                // 积极评价
+                                resp.setMessage(ChatbotConstants.PROVIDER_FEEDBACK_EVAL_POSITIVE_REPLY_PLACEHOLDER);
+                            } else if (StringUtils.equals(Constants.PROVIDER_FEEDBACK_EVAL_NEGATIVE, sentiment)) {
+                                // 消极评价
+                                resp.setMessage(ChatbotConstants.PROVIDER_FEEDBACK_EVAL_NEGATIVE_REPLY_PLACEHOLDER);
+                            } else {
+                                // no response
+                                resp.setMessage("${leaveMeAlone}");
                             }
                         } else if (StringUtils.equals(Constants.PROVIDER_FAQ, data.getJSONObject("service").get("provider").toString())) {
                             if (data.has("params")) {
@@ -197,6 +219,7 @@ public class ChatbotEventSubscription {
                             }
                         }
                     } else {
+                        // 当前渠道为 WEBIM
                         if (data.getBoolean("logic_is_fallback")) {
                             // 兜底回复，检查FAQ
                             JSONArray faqReplies = data.getJSONArray("faq");
@@ -221,11 +244,13 @@ public class ChatbotEventSubscription {
 
                     // 更新聊天机器人累计值
                     updateAgentUserWithRespData(request.getUserid(), request.getOrgi(), data);
-                    // 保存并发送
 
+                    // 保存并发送
                     if (MainContext.ChannelType.WEBIM.toString().equals(resp.getChannel())) {
+                        // WEBIM 渠道
                         chatbotProxy.saveAndPublish(resp);
                     } else {
+                        // 其他渠道
                         chatMessageRes.save(resp);
                         if (respParams.length() > 0) {
                             for (int i = 0; i < respParams.length(); i++) {
@@ -244,7 +269,7 @@ public class ChatbotEventSubscription {
                 }
             }
         } else {
-            logger.warn("[chat] can not get expected response {}", result.toString());
+            logger.warn("[chat] can not get expected response rc {}, error {}", result.getRc(), result.getError());
         }
     }
 

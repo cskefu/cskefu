@@ -20,4 +20,6 @@ public class ChatbotConstants {
     public static final String THRESHOLD_FAQ_BEST_REPLY = "BOT_THRESHOLD_FAQ_BEST_REPLY";
     public static final String THRESHOLD_FAQ_SUGG_REPLY = "BOT_THRESHOLD_FAQ_SUGG_REPLY";
     public static final String DEFAULT_BOT_PROVIDER = "https://bot.chatopera.com";
+    public static final String PROVIDER_FEEDBACK_EVAL_POSITIVE_REPLY_PLACEHOLDER = "${evaluationYesReply}";
+    public static final String PROVIDER_FEEDBACK_EVAL_NEGATIVE_REPLY_PLACEHOLDER = "${evaluationNoReply}";
 }

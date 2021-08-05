@@ -131,6 +131,9 @@ public class Constants {
     public static final String AUDIT_AGENT_MESSAGE = "cskefu.agent.audit";
     // 机器人返回的结果数据来源为faq
     public final static String PROVIDER_FAQ = "faq";
+    public final static String PROVIDER_FEEDBACK = "feedback";
+    public final static String PROVIDER_FEEDBACK_EVAL_POSITIVE = "positive";
+    public final static String PROVIDER_FEEDBACK_EVAL_NEGATIVE = "negative";
 
     // Facebook OTN 发送
     public final static String INSTANT_MESSAGING_MQ_QUEUE_FACEBOOK_OTN = "cskefu.outbound.faceboot.otn";
