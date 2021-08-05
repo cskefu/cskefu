@@ -6,7 +6,7 @@
 
 # 春松客服: 越是重视客户服务，越是好的企业
 
- [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&amp;label=Star&amp;maxAge=2592000)](https://github.com/chatopera/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&amp;label=Fork&amp;maxAge=2592000)](https://github.com/chatopera/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/blob/osc/LICENSE "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![Docker Tags](https://raw.githubusercontent.com/hailiang-wang/Rishit-dagli/master/badges/docker.svg)](https://hub.docker.com/repository/docker/chatopera/contact-center/tags?page=1&ordering=last_updated "Get Latest Docker Images") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) [![Docker Stars](https://img.shields.io/docker/stars/chatopera/contact-center.svg)](https://hub.docker.com/r/chatopera/contact-center/ "Docker Stars")
+[![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/chatopera/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/chatopera/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/blob/osc/LICENSE "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![Docker Tags](https://raw.githubusercontent.com/hailiang-wang/Rishit-dagli/master/badges/docker.svg)](https://hub.docker.com/repository/docker/chatopera/contact-center/tags?page=1&ordering=last_updated "Get Latest Docker Images") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) [![Docker Stars](https://img.shields.io/docker/stars/chatopera/contact-center.svg)](https://hub.docker.com/r/chatopera/contact-center/ "Docker Stars")
 
 [https://www.cskefu.com](https://www.cskefu.com/)
 
@@ -15,13 +15,15 @@
 在 Chatopera，我们相信：**越是重视客户服务，越是好的企业 / the more you care about your customers, the better income you earn in return**。
 
 :hearts: 我们发布春松客服的愿景 / Our vision on CSKeFu:
-* 帮助企业快速获得开箱即用的智能客服系统 / Get Customer Support System in minutes
-* 成为开发者首选的客服系统开发框架 / To be Top 1 Framework for Customer Support System Customization
+
+- 帮助企业快速获得开箱即用的智能客服系统 / Get Customer Support System in minutes
+- 成为开发者首选的客服系统开发框架 / To be Top 1 Framework for Customer Support System Customization
 
 :innocent: 我们对春松客服客户的承诺 / Our promise on CSKeFu:
-* 我们不发布垃圾 / We don't ship junk
-* 持续优化春松客服 / Keep on coming with great enhancements in the long term
-* 坚持开源，商业友好授权 / OpenSource for the world with license which is business friendly
+
+- 我们不发布垃圾 / We don't ship junk
+- 持续优化春松客服 / Keep on coming with great enhancements in the long term
+- 坚持开源，商业友好授权 / OpenSource for the world with license which is business friendly
 
 ![image](https://user-images.githubusercontent.com/3538629/110291138-8b5a5e00-8026-11eb-8651-d3ce18d8dab1.png)
 
@@ -378,7 +380,6 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 **提示**：本在线课程使用腾讯课堂服务；课程包括免费内容和付费内容，购买后可联系电话 <a href="tel:15210018430"> (+86)152-1001-8430</a> 开发票；课程内容以上面标题为准，腾讯课堂上的标题与真实内容不完全匹配。
 
 课程观看截止时间参考[页面](https://ke.qq.com/course/464050)内的上课时间，逾期后课程下线。遇到问题可在 [Chatopera 用户交流群](#用户交流群)内交流。
-
 
 ### 开发者文档
 
