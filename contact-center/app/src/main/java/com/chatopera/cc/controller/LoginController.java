@@ -85,8 +85,8 @@ public class LoginController extends Handler {
     @Value("${tongji.baidu.sitekey}")
     private String tongjiBaiduSiteKey;
 
-    @Value("${ads.login.banner}")
-    private String adsLoginBanner;
+    @Value("${notice.login.banner}")
+    private String noticeLoginBanner;
 
     /**
      * 登录页面
@@ -152,8 +152,10 @@ public class LoginController extends Handler {
             view.addObject("tongjiBaiduSiteKey", tongjiBaiduSiteKey);
         }
 
-        if (StringUtils.isNotBlank(adsLoginBanner) && StringUtils.equalsIgnoreCase(adsLoginBanner, "on")) {
-            view.addObject("adsLoginBanner", "on");
+        if (StringUtils.isNotBlank(noticeLoginBanner) && !StringUtils.equalsIgnoreCase(noticeLoginBanner, "off")) {
+            view.addObject("noticeLoginBanner", noticeLoginBanner);
+        } else {
+            view.addObject("noticeLoginBanner", "off");
         }
 
         return view;

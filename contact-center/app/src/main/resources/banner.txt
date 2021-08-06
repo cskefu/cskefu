@@ -5,7 +5,19 @@
  '|...'  '|..|' .||. ||.  '|.' '|..'|'  '|...'  '|.'  '|...'  '|...' .||. ||.  '|.'  '|...' .||.
 
 ==================== Powered by Chatopera Inc. =================
-春松客服: 多渠道智能客服 v${git.build.version} build ${git.commit.id.abbrev}
+春松客服: 越是重视客户服务，越是好的企业 v${git.build.version} build ${git.commit.id.abbrev}
 版权所有 © 北京华夏春松科技有限公司️ https://www.chatopera.com/
-商业许可授权联系 info@chatopera.com
+商业许可授权联系商务顾问 https://dwz.chatopera.com/A51h6m
+
+第一次安装后，参考系统初始化文档，对系统进行初始化，再使用！！！
+https://docs.chatopera.com/products/cskefu/initialization.html
+
+使用过程中，进行维护：备份、回复、升级等，参考文档
+https://docs.chatopera.com/products/cskefu/osc/maintainence.html
+
+春松客服定制开发技能培训：春松客服大讲堂
+https://docs.chatopera.com/products/cskefu/osc/training.html
+
+开源社区反馈建议& 提交 BUG
+https://github.com/chatopera/cskefu/issues
 ----------------------------------------------------------------

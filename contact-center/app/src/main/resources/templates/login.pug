@@ -51,6 +51,9 @@ html
                 })();
             }
     body.login
+        if noticeLoginBanner != "off"
+            div(style="width: 100%; height:50px; background-color: #2bd99e; padding-top: 0px;display: flex;")
+                p(style="color: white;margin: auto; font-size: 15px")= noticeLoginBanner
         .login-box
             .login-logo
                 a
