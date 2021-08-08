@@ -11,19 +11,23 @@ block content
             .row(style='padding:5px;')
                 .col-lg-12
                     ul
-                        if roleList
+                        if size(roleList) > 0
                             for role in roleList
                                 li.uk_role(class={'this': roleData.id == role.id})
                                     a(href="/admin/role/index.html?role=" + role.id, style="word-wrap: break-word;word-break: break-all;")
                                         i.kfont(style="margin-top: 3px;float: left") &#xe7d0;
                                         | #{role.name}
+                        else
+                            .ukefu-empty(style="background: none;")
+                                i.layui-icon 
+                                div(style="") 还没有角色
         .col-lg-9
             h1.site-h1(style='background-color:#FFFFFF;')
                 span(style='width:200px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;word-wrap: break-word;word-break: break-all;')
                     if roleData
                         | #{roleData.name}
                     else
-                        | 坐席组
+                        | 角色用户
                     if userList
                         | （#{userList.size()}）
                 span(style='float:right;')
@@ -71,6 +75,12 @@ block content
                                             a(href="/admin/role/user/delete.html?id=" + userRole.id + "&role=" + userRole.role.id, data-toggle="tip", data-title="请确认是否移除？")
                                                 i.layui-icon(style="color:red;") ဆ
                                                 | 移除
+                            else
+                                td(colspan="5", style="height: 400px;")
+                                    .ukefu-empty(style="background: none;")
+                                        i.layui-icon 
+                                        div(style="") 还没有系统用户
+
             .row(style='padding:5px;')
                 .col-lg-12#page(style='text-align:center;')
     script.

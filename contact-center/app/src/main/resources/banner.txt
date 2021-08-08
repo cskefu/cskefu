@@ -8,6 +8,7 @@
 春松客服: 越是重视客户服务，越是好的企业 v${git.build.version} build ${git.commit.id.abbrev}
 版权所有 © 北京华夏春松科技有限公司️ https://www.chatopera.com/
 商业许可授权联系商务顾问 https://dwz.chatopera.com/A51h6m
+春松客服博客专栏 https://blog.chatopera.com/
 
 第一次安装后，参考系统初始化文档，对系统进行初始化，再使用！！！
 https://docs.chatopera.com/products/cskefu/initialization.html
@@ -20,4 +21,7 @@ https://docs.chatopera.com/products/cskefu/osc/training.html
 
 开源社区反馈建议& 提交 BUG
 https://github.com/chatopera/cskefu/issues
+
+鼓励我们不断的优化春松客服，给春松客服点赞
+https://github.com/chatopera/cskefu/stargazers
 ----------------------------------------------------------------

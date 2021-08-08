@@ -16,6 +16,7 @@
  */
 package com.chatopera.cc.controller.admin;
 
+import com.alibaba.fastjson.JSONArray;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
@@ -24,6 +25,7 @@ import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.proxy.OrganProxy;
 import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
+import com.chatopera.cc.util.json.GsonTools;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,6 +108,28 @@ public class OrganController extends Handler {
                                 organData.getId(),
                                 super.getOrgi(),
                                 false));
+
+                // 处理附属组织
+                final Map<String, Organ> affiliates = organProxy.findAllOrganByParentAndOrgi(organData, super.getOrgi());
+                List<User> affiliateUsers = new ArrayList<>();
+
+                for (final Map.Entry<String, Organ> o : affiliates.entrySet()) {
+                    if (StringUtils.equals(o.getKey(), organData.getId())) continue;
+                    List<User> ousers = userProxy.findByOrganAndOrgiAndDatastatus(
+                            o.getKey(),
+                            super.getOrgi(),
+                            false);
+                    if (ousers != null && ousers.size() > 0) {
+                        for (User u : ousers) {
+                            u.setCurrOrganId(o.getKey());
+                            u.setCurrOrganName(o.getValue().getName());
+                            // copy an object to avoid modify multi times
+                            affiliateUsers.add(GsonTools.copyObject(u));
+                        }
+                    }
+                }
+                map.addAttribute("affiliateUsers", affiliateUsers);
+
             }
         }
         map.addAttribute("areaList", areaRepository.findByOrgi(super.getOrgi()));

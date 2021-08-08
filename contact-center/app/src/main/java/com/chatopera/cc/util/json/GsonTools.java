@@ -17,6 +17,7 @@ package com.chatopera.cc.util.json;
 
 import com.google.gson.*;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,13 @@ public class GsonTools {
     public static enum ConflictStrategy {
 
         THROW_EXCEPTION, PREFER_FIRST_OBJ, PREFER_SECOND_OBJ, PREFER_NON_NULL;
+    }
+
+
+    public static <T>T copyObject(Object object){
+        Gson gson = new Gson();
+        JsonObject jsonObject = gson.toJsonTree(object).getAsJsonObject();
+        return gson.fromJson(jsonObject,(Type) object.getClass());
     }
 
     /**

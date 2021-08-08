@@ -39,8 +39,11 @@ block content
                             | 修改部门
                         button.layui-btn.layui-btn-danger.layui-btn-small(href="/admin/organ/delete.html?id=" + organData.id, data-toggle="tip", data-title="请确认是否删除该部门？")
                             | 删除部门
+
+            // 展示部门根用户
             .row(style='padding:5px;')
                 .col-lg-12
+                    blockquote.layui-elem-quote 部门根用户
                     table.layui-table(lay-skin='line')
                         colgroup
                             col(width='30%')
@@ -57,7 +60,7 @@ block content
                                 th 手机
                                 th(style='white-space:nowrap;', nowrap) 操作
                         tbody(style='table-layout: fixed; word-break: break-all;')
-                            if userList
+                            if size(userList) > 0
                                 for organUser in userList
                                     tr
                                         td(style="width:150px;")
@@ -67,11 +70,61 @@ block content
                                         td= organUser.email
                                         td= organUser.mobile
                                         td(style="white-space: nowrap;")
-                                            a(href="/admin/organ/user/delete.html?id=" + organUser.id + "&organ=" + organData.id, data-toggle="tip", data-title="请确认是否从坐席组中移除坐席？")
+                                            a(href="/admin/organ/user/delete.html?id=" + organUser.id + "&organ=" + organData.id, data-toggle="tip", data-title="请确认是否从部门【#{organData.name}】中移除用户【#{organUser.username}】？")
                                                 i.layui-icon(style="color:red;") ဆ
                                                 | 移除
+                            else
+                                td(colspan="5", style="height:170px;")
+                                    .ukefu-empty(style="background: none;")
+                                        i.layui-icon 
+                                        div(style="") 还没有部门根用户
             .row(style='padding:5px;')
                 .col-lg-12#page(style='text-align:center;')
+
+            // 展示部门附属的用户
+            hr
+            .row(style='padding:5px;')
+                .col-lg-12
+                    blockquote.layui-elem-quote 附属部门用户
+                    table.layui-table(lay-skin='line')
+                        colgroup
+                            col(width='15%')
+                            col(width='15%')
+                            col(width='15%')
+                            col(width='20%')
+                            col(width='20%')
+                            col(width='1%')
+                            col
+                        thead
+                            tr
+                                th 部门
+                                th 用户
+                                th 姓名
+                                th 电子邮件
+                                th 手机
+                                th(style='white-space:nowrap;', nowrap) 操作
+                        tbody(style='table-layout: fixed; word-break: break-all;')
+                            if size(affiliateUsers) > 0
+                                for organUser in affiliateUsers
+                                    tr
+                                        td(style="width:100px;")= organUser.currOrganName
+                                        td(style="width:100px;")
+                                            a(href="")
+                                                | #{organUser.username}
+                                        td(style="width: 100px")= organUser.uname
+                                        td= organUser.email
+                                        td= organUser.mobile
+                                        td(style="white-space: nowrap;")
+                                            a(href="/admin/organ/user/delete.html?id=" + organUser.id + "&organ=" + organUser.currOrganId, data-toggle="tip", data-title="请确认是否从部门【#{organUser.currOrganName}】中移除用户【#{organUser.username}】？")
+                                                i.layui-icon(style="color:red;") ဆ
+                                                | 移除
+                            else
+                                td(colspan="5", style="height:170px;")
+                                    .ukefu-empty(style="background: none;")
+                                        i.layui-icon 
+                                        div(style="") 还没有附属部门用户
+
+
     script(type='text/javascript').
         var setting = {
             data: {simpleData: {enable: true}},

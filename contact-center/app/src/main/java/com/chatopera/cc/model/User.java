@@ -32,6 +32,13 @@ import java.util.*;
 public class User implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
+    public User() {
+    }
+
+    public User(String id) {
+        this.id = id;
+    }
+
     @Id
     private String id;
 
@@ -110,13 +117,11 @@ public class User implements java.io.Serializable {
     // 角色的权限
     private Map<String, Object> roleAuthMap = new HashMap<String, Object>();
 
-    public User() {
-    }
+    @Transient
+    private String currOrganId;   // 短时使用：浏览到该用户时，打开到组织 ID
 
-    public User(String id) {
-        this.id = id;
-    }
-
+    @Transient
+    private String currOrganName;   // 短时使用：浏览到该用户时，打开到组织名
 
     /**
      * @return the id
@@ -555,5 +560,23 @@ public class User implements java.io.Serializable {
 
     public void setExtension(Extension extension) {
         this.extension = extension;
+    }
+
+    @Transient
+    public String getCurrOrganId() {
+        return currOrganId;
+    }
+
+    public void setCurrOrganId(String currOrganId) {
+        this.currOrganId = currOrganId;
+    }
+
+    @Transient
+    public String getCurrOrganName() {
+        return currOrganName;
+    }
+
+    public void setCurrOrganName(String currOrganName) {
+        this.currOrganName = currOrganName;
     }
 }

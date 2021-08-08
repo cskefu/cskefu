@@ -45,22 +45,21 @@ html
                         var count = this.count()
 
                         var limitNum = #{ inviteData.maxwordsnum > 0 ? inviteData.maxwordsnum : 300};  //设定限制字数
-                        var pattern = '还可以输入' + limitNum + '字';
                         var strValue = this.html();
                         if (count > limitNum) {
-                            pattern = ('字数超过限制，请适当删除部分内容');
-                            //超过字数限制自动截取
+                            // 超过字数限制自动截取
                             strValue = strValue.substring(0, limitNum);
                             editor.html(strValue);
+                            document.getElementById('sent').innerHTML = "发送（" + limitNum + "/" + limitNum + "）"; //输入显示
                         } else {
-                            //计算剩余字数
+                            // 计算剩余字数
                             var result = limitNum - this.count();
-                            pattern = '还可以输入' + result + '字';
                             if (result < 20) {
-                                document.getElementById('surplus').style.color = "red";
+                                document.getElementById('sent').style.color = "red";
                             } else {
-                                document.getElementById('surplus').style.color = "#000000";
+                                document.getElementById('sent').style.color = "#fff";
                             }
+                            document.getElementById('sent').innerHTML = "发送（" + count + "/" + limitNum + "）"; //输入显示
                         }
                         if (this.count("text") == 0) {
                             strValue = "";
@@ -78,7 +77,7 @@ html
                         // }
                         words = this.count("text");
 
-                        document.getElementById('surplus').innerHTML = count + "/" + limitNum + " , " + pattern; //输入显示
+
                     },
                     afterCreate: function () { //设置编辑器创建后执行的回调函数
                         var self = this;
@@ -365,7 +364,7 @@ html
                     .chat-bottom#bottom
                         textarea#message(name='content', style='visibility:hidden;')
                         .btn-push.clearfix
-                            #surplus(style='float:left;height:34px;line-height:34px;margin: 10px 20px 10px 5px;') 0/200
+                            #surplus(style='float:left;height:34px;line-height:34px;margin: 10px 20px 10px 5px;'): a(style="color: #C7C6C6;text-decoration: none;cursor: pointer;", href="https://www.cskefu.com", target="_blank") 春松客服提供客服软件支持
                             button.send-btn.active.special.clearfix#sent(type='button', onclick='sendMessage()') 发送
 
                 .content-rig
