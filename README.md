@@ -229,7 +229,7 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 
 容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](https://docs.chatopera.com/products/cskefu/deploy.html)。
 
-## [开发者社区](https://docs.chatopera.com/products/cskefu/osc/index.html)
+## 开发者社区
 
 ### 开源项目地址
 
@@ -248,6 +248,8 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
   <b>在 Chatopera 客户群中也包括其他用户，请不要发送敏感信息。讨论与 Chatopera 产品和服务相关的事宜</b><br>
 <img src="https://static-public.chatopera.com/assets/images/Chatopera_wecom_customer_group_qr.png" width="600">
 </p>
+
+更多开发者社区介绍，查看：[https://docs.chatopera.com/products/cskefu/osc/index.html](https://docs.chatopera.com/products/cskefu/osc/index.html)
 
 ## 运营及定制开发技能培训
 
