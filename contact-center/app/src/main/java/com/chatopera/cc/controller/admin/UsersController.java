@@ -40,6 +40,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -74,13 +76,22 @@ public class UsersController extends Handler {
     @Autowired
     private ExtensionRepository extensionRes;
 
+    /**
+     * 只返回根用户：只属于该部门的非下级部门的用户
+     * @param map
+     * @param request
+     * @return
+     * @throws IOException
+     */
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "user")
     public ModelAndView index(ModelMap map, HttpServletRequest request) throws IOException {
-        User logined = super.getUser(request);
+        Organ currentOrgan = super.getOrgan(request);
+        ArrayList<String> organs = new ArrayList<>();
+        organs.add(currentOrgan.getId());
 
-        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
-        map.addAttribute("userList", userProxy.findUserInOrgans(organs.keySet(), new PageRequest(
+        map.addAttribute("currentOrgan", currentOrgan);
+        map.addAttribute("userList", userProxy.findUserInOrgans(organs, new PageRequest(
                 super.getP(request),
                 super.getPs(request),
                 Sort.Direction.ASC,

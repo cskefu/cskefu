@@ -88,6 +88,7 @@ public class OrganController extends Handler {
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "organ")
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String organ, @Valid String msg) {
+        Organ currentOrgan = super.getOrgan(request);
         List<Organ> organList = organRepository.findByOrgi(super.getOrgi());
         map.addAttribute("organList", getOwnOragans(request));
         if (organList.size() > 0) {
@@ -100,7 +101,7 @@ public class OrganController extends Handler {
                     }
                 }
             } else {
-                map.addAttribute("organData", organData = super.getOrgan(request));
+                map.addAttribute("organData", organData = currentOrgan);
             }
             if (organData != null) {
                 map.addAttribute(
@@ -132,6 +133,7 @@ public class OrganController extends Handler {
 
             }
         }
+        map.addAttribute("currentOrgan", currentOrgan);
         map.addAttribute("areaList", areaRepository.findByOrgi(super.getOrgi()));
         map.addAttribute("roleList", roleRepository.findByOrgi(super.getOrgi()));
         map.put("msg", msg);

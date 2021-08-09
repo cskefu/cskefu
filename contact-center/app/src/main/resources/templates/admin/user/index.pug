@@ -4,14 +4,14 @@ block content
     .row
         .col-lg-12
             h1.site-h1(style='background-color:#FFFFFF;')
-                | 用户列表 (#{userList.totalElements?userList.totalElements:0})
+                | #{currentOrgan.name}根用户列表 (#{userList.totalElements?userList.totalElements:0})
                 span(style='float:right')
                     button.layui-btn.layui-btn-small.green(href='/admin/user/add.html', data-toggle='ajax', data-width='750', data-height='540', data-title='创建新用户')
                         | 创建新用户
             .row(style='padding:5px;')
                 blockquote.layui-elem-quote.layui-quote-nm
                     i.layui-icon(style="color:gray") &#xe60b;
-                    font(color="#999").layui-word-aux 除管理员外，账号必须在【组织结构】中关联一个部门，必须在【系统角色】中关联一个角色，才可以使用资源。设置后，该账号需重新登系统才能生效。
+                    font(color="#999").layui-word-aux 直接属于该部门的系统用户，不含下级组织机构的用户；除管理员外，账号必须在【组织结构】中关联一个部门，必须在【系统角色】中关联一个角色，才可以使用资源。设置后，该账号需重新登系统才能生效。
                 .col-lg-12
                     table.layui-table(lay-skin='line', style='table-layout: fixed;word-break: break-all')
                         colgroup
@@ -75,9 +75,20 @@ block content
                                                     i.layui-icon &#xe642;
                                                     | 编辑
                                             if !user.admin && user.datastatus != true
-                                                a(href='/admin/user/delete.html?id=' + user.id, style="margin-left:10px;" data-toggle="tip" data-title="请确认是否删除记录？")
+                                                a(href='/admin/user/delete.html?id=' + user.id, style="margin-left:10px;" data-toggle="tip" data-title="请确认是否删除该系统用户？")
                                                     i.layui-icon(style="color:red") &#x1006;
                                                     | 删除
+                            else
+                                if models.contains("callcenter")
+                                    td(colspan="9", style="height:400px;")
+                                        .ukefu-empty(style="background: none;")
+                                            i.layui-icon 
+                                            div(style="") 还没有系统用户
+                                else
+                                    td(colspan="8", style="height:400px;")
+                                        .ukefu-empty(style="background: none;")
+                                            i.layui-icon 
+                                            div(style="") 还没有系统用户
             .row(style='padding:5px;')
                 .col-lg-12#page(style='text-align:center;')
 

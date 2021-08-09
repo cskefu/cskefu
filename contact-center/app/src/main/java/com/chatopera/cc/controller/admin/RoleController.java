@@ -74,6 +74,7 @@ public class RoleController extends Handler {
         List<Role> roleList = roleRepository.findByOrgiAndOrgan(super.getOrgi(),currentOrgan.getId());
         map.addAttribute("roleList", roleList);
         map.addAttribute("msg", msg);
+        map.addAttribute("currentOrgan", currentOrgan);
         if (roleList.size() > 0) {
             Role roleData = null;
             if (StringUtils.isNotBlank(role)) {

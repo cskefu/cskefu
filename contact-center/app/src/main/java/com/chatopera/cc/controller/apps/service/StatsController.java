@@ -149,7 +149,7 @@ public class StatsController extends Handler {
             }
         }
 
-        response.setHeader("content-disposition", "attachment;filename=UCKeFu-Report-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
+        response.setHeader("content-disposition", "attachment;filename=CSKeFu-Report-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
         new UKExcelUtil(reportData, response.getOutputStream(), "满意度统计").createFile();
 
         return;
@@ -208,7 +208,7 @@ public class StatsController extends Handler {
         }
         mapR.put("orgi", super.getOrgi(request));
         ReportData reportData = new CubeService("consult.pug", path, dataSource, mapR).execute("SELECT {[Measures].[咨询数量],[Measures].[平均等待时长（秒）],[Measures].[平均咨询时长（秒）]} on columns , NonEmptyCrossJoin([time].[日期].members , NonEmptyCrossJoin([skill].[技能组].members,[agent].[坐席].members)) on rows  FROM [咨询]");
-        response.setHeader("content-disposition", "attachment;filename=UCKeFu-Report-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
+        response.setHeader("content-disposition", "attachment;filename=CSKeFu-Report-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xls");
         new UKExcelUtil(reportData, response.getOutputStream(), "客服坐席统计").createFile();
         return;
     }

@@ -67,7 +67,7 @@ public class TemplateController extends Handler{
     @Menu(type = "admin" , subtype = "template" , access = false , admin = true)
     public void expall(ModelMap map , HttpServletRequest request , HttpServletResponse response) throws Exception {
     	List<Template> templateList = templateRes.findByOrgi(super.getOrgi(request)) ;
-		response.setHeader("content-disposition", "attachment;filename=UCKeFu-Template-Export-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".data");  
+		response.setHeader("content-disposition", "attachment;filename=CSKeFu-Template-Export-"+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".data");  
 		response.getOutputStream().write(MainUtils.toBytes(templateList));
         return ;
     }

@@ -238,6 +238,11 @@ public class LoginController extends Handler {
                     if (StringUtils.isNotBlank(referer)) {
                         view.addObject("referer", referer);
                     }
+                    if (StringUtils.isNotBlank(noticeLoginBanner) && !StringUtils.equalsIgnoreCase(noticeLoginBanner, "off")) {
+                        view.addObject("noticeLoginBanner", noticeLoginBanner);
+                    } else {
+                        view.addObject("noticeLoginBanner", "off");
+                    }
                     view.addObject("msg", "0");
                 }
             }

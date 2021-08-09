@@ -1,4 +1,4 @@
-var title = "春松客服-全渠道智能客服" ;
+var title = "春松客服-多渠道智能客服" ;
 var socket  , newuser = [] , newmessage = [] , ring = [];
 newuser['mp3'] = '/images/new.mp3'; 
 newmessage['mp3'] = '/images/message.mp3';
