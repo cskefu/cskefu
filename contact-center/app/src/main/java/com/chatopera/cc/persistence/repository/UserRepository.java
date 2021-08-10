@@ -96,4 +96,6 @@ public interface UserRepository extends JpaRepository<User, String> {
     List<User> findByOrgiAndAgentAndDatastatusAndIdIsNot(final String orgi, boolean agent, boolean datastatus, final String id);
 
     Page<User> findByIdIn(Iterable<String> ids, Pageable pageRequest);
+
+    List<User> findByIdIn(List<String> ids);
 }

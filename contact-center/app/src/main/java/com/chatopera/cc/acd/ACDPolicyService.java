@@ -20,14 +20,8 @@ import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
-import com.chatopera.cc.model.AgentStatus;
-import com.chatopera.cc.model.AgentUser;
-import com.chatopera.cc.model.SNSAccount;
-import com.chatopera.cc.model.SessionConfig;
-import com.chatopera.cc.persistence.repository.AgentUserRepository;
-import com.chatopera.cc.persistence.repository.OnlineUserRepository;
-import com.chatopera.cc.persistence.repository.SNSAccountRepository;
-import com.chatopera.cc.persistence.repository.SessionConfigRepository;
+import com.chatopera.cc.model.*;
+import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.util.HashMapUtils;
 import com.chatopera.cc.util.WebIMReport;
 import org.apache.commons.lang.StringUtils;
@@ -36,10 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 坐席自动分配策略集
@@ -50,6 +41,9 @@ public class ACDPolicyService {
 
     @Autowired
     private Cache cache;
+
+    @Autowired
+    private UserRepository userRes;
 
     @Autowired
     private SessionConfigRepository sessionConfigRes;
@@ -170,18 +164,22 @@ public class ACDPolicyService {
         }
 
         if (agentUser != null && StringUtils.isNotBlank(agentUser.getAgentno())) {
-            // 指定坐席
-            for (final Map.Entry<String, AgentStatus> entry : map.entrySet()) {
-                // 被指定的坐席，不检查是否忙，是否达到最大接待数量
-                if (StringUtils.equals(
-                        entry.getValue().getAgentno(), agentUser.getAgentno())) {
-                    agentStatuses.add(entry.getValue());
-                    logger.info(
-                            "[filterOutAvailableAgentStatus] <Agent> find ready agent {}, name {}, status {}, service {}/{}",
-                            entry.getValue().getAgentno(), entry.getValue().getUsername(), entry.getValue().getStatus(),
-                            entry.getValue().getUsers(),
-                            entry.getValue().getMaxusers());
-                    break;
+            User user = userRes.findById(agentUser.getUserid());
+            if (user != null && !user.isSuperadmin()) {
+                // 用户不为空，并且不是超级管理员
+                // 指定坐席
+                for (final Map.Entry<String, AgentStatus> entry : map.entrySet()) {
+                    // 被指定的坐席，不检查是否忙，是否达到最大接待数量
+                    if (StringUtils.equals(
+                            entry.getValue().getAgentno(), agentUser.getAgentno())) {
+                        agentStatuses.add(entry.getValue());
+                        logger.info(
+                                "[filterOutAvailableAgentStatus] <Agent> find ready agent {}, name {}, status {}, service {}/{}",
+                                entry.getValue().getAgentno(), entry.getValue().getUsername(), entry.getValue().getStatus(),
+                                entry.getValue().getUsers(),
+                                entry.getValue().getMaxusers());
+                        break;
+                    }
                 }
             }
         }
@@ -190,7 +188,7 @@ public class ACDPolicyService {
         if (agentStatuses.size() == 1) {
             logger.info("[filterOutAvailableAgentStatus] agent status list size: {}", agentStatuses.size());
             // 得到指定的坐席
-            return agentStatuses;
+            return filterOutAgentStatusBySkipSuperAdmin(agentStatuses);
         }
 
         // Note 如果指定了坐席，但是该坐席却不是就绪的，那么就根据技能组或其它条件查找
@@ -226,7 +224,7 @@ public class ACDPolicyService {
             // 如果绑定了技能组，立即返回该技能组的人
             // 这时候，如果该技能组没有人，也不按照其它条件查找
             logger.info("[filterOutAvailableAgentStatus] agent status list size: {}", agentStatuses.size());
-            return agentStatuses;
+            return filterOutAgentStatusBySkipSuperAdmin(agentStatuses);
         } else {
             /**
              * 在指定的坐席和技能组中未查到坐席
@@ -259,7 +257,40 @@ public class ACDPolicyService {
         }
 
         logger.info("[filterOutAvailableAgentStatus] agent status list size: {}", agentStatuses.size());
-        return agentStatuses;
+        return filterOutAgentStatusBySkipSuperAdmin(agentStatuses);
+    }
+
+    /**
+     * 过滤超级管理员
+     *
+     * @param agentStatuses
+     * @return
+     */
+    private List<AgentStatus> filterOutAgentStatusBySkipSuperAdmin(final List<AgentStatus> agentStatuses) {
+        List<AgentStatus> result = new ArrayList<>();
+        List<String> uids = new ArrayList<>();
+        HashMap<String, User> userMap = new HashMap<>();
+
+        for (final AgentStatus as : agentStatuses) {
+            if (StringUtils.isNotBlank(as.getUserid()))
+                uids.add(as.getUserid());
+        }
+
+        List<User> users = userRes.findByIdIn(uids);
+
+        for (final User u : users) {
+            userMap.put(u.getId(), u);
+        }
+
+        for (final AgentStatus as : agentStatuses) {
+            if (userMap.containsKey(as.getUserid())) {
+                if (!userMap.get(as.getUserid()).isSuperadmin())
+                    result.add(as);
+            }
+        }
+
+        logger.info("[filterOutAgentStatusBySkipSuperAdmin] agent status list size: {}", agentStatuses.size());
+        return result;
     }
 
 

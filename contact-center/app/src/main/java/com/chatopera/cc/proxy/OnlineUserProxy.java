@@ -225,8 +225,8 @@ public class OnlineUserProxy {
 
         if (!skillOrgansByOrgi.isEmpty()) {
             for (User user : agentList) {
-                // 跳过管理员角色用户，不显示在技能组列表
-                if (user.isAdmin() || user.isSuperadmin()) continue;
+                // 跳过超级管理员角色用户，不显示在技能组列表
+                if (user.isSuperadmin()) continue;
 
                 // 只显示在线的客服，跳过离线的客服
                 if (getCache().findOneAgentStatusByAgentnoAndOrig(user.getId(), origOrig) == null) continue;
