@@ -306,7 +306,7 @@ html
             var hostname = location.hostname;
             var protocol = window.location.protocol.replace(/:/g, '');
             var username = encodeURIComponent("#{username}");
-            var socket = io(protocol + '://' + hostname + ':#{port}/im/chatbot?userid=#{userid}&orgi=#{orgi}&session=#{sessionid}&appid=#{appid}&osname=!{osname}&browser=!{browser}!{skill ? "&skill=" + skill : ""}!{username ? "&nickname='+username+'" : ""}!{agent ? "&agent=" + agent : ""}!{title ? "&title=" + title : ""}!{traceid ? "&url=" + url : ""}!{traceid ? "&traceid=" + traceid : ""}!{aiid ? "&aiid=" + aiid : ""}', {transports: ['websocket', 'polling']});
+            var socket = io(protocol + '://' + hostname + ':#{port}/im/chatbot?userid=#{userid}&orgi=#{orgi}&session=#{sessionid}&appid=#{appid}&osname=!{osname}&browser=!{browser}!{skill ? "&skill=" + skill : ""}!{username ? "&nickname='+username+'" : ""}!{agent ? "&agent=" + agent : ""}!{title ? "&title=" + encodeURIComponent(title) : ""}!{traceid ? "&url=" + url : ""}!{traceid ? "&traceid=" + traceid : ""}!{aiid ? "&aiid=" + aiid : ""}', {transports: ['websocket', 'polling']});
             socket.on('connect', function () {
                 //service.sendRequestMessage();
                 //output('<span id="callOutConnect-message">'+ new Date().format("yyyy-MM-dd hh:mm:ss") + ' 开始沟通' +'</span>' , 'message callOutConnect-message');
