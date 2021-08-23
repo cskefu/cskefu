@@ -25,15 +25,13 @@
 - 持续优化春松客服 / Keep on coming with great enhancements in the long term
 - 坚持开源，商业友好授权 / OpenSource for the world with license which is business friendly
 
-![image](https://user-images.githubusercontent.com/3538629/110291138-8b5a5e00-8026-11eb-8651-d3ce18d8dab1.png)
-
-<!-- pre post <img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-yellow-bg.png" width="600"> -->
+![image](./public/assets/110291138-8b5a5e00-8026-11eb-8651-d3ce18d8dab1.png)
 
 新版本介绍：[一山还有一山高，开源智能客服系统春松客服 v7 版本发布 | Chatopera](https://chatopera.blog.csdn.net/article/details/113786505)
 
 ## 媒体报道
 
-<img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-gpv-2.png" height = "220" div align=right />
+<img src="./public/assets/cskefu-gpv-2.png" height = "220" div align=right />
 
 - [春松客服荣获 GVP 企业级开源项目认证](http://www.ctiforum.com/news/guonei/578988.html)
 
@@ -46,31 +44,20 @@
 ## 客户案例
 
 <p align="center">
-  <b>TA 们都选择春松客服</b><br>
+  <b>:briefcase: TA 们都选择春松客服</b><br>
   <a href="https://www.chatopera.com/customer.html" target="_blank">
       <img src="./public/assets/customers-202107.jpg" width="900">
   </a>
 </p>
 
-### :yum: TA 们这样评价春松客服
+## 客户反馈
 
-```
-The collaboration is efficient, very professional. The software is steady with high quality services.
-```
-
--- Michael, Founder & CEO, [麥睿資訊](https://www.maideax.com/)
-
-```
-系统功能强大，免费且响应及时，太赞了！贵公司是我碰到的最有爱的公司啦，这么好的产品授权竟然是Apache。
-```
-
--- 小赵，技术员，上海某特种气体公司 IT 部客服系统负责人
-
-```
-技术支持力度大，产品更新很快！
-```
-
--- 阿伟，电商客服技术总监，某跨境电商企业
+<p align="center">
+  <b>:yum: TA 们这样评价春松客服</b><br>
+  <a href="https://www.chatopera.com/customer.html" target="_blank">
+      <img src="./public/assets/cskefu-2021-08-23-10.12.45-AM.jpg" width="900">
+  </a>
+</p>
 
 ## 产品演示
 
@@ -87,6 +74,8 @@ The collaboration is efficient, very professional. The software is steady with h
 [https://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
 
 ## 功能介绍
+
+<img src="./public/assets/cskefu-2021-08-22-8.22.09PM.jpg" width="900">
 
 ### 基础模块
 
