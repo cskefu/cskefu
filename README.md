@@ -73,6 +73,10 @@
 
 [https://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
 
+### 机器人客服示例程序
+
+[https://oh-my.cskefu.com/im/text/0nhckh.html](https://oh-my.cskefu.com/im/text/0nhckh.html)
+
 ## 功能介绍
 
 <img src="./public/assets/cskefu-2021-08-22-8.22.09PM.jpg" width="900">
@@ -153,6 +157,14 @@
 **超过 85% 的春松客服企业客户通过 Chatopera 云服务上线机器人客服！7x24 小时在线，接待访客，辅助人工坐席，提升 10 倍工作效率。**
 
 Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音识别等组件，标准化聊天机器人开发，支持企业 OA 智能问答、HR 智能问答、智能客服和网络营销等场景。企业 IT 部门、业务部门借助 Chatopera 云服务快速让聊天机器人上线！
+
+### 机器人客服示例程序
+
+[https://oh-my.cskefu.com/im/text/0nhckh.html](https://oh-my.cskefu.com/im/text/0nhckh.html)
+
+![](public/assets/screenshot-20210908-184522.png)
+
+### 立即上线机器人客服
 
 查看文档[《立即上线机器人客服》](https://docs.chatopera.com/products/cskefu/work-chatbot/bot-agent.html)。
 
