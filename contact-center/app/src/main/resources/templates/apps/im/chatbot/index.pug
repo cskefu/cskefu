@@ -300,9 +300,9 @@ html
                 padding: 6px;
             }
 
-    body.ukefu-point-text(style='overflow:hidden;')
+    body.ukefu-point-text(style='overflow:hidden; background:#E8E8E8')
         - var dialog_headimg= inviteData.consult_dialog_headimg ? '/res/image.html?id=' + inviteData.consult_dialog_headimg : '/images/agent.png'
-        .large.ukefu-im-theme(class=(type == 'text' ? 'ukefu-theme-border-' + inviteData.consult_dialog_color : ''))
+        .large.ukefu-im-theme(style='background: white;', class=(type == 'text' ? 'ukefu-theme-border-' + inviteData.consult_dialog_color : ''))
             #containter.clearfix
                 #header(class='theme' + inviteData.consult_dialog_color)
                     - var dialog_logo=inviteData.consult_dialog_logo?'/res/image.html?id='+inviteData.consult_dialog_logo:'/images/logo.png'
