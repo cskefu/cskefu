@@ -66,8 +66,13 @@ else if  inviteData.consult_invite_color == "6"
                         a(href=pointAd.url, title=pointAd.tiptext, target="_blank")
                             img(src=baseUrl + pointAd.imgurl, style='max-width:140px;max-height:90px;margin:0 5px;vertical-align: middle;')
                     else
-                        div(style="padding:0px 5px 10px 5px;border-bottom:1px solid #dedede;")
-                            a#point_ad_text(href=pointAd.url, title=pointAd.tiptext, target="_blank")= pointAd.content
+                        // 文本
+                        for ad in pointAds
+                            - var pointAdsNum = 0
+                            if ad.adtype == "text" && pointAdsNum <= 5
+                                - pointAdsNum = pointAdsNum + 1
+                                div(style="padding:0px 5px 10px 5px;border-bottom:1px solid #dedede;")
+                                    a#point_ad_text(href=ad.url, title=ad.tiptext, target="_blank")= ad.content
                 else
                     img(src=baseUrl + '/images/title.jpg', style='width:140px;margin:0 5px;vertical-align: middle;')
                 div(style="padding:10px 5px;text-align:center;color:#555;")= inviteData.skill == true && inviteData.consult_skill_fixed == false && inviteData.consult_skill_msg ? inviteData.consult_skill_msg : ''

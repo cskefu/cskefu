@@ -33,7 +33,6 @@ import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.proxy.OnlineUserProxy;
 import com.chatopera.cc.socketio.util.RichMediaUtils;
 import com.chatopera.cc.util.*;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -67,10 +66,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/im")
@@ -333,9 +329,31 @@ public class IMController extends Handler {
                 // 用户的浏览历史会有很大的数据量，目前强制开启
                 userHistoryRes.save(userHistory);
 
-                view.addObject(
-                        "pointAd",
-                        MainUtils.getPointAdv(MainContext.AdPosEnum.POINT.toString(), invite.getConsult_skill_fixed_id(), Constants.SYSTEM_ORGI));
+                /**
+                 * 广告信息
+                 */
+                List<AdType> ads = MainUtils.getPointAdvs(MainContext.AdPosEnum.POINT.toString(), invite.getConsult_skill_fixed_id(), Constants.SYSTEM_ORGI);
+
+                if (ads.size() > 0) {
+                    view.addObject(
+                            "pointAds",
+                            ads
+                    );
+                    view.addObject(
+                            "pointAd",
+                            MainUtils.weitht(ads)
+                    );
+                } else {
+                    view.addObject(
+                            "pointAds",
+                            null
+                    );
+                    view.addObject(
+                            "pointAd",
+                            null
+                    );
+                }
+
                 view.addObject(
                         "inviteAd",
                         MainUtils.getPointAdv(MainContext.AdPosEnum.INVITE.toString(), invite.getConsult_skill_fixed_id(), Constants.SYSTEM_ORGI));
@@ -947,7 +965,7 @@ public class IMController extends Handler {
                 view.addObject("commentList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_COMMENT_DIC));
                 view.addObject("commentItemList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_COMMENT_ITEM_DIC));
                 view.addObject("welcomeAd", MainUtils.getPointAdv(MainContext.AdPosEnum.WELCOME.toString(), skill, orgi));
-                view.addObject("imageAd", MainUtils.getPointAdv(MainContext.AdPosEnum.IMAGE.toString(), skill, orgi));
+                view.addObject("figureAds", MainUtils.getPointAdvs(MainContext.AdPosEnum.IMAGE.toString(), skill, orgi));
 
                 // 确定"接受邀请"被处理后，通知浏览器关闭弹出窗口
                 OnlineUserProxy.sendWebIMClients(userid, "accept");

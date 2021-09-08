@@ -901,13 +901,14 @@ public class MainUtils {
     }
 
     /**
-     * 按照权重获取广告
+     * 获得所有广告
      *
      * @param adpos
+     * @param skill
+     * @param orgi
      * @return
      */
-    @SuppressWarnings("unchecked")
-    public static AdType getPointAdv(String adpos, String skill, String orgi) {
+    public static List<AdType> getPointAdvs(String adpos, String skill, String orgi) {
         List<AdType> adTypeList = new ArrayList<AdType>();
         List<AdType> cacheAdTypeList = MainContext.getCache().findOneSystemListByIdAndOrgi(
                 Constants.CSKEFU_SYSTEM_ADV + "_" + skill, orgi);
@@ -934,7 +935,19 @@ public class MainUtils {
                 }
             }
         }
-        return weitht(adTypeList);
+        return adTypeList;
+    }
+
+    /**
+     * 按照权重获取广告
+     *
+     * @param adpos
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static AdType getPointAdv(String adpos, String skill, String orgi) {
+        List<AdType> ads = getPointAdvs(adpos, skill, orgi);
+        return weitht(ads);
     }
 
     private static Random random = new Random();
@@ -945,7 +958,7 @@ public class MainUtils {
      * @param adList
      * @return
      */
-    private static AdType weitht(List<AdType> adList) {
+    public static AdType weitht(List<AdType> adList) {
         AdType adType = null;
         int weight = 0;
         if (adList != null && adList.size() > 0) {
@@ -1003,7 +1016,7 @@ public class MainUtils {
         config.setCaching(false);
         config.setMode(Pug4J.Mode.XML);
         config.setPrettyPrint(true);
-        String retValue = config.renderTemplate(template,values);
+        String retValue = config.renderTemplate(template, values);
 
         return retValue;
     }

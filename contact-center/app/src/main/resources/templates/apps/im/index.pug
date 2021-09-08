@@ -431,13 +431,21 @@ html
                                     p(style="text-indent:25px;line-height:25px;")= inviteData.dialog_introduction
 
                     .content-pic(style='width:100%;height:192px;')
-                        if imageAd
-                            if imageAd.adtype == "image"
-                                a(href=imageAd.url, title=imageAd.tiptext, target="_blank")
-                                    img(src=imageAd.imgurl, style="max-width:100%;max-height:190px;margin:0px;vertical-align: middle;")
-                            else
-                                div(style="padding:0px 5px 10px 5px;border-bottom:1px solid #dedede;")
-                                    a#point_ad_text(href=imageAd.url, title=imageAd.tiptext, target="_blank")= imageAd.content
+                        if figureAds
+                            - var figureAdsNum = 0
+                            for figureAd in figureAds
+                                if figureAd.adtype == "image" && figureAdsNum < 5
+                                    - figureAdsNum = 6
+                                    a(href=figureAd.url, title=figureAd.tiptext, target="_blank")
+                                        img(src=figureAd.imgurl, style="max-width:100%;max-height:190px;margin:0px;vertical-align: middle;")
+                                else if figureAdsNum < 5
+                                    - figureAdsNum = figureAdsNum + 1
+                                    if figureAdsNum == 1
+                                        div(style="padding:4px 5px 1px 7px")
+                                            a#point_ad_text(href=figureAd.url, title=figureAd.tiptext, target="_blank")= figureAd.content
+                                    else
+                                        div(style="padding:1px 5px 1px 7px")
+                                            a#point_ad_text(href=figureAd.url, title=figureAd.tiptext, target="_blank")= figureAd.content
                         else if inviteData.dialog_ad
                             img(src="/res/image.html?id=" + inviteData.dialog_ad, style="height:190px;width:100%;")
 
