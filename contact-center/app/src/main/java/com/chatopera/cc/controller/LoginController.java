@@ -85,8 +85,26 @@ public class LoginController extends Handler {
     @Value("${tongji.baidu.sitekey}")
     private String tongjiBaiduSiteKey;
 
-    @Value("${notice.login.banner}")
-    private String noticeLoginBanner;
+    @Value("${extras.login.banner}")
+    private String extrasLoginBanner;
+
+    @Value("${extras.login.chatbox}")
+    private String extrasLoginChatbox;
+
+
+    private void putViewExtras(final ModelAndView view) {
+        if (StringUtils.isNotBlank(extrasLoginBanner) && !StringUtils.equalsIgnoreCase(extrasLoginBanner, "off")) {
+            view.addObject("extrasLoginBanner", extrasLoginBanner);
+        } else {
+            view.addObject("extrasLoginBanner", "off");
+        }
+
+        if (StringUtils.isNotBlank(extrasLoginChatbox) && !StringUtils.equalsIgnoreCase(extrasLoginChatbox, "off")) {
+            view.addObject("extrasLoginChatbox", extrasLoginChatbox);
+        } else {
+            view.addObject("extrasLoginChatbox", "off");
+        }
+    }
 
     /**
      * 登录页面
@@ -152,11 +170,7 @@ public class LoginController extends Handler {
             view.addObject("tongjiBaiduSiteKey", tongjiBaiduSiteKey);
         }
 
-        if (StringUtils.isNotBlank(noticeLoginBanner) && !StringUtils.equalsIgnoreCase(noticeLoginBanner, "off")) {
-            view.addObject("noticeLoginBanner", noticeLoginBanner);
-        } else {
-            view.addObject("noticeLoginBanner", "off");
-        }
+        putViewExtras(view);
 
         return view;
     }
@@ -238,11 +252,9 @@ public class LoginController extends Handler {
                     if (StringUtils.isNotBlank(referer)) {
                         view.addObject("referer", referer);
                     }
-                    if (StringUtils.isNotBlank(noticeLoginBanner) && !StringUtils.equalsIgnoreCase(noticeLoginBanner, "off")) {
-                        view.addObject("noticeLoginBanner", noticeLoginBanner);
-                    } else {
-                        view.addObject("noticeLoginBanner", "off");
-                    }
+
+                    putViewExtras(view);
+
                     view.addObject("msg", "0");
                 }
             }
