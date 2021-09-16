@@ -31,7 +31,7 @@ import java.util.List;
 @Table(name = "uk_chat_message")
 @Document(indexName = "cskefu", type = "chat_message")
 @org.hibernate.annotations.Proxy(lazy = false)
-public class ChatMessage implements java.io.Serializable {
+public class ChatMessage implements java.io.Serializable, Cloneable {
     /**
      *
      */
@@ -517,5 +517,15 @@ public class ChatMessage implements java.io.Serializable {
 
     public void setIntervented(boolean intervented) {
         this.intervented = intervented;
+    }
+
+    public Object clone() {
+        ChatMessage copy = null;
+        try {
+            copy = (ChatMessage) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return copy;
     }
 }

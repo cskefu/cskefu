@@ -248,7 +248,28 @@ public class ChatbotEventSubscription {
                     // 保存并发送
                     if (MainContext.ChannelType.WEBIM.toString().equals(resp.getChannel())) {
                         // WEBIM 渠道
-                        chatbotProxy.saveAndPublish(resp);
+                        if (StringUtils.equals(resp.getMessage(), "{CLEAR} 混合类型消息") || StringUtils.equals(resp.getMessage(), "{CLEAR} 图文消息")) {
+                            JSONArray params = data.getJSONArray("params");
+                            for (int i = 0; i < params.length(); i++) {
+                                JSONObject item = params.getJSONObject(i);
+                                ChatMessage itemResp = (ChatMessage) resp.clone();
+                                itemResp.setExpmsg(null);
+                                if (item.getString("type").equals("plain")) {
+                                    itemResp.setMessage(item.getString("content"));
+                                    chatbotProxy.saveAndPublish(itemResp);
+                                } else if (item.getString("type").equals("card")) {
+                                    if (item.has("thumbnail")) {
+                                        item.put("thumbnail", ChatbotConstants.DEFAULT_BOT_PROVIDER + item.getString("thumbnail"));
+                                    }
+                                    JSONArray expmsg = new JSONArray();
+                                    expmsg.put(item);
+                                    itemResp.setExpmsg(expmsg.toString());
+                                    chatbotProxy.saveAndPublish(itemResp);
+                                }
+                            }
+                        } else {
+                            chatbotProxy.saveAndPublish(resp);
+                        }
                     } else {
                         // 其他渠道
                         chatMessageRes.save(resp);
