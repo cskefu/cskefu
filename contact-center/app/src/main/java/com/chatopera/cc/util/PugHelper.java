@@ -1,16 +1,10 @@
 package com.chatopera.cc.util;
 
 import com.alibaba.fastjson.JSON;
-import com.google.common.collect.BoundType;
-import com.google.common.collect.Range;
-import org.apache.commons.lang.StringUtils;
+import com.alibaba.fastjson.JSONArray;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class PugHelper {
     public String formatDate(String pattern, Date value) {
@@ -36,6 +30,15 @@ public class PugHelper {
         char[] charr = ch.toCharArray();
         System.arraycopy(src.toCharArray(), 0, charr, diff, src.length());
         return new String(charr);
+    }
+
+    /**
+     * 将 String 转化为 JSONArray
+     * @param str
+     * @return
+     */
+    public JSONArray parseStringToJsonArray(final String str) {
+        return JSON.parseArray(str);
     }
 
     public String toJSON(Object input) {

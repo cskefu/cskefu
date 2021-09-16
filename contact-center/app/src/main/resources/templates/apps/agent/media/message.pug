@@ -1,4 +1,12 @@
-if chatmessage.msgtype && chatmessage.msgtype == "image"
+if chatmessage.expmsg && chatmessage.expmsg.contains("hyperlink\":\"http")
+    - var expmsg = pugHelper.parseStringToJsonArray(chatmessage.expmsg)[0];
+    | 图文消息：#{expmsg.title}
+    br
+    = expmsg.summary
+    br
+    a(href="#{expmsg.hyperlink}", target="_blank")
+        img.ukefu-media-image(src="!{chatmessage.message ? chatmessage.message : ''}", id="#{chatmessage.id}")
+else if chatmessage.msgtype && chatmessage.msgtype == "image"
     a(href="/agent/message/image.html?id=" + chatmessage.id, data-toggle="ajax", data-width="950", data-height="600", title="图片")
         img.ukefu-media-image(src="!{chatmessage.message ? chatmessage.message : ''}", id="#{chatmessage.id}")
 else if chatmessage.msgtype && chatmessage.msgtype == "cooperation"

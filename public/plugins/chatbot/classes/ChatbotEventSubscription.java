@@ -20,6 +20,7 @@ import com.chatopera.bot.exception.ChatbotException;
 import com.chatopera.bot.sdk.Response;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
+import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.Chatbot;
 import com.chatopera.cc.persistence.repository.AgentUserRepository;
@@ -126,7 +127,9 @@ public class ChatbotEventSubscription {
                     ChatMessage respHelp = new ChatMessage();
                     JSONArray respParams = new JSONArray();
                     if (!StringUtils.equals(MainContext.ChannelType.WEBIM.toString(), c.getChannel())) {
-                        // 非 WEBIM 情况，比如 Facebook Messenger，使用下面的方法
+                        /**
+                         * 非 WEBIM 情况，比如 Facebook Messenger，使用下面的方法
+                         */
                         // 如果在更多渠道下，此处可能仅适应于 Messenger，那么宜将检测条件调整为 ChannelType.MESSENGER
                         if (data.getBoolean("logic_is_fallback")) {
                             if (!StringUtils.equals(Constants.CHATBOT_HUMAN_FIRST, c.getWorkmode())) {
@@ -219,7 +222,9 @@ public class ChatbotEventSubscription {
                             }
                         }
                     } else {
-                        // 当前渠道为 WEBIM
+                        /**
+                         * 当前渠道为 WEBIM
+                         */
                         if (data.getBoolean("logic_is_fallback")) {
                             // 兜底回复，检查FAQ
                             JSONArray faqReplies = data.getJSONArray("faq");
@@ -249,22 +254,30 @@ public class ChatbotEventSubscription {
                     if (MainContext.ChannelType.WEBIM.toString().equals(resp.getChannel())) {
                         // WEBIM 渠道
                         if (StringUtils.equals(resp.getMessage(), "{CLEAR} 混合类型消息") || StringUtils.equals(resp.getMessage(), "{CLEAR} 图文消息")) {
+                            // 处理多答案
                             JSONArray params = data.getJSONArray("params");
                             for (int i = 0; i < params.length(); i++) {
                                 JSONObject item = params.getJSONObject(i);
                                 ChatMessage itemResp = (ChatMessage) resp.clone();
+                                itemResp.setId(MainUtils.getUUID());
                                 itemResp.setExpmsg(null);
+
+                                // 处理不同答案类型
+                                // 数据格式：https://github.com/chatopera/cskefu/issues/468
                                 if (item.getString("type").equals("plain")) {
                                     itemResp.setMessage(item.getString("content"));
                                     chatbotProxy.saveAndPublish(itemResp);
                                 } else if (item.getString("type").equals("card")) {
                                     if (item.has("thumbnail")) {
-                                        item.put("thumbnail", ChatbotConstants.DEFAULT_BOT_PROVIDER + item.getString("thumbnail"));
+                                        String thumbnailUrl = botServiceProvider + item.getString("thumbnail");
+                                        item.put("thumbnail", thumbnailUrl);
+                                        JSONArray expmsg = new JSONArray();
+                                        expmsg.put(item);
+                                        itemResp.setExpmsg(expmsg.toString());
+//                                        itemResp.setMsgtype("image");
+                                        itemResp.setMessage(thumbnailUrl);
+                                        chatbotProxy.saveAndPublish(itemResp);
                                     }
-                                    JSONArray expmsg = new JSONArray();
-                                    expmsg.put(item);
-                                    itemResp.setExpmsg(expmsg.toString());
-                                    chatbotProxy.saveAndPublish(itemResp);
                                 }
                             }
                         } else {

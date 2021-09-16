@@ -1,4 +1,6 @@
 doctype html
+// constants
+- var dialog_headimg = inviteData.consult_dialog_headimg ? '/res/image.html?id=' + inviteData.consult_dialog_headimg : '/images/agent.png'
 html
     head
         meta(charset='utf-8')
@@ -259,6 +261,138 @@ html
                 return false;
             }
 
+            function output(message, clazz, scroll, msgType) {
+                if (clazz == "message connect-message") {
+                    var messages = document.getElementsByClassName("connect-message");
+                    for (inx = 0; inx < messages.length;) {
+                        document.getElementById('above').removeChild(messages[inx]);
+                        inx++;
+                    }
+                }
+                var element = $("<div class='clearfix " + clazz + "'></div>");
+                element.append(message);
+                $('#above').append(element);
+                if (scroll == null || scroll == true) {
+                    if (msgType && msgType == "image") {
+                        chatScorllBottom("above")
+                    } else {
+                        document.getElementById("above").scrollTop = document.getElementById("above").scrollHeight
+                    }
+                }
+            }
+
+            function update(id, message) {
+                document.getElementById(id).innerHTML = message;
+            }
+
+
+            function createButton(message, data) {
+                var element = $('<div><p>' + message + '</p><div class="button-box"></div></div>')
+                var list = element.find('.button-box');
+                for (let i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    var allowClick = true;
+                    var btn = $('<div class="msg-btn" style="background-color: #e6f2ff !important;">' + item.label + '</div>');
+                    var regClick = function (key) {
+                        btn.click(function () {
+                            if (allowClick) {
+                                allowClick = false;
+                                socket.emit('message', {
+                                appid: "#{appid}",
+                                    userid: "#{userid}",
+                                    type: "message",
+                                    session: "#{sessionid}",
+                                    orgi: "#{orgi}",
+                                    message: key
+                                    });
+                        }
+                    });
+            }
+            regClick(item.text);
+            list.append(btn);
+            }
+
+            return element;
+            }
+
+            function createQList(message, data) {
+                var element = $('<div><p>' + message + '</p><div class="button-box"></div></div>')
+                var list = element.find('.button-box');
+                for (let i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    var btn = $('<div class="msg-list">' + item.label + '</div>');
+                    var regClick = function (key) {
+                        btn.click(function () {
+                            socket.emit('message', {
+                            appid: "#{appid}",
+                                userid: "#{userid}",
+                                type: "message",
+                                session: "#{sessionid}",
+                                orgi: "#{orgi}",
+                                message: key
+                                });
+                    });
+            }
+            regClick(item.text);
+            list.append(btn);
+            }
+
+            return element;
+            }
+
+            function createCard(message, data) {
+                let item = data[0];
+
+                let html = '<div class="card-box" style="background-color: #fff !important;"><div class="msg-card" style="background-color: #fff !important;"><img src="' + item.thumbnail + '" style="width: 80px;height: 80px;"></div><div class="msg-card msg-crad-right" style="background-color: #fff !important;"><h3 style="background-color: #fff !important;">' + item.title + '</h3><p style="background-color: #fff !important;">' + item.summary + '</p></div></div>'
+
+                var element = $(html);
+                element.click(function () {
+                    window.open(item.hyperlink);
+            })
+
+            return element;
+            }
+
+            function showExtmsg(username, createtime, message, json) {
+                var expmsg = JSON.parse(json.replace(/&quot;/g,'"'));
+
+                var type = expmsg[0].type;
+                var content;
+                if (type == 'button') {
+                    content = createButton(message, expmsg);
+                } else if (type == 'qlist') {
+                content = createQList(message, expmsg);
+                } else if (type == 'card') {
+                content = createCard(message, expmsg);
+                }
+
+                var box = $('<div class="chat-left"> <img class="user-img" src="#{dialog_headimg}" alt=""><div class="chat-message"><label  class="user">' + username + '</label><label class="time">' + createtime + '</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content"></div></div>');
+
+                box.find('.chat-content').append(content);
+                output(box, 'chat-block')
+            }
+
+            function showExtmsgBody(username, createtime, message, json) {
+                var expmsg = JSON.parse(json.replace(/&quot;/g,'"'));
+
+                var type = expmsg[0].type;
+                var content;
+                if (type == 'button') {
+                    content = createButton(message, expmsg);
+                } else if (type == 'qlist') {
+                    content = createQList(message, expmsg);
+                } else if (type == 'card') {
+                    content = createCard(message, expmsg);
+                }
+
+                var box = $('')
+
+                var box = $('<div class="chat-left"> <img class="user-img" src="#{dialog_headimg}" alt=""><div class="chat-message"><label  class="user">' + username + '</label><label class="time">' + createtime + '</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content"></div></div>');
+
+                box.find('.chat-content').append(content);
+                output(box, 'chat-block')
+            }
+
             window.onbeforeunload = function () {
             }
 
@@ -301,7 +435,6 @@ html
             }
 
     body.ukefu-point-text(style='overflow:hidden; background:#E8E8E8')
-        - var dialog_headimg= inviteData.consult_dialog_headimg ? '/res/image.html?id=' + inviteData.consult_dialog_headimg : '/images/agent.png'
         .large.ukefu-im-theme(style='background: white;', class=(type == 'text' ? 'ukefu-theme-border-' + inviteData.consult_dialog_color : ''))
             #containter.clearfix
                 #header(class='theme' + inviteData.consult_dialog_color)
@@ -347,20 +480,36 @@ html
                                                 include ../media/message
                             else
                                 .clearfix.chat-block
-                                    .chat-left
-                                        img.user-img(src=dialog_headimg , alt="")
-                                        .chat-message
-                                            label.user
-                                                if chatMessage.chatype == 'aireply'
-                                                    | #{inviteData.ainame ? inviteData.ainame : '小松'}
-                                                else
-                                                    | #{chatMessage.username}
+                                    // for debugging purpose
+                                    //script.
+                                        // console.log("chatMessage.message", '#{chatMessage.message.replaceAll("\\r|\\n", "")}'.replace(/\r?\n|\r/g, ''))
+                                        // console.log("chatMessage.username", "#{chatMessage.username}")
+                                        // var expmsg = "#{chatMessage.expmsg}";
+                                        // if(expmsg)  console.log("chatMessage.expmsg", JSON.parse(expmsg.replace(/&quot;/g,'"')))
+                                        // // && (chatMessage.message == "{CLEAR} 混合类型消息" || chatMessage.message == "{CLEAR} 图文消息")
+                                    - var createtime = pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', chatMessage.createtime)
+                                    if chatMessage.expmsg
+                                        script.
+                                            try {
+                                                showExtmsgBody("#{chatMessage.username}", "#{createtime}", "#{chatMessage.message}", "#{chatMessage.expmsg}");
+                                            } catch (e) {
+                                                console.log("unexpected result", e)
+                                            }
+                                    else
+                                        .chat-left
+                                            img.user-img(src=dialog_headimg , alt="")
+                                            .chat-message
+                                                label.user
+                                                    if chatMessage.chatype == 'aireply'
+                                                        | #{inviteData.ainame ? inviteData.ainame : '小松'}
+                                                    else
+                                                        | #{chatMessage.username}
+                                                label.time= createtime
+                                            .chatting-left
+                                                i.arrow
+                                                .chat-content
+                                                    include ../media/message
 
-                                            label.time= pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', chatMessage.createtime)
-                                        .chatting-left
-                                            i.arrow
-                                            .chat-content
-                                                include ../media/message
                     .chat-bottom#bottom
                         textarea#message(name='content', style='visibility:hidden;')
                         .btn-push.clearfix
@@ -556,92 +705,7 @@ html
             }
         });
 
-        function createButton(message, data) {
-            var element = $('<div><p>' + message + '</p><div class="button-box"></div></div>')
-            var list = element.find('.button-box');
-            for (let i = 0; i < data.length; i++) {
-                var item = data[i];
-                var allowClick = true;
-                var btn = $('<div class="msg-btn" style="background-color: #e6f2ff !important;">' + item.label + '</div>');
-                var regClick = function (key) {
-                    btn.click(function () {
-                        if (allowClick) {
-                            allowClick = false;
-                            socket.emit('message', {
-                                appid: "#{appid}",
-                                userid: "#{userid}",
-                                type: "message",
-                                session: "#{sessionid}",
-                                orgi: "#{orgi}",
-                                message: key
-                            });
-                        }
-                    });
-                }
-                regClick(item.text);
-                list.append(btn);
-            }
 
-            return element;
-        }
-
-        function createQList(message, data) {
-            var element = $('<div><p>' + message + '</p><div class="button-box"></div></div>')
-            var list = element.find('.button-box');
-            for (let i = 0; i < data.length; i++) {
-                var item = data[i];
-                var btn = $('<div class="msg-list">' + item.label + '</div>');
-                var regClick = function (key) {
-                    btn.click(function () {
-                        socket.emit('message', {
-                            appid: "#{appid}",
-                            userid: "#{userid}",
-                            type: "message",
-                            session: "#{sessionid}",
-                            orgi: "#{orgi}",
-                            message: key
-                        });
-                    });
-                }
-                regClick(item.text);
-                list.append(btn);
-            }
-
-            return element;
-        }
-
-        function createCard(message, data) {
-            let item = data[0];
-
-            let html = '<div class="card-box" style="background-color: #fff !important;"><div class="msg-card" style="background-color: #fff !important;"><img src="' + item.thumbnail + '" style="width: 80px;height: 80px;"></div><div class="msg-card msg-crad-right" style="background-color: #fff !important;"><h3 style="background-color: #fff !important;">' + item.title + '</h3><p style="background-color: #fff !important;">' + item.summary + '</p></div></div>'
-
-            var element = $(html);
-            element.click(function () {
-                window.open(item.hyperlink);
-            })
-
-            return element;
-        }
-
-        function showExtmsg(username, createtime, message, json) {
-            var expmsg = JSON.parse(json);
-
-            var type = expmsg[0].type;
-            var content;
-            if (type == 'button') {
-                content = createButton(message, expmsg);
-            } else if (type == 'qlist') {
-                content = createQList(message, expmsg);
-            } else if (type == 'card') {
-                content = createCard(message, expmsg);
-            }
-
-            var box = $('<div class="chat-left"> <img class="user-img" src="#{dialog_headimg}" alt=""><div class="chat-message"><label  class="user">' + username + '</label><label class="time">' + createtime + '</label> </div><div class="chatting-left"><i class="arrow"></i><div class="chat-content"></div></div>');
-
-            box.find('.chat-content').append(content);
-
-            output(box, 'chat-block')
-        }
 
         function sendDisconnect() {
             socket.disconnect();
@@ -665,28 +729,6 @@ html
                 alert("坐席已断开和您的对话");
             }
             editor.html('');
-        }
-        function output(message, clazz, scroll, msgType) {
-            if (clazz == "message connect-message") {
-                var messages = document.getElementsByClassName("connect-message");
-                for (inx = 0; inx < messages.length;) {
-                    document.getElementById('above').removeChild(messages[inx]);
-                    inx++;
-                }
-            }
-            var element = $("<div class='clearfix " + clazz + "'></div>");
-            element.append(message);
-            $('#above').append(element);
-            if (scroll == null || scroll == true) {
-                if (msgType && msgType == "image") {
-                    chatScorllBottom("above")
-                } else {
-                    document.getElementById("above").scrollTop = document.getElementById("above").scrollHeight
-                }
-            }
-        }
-        function update(id, message) {
-            document.getElementById(id).innerHTML = message;
         }
 
         var message = {
