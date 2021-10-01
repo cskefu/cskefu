@@ -438,5 +438,5 @@ Copyright (2018-2021) <a href="https://www.chatopera.com/" target="_blank">åŒ—äº
 
 [![chatoper banner][co-banner-image]][co-url]
 
-[co-banner-image]: https://static-public.chatopera.com/assets/images/42383104-da925942-8168-11e8-8195-868d5fcec170.png
+[co-banner-image]: https://user-images.githubusercontent.com/3538629/135558449-9739c98c-30aa-4b49-916b-87182520c0c6.png
 [co-url]: https://www.chatopera.com
