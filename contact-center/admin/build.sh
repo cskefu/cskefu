@@ -8,7 +8,6 @@ baseDir=$(cd `dirname "$0"`;pwd)
 appHome=$baseDir/..
 registryPrefix=
 imagename=chatopera/contact-center
-TIMESTAMP=`date "+%Y%m%d.%H%M%S"`
 
 # functions
 
@@ -20,18 +19,20 @@ if [ -d ../private ]; then
     registryPrefix=dockerhub.qingcloud.com/
 fi
 
+TIMESTAMP=`date "+%Y%m%d.%H%M%S"`
 PACKAGE_VERSION=`git rev-parse --short HEAD`
+APPLICATION_CUSTOMER_ENTITY=${APPLICATION_CUSTOMER_ENTITY:-"OpenSource Community"}
 
-set -x
 $baseDir/package.sh
 
 if [ ! $? -eq 0 ]; then
     exit 1
 fi
 
+set -x
 docker build --build-arg VCS_REF=$PACKAGE_VERSION \
     --build-arg APPLICATION_BUILD_DATESTR=$TIMESTAMP \
-    --build-arg APPLICATION_CUSTOMER_ENTITY=$APPLICATION_CUSTOMER_ENTITY \
+    --build-arg APPLICATION_CUSTOMER_ENTITY="$APPLICATION_CUSTOMER_ENTITY" \
     --no-cache \
     --force-rm=true --tag $registryPrefix$imagename:$PACKAGE_VERSION .
 
