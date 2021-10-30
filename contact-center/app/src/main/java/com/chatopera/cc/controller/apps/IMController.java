@@ -49,7 +49,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -1000,7 +1002,7 @@ public class IMController extends Handler {
         return view;
     }
 
-    @RequestMapping("/text/{appid}")
+    @GetMapping("/text/{appid}")
     @Menu(type = "im", subtype = "index", access = true)
     public ModelAndView text(
             HttpServletRequest request,
@@ -1092,6 +1094,105 @@ public class IMController extends Handler {
         }
 
         return view;
+    }
+
+    /**
+     * 适配移动端连接请求
+     *
+     * @throws Exception
+     */
+    @ResponseBody
+    @PostMapping("/text/{appid}")
+    @Menu(type = "im", subtype = "index", access = true)
+    public Map<String, Object> miniapp(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @PathVariable String appid,
+            @Valid String traceid,
+            @Valid String aiid,
+            @Valid String exchange,
+            @Valid String title,
+            @Valid String url,
+            @Valid String skill,
+            @Valid String id,
+            @Valid String userid,
+            @Valid String agent,
+            @Valid String name,
+            @Valid String email,
+            @Valid String phone,
+            @Valid String ai,
+            @Valid String orgi,
+            @Valid String product,
+            @Valid String description,
+            @Valid String imgurl,
+            @Valid String pid,
+            @Valid String purl) throws Exception {
+        Map<String, Object> params = new HashMap<>();
+        CousultInvite invite = OnlineUserProxy.consult(appid, StringUtils.isBlank(orgi) ? Constants.SYSTEM_ORGI : orgi);
+
+        params.put("hostname", request.getServerName());
+        params.put("port", request.getServerPort());
+        params.put("schema", request.getScheme());
+        params.put("appid", appid);
+        params.put("channelVisitorSeparate", channelWebIMVisitorSeparate);
+        params.put("ip", MainUtils.md5(request.getRemoteAddr()));
+
+        if (invite.isSkill() && invite.isConsult_skill_fixed()) { // 添加技能组ID
+            // 忽略前端传入的技能组ID
+            params.put("skill", invite.getConsult_skill_fixed_id());
+        } else if (StringUtils.isNotBlank(skill)) {
+            params.put("skill", skill);
+        }
+
+        if (StringUtils.isNotBlank(agent)) {
+            params.put("agent", agent);
+        }
+
+        params.put("client", MainUtils.getUUID());
+        params.put("sessionid", request.getSession().getId());
+
+        params.put("id", id);
+        if (StringUtils.isNotBlank(ai)) {
+            params.put("ai", ai);
+        }
+        if (StringUtils.isNotBlank(exchange)) {
+            params.put("exchange", exchange);
+        }
+
+        params.put("name", name);
+        params.put("email", email);
+        params.put("phone", phone);
+        params.put("userid", userid);
+
+        params.put("product", product);
+        params.put("description", description);
+        params.put("imgurl", imgurl);
+        params.put("pid", pid);
+        params.put("purl", purl);
+
+        if (StringUtils.isNotBlank(traceid)) {
+            params.put("traceid", traceid);
+        }
+        if (StringUtils.isNotBlank(title)) {
+            params.put("title", title);
+        }
+        if (StringUtils.isNotBlank(traceid)) {
+            params.put("url", url);
+        }
+
+        if (invite != null) {
+            params.put("inviteData", invite);
+            params.put("orgi", invite.getOrgi());
+            params.put("appid", appid);
+
+            if (StringUtils.isNotBlank(aiid)) {
+                params.put("aiid", aiid);
+            } else if (StringUtils.isNotBlank(invite.getAiid())) {
+                params.put("aiid", invite.getAiid());
+            }
+        }
+
+        return params;
     }
 
 
