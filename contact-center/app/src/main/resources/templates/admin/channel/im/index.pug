@@ -7,7 +7,7 @@ block content
                 | 网站列表 (#{snsAccountList.totalElements})
                 span(style="float:right;")
                     if user.superadmin || user.admin
-                        button.layui-btn.layui-btn-small.green(href="/admin/im/add.html", data-toggle="ajax", data-width="550", data-height="300", data-title="创建新网站") 创建新网站
+                        button.layui-btn.layui-btn-small.green(href="/admin/im/add.html", data-toggle="ajax", data-width="600", data-height="300", data-title="创建新网站") 创建新网站
             .ror(style="padding:5px;")
                 .col-lg-12
                     table.layui-table(lay-skin="line", style="table-layout: fixed; word-break: break-all")
@@ -30,7 +30,7 @@ block content
                                             i.layui-icon 
                                             |                                接入
                                         if user.superadmin || user.admin
-                                            a(href="/admin/im/edit.html?id=" + snsAccount.id, data-toggle="ajax", data-width="550", data-height="300", data-title="编辑网站")
+                                            a(href="/admin/im/edit.html?id=" + snsAccount.id, data-toggle="ajax", data-width="600", data-height="300", data-title="编辑网站")
                                                 i.layui-icon 
                                                 |                                编辑
                                         if (user.superadmin || user.admin) && snsAccount.datastatus != true

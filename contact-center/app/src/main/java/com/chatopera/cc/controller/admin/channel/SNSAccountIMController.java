@@ -21,6 +21,7 @@ import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.repository.ConsultInviteRepository;
+import com.chatopera.cc.persistence.repository.OrganRepository;
 import com.chatopera.cc.persistence.repository.SNSAccountRepository;
 import com.chatopera.cc.persistence.repository.SecretRepository;
 import com.chatopera.cc.proxy.OrganProxy;
@@ -61,6 +62,9 @@ public class SNSAccountIMController extends Handler {
     @Autowired
     private OrganProxy organProxy;
 
+    @Autowired
+    private OrganRepository organRes;
+
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "im", access = false, admin = true)
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String execute, @RequestParam(name = "status", required = false) String status) {
@@ -81,6 +85,8 @@ public class SNSAccountIMController extends Handler {
     @RequestMapping("/add")
     @Menu(type = "admin", subtype = "send", access = false, admin = true)
     public ModelAndView add(ModelMap map, HttpServletRequest request) {
+        Organ currentOrgan = super.getOrgan(request);
+        map.put("organ", currentOrgan);
         return request(super.createView("/admin/channel/im/add"));
     }
 
@@ -147,7 +153,10 @@ public class SNSAccountIMController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "send", access = false, admin = true)
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
-        map.addAttribute("snsAccount", snsAccountRes.findByIdAndOrgi(id, super.getOrgi(request)));
+        SNSAccount snsAccount = snsAccountRes.findByIdAndOrgi(id, super.getOrgi(request));
+        Organ organ = organRes.findOne(snsAccount.getOrgan());
+        map.put("organ", organ);
+        map.addAttribute("snsAccount", snsAccount);
         return request(super.createView("/admin/channel/im/edit"));
     }
 

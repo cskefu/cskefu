@@ -22,6 +22,7 @@ import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.repository.*;
+import com.chatopera.cc.proxy.OrganProxy;
 import com.chatopera.cc.util.HashMapUtils;
 import com.chatopera.cc.util.WebIMReport;
 import org.apache.commons.lang.StringUtils;
@@ -56,6 +57,9 @@ public class ACDPolicyService {
 
     @Autowired
     private SNSAccountRepository snsAccountRes;
+
+    @Autowired
+    private OrganProxy organProxy;
 
     /**
      * 载入坐席 ACD策略配置
@@ -234,10 +238,15 @@ public class ACDPolicyService {
              */
 
             SNSAccount snsAccount = snsAccountRes.findBySnsidAndOrgi(agentUser.getAppid(), orgi);
+            Map<String, Organ> allOrgan = organProxy.findAllOrganByParentIdAndOrgi(snsAccount.getOrgan(), orgi);
+//            allOrgan.keySet().retainAll
 
             // 对于该租户的所有客服
             for (final Map.Entry<String, AgentStatus> entry : map.entrySet()) {
-                if ((!entry.getValue().isBusy()) && (entry.getValue().getUsers() < sessionConfig.getMaxuser()) && entry.getValue().getSkills().containsKey(snsAccount.getOrgan())) {
+                Set<String> agentSkills = entry.getValue().getSkills().keySet();
+                agentSkills.retainAll(allOrgan.keySet());
+
+                if ((!entry.getValue().isBusy()) && (entry.getValue().getUsers() < sessionConfig.getMaxuser()) && agentSkills.size() > 0) {
                     agentStatuses.add(entry.getValue());
                     logger.info(
                             "[filterOutAvailableAgentStatus] <Redundance> find ready agent {}, agentname {}, status {}, service {}/{}, skills {}",

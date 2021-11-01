@@ -98,6 +98,14 @@ public class OrganProxy {
         }
     }
 
+    public Map<String, Organ> findAllOrganByParentIdAndOrgi(String organId, String orgi) {
+        Map<String, Organ> result = new HashMap<>();
+        if (StringUtils.isNotBlank(organId)) {
+            processChild(result, organId, orgi);
+        }
+        return result;
+    }
+
     public Map<String, Organ> findAllOrganByParentAndOrgi(Organ organ, String orgi) {
         Map<String, Organ> result = new HashMap<>();
         if (organ != null) {
