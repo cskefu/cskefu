@@ -4,7 +4,7 @@
 
 </div>
 
-# 春松客服: 做好开源客服系统
+# 春松客服
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/chatopera/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/chatopera/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/blob/osc/LICENSE "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![Docker Tags](https://raw.githubusercontent.com/hailiang-wang/Rishit-dagli/master/badges/docker.svg)](https://hub.docker.com/repository/docker/chatopera/contact-center/tags?page=1&ordering=last_updated "Get Latest Docker Images") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) [![Docker Stars](https://img.shields.io/docker/stars/chatopera/contact-center.svg)](https://hub.docker.com/r/chatopera/contact-center/ "Docker Stars")
 
@@ -26,7 +26,18 @@
 - 持续优化春松客服 / Keep on coming with great enhancements in the long term
 - 坚持开源，商业友好授权 / OpenSource for the world with license which is business friendly
 
-![image](./public/assets/110291138-8b5a5e00-8026-11eb-8651-d3ce18d8dab1.png)
+
+## 做好开源客服系统
+
+春松客服积极参与开源社区建设，以下为参与科创中国创新开源项目视频，春松客服正式介绍开始于2分45秒。
+
+<p align="center">
+  <a href="https://mp.weixin.qq.com/s/ixFg3zVJP07e9EPQRPq2UQ" target="_blank">
+      <img src="./public/assets/screenshot-20211103-212628.png" width="800">
+  </a>
+</p>
+
+其它播放地址：[YouTube](https://www.youtube.com/watch?v=1DMLwhb5C-8&t=165s)
 
 新版本介绍：[一山还有一山高，开源智能客服系统春松客服 v7 版本发布 | Chatopera](https://chatopera.blog.csdn.net/article/details/113786505)
 
@@ -56,7 +67,7 @@
 <p align="center">
   <b>:yum: TA 们这样评价春松客服</b><br>
   <a href="https://www.chatopera.com/customer.html" target="_blank">
-      <img src="./public/assets/cskefu-2021-08-23-10.12.45-AM.jpg" width="900">
+      <img src="./public/assets/screenshot-20211026-103937.png" width="900">
   </a>
 </p>
 
@@ -437,7 +448,4 @@ Copyright (2018-2021) <a href="https://www.chatopera.com/" target="_blank">北�
 
 [Apache License Version 2.0](https://github.com/chatopera/cskefu/blob/osc/LICENSE)
 
-[![chatoper banner][co-banner-image]][co-url]
-
-[co-banner-image]: https://user-images.githubusercontent.com/3538629/135558449-9739c98c-30aa-4b49-916b-87182520c0c6.png
-[co-url]: https://www.chatopera.com
+![image](./public/assets/110291138-8b5a5e00-8026-11eb-8651-d3ce18d8dab1.png)
