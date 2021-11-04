@@ -28,12 +28,12 @@
 
 
 <p align="center">
-  <a href="https://youtu.be/ILf3BWpq4Ns" target="_blank">
-      <img src="./public/assets/screenshot-20211103-212628.png" width="800">
+  <a href="https://www.bilibili.com/video/BV1hu411o76r/" target="_blank">
+      <img src="./public/assets/screenshot-20211104-095817.png" width="800">
   </a>
 </p>
 
-其它播放地址：[微信公众号（春松客服正式介绍开始于 2 分 45 秒）](https://mp.weixin.qq.com/s/ixFg3zVJP07e9EPQRPq2UQ)
+其它播放地址：[微信公众号](https://mp.weixin.qq.com/s/ixFg3zVJP07e9EPQRPq2UQ) | [YouTube](https://youtu.be/ILf3BWpq4Ns)
 
 新版本介绍：[一山还有一山高，开源智能客服系统春松客服 v7 版本发布 | Chatopera](https://chatopera.blog.csdn.net/article/details/113786505)
 
