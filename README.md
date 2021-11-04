@@ -29,7 +29,7 @@
 
 <p align="center">
   <a href="https://www.bilibili.com/video/BV1hu411o76r/" target="_blank">
-      <img src="./public/assets/screenshot-20211104-095817.png" width="800">
+      <img src="./public/assets/screenshot-20211104-113333.png" width="800">
   </a>
 </p>
 
