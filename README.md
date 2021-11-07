@@ -10,21 +10,21 @@
 
 [https://www.cskefu.com](https://www.cskefu.com/)
 
-:evergreen_tree: 春松客服是 [Chatopera](https://www.chatopera.com/) 发布的开源智能客服系统 / CSKeFu is a Customer Support System for Enterprises in a High Performance Low-Touch way, opensource for the world by [Chatopera](https://www.chatopera.com/).
+:evergreen_tree: 春松客服是 [Chatopera](https://www.chatopera.com/) 发布的开源并且免费的智能客服系统 / CSKeFu is a Customer Support System for Enterprises in a High Performance Low-Touch way, OpenSource and Free for the world by [Chatopera](https://www.chatopera.com/).
 
 在 Chatopera，我们相信：**越是重视客户服务，越是好的企业 / the more you care about your customers, the better income you earn in return**。
 
 :hearts: 我们发布春松客服的愿景 / Our vision on CSKeFu:
 
 - 做好开源客服系统 / Deliver Open Source Contact Center with High Quality
-- 帮助企业快速获得开箱即用的智能客服系统 / Get Customer Support System in minutes
+- 帮助企业快速获得开箱即用的免费智能客服系统 / Get Customer Support System in minutes
 - 成为开发者首选的客服系统开发框架 / To be Top 1 Framework for Customer Support System Customization
 
 :innocent: 我们对春松客服客户的承诺 / Our promise on CSKeFu:
 
 - 我们不发布垃圾 / We don't ship junk
 - 持续优化春松客服 / Keep on coming with great enhancements in the long term
-- 坚持开源，商业友好授权 / OpenSource for the world with license which is business friendly
+- 坚持开源和免费，商业友好授权 / OpenSource for the world with license which is business friendly
 
 
 <p align="center">
@@ -89,9 +89,9 @@
 
 <img src="./public/assets/cskefu-2021-08-22-8.22.09PM.jpg" width="900">
 
-### 基础模块
+### 免费模块
 
-春松客服提供多个开箱即用的供企业免费使用的模块：
+春松客服提供的开源代码，即[CSKeFu](https://github.com/chatopera/cskefu)，包含多个开箱即用的模块：
 
 - 账号及组织机构管理：按组织、角色分配账号权限
 
@@ -160,6 +160,10 @@
 </p>
 </details>
 
+## 私有部署
+
+容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](https://docs.chatopera.com/products/cskefu/deploy.html)。
+
 ## 机器人客服
 
 **超过 85% 的春松客服企业客户通过 Chatopera 云服务上线机器人客服！7x24 小时在线，接待访客，辅助人工坐席，提升 10 倍工作效率。**
@@ -173,6 +177,8 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 ![](public/assets/screenshot-20210908-184522.png)
 
 ### 立即上线机器人客服
+
+上线机器人客服的两个方式：1）Chatopera 云服务，按量付费，提供每日免费额度；2）私有部署。
 
 查看文档[《立即上线机器人客服》](https://docs.chatopera.com/products/cskefu/work-chatbot/bot-agent.html)。
 
@@ -233,10 +239,6 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 
 </p>
 </details>
-
-## 私有部署
-
-容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](https://docs.chatopera.com/products/cskefu/deploy.html)。
 
 ## 开发者社区
 
