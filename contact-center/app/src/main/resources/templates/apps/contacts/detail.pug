@@ -181,6 +181,20 @@ block content
         }
 
     script.
+        function escapeHtml (str) {
+            if (typeof str == 'string') {
+                return str.replace(/<|&|>/g, function (matches) {
+                    return ({
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '&': '&amp;'
+                    })[matches];
+                });
+            }
+
+            return '';
+        }
+
         function getNotesByContactId () {
                 // 获取数据
                 var id = $('#contactsId').val();
@@ -204,8 +218,8 @@ block content
                                     '<div class="container">' +
                                     '<h4>时间：' + item.updatetime + '</h4>' +
                                     '<h5>笔记者：' + item.creatername + '</h5>' +
-                                    '<h5>事件类型：' + item.category + '</h5>' +
-                                    '<div>笔记：' + item.content + '</div>' +
+                                    '<h5>事件类型：' + escapeHtml(item.category) + '</h5>' +
+                                    '<div>笔记：' + escapeHtml(item.content) + '</div>' +
                                     '</div>' +
                                     '</div>');
                             }
