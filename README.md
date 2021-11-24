@@ -37,6 +37,14 @@
 
 新版本介绍：[一山还有一山高，开源智能客服系统春松客服 v7 版本发布 | Chatopera](https://chatopera.blog.csdn.net/article/details/113786505)
 
+## 行动号召
+
+给春松客服点赞！您的支持是我们工作的动力之一！
+
+<img src="./public/assets/cskefu-star-call-for-action.png" width="900">
+
+Star 地址：[https://github.com/chatopera/cskefu](https://github.com/chatopera/cskefu)
+
 ## 媒体报道
 
 <img src="./public/assets/cskefu-gpv-2.png" height = "220" div align=right />
