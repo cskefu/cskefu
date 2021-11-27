@@ -13,7 +13,7 @@ MVNNAME=maven.tgz
 
 # main 
 [ -z "${BASH_SOURCE[0]}" -o "${BASH_SOURCE[0]}" = "$0" ] || return
-cd /opt && wget -O $MVNNAME https://www-us.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+cd /opt && wget -O $MVNNAME https://downloads.apache.org/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
 tar xzf $MVNNAME
 mv apache-maven-* maven
 rm $MVNNAME
