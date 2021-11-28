@@ -26,7 +26,6 @@
 - 持续优化春松客服 / Keep on coming with great enhancements in the long term
 - 坚持开源和免费，商业友好授权 / OpenSource for the world with license which is business friendly
 
-
 <p align="center">
   <a href="https://www.bilibili.com/video/BV1hu411o76r/" target="_blank">
       <img src="./public/assets/screenshot-20211104-113333.jpg" width="800">
@@ -81,13 +80,16 @@ Star 地址：[https://github.com/chatopera/cskefu](https://github.com/chatopera
 
 [https://cc.chatopera.com/](https://cc.chatopera.com/)
 
-| **登录账号** | **密码**  |
-| ------------ | --------- |
-| admin        | admin1234 |
+| **登录账号** | **密码**  | **描述**       |
+| ------------ | --------- | -------------- |
+| admin        | admin1234 | 系统超级管理员 |
+| zhangsan     | agent1234 | 坐席           |
 
 ### 网页端访客程序
 
 [https://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
+
+坐席 `zhangsan` 在线且就绪状态，访客打开网页端访客程序会分配给张三接待。
 
 ### 机器人客服示例程序
 
