@@ -273,7 +273,7 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 
 ### 在线培训视频
 
-《春松客服大讲堂 2019》课程有发布到两个地址：Bilibili 和 [腾讯课堂](https://ke.qq.com/course/464050)。Bilibili 视频免费观看，腾讯课堂为付费，有条件的观众请在腾讯课堂购买，以视对我们工作的支持和鼓励 :heartpulse:，做好开源客服系统。
+《春松客服大讲堂 2019》课程有发布到两个地址：Bilibili 和 [腾讯课堂](https://ke.qq.com/course/464050)。Bilibili 视频免费观看，腾讯课堂为付费，有条件的观众请在腾讯课堂购买，以示对我们工作的支持和鼓励 :heartpulse:，做好开源客服系统。
 
 以下列表中使用 Bilibili 站点地址，PPT 课件库地址 [chatopera/cskefu.djt](https://github.com/chatopera/cskefu.djt)。
 
