@@ -48,11 +48,11 @@ Star 地址：[https://github.com/chatopera/cskefu](https://github.com/chatopera
 
 <img src="./public/assets/cskefu-gpv-2.png" height = "220" div align=right />
 
+- [Chatopera 王海良：做好开源客服系统 | 开源社开源故事集](https://mp.weixin.qq.com/s?__biz=MzA4NTM4NDc4NQ==&mid=2247486827&idx=1&sn=d04fae9325929eea639763ba6d41e314)
+
 - [春松客服荣获 GVP 企业级开源项目认证](http://www.ctiforum.com/news/guonei/578988.html)
 
 - [GitHub 上获点赞最多的开源客服系统春松客服入驻 CODE CHINA](https://mp.weixin.qq.com/s/wGCFj9Hs1uVuTQCTqH0IWg)
-
-- [Coscon'19 中国开源年会春松客服主题分享](https://www.shangyexinzhi.com/article/351121.html)
 
 ---
 
