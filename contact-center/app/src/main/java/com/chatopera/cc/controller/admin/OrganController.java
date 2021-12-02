@@ -16,7 +16,6 @@
  */
 package com.chatopera.cc.controller.admin;
 
-import com.alibaba.fastjson.JSONArray;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
@@ -111,11 +110,13 @@ public class OrganController extends Handler {
                                 false));
 
                 // 处理附属组织
-                final Map<String, Organ> affiliates = organProxy.findAllOrganByParentAndOrgi(organData, super.getOrgi());
+                final Map<String, Organ> affiliates = organProxy.findAllOrganByParentAndOrgi(organData,
+                        super.getOrgi());
                 List<User> affiliateUsers = new ArrayList<>();
 
                 for (final Map.Entry<String, Organ> o : affiliates.entrySet()) {
-                    if (StringUtils.equals(o.getKey(), organData.getId())) continue;
+                    if (StringUtils.equals(o.getKey(), organData.getId()))
+                        continue;
                     List<User> ousers = userProxy.findByOrganAndOrgiAndDatastatus(
                             o.getKey(),
                             super.getOrgi(),
@@ -163,7 +164,7 @@ public class OrganController extends Handler {
         String msg = "admin_organ_new_success";
         String firstId = null;
         if (tempOrgan != null) {
-            msg = "admin_organ_update_name_not"; //分类名字重复
+            msg = "admin_organ_update_name_not"; // 分类名字重复
         } else {
             organ.setOrgi(super.getOrgi());
             firstId = organ.getId();
@@ -185,7 +186,8 @@ public class OrganController extends Handler {
     @RequestMapping("/seluser")
     @Menu(type = "admin", subtype = "seluser", admin = true)
     public ModelAndView seluser(ModelMap map, HttpServletRequest request, @Valid String organ) {
-        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
+        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request),
+                super.getOrgi(request));
         map.addAttribute("userList", userProxy.findUserInOrgans(organs.keySet()));
         Organ organData = organRepository.findByIdAndOrgi(organ, super.getOrgi());
         map.addAttribute("userOrganList", userProxy
@@ -193,7 +195,6 @@ public class OrganController extends Handler {
         map.addAttribute("organ", organData);
         return request(super.createView("/admin/organ/seluser"));
     }
-
 
     /**
      * 执行添加用户到组织中
@@ -208,8 +209,7 @@ public class OrganController extends Handler {
     public ModelAndView saveuser(
             HttpServletRequest request,
             final @Valid String[] users,
-            final @Valid String organ
-    ) {
+            final @Valid String organ) {
         logger.info("[saveuser] save users {} into organ {}", StringUtils.join(users, ","), organ);
         final User loginUser = super.getUser(request);
 
@@ -271,15 +271,15 @@ public class OrganController extends Handler {
     public ModelAndView userroledelete(
             final HttpServletRequest request,
             final @Valid String id,
-            final @Valid String organ
-    ) {
+            final @Valid String organ) {
         logger.info("[userroledelete] user id {}, organ {}", id, organ);
         if (id != null) {
             List<OrganUser> organUsers = organUserRes.findByUserid(id);
             if (organUsers.size() > 1) {
                 organUserRes.deleteOrganUserByUseridAndOrgan(id, organ);
             } else {
-                return request(super.createView("redirect:/admin/organ/index.html?organ=" + organ + "&msg=not_allow_remove_user"));
+                return request(super.createView(
+                        "redirect:/admin/organ/index.html?organ=" + organ + "&msg=not_allow_remove_user"));
             }
         }
         return request(super.createView("redirect:/admin/organ/index.html?organ=" + organ));
@@ -320,7 +320,6 @@ public class OrganController extends Handler {
         return request(super.createView("/admin/organ/area"));
     }
 
-
     @RequestMapping("/area/update")
     @Menu(type = "admin", subtype = "organ")
     public ModelAndView areaupdate(HttpServletRequest request, @Valid Organ organ) {
@@ -347,11 +346,13 @@ public class OrganController extends Handler {
             msg = "admin_oran_not_delete";
         } else if (organ != null) {
             List<OrganUser> organUsers = organUserRes.findByOrgan(organ.getId());
-            organUserRes.deleteInBatch(organUsers);
-            organRepository.delete(organ);
-        } else {
-            msg = "admin_organ_not_exist";
+            if (organUsers.size() > 0) {
+                msg = "admin_oran_not_empty";
+            } else {
+                organRepository.delete(organ);
+            }
         }
+
         return request(super.createView("redirect:/admin/organ/index.html?msg=" + msg));
     }
 

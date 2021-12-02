@@ -165,17 +165,19 @@ block content
             var layer = layui.layer;
             var msg = '#{msg}';
             if (msg == 'admin_organ_update_name_not') {
-                layer.msg('组织机构分类名已存在！', {icon: 2, time: 1500})
+                layer.msg('组织机构分类名已存在！', {icon: 2, time: 2000})
             } else if (msg == 'admin_oran_not_delete') {
-                layer.msg('无法删除，因为存在子组织', {icon: 2, time: 1500})
+                layer.msg('无法删除，因为存在子组织', {icon: 2, time: 2000})
+            } else if (msg == 'admin_oran_not_empty') {
+                layer.msg('无法删除，因为组织下存在用户', {icon: 2, time: 2000})
             } else if (msg == 'admin_organ_update_success') {
-                layer.msg('修改组织成功', {icon: 1, time: 1500})
+                layer.msg('修改组织成功', {icon: 1, time: 2000})
             } else if (msg == 'admin_organ_new_success') {
-                layer.msg('新建组织成功', {icon: 1, time: 1500})
+                layer.msg('新建组织成功', {icon: 1, time: 2000})
             } else if (msg == 'admin_organ_update_not_standard') {
-                layer.msg('修改无法完成，上级机构选择错误', {icon: 2, time: 1500})
+                layer.msg('修改无法完成，上级机构选择错误', {icon: 2, time: 2000})
             } else if (msg == 'not_allow_remove_user') {
-                layer.msg('用户只有一个组织，不允许移除', {icon: 2, time: 1500})
+                layer.msg('用户只有一个组织，不允许移除', {icon: 2, time: 2000})
             }
         });
 
