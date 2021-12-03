@@ -15,7 +15,6 @@
  */
 package com.chatopera.cc.proxy;
 
-import com.chatopera.cc.acd.ACDPolicyService;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
@@ -59,9 +58,6 @@ public class AgentUserProxy {
 
     // 转接聊天
     private final static String AUTH_KEY_AUDIT_TRANS = "A13_A01_A03";
-
-    @Autowired
-    private ACDPolicyService acdPolicyService;
 
     @Autowired
     private AgentUserRepository agentUserRes;

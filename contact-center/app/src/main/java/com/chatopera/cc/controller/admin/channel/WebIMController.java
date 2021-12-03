@@ -23,7 +23,6 @@ import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.proxy.OnlineUserProxy;
-import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -60,9 +59,6 @@ public class WebIMController extends Handler {
     @Autowired
     private ServiceAiRepository serviceAiRes;
 
-    @Autowired
-    private OrgiSkillRelRepository orgiSkillRelService;
-
     @Value("${web.upload-path}")
     private String path;
 
@@ -71,9 +67,6 @@ public class WebIMController extends Handler {
 
     @Autowired
     private Cache cache;
-
-    @Autowired
-    private UserProxy userProxy;
 
     @RequestMapping("/index")
     @Menu(type = "app", subtype = "app", admin = true)

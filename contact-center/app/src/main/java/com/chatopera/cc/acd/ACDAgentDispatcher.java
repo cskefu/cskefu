@@ -45,9 +45,6 @@ public class ACDAgentDispatcher implements IACDDispatcher {
     private AgentStatusRepository agentStatusRes;
 
     @Autowired
-    private ACDAgentService acdAgentService;
-
-    @Autowired
     private RedisCommand redisCommand;
 
     @Autowired

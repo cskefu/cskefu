@@ -16,8 +16,6 @@
 
 package com.chatopera.cc.controller.api;
 
-import com.chatopera.cc.basic.Constants;
-import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.controller.api.request.RestUtils;
 import com.chatopera.cc.exception.CSKefuRestException;
@@ -25,7 +23,6 @@ import com.chatopera.cc.model.Tag;
 import com.chatopera.cc.model.TagRelation;
 import com.chatopera.cc.persistence.repository.TagRelationRepository;
 import com.chatopera.cc.persistence.repository.TagRepository;
-import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.json.GsonTools;
 import com.google.gson.JsonArray;
@@ -62,10 +59,6 @@ public class ApiContactTagsController extends Handler {
 
     @Autowired
     private TagRelationRepository tagRelationRes;
-
-    @Autowired
-    private UserRepository userRes;
-
 
     /**
      * 获取联系人标签

@@ -34,6 +34,7 @@ public class UserRole implements java.io.Serializable {
     private Role role;
     private String creater;
     private String orgi;
+    private String organ;
     private Date createtime = new Date();
 
     @Id
@@ -42,6 +43,14 @@ public class UserRole implements java.io.Serializable {
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     public String getId() {
         return id;
+    }
+
+    public String getOrgan() {
+        return organ;
+    }
+
+    public void setOrgan(String organ) {
+        this.organ = organ;
     }
 
     public void setId(String id) {

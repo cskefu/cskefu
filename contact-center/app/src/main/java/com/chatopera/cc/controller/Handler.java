@@ -28,6 +28,8 @@ import com.chatopera.cc.model.StreamingFile;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.blob.JpaBlobHelper;
 import com.chatopera.cc.persistence.repository.StreamingFileRepository;
+import com.chatopera.cc.proxy.OrganProxy;
+
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -53,7 +55,6 @@ import java.util.Map;
 
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
-
 @Controller
 @SessionAttributes
 public class Handler {
@@ -70,6 +71,9 @@ public class Handler {
 
     @Autowired
     private AuthToken authToken;
+
+    @Autowired
+    private OrganProxy organProxy;
 
     public final static int PAGE_SIZE_BG = 1;
     public final static int PAGE_SIZE_TW = 20;
@@ -115,28 +119,12 @@ public class Handler {
     public Organ getOrgan(HttpServletRequest request) {
         User user = getUser(request);
         if (user.getOrgans() != null) {
-            ArrayList<Organ> organs = new ArrayList<>(user.getOrgans().values());
-
-            if (organs.size() == 0) {
-                return null;
-            }
 
             Organ organ = (Organ) request.getSession(true).getAttribute(Constants.ORGAN_SESSION_NAME);
             if (organ == null) {
-                if (organs.size() > 0) {
-                    ArrayList<String> organTree = new ArrayList();
-                    organs.stream().forEach(o -> {
-                        if (organTree.stream().filter(p -> StringUtils.equals(o.getParent(), p)).findFirst().isPresent()) {
-                            int index = organTree.indexOf(o.getParent());
-                            organTree.add(index + 1, o.getId());
-                        } else {
-                            organTree.add(0, o.getId());
-                        }
-                    });
+                organ = organProxy.getDefault(user.getOrgans().values());
 
-                    organ = organs.stream().filter(o ->
-                            StringUtils.equals(o.getId(), organTree.get(0))
-                    ).findFirst().orElse(organs.get(0));
+                if (organ != null) {
                     request.getSession(true).setAttribute(Constants.ORGAN_SESSION_NAME, organ);
                 }
             }
@@ -154,7 +142,8 @@ public class Handler {
      * @return
      * @throws CSKefuException
      */
-    public boolean esOrganFilter(final HttpServletRequest request, final BoolQueryBuilder boolQueryBuilder) throws CSKefuException {
+    public boolean esOrganFilter(final HttpServletRequest request, final BoolQueryBuilder boolQueryBuilder)
+            throws CSKefuException {
         // 组合部门条件
         User u = getUser(request);
         if (u == null) {
@@ -164,10 +153,11 @@ public class Handler {
             return true;
         } else {
             // 用户在部门中，通过部门过滤数据
-//            String[] values = u.getAffiliates().toArray(new String[u.getAffiliates().size()]);
-//            boolQueryBuilder.filter(termsQuery("organ", values));
+            // String[] values = u.getAffiliates().toArray(new
+            // String[u.getAffiliates().size()]);
+            // boolQueryBuilder.filter(termsQuery("organ", values));
             // 不对contacts进行过滤，普通用户也可以查看该租户的任何数据
-//            return true;
+            // return true;
         }
         return true;
     }
@@ -289,7 +279,6 @@ public class Handler {
                     e.printStackTrace();
                 }
 
-
             }
             map.put("apbegin", request.getParameter("apbegin"));
             map.put("apend", request.getParameter("apend"));
@@ -398,7 +387,6 @@ public class Handler {
         request.getSession(true).setAttribute(Constants.USER_SESSION_NAME, user);
     }
 
-
     /**
      * 创建系统监控的 模板页面
      *
@@ -481,7 +469,6 @@ public class Handler {
         return pagesize;
     }
 
-
     public int get50Ps(HttpServletRequest request) {
         int pagesize = PAGE_SIZE_FV;
         String ps = request.getParameter("ps");
@@ -525,6 +512,5 @@ public class Handler {
         streamingFileRes.save(sf);
         return fileid;
     }
-
 
 }

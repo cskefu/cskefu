@@ -49,7 +49,6 @@ public class OrganProxy {
         }
     }
 
-
     /**
      * @param organ
      * @param orgi
@@ -112,5 +111,27 @@ public class OrganProxy {
             processChild(result, organ.getId(), orgi);
         }
         return result;
+    }
+
+    public Organ getDefault(Collection<Organ> organs) {
+        Organ organ = null;
+
+        if (organs.size() > 0) {
+            ArrayList<String> organTree = new ArrayList<>();
+            organs.stream().forEach(o -> {
+                if (organTree.stream().filter(p -> StringUtils.equals(o.getParent(), p)).findFirst()
+                        .isPresent()) {
+                    int index = organTree.indexOf(o.getParent());
+                    organTree.add(index + 1, o.getId());
+                } else {
+                    organTree.add(0, o.getId());
+                }
+            });
+
+            organ = organs.stream().filter(o -> StringUtils.equals(o.getId(), organTree.get(0))).findFirst()
+                    .orElse(organs.stream().findFirst().get());
+        }
+
+        return organ;
     }
 }

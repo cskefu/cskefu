@@ -45,7 +45,7 @@ public class ACDMessageHelper {
      * @param initiator
      * @return
      */
-    public static ACDComposeContext getComposeContextWithAgentUser(final AgentUser agentUser, final boolean isInvite, final String initiator) {
+    public ACDComposeContext getComposeContextWithAgentUser(final AgentUser agentUser, final boolean isInvite, final String initiator) {
         ACDComposeContext ctx = new ACDComposeContext();
         ctx.setOnlineUserId(agentUser.getUserid());
         ctx.setOnlineUserNickname(agentUser.getNickname());

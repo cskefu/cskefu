@@ -4,10 +4,11 @@ block content
     .row(style='height:100%;')
         .col-lg-3(style='border-right:1px solid #e6e6e6;padding-right:0px;')
             h1.site-h1(style='background-color:#FFFFFF;')
-                | #{currentOrgan.name}角色列表
-                span(style='float:right;')
-                    button.layui-btn.layui-btn-small.green(href='/admin/role/add.html', data-toggle='ajax', data-height='200', data-width='550', data-title='新建角色')
-                        | 新建角色
+                | 角色列表
+                if user.superadmin
+                    span(style='float:right;')
+                        button.layui-btn.layui-btn-small.green(href='/admin/role/add.html', data-toggle='ajax', data-height='200', data-width='550', data-title='新建角色')
+                            | 新建角色
             .row(style='padding:5px;')
                 .col-lg-12
                     ul
@@ -34,16 +35,19 @@ block content
                     if roleData
                         button.layui-btn.layui-btn-small.green(href="/admin/role/seluser.html?role=" + roleData.id, data-toggle="ajax", data-width="750", data-title="添加用户到角色")
                             | 添加用户到角色
-                        button.layui-btn.layui-btn-original.layui-btn-small(href="/admin/role/edit.html?id=" + roleData.id, data-toggle="ajax", data-width="550", data-height="200", data-title="修改角色")
-                            | 修改角色
+                        if user.superadmin
+                            button.layui-btn.layui-btn-original.layui-btn-small(href="/admin/role/edit.html?id=" + roleData.id, data-toggle="ajax", data-width="550", data-height="200", data-title="修改角色")
+                                | 修改角色
                         button.layui-btn.layui-btn-warm.layui-btn-small(href="/admin/role/auth.html?id=" + roleData.id, data-toggle="ajax", title="角色授权", data-width="400", data-height="500")
                             | 角色授权
-                        button.layui-btn.layui-btn-danger.layui-btn-small(href="/admin/role/delete.html?id=" + roleData.id, data-toggle="tip", data-title="请确认是否删除角色？")
-                            | 删除角色
+                        if user.superadmin
+                            button.layui-btn.layui-btn-danger.layui-btn-small(href="/admin/role/delete.html?id=" + roleData.id, data-toggle="tip", data-title="请确认是否删除角色？")
+                                | 删除角色
             .row(style='padding:5px;')
                 .col-lg-12
                     table.layui-table(lay-skin='line')
                         colgroup
+                            col(width='20%')
                             col(width='30%')
                             col(width='20%')
                             col(width='25%')
@@ -52,6 +56,7 @@ block content
                             col
                         thead
                             tr
+                                th 组织
                                 th 用户
                                 th 姓名
                                 th 电子邮件
@@ -61,7 +66,8 @@ block content
                             if userRoleList && userRoleList.content
                                 for userRole in userRoleList.content
                                     tr
-                                        td(style="150px")
+                                        td= userRole.user.currOrganName
+                                        td(style="width:150px")
                                             a(href="")
                                                 i.layui-icon.headimg 
                                                 div(style="margin-left:50px;margin-top:0px;")

@@ -340,13 +340,6 @@ public class AgentAuditController extends Handler {
                                             .toString())));
             view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid()));
 
-//        TODO: mdx-organ clean
-//        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(super.getOrgi(request));
-//
-//        view.addObject("sessionConfig", sessionConfig);
-//        if (sessionConfig.isOtherquickplay()) {
-//            view.addObject("topicList", OnlineUserProxy.search(null, orgi, super.getUser(request)));
-//        }
             AgentService service = agentServiceRes.findByIdAndOrgi(agentUser.getAgentserviceid(), orgi);
             if (service != null) {
                 view.addObject("tags", tagRes.findByOrgiAndTagtypeAndSkill(orgi, MainContext.ModelType.USER.toString(), service.getSkill()));
@@ -378,8 +371,6 @@ public class AgentAuditController extends Handler {
     ) {
         logger.info("[transfer] userId {}, agentUser {}", userid, agentuserid);
         final String orgi = super.getOrgi(request);
-        final User logined = super.getUser(request);
-
         Organ targetOrgan = super.getOrgan(request);
         Map<String, Organ> ownOrgans = organProxy.findAllOrganByParentAndOrgi(targetOrgan, super.getOrgi(request));
         if (StringUtils.isNotBlank(userid) && StringUtils.isNotBlank(agentuserid)) {
@@ -444,7 +435,6 @@ public class AgentAuditController extends Handler {
             @Valid String agentid,
             @Valid String organ
     ) {
-        final User logined = super.getUser(request);
         final String orgi = super.getOrgi(request);
         if (StringUtils.isNotBlank(organ)) {
             List<String> userids = new ArrayList<>();

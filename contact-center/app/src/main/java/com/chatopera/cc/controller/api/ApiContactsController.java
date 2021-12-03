@@ -158,8 +158,6 @@ public class ApiContactsController extends Handler {
         JsonObject json = new JsonObject();
         HttpHeaders headers = RestUtils.header();
         final User logined = super.getUser(request);
-        final String orgi = logined.getOrgi();
-
         if (!j.has("ops")) {
             json.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_1);
             json.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的请求参数。");

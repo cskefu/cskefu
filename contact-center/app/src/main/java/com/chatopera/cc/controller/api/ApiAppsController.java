@@ -11,7 +11,6 @@
 package com.chatopera.cc.controller.api;
 
 import com.chatopera.cc.basic.MainContext;
-import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.controller.api.request.RestUtils;
 import com.chatopera.cc.model.InviteRecord;
@@ -47,9 +46,6 @@ public class ApiAppsController extends Handler {
 
     @Autowired
     private InviteRecordRepository inviteRecordRes;
-
-    @Autowired
-    private Cache cache;
 
     @RequestMapping(method = RequestMethod.POST)
     @Menu(type = "apps", subtype = "apps", access = true)

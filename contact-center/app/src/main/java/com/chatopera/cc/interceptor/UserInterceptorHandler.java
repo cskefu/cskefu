@@ -21,8 +21,10 @@ import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.config.MessagingServerConfigure;
 import com.chatopera.cc.model.Dict;
+import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.model.SystemConfig;
 import com.chatopera.cc.model.User;
+import com.chatopera.cc.proxy.OrganProxy;
 import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.PugHelper;
@@ -40,6 +42,7 @@ import javax.servlet.http.HttpServletResponse;
 public class UserInterceptorHandler extends HandlerInterceptorAdapter {
     private final static Logger logger = LoggerFactory.getLogger(UserInterceptorHandler.class);
     private static UserProxy userProxy;
+    private static OrganProxy organProxy;
     private static Integer webimport;
 
     @Override
@@ -47,21 +50,26 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
             throws Exception {
         boolean filter = false;
         User user = (User) request.getSession(true).getAttribute(Constants.USER_SESSION_NAME);
+        Organ organ = (Organ) request.getSession(true).getAttribute(Constants.ORGAN_SESSION_NAME);
 
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             Menu menu = handlerMethod.getMethod().getAnnotation(Menu.class);
-            if (user != null || (menu != null && menu.access()) || handlerMethod.getBean() instanceof BasicErrorController) {
+            if (user != null || (menu != null && menu.access())
+                    || handlerMethod.getBean() instanceof BasicErrorController) {
                 filter = true;
                 if (user != null && StringUtils.isNotBlank(user.getId())) {
 
+                    if (organ == null) {
+                        organ = getOrganProxy().getDefault(user.getOrgans().values());
+                    }
                     /**
                      * 每次刷新用户的组织机构、角色和权限
                      * TODO 此处代码执行频率高，但是并不是每次都要执行，存在很多冗余
                      * 待用更好的方法实现
                      */
                     getUserProxy().attachOrgansPropertiesForUser(user);
-                    getUserProxy().attachRolesMap(user);
+                    getUserProxy().attachRolesMap(user, organ);
 
                     request.getSession(true).setAttribute(Constants.USER_SESSION_NAME, user);
                 }
@@ -86,7 +94,7 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
             ModelAndView view) {
         final User user = (User) request.getSession().getAttribute(Constants.USER_SESSION_NAME);
         final String infoace = (String) request.getSession().getAttribute(
-                Constants.CSKEFU_SYSTEM_INFOACQ);        //进入信息采集模式
+                Constants.CSKEFU_SYSTEM_INFOACQ); // 进入信息采集模式
         final SystemConfig systemConfig = MainUtils.getSystemConfig();
         if (view != null) {
             if (user != null) {
@@ -115,7 +123,7 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
                 view.addObject("orgi", user.getOrgi());
             }
             if (StringUtils.isNotBlank(infoace)) {
-                view.addObject("infoace", infoace);        //进入信息采集模式
+                view.addObject("infoace", infoace); // 进入信息采集模式
             }
             view.addObject("webimport", getWebimport());
             view.addObject("sessionid", MainUtils.getContextID(request.getSession().getId()));
@@ -138,12 +146,12 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
                 view.addObject("msg", request.getParameter("msg"));
             }
 
-            view.addObject("uKeFuDic", Dict.getInstance());    //处理系统 字典数据 ， 通过 字典code 获取
+            view.addObject("uKeFuDic", Dict.getInstance()); // 处理系统 字典数据 ， 通过 字典code 获取
 
             view.addObject(
                     "uKeFuSecField", MainContext.getCache().findOneSystemByIdAndOrgi(
                             Constants.CSKEFU_SYSTEM_SECFIELD,
-                            Constants.SYSTEM_ORGI));    //处理系统 需要隐藏号码的字段， 启动的时候加载
+                            Constants.SYSTEM_ORGI)); // 处理系统 需要隐藏号码的字段， 启动的时候加载
 
             if (systemConfig != null) {
                 view.addObject("systemConfig", systemConfig);
@@ -160,9 +168,9 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+            Exception ex) {
     }
-
 
     private static Integer getWebimport() {
         if (webimport == null) {
@@ -171,11 +179,17 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
         return webimport;
     }
 
-
     private static UserProxy getUserProxy() {
         if (userProxy == null) {
             userProxy = MainContext.getContext().getBean(UserProxy.class);
         }
         return userProxy;
+    }
+
+    private static OrganProxy getOrganProxy() {
+        if (organProxy == null) {
+            organProxy = MainContext.getContext().getBean(OrganProxy.class);
+        }
+        return organProxy;
     }
 }

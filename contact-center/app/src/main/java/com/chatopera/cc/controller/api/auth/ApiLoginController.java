@@ -58,9 +58,6 @@ public class ApiLoginController extends Handler {
     private UserRoleRepository userRoleRes;
 
     @Autowired
-    private Cache cache;
-
-    @Autowired
     private AuthToken authToken;
 
     /**

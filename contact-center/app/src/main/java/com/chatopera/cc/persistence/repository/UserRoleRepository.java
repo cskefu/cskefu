@@ -16,6 +16,7 @@
  */
 package com.chatopera.cc.persistence.repository;
 
+import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.model.Role;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.model.UserRole;
@@ -24,19 +25,27 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Collection;
 import java.util.List;
 
-public interface UserRoleRepository  extends JpaRepository<UserRole, String>
-{
-	
+public interface UserRoleRepository extends JpaRepository<UserRole, String> {
+	List<UserRole> findByOrganAndRole(String organ, Role role);
+
+	Page<UserRole> findByOrganAndRole(String organ, Role role,
+			Pageable paramPageable);
+
+	Page<UserRole> findByOrganInAndRole(Collection<String> organ, Role role,
+			Pageable paramPageable);
+
 	Page<UserRole> findByOrgiAndRole(String orgi, Role role, Pageable paramPageable);
-	
+
 	List<UserRole> findByOrgiAndRole(String orgi, Role role);
-	
+
 	List<UserRole> findByOrgiAndUser(String orgi, User user);
+
+	List<UserRole> findByOrganAndUser(String organ, User user);
 
 	@Query(value = "SELECT u.user_id FROM uk_userrole u WHERE u.orgi = ?1 AND u.role_id = ?2", nativeQuery = true)
 	List<String> findByOrgiAndRoleId(final String orgi, final String roleid);
 
 }
-

@@ -12,8 +12,11 @@
                 ul#roleTree.ztree
         .layui-form-button
             .layui-button-block
-                button.layui-btn(lay-submit, lay-filter='formDemo') 立即提交
-                button#reset.layui-btn.layui-btn-original(type='reset', href='/admin/role/auth.html?id=${role.id}') 重置
+                if user.superadmin
+                    button.layui-btn(lay-submit, lay-filter='formDemo') 立即提交
+                    button#reset.layui-btn.layui-btn-original(type='reset', href='/admin/role/auth.html?id=${role.id}') 重置
+                else
+                    button.layui-btn.layui-btn-original(type='reset', onclick='layer.close(top.layerwin);') 关闭
 script(type='text/javascript').
     var setting = {
         check: {enable: true},

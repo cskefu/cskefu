@@ -22,10 +22,8 @@ import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
-import com.chatopera.cc.model.SysDic;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.OnlineUserRepository;
-import com.chatopera.cc.persistence.repository.SysDicRepository;
 import com.chatopera.cc.persistence.repository.UserEventRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.proxy.OnlineUserProxy;
@@ -39,9 +37,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -58,9 +54,6 @@ public class AdminController extends Handler {
 
     @Autowired
     private UserEventRepository userEventRes;
-
-    @Autowired
-    private SysDicRepository sysDicRes;
 
     @Autowired
     private Cache cache;

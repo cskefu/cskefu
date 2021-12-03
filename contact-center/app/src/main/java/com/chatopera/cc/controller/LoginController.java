@@ -22,6 +22,7 @@ import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.basic.auth.AuthToken;
 import com.chatopera.cc.model.AgentStatus;
+import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.model.SystemConfig;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.model.UserRole;
@@ -91,7 +92,6 @@ public class LoginController extends Handler {
     @Value("${extras.login.chatbox}")
     private String extrasLoginChatbox;
 
-
     private void putViewExtras(final ModelAndView view) {
         if (StringUtils.isNotBlank(extrasLoginBanner) && !StringUtils.equalsIgnoreCase(extrasLoginBanner, "off")) {
             view.addObject("extrasLoginBanner", extrasLoginBanner);
@@ -118,7 +118,8 @@ public class LoginController extends Handler {
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     @Menu(type = "apps", subtype = "user", access = true)
-    public ModelAndView login(HttpServletRequest request, HttpServletResponse response, @RequestHeader(value = "referer", required = false) String referer, @Valid String msg) {
+    public ModelAndView login(HttpServletRequest request, HttpServletResponse response,
+            @RequestHeader(value = "referer", required = false) String referer, @Valid String msg) {
         ModelAndView view = new ModelAndView("redirect:/");
         if (request.getSession(true).getAttribute(Constants.USER_SESSION_NAME) == null) {
             view = new ModelAndView("/login");
@@ -166,7 +167,8 @@ public class LoginController extends Handler {
             view.addObject("systemConfig", systemConfig);
         }
 
-        if (StringUtils.isNotBlank(tongjiBaiduSiteKey) && !StringUtils.equalsIgnoreCase(tongjiBaiduSiteKey, "placeholder")) {
+        if (StringUtils.isNotBlank(tongjiBaiduSiteKey)
+                && !StringUtils.equalsIgnoreCase(tongjiBaiduSiteKey, "placeholder")) {
             view.addObject("tongjiBaiduSiteKey", tongjiBaiduSiteKey);
         }
 
@@ -288,7 +290,6 @@ public class LoginController extends Handler {
                     loginUser.getId(), MainUtils.getContextID(request.getSession().getId()), loginUser.getOrgi());
             loginUser.setSessionid(MainUtils.getContextID(request.getSession().getId()));
 
-
             if (StringUtils.isNotBlank(referer)) {
                 view = new ModelAndView("redirect:" + referer);
             } else {
@@ -297,7 +298,8 @@ public class LoginController extends Handler {
 
             // 登录成功 判断是否进入多租户页面
             SystemConfig systemConfig = MainUtils.getSystemConfig();
-            if (systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantconsole() && !loginUser.isAdmin()) {
+            if (systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantconsole()
+                    && !loginUser.isAdmin()) {
                 view = new ModelAndView("redirect:/apps/tenant/index");
             }
             List<UserRole> userRoleList = userRoleRes.findByOrgiAndUser(loginUser.getOrgi(), loginUser);
@@ -310,8 +312,10 @@ public class LoginController extends Handler {
             // 获取用户部门以及下级部门
             userProxy.attachOrgansPropertiesForUser(loginUser);
 
+            Organ currentOrgan = super.getOrgan(request);
+
             // 添加角色信息
-            userProxy.attachRolesMap(loginUser);
+            userProxy.attachRolesMap(loginUser, currentOrgan);
 
             loginUser.setLastlogintime(new Date());
             if (StringUtils.isNotBlank(loginUser.getId())) {
@@ -323,7 +327,6 @@ public class LoginController extends Handler {
         return view;
     }
 
-
     /**
      * 登出用户
      * code代表登出的原因
@@ -334,7 +337,8 @@ public class LoginController extends Handler {
      * @return
      */
     @RequestMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "code", required = false) String code) throws UnsupportedEncodingException {
+    public String logout(HttpServletRequest request, HttpServletResponse response,
+            @RequestParam(value = "code", required = false) String code) throws UnsupportedEncodingException {
         final User user = super.getUser(request);
         request.getSession().removeAttribute(Constants.USER_SESSION_NAME);
         request.getSession().invalidate();

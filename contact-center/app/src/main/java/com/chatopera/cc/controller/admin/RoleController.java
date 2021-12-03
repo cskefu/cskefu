@@ -23,10 +23,13 @@ import com.chatopera.cc.persistence.repository.*;
 import com.chatopera.cc.proxy.OrganProxy;
 import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
+import com.chatopera.cc.util.json.GsonTools;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -35,6 +38,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -55,9 +60,6 @@ public class RoleController extends Handler {
     private RoleAuthRepository roleAuthRes;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private SysDicRepository sysDicRes;
 
     @Autowired
@@ -71,7 +73,7 @@ public class RoleController extends Handler {
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String role, @Valid String msg) {
         Organ currentOrgan = super.getOrgan(request);
 
-        List<Role> roleList = roleRepository.findByOrgiAndOrgan(super.getOrgi(),currentOrgan.getId());
+        List<Role> roleList = roleRepository.findByOrgi(super.getOrgi());
         map.addAttribute("roleList", roleList);
         map.addAttribute("msg", msg);
         map.addAttribute("currentOrgan", currentOrgan);
@@ -88,7 +90,30 @@ public class RoleController extends Handler {
                 map.addAttribute("roleData", roleData = roleList.get(0));
             }
             if (roleData != null) {
-                map.addAttribute("userRoleList", userRoleRes.findByOrgiAndRole(super.getOrgi(), roleData, new PageRequest(super.getP(request), super.getPs(request))));
+                Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan,
+                        super.getOrgi(request));
+                // List<String> userIds = userProxy.findUserIdsInOrgans(organs.keySet());
+
+                // Page<UserRole> userRoleList =
+                // userRoleRes.findByOrganAndRole(currentOrgan.getId(), roleData,
+                // new PageRequest(super.getP(request), super.getPs(request)));
+
+                Page<UserRole> userRoleList = userRoleRes.findByOrganInAndRole(organs.keySet(), roleData,
+                        new PageRequest(super.getP(request), super.getPs(request)));
+
+                if (userRoleList.getContent().size() > 0) {
+                    for (UserRole ur : userRoleList.getContent()) {
+                        organs.values().stream().filter(o -> o.getId().equals(ur.getOrgan())).findFirst()
+                                .ifPresent(o -> {
+                                    User u = GsonTools.copyObject(ur.getUser());
+                                    u.setCurrOrganId(o.getId());
+                                    u.setCurrOrganName(o.getName());
+                                    ur.setUser(u);
+                                });
+                    }
+                }
+
+                map.addAttribute("userRoleList", userRoleList);
             }
         }
         return request(super.createView("/admin/role/index"));
@@ -122,8 +147,8 @@ public class RoleController extends Handler {
     @RequestMapping("/seluser")
     @Menu(type = "admin", subtype = "seluser", admin = true)
     public ModelAndView seluser(ModelMap map, HttpServletRequest request, @Valid String role) {
-        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
-        map.addAttribute("userList", userProxy.findUserInOrgans(organs.keySet()));
+        Organ currentOrgan = super.getOrgan(request);
+        map.addAttribute("userList", userProxy.findUserInOrgans(Arrays.asList(currentOrgan.getId())));
         Role roleData = roleRepository.findByIdAndOrgi(role, super.getOrgi());
         map.addAttribute("userRoleList", userRoleRes.findByOrgiAndRole(super.getOrgi(), roleData));
         map.addAttribute("role", roleData);
@@ -133,8 +158,9 @@ public class RoleController extends Handler {
     @RequestMapping("/saveuser")
     @Menu(type = "admin", subtype = "saveuser", admin = true)
     public ModelAndView saveuser(HttpServletRequest request, @Valid String[] users, @Valid String role) {
+        Organ currentOrgan = super.getOrgan(request);
         Role roleData = roleRepository.findByIdAndOrgi(role, super.getOrgi());
-        List<UserRole> userRoleList = userRoleRes.findByOrgiAndRole(super.getOrgi(), roleData);
+        List<UserRole> userRoleList = userRoleRes.findByOrganAndRole(super.getOrgi(), roleData);
         if (users != null && users.length > 0) {
             for (String user : users) {
                 boolean exist = false;
@@ -150,6 +176,7 @@ public class RoleController extends Handler {
                     userRole.setRole(new Role(role));
                     userRole.setOrgi(super.getOrgi());
                     userRole.setCreater(super.getUser(request).getId());
+                    userRole.setOrgan(currentOrgan.getId());
                     userRoleRes.save(userRole);
                 }
             }
@@ -239,7 +266,8 @@ public class RoleController extends Handler {
                 SysDic sysDic = Dict.getInstance().getDicItem(menu);
 
                 if (sysDic != null && (!StringUtils.equals(sysDic.getParentid(), "0"))) {
-                    logger.debug("[authsave] get sysdict {}, code {}, name {}, parent {}", sysDic.getId(), sysDic.getCode(), sysDic.getName(), sysDic.getParentid());
+                    logger.debug("[authsave] get sysdict {}, code {}, name {}, parent {}", sysDic.getId(),
+                            sysDic.getCode(), sysDic.getName(), sysDic.getParentid());
                     roleAuth.setCreater(super.getUser(request).getId());
                     roleAuth.setOrgi(super.getOrgi());
                     roleAuth.setCreatetime(new Date());

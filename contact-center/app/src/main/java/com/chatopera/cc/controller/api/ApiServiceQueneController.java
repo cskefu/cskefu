@@ -17,13 +17,11 @@
 package com.chatopera.cc.controller.api;
 
 import com.chatopera.cc.acd.ACDAgentService;
-import com.chatopera.cc.acd.ACDPolicyService;
 import com.chatopera.cc.acd.ACDWorkMonitor;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.AgentStatus;
-import com.chatopera.cc.model.SessionConfig;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.persistence.repository.AgentStatusRepository;
 import com.chatopera.cc.proxy.AgentStatusProxy;
@@ -55,9 +53,6 @@ public class ApiServiceQueneController extends Handler {
 
     @Autowired
     private ACDWorkMonitor acdWorkMonitor;
-
-    @Autowired
-    private ACDPolicyService acdPolicyService;
 
     @Autowired
     private AgentStatusRepository agentStatusRes;

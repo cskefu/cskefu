@@ -27,7 +27,6 @@ import com.chatopera.cc.persistence.repository.OrganRepository;
 import com.chatopera.cc.persistence.repository.OrganUserRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.persistence.repository.UserRoleRepository;
-import com.chatopera.cc.proxy.OnlineUserProxy;
 import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
 import com.chatopera.cc.util.RestResult;
