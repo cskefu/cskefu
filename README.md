@@ -167,9 +167,17 @@ Star 地址：[https://github.com/chatopera/cskefu](https://github.com/chatopera
 </p>
 </details>
 
-## 私有部署
+## 软件部署
+
+### 私有部署
 
 容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](https://docs.chatopera.com/products/cskefu/deploy.html)。
+
+### 容器云部署
+
+容器云部署是云原生应用交付的最佳实践，简单易用。春松客服已经在以下容器云应用商店上架：
+
+[Rainbond 云原生应用管理平台](https://www.rainbond.com/docs/opensource-app/chatopera/?channel=chatopera)：专注于以应用为中心的理念，赋能企业搭建云原生开发云、云原生交付云。
 
 ## 机器人客服
 
