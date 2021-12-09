@@ -33,6 +33,14 @@
                     #menuContent.ukefu-ztree(style='display:none; position: absolute;z-index:10000;width: 218px;')
                         ul#organTree.ztree(style='width:208px;')
         .layui-form-item
+            label.layui-form-label 角色：
+            .layui-input-inline
+                .layui-input-inline(style='width:218px;margin:0px;')
+                    select(name='role', required, lay-verify='required')
+                        option
+                        for r in sysRoles
+                            option(value=r.id)= r.name
+        .layui-form-item
             label.layui-form-label 管理员：
             .layui-input-inline
                 input(type='checkbox', name='admin', lay-skin='switch', lay-filter='admincheckbox', value='1', lay-text='是|否')

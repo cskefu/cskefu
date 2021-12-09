@@ -16,17 +16,32 @@
  */
 package com.chatopera.cc.controller.admin;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.Organ;
 import com.chatopera.cc.model.OrganUser;
+import com.chatopera.cc.model.Role;
 import com.chatopera.cc.model.User;
 import com.chatopera.cc.model.UserRole;
-import com.chatopera.cc.persistence.repository.*;
+import com.chatopera.cc.persistence.repository.ExtensionRepository;
+import com.chatopera.cc.persistence.repository.OrganUserRepository;
+import com.chatopera.cc.persistence.repository.PbxHostRepository;
+import com.chatopera.cc.persistence.repository.RoleRepository;
+import com.chatopera.cc.persistence.repository.UserRepository;
+import com.chatopera.cc.persistence.repository.UserRoleRepository;
 import com.chatopera.cc.proxy.OrganProxy;
 import com.chatopera.cc.proxy.UserProxy;
 import com.chatopera.cc.util.Menu;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +51,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author 程序猿DD
@@ -61,6 +69,9 @@ public class UsersController extends Handler {
     private UserRoleRepository userRoleRes;
 
     @Autowired
+    private RoleRepository roleRes;
+
+    @Autowired
     OrganProxy organProxy;
 
     @Autowired
@@ -77,6 +88,7 @@ public class UsersController extends Handler {
 
     /**
      * 只返回根用户：只属于该部门的非下级部门的用户
+     * 
      * @param map
      * @param request
      * @return
@@ -94,9 +106,7 @@ public class UsersController extends Handler {
                 super.getP(request),
                 super.getPs(request),
                 Sort.Direction.ASC,
-                "createtime"
-        )));
-
+                "createtime")));
 
         return request(super.createView("/admin/user/index"));
     }
@@ -107,8 +117,10 @@ public class UsersController extends Handler {
         ModelAndView view = request(super.createView("/admin/user/add"));
         Organ currentOrgan = super.getOrgan(request);
         Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        List<Role> sysRoles = roleRes.findByOrgi(super.getOrgi(request));
         map.addAttribute("currentOrgan", currentOrgan);
         map.addAttribute("organList", organs.values());
+        map.addAttribute("sysRoles", sysRoles);
 
         return view;
     }

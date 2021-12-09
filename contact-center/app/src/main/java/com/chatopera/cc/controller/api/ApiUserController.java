@@ -16,15 +16,28 @@
  */
 package com.chatopera.cc.controller.api;
 
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
 import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.controller.api.request.RestUtils;
-import com.chatopera.cc.model.*;
+import com.chatopera.cc.model.AgentStatus;
+import com.chatopera.cc.model.Organ;
+import com.chatopera.cc.model.OrganUser;
+import com.chatopera.cc.model.Role;
+import com.chatopera.cc.model.User;
+import com.chatopera.cc.model.UserRole;
 import com.chatopera.cc.persistence.repository.OrganRepository;
 import com.chatopera.cc.persistence.repository.OrganUserRepository;
+import com.chatopera.cc.persistence.repository.RoleRepository;
 import com.chatopera.cc.persistence.repository.UserRepository;
 import com.chatopera.cc.persistence.repository.UserRoleRepository;
 import com.chatopera.cc.proxy.UserProxy;
@@ -34,6 +47,7 @@ import com.chatopera.cc.util.RestResultType;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,13 +61,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
 
 @RestController
 @RequestMapping("/api/user")
@@ -74,6 +81,9 @@ public class ApiUserController extends Handler {
 
     @Autowired
     private OrganRepository organRes;
+
+    @Autowired
+    private RoleRepository roleRes;
 
     @Autowired
     private UserRoleRepository userRoleRes;
@@ -116,10 +126,12 @@ public class ApiUserController extends Handler {
      */
     @RequestMapping(method = RequestMethod.POST)
     @Menu(type = "apps", subtype = "user", access = true)
-    public ResponseEntity<String> operations(HttpServletRequest request, @RequestBody final String body, @Valid String q) {
+    public ResponseEntity<String> operations(HttpServletRequest request, @RequestBody final String body,
+            @Valid String q) {
         logger.info("[operations] body {}, q {}", body, q);
-        final JsonObject j = StringUtils.isBlank(body) ? (new JsonObject()) : (new JsonParser()).parse(
-                body).getAsJsonObject();
+        final JsonObject j = StringUtils.isBlank(body) ? (new JsonObject())
+                : (new JsonParser()).parse(
+                        body).getAsJsonObject();
         JsonObject json = new JsonObject();
         HttpHeaders headers = RestUtils.header();
 
@@ -149,7 +161,6 @@ public class ApiUserController extends Handler {
         return new ResponseEntity<String>(json.toString(), headers, HttpStatus.OK);
     }
 
-
     /**
      * 创建新用户
      *
@@ -165,11 +176,25 @@ public class ApiUserController extends Handler {
             parentOrgan = organRes.getOne(parent);
         }
 
+        String roleId = payload.get("role").getAsString();
+
         // 创建新用户时，阻止传入ID
         payload.remove("id");
         // 从payload中创建User
         User user = userProxy.parseUserFromJson(payload);
         JsonObject resp = userProxy.createNewUser(user, parentOrgan);
+
+        if (StringUtils.isNotEmpty(roleId)) {
+            Role role = roleRes.getOne(roleId);
+            UserRole userRole = new UserRole();
+            userRole.setUser(user);
+            userRole.setRole(role);
+            userRole.setOrgi(Constants.SYSTEM_ORGI);
+            userRole.setCreater(super.getUser(request).getId());
+            userRole.setOrgan(parentOrgan.getId());
+            userRoleRes.save(userRole);
+        }
+
         logger.info("[create] response {}", resp.toString());
         return resp;
     }
