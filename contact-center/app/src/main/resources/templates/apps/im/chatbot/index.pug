@@ -514,7 +514,7 @@ html
                         textarea#message(name='content', style='visibility:hidden;')
                         .btn-push.clearfix
                             #surplus(style='float:left;height:34px;line-height:34px;margin: 10px 20px 10px 5px;'): a(style="color: #C7C6C6;text-decoration: none;cursor: pointer;", href="https://www.cskefu.com", target="_blank") 春松客服提供客服软件支持
-                            button.send-btn.active.special.clearfix#sent(type='button', onclick='sendMessage()') 发送
+                            button.send-btn.active.special.clearfix#sent(class="theme" + inviteData.consult_dialog_color, type='button', onclick='sendMessage()') 发送
 
                 .content-rig
                     .content-list(style='padding-top:50px;')
