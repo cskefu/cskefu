@@ -97,6 +97,17 @@ script.
     $('#entcustomer_province').change(function () {
         loadURL('/res/dic.html?id=' + $(this).val() + "&name=entcustomer.city&attr=lay-ignore&style=width:85px;", '#entcustomer_city');
     })
+
+    $('.layui-form').on('reset', function(){
+        var province = $('#entcustomer_province').attr('old');
+        var city = $('#entcustomer_city').attr('old');
+
+        loadURL('/res/dic.html?id=' + province + "&name=entcustomer.city&attr=lay-ignore&style=width:85px;", '#entcustomer_city',function(){
+            $('#entcustomer_city').val(city);
+        });
+    });
+
+
     layui.use('form', function () {
         var form = layui.form();
         form.render(); //更新全部

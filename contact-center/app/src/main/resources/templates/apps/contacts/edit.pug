@@ -104,6 +104,15 @@ script.
         loadURL('/res/dic.html?id=' + $(this).val() + "&name=city&attr=lay-ignore&style=width:85px;", '#city');
     })
 
+    $('.layui-form').on('reset', function(){
+        var province = $('#province').attr('old');
+        var city = $('#city').attr('old');
+
+        loadURL('/res/dic.html?id=' + province + "&name=city&attr=lay-ignore&style=width:85px;", '#city',function(){
+            $('#city').val(city);
+        });
+    });
+
     layui.use('form', function () {
         var form = layui.form();
         form.render(); //更新全部
