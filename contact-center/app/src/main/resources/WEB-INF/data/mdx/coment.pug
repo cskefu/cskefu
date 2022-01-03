@@ -18,7 +18,7 @@ Schema(name="ukefu")
                 Level(name="日期", column="satistime", uniqueMembers="false")
                     KeyExpression
                         SQL(dialect="generic") date_format(agentservice.satistime,'%Y-%m-%d')
-                        SQL(dialect="mysql") date_format(agentservice.satistime,'%Y-%m-%d')
+                        SQL(dialect="mysql") ANY_VALUE(date_format(agentservice.satistime,'%Y-%m-%d'))
                         SQL(dialect="oracle") TO_DATE(agentservice.satistime,'YYYY-MM-DD')
         Dimension(name="comment")
             Hierarchy(hasAll="true", allMemberName="合计")

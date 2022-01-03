@@ -18,7 +18,7 @@ Schema(name="ukefu")
                 Level(name="日期", column="createtime", uniqueMembers="false")
                     KeyExpression
                         SQL(dialect="generic") date_format(agentservice.createtime,'%Y-%m-%d')
-                        SQL(dialect="mysql") date_format(agentservice.createtime,'%Y-%m-%d')
+                        SQL(dialect="mysql") ANY_VALUE(date_format(agentservice.createtime,'%Y-%m-%d'))
                         SQL(dialect="oracle") TO_DATE(agentservice.createtime,'YYYY-MM-DD')
         Measure(name="咨询数量", column="id", aggregator="count", formatString="")
         Measure(name="平均等待时长_ms", column="waittingtime", aggregator="avg", formatString="")
