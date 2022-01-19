@@ -80,13 +80,17 @@ Star 地址：[https://github.com/chatopera/cskefu](https://github.com/chatopera
 
 [https://cc.chatopera.com/](https://cc.chatopera.com/)
 
-| **登录账号** | **密码**  |
-| ------------ | --------- |
-| admin        | admin1234 |
+| **登录账号** | **密码**  | **角色** |
+| ------------ | --------- | --------- |
+| admin        | admin1234 | 系统超级管理员 |
+| zhangsan        | agent1234 | 客服坐席人员 |
 
 ### 网页端访客程序
 
 [https://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
+
+- 登录张三后可接待访客，否则显示没有客服人员在线
+
 
 ### 机器人客服示例程序
 
