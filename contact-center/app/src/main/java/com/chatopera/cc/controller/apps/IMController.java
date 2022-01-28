@@ -170,11 +170,7 @@ public class IMController extends Handler {
                 view.addObject("port", request.getServerPort());
             }
         } else {
-            view.addObject("schema", request.getScheme());
-            String header = request.getHeader("X-Forwarded-Proto");
-            if (header != null) {
-                view.addObject("schema", header);
-            }
+            view.addObject("schema", super.getSchema(request));
             view.addObject("port", request.getServerPort());
         }
 
@@ -230,11 +226,7 @@ public class IMController extends Handler {
                     view.addObject("port", request.getServerPort());
                 }
             } else {
-                view.addObject("schema", request.getScheme());
-                String header = request.getHeader("X-Forwarded-Proto");
-                if (header != null) {
-                    view.addObject("schema", header);
-                }
+                view.addObject("schema", super.getSchema(request));
                 view.addObject("port", request.getServerPort());
             }
 
@@ -329,31 +321,29 @@ public class IMController extends Handler {
                 /**
                  * 广告信息
                  */
-                List<AdType> ads = MainUtils.getPointAdvs(MainContext.AdPosEnum.POINT.toString(), invite.getConsult_skill_fixed_id(), Constants.SYSTEM_ORGI);
+                List<AdType> ads = MainUtils.getPointAdvs(MainContext.AdPosEnum.POINT.toString(),
+                        invite.getConsult_skill_fixed_id(), Constants.SYSTEM_ORGI);
 
                 if (ads.size() > 0) {
                     view.addObject(
                             "pointAds",
-                            ads
-                    );
+                            ads);
                     view.addObject(
                             "pointAd",
-                            MainUtils.weitht(ads)
-                    );
+                            MainUtils.weitht(ads));
                 } else {
                     view.addObject(
                             "pointAds",
-                            null
-                    );
+                            null);
                     view.addObject(
                             "pointAd",
-                            null
-                    );
+                            null);
                 }
 
                 view.addObject(
                         "inviteAd",
-                        MainUtils.getPointAdv(MainContext.AdPosEnum.INVITE.toString(), invite.getConsult_skill_fixed_id(), Constants.SYSTEM_ORGI));
+                        MainUtils.getPointAdv(MainContext.AdPosEnum.INVITE.toString(),
+                                invite.getConsult_skill_fixed_id(), Constants.SYSTEM_ORGI));
             } else {
                 logger.info("[point] invite id {}, orgi {} not found", id, Constants.SYSTEM_ORGI);
             }
@@ -449,10 +439,10 @@ public class IMController extends Handler {
         return "ok";
     }
 
-
     @RequestMapping("/{id}/userlist")
     @Menu(type = "im", subtype = "inlist", access = true)
-    public void inlist(HttpServletRequest request, HttpServletResponse response, @PathVariable String id, @Valid String userid) throws IOException {
+    public void inlist(HttpServletRequest request, HttpServletResponse response, @PathVariable String id,
+            @Valid String userid) throws IOException {
         response.setHeader("Content-Type", "text/html;charset=utf-8");
         if (StringUtils.isNotBlank(userid)) {
             BlackEntity black = cache.findOneSystemByIdAndOrgi(userid, Constants.SYSTEM_ORGI);
@@ -487,8 +477,9 @@ public class IMController extends Handler {
             final @Valid String client,
             final @Valid String title,
             final @Valid String traceid) throws InterruptedException {
-//        logger.info(
-//                "[online] user {}, orgi {}, traceid {}, appid {}, session {}", userid, orgi, traceid, appid, sessionid);
+        // logger.info(
+        // "[online] user {}, orgi {}, traceid {}, appid {}, session {}", userid, orgi,
+        // traceid, appid, sessionid);
         Optional<BlackEntity> blackOpt = cache.findOneBlackEntityByUserIdAndOrgi(userid, orgi);
         if (blackOpt.isPresent() && (blackOpt.get().getEndtime() == null || blackOpt.get().getEndtime().after(
                 new Date()))) {
@@ -526,21 +517,23 @@ public class IMController extends Handler {
             CousultInvite invite = OnlineUserProxy.consult(appid, orgi);
 
             // TODO 该contacts的识别并不准确，因为不能关联
-//                if (invite != null && invite.isTraceuser()) {
-//                    contacts = OnlineUserProxy.OnlineUserProxy.processContacts(orgi, contacts, appid, userid);
-//                }
-//
-//                if (StringUtils.isNotBlank(sign)) {
-//                    OnlineUserProxy.online(
-//                            super.getIMUser(request, sign, contacts != null ? contacts.getName() : null, sessionid),
-//                            orgi,
-//                            sessionid,
-//                            MainContext.OnlineUserType.WEBIM.toString(),
-//                            request,
-//                            MainContext.ChannelType.WEBIM.toString(),
-//                            appid,
-//                            contacts,
-//                            invite);
+            // if (invite != null && invite.isTraceuser()) {
+            // contacts = OnlineUserProxy.OnlineUserProxy.processContacts(orgi, contacts,
+            // appid, userid);
+            // }
+            //
+            // if (StringUtils.isNotBlank(sign)) {
+            // OnlineUserProxy.online(
+            // super.getIMUser(request, sign, contacts != null ? contacts.getName() : null,
+            // sessionid),
+            // orgi,
+            // sessionid,
+            // MainContext.OnlineUserType.WEBIM.toString(),
+            // request,
+            // MainContext.ChannelType.WEBIM.toString(),
+            // appid,
+            // contacts,
+            // invite);
             // END 取消关联contacts
 
             if (StringUtils.isNotBlank(sign)) {
@@ -604,7 +597,7 @@ public class IMController extends Handler {
             HttpServletResponse response,
             @Valid final String orgi,
             @Valid final String aiid,
-//                              @Valid String uid,
+            // @Valid String uid,
             @Valid final String traceid,
             @Valid final String exchange,
             @Valid final String title,
@@ -647,8 +640,10 @@ public class IMController extends Handler {
         Optional<BlackEntity> blackOpt = cache.findOneBlackEntityByUserIdAndOrgi(userid, Constants.SYSTEM_ORGI);
         CousultInvite invite = OnlineUserProxy.consult(appid, orgi);
         if (StringUtils.isNotBlank(
-                appid) && ((!blackOpt.isPresent()) || (blackOpt.get().getEndtime() != null && blackOpt.get().getEndtime().before(
-                new Date())))) {
+                appid)
+                && ((!blackOpt.isPresent())
+                        || (blackOpt.get().getEndtime() != null && blackOpt.get().getEndtime().before(
+                                new Date())))) {
 
             String randomUserId; // 随机生成OnlineUser的用户名，使用了浏览器指纹做唯一性KEY
             if (StringUtils.isNotBlank(userid)) {
@@ -671,7 +666,7 @@ public class IMController extends Handler {
 
             view.addObject("nickname", nickname);
 
-            boolean consult = true;                //是否已收集用户信息
+            boolean consult = true; // 是否已收集用户信息
             SessionConfig sessionConfig = acdPolicyService.initSessionConfig(skill, orgi);
 
             // 强制开启满意调查问卷
@@ -680,7 +675,11 @@ public class IMController extends Handler {
             map.addAttribute("sessionConfig", sessionConfig);
             map.addAttribute("hostname", request.getServerName());
 
-            if (sslPort != null) {
+            String schema = super.getSchema(request);
+
+            if (StringUtils.equals(schema, "https")) {
+                map.addAttribute("port", 443);
+            } else if (sslPort != null) {
                 map.addAttribute("port", sslPort);
             } else {
                 map.addAttribute("port", port);
@@ -688,10 +687,9 @@ public class IMController extends Handler {
 
             map.addAttribute("appid", appid);
             map.addAttribute("userid", userid);
-            map.addAttribute("schema", request.getScheme());
+            map.addAttribute("schema", schema);
             map.addAttribute("sessionid", sessionid);
             map.addAttribute("isInvite", isInvite);
-
 
             view.addObject("product", product);
             view.addObject("description", description);
@@ -751,12 +749,13 @@ public class IMController extends Handler {
                     } else {
                         view = request(super.createView("/apps/im/noagent"));
                     }
-                } else if (invite.isConsult_info()) {    //启用了信息收集，从Request获取， 或从 Cookies 里去
+                } else if (invite.isConsult_info()) { // 启用了信息收集，从Request获取， 或从 Cookies 里去
                     // 验证 OnlineUser 信息
                     if (contacts != null && StringUtils.isNotBlank(
-                            contacts.getName())) {    //contacts用于传递信息，并不和 联系人表发生 关联，contacts信息传递给 Socket.IO，然后赋值给 AgentUser，最终赋值给 AgentService永久存储
+                            contacts.getName())) { // contacts用于传递信息，并不和 联系人表发生 关联，contacts信息传递给 Socket.IO，然后赋值给
+                                                   // AgentUser，最终赋值给 AgentService永久存储
                         consult = true;
-                        //存入 Cookies
+                        // 存入 Cookies
                         if (invite.isConsult_info_cookies()) {
                             Cookie name = new Cookie(
                                     "name", MainUtils.encryption(URLEncoder.encode(contacts.getName(), "UTF-8")));
@@ -778,11 +777,10 @@ public class IMController extends Handler {
                             if (StringUtils.isNotBlank(contacts.getSkypeid())) {
                                 Cookie skypeid = new Cookie(
                                         "skypeid", MainUtils.encryption(
-                                        URLEncoder.encode(contacts.getSkypeid(), "UTF-8")));
+                                                URLEncoder.encode(contacts.getSkypeid(), "UTF-8")));
                                 skypeid.setMaxAge(3600);
                                 response.addCookie(skypeid);
                             }
-
 
                             if (StringUtils.isNotBlank(contacts.getMemo())) {
                                 Cookie memo = new Cookie(
@@ -792,9 +790,9 @@ public class IMController extends Handler {
                             }
                         }
                     } else {
-                        //从 Cookies里尝试读取
+                        // 从 Cookies里尝试读取
                         if (invite.isConsult_info_cookies()) {
-                            Cookie[] cookies = request.getCookies();//这样便可以获取一个cookie数组
+                            Cookie[] cookies = request.getCookies();// 这样便可以获取一个cookie数组
                             contacts = new Contacts();
                             if (cookies != null) {
                                 for (Cookie cookie : cookies) {
@@ -837,7 +835,8 @@ public class IMController extends Handler {
                     }
                 } else {
                     // TODO 该contacts的识别并不准确，因为不能关联
-//                    contacts = OnlineUserProxy.processContacts(invite.getOrgi(), contacts, appid, userid);
+                    // contacts = OnlineUserProxy.processContacts(invite.getOrgi(), contacts, appid,
+                    // userid);
                     String uid = (String) request.getSession().getAttribute("Sessionuid");
                     String sid = (String) request.getSession().getAttribute("Sessionsid");
                     String cid = (String) request.getSession().getAttribute("Sessioncid");
@@ -856,8 +855,9 @@ public class IMController extends Handler {
 
                                 // 关联AgentUserContact的联系人
                                 // NOTE: 如果该userid已经有了关联的Contact则忽略，继续使用之前的
-                                Optional<AgentUserContacts> agentUserContactsOpt = agentUserContactsRes.findOneByUseridAndOrgi(
-                                        userid, orgi);
+                                Optional<AgentUserContacts> agentUserContactsOpt = agentUserContactsRes
+                                        .findOneByUseridAndOrgi(
+                                                userid, orgi);
                                 if (!agentUserContactsOpt.isPresent()) {
                                     AgentUserContacts agentUserContacts = new AgentUserContacts();
                                     agentUserContacts.setOrgi(orgi);
@@ -935,7 +935,6 @@ public class IMController extends Handler {
                         chatbotConfig.put("botfirst", Boolean.toString(invite.isAifirst()));
                         chatbotConfig.put("isai", Boolean.toString(invite.isAi()));
 
-
                         if (chatbotConfig != null) {
                             map.addAttribute("chatbotConfig", chatbotConfig);
                         }
@@ -943,14 +942,14 @@ public class IMController extends Handler {
                         if (MobileDevice.isMobile(request.getHeader("User-Agent")) || StringUtils.isNotBlank(
                                 mobile)) {
                             view = request(super.createView(
-                                    "/apps/im/chatbot/mobile"));        // 智能机器人 移动端
+                                    "/apps/im/chatbot/mobile")); // 智能机器人 移动端
                         }
                     } else {
                         // 维持人工坐席的设定，检查是否进入留言
                         if (!isLeavemsg && (MobileDevice.isMobile(
                                 request.getHeader("User-Agent")) || StringUtils.isNotBlank(mobile))) {
                             view = request(
-                                    super.createView("/apps/im/mobile"));    // WebIM移动端。再次点选技能组？
+                                    super.createView("/apps/im/mobile")); // WebIM移动端。再次点选技能组？
                         }
                     }
 
@@ -961,8 +960,10 @@ public class IMController extends Handler {
                 }
                 view.addObject("commentList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_COMMENT_DIC));
                 view.addObject("commentItemList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_COMMENT_ITEM_DIC));
-                view.addObject("welcomeAd", MainUtils.getPointAdv(MainContext.AdPosEnum.WELCOME.toString(), skill, orgi));
-                view.addObject("figureAds", MainUtils.getPointAdvs(MainContext.AdPosEnum.IMAGE.toString(), skill, orgi));
+                view.addObject("welcomeAd",
+                        MainUtils.getPointAdv(MainContext.AdPosEnum.WELCOME.toString(), skill, orgi));
+                view.addObject("figureAds",
+                        MainUtils.getPointAdvs(MainContext.AdPosEnum.IMAGE.toString(), skill, orgi));
 
                 // 确定"接受邀请"被处理后，通知浏览器关闭弹出窗口
                 OnlineUserProxy.sendWebIMClients(userid, "accept");
@@ -1028,7 +1029,7 @@ public class IMController extends Handler {
 
         view.addObject("hostname", request.getServerName());
         view.addObject("port", request.getServerPort());
-        view.addObject("schema", request.getScheme());
+        view.addObject("schema", super.getSchema(request));
         view.addObject("appid", appid);
         view.addObject("channelVisitorSeparate", channelWebIMVisitorSeparate);
         view.addObject("ip", MainUtils.md5(request.getRemoteAddr()));
@@ -1127,7 +1128,7 @@ public class IMController extends Handler {
 
         params.put("hostname", request.getServerName());
         params.put("port", request.getServerPort());
-        params.put("schema", request.getScheme());
+        params.put("schema", super.getSchema(request));
         params.put("appid", appid);
         params.put("channelVisitorSeparate", channelWebIMVisitorSeparate);
         params.put("ip", MainUtils.md5(request.getRemoteAddr()));
@@ -1193,14 +1194,15 @@ public class IMController extends Handler {
     @RequestMapping("/leavemsg/save")
     @Menu(type = "admin", subtype = "user")
     public ModelAndView leavemsgsave(HttpServletRequest request,
-                                     @Valid String appid,
-                                     @Valid LeaveMsg msg,
-                                     @Valid String skillId) {
+            @Valid String appid,
+            @Valid LeaveMsg msg,
+            @Valid String skillId) {
         if (StringUtils.isNotBlank(appid)) {
             snsAccountRepository.findBySnsid(appid).ifPresent(p -> {
                 CousultInvite invite = inviteRepository.findBySnsaccountidAndOrgi(appid, Constants.SYSTEM_ORGI);
                 // TODO 增加策略防止恶意刷消息
-                //  List<LeaveMsg> msgList = leaveMsgRes.findByOrgiAndUserid(invite.getOrgi(), msg.getUserid());
+                // List<LeaveMsg> msgList = leaveMsgRes.findByOrgiAndUserid(invite.getOrgi(),
+                // msg.getUserid());
                 // if(msg!=null && msgList.size() == 0){
                 if (msg != null) {
                     msg.setOrgi(invite.getOrgi());
@@ -1216,7 +1218,8 @@ public class IMController extends Handler {
 
     @RequestMapping("/refuse")
     @Menu(type = "im", subtype = "refuse", access = true)
-    public void refuse(HttpServletRequest request, HttpServletResponse response, @Valid String orgi, @Valid String appid, @Valid String userid, @Valid String sessionid, @Valid String client) throws Exception {
+    public void refuse(HttpServletRequest request, HttpServletResponse response, @Valid String orgi,
+            @Valid String appid, @Valid String userid, @Valid String sessionid, @Valid String client) throws Exception {
         OnlineUserProxy.refuseInvite(userid, orgi);
         final Date threshold = new Date(System.currentTimeMillis() - Constants.WEBIM_AGENT_INVITE_TIMEOUT);
         Page<InviteRecord> inviteRecords = inviteRecordRes.findByUseridAndOrgiAndResultAndCreatetimeGreaterThan(
@@ -1241,7 +1244,8 @@ public class IMController extends Handler {
 
     @RequestMapping("/satis")
     @Menu(type = "im", subtype = "satis", access = true)
-    public void satis(HttpServletRequest request, HttpServletResponse response, @Valid AgentServiceSatis satis) throws Exception {
+    public void satis(HttpServletRequest request, HttpServletResponse response, @Valid AgentServiceSatis satis)
+            throws Exception {
         if (satis != null && StringUtils.isNotBlank(satis.getId())) {
             int count = agentServiceSatisRes.countById(satis.getId());
             if (count == 1) {
@@ -1272,18 +1276,21 @@ public class IMController extends Handler {
         String fileName = null;
         JSONObject result = new JSONObject();
         HttpHeaders headers = RestUtils.header();
-//        String multipartLast = null;
-//        if ( multipart != null && multipart.getOriginalFilename() != null ){
-//            Number multipartLenght = multipart.getOriginalFilename().split("\\.").length - 1;
-//            multipartLast = multipart.getOriginalFilename().split("\\.")[ multipartLenght.intValue()];
-//        }
+        // String multipartLast = null;
+        // if ( multipart != null && multipart.getOriginalFilename() != null ){
+        // Number multipartLenght = multipart.getOriginalFilename().split("\\.").length
+        // - 1;
+        // multipartLast = multipart.getOriginalFilename().split("\\.")[
+        // multipartLenght.intValue()];
+        // }
 
-//        if (multipart != null &&
-//                multipartLast != null
-//                && multipart.getOriginalFilename().lastIndexOf(".") > 0
-//                && StringUtils.isNotBlank(userid)) {
-//            if(     multipartLast.equals("jpeg") || multipartLast.equals("jpg") || multipartLast.equals("bmp")
-//                    || multipartLast.equals("png")  ){
+        // if (multipart != null &&
+        // multipartLast != null
+        // && multipart.getOriginalFilename().lastIndexOf(".") > 0
+        // && StringUtils.isNotBlank(userid)) {
+        // if( multipartLast.equals("jpeg") || multipartLast.equals("jpg") ||
+        // multipartLast.equals("bmp")
+        // || multipartLast.equals("png") ){
         if (multipart != null
                 && multipart.getOriginalFilename().lastIndexOf(".") > 0
                 && StringUtils.isNotBlank(userid)) {
@@ -1291,7 +1298,6 @@ public class IMController extends Handler {
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
-
 
             String fileid = MainUtils.getUUID();
             StreamingFile sf = new StreamingFile();
@@ -1311,7 +1317,7 @@ public class IMController extends Handler {
                     File thumbnail = new File(path, thumbnailsFileName);
                     MainUtils.processImage(thumbnail, imageFile);
 
-                    //  存储数据库
+                    // 存储数据库
                     sf.setData(jpaBlobHelper.createBlob(multipart.getInputStream(), multipart.getSize()));
                     sf.setThumbnail(jpaBlobHelper.createBlobWithFile(thumbnail));
                     streamingFileRepository.save(sf);
@@ -1365,16 +1371,15 @@ public class IMController extends Handler {
             result.put("error", 1);
             result.put("message", "请选择文件");
         }
-//        }else {
-//                upload = new UploadStatus("请上传格式为jpg，png，jpeg，bmp类型图片");
-//            }
-//        } else {
-//            upload = new UploadStatus("请上传格式为jpg，png，jpeg，bmp类型图片");
-//        }
+        // }else {
+        // upload = new UploadStatus("请上传格式为jpg，png，jpeg，bmp类型图片");
+        // }
+        // } else {
+        // upload = new UploadStatus("请上传格式为jpg，png，jpeg，bmp类型图片");
+        // }
 
         return new ResponseEntity<>(result.toString(), headers, HttpStatus.OK);
     }
-
 
     private String processAttachmentFile(
             final MultipartFile file,
@@ -1383,7 +1388,7 @@ public class IMController extends Handler {
             final String creator) throws IOException {
         String id = null;
 
-        if (file.getSize() > 0) {            //文件尺寸 限制 ？在 启动 配置中 设置 的最大值，其他地方不做限制
+        if (file.getSize() > 0) { // 文件尺寸 限制 ？在 启动 配置中 设置 的最大值，其他地方不做限制
             AttachmentFile attachmentFile = new AttachmentFile();
             attachmentFile.setCreater(creator);
             attachmentFile.setOrgi(orgi);
