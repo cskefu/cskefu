@@ -513,4 +513,13 @@ public class Handler {
         return fileid;
     }
 
+    public String getSchema(HttpServletRequest request) {
+        String schema = request.getScheme();
+        String headerProto = request.getHeader("X-Forwarded-Proto");
+        if (StringUtils.isNotBlank(headerProto)) {
+            schema = headerProto;
+        }
+        return schema;
+    }
+
 }
