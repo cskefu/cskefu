@@ -36,19 +36,11 @@
 
 新版本介绍：[一山还有一山高，开源智能客服系统春松客服 v7 版本发布 | Chatopera](https://chatopera.blog.csdn.net/article/details/113786505)
 
-## 行动号召
-
-给春松客服点赞！您的支持是我们工作的动力之一！
-
-<img src="./public/assets/cskefu-star-call-for-action.png" width="900">
-
-Star 地址：[https://github.com/chatopera/cskefu](https://github.com/chatopera/cskefu)
-
 ## 媒体报道
 
 <img src="./public/assets/cskefu-gpv-2.png" height = "220" div align=right />
 
-- [Chatopera 王海良：做好开源客服系统 | 开源社开源故事集](https://mp.weixin.qq.com/s?__biz=MzA4NTM4NDc4NQ==&mid=2247486827&idx=1&sn=d04fae9325929eea639763ba6d41e314)
+- [春松客服：通过开源加云原生模式，大规模交付智能客服系统](https://chatopera.blog.csdn.net/article/details/123599878)
 
 - [春松客服荣获 GVP 企业级开源项目认证](http://www.ctiforum.com/news/guonei/578988.html)
 
