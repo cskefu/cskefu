@@ -58,6 +58,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Happy5",
+      "name": "Happy5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/53087368?v=4",
+      "profile": "https://github.com/Happy5",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
