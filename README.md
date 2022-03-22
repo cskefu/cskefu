@@ -7,7 +7,7 @@
 # 春松客服：做好开源客服系统
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/chatopera/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/chatopera/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/blob/osc/LICENSE "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![Docker Tags](https://raw.githubusercontent.com/hailiang-wang/Rishit-dagli/master/badges/docker.svg)](https://hub.docker.com/repository/docker/chatopera/contact-center/tags?page=1&ordering=last_updated "Get Latest Docker Images") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-19-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-20-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [https://www.cskefu.com](https://www.cskefu.com/) | [Github](https://github.com/chatopera/cskefu) | [Gitee](https://gitee.com/chatopera/cskefu) | [GitCode](https://gitcode.net/chatopera/cskefu)
@@ -278,6 +278,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/understanding"><img src="https://avatars.githubusercontent.com/u/2801277?v=4?s=100" width="100px;" alt=""/><br /><sub><b>understanding</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=understanding" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/MQPearth"><img src="https://avatars.githubusercontent.com/u/32632796?v=4?s=100" width="100px;" alt=""/><br /><sub><b>MQPearth</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=MQPearth" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/SkorpiosL"><img src="https://avatars.githubusercontent.com/u/32902343?v=4?s=100" width="100px;" alt=""/><br /><sub><b>SkorpiosL</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=SkorpiosL" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/always-China"><img src="https://avatars.githubusercontent.com/u/49581101?v=4?s=100" width="100px;" alt=""/><br /><sub><b>hua</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=always-China" title="Code">💻</a></td>
   </tr>
 </table>
 
