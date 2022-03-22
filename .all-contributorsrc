@@ -49,6 +49,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "DevDengChao",
+      "name": "邓超",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16363180?v=4",
+      "profile": "https://blog.dengchao.fun",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
