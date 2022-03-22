@@ -113,6 +113,18 @@
       "contributions": [
         "test"
       ]
+    },
+    {
+      "login": "youkefu",
+      "name": "优客服",
+      "avatar_url": "https://avatars.githubusercontent.com/u/48078408?v=4",
+      "profile": "http://www.youkefu.cn",
+      "contributions": [
+        "code",
+        "test",
+        "business",
+        "design"
+      ]
     }
   ],
   "contributorsPerLine": 7,
