@@ -1,4 +1,7 @@
 <div align=right>
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [主页](https://www.cskefu.com/)　|　[成功案例](#客户案例)　|　[开发者文档](https://docs.chatopera.com/products/cskefu/osc/index.html)　|　[博客专栏](https://chatopera.blog.csdn.net/)　|　[更新日志](./CHANGELOG.md)　|　[帮助](https://github.com/chatopera/cskefu/issues)
 
@@ -467,3 +470,23 @@ Copyright (2018-2022) <a href="https://www.chatopera.com/" target="_blank">北�
 [Apache License Version 2.0](https://github.com/chatopera/cskefu/blob/osc/LICENSE)
 
 ![image](./public/assets/110291138-8b5a5e00-8026-11eb-8651-d3ce18d8dab1.png)
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/mukaiu"><img src="https://avatars.githubusercontent.com/u/7746790?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Mukaiu</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=mukaiu" title="Code">💻</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
