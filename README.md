@@ -7,7 +7,7 @@
 # 春松客服：做好开源客服系统
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/chatopera/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/chatopera/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/blob/osc/LICENSE "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![Docker Tags](https://raw.githubusercontent.com/hailiang-wang/Rishit-dagli/master/badges/docker.svg)](https://hub.docker.com/repository/docker/chatopera/contact-center/tags?page=1&ordering=last_updated "Get Latest Docker Images") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [https://www.cskefu.com](https://www.cskefu.com/) | [Github](https://github.com/chatopera/cskefu) | [Gitee](https://gitee.com/chatopera/cskefu) | [GitCode](https://gitcode.net/chatopera/cskefu)
@@ -266,6 +266,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://www.csdn.net"><img src="https://avatars.githubusercontent.com/u/3679798?v=4?s=100" width="100px;" alt=""/><br /><sub><b>kyle</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=kylezhang" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/xianliwang"><img src="https://avatars.githubusercontent.com/u/52594347?v=4?s=100" width="100px;" alt=""/><br /><sub><b>xianliwang</b></sub></a><br /><a href="#video-xianliwang" title="Videos">📹</a> <a href="https://github.com/chatopera/cskefu/commits?author=xianliwang" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/lihang2016"><img src="https://avatars.githubusercontent.com/u/23203931?v=4?s=100" width="100px;" alt=""/><br /><sub><b>lihang2016</b></sub></a><br /><a href="#ideas-lihang2016" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 

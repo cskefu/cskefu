@@ -86,6 +86,15 @@
         "video",
         "test"
       ]
+    },
+    {
+      "login": "lihang2016",
+      "name": "lihang2016",
+      "avatar_url": "https://avatars.githubusercontent.com/u/23203931?v=4",
+      "profile": "https://github.com/lihang2016",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
