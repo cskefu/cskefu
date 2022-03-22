@@ -7,7 +7,7 @@
 # 春松客服：做好开源客服系统
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/chatopera/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/chatopera/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/blob/osc/LICENSE "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![Docker Tags](https://raw.githubusercontent.com/hailiang-wang/Rishit-dagli/master/badges/docker.svg)](https://hub.docker.com/repository/docker/chatopera/contact-center/tags?page=1&ordering=last_updated "Get Latest Docker Images") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [https://www.cskefu.com](https://www.cskefu.com/) | [Github](https://github.com/chatopera/cskefu) | [Gitee](https://gitee.com/chatopera/cskefu) | [GitCode](https://gitcode.net/chatopera/cskefu)
@@ -274,6 +274,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/xl111"><img src="https://avatars.githubusercontent.com/u/64338718?v=4?s=100" width="100px;" alt=""/><br /><sub><b>徐。。</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=xl111" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/viaco2ove"><img src="https://avatars.githubusercontent.com/u/8044837?v=4?s=100" width="100px;" alt=""/><br /><sub><b>viaco2ove</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=viaco2ove" title="Code">💻</a></td>
   </tr>
 </table>
 
