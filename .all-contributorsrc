@@ -104,6 +104,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "ArioWei",
+      "name": "ArioWei",
+      "avatar_url": "https://avatars.githubusercontent.com/u/41034256?v=4",
+      "profile": "https://github.com/ArioWei",
+      "contributions": [
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
