@@ -153,6 +153,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "understanding",
+      "name": "understanding",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2801277?v=4",
+      "profile": "https://github.com/understanding",
+      "contributions": [
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
