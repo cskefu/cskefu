@@ -57,15 +57,6 @@
   </a>
 </p>
 
-## 客户反馈
-
-<p align="center">
-  <b>:yum: TA 们这样评价春松客服</b><br>
-  <a href="https://www.chatopera.com/customer.html" target="_blank">
-      <img src="./public/assets/screenshot-20211026-103937.png" width="900">
-  </a>
-</p>
-
 ## 产品演示
 
 ### 坐席工作台
