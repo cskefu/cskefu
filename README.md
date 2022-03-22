@@ -1,11 +1,10 @@
 <div align=right>
+[主页](https://www.cskefu.com/)　|　[成功案例](#客户案例)　|　[开发者文档](https://docs.chatopera.com/products/cskefu/osc/index.html)　|　[博客专栏](https://chatopera.blog.csdn.net/)　|　[更新日志](./CHANGELOG.md)　|　[帮助](https://github.com/chatopera/cskefu/issues)
+</div>
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-
-[主页](https://www.cskefu.com/)　|　[成功案例](#客户案例)　|　[开发者文档](https://docs.chatopera.com/products/cskefu/osc/index.html)　|　[博客专栏](https://chatopera.blog.csdn.net/)　|　[更新日志](./CHANGELOG.md)　|　[帮助](https://github.com/chatopera/cskefu/issues)
-
-</div>
 
 # 春松客服：做好开源客服系统
 
