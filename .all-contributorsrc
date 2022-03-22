@@ -67,6 +67,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "kylezhang",
+      "name": "kyle",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3679798?v=4",
+      "profile": "https://www.csdn.net",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
