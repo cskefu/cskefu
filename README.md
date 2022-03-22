@@ -246,6 +246,29 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 
 ## 开发者社区
 
+### 贡献者列表 ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/mukaiu"><img src="https://avatars.githubusercontent.com/u/7746790?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Mukaiu</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=mukaiu" title="Code">💻</a></td>
+    <td align="center"><a href="https://www.linkedin.com/in/hai-liang-wang/"><img src="https://avatars.githubusercontent.com/u/3538629?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hai Liang Wang</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=hailiang-wang" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/shih945"><img src="https://avatars.githubusercontent.com/u/29646781?v=4?s=100" width="100px;" alt=""/><br /><sub><b>SHIH</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=shih945" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/luruiGit"><img src="https://avatars.githubusercontent.com/u/49265205?v=4?s=100" width="100px;" alt=""/><br /><sub><b>luruiGit</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=luruiGit" title="Code">💻</a></td>
+    <td align="center"><a href="http://enze5088.github.io"><img src="https://avatars.githubusercontent.com/u/14285786?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Enze</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=enze5088" title="Code">💻</a></td>
+    <td align="center"><a href="https://blog.dengchao.fun"><img src="https://avatars.githubusercontent.com/u/16363180?v=4?s=100" width="100px;" alt=""/><br /><sub><b>邓超</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=DevDengChao" title="Code">💻</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
 ### 用户交流群
 
 <p align="center">
@@ -460,28 +483,3 @@ Copyright (2018-2022) <a href="https://www.chatopera.com/" target="_blank">北�
 [Apache License Version 2.0](https://github.com/chatopera/cskefu/blob/osc/LICENSE)
 
 ![image](./public/assets/110291138-8b5a5e00-8026-11eb-8651-d3ce18d8dab1.png)
-
-## Contributors ✨
-
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tr>
-    <td align="center"><a href="https://github.com/mukaiu"><img src="https://avatars.githubusercontent.com/u/7746790?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Mukaiu</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=mukaiu" title="Code">💻</a></td>
-    <td align="center"><a href="https://www.linkedin.com/in/hai-liang-wang/"><img src="https://avatars.githubusercontent.com/u/3538629?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hai Liang Wang</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=hailiang-wang" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/shih945"><img src="https://avatars.githubusercontent.com/u/29646781?v=4?s=100" width="100px;" alt=""/><br /><sub><b>SHIH</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=shih945" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/luruiGit"><img src="https://avatars.githubusercontent.com/u/49265205?v=4?s=100" width="100px;" alt=""/><br /><sub><b>luruiGit</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=luruiGit" title="Code">💻</a></td>
-    <td align="center"><a href="http://enze5088.github.io"><img src="https://avatars.githubusercontent.com/u/14285786?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Enze</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=enze5088" title="Code">💻</a></td>
-    <td align="center"><a href="https://blog.dengchao.fun"><img src="https://avatars.githubusercontent.com/u/16363180?v=4?s=100" width="100px;" alt=""/><br /><sub><b>邓超</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=DevDengChao" title="Code">💻</a></td>
-  </tr>
-</table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
