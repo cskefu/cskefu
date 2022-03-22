@@ -135,6 +135,15 @@
         "ideas",
         "talk"
       ]
+    },
+    {
+      "login": "xl111",
+      "name": "徐。。",
+      "avatar_url": "https://avatars.githubusercontent.com/u/64338718?v=4",
+      "profile": "https://github.com/xl111",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
