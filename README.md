@@ -12,19 +12,19 @@
 
 [https://www.cskefu.com](https://www.cskefu.com/) | [Github](https://github.com/chatopera/cskefu) | [Gitee](https://gitee.com/chatopera/cskefu) | [GitCode](https://gitcode.net/chatopera/cskefu)
 
-:evergreen_tree: 春松客服是 [Chatopera](https://www.chatopera.com/) 发布的**开源并且免费**的智能客服系统 / CSKeFu is a Customer Support System for Enterprises in a High Performance Low-Touch way, OpenSource and Free for the world by [Chatopera](https://www.chatopera.com/).
+:evergreen_tree: 春松客服是 [Chatopera](https://www.chatopera.com/) 发布的**开源并且免费**的智能客服系统。
 
-:hearts: 我们发布春松客服的愿景 / Our vision on CSKeFu:
+:hearts: 我们发布春松客服的愿景：
 
-- 做好开源客服系统 / Deliver Open Source Contact Center with High Quality
-- 帮助企业快速获得开箱即用的免费智能客服系统 / Get Customer Support System in minutes
-- 成为开发者首选的客服系统开发框架 / To be Top 1 Framework for Customer Support System Customization
+- 做好开源客服系统
+- 帮助企业快速获得开箱即用的免费智能客服系统
+- 成为开发者首选的客服系统开发框架
 
-:innocent: 我们对春松客服客户的承诺 / Our promise on CSKeFu:
+:innocent: 我们对春松客服客户的承诺:
 
-- 我们不发布垃圾 / We don't ship junk
-- 持续优化春松客服 / Keep on coming with great enhancements in the long term
-- 坚持开源和免费，商业友好授权 / OpenSource for the world with license which is business friendly
+- 我们不发布垃圾
+- 持续优化春松客服
+- 坚持开源和免费，商业友好授权
 
 春松客服宣言：做好开源客服系统，视频 [Bilibili](https://www.bilibili.com/video/BV1hu411o76r/) | [YouTube](https://youtu.be/ILf3BWpq4Ns)
 
