@@ -236,6 +236,15 @@
         "bug",
         "test"
       ]
+    },
+    {
+      "login": "lokywang",
+      "name": "lokywang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/28672424?v=4",
+      "profile": "https://github.com/lokywang",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "projectName": "cskefu",
