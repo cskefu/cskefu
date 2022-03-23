@@ -501,4 +501,4 @@ Copyright (2018-2022) <a href="https://www.chatopera.com/" target="_blank">åŒ—äº
 
 [Apache License Version 2.0](https://github.com/chatopera/cskefu/blob/osc/LICENSE)
 
-![image](./public/assets/110291138-8b5a5e00-8026-11eb-8651-d3ce18d8dab1.png)
+![image](./public/assets/screenshot-20220323-163051.jpg)
