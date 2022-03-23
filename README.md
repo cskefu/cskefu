@@ -28,13 +28,7 @@
 - 持续优化春松客服 / Keep on coming with great enhancements in the long term
 - 坚持开源和免费，商业友好授权 / OpenSource for the world with license which is business friendly
 
-<p align="center">
-  <a href="https://www.bilibili.com/video/BV1hu411o76r/" target="_blank">
-      <img src="./public/assets/screenshot-20211104-113333.jpg" width="800">
-  </a>
-</p>
-
-其它播放地址：[微信公众号](https://mp.weixin.qq.com/s/ixFg3zVJP07e9EPQRPq2UQ) | [YouTube](https://youtu.be/ILf3BWpq4Ns)
+春松客服宣言：做好开源客服系统，视频 [Bilibili](https://www.bilibili.com/video/BV1hu411o76r/) | [YouTube](https://youtu.be/ILf3BWpq4Ns)
 
 新版本介绍：[一山还有一山高，开源智能客服系统春松客服 v7 版本发布 | Chatopera](https://chatopera.blog.csdn.net/article/details/113786505)
 
