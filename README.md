@@ -186,12 +186,6 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 
 查看文档[《立即上线机器人客服》](https://docs.chatopera.com/products/cskefu/work-chatbot/bot-agent.html)。
 
-<p align="center">
-  <a href="https://docs.chatopera.com/products/cskefu/work-chatbot/bot-agent.html" target="_blank">
-      <img src="./public/assets/screenshot-20210726-103611.jpg" width="800">
-  </a>
-</p>
-
 <details>
 <summary>展开查看 Chatopera 云服务的产品截图</summary>
 <p>
