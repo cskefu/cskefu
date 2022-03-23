@@ -3,7 +3,7 @@
     "README.md"
   ],
   "imageSize": 50,
-  "contributorsPerLine": 10,
+  "contributorsPerLine": 7,
   "commit": false,
   "contributors": [
     {
@@ -111,7 +111,9 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/62800943?v=4",
       "profile": "https://github.com/live-in-the-moment",
       "contributions": [
-        "ideas"
+        "ideas",
+        "bug",
+        "test"
       ]
     },
     {
@@ -221,7 +223,6 @@
       ]
     }
   ],
-  "contributorsPerLine": 7,
   "projectName": "cskefu",
   "projectOwner": "chatopera",
   "repoType": "github",
