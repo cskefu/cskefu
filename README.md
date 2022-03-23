@@ -248,7 +248,9 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 
 ### 贡献者列表 ✨
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+荣誉归于贡献者，没有集体协作，就没有好的开源客服系统。每一个因使用春松客服受益的人、组织，也应回报给春松客服社区和贡献者。
+
+“投我以木桃，报之以琼瑶。匪报也，永以为好也！”，这是来自 3000 年前《诗经·木瓜》。
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
