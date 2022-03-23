@@ -487,9 +487,11 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 
 ## 鸣谢
 
+[Amazon AWS 赞助春松客服服务器资源 5W RMB（2021 年度）](https://aws.amazon.com)
+
 [IBM Cloud 赞助春松客服服务器资源 12W US Dollar（2019 年度）](https://cloud.ibm.com/)
 
-[Amazon AWS 赞助春松客服服务器资源 5W RMB（2021 年度）](https://aws.amazon.com)
+[QingCloud 赞助春松客服服务器资源 1W RMB（2018 年度）](https://www.qingcloud.com/)
 
 ## 开源许可协议
 
