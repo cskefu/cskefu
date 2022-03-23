@@ -7,34 +7,26 @@
 # 春松客服：做好开源客服系统
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/chatopera/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/chatopera/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/blob/osc/LICENSE "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![Docker Tags](https://raw.githubusercontent.com/hailiang-wang/Rishit-dagli/master/badges/docker.svg)](https://hub.docker.com/repository/docker/chatopera/contact-center/tags?page=1&ordering=last_updated "Get Latest Docker Images") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-21-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-28-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [https://www.cskefu.com](https://www.cskefu.com/) | [Github](https://github.com/chatopera/cskefu) | [Gitee](https://gitee.com/chatopera/cskefu) | [GitCode](https://gitcode.net/chatopera/cskefu)
 
-:evergreen_tree: 春松客服是 [Chatopera](https://www.chatopera.com/) 发布的**开源并且免费**的智能客服系统 / CSKeFu is a Customer Support System for Enterprises in a High Performance Low-Touch way, OpenSource and Free for the world by [Chatopera](https://www.chatopera.com/).
+:evergreen_tree: 春松客服是**开源并且免费**的智能客服系统，于 2018 年 9 月由 [Chatopera](https://www.chatopera.com) 发布，在开源社区协作中优化和完善，春松客服属于[春松客服开源社区](https://github.com/chatopera/cskefu#%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%BC%80%E6%BA%90%E7%A4%BE%E5%8C%BA)。
 
-在 Chatopera，我们相信：**越是重视客户服务，越是好的企业 / the more you care about your customers, the better income you earn in return**。
+:hearts: 春松客服的愿景：
 
-:hearts: 我们发布春松客服的愿景 / Our vision on CSKeFu:
+- 做好开源客服系统
+- 帮助企业快速获得开箱即用的免费智能客服系统
+- 成为开发者首选的客服系统开发框架
 
-- 做好开源客服系统 / Deliver Open Source Contact Center with High Quality
-- 帮助企业快速获得开箱即用的免费智能客服系统 / Get Customer Support System in minutes
-- 成为开发者首选的客服系统开发框架 / To be Top 1 Framework for Customer Support System Customization
+:innocent: 春松客服的承诺:
 
-:innocent: 我们对春松客服客户的承诺 / Our promise on CSKeFu:
+- 我们不发布垃圾
+- 持续优化
+- 坚持开源和免费，商业友好授权
 
-- 我们不发布垃圾 / We don't ship junk
-- 持续优化春松客服 / Keep on coming with great enhancements in the long term
-- 坚持开源和免费，商业友好授权 / OpenSource for the world with license which is business friendly
-
-<p align="center">
-  <a href="https://www.bilibili.com/video/BV1hu411o76r/" target="_blank">
-      <img src="./public/assets/screenshot-20211104-113333.jpg" width="800">
-  </a>
-</p>
-
-其它播放地址：[微信公众号](https://mp.weixin.qq.com/s/ixFg3zVJP07e9EPQRPq2UQ) | [YouTube](https://youtu.be/ILf3BWpq4Ns)
+春松客服宣言：做好开源客服系统，视频 [Bilibili](https://www.bilibili.com/video/BV1hu411o76r/) | [YouTube](https://youtu.be/ILf3BWpq4Ns)
 
 新版本介绍：[一山还有一山高，开源智能客服系统春松客服 v7 版本发布 | Chatopera](https://chatopera.blog.csdn.net/article/details/113786505)
 
@@ -53,37 +45,15 @@
 ## 客户案例
 
 <p align="center">
-  <b>:briefcase: TA 们都选择春松客服</b><br>
+  <b>:briefcase: 大家都选择春松客服</b><br>
   <a href="https://www.chatopera.com/customer.html" target="_blank">
       <img src="./public/assets/customers-202107.jpg" width="900">
   </a>
 </p>
 
-## 产品演示
-
-### 坐席工作台
-
-[https://cc.chatopera.com/](https://cc.chatopera.com/)
-
-| **登录账号** | **密码**  | **角色** |
-| ------------ | --------- | --------- |
-| admin        | admin1234 | 系统超级管理员 |
-| zhangsan        | agent1234 | 客服坐席人员 |
-
-### 网页端访客程序
-
-[https://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
-
-- 登录张三后可接待访客，否则显示没有客服人员在线
-
-
-### 机器人客服示例程序
-
-[https://oh-my.cskefu.com/im/text/0nhckh.html](https://oh-my.cskefu.com/im/text/0nhckh.html)
-
 ## 功能介绍
 
-<img src="./public/assets/cskefu-2021-08-22-8.22.09PM.jpg" width="900">
+<!-- <img src="./public/assets/cskefu-2021-08-22-8.22.09PM.jpg" width="900"> -->
 
 ### 免费模块
 
@@ -113,11 +83,33 @@
 
 付费模块代码并不开源，并且使用插件的形式安装在源码中，[请联系“商务洽谈”](https://www.chatopera.com/mail.html)获得插件和商业支持。
 
-## 产品文档
+## 产品演示
+
+### 坐席工作台
+
+[https://cc.chatopera.com/](https://cc.chatopera.com/)
+
+| **登录账号** | **密码**  | **角色** |
+| ------------ | --------- | --------- |
+| admin        | admin1234 | 系统超级管理员 |
+| zhangsan        | agent1234 | 客服坐席人员 |
+
+### 网页端访客程序
+
+[https://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
+
+- 登录张三后可接待访客，否则显示没有客服人员在线
+
+
+### 机器人客服示例程序
+
+[https://oh-my.cskefu.com/im/text/0nhckh.html](https://oh-my.cskefu.com/im/text/0nhckh.html)
+
+## 在线文档
+
+### 春松客服文档中心 
 
 关于产品的具体使用说明，请参考[文档中心](https://docs.chatopera.com/products/cskefu/index.html)。
-
-### 产品截图
 
 <p align="center">
   <b>欢迎页</b><br>
@@ -156,41 +148,23 @@
 </p>
 </details>
 
-## 软件部署
-
-### 私有部署
-
-容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](https://docs.chatopera.com/products/cskefu/deploy.html)。
-
-### 容器云部署
-
-容器云部署是云原生应用交付的最佳实践，简单易用。春松客服已经在以下容器云应用商店上架：
-
-[Rainbond 云原生应用管理平台](https://www.rainbond.com/docs/opensource-app/chatopera/?channel=chatopera)：专注于以应用为中心的理念，赋能企业搭建云原生开发云、云原生交付云。
-
-## 机器人客服
+### 机器人客服
 
 **超过 85% 的春松客服企业客户通过 Chatopera 云服务上线机器人客服！7x24 小时在线，接待访客，辅助人工坐席，提升 10 倍工作效率。**
 
 Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音识别等组件，标准化聊天机器人开发，支持企业 OA 智能问答、HR 智能问答、智能客服和网络营销等场景。企业 IT 部门、业务部门借助 Chatopera 云服务快速让聊天机器人上线！
 
-### 机器人客服示例程序
+#### 机器人客服示例程序
 
 [https://oh-my.cskefu.com/im/text/0nhckh.html](https://oh-my.cskefu.com/im/text/0nhckh.html)
 
 ![](public/assets/screenshot-20210908-184522.png)
 
-### 立即上线机器人客服
+#### 立即上线机器人客服
 
 上线机器人客服的两个方式：1）Chatopera 云服务，按量付费，提供每日免费额度；2）私有部署。
 
 查看文档[《立即上线机器人客服》](https://docs.chatopera.com/products/cskefu/work-chatbot/bot-agent.html)。
-
-<p align="center">
-  <a href="https://docs.chatopera.com/products/cskefu/work-chatbot/bot-agent.html" target="_blank">
-      <img src="./public/assets/screenshot-20210726-103611.jpg" width="800">
-  </a>
-</p>
 
 <details>
 <summary>展开查看 Chatopera 云服务的产品截图</summary>
@@ -244,42 +218,66 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 </p>
 </details>
 
-## 开发者社区
+
+## 软件部署
+
+### 私有部署
+
+容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](https://docs.chatopera.com/products/cskefu/deploy.html)。
+
+### 容器云部署
+
+容器云部署是云原生应用交付的最佳实践，简单易用。春松客服已经在以下容器云应用商店上架：
+
+[Rainbond 云原生应用管理平台](https://www.rainbond.com/docs/opensource-app/chatopera/?channel=chatopera)：专注于以应用为中心的理念，赋能企业搭建云原生开发云、云原生交付云。
+
+## 春松客服开源社区
 
 ### 贡献者列表 ✨
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+荣誉归于贡献者，没有集体协作，就没有好的开源客服系统。每一个因使用春松客服受益的人、组织，也应回报给春松客服社区和贡献者。
+
+“投我以木桃，报之以琼瑶。匪报也，永以为好也！”，这是来自 3000 年前《诗经·木瓜》。
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/mukaiu"><img src="https://avatars.githubusercontent.com/u/7746790?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Mukaiu</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=mukaiu" title="Code">💻</a></td>
-    <td align="center"><a href="https://www.linkedin.com/in/hai-liang-wang/"><img src="https://avatars.githubusercontent.com/u/3538629?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hai Liang Wang</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=hailiang-wang" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/shih945"><img src="https://avatars.githubusercontent.com/u/29646781?v=4?s=100" width="100px;" alt=""/><br /><sub><b>SHIH</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=shih945" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/luruiGit"><img src="https://avatars.githubusercontent.com/u/49265205?v=4?s=100" width="100px;" alt=""/><br /><sub><b>luruiGit</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=luruiGit" title="Code">💻</a></td>
-    <td align="center"><a href="http://enze5088.github.io"><img src="https://avatars.githubusercontent.com/u/14285786?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Enze</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=enze5088" title="Code">💻</a></td>
-    <td align="center"><a href="https://blog.dengchao.fun"><img src="https://avatars.githubusercontent.com/u/16363180?v=4?s=100" width="100px;" alt=""/><br /><sub><b>邓超</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=DevDengChao" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/Happy5"><img src="https://avatars.githubusercontent.com/u/53087368?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Happy5</b></sub></a><br /><a href="#ideas-Happy5" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/mukaiu"><img src="https://avatars.githubusercontent.com/u/7746790?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Mukaiu</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=mukaiu" title="Code">💻</a> <a href="#infra-mukaiu" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    <td align="center"><a href="https://www.linkedin.com/in/hai-liang-wang/"><img src="https://avatars.githubusercontent.com/u/3538629?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Hai Liang W.</b></sub></a><br /><a href="#plugin-hailiang-wang" title="Plugin/utility libraries">🔌</a> <a href="#financial-hailiang-wang" title="Financial">💵</a></td>
+    <td align="center"><a href="https://github.com/shih945"><img src="https://avatars.githubusercontent.com/u/29646781?v=4?s=50" width="50px;" alt=""/><br /><sub><b>SHIH</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=shih945" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/luruiGit"><img src="https://avatars.githubusercontent.com/u/49265205?v=4?s=50" width="50px;" alt=""/><br /><sub><b>luruiGit</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=luruiGit" title="Code">💻</a></td>
+    <td align="center"><a href="http://enze5088.github.io"><img src="https://avatars.githubusercontent.com/u/14285786?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Enze</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=enze5088" title="Code">💻</a></td>
+    <td align="center"><a href="https://blog.dengchao.fun"><img src="https://avatars.githubusercontent.com/u/16363180?v=4?s=50" width="50px;" alt=""/><br /><sub><b>邓超</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=DevDengChao" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Happy5"><img src="https://avatars.githubusercontent.com/u/53087368?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Happy5</b></sub></a><br /><a href="#ideas-Happy5" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://www.csdn.net"><img src="https://avatars.githubusercontent.com/u/3679798?v=4?s=50" width="50px;" alt=""/><br /><sub><b>kyle</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=kylezhang" title="Code">💻</a> <a href="#talk-kylezhang" title="Talks">📢</a></td>
+    <td align="center"><a href="https://github.com/xianliwang"><img src="https://avatars.githubusercontent.com/u/52594347?v=4?s=50" width="50px;" alt=""/><br /><sub><b>xianliwang</b></sub></a><br /><a href="#video-xianliwang" title="Videos">📹</a> <a href="https://github.com/chatopera/cskefu/commits?author=xianliwang" title="Tests">⚠️</a></td>
   </tr>
   <tr>
-    <td align="center"><a href="https://www.csdn.net"><img src="https://avatars.githubusercontent.com/u/3679798?v=4?s=100" width="100px;" alt=""/><br /><sub><b>kyle</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=kylezhang" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/xianliwang"><img src="https://avatars.githubusercontent.com/u/52594347?v=4?s=100" width="100px;" alt=""/><br /><sub><b>xianliwang</b></sub></a><br /><a href="#video-xianliwang" title="Videos">📹</a> <a href="https://github.com/chatopera/cskefu/commits?author=xianliwang" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/lihang2016"><img src="https://avatars.githubusercontent.com/u/23203931?v=4?s=100" width="100px;" alt=""/><br /><sub><b>lihang2016</b></sub></a><br /><a href="#ideas-lihang2016" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://github.com/live-in-the-moment"><img src="https://avatars.githubusercontent.com/u/62800943?v=4?s=100" width="100px;" alt=""/><br /><sub><b>live-in-the-moment</b></sub></a><br /><a href="#ideas-live-in-the-moment" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://github.com/ArioWei"><img src="https://avatars.githubusercontent.com/u/41034256?v=4?s=100" width="100px;" alt=""/><br /><sub><b>ArioWei</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=ArioWei" title="Tests">⚠️</a></td>
-    <td align="center"><a href="http://www.youkefu.cn"><img src="https://avatars.githubusercontent.com/u/48078408?v=4?s=100" width="100px;" alt=""/><br /><sub><b>优客服</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=youkefu" title="Code">💻</a> <a href="https://github.com/chatopera/cskefu/commits?author=youkefu" title="Tests">⚠️</a> <a href="#business-youkefu" title="Business development">💼</a> <a href="#design-youkefu" title="Design">🎨</a></td>
-    <td align="center"><a href="https://github.com/lecjy"><img src="https://avatars.githubusercontent.com/u/9280760?v=4?s=100" width="100px;" alt=""/><br /><sub><b>lecjy</b></sub></a><br /><a href="#ideas-lecjy" title="Ideas, Planning, & Feedback">🤔</a> <a href="#talk-lecjy" title="Talks">📢</a></td>
+    <td align="center"><a href="https://github.com/lihang2016"><img src="https://avatars.githubusercontent.com/u/23203931?v=4?s=50" width="50px;" alt=""/><br /><sub><b>lihang2016</b></sub></a><br /><a href="#ideas-lihang2016" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/live-in-the-moment"><img src="https://avatars.githubusercontent.com/u/62800943?v=4?s=50" width="50px;" alt=""/><br /><sub><b>live-in-the-moment</b></sub></a><br /><a href="#ideas-live-in-the-moment" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/chatopera/cskefu/issues?q=author%3Alive-in-the-moment" title="Bug reports">🐛</a> <a href="https://github.com/chatopera/cskefu/commits?author=live-in-the-moment" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/ArioWei"><img src="https://avatars.githubusercontent.com/u/41034256?v=4?s=50" width="50px;" alt=""/><br /><sub><b>ArioWei</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=ArioWei" title="Tests">⚠️</a></td>
+    <td align="center"><a href="http://www.youkefu.cn"><img src="https://avatars.githubusercontent.com/u/48078408?v=4?s=50" width="50px;" alt=""/><br /><sub><b>优客服</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=youkefu" title="Code">💻</a> <a href="https://github.com/chatopera/cskefu/commits?author=youkefu" title="Tests">⚠️</a> <a href="#business-youkefu" title="Business development">💼</a> <a href="#design-youkefu" title="Design">🎨</a></td>
+    <td align="center"><a href="https://github.com/lecjy"><img src="https://avatars.githubusercontent.com/u/9280760?v=4?s=50" width="50px;" alt=""/><br /><sub><b>lecjy</b></sub></a><br /><a href="#ideas-lecjy" title="Ideas, Planning, & Feedback">🤔</a> <a href="#talk-lecjy" title="Talks">📢</a></td>
+    <td align="center"><a href="https://github.com/xl111"><img src="https://avatars.githubusercontent.com/u/64338718?v=4?s=50" width="50px;" alt=""/><br /><sub><b>徐。。</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=xl111" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/viaco2ove"><img src="https://avatars.githubusercontent.com/u/8044837?v=4?s=50" width="50px;" alt=""/><br /><sub><b>viaco2ove</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=viaco2ove" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/understanding"><img src="https://avatars.githubusercontent.com/u/2801277?v=4?s=50" width="50px;" alt=""/><br /><sub><b>understanding</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=understanding" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/MQPearth"><img src="https://avatars.githubusercontent.com/u/32632796?v=4?s=50" width="50px;" alt=""/><br /><sub><b>MQPearth</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=MQPearth" title="Tests">⚠️</a></td>
   </tr>
   <tr>
-    <td align="center"><a href="https://github.com/xl111"><img src="https://avatars.githubusercontent.com/u/64338718?v=4?s=100" width="100px;" alt=""/><br /><sub><b>徐。。</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=xl111" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/viaco2ove"><img src="https://avatars.githubusercontent.com/u/8044837?v=4?s=100" width="100px;" alt=""/><br /><sub><b>viaco2ove</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=viaco2ove" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/understanding"><img src="https://avatars.githubusercontent.com/u/2801277?v=4?s=100" width="100px;" alt=""/><br /><sub><b>understanding</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=understanding" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/MQPearth"><img src="https://avatars.githubusercontent.com/u/32632796?v=4?s=100" width="100px;" alt=""/><br /><sub><b>MQPearth</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=MQPearth" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/SkorpiosL"><img src="https://avatars.githubusercontent.com/u/32902343?v=4?s=100" width="100px;" alt=""/><br /><sub><b>SkorpiosL</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=SkorpiosL" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/always-China"><img src="https://avatars.githubusercontent.com/u/49581101?v=4?s=100" width="100px;" alt=""/><br /><sub><b>hua</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=always-China" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/wq11123"><img src="https://avatars.githubusercontent.com/u/40993206?v=4?s=100" width="100px;" alt=""/><br /><sub><b>wq11123</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=wq11123" title="Tests">⚠️</a> <a href="#video-wq11123" title="Videos">📹</a> <a href="#ideas-wq11123" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/SkorpiosL"><img src="https://avatars.githubusercontent.com/u/32902343?v=4?s=50" width="50px;" alt=""/><br /><sub><b>SkorpiosL</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=SkorpiosL" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/always-China"><img src="https://avatars.githubusercontent.com/u/49581101?v=4?s=50" width="50px;" alt=""/><br /><sub><b>hua</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=always-China" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/wq11123"><img src="https://avatars.githubusercontent.com/u/40993206?v=4?s=50" width="50px;" alt=""/><br /><sub><b>wq11123</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=wq11123" title="Tests">⚠️</a> <a href="#video-wq11123" title="Videos">📹</a> <a href="#ideas-wq11123" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/MouMouQQ"><img src="https://avatars.githubusercontent.com/u/101631131?v=4?s=50" width="50px;" alt=""/><br /><sub><b>MouMouQQ</b></sub></a><br /><a href="#ideas-MouMouQQ" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/chatopera/cskefu/commits?author=MouMouQQ" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/tigerun"><img src="https://avatars.githubusercontent.com/u/17540364?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Tigerun</b></sub></a><br /><a href="#ideas-tigerun" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/yangbailiang"><img src="https://avatars.githubusercontent.com/u/50096675?v=4?s=50" width="50px;" alt=""/><br /><sub><b>yangbailiang</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/issues?q=author%3Ayangbailiang" title="Bug reports">🐛</a> <a href="https://github.com/chatopera/cskefu/commits?author=yangbailiang" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/lokywang"><img src="https://avatars.githubusercontent.com/u/28672424?v=4?s=50" width="50px;" alt=""/><br /><sub><b>lokywang</b></sub></a><br /><a href="#ideas-lokywang" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/jichoucc"><img src="https://avatars.githubusercontent.com/u/87190214?v=4?s=50" width="50px;" alt=""/><br /><sub><b>jichoucc</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/issues?q=author%3Ajichoucc" title="Bug reports">🐛</a> <a href="https://github.com/chatopera/cskefu/commits?author=jichoucc" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/wuyongyin"><img src="https://avatars.githubusercontent.com/u/20410234?v=4?s=50" width="50px;" alt=""/><br /><sub><b>wuyongyin</b></sub></a><br /><a href="#ideas-wuyongyin" title="Ideas, Planning, & Feedback">🤔</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/wangdayan"><img src="https://avatars.githubusercontent.com/u/62323175?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Claire</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=wangdayan" title="Tests">⚠️</a></td>
   </tr>
 </table>
 
@@ -307,7 +305,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 - [Profiling: 瓶颈分析、性能优化建议和安全漏洞等](https://github.com/chatopera/cskefu/issues/new?assignees=hailiang-wang&labels=profiling&template=4_profiling.md&title=Title%3A+%E7%94%A8%E4%B8%80%E5%8F%A5%E8%AF%9D%E9%99%88%E8%BF%B0%E4%BA%8B%E6%83%85%EF%BC%8C%E4%BF%9D%E8%AF%81%E8%A8%80%E7%AE%80%E6%84%8F%E8%B5%85%EF%BC%8C%E6%AF%94%E5%A6%82%E9%97%AE%E9%A2%98%E7%AE%80%E8%BF%B0%E5%8F%8A+root+cause+%E6%97%A5%E5%BF%97%E8%AF%AD%E5%8F%A5%EF%BC%8C%E6%9B%B4%E5%AE%B9%E6%98%93%E8%8E%B7%E5%BE%97%E5%B8%AE%E5%8A%A9)
 
 
-### 在线培训视频
+### 使用及开发视频
 
 《春松客服大讲堂 2019》课程有发布到两个地址：Bilibili 和 [腾讯课堂](https://ke.qq.com/course/464050)。Bilibili 视频免费观看，腾讯课堂为付费，有条件的观众请在腾讯课堂购买，以示对我们工作的支持和鼓励 :heartpulse:，做好开源客服系统。
 
@@ -489,11 +487,17 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 </p>
 
 
+### 提交代码到春松客服
+
+参考[贡献说明文档](./CONTRIBUTING.md)。
+
 ## 鸣谢
+
+[Amazon AWS 赞助春松客服服务器资源 5W RMB（2021 年度）](https://aws.amazon.com)
 
 [IBM Cloud 赞助春松客服服务器资源 12W US Dollar（2019 年度）](https://cloud.ibm.com/)
 
-[Amazon AWS 赞助春松客服服务器资源 5W RMB（2021 年度）](https://aws.amazon.com)
+[QingCloud 赞助春松客服服务器资源 1W RMB（2018 年度）](https://www.qingcloud.com/)
 
 ## 开源许可协议
 
