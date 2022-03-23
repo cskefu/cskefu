@@ -3,7 +3,7 @@
     "README.md"
   ],
   "imageSize": 50,
-  "contributorsPerLine": 7,
+  "contributorsPerLine": 10,
   "commit": false,
   "contributors": [
     {
@@ -22,13 +22,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/3538629?v=4",
       "profile": "https://www.linkedin.com/in/hai-liang-wang/",
       "contributions": [
-        "code",
-        "infra",
         "plugin",
-        "talk",
-        "video",
         "financial",
-        "business",
         "doc"
       ]
     },
