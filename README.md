@@ -14,16 +14,16 @@
 
 :evergreen_tree: 春松客服是**开源并且免费**的智能客服系统，于 2018 年 9 月由 [Chatopera](https://www.chatopera.com) 发布，在开源社区协作中优化和完善，春松客服属于春松客服开源社区。
 
-:hearts: 我们发布春松客服的愿景：
+:hearts: 春松客服的愿景：
 
 - 做好开源客服系统
 - 帮助企业快速获得开箱即用的免费智能客服系统
 - 成为开发者首选的客服系统开发框架
 
-:innocent: 我们对春松客服客户的承诺:
+:innocent: 春松客服的承诺:
 
 - 我们不发布垃圾
-- 持续优化春松客服
+- 持续优化
 - 坚持开源和免费，商业友好授权
 
 春松客服宣言：做好开源客服系统，视频 [Bilibili](https://www.bilibili.com/video/BV1hu411o76r/) | [YouTube](https://youtu.be/ILf3BWpq4Ns)
@@ -45,7 +45,7 @@
 ## 客户案例
 
 <p align="center">
-  <b>:briefcase: TA 们都选择春松客服</b><br>
+  <b>:briefcase: 大家都选择春松客服</b><br>
   <a href="https://www.chatopera.com/customer.html" target="_blank">
       <img src="./public/assets/customers-202107.jpg" width="900">
   </a>
