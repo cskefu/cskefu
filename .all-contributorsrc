@@ -264,6 +264,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "wangdayan",
+      "name": "Claire",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62323175?v=4",
+      "profile": "https://github.com/wangdayan",
+      "contributions": [
+        "test"
+      ]
     }
   ],
   "projectName": "cskefu",
