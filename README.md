@@ -7,7 +7,7 @@
 # 春松客服：做好开源客服系统
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/chatopera/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/chatopera/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/blob/osc/LICENSE "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![Docker Tags](https://raw.githubusercontent.com/hailiang-wang/Rishit-dagli/master/badges/docker.svg)](https://hub.docker.com/repository/docker/chatopera/contact-center/tags?page=1&ordering=last_updated "Get Latest Docker Images") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-26-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-27-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [https://www.cskefu.com](https://www.cskefu.com/) | [Github](https://github.com/chatopera/cskefu) | [Gitee](https://gitee.com/chatopera/cskefu) | [GitCode](https://gitcode.net/chatopera/cskefu)
@@ -273,6 +273,7 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
     <td align="center"><a href="https://github.com/yangbailiang"><img src="https://avatars.githubusercontent.com/u/50096675?v=4?s=50" width="50px;" alt=""/><br /><sub><b>yangbailiang</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/issues?q=author%3Ayangbailiang" title="Bug reports">🐛</a> <a href="https://github.com/chatopera/cskefu/commits?author=yangbailiang" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/lokywang"><img src="https://avatars.githubusercontent.com/u/28672424?v=4?s=50" width="50px;" alt=""/><br /><sub><b>lokywang</b></sub></a><br /><a href="#ideas-lokywang" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/jichoucc"><img src="https://avatars.githubusercontent.com/u/87190214?v=4?s=50" width="50px;" alt=""/><br /><sub><b>jichoucc</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/issues?q=author%3Ajichoucc" title="Bug reports">🐛</a> <a href="https://github.com/chatopera/cskefu/commits?author=jichoucc" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/wuyongyin"><img src="https://avatars.githubusercontent.com/u/20410234?v=4?s=50" width="50px;" alt=""/><br /><sub><b>wuyongyin</b></sub></a><br /><a href="#ideas-wuyongyin" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
