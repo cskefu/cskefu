@@ -12,7 +12,7 @@
 
 [https://www.cskefu.com](https://www.cskefu.com/) | [Github](https://github.com/chatopera/cskefu) | [Gitee](https://gitee.com/chatopera/cskefu) | [GitCode](https://gitcode.net/chatopera/cskefu)
 
-:evergreen_tree: 春松客服是 [Chatopera](https://www.chatopera.com/) 发布的**开源并且免费**的智能客服系统。
+:evergreen_tree: 春松客服是**开源并且免费**的智能客服系统，于 2018 年 9 月由 [Chatopera](https://www.chatopera.com) 发布，在开源社区协作中优化和完善，春松客服属于春松客服开源社区。
 
 :hearts: 我们发布春松客服的愿景：
 
