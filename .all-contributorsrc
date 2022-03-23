@@ -245,6 +245,16 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "jichoucc",
+      "name": "jichoucc",
+      "avatar_url": "https://avatars.githubusercontent.com/u/87190214?v=4",
+      "profile": "https://github.com/jichoucc",
+      "contributions": [
+        "bug",
+        "test"
+      ]
     }
   ],
   "projectName": "cskefu",
