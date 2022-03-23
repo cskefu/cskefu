@@ -53,7 +53,7 @@
 
 ## 功能介绍
 
-<img src="./public/assets/cskefu-2021-08-22-8.22.09PM.jpg" width="900">
+<!-- <img src="./public/assets/cskefu-2021-08-22-8.22.09PM.jpg" width="900"> -->
 
 ### 免费模块
 
