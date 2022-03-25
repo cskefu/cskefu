@@ -314,7 +314,7 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 Bilibili 站点和 PPT 课件库地址：[chatopera/cskefu.djt](https://github.com/chatopera/cskefu.djt)。
 
 <details>
-<summary>展开课程目录/summary>
+<summary>展开课程目录</summary>
 <p>
 
 <table>
