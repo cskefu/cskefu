@@ -241,6 +241,11 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 
 因春松客服受益，而不回报开源社区的用户，我们不欢迎使用春松客服：我们开源并不是为了你们，你们是不被祝福的。
 
+### 成为春松客服贡献者
+
+* 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
+* 如何提交代码，参考[文档](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
+
 ### 贡献者列表 ✨
 
 “投我以木桃，报之以琼瑶。匪报也，永以为好也！”，这是来自 3000 年前《诗经·木瓜》。
@@ -311,11 +316,15 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 - [Profiling: 瓶颈分析、性能优化建议和安全漏洞等](https://github.com/chatopera/cskefu/issues/new?assignees=hailiang-wang&labels=profiling&template=4_profiling.md&title=Title%3A+%E7%94%A8%E4%B8%80%E5%8F%A5%E8%AF%9D%E9%99%88%E8%BF%B0%E4%BA%8B%E6%83%85%EF%BC%8C%E4%BF%9D%E8%AF%81%E8%A8%80%E7%AE%80%E6%84%8F%E8%B5%85%EF%BC%8C%E6%AF%94%E5%A6%82%E9%97%AE%E9%A2%98%E7%AE%80%E8%BF%B0%E5%8F%8A+root+cause+%E6%97%A5%E5%BF%97%E8%AF%AD%E5%8F%A5%EF%BC%8C%E6%9B%B4%E5%AE%B9%E6%98%93%E8%8E%B7%E5%BE%97%E5%B8%AE%E5%8A%A9)
 
 
-### 使用及开发视频
+### 开发者视频
 
-《春松客服大讲堂 2019》课程有发布到两个地址：Bilibili 和 [腾讯课堂](https://ke.qq.com/course/464050)。Bilibili 视频免费观看，腾讯课堂为付费，有条件的观众请在腾讯课堂购买，以示对我们工作的支持和鼓励 :heartpulse:，做好开源客服系统。
+全面的介绍定制开发和使用春松客服的视频内容，《春松客服大讲堂 2019》课程有发布到两个地址：Bilibili 和 [腾讯课堂](https://ke.qq.com/course/464050)。Bilibili 视频免费观看，腾讯课堂为付费，有条件的观众请在腾讯课堂购买，以示对我们工作的支持和鼓励 :heartpulse:，做好开源客服系统。
 
-以下列表中使用 Bilibili 站点地址，PPT 课件库地址 [chatopera/cskefu.djt](https://github.com/chatopera/cskefu.djt)。
+Bilibili 站点和 PPT 课件库地址：[chatopera/cskefu.djt](https://github.com/chatopera/cskefu.djt)。
+
+<details>
+<summary>展开课程目录/summary>
+<p>
 
 <table>
   <tr>
@@ -483,6 +492,9 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
   </tr>
 </table>
 
+</p>
+</details>
+
 ### 开发者文档
 
 <p align="center">
@@ -492,10 +504,6 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
   </a>
 </p>
 
-
-### 提交代码到春松客服
-
-参考[贡献说明文档](./CONTRIBUTING.md)。
 
 ## 鸣谢
 
