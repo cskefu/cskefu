@@ -55,8 +55,6 @@
 
 <!-- <img src="./public/assets/cskefu-2021-08-22-8.22.09PM.jpg" width="900"> -->
 
-### 免费模块
-
 春松客服提供的开源代码，即[CSKeFu](https://github.com/chatopera/cskefu)，包含多个开箱即用的模块：
 
 - 账号及组织机构管理：按组织、角色分配账号权限
@@ -75,13 +73,6 @@
 
 - 质检：历史会话、服务小结、服务反馈及相关报表
 
-### 付费模块
-
-**春松客服从 v5.0.0 版本开始提供如下付费模块：**
-
-- Messenger 渠道：在 Facebook 全家桶中连接亿万消费者、买家，视频简介 [Bilibili](https://www.bilibili.com/video/BV1Pa411t7jh) | [YouTube](https://www.youtube.com/watch?v=9EhkUU5yQig)，[详细介绍](https://docs.chatopera.com/products/cskefu/channels/messenger/index.html)。
-
-付费模块代码并不开源，并且使用插件的形式安装在源码中，[请联系“商务洽谈”](https://www.chatopera.com/mail.html)获得插件和商业支持。
 
 ## 产品演示
 
