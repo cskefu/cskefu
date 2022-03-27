@@ -86,7 +86,12 @@ public class ChatbotEventSubscription {
     public void onMessage(final String payload) {
         ChatMessage message = SerializeUtil.deserialize(payload);
         try {
-            chat(message);
+            try {
+				chat(message);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         } catch (MalformedURLException e) {
             logger.error("[onMessage] error", e);
         } catch (ChatbotException e) {
@@ -346,9 +351,14 @@ public class ChatbotEventSubscription {
     private void updateAgentUserWithRespData(final String userid, final String orgi, final JSONObject data) throws JSONException {
         cache.findOneAgentUserByUserIdAndOrgi(userid, orgi).ifPresent(p -> {
             p.setChatbotround(p.getChatbotround() + 1);
-            if (data.has("logic_is_unexpected") && data.getBoolean("logic_is_unexpected")) {
-                p.setChatbotlogicerror(p.getChatbotlogicerror() + 1);
-            }
+            try {
+				if (data.has("logic_is_unexpected") && data.getBoolean("logic_is_unexpected")) {
+				    p.setChatbotlogicerror(p.getChatbotlogicerror() + 1);
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             agentUserRes.save(p);
         });
 

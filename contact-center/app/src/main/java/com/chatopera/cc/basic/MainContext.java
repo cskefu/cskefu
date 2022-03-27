@@ -940,6 +940,7 @@ public class MainContext {
 
     public static void setApplicationContext(ApplicationContext context) {
         applicationContext = context;
+        context.getBean(TerminateBean.class);
     }
 
     public static ApplicationContext getContext() {

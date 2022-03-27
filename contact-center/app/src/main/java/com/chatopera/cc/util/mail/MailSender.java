@@ -117,7 +117,7 @@ public class MailSender {
 		props.put("mail.smtp.host", smtpHostName);
 		//ssl
 		if(!StringUtils.isBlank(seclev)&&seclev.equals("true")) {
-			Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());  
+//			Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());  
 			final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";  
 			props.put("mail.smtp.socketFactory.class", SSL_FACTORY);
 			props.put("mail.smtp.socketFactory.fallback", "false");

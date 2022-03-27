@@ -5,11 +5,11 @@
  '|...'  '|..|' .||. ||.  '|.' '|..'|'  '|...'  '|.'  '|...'  '|...' .||. ||.  '|.'  '|...' .||.
 
 ==================== Powered by Chatopera Inc. =================
-春松客服: 越是重视客户服务，越是好的企业 v${git.build.version} build ${git.commit.id.abbrev}
-版权所有 © 北京华夏春松科技有限公司️ https://www.chatopera.com/
-商业许可授权联系商务顾问 https://www.chatopera.com/mail.html
+春松客服: 做好开源客服系统 v${git.build.version} build ${git.commit.id.abbrev}
+开源许可证：Apache License 2.0 
+开源地址：https://github.com/chatopera/cskefu
 
-第一次安装后，参考系统初始化文档，对系统进行初始化，再使用！！！
+第一次安装后，参考系统初始化文档，对系统进行初始化，再使用
 https://docs.chatopera.com/products/cskefu/initialization.html
 
 使用过程中，进行维护：备份、回复、升级等，参考文档
@@ -17,9 +17,4 @@ https://docs.chatopera.com/products/cskefu/osc/maintainence.html
 
 开源社区反馈建议& 提交 BUG
 https://github.com/chatopera/cskefu/issues
-
-春松客服之所以开源，是基于这样一种信念：爱人也是爱己，利他也是利己。
-对人和人美好关系的向往，对人潜力的信任。让我们相信因春松客服而受益的人，会回报给春松客服开源社区，我们所有贡献者基于共赢的信念合作。
-回报方式包括：提交 PR、购买春松客服相关的付费产品和服务等。
-因春松客服受益，而不回报开源社区的用户，我们不欢迎使用春松客服：我们开源并不是为了你们，你们是不被祝福的。
 ----------------------------------------------------------------
