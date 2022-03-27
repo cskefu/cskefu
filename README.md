@@ -84,19 +84,27 @@
 | admin        | admin1234 | 系统超级管理员 |
 | zhangsan        | agent1234 | 客服坐席人员 |
 
-### 网页端访客程序
+### 网页端访客示例
 
 [https://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
 
 - 登录张三后可接待访客，否则显示没有客服人员在线
 
-### 机器人客服示例程序
+### 机器人客服示例
 
 [https://oh-my.cskefu.com/im/text/0nhckh.html](https://oh-my.cskefu.com/im/text/0nhckh.html)
 
-## 在线文档
+## 快速开始
 
-### 春松客服文档中心
+### 安装部署
+
+容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](https://docs.chatopera.com/products/cskefu/deploy.html)。
+
+### 运维
+
+备份、升级、回滚等运维工作，参考[《系统维护文档》](https://docs.chatopera.com/products/cskefu/osc/maintainence.html)。
+
+### 运营使用指南
 
 关于产品的具体使用说明，请参考[文档中心](https://docs.chatopera.com/products/cskefu/index.html)。
 
@@ -137,19 +145,13 @@
 </p>
 </details>
 
-### 机器人客服
+### 立即上线机器人客服
 
 **超过 85% 的春松客服企业客户通过 Chatopera 云服务上线机器人客服！7x24 小时在线，接待访客，辅助人工坐席，提升 10 倍工作效率。**
 
 Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音识别等组件，标准化聊天机器人开发，支持企业 OA 智能问答、HR 智能问答、智能客服和网络营销等场景。企业 IT 部门、业务部门借助 Chatopera 云服务快速让聊天机器人上线！
 
-#### 机器人客服示例程序
-
-[https://oh-my.cskefu.com/im/text/0nhckh.html](https://oh-my.cskefu.com/im/text/0nhckh.html)
-
 ![](public/assets/screenshot-20210908-184522.png)
-
-#### 立即上线机器人客服
 
 上线机器人客服的两个方式：1）Chatopera 云服务，按量付费，提供每日免费额度；2）私有部署。
 
@@ -206,16 +208,6 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 
 </p>
 </details>
-
-## 快速开始
-
-### 安装部署
-
-容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](https://docs.chatopera.com/products/cskefu/deploy.html)。
-
-### 运维
-
-备份、升级、回滚等运维工作，参考[《系统维护文档》](https://docs.chatopera.com/products/cskefu/osc/maintainence.html)。
 
 ## 春松客服开源社区
 
@@ -292,7 +284,7 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 
 更多开发者社区介绍，查看：[https://docs.chatopera.com/products/cskefu/osc/index.html](https://docs.chatopera.com/products/cskefu/osc/index.html)
 
-### 社区协作
+### 工单
 
 关于软件使用的任何问题，先开工单 -
 
