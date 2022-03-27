@@ -1,3 +1,4 @@
+/** CSKeFu All Rights Reserved, Apache 2.0 License By http://www.cskefu.com */
 var layer, iframe, layerwin, cursession, curHeadImgUrl, cususerid;
 $(document).ready(function () {
     var hide;
