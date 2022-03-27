@@ -75,6 +75,38 @@
 
 ## 产品演示
 
+<p align="center">
+  <b>欢迎页</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-screen-1.jpg" width="900">
+</p>
+
+<details>
+<summary>展开查看更多产品截图</summary>
+<p>
+
+<p align="center">
+  <b>坐席工作台</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/44915582-eb8d2c80-ad65-11e8-8876-86c8b5bb5cc7.png" width="900">
+</p>
+
+<p align="center">
+  <b>坐席监控</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/44915711-432b9800-ad66-11e8-899b-1ea02244925d.png" width="900">
+</p>
+
+<p align="center">
+  <b>集成客服机器人</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/51080565-4b82df00-1719-11e9-8cc4-dbbec0459224.png" width="900">
+</p>
+
+<p align="center">
+  <b>客服机器人应答</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/51080567-50479300-1719-11e9-85d8-d209370c9d10.png" width="900">
+</p>
+
+</p>
+</details>
+
 ### 坐席工作台
 
 [https://cc.chatopera.com/](https://cc.chatopera.com/)
@@ -110,39 +142,7 @@
 
 ### 运营使用指南
 
-关于产品的具体使用说明，请参考[文档中心](https://docs.chatopera.com/products/cskefu/index.html)。
-
-<p align="center">
-  <b>欢迎页</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-screen-1.jpg" width="900">
-</p>
-
-<details>
-<summary>展开查看更多产品截图</summary>
-<p>
-
-<p align="center">
-  <b>坐席工作台</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/44915582-eb8d2c80-ad65-11e8-8876-86c8b5bb5cc7.png" width="900">
-</p>
-
-<p align="center">
-  <b>坐席监控</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/44915711-432b9800-ad66-11e8-899b-1ea02244925d.png" width="900">
-</p>
-
-<p align="center">
-  <b>集成客服机器人</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/51080565-4b82df00-1719-11e9-8cc4-dbbec0459224.png" width="900">
-</p>
-
-<p align="center">
-  <b>客服机器人应答</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/51080567-50479300-1719-11e9-85d8-d209370c9d10.png" width="900">
-</p>
-
-</p>
-</details>
+关于产品的具体使用说明，请参考[《春松客服文档》](https://docs.chatopera.com/products/cskefu/index.html)。
 
 ### 立即上线机器人客服
 
