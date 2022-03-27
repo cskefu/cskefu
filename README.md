@@ -73,7 +73,6 @@
 
 - 质检：历史会话、服务小结、服务反馈及相关报表
 
-
 ## 产品演示
 
 ### 坐席工作台
@@ -91,14 +90,13 @@
 
 - 登录张三后可接待访客，否则显示没有客服人员在线
 
-
 ### 机器人客服示例程序
 
 [https://oh-my.cskefu.com/im/text/0nhckh.html](https://oh-my.cskefu.com/im/text/0nhckh.html)
 
 ## 在线文档
 
-### 春松客服文档中心 
+### 春松客服文档中心
 
 关于产品的具体使用说明，请参考[文档中心](https://docs.chatopera.com/products/cskefu/index.html)。
 
@@ -209,22 +207,19 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 </p>
 </details>
 
+## 快速开始
 
-## 软件部署
-
-### 私有部署
+### 安装部署
 
 容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](https://docs.chatopera.com/products/cskefu/deploy.html)。
 
-### 容器云部署
+### 运维
 
-容器云部署是云原生应用交付的最佳实践，简单易用。春松客服已经在以下容器云应用商店上架：
-
-[Rainbond 云原生应用管理平台](https://www.rainbond.com/docs/opensource-app/chatopera/?channel=chatopera)：专注于以应用为中心的理念，赋能企业搭建云原生开发云、云原生交付云。
+备份、升级、回滚等运维工作，参考[《系统维护文档》](https://docs.chatopera.com/products/cskefu/osc/maintainence.html)。
 
 ## 春松客服开源社区
 
-### 祝福与不祝福
+### 团结起来，做好开源客服系统
 
 春松客服之所以开源，是基于这样一种信念：爱人也是爱己，利他也是利己。
 对人和人美好关系的向往，对人潜力的信任。让我们相信因春松客服而受益的人，会回报给春松客服开源社区，我们[所有贡献者](#贡献者列表)基于共赢的信念合作。
@@ -234,8 +229,8 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 
 ### 成为春松客服贡献者
 
-* 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
-* 如何提交代码，参考[文档](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
+- 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
+- 如何提交代码，参考[文档](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
 
 ### 贡献者列表 ✨
 
@@ -306,6 +301,14 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 - [Requirement: 描述新需求、反馈建议](https://github.com/chatopera/cskefu/issues/new?assignees=hailiang-wang&labels=requirement&template=3_requirement.md&title=Title%3A+%E7%94%A8%E4%B8%80%E5%8F%A5%E8%AF%9D%E9%99%88%E8%BF%B0%E4%BA%8B%E6%83%85%EF%BC%8C%E4%BF%9D%E8%AF%81%E8%A8%80%E7%AE%80%E6%84%8F%E8%B5%85%EF%BC%8C%E6%AF%94%E5%A6%82%E9%97%AE%E9%A2%98%E7%AE%80%E8%BF%B0%E5%8F%8A+root+cause+%E6%97%A5%E5%BF%97%E8%AF%AD%E5%8F%A5%EF%BC%8C%E6%9B%B4%E5%AE%B9%E6%98%93%E8%8E%B7%E5%BE%97%E5%B8%AE%E5%8A%A9)
 - [Profiling: 瓶颈分析、性能优化建议和安全漏洞等](https://github.com/chatopera/cskefu/issues/new?assignees=hailiang-wang&labels=profiling&template=4_profiling.md&title=Title%3A+%E7%94%A8%E4%B8%80%E5%8F%A5%E8%AF%9D%E9%99%88%E8%BF%B0%E4%BA%8B%E6%83%85%EF%BC%8C%E4%BF%9D%E8%AF%81%E8%A8%80%E7%AE%80%E6%84%8F%E8%B5%85%EF%BC%8C%E6%AF%94%E5%A6%82%E9%97%AE%E9%A2%98%E7%AE%80%E8%BF%B0%E5%8F%8A+root+cause+%E6%97%A5%E5%BF%97%E8%AF%AD%E5%8F%A5%EF%BC%8C%E6%9B%B4%E5%AE%B9%E6%98%93%E8%8E%B7%E5%BE%97%E5%B8%AE%E5%8A%A9)
 
+### 开发者文档
+
+- 开发环境搭建
+  - [安装依赖和启动数据库等](https://docs.chatopera.com/products/cskefu/osc/engineering.html)
+  - [IDE 配置和使用之 IntelliJ IDEA](https://docs.chatopera.com/products/cskefu/osc/ide_intelij_idea.html)
+  - [IDE 配置和使用之 Eclipse IDE](https://docs.chatopera.com/products/cskefu/osc/ide_eclipse.html)
+- [提交代码](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
+- [系统集成之 RestAPIs](https://docs.chatopera.com/products/cskefu/osc/restapi.html)
 
 ### 开发者视频
 
@@ -485,16 +488,6 @@ Bilibili 站点和 PPT 课件库地址：[chatopera/cskefu.djt](https://github.c
 
 </p>
 </details>
-
-### 开发者文档
-
-<p align="center">
-  <b><a href="https://docs.chatopera.com/products/cskefu/osc/engineering.html" target="_blank">开发者文档</a></b><br>
-  <a href="https://docs.chatopera.com/products/cskefu/osc/engineering.html" target="_blank">
-      <img src="https://static-public.chatopera.com/assets/images/44992890-38be0800-afcb-11e8-8fde-a5a671d29764.png" width="300">
-  </a>
-</p>
-
 
 ## 鸣谢
 

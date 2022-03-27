@@ -9,12 +9,12 @@
 开源许可证：Apache License 2.0 
 开源地址：https://github.com/chatopera/cskefu
 
-第一次安装后，参考系统初始化文档，对系统进行初始化，再使用
+系统进行初始化，第一次安装后，根据文档进行配置
 https://docs.chatopera.com/products/cskefu/initialization.html
 
-使用过程中，进行维护：备份、回复、升级等，参考文档
-https://docs.chatopera.com/products/cskefu/osc/maintainence.html
+开发者社区、使用维护等文档
+https://docs.chatopera.com/products/cskefu/osc/index.html
 
-开源社区反馈建议& 提交 BUG
+反馈建议& 提交 BUG
 https://github.com/chatopera/cskefu/issues
 ----------------------------------------------------------------
