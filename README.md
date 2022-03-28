@@ -7,7 +7,7 @@
 # 春松客服：做好开源客服系统
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/chatopera/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/chatopera/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/blob/osc/LICENSE "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![Docker Tags](https://raw.githubusercontent.com/hailiang-wang/Rishit-dagli/master/badges/docker.svg)](https://hub.docker.com/repository/docker/chatopera/contact-center/tags?page=1&ordering=last_updated "Get Latest Docker Images") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-28-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-29-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [https://www.cskefu.com](https://www.cskefu.com/) | [Github](https://github.com/chatopera/cskefu) | [Gitee](https://gitee.com/chatopera/cskefu) | [GitCode](https://gitcode.net/chatopera/cskefu)
@@ -75,6 +75,38 @@
 
 ## 产品演示
 
+<p align="center">
+  <b>欢迎页</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-screen-1.jpg" width="900">
+</p>
+
+<details>
+<summary>展开查看更多产品截图</summary>
+<p>
+
+<p align="center">
+  <b>坐席工作台</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/44915582-eb8d2c80-ad65-11e8-8876-86c8b5bb5cc7.png" width="900">
+</p>
+
+<p align="center">
+  <b>坐席监控</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/44915711-432b9800-ad66-11e8-899b-1ea02244925d.png" width="900">
+</p>
+
+<p align="center">
+  <b>集成客服机器人</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/51080565-4b82df00-1719-11e9-8cc4-dbbec0459224.png" width="900">
+</p>
+
+<p align="center">
+  <b>客服机器人应答</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/51080567-50479300-1719-11e9-85d8-d209370c9d10.png" width="900">
+</p>
+
+</p>
+</details>
+
 ### 坐席工作台
 
 [https://cc.chatopera.com/](https://cc.chatopera.com/)
@@ -110,39 +142,7 @@
 
 ### 运营使用指南
 
-关于产品的具体使用说明，请参考[文档中心](https://docs.chatopera.com/products/cskefu/index.html)。
-
-<p align="center">
-  <b>欢迎页</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-screen-1.jpg" width="900">
-</p>
-
-<details>
-<summary>展开查看更多产品截图</summary>
-<p>
-
-<p align="center">
-  <b>坐席工作台</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/44915582-eb8d2c80-ad65-11e8-8876-86c8b5bb5cc7.png" width="900">
-</p>
-
-<p align="center">
-  <b>坐席监控</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/44915711-432b9800-ad66-11e8-899b-1ea02244925d.png" width="900">
-</p>
-
-<p align="center">
-  <b>集成客服机器人</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/51080565-4b82df00-1719-11e9-8cc4-dbbec0459224.png" width="900">
-</p>
-
-<p align="center">
-  <b>客服机器人应答</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/51080567-50479300-1719-11e9-85d8-d209370c9d10.png" width="900">
-</p>
-
-</p>
-</details>
+关于产品的具体使用说明，请参考[《春松客服文档》](https://docs.chatopera.com/products/cskefu/index.html)。
 
 ### 立即上线机器人客服
 
@@ -266,6 +266,7 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/wangdayan"><img src="https://avatars.githubusercontent.com/u/62323175?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Claire</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=wangdayan" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/zc1813400107"><img src="https://avatars.githubusercontent.com/u/46372405?v=4?s=50" width="50px;" alt=""/><br /><sub><b>super</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=zc1813400107" title="Code">💻</a> <a href="https://github.com/chatopera/cskefu/commits?author=zc1813400107" title="Documentation">📖</a></td>
   </tr>
 </table>
 
@@ -285,7 +286,8 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 
 ### 工单
 
-关于软件使用的任何问题，先开工单 -
+遇到任何软件使用的问题，现在[工单历史记录](https://github.com/chatopera/cskefu/issues)中查询。
+如果没有找到相似问题，使用下面的链接创建新的工单 -
 
 - [Help: 开发环境搭建、功能咨询和使用问题等](https://github.com/chatopera/cskefu/issues/new?assignees=hailiang-wang&labels=help-wanted&template=1_help.md&title=Title%3A+%E7%94%A8%E4%B8%80%E5%8F%A5%E8%AF%9D%E9%99%88%E8%BF%B0%E4%BA%8B%E6%83%85%EF%BC%8C%E4%BF%9D%E8%AF%81%E8%A8%80%E7%AE%80%E6%84%8F%E8%B5%85%EF%BC%8C%E6%AF%94%E5%A6%82%E9%97%AE%E9%A2%98%E7%AE%80%E8%BF%B0%E5%8F%8A+root+cause+%E6%97%A5%E5%BF%97%E8%AF%AD%E5%8F%A5%EF%BC%8C%E6%9B%B4%E5%AE%B9%E6%98%93%E8%8E%B7%E5%BE%97%E5%B8%AE%E5%8A%A9)
 - [Bug: 提交软件缺陷](https://github.com/chatopera/cskefu/issues/new?assignees=hailiang-wang&labels=bug&template=2_bug_report.md&title=Title%3A+%E7%94%A8%E4%B8%80%E5%8F%A5%E8%AF%9D%E9%99%88%E8%BF%B0%E4%BA%8B%E6%83%85%EF%BC%8C%E4%BF%9D%E8%AF%81%E8%A8%80%E7%AE%80%E6%84%8F%E8%B5%85%EF%BC%8C%E6%AF%94%E5%A6%82%E9%97%AE%E9%A2%98%E7%AE%80%E8%BF%B0%E5%8F%8A+root+cause+%E6%97%A5%E5%BF%97%E8%AF%AD%E5%8F%A5%EF%BC%8C%E6%9B%B4%E5%AE%B9%E6%98%93%E8%8E%B7%E5%BE%97%E5%B8%AE%E5%8A%A9)
