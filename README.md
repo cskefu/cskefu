@@ -278,7 +278,7 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 
 <p align="center">
   <b>在 Chatopera 客户群中也包括其他用户，请不要发送敏感信息。讨论与 Chatopera 产品和服务相关的事宜</b><br>
-<img src="https://static-public.chatopera.com/assets/images/Chatopera_wecom_customer_group_qr.png" width="600">
+<img src="https://user-images.githubusercontent.com/3538629/160318144-ba6b9746-aba8-483e-a1de-3aba62b8b271.png" width="600">
 </p>
 
 更多开发者社区介绍，查看：[https://docs.chatopera.com/products/cskefu/osc/index.html](https://docs.chatopera.com/products/cskefu/osc/index.html)
