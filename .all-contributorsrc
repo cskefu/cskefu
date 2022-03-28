@@ -273,6 +273,16 @@
       "contributions": [
         "test"
       ]
+    },
+    {
+      "login": "zc1813400107",
+      "name": "super",
+      "avatar_url": "https://avatars.githubusercontent.com/u/46372405?v=4",
+      "profile": "https://github.com/zc1813400107",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "projectName": "cskefu",
