@@ -66,6 +66,11 @@ public class MessagingServerConfigure {
     @Bean
     public SocketIOServer socketIOServer() throws NoSuchAlgorithmException, IOException {
         Configuration config = new Configuration();
+        //解决对此重启服务时，netty端口被占用问题
+        com.corundumstudio.socketio.SocketConfig tmpConfig = new com.corundumstudio.socketio.SocketConfig();
+        tmpConfig.setReuseAddress(true);
+        config.setSocketConfig(tmpConfig);
+
 //		config.setHostname("localhost");
         config.setPort(port);
 
