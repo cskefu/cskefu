@@ -181,6 +181,7 @@
 
 - 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
 - 如何提交代码，参考[文档](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
+- 如何参与春松客服社区活动：[成为春松客服开源之夏2022导师，火热招募中 🔥 🔥 🔥 ](https://github.com/chatopera/cskefu/issues/673)
 
 ### 贡献者列表 ✨
 
