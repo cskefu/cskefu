@@ -246,7 +246,7 @@
 
 ### 工单
 
-遇到任何软件使用的问题，现在[工单历史记录](https://github.com/chatopera/cskefu/issues)中查询。
+遇到任何软件使用的问题，先在[工单历史记录](https://github.com/chatopera/cskefu/issues)中查询。
 如果没有找到相似问题，使用下面的链接创建新的工单 -
 
 - [Help: 开发环境搭建、功能咨询和使用问题等](https://github.com/chatopera/cskefu/issues/new?assignees=hailiang-wang&labels=help-wanted&template=1_help.md&title=Title%3A+%E7%94%A8%E4%B8%80%E5%8F%A5%E8%AF%9D%E9%99%88%E8%BF%B0%E4%BA%8B%E6%83%85%EF%BC%8C%E4%BF%9D%E8%AF%81%E8%A8%80%E7%AE%80%E6%84%8F%E8%B5%85%EF%BC%8C%E6%AF%94%E5%A6%82%E9%97%AE%E9%A2%98%E7%AE%80%E8%BF%B0%E5%8F%8A+root+cause+%E6%97%A5%E5%BF%97%E8%AF%AD%E5%8F%A5%EF%BC%8C%E6%9B%B4%E5%AE%B9%E6%98%93%E8%8E%B7%E5%BE%97%E5%B8%AE%E5%8A%A9)
