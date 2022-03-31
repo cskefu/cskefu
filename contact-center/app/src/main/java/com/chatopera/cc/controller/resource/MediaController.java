@@ -22,12 +22,10 @@ import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.controller.api.request.RestUtils;
 import com.chatopera.cc.model.AttachmentFile;
 import com.chatopera.cc.model.StreamingFile;
-import com.chatopera.cc.model.UploadStatus;
 import com.chatopera.cc.persistence.blob.JpaBlobHelper;
 import com.chatopera.cc.persistence.repository.AttachmentRepository;
 import com.chatopera.cc.persistence.repository.StreamingFileRepository;
 import com.chatopera.cc.util.Menu;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
@@ -42,7 +40,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -100,16 +97,18 @@ public class MediaController extends Handler {
     @RequestMapping("/url")
     @Menu(type = "resouce", subtype = "image", access = true)
     public void url(HttpServletResponse response, @Valid String url) throws IOException {
+        if (StringUtils.isBlank(url)) {
+            return;
+        }
         byte[] data = new byte[1024];
         int length = 0;
         OutputStream out = response.getOutputStream();
-        if (StringUtils.isNotBlank(url)) {
-            InputStream input = new URL(url).openStream();
+        try (InputStream input = new URL(url).openStream()) {
             while ((length = input.read(data)) > 0) {
                 out.write(data, 0, length);
             }
-            input.close();
         }
+
     }
 
     @RequestMapping("/image/upload")

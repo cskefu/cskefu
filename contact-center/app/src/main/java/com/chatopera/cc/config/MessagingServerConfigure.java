@@ -82,9 +82,10 @@ public class MessagingServerConfigure {
         File sslFile = new File(path, "ssl/https.properties");
         if (sslFile.exists()) {
             Properties sslProperties = new Properties();
-            FileInputStream in = new FileInputStream(sslFile);
-            sslProperties.load(in);
-            in.close();
+
+            try (FileInputStream in = new FileInputStream(sslFile)) {
+                sslProperties.load(in);
+            }
             if (StringUtils.isNotBlank(sslProperties.getProperty("key-store")) && StringUtils.isNotBlank(
                     sslProperties.getProperty("key-store-password"))) {
                 config.setKeyStorePassword(MainUtils.decryption(sslProperties.getProperty("key-store-password")));
