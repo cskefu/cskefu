@@ -302,11 +302,10 @@ public class RedisCommand {
     public List<String> getSet(final String key) {
         Set<String> s = redisSetOps.members(key);
 
-        if (s != null & s.size() > 0) {
-            return new ArrayList<>(s);
-        } else {
+        if (CollectionUtils.isEmpty(s)) {
             return new ArrayList<>();
         }
+        return new ArrayList<>(s);
     }
 
 }

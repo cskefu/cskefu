@@ -147,9 +147,9 @@ public class UKResultMapper extends AbstractResultMapper {
 
 	private String buildJSONFromFields(Collection<SearchHitField> values) {
 		JsonFactory nodeFactory = new JsonFactory();
-		try {
-			ByteArrayOutputStream stream = new ByteArrayOutputStream();
-			JsonGenerator generator = nodeFactory.createGenerator(stream, JsonEncoding.UTF8);
+		try (ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			 JsonGenerator generator = nodeFactory.createGenerator(stream, JsonEncoding.UTF8);) {
+
 			generator.writeStartObject();
 			for (SearchHitField value : values) {
 				if (value.getValues().size() > 1) {
