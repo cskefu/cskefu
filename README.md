@@ -182,6 +182,7 @@
 - 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
 - 如何提交代码，参考[文档](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
 - 如何参与春松客服社区活动：[成为春松客服开源之夏2022导师，火热招募中 🔥 🔥 🔥 ](https://github.com/chatopera/cskefu/issues/673)
+- 如何最新的春松客服开发进展：订阅[春松客服邮件列表](https://lists.cskefu.com/cgi-bin/mailman/listinfo/dev)
 
 ### 贡献者列表 ✨
 
@@ -236,14 +237,11 @@
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-### 用户交流群
+### 微信交流群
 
 <p align="center">
-  <b>在 Chatopera 客户群中也包括其他用户，请不要发送敏感信息。讨论与 Chatopera 产品和服务相关的事宜</b><br>
-<img src="https://user-images.githubusercontent.com/3538629/160318144-ba6b9746-aba8-483e-a1de-3aba62b8b271.png" width="600">
+  <img src="./public/assets/cskefu_opensource_community_wx_qr.jpg" width="600">
 </p>
-
-更多开发者社区介绍，查看：[https://docs.chatopera.com/products/cskefu/osc/index.html](https://docs.chatopera.com/products/cskefu/osc/index.html)
 
 ### 工单
 
