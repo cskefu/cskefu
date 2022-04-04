@@ -668,7 +668,7 @@ public int method(String p1) { ... }
 
 ## <a id="JavaIDEPlugin">IDE 插件</a>
 
-### IntelliJ IDEA
+### 8.1 IntelliJ IDEA
 
 自动给出优化建议
 
@@ -677,5 +677,5 @@ https://github.com/alibaba/p3c/tree/master/idea-plugin
 
 ## <a id="JavaCopyright">Java 命名规范版权声明</a>
 
-本文档翻译自[Google Java Style](http://google-styleguide.googlecode.com/svn/trunk/javaguide.html)，
+春松客服开源社区在原文内容上有调整；原文翻译自[Google Java Style](http://google-styleguide.googlecode.com/svn/trunk/javaguide.html)，
 译者[@Hawstein](http://weibo.com/hawstein)。
