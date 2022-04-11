@@ -1,6 +1,6 @@
 <div align=right>
 
-[主页](https://www.cskefu.com/)　|　[邮件列表](https://lists.cskefu.com/cgi-bin/mailman/listinfo/dev)　|　[博客专栏](https://chatopera.blog.csdn.net/)
+[主页](https://www.cskefu.com/)　|　[邮件列表](https://lists.cskefu.com/cgi-bin/mailman/listinfo/dev)　|　[博客专栏](https://chatopera.blog.csdn.net/)　|　[开源之夏](https://www.cskefu.com/summercode/)
 
 </div>
 
