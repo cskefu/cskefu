@@ -63,7 +63,7 @@ else if  inviteData.consult_invite_color == "5"
 else if  inviteData.consult_invite_color == "6"
     - invitetheme = 'background-color: #FF626F !important;'
 
-#ukefu-point.ukefu-im-point(style='display:none;z-index:100000;font-family:14px \\5FAE\\8F6F\\96C5\\9ED1,Helvetica Neue,Helvetica,PingFang SC,Tahoma,Arial,sans-serif;position: fixed;' + position + (inviteData.skill == true && inviteData.consult_skill_fixed == false ? 'cursor:default;' : 'cursor: pointer;'))
+#ukefu-point.ukefu-im-point(draggable="true", style='display:none;z-index:100000;font-family:14px \\5FAE\\8F6F\\96C5\\9ED1,Helvetica Neue,Helvetica,PingFang SC,Tahoma,Arial,sans-serif;position: fixed;' + position + (inviteData.skill == true && inviteData.consult_skill_fixed == false ? 'cursor:default;' : 'cursor: pointer;'))
     #ukefu-point-theme.ukefu-theme-color.theme1(class="ukefu-point-theme" + (inviteData.consult_vsitorbtn_model ? inviteData.consult_vsitorbtn_model : '1'), style=style + theme)
         #ukefu-im-point-text.ukefu-im-point-text(style='cursor: pointer;' + text + ';line-height: 23px;font-size: 15px;text-align: center;margin: 0 auto;')
             i(style="width:24px;height:24px;display: inline-block;font: normal normal normal 14px/1 FontAwesome;font-size: inherit;text-rendering: auto;-webkit-font-smoothing: antialiased;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAB60lEQVRIS7WV4TVsQRCEqyJABkSACBABLwJE8IjAigARIAMieCsCREAGjwja+eb03TO7O9ddrPm1Z29PV3dXdY31y8eL5I+ILUmbktYz/lXSs+2nofu9ABFBsjNJB5JWJT3MJNuR9CbpTtK5bUDnThMgIkaZnKSXtkkydyIC8BNJgI1sn88GzQFExI2kXUlHtsdDI+B7RBDPvUfbf+o7UwCZnHnv2qb9hU9EMEYKAuS4uzgByHapYqtvnkNoyRvE030Zaw0AScz7cijRZ9+Tv33b2xOAlOGjpLWvjmYWLEf1X9I2Mi4dRMRRtgVZ5WTgtaRX26cVmUj3lMtVzEPdeUTARVFfB4AsIbYG4Pe/0qbdxXERSaL7UapnKiYLIW5MTG8HGYjG6aAQlqNE+1RXVBYRUzH5H0SzF5MO2NqXJXHQ5dpAjbWKQL2jrSWo6MA2+zQlU2bOKOBi0MRaRVRq3OtcYHaT2YFDSQR8CSSTQ/itbXgpp+VFgCDbi5Z59ej+L6RKuqqTNwEqvWMbK2li97XxpSXwPhRTlPSOq7Zc99MHJxeQdt+6HcklYhdICmfonWKaZwgAh8RC8HmSXUjCjtcXtZQhAKrHGqiQUTynpTRfr1YLQwBomcq7HekdxbdG9JOF65XpMpLWOT4AygTtGd0Q7EsAAAAASUVORK5CYII=);")
@@ -335,6 +335,19 @@ script(type='text/javascript').
             } else {
                 document.getElementById("ukefu-point").onclick = function () {
                     cskefu.openChatDialog();
+                }
+                document.getElementById("ukefu-point").ondragend=function(e){
+                    let div = e.target || window.event;
+                    var style = {
+                        position: "absolute",
+                        left: "0",
+                        top: "0"
+                    };
+                    for(var k in style){
+                        div.style[k] = style[k];
+                    }
+                    div.style.left = e.clientX + "px";
+                    div.style.top = e.clientY - 150 +  "px";
                 }
             }
             var inviteDialog = document.getElementById('ukefu-invite-dialog');
