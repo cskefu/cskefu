@@ -6,7 +6,7 @@
     <version>7.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>cc-root</name>
-    <description>春松客服：做好开源客服系统</description>
+    <description>春松客服：合作开源客服系统，共赢未来！</description>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>

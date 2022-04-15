@@ -5,9 +5,9 @@
  '|...'  '|..|' .||. ||.  '|.' '|..'|'  '|...'  '|.'  '|...'  '|...' .||. ||.  '|.'  '|...' .||.
 
 ==================== Powered by Chatopera Inc. =================
-春松客服: 做好开源客服系统 v${git.build.version} build ${git.commit.id.abbrev}
+春松客服: 合作开源客服系统，共赢未来！ v${git.build.version} build ${git.commit.id.abbrev}
 开源许可证：Apache License 2.0 
-开源地址：https://github.com/chatopera/cskefu
+开源社区：https://www.cskefu.com
 
 系统进行初始化，第一次安装后，根据文档进行配置
 https://docs.chatopera.com/products/cskefu/initialization.html

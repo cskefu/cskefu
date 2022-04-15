@@ -4,7 +4,7 @@
 
 </div>
 
-# 春松客服：做好开源客服系统
+# 春松客服：合作开源客服系统，共赢未来！
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/chatopera/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/chatopera/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/blob/osc/LICENSE "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![Docker Tags](https://raw.githubusercontent.com/hailiang-wang/Rishit-dagli/master/badges/docker.svg)](https://hub.docker.com/repository/docker/chatopera/contact-center/tags?page=1&ordering=last_updated "Get Latest Docker Images") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-30-orange.svg?style=flat-square)](#contributors-)
@@ -12,21 +12,21 @@
 
 [https://www.cskefu.com](https://www.cskefu.com/) | [Github](https://github.com/chatopera/cskefu) | [Gitee](https://gitee.com/chatopera/cskefu) | [GitCode](https://gitcode.net/chatopera/cskefu)
 
-:evergreen_tree: 春松客服是**开源并且免费**的智能客服系统，于 2018 年 9 月由 [Chatopera](https://www.chatopera.com) 发布，在开源社区协作中优化和完善，春松客服属于[春松客服开源社区](https://github.com/chatopera/cskefu#%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%BC%80%E6%BA%90%E7%A4%BE%E5%8C%BA)。
+:evergreen_tree: 春松客服是开源的智能客服系统，于 2018 年 9 月由 [Chatopera](https://www.chatopera.com) 发布，在开源社区协作中优化和完善，春松客服属于[春松客服开源社区](https://github.com/chatopera/cskefu#%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%BC%80%E6%BA%90%E7%A4%BE%E5%8C%BA)。
 
 :hearts: 春松客服的愿景：
 
-- 做好开源客服系统
-- 帮助企业快速获得开箱即用的免费智能客服系统
+- 做好开源客服系统及其商业支持
+- 帮助企业快速获得开箱即用的智能客服系统
 - 成为开发者首选的客服系统开发框架
 
 :innocent: 春松客服的承诺:
 
-- 我们不发布垃圾
-- 持续优化
-- 坚持开源和免费，商业友好授权
+- 坚持基础功能开源，不发布垃圾
+- 坚持持续优化
+- 坚持商业友好授权
 
-春松客服宣言：做好开源客服系统，视频 [Bilibili](https://www.bilibili.com/video/BV1hu411o76r/) | [YouTube](https://youtu.be/ILf3BWpq4Ns)
+春松客服宣言视频： [Bilibili](https://www.bilibili.com/video/BV1hu411o76r/) | [YouTube](https://youtu.be/ILf3BWpq4Ns)
 
 新版本介绍：[一山还有一山高，开源智能客服系统春松客服 v7 版本发布 | Chatopera](https://chatopera.blog.csdn.net/article/details/113786505)
 
@@ -34,11 +34,11 @@
 
 <img src="./public/assets/cskefu-gpv-2.png" height = "220" div align=right />
 
-- [春松客服：通过开源加云原生模式，大规模交付智能客服系统](https://chatopera.blog.csdn.net/article/details/123599878)
+- [春松客服：通过开源加云原生模式，大规模交付智能客服系统](https://www.cskefu.com/2022/04/11/cskefu-opensource-plus-cloud-model/)
 
 - [春松客服荣获 GVP 企业级开源项目认证](http://www.ctiforum.com/news/guonei/578988.html)
 
-- [春松客服：做好开源客服系统 | OpenTEKr 专访](https://www.bilibili.com/video/BV1qF411p7hW)
+- [Chatopera 王海良：做好开源客服系统 | OpenTEKr 专访](https://www.bilibili.com/video/BV1qF411p7hW)
 
 ---
 
@@ -169,7 +169,7 @@
 
 ## 春松客服开源社区
 
-### 团结起来，做好开源客服系统
+### 合作开源客服系统，共赢未来！
 
 春松客服之所以开源，是基于这样一种信念：爱人也是爱己，利他也是利己。
 对人和人美好关系的向往，对人潜力的信任。让我们相信因春松客服而受益的人，会回报给春松客服开源社区，我们[所有贡献者](#贡献者列表)基于共赢的信念合作。
