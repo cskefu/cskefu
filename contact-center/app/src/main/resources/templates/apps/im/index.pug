@@ -387,6 +387,10 @@ html
                         .clearfix.message.welcome
                             span#welcome-message= inviteData.dialog_message ? inviteData.dialog_message : '欢迎您来咨询！欢迎使用春松客服！如需帮助请联系 info@chatopera.com'
 
+                        if sessionConfig && sessionConfig.sessionmsg
+                            div(style='text-align:center;')
+                                span.clearfix.message.session-message=sessionConfig.sessionmsg
+
                         if chatMessageList && chatMessageList.content
                             for chatMessage in pugHelper.reverse(chatMessageList.content)
                                 if chatMessage.userid && userid && chatMessage.calltype && chatMessage.calltype == "呼入"
