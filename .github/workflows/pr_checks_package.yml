@@ -1,18 +1,16 @@
-name: CSKeFu PR CC Build Check
+name: PR Checks Package
 on:
   pull_request: 
     branches: [osc]
     types: [opened, synchronize, closed]
-
 jobs: 
-  build: 
+  build:
     runs-on: [self-hosted, linux, cskefu]
-   
-    steps: 
+    steps:
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      — run: | 
+      — run: |
           cd $GITHUB_WORKSPACE && pwd
           echo `git log --pretty=format:"%h:%an:%ar: %s <br>" HEAD~5..HEAD`
           $GITHUB_WORKSPACE/public/plugins/scripts/install-all.sh
