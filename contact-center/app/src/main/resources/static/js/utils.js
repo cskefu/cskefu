@@ -1,3 +1,4 @@
+/** CSKeFu All Rights Reserved, Apache 2.0 License By http://www.cskefu.com */
 /**
  * JavaScript String Formatting
  * https://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format

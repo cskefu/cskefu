@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Chatopera Inc, <https://www.chatopera.com>
+ * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -302,11 +302,10 @@ public class RedisCommand {
     public List<String> getSet(final String key) {
         Set<String> s = redisSetOps.members(key);
 
-        if (s != null & s.size() > 0) {
-            return new ArrayList<>(s);
-        } else {
+        if (CollectionUtils.isEmpty(s)) {
             return new ArrayList<>();
         }
+        return new ArrayList<>(s);
     }
 
 }

@@ -1,34 +1,31 @@
 <div align=right>
 
-[主页](https://www.cskefu.com/)　|　[成功案例](#客户案例)　|　[开发者文档](https://docs.chatopera.com/products/cskefu/osc/index.html)　|　[博客专栏](https://chatopera.blog.csdn.net/)　|　[更新日志](./CHANGELOG.md)　|　[帮助](https://github.com/chatopera/cskefu/issues)
+[主页](https://www.cskefu.com/)　|　[邮件列表](https://lists.cskefu.com/cgi-bin/mailman/listinfo/dev)　|　[博客专栏](https://chatopera.blog.csdn.net/)　|　[开源之夏](https://www.cskefu.com/summercode/)
 
 </div>
 
-PR wf test
-
-# 春松客服：做好开源客服系统
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/chatopera/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/chatopera/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/blob/osc/LICENSE "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![Docker Tags](https://raw.githubusercontent.com/hailiang-wang/Rishit-dagli/master/badges/docker.svg)](https://hub.docker.com/repository/docker/chatopera/contact-center/tags?page=1&ordering=last_updated "Get Latest Docker Images") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-28-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-30-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [https://www.cskefu.com](https://www.cskefu.com/) | [Github](https://github.com/chatopera/cskefu) | [Gitee](https://gitee.com/chatopera/cskefu) | [GitCode](https://gitcode.net/chatopera/cskefu)
 
-:evergreen_tree: 春松客服是**开源并且免费**的智能客服系统，于 2018 年 9 月由 [Chatopera](https://www.chatopera.com) 发布，在开源社区协作中优化和完善，春松客服属于[春松客服开源社区](https://github.com/chatopera/cskefu#%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%BC%80%E6%BA%90%E7%A4%BE%E5%8C%BA)。
+:evergreen_tree: 春松客服是开源的智能客服系统，于 2018 年 9 月由 [Chatopera](https://www.chatopera.com) 发布，在开源社区协作中优化和完善，春松客服属于[春松客服开源社区](https://github.com/chatopera/cskefu#%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%BC%80%E6%BA%90%E7%A4%BE%E5%8C%BA)。
 
 :hearts: 春松客服的愿景：
 
-- 做好开源客服系统
-- 帮助企业快速获得开箱即用的免费智能客服系统
+- 做好开源客服系统及其商业支持
+- 帮助企业快速获得开箱即用的智能客服系统
 - 成为开发者首选的客服系统开发框架
 
 :innocent: 春松客服的承诺:
 
-- 我们不发布垃圾
-- 持续优化
-- 坚持开源和免费，商业友好授权
+- 坚持基础功能开源，不发布垃圾
+- 坚持持续优化
+- 坚持商业友好授权
 
-春松客服宣言：做好开源客服系统，视频 [Bilibili](https://www.bilibili.com/video/BV1hu411o76r/) | [YouTube](https://youtu.be/ILf3BWpq4Ns)
+春松客服宣言视频： [Bilibili](https://www.bilibili.com/video/BV1hu411o76r/) | [YouTube](https://youtu.be/ILf3BWpq4Ns)
 
 新版本介绍：[一山还有一山高，开源智能客服系统春松客服 v7 版本发布 | Chatopera](https://chatopera.blog.csdn.net/article/details/113786505)
 
@@ -36,11 +33,11 @@ PR wf test
 
 <img src="./public/assets/cskefu-gpv-2.png" height = "220" div align=right />
 
-- [春松客服：通过开源加云原生模式，大规模交付智能客服系统](https://chatopera.blog.csdn.net/article/details/123599878)
+- [春松客服：通过开源加云原生模式，大规模交付智能客服系统](https://www.cskefu.com/2022/04/11/cskefu-opensource-plus-cloud-model/)
 
 - [春松客服荣获 GVP 企业级开源项目认证](http://www.ctiforum.com/news/guonei/578988.html)
 
-- [春松客服：做好开源客服系统 | OpenTEKr 专访](https://www.bilibili.com/video/BV1qF411p7hW)
+- [Chatopera 王海良：做好开源客服系统 | OpenTEKr 专访](https://www.bilibili.com/video/BV1qF411p7hW)
 
 ---
 
@@ -56,8 +53,6 @@ PR wf test
 ## 功能介绍
 
 <!-- <img src="./public/assets/cskefu-2021-08-22-8.22.09PM.jpg" width="900"> -->
-
-### 免费模块
 
 春松客服提供的开源代码，即[CSKeFu](https://github.com/chatopera/cskefu)，包含多个开箱即用的模块：
 
@@ -77,41 +72,7 @@ PR wf test
 
 - 质检：历史会话、服务小结、服务反馈及相关报表
 
-### 付费模块
-
-**春松客服从 v5.0.0 版本开始提供如下付费模块：**
-
-- Messenger 渠道：在 Facebook 全家桶中连接亿万消费者、买家，视频简介 [Bilibili](https://www.bilibili.com/video/BV1Pa411t7jh) | [YouTube](https://www.youtube.com/watch?v=9EhkUU5yQig)，[详细介绍](https://docs.chatopera.com/products/cskefu/channels/messenger/index.html)。
-
-付费模块代码并不开源，并且使用插件的形式安装在源码中，[请联系“商务洽谈”](https://www.chatopera.com/mail.html)获得插件和商业支持。
-
 ## 产品演示
-
-### 坐席工作台
-
-[https://cc.chatopera.com/](https://cc.chatopera.com/)
-
-| **登录账号** | **密码**  | **角色** |
-| ------------ | --------- | --------- |
-| admin        | admin1234 | 系统超级管理员 |
-| zhangsan        | agent1234 | 客服坐席人员 |
-
-### 网页端访客程序
-
-[https://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
-
-- 登录张三后可接待访客，否则显示没有客服人员在线
-
-
-### 机器人客服示例程序
-
-[https://oh-my.cskefu.com/im/text/0nhckh.html](https://oh-my.cskefu.com/im/text/0nhckh.html)
-
-## 在线文档
-
-### 春松客服文档中心 
-
-关于产品的具体使用说明，请参考[文档中心](https://docs.chatopera.com/products/cskefu/index.html)。
 
 <p align="center">
   <b>欢迎页</b><br>
@@ -142,106 +103,85 @@ PR wf test
   <img src="https://static-public.chatopera.com/assets/images/51080567-50479300-1719-11e9-85d8-d209370c9d10.png" width="900">
 </p>
 
-<p align="center">
-  <b>更多功能，敬请期待 ...</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/44916014-28a5ee80-ad67-11e8-936a-a2cdbe62f529.png" width="900">
-</p>
-
 </p>
 </details>
 
-### 机器人客服
+### 坐席工作台
 
-**超过 85% 的春松客服企业客户通过 Chatopera 云服务上线机器人客服！7x24 小时在线，接待访客，辅助人工坐席，提升 10 倍工作效率。**
+[https://cc.chatopera.com/](https://cc.chatopera.com/)
 
-Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音识别等组件，标准化聊天机器人开发，支持企业 OA 智能问答、HR 智能问答、智能客服和网络营销等场景。企业 IT 部门、业务部门借助 Chatopera 云服务快速让聊天机器人上线！
+| **登录账号** | **密码**  | **角色** |
+| ------------ | --------- | --------- |
+| admin        | admin1234 | 系统超级管理员 |
+| zhangsan        | agent1234 | 客服坐席人员 |
 
-#### 机器人客服示例程序
+### 网页端访客示例
+
+[https://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
+
+- 登录张三后可接待访客，否则显示没有客服人员在线
+
+### 机器人客服示例
 
 [https://oh-my.cskefu.com/im/text/0nhckh.html](https://oh-my.cskefu.com/im/text/0nhckh.html)
 
-![](public/assets/screenshot-20210908-184522.png)
+## 快速开始
 
-#### 立即上线机器人客服
+### 安装部署
 
-上线机器人客服的两个方式：1）Chatopera 云服务，按量付费，提供每日免费额度；2）私有部署。
+容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](https://docs.chatopera.com/products/cskefu/deploy.html)。
 
-查看文档[《立即上线机器人客服》](https://docs.chatopera.com/products/cskefu/work-chatbot/bot-agent.html)。
+### 系统初始化
+
+部署后，进行系统初始化，为组织设定部门、权限、账号等，参考[《系统初始化文档》](https://docs.chatopera.com/products/cskefu/initialization.html)。
+
+### 运维
+
+备份、升级、回滚等运维工作，参考[《系统维护文档》](https://docs.chatopera.com/products/cskefu/osc/maintainence.html)。
+
+### 运营使用指南
+
+关于产品的具体使用说明，请参考[《春松客服文档》](https://docs.chatopera.com/products/cskefu/index.html)。
+
+### 立即上线机器人客服
+
+超过 85% 的春松客服企业客户通过 Chatopera 云服务上线机器人客服！7x24 小时在线，接待访客，辅助人工坐席，提升 10 倍工作效率。Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音识别等组件，标准化聊天机器人开发。
+
+- [春松客服安装机器人客服插件](https://docs.chatopera.com/products/cskefu/work-chatbot/install.html)
+- [集成 Chatopera 云服务](https://docs.chatopera.com/products/cskefu/work-chatbot/bot-agent.html)
+- [设定知识库、对话技能：欢迎语、按钮、图文消息等](https://docs.chatopera.com/products/cskefu/work-chatbot/message-types.html)
 
 <details>
-<summary>展开查看 Chatopera 云服务的产品截图</summary>
+<summary>展开查看更多机器人客服介绍</summary>
 <p>
 
 <p align="center">
-  <b>自定义词典</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/64530072-da92d600-d33e-11e9-8656-01c26caff4f9.png" width="800">
+  <b>应用场景示例</b><br>
+  <img src="https://github.com/chatopera/cskefu/raw/osc/public/assets/screenshot-20210908-184522.png" width="800">
 </p>
 
-<p align="center">
-  <b>自定义词条</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/64530091-e41c3e00-d33e-11e9-9704-c07a2a02b84e.png" width="800">
-</p>
-
-<p align="center">
-  <b>创建意图</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/64530169-12018280-d33f-11e9-93b4-9db881cf4dd5.png" width="800">
-</p>
-
-<p align="center">
-  <b>添加说法和槽位</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/64530187-20e83500-d33f-11e9-87ec-a0241e3dac4d.png" width="800">
-</p>
-
-<p align="center">
-  <b>训练模型</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/64530235-33626e80-d33f-11e9-8d07-fa3ae417fd5d.png" width="800">
-</p>
-
-<p align="center">
-  <b>测试对话</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/64530253-3d846d00-d33f-11e9-81ea-86e6d47020d8.png" width="800">
-</p>
-
-<p align="center">
-  <b>机器人画像</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/64530312-6442a380-d33f-11e9-869c-85fb6a835a97.png" width="800">
-</p>
-
-<p align="center">
-  <b>系统集成</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/64530281-4ecd7980-d33f-11e9-8def-c53251f30138.png" width="800">
-</p>
-
-<p align="center">
-  <b>聊天历史</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/64530295-5856e180-d33f-11e9-94d4-db50481b2d8e.png" width="800">
-</p>
+支持企业 OA 智能问答、HR 智能问答、智能客服和网络营销等场景。企业 IT 部门、业务部门借助 Chatopera 云服务快速让聊天机器人上线！
+上线机器人客服的两个方式：1）Chatopera 云服务，按量付费，提供每日免费额度；2）私有部署。
 
 </p>
 </details>
 
-
-## 软件部署
-
-### 私有部署
-
-容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](https://docs.chatopera.com/products/cskefu/deploy.html)。
-
-### 容器云部署
-
-容器云部署是云原生应用交付的最佳实践，简单易用。春松客服已经在以下容器云应用商店上架：
-
-[Rainbond 云原生应用管理平台](https://www.rainbond.com/docs/opensource-app/chatopera/?channel=chatopera)：专注于以应用为中心的理念，赋能企业搭建云原生开发云、云原生交付云。
-
 ## 春松客服开源社区
 
-### 祝福与不祝福
+### 合作开源客服系统，共赢未来！
 
 春松客服之所以开源，是基于这样一种信念：爱人也是爱己，利他也是利己。
 对人和人美好关系的向往，对人潜力的信任。让我们相信因春松客服而受益的人，会回报给春松客服开源社区，我们[所有贡献者](#贡献者列表)基于共赢的信念合作。
 回报方式包括：[提交 PR](https://github.com/chatopera/cskefu/blob/osc/CONTRIBUTING.md)、购买春松客服相关的[付费产品和服务](https://www.chatopera.com/price.html)等。
 
 因春松客服受益，而不回报开源社区的用户，我们不欢迎使用春松客服：我们开源并不是为了你们，你们是不被祝福的。
+
+### 成为春松客服贡献者
+
+- 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
+- 如何提交代码，参考[文档](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
+- 如何参与春松客服社区活动：[成为春松客服开源之夏2022导师，火热招募中 🔥 🔥 🔥 ](https://github.com/chatopera/cskefu/issues/673)
+- 如何最新的春松客服开发进展：订阅[春松客服邮件列表](https://lists.cskefu.com/cgi-bin/mailman/listinfo/dev)
 
 ### 贡献者列表 ✨
 
@@ -286,6 +226,8 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/wangdayan"><img src="https://avatars.githubusercontent.com/u/62323175?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Claire</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=wangdayan" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/zc1813400107"><img src="https://avatars.githubusercontent.com/u/46372405?v=4?s=50" width="50px;" alt=""/><br /><sub><b>super</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=zc1813400107" title="Code">💻</a> <a href="https://github.com/chatopera/cskefu/commits?author=zc1813400107" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/xiaobo9"><img src="https://avatars.githubusercontent.com/u/1284376?v=4?s=50" width="50px;" alt=""/><br /><sub><b>xiaobo9</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=xiaobo9" title="Code">💻</a></td>
   </tr>
 </table>
 
@@ -294,210 +236,33 @@ Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音�
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-### 用户交流群
+### 微信交流群
 
 <p align="center">
-  <b>在 Chatopera 客户群中也包括其他用户，请不要发送敏感信息。讨论与 Chatopera 产品和服务相关的事宜</b><br>
-<img src="https://static-public.chatopera.com/assets/images/Chatopera_wecom_customer_group_qr.png" width="600">
+  <img src="./public/assets/cskefu_opensource_community_wx_qr.jpg" width="600">
 </p>
 
-更多开发者社区介绍，查看：[https://docs.chatopera.com/products/cskefu/osc/index.html](https://docs.chatopera.com/products/cskefu/osc/index.html)
+### 工单
 
-### 社区协作
-
-关于软件使用的任何问题，先开工单 -
+遇到任何软件使用的问题，先在[工单历史记录](https://github.com/chatopera/cskefu/issues)中查询。
+如果没有找到相似问题，使用下面的链接创建新的工单 -
 
 - [Help: 开发环境搭建、功能咨询和使用问题等](https://github.com/chatopera/cskefu/issues/new?assignees=hailiang-wang&labels=help-wanted&template=1_help.md&title=Title%3A+%E7%94%A8%E4%B8%80%E5%8F%A5%E8%AF%9D%E9%99%88%E8%BF%B0%E4%BA%8B%E6%83%85%EF%BC%8C%E4%BF%9D%E8%AF%81%E8%A8%80%E7%AE%80%E6%84%8F%E8%B5%85%EF%BC%8C%E6%AF%94%E5%A6%82%E9%97%AE%E9%A2%98%E7%AE%80%E8%BF%B0%E5%8F%8A+root+cause+%E6%97%A5%E5%BF%97%E8%AF%AD%E5%8F%A5%EF%BC%8C%E6%9B%B4%E5%AE%B9%E6%98%93%E8%8E%B7%E5%BE%97%E5%B8%AE%E5%8A%A9)
 - [Bug: 提交软件缺陷](https://github.com/chatopera/cskefu/issues/new?assignees=hailiang-wang&labels=bug&template=2_bug_report.md&title=Title%3A+%E7%94%A8%E4%B8%80%E5%8F%A5%E8%AF%9D%E9%99%88%E8%BF%B0%E4%BA%8B%E6%83%85%EF%BC%8C%E4%BF%9D%E8%AF%81%E8%A8%80%E7%AE%80%E6%84%8F%E8%B5%85%EF%BC%8C%E6%AF%94%E5%A6%82%E9%97%AE%E9%A2%98%E7%AE%80%E8%BF%B0%E5%8F%8A+root+cause+%E6%97%A5%E5%BF%97%E8%AF%AD%E5%8F%A5%EF%BC%8C%E6%9B%B4%E5%AE%B9%E6%98%93%E8%8E%B7%E5%BE%97%E5%B8%AE%E5%8A%A9)
 - [Requirement: 描述新需求、反馈建议](https://github.com/chatopera/cskefu/issues/new?assignees=hailiang-wang&labels=requirement&template=3_requirement.md&title=Title%3A+%E7%94%A8%E4%B8%80%E5%8F%A5%E8%AF%9D%E9%99%88%E8%BF%B0%E4%BA%8B%E6%83%85%EF%BC%8C%E4%BF%9D%E8%AF%81%E8%A8%80%E7%AE%80%E6%84%8F%E8%B5%85%EF%BC%8C%E6%AF%94%E5%A6%82%E9%97%AE%E9%A2%98%E7%AE%80%E8%BF%B0%E5%8F%8A+root+cause+%E6%97%A5%E5%BF%97%E8%AF%AD%E5%8F%A5%EF%BC%8C%E6%9B%B4%E5%AE%B9%E6%98%93%E8%8E%B7%E5%BE%97%E5%B8%AE%E5%8A%A9)
 - [Profiling: 瓶颈分析、性能优化建议和安全漏洞等](https://github.com/chatopera/cskefu/issues/new?assignees=hailiang-wang&labels=profiling&template=4_profiling.md&title=Title%3A+%E7%94%A8%E4%B8%80%E5%8F%A5%E8%AF%9D%E9%99%88%E8%BF%B0%E4%BA%8B%E6%83%85%EF%BC%8C%E4%BF%9D%E8%AF%81%E8%A8%80%E7%AE%80%E6%84%8F%E8%B5%85%EF%BC%8C%E6%AF%94%E5%A6%82%E9%97%AE%E9%A2%98%E7%AE%80%E8%BF%B0%E5%8F%8A+root+cause+%E6%97%A5%E5%BF%97%E8%AF%AD%E5%8F%A5%EF%BC%8C%E6%9B%B4%E5%AE%B9%E6%98%93%E8%8E%B7%E5%BE%97%E5%B8%AE%E5%8A%A9)
 
-
-### 使用及开发视频
-
-《春松客服大讲堂 2019》课程有发布到两个地址：Bilibili 和 [腾讯课堂](https://ke.qq.com/course/464050)。Bilibili 视频免费观看，腾讯课堂为付费，有条件的观众请在腾讯课堂购买，以示对我们工作的支持和鼓励 :heartpulse:，做好开源客服系统。
-
-以下列表中使用 Bilibili 站点地址，PPT 课件库地址 [chatopera/cskefu.djt](https://github.com/chatopera/cskefu.djt)。
-
-<table>
-  <tr>
-    <th>章</th>
-    <th>小节</th>
-    <th>时长（时:分:秒）</th>
-    <th>课件</th>
-  </tr>
-  <tr>
-    <td rowspan="3">一、春松客服的介绍</td>
-    <td><a href="https://www.bilibili.com/video/BV13P4y1V7Jk?p=1">如何使用Java开发智能客服系统</a></td>
-    <td>00:32:11</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/1-1.opencc-in-java.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV13P4y1V7Jk?p=2">春松客服在企业的落地</a></td>
-    <td>00:30:41</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/1-2.quickview-of-cc.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV13P4y1V7Jk?p=3">春松客服的技术介绍</a></td>
-    <td>01:09:30</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/1-3.technologies-overview.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td rowspan="7">二、客服相关的基本知识</td>
-    <td><a href="https://www.bilibili.com/video/BV1Qr4y1k772?p=1">客服的日常工作</a></td>
-    <td>00:57:35</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/2-1.kefu-daily-job.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV1Qr4y1k772?p=2">客服的基本知识</a></td>
-    <td>00:46:48</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/2-2.kefu-fundamentals.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV1Qr4y1k772?p=3">账号体系-权限，部门和角色</a></td>
-    <td>00:42:06</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/2-3.accout-n-permissions.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV1Qr4y1k772?p=4">坐席会话的工具-拉黑，服务小结和转接</a></td>
-    <td>00:33:00</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/2-4.agent-toolset.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV1Qr4y1k772?p=5">即时通信及坐席自动分配</a></td>
-    <td>00:56:50</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/2-5.instant-messaging.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV1Qr4y1k772?p=6">企业聊天与人工质检</a></td>
-    <td>00:35:12</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/4-3.entim-and-quality-inspection.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV1Qr4y1k772?p=7">统计报表和满意度评价</a></td>
-    <td>00:37:18</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/2-5.instant-messaging.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td rowspan="6">三、春松客服的上线及维护</td>
-    <td><a href="https://www.bilibili.com/video/BV14M4y1P77U?p=1">春松客服的编译和部署</a></td>
-    <td>00:38:27</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/3-1.cskefu-compile-deploy.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV14M4y1P77U?p=2">春松客服的运维管理</a></td>
-    <td>01:00:37</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/3-2.cskefu-maintenance.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV14M4y1P77U?p=3">春松客服的自动化系统测试（1）</a></td>
-    <td>00:32:45</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/4-1.automatic-system-test.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV14M4y1P77U?p=4">春松客服的自动化系统测试（2）</a></td>
-    <td>00:49:20</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/4-1.automatic-system-test.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV14M4y1P77U?p=5">春松客服的压力测试（1）</a></td>
-    <td>00:42:33</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/4-2.stress-test.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV14M4y1P77U?p=6">春松客服的压力测试（2）</a></td>
-    <td>00:40:39</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/4-2.stress-test.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td rowspan="3">四、春松客服的机器人客服</td>
-    <td><a href="https://www.bilibili.com/video/BV1s44y1Y7mV?p=1">Chatopera 云服务介绍</a></td>
-    <td>00:28:01</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/6-1.chatopera-botcloud.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV1s44y1Y7mV?p=2">机器人的知识库管理</a></td>
-    <td>00:47:56</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/6-1.chatopera-botcloud.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV1s44y1Y7mV?p=3">机器人的多轮对话及富文本消息类型</a></td>
-    <td>00:43:32</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/6-1.chatopera-botcloud.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td rowspan="8">五、春松客服开发基础知识</td>
-    <td><a href="https://www.bilibili.com/video/BV1ah411s7ak?p=1">SQL快速入门</a></td>
-    <td>00:46:39</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/5-1.sql-basics.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV1ah411s7ak?p=2">春松客服数据库表及管理</a></td>
-    <td>00:45:30</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/5-2.java-basics.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV1ah411s7ak?p=3">Java编程基础（1）</a></td>
-    <td>00:45:24</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/5-2.java-basics.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV1ah411s7ak?p=4">Java编程基础（2）</a></td>
-    <td>01:37:53</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/5-2.java-basics.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV1ah411s7ak?p=5">Maven项目管理</a></td>
-    <td>00:46:18</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/5-3.maven-idea.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV1ah411s7ak?p=6">搭建春松客服开发环境</a></td>
-    <td>01:10:28</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/5-3.maven-idea.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV1ah411s7ak?p=7">SpringBoot快速入门</a></td>
-    <td>00:45:50</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/5-3.maven-idea.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV1ah411s7ak?p=8">项目源码讲解</a></td>
-    <td>01:09:40</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/7-1.sourcecode-deepdive.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td rowspan="2">六、春松客服的插件</td>
-    <td><a href="https://www.bilibili.com/video/BV1Mr4y1Q7hc?p=1">插件机制设计</a></td>
-    <td>00:45:51</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/7-2.plugin-mechanism-chatbot.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://www.bilibili.com/video/BV1Mr4y1Q7hc?p=2">春松客服机器人插件解读</a></td>
-    <td>00:41:20</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/7-2.plugin-mechanism-chatbot.pptx">PPT</a></td>
-  </tr>
-  <tr>
-    <td>七、总结</td>
-    <td><a href="https://www.bilibili.com/video/BV1RL411M7Zr">春松客服团队介绍及课程总结</a></td>
-    <td>00:32:11</td>
-    <td><a href="https://github.com/chatopera/cskefu.djt/raw/main/%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%A4%A7%E8%AE%B2%E5%A0%82_2019/8-1.course-summary.pptx">PPT</a></td>
-  </tr>
-</table>
-
 ### 开发者文档
 
-<p align="center">
-  <b><a href="https://docs.chatopera.com/products/cskefu/osc/engineering.html" target="_blank">开发者文档</a></b><br>
-  <a href="https://docs.chatopera.com/products/cskefu/osc/engineering.html" target="_blank">
-      <img src="https://static-public.chatopera.com/assets/images/44992890-38be0800-afcb-11e8-8fde-a5a671d29764.png" width="300">
-  </a>
-</p>
-
-
-### 提交代码到春松客服
-
-参考[贡献说明文档](./CONTRIBUTING.md)。
+- 开发环境搭建
+  - [安装依赖和启动数据库等](https://docs.chatopera.com/products/cskefu/osc/engineering.html)
+  - [IDE 配置和使用之 IntelliJ IDEA](https://docs.chatopera.com/products/cskefu/osc/ide_intelij_idea.html)
+  - [IDE 配置和使用之 Eclipse IDE](https://docs.chatopera.com/products/cskefu/osc/ide_eclipse.html)
+- 定制开发技能
+  - [系统集成之 RestAPIs](https://docs.chatopera.com/products/cskefu/osc/restapi.html)
+  - [从零开始学习定制春松客服技能：春松客服大讲堂 PPT 课件及视频](https://github.com/chatopera/cskefu.djt)
+  - [掌握春松客服前端框架 Pugjs，介绍及使用注意事项](https://blog.csdn.net/samurais/article/details/114576611)
+- [提交代码](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
 
 ## 鸣谢
 

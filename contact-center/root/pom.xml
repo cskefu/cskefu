@@ -6,7 +6,7 @@
     <version>7.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>cc-root</name>
-    <description>春松客服：多渠道智能客服系统</description>
+    <description>春松客服：合作开源客服系统，共赢未来！</description>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -18,6 +18,13 @@
         <java.version>1.8</java.version>
     </properties>
     <dependencies>
+
+        <dependency>
+            <groupId>com.chatopera.cc</groupId>
+            <artifactId>pep</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>

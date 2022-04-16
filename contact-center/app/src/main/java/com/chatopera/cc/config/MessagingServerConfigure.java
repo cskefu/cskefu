@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,6 +66,11 @@ public class MessagingServerConfigure {
     @Bean
     public SocketIOServer socketIOServer() throws NoSuchAlgorithmException, IOException {
         Configuration config = new Configuration();
+        //解决对此重启服务时，netty端口被占用问题
+        com.corundumstudio.socketio.SocketConfig tmpConfig = new com.corundumstudio.socketio.SocketConfig();
+        tmpConfig.setReuseAddress(true);
+        config.setSocketConfig(tmpConfig);
+
 //		config.setHostname("localhost");
         config.setPort(port);
 
@@ -77,9 +82,10 @@ public class MessagingServerConfigure {
         File sslFile = new File(path, "ssl/https.properties");
         if (sslFile.exists()) {
             Properties sslProperties = new Properties();
-            FileInputStream in = new FileInputStream(sslFile);
-            sslProperties.load(in);
-            in.close();
+
+            try (FileInputStream in = new FileInputStream(sslFile)) {
+                sslProperties.load(in);
+            }
             if (StringUtils.isNotBlank(sslProperties.getProperty("key-store")) && StringUtils.isNotBlank(
                     sslProperties.getProperty("key-store-password"))) {
                 config.setKeyStorePassword(MainUtils.decryption(sslProperties.getProperty("key-store-password")));

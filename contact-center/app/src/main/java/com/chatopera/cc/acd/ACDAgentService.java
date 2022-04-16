@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Chatopera Inc, <https://www.chatopera.com>
+ * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Component
 public class ACDAgentService {
@@ -93,49 +94,48 @@ public class ACDAgentService {
      * @param ctx
      */
     public void notifyAgentUserProcessResult(final ACDComposeContext ctx) {
-        if (ctx != null && StringUtils.isNotBlank(
-                ctx.getMessage())) {
-            logger.info("[onConnect] find available agent for onlineUser id {}", ctx.getOnlineUserId());
-
-            /**
-             * 发送消息给坐席
-             * 如果没有AgentService或该AgentService没有坐席或AgentService在排队中，则不发送
-             */
-            if (ctx.getAgentService() != null && (!ctx.isNoagent()) && !StringUtils.equals(
-                    MainContext.AgentUserStatusEnum.INQUENE.toString(),
-                    ctx.getAgentService().getStatus())) {
-                // 通知消息到坐席
-                MainContext.getPeerSyncIM().send(MainContext.ReceiverType.AGENT,
-                        MainContext.ChannelType.WEBIM,
-                        ctx.getAppid(),
-                        MainContext.MessageType.NEW,
-                        ctx.getAgentService().getAgentno(),
-                        ctx, true);
-            }
-
-            /**
-             * 发送消息给访客
-             */
-            Message outMessage = new Message();
-            outMessage.setAgentUser(ctx.getAgentUser());
-            outMessage.setMessage(ctx.getMessage());
-            outMessage.setMessageType(MainContext.MessageType.MESSAGE.toString());
-            outMessage.setCalltype(MainContext.CallType.IN.toString());
-            outMessage.setCreatetime(MainUtils.dateFormate.format(new Date()));
-            outMessage.setNoagent(ctx.isNoagent());
-            if (ctx.getAgentService() != null) {
-                outMessage.setAgentserviceid(ctx.getAgentService().getId());
-            }
-
-            MainContext.getPeerSyncIM().send(MainContext.ReceiverType.VISITOR,
-                    MainContext.ChannelType.toValue(ctx.getChannel()),
-                    ctx.getAppid(),
-                    MainContext.MessageType.NEW, ctx.getOnlineUserId(), outMessage, true);
-
-
-        } else {
+        Objects.requireNonNull(ctx,"ctx can not be null");
+        if (StringUtils.isBlank(ctx.getMessage())) {
             logger.info("[onConnect] can not find available agent for user {}", ctx.getOnlineUserId());
+            return;
         }
+        logger.info("[onConnect] find available agent for onlineUser id {}", ctx.getOnlineUserId());
+
+        /**
+         * 发送消息给坐席
+         * 如果没有AgentService或该AgentService没有坐席或AgentService在排队中，则不发送
+         */
+        if (ctx.getAgentService() != null && (!ctx.isNoagent()) && !StringUtils.equals(
+                MainContext.AgentUserStatusEnum.INQUENE.toString(),
+                ctx.getAgentService().getStatus())) {
+            // 通知消息到坐席
+            MainContext.getPeerSyncIM().send(MainContext.ReceiverType.AGENT,
+                    MainContext.ChannelType.WEBIM,
+                    ctx.getAppid(),
+                    MainContext.MessageType.NEW,
+                    ctx.getAgentService().getAgentno(),
+                    ctx, true);
+        }
+
+        /**
+         * 发送消息给访客
+         */
+        Message outMessage = new Message();
+        outMessage.setAgentUser(ctx.getAgentUser());
+        outMessage.setMessage(ctx.getMessage());
+        outMessage.setMessageType(MainContext.MessageType.MESSAGE.toString());
+        outMessage.setCalltype(MainContext.CallType.IN.toString());
+        outMessage.setCreatetime(MainUtils.dateFormate.format(new Date()));
+        outMessage.setNoagent(ctx.isNoagent());
+        if (ctx.getAgentService() != null) {
+            outMessage.setAgentserviceid(ctx.getAgentService().getId());
+        }
+
+        MainContext.getPeerSyncIM().send(MainContext.ReceiverType.VISITOR,
+                MainContext.ChannelType.toValue(ctx.getChannel()),
+                ctx.getAppid(),
+                MainContext.MessageType.NEW, ctx.getOnlineUserId(), outMessage, true);
+
     }
 
     /**

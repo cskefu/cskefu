@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -147,9 +147,9 @@ public class UKResultMapper extends AbstractResultMapper {
 
 	private String buildJSONFromFields(Collection<SearchHitField> values) {
 		JsonFactory nodeFactory = new JsonFactory();
-		try {
-			ByteArrayOutputStream stream = new ByteArrayOutputStream();
-			JsonGenerator generator = nodeFactory.createGenerator(stream, JsonEncoding.UTF8);
+		try (ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			 JsonGenerator generator = nodeFactory.createGenerator(stream, JsonEncoding.UTF8);) {
+
 			generator.writeStartObject();
 			for (SearchHitField value : values) {
 				if (value.getValues().size() > 1) {

@@ -1,3 +1,4 @@
+/** CSKeFu All Rights Reserved, Apache 2.0 License By http://www.cskefu.com */
 /**
  *权限数据采集 
  */

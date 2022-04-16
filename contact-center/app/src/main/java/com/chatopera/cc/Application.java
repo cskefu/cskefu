@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,8 +81,6 @@ public class Application {
         if (StringUtils.equalsIgnoreCase(SystemEnvHelper.parseFromApplicationProps("cskefu.modules.report"), "true")) {
             MainContext.enableModule(Constants.CSKEFU_MODULE_REPORT);
         }
-
-
     }
 
     /**
@@ -98,10 +96,11 @@ public class Application {
             SpringApplication app = new SpringApplicationBuilder(Application.class)
                     .properties("spring.config.name:application,git")
                     .build();
-
+            BlessingAndUnblessing.print();
             app.setBannerMode(Banner.Mode.CONSOLE);
             app.setAddCommandLineProperties(false);
             app.addListeners(new AppCtxRefreshEventListener());
+            
             MainContext.setApplicationContext(app.run(args));
         } catch (IOException e) {
             logger.error("Application Startup Error", e);

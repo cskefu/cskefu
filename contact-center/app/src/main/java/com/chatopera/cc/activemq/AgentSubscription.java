@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Chatopera Inc, All rights reserved.
+ * Copyright (C) 2019-2022 Chatopera Inc, All rights reserved.
  * <https://www.chatopera.com>
  * This software and related documentation are provided under a license agreement containing
  * restrictions on use and disclosure and are protected by intellectual property laws.

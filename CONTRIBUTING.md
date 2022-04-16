@@ -1,12 +1,40 @@
-# 贡献注意事项
+# Contributing
 
-- 在[Issue](https://github.com/chatopera/cskefu/issues)中查看有无相关问题
+成为春松客服贡献者
 
-- 详细的介绍问题
+## 提交反馈
 
-- 注意文明用语
+在[春松客服 GitHub Issues](https://github.com/chatopera/cskefu/issues)中，先搜索是否有重复的。然后进行补充或新建 Issue。
 
-[![chatoper banner][co-banner-image]][co-url]
+## 提交代码
 
-[co-banner-image]: https://user-images.githubusercontent.com/3538629/42383104-da925942-8168-11e8-8195-868d5fcec170.png
-[co-url]: https://www.chatopera.com
+从零开始，一步步介绍：
+[https://docs.chatopera.com/products/cskefu/osc/contribution.html](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
+
+## 提交文档
+
+春松客服文档中心的项目，也是开源的，地址在：
+
+[https://github.com/chatopera/docs](https://github.com/chatopera/docs)
+
+春松客服文档 Markdown 文件路径：
+
+[https://github.com/chatopera/docs/tree/master/docfx_project/products/cskefu](https://github.com/chatopera/docs/tree/master/docfx_project/products/cskefu)
+
+更新文档：
+
+1）提交 PR 到[春松客服文档中心 GitHub 仓库](https://github.com/chatopera/docs)，一步到位。
+
+2）提交 Issue 到[春松客服 Issues](https://github.com/chatopera/cskefu/issues/new)， 并撰写文档内容，使用该方案则需要后续其他协作者提交到 [春松客服文档中心 GitHub 仓库](https://github.com/chatopera/docs) 中。
+
+
+## 期待您成为春松客服贡献者
+
+不管是何种贡献，只有大小之分，而无本质区别。
+
+一起贡献，一起好！
+没有贡献，都不好！
+
+团结是共赢，分裂是全输。
+
+![image](./public/assets/screenshot-20220323-163051.jpg)

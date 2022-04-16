@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2019 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package com.chatopera.cc.util;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
@@ -44,6 +43,7 @@ import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -99,39 +99,31 @@ public class HttpClientUtil {
      * @param params 
      * @return 
      * @throws IOException 
-     */  
-    public static String doGet(String url, Map<String, Object> params) throws IOException {  
-        String apiUrl = url;  
-        StringBuffer param = new StringBuffer();  
-        int i = 0;  
-        for (String key : params.keySet()) {  
-            if (i == 0)  
-                param.append("?");  
-            else  
-                param.append("&");  
-            param.append(key).append("=").append(params.get(key));  
-            i++;  
-        }  
-        apiUrl += param;  
-        String result = null;  
-        CloseableHttpClient httpclient = HttpClients.createDefault();  
-        try {  
-            HttpGet httpPost = new HttpGet(apiUrl);  
-            HttpResponse response = httpclient.execute(httpPost);  
-  
-            HttpEntity entity = response.getEntity();  
-            if (entity != null) {  
-                InputStream instream = entity.getContent();  
-                result = IOUtils.toString(instream, "UTF-8");  
-            }  
-        } catch (IOException e) {  
-            e.printStackTrace();  
-        }finally {
-        	if(httpclient!=null) {
-        		httpclient.close();
-        	}
+     */
+    public static String doGet(String url, Map<String, Object> params) throws IOException {
+        String apiUrl = url;
+        StringBuffer param = new StringBuffer();
+        int i = 0;
+        for (String key : params.keySet()) {
+            if (i == 0)
+                param.append("?");
+            else
+                param.append("&");
+            param.append(key).append("=").append(params.get(key));
+            i++;
         }
-        return result;  
+        apiUrl += param;
+        String result = null;
+
+        HttpGet httpPost = new HttpGet(apiUrl);
+        try (CloseableHttpClient httpclient = HttpClients.createDefault();
+             CloseableHttpResponse response = httpclient.execute(httpPost);
+             InputStream inputStream = response.getEntity().getContent();) {
+            result = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }  
   
     /**
@@ -141,33 +133,24 @@ public class HttpClientUtil {
      * @return
      */
     public static String doPost(String apiUrl, Map<String, Object> params) {
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        String httpStr = null;
-        HttpPost httpPost = new HttpPost(apiUrl);
-        CloseableHttpResponse response = null;
 
-        try {
-            httpPost.setConfig(requestConfig);
-            List<NameValuePair> pairList = new ArrayList<>(params.size());
-            for (Map.Entry<String, Object> entry : params.entrySet()) {
-                NameValuePair pair = new BasicNameValuePair(entry.getKey(), entry
-                        .getValue().toString());
-                pairList.add(pair);
-            }
-            httpPost.setEntity(new UrlEncodedFormEntity(pairList, Charset.forName("UTF-8")));
-            response = httpClient.execute(httpPost);
+        HttpPost httpPost = new HttpPost(apiUrl);
+        httpPost.setConfig(requestConfig);
+        List<NameValuePair> pairList = new ArrayList<>(params.size());
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            NameValuePair pair = new BasicNameValuePair(entry.getKey(), entry
+                    .getValue().toString());
+            pairList.add(pair);
+        }
+        httpPost.setEntity(new UrlEncodedFormEntity(pairList, StandardCharsets.UTF_8));
+        String httpStr = null;
+        try (CloseableHttpClient httpClient = HttpClients.createDefault();
+             CloseableHttpResponse response = httpClient.execute(httpPost);) {
+
             HttpEntity entity = response.getEntity();
             httpStr = EntityUtils.toString(entity, "UTF-8");
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            if (response != null) {
-                try {
-                    EntityUtils.consume(response.getEntity());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return httpStr;
     }
@@ -179,37 +162,24 @@ public class HttpClientUtil {
      * @return 
      * @throws IOException 
      */
-    public static String doPost(String apiUrl, String json) throws IOException {  
-        CloseableHttpClient httpClient = HttpClients.createDefault();  
-        String httpStr = null;  
-        HttpPost httpPost = new HttpPost(apiUrl);  
-        CloseableHttpResponse response = null;  
-  
-        try {
+    public static String doPost(String apiUrl, String json) throws IOException {
 
-            httpPost.setConfig(requestConfig);  
-            StringEntity stringEntity = new StringEntity(json,"UTF-8");//解决中文乱码问题  
-            stringEntity.setContentEncoding("UTF-8");  
-            stringEntity.setContentType("application/json");
-            httpPost.setEntity(stringEntity);  
-            response = httpClient.execute(httpPost);  
-            HttpEntity entity = response.getEntity();  
-            httpStr = EntityUtils.toString(entity, "UTF-8");  
-        } catch (IOException e) {  
-            e.printStackTrace();  
-        } finally {  
-            if (response != null) {  
-                try {  
-                    EntityUtils.consume(response.getEntity());  
-                } catch (IOException e) {  
-                    e.printStackTrace();  
-                }  
-            }
-            if(httpClient!=null) {
-            	httpClient.close();
-            }
-        }  
-        return httpStr;  
+        HttpPost httpPost = new HttpPost(apiUrl);
+        httpPost.setConfig(requestConfig);
+        StringEntity stringEntity = new StringEntity(json, "UTF-8");//解决中文乱码问题
+        stringEntity.setContentEncoding("UTF-8");
+        stringEntity.setContentType("application/json");
+        httpPost.setEntity(stringEntity);
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault();
+             CloseableHttpResponse response = httpClient.execute(httpPost);) {
+
+            HttpEntity entity = response.getEntity();
+            return EntityUtils.toString(entity, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
