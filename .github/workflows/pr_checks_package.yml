@@ -1,0 +1,19 @@
+name: CSKeFu PR CC Build Check
+on:
+  pull_request: 
+    branches: [osc]
+    types: [opened, synchronize, closed]
+
+jobs: 
+  build: 
+    runs-on: [self-hosted, linux, cskefu]
+   
+    steps: 
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      — run: | 
+          cd $GITHUB_WORKSPACE && pwd
+          echo `git log --pretty=format:"%h:%an:%ar: %s <br>" HEAD~5..HEAD`
+          $GITHUB_WORKSPACE/public/plugins/scripts/install-all.sh
+          cd $GITHUB_WORKSPACE/contact-center && ./admin/package.sh
