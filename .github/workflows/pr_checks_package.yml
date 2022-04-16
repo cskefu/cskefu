@@ -12,6 +12,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       - run: |
           cd $GITHUB_WORKSPACE && pwd
-          echo `git log --pretty=format:"%h:%an:%ar: %s <br>" HEAD~5..HEAD`
+          if [ -f ~/.cskefu.rc ]; then source ~/.cskefu.rc; else echo "Not found ~/.cskefu.rc; find info with https://github.com/chatopera/cskefu/issues/688"; exit 1 fi
+          java -version && mvn -version
           $GITHUB_WORKSPACE/public/plugins/scripts/install-all.sh
           cd $GITHUB_WORKSPACE/contact-center && ./admin/package.sh
