@@ -181,7 +181,7 @@
 
 春松客服开源社区，也是社交网络，在这里，我们建立关系、发现认同、合作共赢！
 
-- [如何加入春松客服开源社区](https://www.cskefu.com/join-us/)
+- 如何加入春松客服开源社区，参考[文档](https://www.cskefu.com/join-us/)
 
 ### 成为春松客服贡献者
 
@@ -246,8 +246,8 @@
 ### 微信通知群
 
 - 使用恰当的工具，可以提升沟通的效率，事半功倍。
-- 春松客服开源社区交流主要通过：[春松客服 W3](https://www.cskefu.com)和 GitHub。优先使用这两个工具。
-- 春松客服微信群，主要是通知分享信息、找到联系人。
+- 春松客服开源社区交流主要通过：[春松客服 W3](https://www.cskefu.com)和 GitHub。**优先使用这两个工具**。
+- 春松客服微信群，主要是通知信息、分享活动和找到联系人。
 
 <p align="center">
   <img src="./public/assets/cskefu_opensource_community_wx_qr.jpg" width="600">
