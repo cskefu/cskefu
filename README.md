@@ -4,7 +4,7 @@
 
 </div>
 
-# 春松客服：合作开源客服系统，共赢未来！
+# 春松客服：合作开源客服系统，共赢未来
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/chatopera/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/chatopera/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/blob/osc/LICENSE "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![Docker Tags](https://raw.githubusercontent.com/hailiang-wang/Rishit-dagli/master/badges/docker.svg)](https://hub.docker.com/repository/docker/chatopera/contact-center/tags?page=1&ordering=last_updated "Get Latest Docker Images") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-30-orange.svg?style=flat-square)](#contributors-)
@@ -169,7 +169,7 @@
 
 ## 春松客服开源社区
 
-### 合作开源客服系统，共赢未来！
+### 合作开源客服系统，共赢未来
 
 春松客服之所以开源，是基于这样一种信念：爱人也是爱己，利他也是利己。
 对人和人美好关系的向往，对人潜力的信任。让我们相信因春松客服而受益的人，会回报给春松客服开源社区，我们[所有贡献者](#贡献者列表)基于共赢的信念合作。
@@ -177,11 +177,17 @@
 
 因春松客服受益，而不回报开源社区的用户，我们不欢迎使用春松客服：我们开源并不是为了你们，你们是不被祝福的。
 
+### 加入春松客服开源社区
+
+春松客服开源社区，也是社交网络，在这里，我们建立关系、发现认同、合作共赢！
+
+- [如何加入春松客服开源社区](https://www.cskefu.com/join-us/)
+
 ### 成为春松客服贡献者
 
 - 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
 - 如何提交代码，参考[文档](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
-- 如何参与春松客服社区活动：[成为春松客服开源之夏2022导师，火热招募中 🔥 🔥 🔥 ](https://github.com/chatopera/cskefu/issues/673)
+- 如何参与春松客服社区活动：[成为春松客服开源之夏2022导师，火热招募中 🔥 🔥 🔥](https://github.com/chatopera/cskefu/issues/673)
 - 如何最新的春松客服开发进展：订阅[春松客服邮件列表](https://lists.cskefu.com/cgi-bin/mailman/listinfo/dev)
 
 ### 贡献者列表 ✨
@@ -237,7 +243,11 @@
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-### 微信交流群
+### 微信通知群
+
+- 使用恰当的工具，可以提升沟通的效率，事半功倍。
+- 春松客服开源社区交流主要通过：[春松客服 W3](https://www.cskefu.com)和 GitHub。优先使用这两个工具。
+- 春松客服微信群，主要是通知分享信息、找到联系人。
 
 <p align="center">
   <img src="./public/assets/cskefu_opensource_community_wx_qr.jpg" width="600">
