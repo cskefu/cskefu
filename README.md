@@ -172,23 +172,16 @@
 ### 合作开源客服系统，共赢未来
 
 春松客服之所以开源，是基于这样一种信念：爱人也是爱己，利他也是利己。
-对人和人美好关系的向往，对人潜力的信任。让我们相信因春松客服而受益的人，会回报给春松客服开源社区，我们[所有贡献者](#贡献者列表)基于共赢的信念合作。
-回报方式包括：[提交 PR](https://github.com/chatopera/cskefu/blob/osc/CONTRIBUTING.md)、购买春松客服相关的[付费产品和服务](https://www.chatopera.com/price.html)等。
-
 因春松客服受益，而不回报开源社区的用户，我们不欢迎使用春松客服：我们开源并不是为了你们，你们是不被祝福的。
 
-### 加入春松客服开源社区
-
-春松客服开源社区，也是社交网络，在这里，我们建立关系、发现认同、合作共赢！
+在春松客服开源社区，我们建立关系、发现认同、合作共赢！
 
 - 如何加入春松客服开源社区，参考[文档](https://www.cskefu.com/join-us/)
-
-### 成为春松客服贡献者
-
 - 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
 - 如何提交代码，参考[文档](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
-- 如何参与春松客服社区活动：[成为春松客服开源之夏2022导师，火热招募中 🔥 🔥 🔥](https://github.com/chatopera/cskefu/issues/673)
+- 如何参与春松客服社区活动：[成为春松客服开源之夏 2022 导师，火热招募中 🔥 🔥 🔥](https://github.com/chatopera/cskefu/issues/673)
 - 如何最新的春松客服开发进展：订阅[春松客服邮件列表](https://lists.cskefu.com/cgi-bin/mailman/listinfo/dev)
+- 如何获得春松客服商业插件和服务，参考[文档](https://www.chatopera.com/price.html)
 
 ### 贡献者列表 ✨
 
@@ -242,16 +235,6 @@
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
-### 微信通知群
-
-- 使用恰当的工具，可以提升沟通的效率，事半功倍。
-- 春松客服开源社区交流主要通过：[春松客服 W3](https://www.cskefu.com)和 GitHub。**优先使用这两个工具**。
-- 春松客服微信群，主要是通知信息、分享活动和找到联系人。
-
-<p align="center">
-  <img src="./public/assets/cskefu_opensource_community_wx_qr.jpg" width="600">
-</p>
 
 ### 工单
 
