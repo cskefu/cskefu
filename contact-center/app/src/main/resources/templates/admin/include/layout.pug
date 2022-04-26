@@ -35,6 +35,13 @@ html(xmlns='http://www.w3.org/1999/xhtml', xmlns:th='http://www.thymeleaf.org', 
         script(language='javascript', src='/js/theme/wonderland.js')
         script(src='/layui.js')
         script(src='/js/cskefu.js')
+        if userExpTelemetry == 'on'
+            script(src='https://www.googletagmanager.com/gtag/js?id=G-SBBX10RKTC' async)
+            script.
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-SBBX10RKTC');
     body
         .layui-layout.layui-layout-content
             .layui-side.layui-bg-black

@@ -269,7 +269,16 @@ block content
                                                     p 系统菜单的权限控制
                                                     p(style='color:#888888;font-size:13px;margin-top:10px;') 默认不启用权限控制，如果选择启用，用户需要授权才能访问需要授权的系统菜单功能，系统管理员账号（admin）不受控制
                                                 .col-lg-4(style='text-align:right;')
-                                                    input(type="checkbox", title="启用", name="auth", value="1", checked= (systemConfig.auth ? 'checked': false))
+                                                    input(type="checkbox", title="启用", name="auth", value="1", checked= (systemConfig.auth == "true" ? 'checked': false))
+                                    .ukefu-webim-prop
+                                        .ukefu-webim-tl(style='clear:both;') 加入用户体验计划
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 是否开启
+                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 反馈功能使用情况，以指导春松客服优化和完善产品功能; 相关数据匿名，不发送敏感数据
+                                                .col-lg-4(style='text-align:right;')
+                                                    input(type="checkbox", title="启用", name="userExpTelemetrySetting", value="1", checked= (userExpTelemetrySetting ? 'checked': false))
                                     .ukefu-webim-prop(hidden)
                                         .ukefu-webim-tl(style='clear:both;') 启用语音平台模板配置
                                         .box-item

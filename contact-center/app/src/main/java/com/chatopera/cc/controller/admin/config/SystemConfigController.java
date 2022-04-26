@@ -19,7 +19,9 @@ package com.chatopera.cc.controller.admin.config;
 import com.chatopera.cc.basic.Constants;
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
+import com.chatopera.cc.cache.RedisCommand;
 import com.chatopera.cc.controller.Handler;
+import com.chatopera.cc.interceptor.UserExperiencePlanInterceptorHandler;
 import com.chatopera.cc.model.Dict;
 import com.chatopera.cc.model.Secret;
 import com.chatopera.cc.model.SysDic;
@@ -69,6 +71,8 @@ public class SystemConfigController extends Handler {
     @Autowired
     private SystemConfigRepository systemConfigRes;
 
+    @Autowired
+    private RedisCommand redisCommand;
 
     @Autowired
     private SystemMessageRepository systemMessageRes;
@@ -127,7 +131,7 @@ public class SystemConfigController extends Handler {
 
         map.addAttribute(
                 "sysMessageList", systemMessageRes.findByMsgtypeAndOrgi(MainContext.SystemMessageType.EMAIL.toString(),
-                                                                        super.getOrgi(request)));
+                        super.getOrgi(request)));
 
         if (StringUtils.isNotBlank(execute) && execute.equals("false")) {
             map.addAttribute("execute", execute);
@@ -135,6 +139,14 @@ public class SystemConfigController extends Handler {
         if (StringUtils.isNotBlank(request.getParameter("msg"))) {
             map.addAttribute("msg", request.getParameter("msg"));
         }
+
+        String userExpTelemetrySetting = redisCommand.get(UserExperiencePlanInterceptorHandler.FLAG_KEY);
+        if (StringUtils.isEmpty(userExpTelemetrySetting) || StringUtils.equalsIgnoreCase(userExpTelemetrySetting, UserExperiencePlanInterceptorHandler.USER_EXP_PLAN_ON)) {
+            map.addAttribute("userExpTelemetrySetting", true);
+        } else {
+            map.addAttribute("userExpTelemetrySetting", false);
+        }
+
         return request(super.createView("/admin/config/index"));
     }
 
@@ -188,7 +200,8 @@ public class SystemConfigController extends Handler {
     @Menu(type = "admin", subtype = "save", admin = true)
     public ModelAndView save(
             ModelMap map, HttpServletRequest request,
-            @Valid SystemConfig config, BindingResult result,
+            @Valid SystemConfig config,
+            BindingResult result,
             @RequestParam(value = "keyfile", required = false) MultipartFile keyfile,
             @RequestParam(value = "loginlogo", required = false) MultipartFile loginlogo,
             @RequestParam(value = "consolelogo", required = false) MultipartFile consolelogo,
@@ -274,6 +287,11 @@ public class SystemConfigController extends Handler {
             }
             map.addAttribute("msg", msg);
         }
+
+        // 设置用户体验计划开关
+        redisCommand.put(UserExperiencePlanInterceptorHandler.FLAG_KEY, config.getUserExpTelemetrySetting() ? UserExperiencePlanInterceptorHandler.USER_EXP_PLAN_ON : UserExperiencePlanInterceptorHandler.USER_EXP_PLAN_OFF);
+
+        // 保存到数据库
         systemConfigRes.save(systemConfig);
 
         MainContext.getCache().putSystemByIdAndOrgi("systemConfig", super.getOrgi(request), systemConfig);

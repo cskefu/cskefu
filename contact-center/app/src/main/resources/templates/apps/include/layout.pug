@@ -53,6 +53,15 @@ html(xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xm
                 script(src="http://api.map.baidu.com/api?v=2.0&ak=" + systemConfig.mapkey)
             script(src="/js/echarts.common.min.js")
             script(language="javascript" src="/js/theme/wonderland.js")
+            if userExpTelemetry == 'on'
+                script(src='https://www.googletagmanager.com/gtag/js?id=G-SBBX10RKTC' async)
+                script.
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag() {
+                        dataLayer.push(arguments);
+                    }
+                    gtag('js', new Date());
+                    gtag('config', 'G-SBBX10RKTC');
 
     body
         .layui-layout.layui-layout-content
