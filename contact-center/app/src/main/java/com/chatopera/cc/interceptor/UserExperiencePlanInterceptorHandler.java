@@ -59,9 +59,9 @@ public class UserExperiencePlanInterceptorHandler extends HandlerInterceptorAdap
 
 //        logger.info("flag {}", flag);
         if (StringUtils.equalsIgnoreCase(USER_EXP_PLAN_OFF, flag)) {
-            view.addObject(USER_EXP_TELEMETRY, "off");
+            view.addObject(USER_EXP_TELEMETRY, USER_EXP_PLAN_OFF);
         } else {
-            view.addObject(USER_EXP_TELEMETRY, "on");
+            view.addObject(USER_EXP_TELEMETRY, USER_EXP_PLAN_ON);
         }
     }
 
