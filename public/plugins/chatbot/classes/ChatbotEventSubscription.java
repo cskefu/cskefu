@@ -241,6 +241,10 @@ public class ChatbotEventSubscription {
                                 sugg.put("text", faqReply.getString("post"));
                                 sugg.put("type", "qlist");
                                 suggs.put(sugg);
+                                // set the maximum suggest list as only seven items
+                                if(i == 6){
+                                    break;
+                                }
                             }
                             if (suggs.length() > 0) {
                                 // TODO set help message on View Page
