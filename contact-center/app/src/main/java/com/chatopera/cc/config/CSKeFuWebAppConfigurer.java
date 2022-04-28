@@ -21,23 +21,21 @@ import com.chatopera.cc.interceptor.LogIntercreptorHandler;
 import com.chatopera.cc.interceptor.UserExperiencePlanInterceptorHandler;
 import com.chatopera.cc.interceptor.UserInterceptorHandler;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.*;
 
 @Configuration
 public class CSKeFuWebAppConfigurer
         extends WebMvcConfigurerAdapter {
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
-    }
-
+    /**
+     * https://www.baeldung.com/spring-cors
+     * @param registry
+     */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**");
+        // enables CORS requests from any origin to any endpoint in the application.
+        registry.addMapping("/**").allowedOrigins("*");
     }
 
     @Override

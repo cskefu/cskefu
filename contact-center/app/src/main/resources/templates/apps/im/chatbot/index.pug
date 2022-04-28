@@ -107,22 +107,14 @@ html
                                 sendMessage();
                             });
                         } else {
-                            var kindEditorIframe = $("iframe").contents().find("body");
-                            kindEditorIframe.keydown(function (event) {
-                                if (event.keyCode == 13 && !event.ctrlKey) {
-                                    self.sync();
-                                    sendMessage();
-                                    return false;
-                                } else if (event.keyCode == 13 && event.ctrlKey) {
-                                    editor.insertHtml('<br/>');
-                                }
-                            });
-                            //Ctrl+Enter提交表单
+                            // Ctrl+Enter 提交表单
                             K.ctrl(document, 13, function () {
-                                editor.insertHtml('<br/>');
+                                self.sync();
+                                sendMessage();
                             });
                             K.ctrl(self.edit.doc, 13, function () {
-                                editor.insertHtml('<br/>');
+                                self.sync();
+                                sendMessage();
                             });
                         }
                     }
