@@ -21,7 +21,9 @@ import com.chatopera.cc.interceptor.LogIntercreptorHandler;
 import com.chatopera.cc.interceptor.UserExperiencePlanInterceptorHandler;
 import com.chatopera.cc.interceptor.UserInterceptorHandler;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
@@ -29,12 +31,22 @@ public class CSKeFuWebAppConfigurer
         extends WebMvcConfigurerAdapter {
 
     @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**");
+    }
+
+    @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 多个拦截器组成一个拦截器链
         // addPathPatterns 用于添加拦截规则
         // excludePathPatterns 用户排除拦截
-        registry.addInterceptor(new UserExperiencePlanInterceptorHandler()).addPathPatterns("/**").excludePathPatterns("/im/**","/res/image*","/res/file*","/cs/**","/messenger/webhook/*");
-        registry.addInterceptor(new UserInterceptorHandler()).addPathPatterns("/**").excludePathPatterns("/login.html","/im/**","/res/image*","/res/file*","/cs/**","/messenger/webhook/*");
+        registry.addInterceptor(new UserExperiencePlanInterceptorHandler()).addPathPatterns("/**").excludePathPatterns("/im/**", "/res/image*", "/res/file*", "/cs/**", "/messenger/webhook/*");
+        registry.addInterceptor(new UserInterceptorHandler()).addPathPatterns("/**").excludePathPatterns("/login.html", "/im/**", "/res/image*", "/res/file*", "/cs/**", "/messenger/webhook/*");
         registry.addInterceptor(new CrossInterceptorHandler()).addPathPatterns("/**");
         registry.addInterceptor(new LogIntercreptorHandler()).addPathPatterns("/**");
         super.addInterceptors(registry);
