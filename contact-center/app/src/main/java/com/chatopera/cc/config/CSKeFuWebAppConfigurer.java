@@ -16,10 +16,7 @@
  */
 package com.chatopera.cc.config;
 
-import com.chatopera.cc.interceptor.CrossInterceptorHandler;
-import com.chatopera.cc.interceptor.LogIntercreptorHandler;
-import com.chatopera.cc.interceptor.UserExperiencePlanInterceptorHandler;
-import com.chatopera.cc.interceptor.UserInterceptorHandler;
+import com.chatopera.cc.interceptor.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
 
@@ -47,6 +44,7 @@ public class CSKeFuWebAppConfigurer
         registry.addInterceptor(new UserInterceptorHandler()).addPathPatterns("/**").excludePathPatterns("/login.html", "/im/**", "/res/image*", "/res/file*", "/cs/**", "/messenger/webhook/*");
         registry.addInterceptor(new CrossInterceptorHandler()).addPathPatterns("/**");
         registry.addInterceptor(new LogIntercreptorHandler()).addPathPatterns("/**");
+        registry.addInterceptor(new ViewsInterceptorHandler()).addPathPatterns("/**");
         super.addInterceptors(registry);
     }
 }
