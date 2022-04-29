@@ -18,6 +18,7 @@ package com.chatopera.cc.controller.admin.channel;
 
 import com.chatopera.cc.basic.MainContext;
 import com.chatopera.cc.basic.MainUtils;
+import com.chatopera.cc.cache.Cache;
 import com.chatopera.cc.controller.Handler;
 import com.chatopera.cc.model.*;
 import com.chatopera.cc.persistence.repository.ConsultInviteRepository;
@@ -64,6 +65,10 @@ public class SNSAccountIMController extends Handler {
 
     @Autowired
     private OrganRepository organRes;
+
+    @Autowired
+    private Cache cache;
+
 
     @RequestMapping("/index")
     @Menu(type = "admin", subtype = "im", access = false, admin = true)
@@ -139,11 +144,17 @@ public class SNSAccountIMController extends Handler {
         if (execute = MainUtils.secConfirm(secRes, super.getOrgi(request), confirm)) {
             SNSAccount snsAccount = snsAccountRes.findByIdAndOrgi(id, super.getOrgi(request));
             if (snsAccountRes != null) {
+                // 删除网站渠道记录
                 snsAccountRes.delete(snsAccount);
+                /**
+                 * 删除网站渠道客服配置
+                 */
                 CousultInvite coultInvite = invite.findBySnsaccountidAndOrgi(snsAccount.getSnsid(), super.getOrgi(request));
                 if (coultInvite != null) {
                     invite.delete(coultInvite);
                 }
+                // 删除缓存
+                cache.deleteConsultInviteBySnsidAndOrgi(snsAccount.getSnsid(), super.getOrgi(request));
             }
         }
 

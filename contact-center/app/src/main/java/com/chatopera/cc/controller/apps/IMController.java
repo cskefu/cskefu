@@ -442,7 +442,7 @@ public class IMController extends Handler {
     @RequestMapping("/{id}/userlist")
     @Menu(type = "im", subtype = "inlist", access = true)
     public void inlist(HttpServletRequest request, HttpServletResponse response, @PathVariable String id,
-            @Valid String userid) throws IOException {
+                       @Valid String userid) throws IOException {
         response.setHeader("Content-Type", "text/html;charset=utf-8");
         if (StringUtils.isNotBlank(userid)) {
             BlackEntity black = cache.findOneSystemByIdAndOrgi(userid, Constants.SYSTEM_ORGI);
@@ -642,8 +642,8 @@ public class IMController extends Handler {
         if (StringUtils.isNotBlank(
                 appid)
                 && ((!blackOpt.isPresent())
-                        || (blackOpt.get().getEndtime() != null && blackOpt.get().getEndtime().before(
-                                new Date())))) {
+                || (blackOpt.get().getEndtime() != null && blackOpt.get().getEndtime().before(
+                new Date())))) {
 
             String randomUserId; // 随机生成OnlineUser的用户名，使用了浏览器指纹做唯一性KEY
             if (StringUtils.isNotBlank(userid)) {
@@ -753,7 +753,7 @@ public class IMController extends Handler {
                     // 验证 OnlineUser 信息
                     if (contacts != null && StringUtils.isNotBlank(
                             contacts.getName())) { // contacts用于传递信息，并不和 联系人表发生 关联，contacts信息传递给 Socket.IO，然后赋值给
-                                                   // AgentUser，最终赋值给 AgentService永久存储
+                        // AgentUser，最终赋值给 AgentService永久存储
                         consult = true;
                         // 存入 Cookies
                         if (invite.isConsult_info_cookies()) {
@@ -777,7 +777,7 @@ public class IMController extends Handler {
                             if (StringUtils.isNotBlank(contacts.getSkypeid())) {
                                 Cookie skypeid = new Cookie(
                                         "skypeid", MainUtils.encryption(
-                                                URLEncoder.encode(contacts.getSkypeid(), "UTF-8")));
+                                        URLEncoder.encode(contacts.getSkypeid(), "UTF-8")));
                                 skypeid.setMaxAge(3600);
                                 response.addCookie(skypeid);
                             }
@@ -960,15 +960,33 @@ public class IMController extends Handler {
                 }
                 view.addObject("commentList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_COMMENT_DIC));
                 view.addObject("commentItemList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_COMMENT_ITEM_DIC));
-                view.addObject("welcomeAd",
-                        MainUtils.getPointAdv(MainContext.AdPosEnum.WELCOME.toString(), skill, orgi));
-                view.addObject("figureAds",
-                        MainUtils.getPointAdvs(MainContext.AdPosEnum.IMAGE.toString(), skill, orgi));
+
+                /**
+                 * 绑定广告位信息，确定对应的组织机构；广告是在该组织机构下，管理的【客服设置】
+                 * 1）查找对应的网站渠道，如果找到对应的网站渠道，则设置为该网站渠道所属的组织机构
+                 * 2）该渠道不属于网站渠道，那么是来自于其他渠道，查看其是否绑定技能组，如果绑定技能组，则使用绑定技能组的 ID
+                 */
+                String adsAttachedOrgan = null;
+                if (StringUtils.isNotEmpty(invite.getSnsaccountid())) {
+                    SNSAccount snsAccount = snsAccountRes.findBySnsidAndOrgi(invite.getSnsaccountid(), orgi);
+                    if (snsAccount != null) {
+                        adsAttachedOrgan = snsAccount.getOrgan();
+                    }
+                } else if (StringUtils.isNotEmpty(skill)) {
+                    adsAttachedOrgan = skill;
+                }
+
+                if (StringUtils.isNotEmpty(adsAttachedOrgan)) {
+                    view.addObject("welcomeAd",
+                            MainUtils.getPointAdv(MainContext.AdPosEnum.WELCOME.toString(), adsAttachedOrgan, orgi));
+                    view.addObject("figureAds",
+                            MainUtils.getPointAdvs(MainContext.AdPosEnum.IMAGE.toString(), adsAttachedOrgan, orgi));
+                }
 
                 // 确定"接受邀请"被处理后，通知浏览器关闭弹出窗口
                 OnlineUserProxy.sendWebIMClients(userid, "accept");
 
-                // 更新InviteRecord
+                // 更新 InviteRecord
                 logger.info("[index] update inviteRecord for user {}", userid);
                 final Date threshold = new Date(System.currentTimeMillis() - Constants.WEBIM_AGENT_INVITE_TIMEOUT);
                 Page<InviteRecord> inviteRecords = inviteRecordRes.findByUseridAndOrgiAndResultAndCreatetimeGreaterThan(
@@ -1194,9 +1212,9 @@ public class IMController extends Handler {
     @RequestMapping("/leavemsg/save")
     @Menu(type = "admin", subtype = "user")
     public ModelAndView leavemsgsave(HttpServletRequest request,
-            @Valid String appid,
-            @Valid LeaveMsg msg,
-            @Valid String skillId) {
+                                     @Valid String appid,
+                                     @Valid LeaveMsg msg,
+                                     @Valid String skillId) {
         if (StringUtils.isNotBlank(appid)) {
             snsAccountRepository.findBySnsid(appid).ifPresent(p -> {
                 CousultInvite invite = inviteRepository.findBySnsaccountidAndOrgi(appid, Constants.SYSTEM_ORGI);
@@ -1219,7 +1237,7 @@ public class IMController extends Handler {
     @RequestMapping("/refuse")
     @Menu(type = "im", subtype = "refuse", access = true)
     public void refuse(HttpServletRequest request, HttpServletResponse response, @Valid String orgi,
-            @Valid String appid, @Valid String userid, @Valid String sessionid, @Valid String client) throws Exception {
+                       @Valid String appid, @Valid String userid, @Valid String sessionid, @Valid String client) throws Exception {
         OnlineUserProxy.refuseInvite(userid, orgi);
         final Date threshold = new Date(System.currentTimeMillis() - Constants.WEBIM_AGENT_INVITE_TIMEOUT);
         Page<InviteRecord> inviteRecords = inviteRecordRes.findByUseridAndOrgiAndResultAndCreatetimeGreaterThan(
