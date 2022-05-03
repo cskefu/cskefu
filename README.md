@@ -1,6 +1,6 @@
 <div align=right>
 
-[主页](https://www.cskefu.com/)　|　[邮件列表](https://lists.cskefu.com/cgi-bin/mailman/listinfo/dev)　|　[博客专栏](https://chatopera.blog.csdn.net/)　|　[路线图](https://github.com/chatopera/cskefu.roadmap)
+[主页](https://www.cskefu.com/)　|　[邮件列表](https://lists.cskefu.com/cgi-bin/mailman/listinfo/dev)　|　[博客专栏](https://chatopera.blog.csdn.net/)　|　[路线图](https://chatopera.github.io/cskefu.roadmap/)
 
 </div>
 
@@ -174,7 +174,7 @@
 在春松客服开源社区，我们建立关系、发现认同、合作共赢！
 
 - 如何加入春松客服开源社区，参考[文档](https://www.cskefu.com/join-us/)
-- 如何了解春松客服的开发计划，参考[文档](https://github.com/chatopera/cskefu.roadmap)
+- 如何了解春松客服的开发计划，参考[文档](https://chatopera.github.io/cskefu.roadmap/)
 - 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
 - 如何提交代码，参考[文档](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
 - 如何参与春松客服社区活动：[成为春松客服开源之夏 2022 导师，火热招募中 🔥 🔥 🔥](https://github.com/chatopera/cskefu/issues/673)
