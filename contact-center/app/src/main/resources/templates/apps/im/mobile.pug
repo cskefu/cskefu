@@ -19,7 +19,10 @@ html
         meta(name='viewport', content='width=device-width,maximum-scale=1,initial-scale=1,initial-scale=1,user-scalable=no')
         meta(name='apple-mobile-web-app-capable', content='yes')
         title 智能客服
-        link(rel='shortcut icon', type='image/x-icon', href='/images/favicon.ico?t=1489039620156')
+        if systemConfig != null && systemConfig.favlogo != null
+            link(rel='shortcut icon', type='image/x-icon', href='/res/image.html?id=' + systemConfig.favlogo)
+        else
+            link(rel='shortcut icon', type='image/x-icon', href='/images/favicon.ico?t=1489039620156')
         link(rel='stylesheet', type='text/css', href='/im/css/ukefu.css')
         link#skin(rel='stylesheet', type='text/css', href='/im/css/default/ukefu.css')
         //  kindeditor 
