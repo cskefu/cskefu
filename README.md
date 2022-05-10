@@ -177,7 +177,6 @@
 - 如何了解春松客服的开发计划，参考[文档](https://chatopera.github.io/cskefu.roadmap/)
 - 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
 - 如何提交代码，参考[文档](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
-- 如何参与春松客服社区活动：[成为春松客服开源之夏 2022 导师，火热招募中 🔥 🔥 🔥](https://github.com/chatopera/cskefu/issues/673)
 - 如何最新的春松客服开发进展：订阅[春松客服邮件列表](https://lists.cskefu.com/cgi-bin/mailman/listinfo/dev)
 - 如何获得春松客服商业插件和服务，参考[文档](https://www.chatopera.com/price.html)
 
