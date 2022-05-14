@@ -11,4 +11,4 @@ baseDir=$(cd `dirname "$0"`;pwd)
 [ -z "${BASH_SOURCE[0]}" -o "${BASH_SOURCE[0]}" = "$0" ] || return
 cd $baseDir/..
 docker-compose pull
-docker-compose up -d contact-center
+docker-compose --compatibility up -d contact-center
