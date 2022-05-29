@@ -1,7 +1,7 @@
 #! /bin/bash 
 ###########################################
 # Install All public plugins
-# Copyright (2019) 北京华夏春松科技有限公司
+# Copyright (2019-2022) 北京华夏春松科技有限公司
 ###########################################
 
 # constants
@@ -24,7 +24,7 @@ function install_plugin(){
 cd $baseDir/..
 echo "Inspect plugins -->" `pwd`
 for x in `ls .`; do
-    if [ $x != "scripts" ] && [ -d ./$x ]; then
+    if [ $x != "scripts" ] && [ $x != "tmp" ] && [ -d ./$x ]; then
         install_plugin $x
         echo -e "\n"
     fi
