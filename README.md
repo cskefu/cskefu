@@ -8,6 +8,7 @@
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/chatopera/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/chatopera/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/blob/osc/LICENSE "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![Docker Tags](https://raw.githubusercontent.com/hailiang-wang/Rishit-dagli/master/badges/docker.svg)](https://hub.docker.com/repository/docker/chatopera/contact-center/tags?page=1&ordering=last_updated "Get Latest Docker Images") [![Docker Pulls](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-30-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [https://www.cskefu.com](https://www.cskefu.com/) | [Github](https://github.com/chatopera/cskefu) | [Gitee](https://gitee.com/chatopera/cskefu) | [GitCode](https://gitcode.net/chatopera/cskefu)
@@ -111,10 +112,10 @@
 
 [https://cc.chatopera.com/](https://cc.chatopera.com/)
 
-| **登录账号** | **密码**  | **角色** |
-| ------------ | --------- | --------- |
+| **登录账号** | **密码**  | **角色**       |
+| ------------ | --------- | -------------- |
 | admin        | admin1234 | 系统超级管理员 |
-| zhangsan        | agent1234 | 客服坐席人员 |
+| zhangsan     | agent1234 | 客服坐席人员   |
 
 ### 网页端访客示例
 
@@ -127,6 +128,13 @@
 [https://oh-my.cskefu.com/im/text/0nhckh.html](https://oh-my.cskefu.com/im/text/0nhckh.html)
 
 ## 快速开始
+
+### 春松客服用户使用指南
+
+- 快速的了解和介绍春松客服
+- 快速的查找和春松客服相关的材料
+
+下载[《春松客服用户使用指南》](https://www.cskefu.com/moment/825.html/)。
 
 ### 安装部署
 
@@ -148,7 +156,6 @@
 
 超过 85% 的春松客服企业客户通过 Chatopera 云服务上线机器人客服！7x24 小时在线，接待访客，辅助人工坐席，提升 10 倍工作效率。Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音识别等组件，标准化聊天机器人开发。
 
-- [春松客服安装机器人客服插件](https://docs.chatopera.com/products/cskefu/work-chatbot/install.html)
 - [集成 Chatopera 云服务](https://docs.chatopera.com/products/cskefu/work-chatbot/bot-agent.html)
 - [设定知识库、对话技能：欢迎语、按钮、图文消息等](https://docs.chatopera.com/products/cskefu/work-chatbot/message-types.html)
 
