@@ -15,7 +15,7 @@
     </parent>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <argLine>-Dfile.encoding=UTF-8</argLine>
     </properties>
     <dependencies>
@@ -384,6 +384,19 @@
             <groupId>com.chatopera.bot</groupId>
             <artifactId>sdk</artifactId>
             <version>3.5.0</version>
+        </dependency>
+
+        <!-- Required for Java 11 https://github.com/chatopera/cskefu/issues/714 -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.1</version>
         </dependency>
     </dependencies>
     <repositories>

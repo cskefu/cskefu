@@ -1,4 +1,4 @@
-FROM chatopera/java-1.8.0-amazon-corretto-jdk:1.0.0
+FROM chatopera/java:11
 MAINTAINER Hai Liang Wang <hain@chatopera.com>
 # base image is built with config/base/build.sh
 
