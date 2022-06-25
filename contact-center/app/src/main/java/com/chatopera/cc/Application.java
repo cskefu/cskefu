@@ -59,7 +59,7 @@ public class Application {
     private String multipartMaxRequest;
 
     /**
-     * 记载模块
+     * 加载模块
      */
     static {
         // CRM模块
@@ -84,6 +84,16 @@ public class Application {
     }
 
     /**
+     * 开源许可协议
+     */
+    protected static void license(){
+        System.out.println(">> 春松客服采用开源许可证：Apache License 2.0");
+        System.out.println(">> 详细介绍：https://docs.chatopera.com/products/cskefu/osc/license.html");
+        System.out.println(">> CSKeFu is released under Apache License 2.0");
+        System.out.println(">> Get details about CSKeFu License with https://docs.chatopera.com/products/cskefu/osc/license.html");
+    }
+
+    /**
      * Init local resources
      */
     protected static void serve(final String[] args) {
@@ -96,8 +106,7 @@ public class Application {
             SpringApplication app = new SpringApplicationBuilder(Application.class)
                     .properties("spring.config.name:application,git")
                     .build();
-            System.out.println("春松客服采用开源许可证：Apache License 2.0");
-            System.out.println("详细介绍：https://docs.chatopera.com/products/cskefu/osc/license.html");
+            Application.license();
             BlessingAndUnblessing.print();
             app.setBannerMode(Banner.Mode.CONSOLE);
             app.setAddCommandLineProperties(false);
