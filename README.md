@@ -11,7 +11,7 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-[https://www.cskefu.com](https://www.cskefu.com/) | [Github](https://github.com/chatopera/cskefu) | [Gitee](https://gitee.com/chatopera/cskefu) | [GitCode](https://gitcode.net/chatopera/cskefu)
+[https://www.cskefu.com](https://www.cskefu.com/) | [GitHub](https://github.com/chatopera/cskefu) | [Gitee](https://gitee.com/chatopera/cskefu) | [GitCode](https://gitcode.net/chatopera/cskefu)
 
 :evergreen_tree: 春松客服是开源的智能客服系统，于 2018 年 9 月由 [Chatopera](https://www.chatopera.com) 发布，在开源社区协作中优化和完善，春松客服属于[春松客服开源社区](https://github.com/chatopera/cskefu#%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%BC%80%E6%BA%90%E7%A4%BE%E5%8C%BA)。
 
@@ -180,7 +180,7 @@
 
 在春松客服开源社区，我们建立关系、发现认同、合作共赢！
 
-- 了解春松客服采用的开源许可协议，参考[文档](https://docs.chatopera.com/products/cskefu/osc/license.html)
+- 了解春松客服采用的开源许可协议，参考[文档](https://www.cskefu.com/2022/06/24/cskefu-opensource-license/)
 - 了解春松客服的开发计划，参考[文档](https://chatopera.github.io/cskefu.roadmap/)
 - 加入春松客服开源社区，参考[文档](https://www.cskefu.com/join-us/)
 - 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
@@ -280,6 +280,6 @@
 
 Copyright (2018-2022) <a href="https://www.chatopera.com/" target="_blank">北京华夏春松科技有限公司</a>
 
-[Apache License Version 2.0](https://github.com/chatopera/cskefu/blob/osc/LICENSE)
+[Apache License Version 2.0](https://www.cskefu.com/2022/06/24/cskefu-opensource-license/)
 
 ![image](./public/assets/screenshot-20220323-163051.jpg)
