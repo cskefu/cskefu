@@ -11,7 +11,7 @@ ENV APPLICATION_CUSTOMER_ENTITY=$APPLICATION_CUSTOMER_ENTITY
 ENV APPLICATION_BUILD_DATESTR=$APPLICATION_BUILD_DATESTR
 
 LABEL org.label-schema.vcs-ref=$VCS_REF \
-          org.label-schema.vcs-url="https://github.com/chatopera/cskefu"
+          org.label-schema.vcs-url="https://www.cskefu.com"
 
 # create dirs
 RUN /bin/bash -c "mkdir -p /{data,logs}"
