@@ -90,7 +90,7 @@ html
                     if systemConfig && systemConfig.loginlogo
                         img(src='/res/image.html?id=' + systemConfig.loginlogo style="height:60px;width:220px;")
                     else
-                        img(src="images/logo2.png" style="height:60px;width:220px;")
+                        img(src="images/logo2.png" style="width:220px;")
             .login-box-body
                 p.login-box-msg 账号密码登陆
                 form#loginForm.layui-form(action="/login.html" method="post")
