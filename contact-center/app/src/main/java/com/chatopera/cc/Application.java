@@ -88,9 +88,9 @@ public class Application {
      */
     protected static void license(){
         System.out.println(">> 春松客服采用开源许可证：Apache License 2.0");
-        System.out.println(">> 详细介绍：https://docs.chatopera.com/products/cskefu/osc/license.html");
+        System.out.println(">> 详细介绍：https://www.cskefu.com/cskefu-opensource-license");
         System.out.println(">> CSKeFu is released under Apache License 2.0");
-        System.out.println(">> Get details about CSKeFu License with https://docs.chatopera.com/products/cskefu/osc/license.html");
+        System.out.println(">> Get details about CSKeFu License with https://www.cskefu.com/cskefu-opensource-license");
     }
 
     /**
