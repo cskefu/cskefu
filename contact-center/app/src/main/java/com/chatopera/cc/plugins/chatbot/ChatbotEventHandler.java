@@ -153,6 +153,10 @@ public class ChatbotEventHandler {
                                 client.sendEvent(MainContext.MessageType.MESSAGE.toString(), faqhotmsg);
                             }
                         }
+                    } else if (result.getRc() == 999 || result.getRc() == 998) {
+                        logger.error("[chat] chatbot agent response rc {}, error {}", result.getRc(), result.getError());
+                    } else {
+                        logger.error("[chat] chatbot agent response rc {}, error {}", result.getRc(), result.getError());
                     }
                 }
 

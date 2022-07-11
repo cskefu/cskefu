@@ -87,11 +87,11 @@ public class ChatbotEventSubscription {
         ChatMessage message = SerializeUtil.deserialize(payload);
         try {
             try {
-				chat(message);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+                chat(message);
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         } catch (MalformedURLException e) {
             logger.error("[onMessage] error", e);
         } catch (ChatbotException e) {
@@ -242,7 +242,7 @@ public class ChatbotEventSubscription {
                                 sugg.put("type", "qlist");
                                 suggs.put(sugg);
                                 // set the maximum suggest list as only seven items
-                                if(i == 6){
+                                if (i == 6) {
                                     break;
                                 }
                             }
@@ -310,9 +310,13 @@ public class ChatbotEventSubscription {
                         }
                     }
                 }
+            } else if (result.getRc() == 999 || result.getRc() == 998) {
+                logger.error("[chat] chatbot agent response rc {}, error {}", result.getRc(), result.getError());
+            } else {
+                logger.error("[chat] chatbot agent response rc {}, error {}", result.getRc(), result.getError());
             }
         } else {
-            logger.warn("[chat] can not get expected response rc {}, error {}", result.getRc(), result.getError());
+            logger.warn("[chat] can not get expected response ", result.toJSON().toString());
         }
     }
 
@@ -356,13 +360,13 @@ public class ChatbotEventSubscription {
         cache.findOneAgentUserByUserIdAndOrgi(userid, orgi).ifPresent(p -> {
             p.setChatbotround(p.getChatbotround() + 1);
             try {
-				if (data.has("logic_is_unexpected") && data.getBoolean("logic_is_unexpected")) {
-				    p.setChatbotlogicerror(p.getChatbotlogicerror() + 1);
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+                if (data.has("logic_is_unexpected") && data.getBoolean("logic_is_unexpected")) {
+                    p.setChatbotlogicerror(p.getChatbotlogicerror() + 1);
+                }
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             agentUserRes.save(p);
         });
 

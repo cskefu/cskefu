@@ -383,7 +383,7 @@
         <dependency>
             <groupId>com.chatopera.bot</groupId>
             <artifactId>sdk</artifactId>
-            <version>3.5.0</version>
+            <version>3.5.1</version>
         </dependency>
 
         <!-- Required for Java 11 https://github.com/chatopera/cskefu/issues/714 -->
