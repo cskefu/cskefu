@@ -79,8 +79,7 @@ public class ApiChatbotController extends Handler {
     @Autowired
     private ConsultInviteRepository consultInviteRes;
 
-    private final static String botServiceProvider = SystemEnvHelper.getenv(
-            ChatbotConstants.BOT_PROVIDER, ChatbotConstants.DEFAULT_BOT_PROVIDER);
+    private final static String botServiceProvider = SystemEnvHelper.getenv(ChatbotConstants.BOT_PROVIDER, ChatbotConstants.DEFAULT_BOT_PROVIDER);
 
     /**
      * 聊天机器人
@@ -114,8 +113,7 @@ public class ApiChatbotController extends Handler {
                     json = delete(j, logined.getId(), logined.getOrgi());
                     break;
                 case "fetch":
-                    json = fetch(
-                            j, logined.getId(), logined.isAdmin(), orgi, super.getP(request), super.getPs(request));
+                    json = fetch(j, logined.getId(), logined.isAdmin(), orgi, super.getP(request), super.getPs(request));
                     break;
                 case "update":
                     json = update(j);
@@ -204,8 +202,7 @@ public class ApiChatbotController extends Handler {
         }
 
         try {
-            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
-                    c.getClientId(), c.getSecret(), botServiceProvider);
+            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(c.getClientId(), c.getSecret(), botServiceProvider);
             if (bot.exists()) {
                 c.setEnabled(isEnabled);
                 chatbotRes.save(c);
@@ -344,8 +341,7 @@ public class ApiChatbotController extends Handler {
 
         try {
             logger.info("[update] BOT_PROVIDER {}", botServiceProvider);
-            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
-                    c.getClientId(), c.getSecret(), botServiceProvider);
+            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(c.getClientId(), c.getSecret(), botServiceProvider);
 
             Response result = bot.command("GET", "/");
             logger.info("[update] bot details response", result.toJSON().toString());
@@ -365,20 +361,20 @@ public class ApiChatbotController extends Handler {
                     invite.setAiname(c.getName());
                 }
                 c.setName(botDetails.getString("name"));
-
+            } else if (result.getRc() == 999 || result.getRc() == 998) {
+                logger.error("[chat] chatbot agent response rc {}, error {}", result.getRc(), result.getError());
+                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
+                resp.addProperty(RestUtils.RESP_KEY_ERROR, result.getError());
+                return resp;
             } else {
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
-                resp.addProperty(
-                        RestUtils.RESP_KEY_ERROR,
-                        "Chatopera 云服务：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。提示：该机器人不存在，请先创建机器人, 登录 https://bot.chatopera.com");
+                resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera 云服务：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。提示：该机器人不存在，请先创建机器人, 登录 https://bot.chatopera.com");
                 return resp;
             }
         } catch (ChatbotException e) {
             logger.error("bot create error", e);
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
-            resp.addProperty(
-                    RestUtils.RESP_KEY_ERROR,
-                    "Chatopera 云服务：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。");
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera 云服务：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。");
             return resp;
         } catch (MalformedURLException e) {
             logger.error("bot request error", e);
@@ -414,8 +410,7 @@ public class ApiChatbotController extends Handler {
             return resp;
         }
 
-        Page<Chatbot> records = chatbotRes.findWithPagination(
-                new PageRequest(p, ps, Sort.Direction.DESC, "createtime"));
+        Page<Chatbot> records = chatbotRes.findWithPagination(new PageRequest(p, ps, Sort.Direction.DESC, "createtime"));
 
         JsonArray ja = new JsonArray();
         for (Chatbot c : records) {
@@ -631,19 +626,21 @@ public class ApiChatbotController extends Handler {
                 resp.add(RestUtils.RESP_KEY_DATA, data);
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
                 return resp;
+            } else if (result.getRc() == 999 || result.getRc() == 998) {
+                logger.error("[chat] chatbot agent response rc {}, error {}", result.getRc(), result.getError());
+                resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
+                resp.addProperty(RestUtils.RESP_KEY_ERROR, result.getError());
+                return resp;
             } else {
                 // 创建失败
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
-                resp.addProperty(
-                        RestUtils.RESP_KEY_ERROR, "Chatopera 云服务：该机器人不存在，请先创建机器人, 登录 https://bot.chatopera.com");
+                resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera 云服务：该机器人不存在，请先创建机器人, 登录 https://bot.chatopera.com");
                 return resp;
             }
         } catch (ChatbotException e) {
             logger.error("bot create error", e);
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
-            resp.addProperty(
-                    RestUtils.RESP_KEY_ERROR,
-                    "Chatopera 云服务：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。");
+            resp.addProperty(RestUtils.RESP_KEY_ERROR, "Chatopera 云服务：无法访问该机器人，请确认【1】该服务器可以访问互联网，【2】该聊天机器人已经创建，【3】clientId和Secret正确设置。");
             return resp;
         } catch (MalformedURLException e) {
             logger.error("bot request error", e);
@@ -674,15 +671,9 @@ public class ApiChatbotController extends Handler {
         String textMessage = j.get("textMessage").getAsString();
 
         try {
-            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
-                    c.getClientId(), c.getSecret(), botServiceProvider);
+            com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(c.getClientId(), c.getSecret(), botServiceProvider);
 
-            JSONObject result = bot.faq(
-                    userId,
-                    textMessage,
-                    Double.parseDouble(SystemEnvHelper.getenv(ChatbotConstants.THRESHOLD_FAQ_BEST_REPLY, "0.8")),
-                    Double.parseDouble(SystemEnvHelper.getenv(ChatbotConstants.THRESHOLD_FAQ_SUGG_REPLY, "0.6"))
-            );
+            JSONObject result = bot.faq(userId, textMessage, Double.parseDouble(SystemEnvHelper.getenv(ChatbotConstants.THRESHOLD_FAQ_BEST_REPLY, "0.8")), Double.parseDouble(SystemEnvHelper.getenv(ChatbotConstants.THRESHOLD_FAQ_SUGG_REPLY, "0.6")));
             if (result.getInt("rc") == 0) {
                 JsonParser jsonParser = new JsonParser();
                 JsonElement data = jsonParser.parse(result.getJSONArray("data").toString());
@@ -693,22 +684,20 @@ public class ApiChatbotController extends Handler {
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
                 resp.addProperty(RestUtils.RESP_KEY_DATA, "查询不成功，智能问答引擎服务异常。");
             }
-        } catch (
-                MalformedURLException e) {
+        } catch (MalformedURLException e) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_6);
             resp.addProperty(RestUtils.RESP_KEY_DATA, "查询不成功，智能问答引擎地址不合法。");
-        } catch (
-                ChatbotException e) {
+        } catch (ChatbotException e) {
 
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_5);
             resp.addProperty(RestUtils.RESP_KEY_DATA, "查询不成功，智能问答引擎服务异常。");
         } catch (JsonSyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return resp;
     }
 
