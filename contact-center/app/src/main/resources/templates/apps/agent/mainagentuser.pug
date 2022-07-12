@@ -218,10 +218,9 @@ script(language='javascript').
             .layui-tab(style='margin-top:0px;')
                 ul.layui-tab-title
                     li.layui-this 访客
-                    if aisuggest && aisuggest == true
-                        li#robot(onclick="$('#dot').css('display','none')")
-                            span 智能机器人
-                            span#dot(style=" width: 7px;height: 7px;background: red;-moz-border-radius: 50%;-webkit-border-radius: 50%;border-radius: 50%;position: absolute;top: 5px;display: none")
+                    li#robot(onclick="$('#dot').css('display','none')")
+                        span 智能机器人
+                        span#dot(style=" width: 7px;height: 7px;background: red;-moz-border-radius: 50%;-webkit-border-radius: 50%;border-radius: 50%;position: absolute;top: 5px;display: inline-block")
                     li 历史
                     li 搜索历史消息
                 .layui-tab-content(style='padding: 5px 0px 0px;')
@@ -295,6 +294,18 @@ script(language='javascript').
                                             .ukefu-empty(style="background: none")
                                                 i.layui-icon 
                                                 div(style="") 未触发知识库查询
+                    else
+                        .layui-tab-item
+                            .box
+                                .box-title
+                                    h1.site-h1(style="background-color:#EEEEEE;")
+                                        | 知识库快捷
+                                .box-body(style="padding:0px 10px;")
+                                    ul#quickReplyBox.info-list.ukefu-quick-reply
+                                        li(style="list-style: none;background-image: url();padding: 50px 0 50px;")
+                                            .ukefu-empty(style="background: none")
+                                                i.layui-icon 
+                                                div(style="") 知识库快捷：提高用户满意度，提升工作效率。系统管理员进入【系统-智能对话机器人】绑定渠道开始使用。
                     .layui-tab-item
                         .box
                             .box-title
