@@ -397,6 +397,7 @@ CREATE TABLE `cs_stream_file` (
   `thumbnail` mediumblob COMMENT '缩略图',
   `mime` varchar(200) DEFAULT NULL COMMENT '文件类型 Content Type',
   `cooperation` mediumblob COMMENT '协作文件',
+  `createtime` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='文件';
 /*!40101 SET character_set_client = @saved_cs_client */;
