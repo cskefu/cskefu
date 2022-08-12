@@ -186,6 +186,7 @@
 
 - 了解春松客服采用的开源许可协议，参考[文档](https://www.cskefu.com/2022/06/24/cskefu-opensource-license/)
 - 了解春松客服的开发计划，参考[文档](https://chatopera.github.io/cskefu.roadmap/)
+- 加入开源社区运营，成为社区合伙人，参考[文档](https://mp.weixin.qq.com/s/TLE87YX4k097iOXnV4WVSw)
 - 加入春松客服开源社区，参考[文档](https://www.cskefu.com/join-us/)
 - 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
 - 如何提交代码，参考[文档](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
