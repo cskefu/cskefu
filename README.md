@@ -60,19 +60,23 @@
 
 - 账号及组织机构管理：按组织、角色分配账号权限
 
-- 访客渠道：支持 H5、PC 浏览器和[微信小程序原生](https://github.com/chatopera/cskefu-wxapp)；一分钟接入对话窗口，支持技能组、邀请和关联联系人等
-
-- 联系人和客户管理：细粒度维护客户信息，自定义标签和打标签，记录来往历史等
-
 - 坐席监控：设置坐席监控角色的人员可以看到并干预访客会话
+
+- 联系人和客户管理：CRM 模块，管理联系人和客户，细粒度维护客户信息，自定义标签和打标签，记录来往历史等
+
+- 网页渠道组件：一分钟接入对话窗口，支持技能组、邀请和关联联系人等
+
+- Facebook 渠道组件：快速接入 [Facebook Messenger](https://www.messenger.com/) 渠道，通过 Messenger 支持 Facebook 粉丝页、[Shopify](https://www.shopify.com/) 等海外社交、电商平台
 
 - 坐席工作台：汇聚多渠道访客请求，坐席根据策略自动分配，自动弹屏，转接等
 
-- 机器人客服：集成 [Chatopera 云服务](https://bot.chatopera.com)，利用 Chatopera 强大的聊天机器人解决方案，提升客户服务工作中的自动化、智能化；机器人客服既能通过知识库联想，知识库快捷支持坐席人员，也可以直接为访客提供查询、数据收集等功能
+- 机器人客服：与[Chatopera 云服务](/products/chatbot-platform/index.html)集成
 
 - 企业聊天：支持企业员工在春松客服系统中群聊和私聊
 
 - 质检：历史会话、服务小结、服务反馈及相关报表
+
+了解功能详细介绍，参考[文档中心](https://docs.chatopera.com/products/cskefu/index.html)。
 
 ## 产品演示
 
