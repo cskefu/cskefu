@@ -272,6 +272,12 @@
   - [掌握春松客服前端框架 Pugjs，介绍及使用注意事项](https://blog.csdn.net/samurais/article/details/114576611)
 - [提交代码](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
 
+## 微信公众号
+
+及时获得产品更新、活动分享等信息，关注春松客服公众号。
+
+![春松客服公众号](./public/assets/cskefu-wechat-gzh.png)
+
 ## 鸣谢
 
 [Amazon AWS 赞助春松客服服务器资源 5W RMB（2021 年度）](https://aws.amazon.com)
