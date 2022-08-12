@@ -1,0 +1,179 @@
+extends /apps/include/layout.pug
+
+block append head
+    script(src="/js/otnContent.js")
+
+block content
+    .layui-side.layui-bg-black
+        .layui-side-scroll
+            include /apps/marketing/left.pug
+    #otn-edit-content.layui-body
+        .layui-side-scroll
+            .row
+                input#copyInput(type="hidden")
+                .col-lg-12
+                    .ukefu-customer-div.setting-wrapper
+                        .box.default-box
+                            .box-header
+                                h1.site-h1
+                                    | Messenger OTN 列表 &nbsp;
+            blockquote.layui-elem-quote.layui-quote-nm
+                i.layui-icon(style="color:gray") &#xe60b;
+                font(color="#999").layui-word-aux 请勿使用负载字段发送密码、用户凭证、可识别用户身份的信息（即，姓名或邮箱等可单独用于联系用户或识别其身份的信息）或其他敏感信息（如健康状况、财务、支付或持卡人数据，或根据适用法律定义为敏感信息的其他类别的信息
+            .row(style="padding:5px;")
+                h1(style="width: 100%;")
+                    span(style="padding: 0 5px;") Messenger &nbsp;
+                    select#queryPageId(name='queryPageId')
+                        option(value) 请选择渠道...
+                        for m in fbMessengers
+                            option(value=m.pageId, selected=m.pageId == queryPageId)= m.name
+                    span(style="float:right;")
+                        button.layui-btn.layui-btn-small.green(href="/apps/messenger/otn/add.html", data-toggle="load", data-target="#otn-edit-content")
+                            | 创建OTN
+            .row(style="padding:5px;")
+                .col-lg-12
+                    table.layui-table(lay-skin="line", style="table-layout: fixed; word-break: break-all")
+                        thead
+                            tr
+                                th 名称
+                                th Messenger
+                                th(style="width:100px") 点击
+                                th(style="width:100px") 订阅
+                                th(style="width:80px") 创建时间
+                                th(style="width:80px") 发送时间
+                                th(style="width:60px") 状态
+                                th(style="width:60px") 分享链接
+                                th(style="width:180px;white-space:nowrap;", nowrap="nowrap") 操作
+                        tbody
+                            - var state = {'create' :'新建','sending':'发送中','finish':'已发送'}
+                            for item in otns.content
+                                tr
+                                    td(title="", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")
+                                        | #{item.name}
+                                    td(title="", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")
+                                        | #{item.fbMessenger.name}
+                                    td(title="", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")
+                                        | #{item.melinkNum}
+                                    td(title="", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")
+                                        | #{item.subNum}
+                                    td
+                                        | #{pugHelper.formatDate("yyyy-MM-dd HH:mm:ss", item.createtime)}
+                                    td
+                                        | #{item.sendtime ? pugHelper.formatDate("yyyy-MM-dd HH:mm:ss", item.sendtime) : ''}
+                                    td(title="", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")
+                                        | #{state[item.status]}
+                                    td(style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")
+                                        button.layui-btn.layui-btn-small.webhook(type="button", data-id=item.id, data-page=item.pageId) 复制
+                                    td(title="", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")
+                                        if(item.status == 'create')
+                                            a(href="/apps/messenger/otn/send.html?id=" + item.id, style="margin-left:10px;", data-toggle="tip", title="请确认是否发送？")
+                                                i.layui-icon 
+                                                |                                 发送
+                                            a(href="/apps/messenger/otn/edit.html?id=" + item.id, data-toggle="load", data-target="#otn-edit-content")
+                                                i.layui-icon 
+                                                |                                 编辑
+                                        a(href="/apps/messenger/otn/delete.html?id=" + item.id, style="margin-left:10px;", data-toggle="tip", title="请确认是否删除？")
+                                            i.layui-icon(style="color:red;") ဆ
+                                            |                                 删除
+            .row(style='padding:5px;')
+                .col-lg-12#page(style='text-align:center;')
+
+    script.
+        layui.use(['laypage', 'layer'], function () {
+            var laypage = layui.laypage,
+                layer = layui.layer;
+            laypage({
+                cont: 'page',
+                pages: #{ otns.totalPages }, //总页数
+                curr: #{ otns.number + 1 },
+                groups: 5, //连续显示分页数
+                jump: function (data, first) {
+                    if (!first) {
+                        location.href = "/apps/messenger/otn/index.html?p=" + data.curr;
+                    }
+                }
+            });
+        });
+
+        layui.use('layer', function () {
+            var layer = layui.layer;
+            var msg = '#{msg}'
+            if (msg == 'save_ok')
+                layer.msg('OTN创建成功', {icon: 1, time: 1000})
+            else if (msg == 'save_no_PageId')
+                layer.msg('Page ID已存在', {icon: 2, time: 3000})
+            else if (msg == 'send_ok')
+                layer.msg('发送成功', {icon: 1, time: 3000})
+
+        });
+
+        $(function () {
+            $('.webhook').each(function (i, n) {
+                var id = $(n).data("id");
+                var pageId = $(n).data("page");
+                var webhook = "https://m.me/" + pageId + "?ref=" + id;
+                $(n).on('click', function () {
+                    Clipboard.copy(webhook);
+                })
+            });
+
+            $('#queryPageId').change(function () {
+                location.search = "queryPageId=" + $(this).val();
+            })
+        })
+
+        window.Clipboard = (function (window, document, navigator) {
+            var textArea,
+                copy;
+
+            // 判断是不是ios端
+            function isOS() {
+                return navigator.userAgent.match(/ipad|iphone/i);
+            }
+
+            //创建文本元素
+            function createTextArea(text) {
+                textArea = document.createElement('textArea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+            }
+
+            //选择内容
+            function selectText() {
+                var range,
+                    selection;
+                if (isOS()) {
+                    range = document.createRange();
+                    range.selectNodeContents(textArea);
+                    selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    textArea.setSelectionRange(0, 999999);
+                } else {
+                    textArea.select();
+                }
+            }
+
+            //复制到剪贴板
+            function copyToClipboard() {
+                try {
+                    if (document.execCommand("Copy")) {
+                        layer.msg('me link 已复制到剪切板', {icon: 1, time: 1000, offset: 'rt'})
+                    } else {
+                        layer.msg('me link 复制失败请手动复制', {icon: 2, time: 1000, offset: 'rt'})
+                    }
+                } catch (err) {
+                    layer.msg('me link 复制失败请手动复制', {icon: 2, time: 1000, offset: 'rt'})
+                }
+                document.body.removeChild(textArea);
+            }
+
+            copy = function (text) {
+                createTextArea(text);
+                selectText();
+                copyToClipboard();
+            };
+            return {
+                copy: copy
+            };
+        })(window, document, navigator);

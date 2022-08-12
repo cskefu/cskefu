@@ -1,0 +1,61 @@
+.uk-layui-form(style="margin:20px auto")
+    form.layui-form(action="/admin/messenger/update.html", method="post")
+        input(type="hidden", name="id", value=fb.id)
+        input(type="hidden", name="status", value=fb.status)
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label(style="width:150px;")
+                    | 技能组
+                .layui-input-inline
+                    input.layui-input(style="width: 200px;", type="text", name="name", required="", lay-verify="required", autocomplete="off", value=organ.name, disabled="disabled")
+                    i.csfont(style='position: absolute;right: 3px;top: 8px;font-size: 20px;color: #e6e6e6') &#xe67d;
+                .layui-form-mid.layui-word-aux
+                    |  &nbsp;&nbsp;&nbsp;该渠道的人工服务由哪个技能组接待，默认为当前技能组，在右上角切换
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label(style="width:150px;")
+                    | 名称
+                    font(color='red') *
+                .layui-input-inline
+                    input.layui-input(style="width: 200px;", type="text", name="name", required="", lay-verify="required", autocomplete="off", value=fb.name)
+                .layui-form-mid.layui-word-aux
+                    |  &nbsp;&nbsp;&nbsp;使用字符串命名该渠道
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label(style="width:150px;")
+                    | Page ID
+                    font(color='red') *
+                .layui-input-inline
+                    input.layui-input(style="width: 200px;", disabled ,type="text", name="pageId", required="", lay-verify="required", autocomplete="off", value=fb.pageId)
+                .layui-form-mid.layui-word-aux
+                    | &nbsp;&nbsp;&nbsp;Facebook Messenger 设置页面获得 Page Id
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label(style="width:150px;")
+                    | Access Token
+                    font(color='red') *
+                .layui-input-inline
+                    input.layui-input(style="width: 200px;", type="password", name="token", required="", lay-verify="required", autocomplete="off", value=fb.token)
+                .layui-form-mid.layui-word-aux
+                    | &nbsp;&nbsp;&nbsp;Facebook Messenger 设置页面获得 Access Token
+        .layui-form-item
+            .layui-inline
+                label.layui-form-label(style="width:150px;")
+                    | Verify Token
+                    font(color='red') *
+                .layui-input-inline
+                    input.layui-input(style="width: 200px;", type="text", name="verifyToken", required="", lay-verify="required", autocomplete="off", value=fb.verifyToken)
+                .layui-form-mid.layui-word-aux
+                    |  &nbsp;&nbsp;&nbsp;自定义，并且回填到 Facebook Messenger 设置页面
+        .layui-form-button
+            .layui-button-block
+                button.layui-btn(lay-submit="", lay-filter="formDemo") 提交
+                button.layui-btn.layui-btn-original(type="reset") 重置
+script.
+    layui.use('form', function () {
+        var form = layui.form();
+        form.render(); //更新全部
+    });
+    layui.use('element', function () {
+        var element = layui.element();
+    });

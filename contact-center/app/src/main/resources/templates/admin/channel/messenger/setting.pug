@@ -1,0 +1,86 @@
+block content
+    include head
+
+    .layui-tab
+        .layui-tab-content
+            .layui-tab-item.layui-show
+                form.layui-form(method='post', action="/admin/messenger/setting/save.html")
+                    input(type='hidden' name='id' value=fb.id)
+                    input.layui-input(type='checkbox', name='status', lay-skin='switch', lay-text="开启|关闭")
+                    .ukefu-customer-div.setting-wrapper
+                        .box.default-box
+                            .box-header
+                                h3.box-title 机器人客服
+                            .box-body(style="padding-top:5px;")
+                                .row: .col-lg-8
+                                    .ukefu-webim-prop
+                                        .ukefu-webim-tl(style="clear:both;") 1、转人工按钮文本
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 默认显示信息：转人工
+                                                    p(style="color:#888888;font-size:13px;margin-top:10px;") 访客在 Messenger 对话窗口，机器人客服转人工客服提示按钮文本
+                                                .col-lg-4
+                                                    input.layui-input(type='text', name='transferManualService', lay-verify='required', value=(transferManualService ? transferManualService : "转人工"))
+
+                                    .ukefu-webim-prop
+                                        .ukefu-webim-tl(style="clear:both;") 2、推荐问题提示文本
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 默认显示信息：您是否想问以下问题
+                                                    p(style="color:#888888;font-size:13px;margin-top:10px;") 机器人客服提示建议问题的文本
+                                                .col-lg-4
+                                                    input.layui-input(type='text', name='suggestQuestion', lay-verify='required', value=(suggestQuestion ? suggestQuestion : "您是否想问以下问题"))
+
+
+                                    .ukefu-webim-prop
+                                        .ukefu-webim-tl(style="clear:both;") 3、询问是否有帮助文本
+                                        .box-item
+                                            .row
+                                                .col-lg-8
+                                                    p 默认显示信息：以上答案是否对您有帮助
+                                                    p(style="color:#888888;font-size:13px;margin-top:10px;") 机器人客服询问回答是否有帮助的文本
+                                                .col-lg-4
+                                                    input.layui-input(type='text', name='evaluationAsk', lay-verify='required', value=(evaluationAsk ? evaluationAsk : "以上答案是否对您有帮助"))
+                                            .row: br
+                                            .row
+                                                .col-lg-8
+                                                    p 有帮助按钮文本
+                                                    p(style="color:#888888;font-size:13px;margin-top:10px;") 访客得到的上一条机器人回答有帮助
+                                                .col-lg-4
+                                                    input.layui-input(type='text', name='evaluationYes', lay-verify='required', value=(evaluationYes ? evaluationYes : "是"))
+                                            .row: br
+                                            .row
+                                                .col-lg-8
+                                                    p 有帮助后回复文本
+                                                    p(style="color:#888888;font-size:13px;margin-top:10px;") 访客反馈反馈有帮助后机器人回复，设置为空则不回复
+                                                .col-lg-4
+                                                    input.layui-input(type='text', name='evaluationYesReply', lay-verify='required', value=(evaluationYesReply ? evaluationYesReply : "感谢您的反馈，我们会做的更好！"))
+
+                                            .row: br
+                                            .row
+                                                .col-lg-8
+                                                    p 无帮助按钮文本
+                                                    p(style="color:#888888;font-size:13px;margin-top:10px;") 访客得到的上一条机器人回答没帮助
+                                                .col-lg-4
+                                                    input.layui-input(type='text', name='evaluationNo', lay-verify='required', value=(evaluationNo ? evaluationNo : "否"))
+                                            .row: br
+                                            .row
+                                                .col-lg-8
+                                                    p 无帮助后回复文本
+                                                    p(style="color:#888888;font-size:13px;margin-top:10px;") 访客反馈反馈没帮助后机器人回复，设置为空则不回复
+                                                .col-lg-4
+                                                    input.layui-input(type='text', name='evaluationNoReply', lay-verify='required', value=(evaluationNoReply ? evaluationNoReply : "感谢您的反馈，机器人在不断的学习！"))
+
+                    .row
+                        .col-lg-3
+                        .col-lg-9
+                            .layui-form-item
+                                .layui-input-block
+                                    button.layui-btn(lay-submit, lay-filter='formDemo') 保存
+                                    button.layui-btn.layui-btn-original(type='reset', onclick="location.reload()") 取消
+    script.
+        layui.use('form', function () {
+            var form = layui.form;
+        });

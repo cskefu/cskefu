@@ -1,0 +1,133 @@
+.row
+    .col-lg-12
+        .ukefu-customer-div.setting-wrapper
+            .box.default-box
+                .box-header
+                    h1.site-h1 新建OTN
+.row
+    .col-lg-12
+        .uk-layui-form(style="height: calc(100% + 10px);")
+            form.layui-form(action="/apps/messenger/otn/save.html", method="post")
+                input#preSubMessage(type="hidden", name="preSubMessage", value=otn.preSubMessage)
+                .layui-colla-item
+                    h2.layui-colla-title 基本信息
+                    .layui-colla-content.layui-show
+                        .layui-form-item
+                            .layui-inline
+                                label.layui-form-label 名称：
+                                .layui-input-inline
+                                    input.layui-input(type='text', name='name', required, lay-verify='required', autocomplete='off')
+                            .layui-inline
+                                font(color='red') *（必填项）
+                            .layui-inline
+                                label.layui-form-label(style='width:60px;line-height: 35px;') 渠道：
+                                .layui-input-inline(style='width:218px;margin-right:0px;padding-top:9px;')
+                                    select(name='pageId', required, lay-verify='required')
+                                        option(value="") 请选择渠道...
+                                        if fbMessengers
+                                            for m in fbMessengers
+                                                option(value=m.pageId)= m.name
+                            .layui-inline
+                                font(color='red') *（必填项）
+                .layui-colla-item
+                    h2.layui-colla-title 订阅邀请信息(2000字符)
+                    .layui-colla-content.layui-show
+                        blockquote.layui-elem-quote.layui-quote-nm
+                            i.layui-icon(style="color:gray") &#xe60b;
+                            font(color="#999").layui-word-aux 访客点击链接后发送订阅邀请信息给访客
+                        .layui-form-item
+                            .layui-inline(style="width: 380px;")
+                                label.layui-form-label(style="float: none;text-align: left;width:200px")
+                                    | 订阅邀请前消息1
+                                    //font(color='red') *（必填项）
+                                .layui-input-inline
+                                    #preSubMessage1.messageBox(name="preSubMessage1")
+                            .layui-inline(style="width: 380px;")
+                                label.layui-form-label(style="float: none;text-align: left;width:200px")
+                                    | 订阅邀请前消息2
+                                    //font(color='red') *（必填项）
+                                .layui-input-inline
+                                    #preSubMessage2.messageBox(name="preSubMessage2")
+                        .layui-form-item
+                            .layui-inline(style="width: 320px;height: 209px;")
+                                label.layui-form-label(style="float: none;text-align: left;width:200px")
+                                    | 订阅邀请
+                                    font(color='red') *（必填项,60字符）
+                                .layui-input-inline
+                                    textarea(name="subMessage", required="required", lay-verify="maxSubMessage", style="margin: 0px; width: 310px; height: 170px;resize:none;border: 1px solid #ccc")
+
+                .layui-colla-item
+                    h2.layui-colla-title 订阅成功提醒(2000字符)
+                    .layui-colla-content.layui-show
+                        .layui-input-inline
+                            .messageBox(name="successMessage")
+
+                .layui-colla-item
+                    h2.layui-colla-title 推送信息(2000字符)
+                    .layui-colla-content.layui-show
+                        blockquote.layui-elem-quote.layui-quote-nm
+                            i.layui-icon(style="color:gray") &#xe60b;
+                            font(color="#999").layui-word-aux 推送时间到达时，此内容通过OTN推送给访客。推送时间可以不设置，后续手动推送。
+                        .layui-form-item
+                            .layui-inline(style="width: 380px;")
+                                label.layui-form-label(style="float: none;text-align: left;width:200px") OTN内容
+                                .layui-input-inline
+                                    .messageBox(name="otnMessage")
+                            .layui-inline(style="width: 320px;height: 209px;")
+                                label.layui-form-label(style="float: none;text-align: left;width:200px") 推送时间
+                                .layui-input-inline
+                                    input#begin.layui-input.ukefu-input(name='sendtime', style="width:310px")
+
+                .layui-button-block(style="width: 700px;")
+                    button.layui-btn(lay-submit="", lay-filter="formDemo") 提交
+                    button.layui-btn.layui-btn-original(type="reset", onclick="location.reload()") 取消
+
+script.
+    layui.use('form', function () {
+        var form = layui.form();
+        form.render(); //更新全部
+
+        form.verify({
+            maxSubMessage: function (value) {
+                if (value.length > 50) {
+                    return '长度大于60！请重新输入';
+                }
+            }
+        });
+
+        form.on('submit(formDemo)', function () {
+
+        });
+    });
+
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+        document.getElementById('begin').onclick = function () {
+            var date = {
+                min: laydate.now(),
+                format: 'YYYY-MM-DD hh:mm:ss',
+                istoday: false,
+                istime: true
+            };
+            date.elem = this;
+            laydate(date);
+        }
+    })
+
+    layui.use('element', function () {
+        var element = layui.element();
+    });
+
+    $(".messageBox").otnContent();
+
+    function preSubMessageChange() {
+        var preSubMessage1 = JSON.parse($('#preSubMessage1 input').val() || '{}');
+        var preSubMessage2 = JSON.parse($('#preSubMessage2 input').val() || '{}');
+
+        $('#preSubMessage').val(JSON.stringify([preSubMessage1, preSubMessage2]))
+    }
+
+    $('#preSubMessage1').change(preSubMessageChange);
+    $('#preSubMessage2').change(preSubMessageChange);
+
+

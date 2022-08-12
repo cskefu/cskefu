@@ -1,0 +1,176 @@
+extends /admin/include/layout.pug
+
+block content
+    .row
+        input#copyInput(type="hidden")
+        #me-config.col-lg-12
+            h1.site-h1(style="background-color:#FFFFFF;")
+                | Messenger 列表 (#{size(fbMessengers)})
+                span(style="float:right;")
+                    .layui-btn-group
+                        if organ.skill == true
+                            button.layui-btn.layui-btn-small.green(href="/admin/messenger/add.html", data-toggle="ajax", data-width="800", data-height="400", data-title="创建 Messenger 渠道") 创建渠道
+                        else
+                            button.layui-btn.layui-btn-disabled.layui-btn-small.layui-btn-warm(data-toggle="tooltip" title="当前组织机构非技能组，不支持创建 Messenger 渠道，使用右上角菜单切换") 创建渠道
+                        button.layui-btn.layui-btn-small.layui-btn-normal(onclick='openExternalUrlWithBlankTarget("https://docs.chatopera.com/products/cskefu/channels/messenger/index.html")') 文档中心
+            .row(style="padding:5px;")
+                blockquote.layui-elem-quote.layui-quote-nm
+                    i.layui-icon(style="color:gray") &#xe60b;
+                    font(color="#999").layui-word-aux Messenger 是 Facebook 提供给企业、商铺、消费者之间相互连接的即时通信工具，与 Facebook 粉丝页、Instagram 和网页聊天等多渠道快速发起对话，春松客服支持与 Messenger 集成，如有疑问，阅读文档中心，获得详细使用指南。
+                .col-lg-12
+                    table.layui-table(lay-skin="line", style="table-layout: fixed; word-break: break-all")
+                        thead
+                            tr
+                                th(style="width:100px") 名称
+                                th 技能组
+                                th Page ID
+                                th(style="width:150px") 创建时间
+                                th
+                                    | 状态
+                                    i.layui-icon(style="color:gray" data-toggle="tooltip" title="处于关闭状态，只对该渠道支持 Facebook OTN 功能；在开启状态，即支持客服功能也支持 Facebook OTN 功能")  &#xe60b;
+                                th Webhook
+                                th(style="width:250px;white-space:nowrap;", nowrap="nowrap") 操作
+                        tbody
+                            for item in fbMessengers
+                                tr
+                                    td(title="#{item.name}", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")= item.name
+                                    td(title="", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")= organs[item.organ].name
+                                    td(title="#{item.pageId}", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")= item.pageId
+                                    td(title="", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")= pugHelper.formatDate("yyyy-MM-dd HH:mm:ss", item.createtime)
+                                    td(style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")
+                                        .fbStatus.layui-unselect.layui-form-switch.checkStatus.lay-filter(style="margin-top: 0px;width: 50px;", data-id=item.id, class={
+                                            'layui-form-onswitch': item.status != 'disabled',
+                                            'layui-form-offswitch': item.status == 'disabled'
+                                        })
+                                            i.checkStatusI
+                                    td(style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")
+                                        button.layui-btn.layui-btn-small.webhook(type="button", data-pageid=item.pageId) 复制
+                                    td(title="", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")
+                                        a(href="/admin/messenger/setting.html?id=" + item.id, data-toggle="load", data-target="#me-config")
+                                            i.layui-icon 
+                                            | 设置
+                                        a(href="/admin/messenger/edit.html?id=" + item.id, style="margin-left:10px;", data-toggle="ajax", data-width="800", data-height="400", data-title="编辑 Messenger 渠道")
+                                            i.layui-icon 
+                                            | 编辑
+                                        a(href="https://www.facebook.com/" + item.pageId, style="margin-left:10px;", target="_blank")
+                                            i.layui-icon &#xe634;
+                                            | 粉丝页
+                                        a(href="/admin/messenger/delete.html?id=" + item.id, style="margin-left:10px;", data-toggle="tip", title="请确认是否删除？")
+                                            i.layui-icon(style="color:red;") ဆ
+                                            | 删除
+
+    style.
+        .fbStatus.layui-form-onswitch .checkStatusI {
+            left: 38px;
+        }
+
+        .fbStatus.layui-form-onswitch:before {
+            content: '开启';
+            color: #ffffff;
+        }
+
+        .fbStatus.layui-form-offswitch:before {
+            content: '关闭';
+            color: #aaaaaa;
+            padding-left: 18px;
+        }
+
+    script.
+        // 打开链接
+        function openExternalUrlWithBlankTarget(externalUrl) {
+            window.open(externalUrl, "_blank");
+        }
+
+        layui.use('layer', function () {
+            var layer = layui.layer;
+            var msg = '#{msg}'
+            if (msg == 'save_ok')
+                layer.msg('渠道添加成功', {icon: 1, time: 1000})
+            else if (msg == 'update_ok')
+                layer.msg('保存成功', {icon: 1, time: 1000})
+            else if (msg == 'save_no_PageId')
+                layer.msg('Page ID已存在', {icon: 2, time: 3000})
+        });
+
+        $('.fbStatus').click(function () {
+            var isOpen = $(this).hasClass('layui-form-onswitch')
+            var id = $(this).data('id');
+            var status = !isOpen ? 'enabled' : 'disabled';
+
+            var that = this;
+
+            $.post('setStatus.html', {id, status}).success(function (msg) {
+                if (msg == 'ok') {
+                    if (isOpen) {
+                        $(that).removeClass('layui-form-onswitch');
+                        $(that).addClass('layui-form-offswitch');
+                    } else {
+                        $(that).removeClass('layui-form-offswitch');
+                        $(that).addClass('layui-form-onswitch');
+                    }
+                }
+            })
+        })
+
+        $('.webhook').each(function (i, n) {
+            var htmlOld = $(n).attr("data-pageId");
+            var webhook = window.location.protocol + "//" + window.location.host + "/messenger/webhook/" + htmlOld;
+            $(n).on('click', function () {
+                Clipboard.copy(webhook);
+            })
+        });
+        window.Clipboard = (function (window, document, navigator) {
+            var textArea,
+                copy;
+
+            // 判断是不是ios端
+            function isOS() {
+                return navigator.userAgent.match(/ipad|iphone/i);
+            }
+
+            //创建文本元素
+            function createTextArea(text) {
+                textArea = document.createElement('textArea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+            }
+
+            //选择内容
+            function selectText() {
+                var range,
+                    selection;
+                if (isOS()) {
+                    range = document.createRange();
+                    range.selectNodeContents(textArea);
+                    selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    textArea.setSelectionRange(0, 999999);
+                } else {
+                    textArea.select();
+                }
+            }
+
+            //复制到剪贴板
+            function copyToClipboard() {
+                try {
+                    if (document.execCommand("Copy")) {
+                        layer.msg('webhook已复制到剪切板', {icon: 1, time: 1000, offset: 'rt'})
+                    } else {
+                        layer.msg('webhook复制失败请手动复制', {icon: 2, time: 1000, offset: 'rt'})
+                    }
+                } catch (err) {
+                    layer.msg('webhook复制失败请手动复制', {icon: 2, time: 1000, offset: 'rt'})
+                }
+                document.body.removeChild(textArea);
+            }
+
+            copy = function (text) {
+                createTextArea(text);
+                selectText();
+                copyToClipboard();
+            };
+            return {
+                copy: copy
+            };
+        })(window, document, navigator);

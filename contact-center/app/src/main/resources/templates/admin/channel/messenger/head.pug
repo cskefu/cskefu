@@ -1,0 +1,17 @@
+.row(style="border-bottom: 10px solid #EFEFEF;padding:10px;")
+    .col-lg-8
+        .ukefu-measure
+            .ukefu-bt
+                .layui-icon.ukewo-btn.ukefu-content-ind
+                    img(src="/images/messenger.png", style="width:60px;height:60px;")
+                .ukefu-bt-text
+                    .ukefu-bt-text-title(style="font-weight:400;font-size:24px;border-bottom:1px solid #dedede;") #{fb.name}
+                        span(style="font-size:15px;color:#AAAAAA;") &nbsp;接入渠道创建时间：#{pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', fb.createtime)}
+
+                    .ukefu-bt-text-content(style="") Facebook Page Id: #{fb.pageId}
+.ukefu-tab-title(style="margin-left: 0px;")
+    ul.tab-title
+        .ukefu-tab-title(style="margin-left: 0px;")
+            ul.tab-title
+                li(class={'layui-this': subtype == 'messenger'})
+                    a(href="/admin/messenger/setting.html?id=" + fb.id) 基本设置
