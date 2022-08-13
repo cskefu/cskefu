@@ -43,14 +43,58 @@
 
 ---
 
-## 客户案例
+## 开发者列表 ✨
 
-<p align="center">
-  <b>:briefcase: 大家都选择春松客服</b><br>
-  <a href="https://www.chatopera.com/customer.html" target="_blank">
-      <img src="./public/assets/customers-202107.jpg" width="900">
-  </a>
-</p>
+“投我以木桃，报之以琼瑶。匪报也，永以为好也！”，这是来自 3000 年前《诗经·木瓜》。
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/mukaiu"><img src="https://avatars.githubusercontent.com/u/7746790?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Mukaiu</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=mukaiu" title="Code">💻</a> <a href="#infra-mukaiu" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    <td align="center"><a href="https://www.linkedin.com/in/hai-liang-wang/"><img src="https://avatars.githubusercontent.com/u/3538629?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Hai Liang W.</b></sub></a><br /><a href="#plugin-hailiang-wang" title="Plugin/utility libraries">🔌</a> <a href="#financial-hailiang-wang" title="Financial">💵</a></td>
+    <td align="center"><a href="https://github.com/shih945"><img src="https://avatars.githubusercontent.com/u/29646781?v=4?s=50" width="50px;" alt=""/><br /><sub><b>SHIH</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=shih945" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/luruiGit"><img src="https://avatars.githubusercontent.com/u/49265205?v=4?s=50" width="50px;" alt=""/><br /><sub><b>luruiGit</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=luruiGit" title="Code">💻</a></td>
+    <td align="center"><a href="http://enze5088.github.io"><img src="https://avatars.githubusercontent.com/u/14285786?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Enze</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=enze5088" title="Code">💻</a></td>
+    <td align="center"><a href="https://blog.dengchao.fun"><img src="https://avatars.githubusercontent.com/u/16363180?v=4?s=50" width="50px;" alt=""/><br /><sub><b>邓超</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=DevDengChao" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Happy5"><img src="https://avatars.githubusercontent.com/u/53087368?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Happy5</b></sub></a><br /><a href="#ideas-Happy5" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://www.csdn.net"><img src="https://avatars.githubusercontent.com/u/3679798?v=4?s=50" width="50px;" alt=""/><br /><sub><b>kyle</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=kylezhang" title="Code">💻</a> <a href="#talk-kylezhang" title="Talks">📢</a></td>
+    <td align="center"><a href="https://github.com/xianliwang"><img src="https://avatars.githubusercontent.com/u/52594347?v=4?s=50" width="50px;" alt=""/><br /><sub><b>xianliwang</b></sub></a><br /><a href="#video-xianliwang" title="Videos">📹</a> <a href="https://github.com/chatopera/cskefu/commits?author=xianliwang" title="Tests">⚠️</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/lihang2016"><img src="https://avatars.githubusercontent.com/u/23203931?v=4?s=50" width="50px;" alt=""/><br /><sub><b>lihang2016</b></sub></a><br /><a href="#ideas-lihang2016" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/live-in-the-moment"><img src="https://avatars.githubusercontent.com/u/62800943?v=4?s=50" width="50px;" alt=""/><br /><sub><b>live-in-the-moment</b></sub></a><br /><a href="#ideas-live-in-the-moment" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/chatopera/cskefu/issues?q=author%3Alive-in-the-moment" title="Bug reports">🐛</a> <a href="https://github.com/chatopera/cskefu/commits?author=live-in-the-moment" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/ArioWei"><img src="https://avatars.githubusercontent.com/u/41034256?v=4?s=50" width="50px;" alt=""/><br /><sub><b>ArioWei</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=ArioWei" title="Tests">⚠️</a></td>
+    <td align="center"><a href="http://www.youkefu.cn"><img src="https://avatars.githubusercontent.com/u/48078408?v=4?s=50" width="50px;" alt=""/><br /><sub><b>优客服</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=youkefu" title="Code">💻</a> <a href="https://github.com/chatopera/cskefu/commits?author=youkefu" title="Tests">⚠️</a> <a href="#business-youkefu" title="Business development">💼</a> <a href="#design-youkefu" title="Design">🎨</a></td>
+    <td align="center"><a href="https://github.com/lecjy"><img src="https://avatars.githubusercontent.com/u/9280760?v=4?s=50" width="50px;" alt=""/><br /><sub><b>lecjy</b></sub></a><br /><a href="#ideas-lecjy" title="Ideas, Planning, & Feedback">🤔</a> <a href="#talk-lecjy" title="Talks">📢</a></td>
+    <td align="center"><a href="https://github.com/xl111"><img src="https://avatars.githubusercontent.com/u/64338718?v=4?s=50" width="50px;" alt=""/><br /><sub><b>徐。。</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=xl111" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/viaco2ove"><img src="https://avatars.githubusercontent.com/u/8044837?v=4?s=50" width="50px;" alt=""/><br /><sub><b>viaco2ove</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=viaco2ove" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/understanding"><img src="https://avatars.githubusercontent.com/u/2801277?v=4?s=50" width="50px;" alt=""/><br /><sub><b>understanding</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=understanding" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/MQPearth"><img src="https://avatars.githubusercontent.com/u/32632796?v=4?s=50" width="50px;" alt=""/><br /><sub><b>MQPearth</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=MQPearth" title="Tests">⚠️</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/SkorpiosL"><img src="https://avatars.githubusercontent.com/u/32902343?v=4?s=50" width="50px;" alt=""/><br /><sub><b>SkorpiosL</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=SkorpiosL" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/always-China"><img src="https://avatars.githubusercontent.com/u/49581101?v=4?s=50" width="50px;" alt=""/><br /><sub><b>hua</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=always-China" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/wq11123"><img src="https://avatars.githubusercontent.com/u/40993206?v=4?s=50" width="50px;" alt=""/><br /><sub><b>wq11123</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=wq11123" title="Tests">⚠️</a> <a href="#video-wq11123" title="Videos">📹</a> <a href="#ideas-wq11123" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/MouMouQQ"><img src="https://avatars.githubusercontent.com/u/101631131?v=4?s=50" width="50px;" alt=""/><br /><sub><b>MouMouQQ</b></sub></a><br /><a href="#ideas-MouMouQQ" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/chatopera/cskefu/commits?author=MouMouQQ" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/tigerun"><img src="https://avatars.githubusercontent.com/u/17540364?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Tigerun</b></sub></a><br /><a href="#ideas-tigerun" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/yangbailiang"><img src="https://avatars.githubusercontent.com/u/50096675?v=4?s=50" width="50px;" alt=""/><br /><sub><b>yangbailiang</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/issues?q=author%3Ayangbailiang" title="Bug reports">🐛</a> <a href="https://github.com/chatopera/cskefu/commits?author=yangbailiang" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/lokywang"><img src="https://avatars.githubusercontent.com/u/28672424?v=4?s=50" width="50px;" alt=""/><br /><sub><b>lokywang</b></sub></a><br /><a href="#ideas-lokywang" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/jichoucc"><img src="https://avatars.githubusercontent.com/u/87190214?v=4?s=50" width="50px;" alt=""/><br /><sub><b>jichoucc</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/issues?q=author%3Ajichoucc" title="Bug reports">🐛</a> <a href="https://github.com/chatopera/cskefu/commits?author=jichoucc" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/wuyongyin"><img src="https://avatars.githubusercontent.com/u/20410234?v=4?s=50" width="50px;" alt=""/><br /><sub><b>wuyongyin</b></sub></a><br /><a href="#ideas-wuyongyin" title="Ideas, Planning, & Feedback">🤔</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/wangdayan"><img src="https://avatars.githubusercontent.com/u/62323175?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Claire</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=wangdayan" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/zc1813400107"><img src="https://avatars.githubusercontent.com/u/46372405?v=4?s=50" width="50px;" alt=""/><br /><sub><b>super</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=zc1813400107" title="Code">💻</a> <a href="https://github.com/chatopera/cskefu/commits?author=zc1813400107" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/xiaobo9"><img src="https://avatars.githubusercontent.com/u/1284376?v=4?s=50" width="50px;" alt=""/><br /><sub><b>xiaobo9</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=xiaobo9" title="Code">💻</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## 功能介绍
 
@@ -197,59 +241,6 @@
 因春松客服受益，而不回报开源社区的用户，我们不欢迎使用春松客服：我们开源并不是为了你们，你们是不被祝福的。
 
 严重违反社区理念，通报及拉黑声明：[拉黑 @vicviz](https://www.cskefu.com/violation-announcement-2022-04-24/)
-
-### 贡献者列表 ✨
-
-“投我以木桃，报之以琼瑶。匪报也，永以为好也！”，这是来自 3000 年前《诗经·木瓜》。
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tr>
-    <td align="center"><a href="https://github.com/mukaiu"><img src="https://avatars.githubusercontent.com/u/7746790?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Mukaiu</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=mukaiu" title="Code">💻</a> <a href="#infra-mukaiu" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
-    <td align="center"><a href="https://www.linkedin.com/in/hai-liang-wang/"><img src="https://avatars.githubusercontent.com/u/3538629?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Hai Liang W.</b></sub></a><br /><a href="#plugin-hailiang-wang" title="Plugin/utility libraries">🔌</a> <a href="#financial-hailiang-wang" title="Financial">💵</a></td>
-    <td align="center"><a href="https://github.com/shih945"><img src="https://avatars.githubusercontent.com/u/29646781?v=4?s=50" width="50px;" alt=""/><br /><sub><b>SHIH</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=shih945" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/luruiGit"><img src="https://avatars.githubusercontent.com/u/49265205?v=4?s=50" width="50px;" alt=""/><br /><sub><b>luruiGit</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=luruiGit" title="Code">💻</a></td>
-    <td align="center"><a href="http://enze5088.github.io"><img src="https://avatars.githubusercontent.com/u/14285786?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Enze</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=enze5088" title="Code">💻</a></td>
-    <td align="center"><a href="https://blog.dengchao.fun"><img src="https://avatars.githubusercontent.com/u/16363180?v=4?s=50" width="50px;" alt=""/><br /><sub><b>邓超</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=DevDengChao" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/Happy5"><img src="https://avatars.githubusercontent.com/u/53087368?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Happy5</b></sub></a><br /><a href="#ideas-Happy5" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://www.csdn.net"><img src="https://avatars.githubusercontent.com/u/3679798?v=4?s=50" width="50px;" alt=""/><br /><sub><b>kyle</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=kylezhang" title="Code">💻</a> <a href="#talk-kylezhang" title="Talks">📢</a></td>
-    <td align="center"><a href="https://github.com/xianliwang"><img src="https://avatars.githubusercontent.com/u/52594347?v=4?s=50" width="50px;" alt=""/><br /><sub><b>xianliwang</b></sub></a><br /><a href="#video-xianliwang" title="Videos">📹</a> <a href="https://github.com/chatopera/cskefu/commits?author=xianliwang" title="Tests">⚠️</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/lihang2016"><img src="https://avatars.githubusercontent.com/u/23203931?v=4?s=50" width="50px;" alt=""/><br /><sub><b>lihang2016</b></sub></a><br /><a href="#ideas-lihang2016" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://github.com/live-in-the-moment"><img src="https://avatars.githubusercontent.com/u/62800943?v=4?s=50" width="50px;" alt=""/><br /><sub><b>live-in-the-moment</b></sub></a><br /><a href="#ideas-live-in-the-moment" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/chatopera/cskefu/issues?q=author%3Alive-in-the-moment" title="Bug reports">🐛</a> <a href="https://github.com/chatopera/cskefu/commits?author=live-in-the-moment" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/ArioWei"><img src="https://avatars.githubusercontent.com/u/41034256?v=4?s=50" width="50px;" alt=""/><br /><sub><b>ArioWei</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=ArioWei" title="Tests">⚠️</a></td>
-    <td align="center"><a href="http://www.youkefu.cn"><img src="https://avatars.githubusercontent.com/u/48078408?v=4?s=50" width="50px;" alt=""/><br /><sub><b>优客服</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=youkefu" title="Code">💻</a> <a href="https://github.com/chatopera/cskefu/commits?author=youkefu" title="Tests">⚠️</a> <a href="#business-youkefu" title="Business development">💼</a> <a href="#design-youkefu" title="Design">🎨</a></td>
-    <td align="center"><a href="https://github.com/lecjy"><img src="https://avatars.githubusercontent.com/u/9280760?v=4?s=50" width="50px;" alt=""/><br /><sub><b>lecjy</b></sub></a><br /><a href="#ideas-lecjy" title="Ideas, Planning, & Feedback">🤔</a> <a href="#talk-lecjy" title="Talks">📢</a></td>
-    <td align="center"><a href="https://github.com/xl111"><img src="https://avatars.githubusercontent.com/u/64338718?v=4?s=50" width="50px;" alt=""/><br /><sub><b>徐。。</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=xl111" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/viaco2ove"><img src="https://avatars.githubusercontent.com/u/8044837?v=4?s=50" width="50px;" alt=""/><br /><sub><b>viaco2ove</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=viaco2ove" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/understanding"><img src="https://avatars.githubusercontent.com/u/2801277?v=4?s=50" width="50px;" alt=""/><br /><sub><b>understanding</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=understanding" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/MQPearth"><img src="https://avatars.githubusercontent.com/u/32632796?v=4?s=50" width="50px;" alt=""/><br /><sub><b>MQPearth</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=MQPearth" title="Tests">⚠️</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/SkorpiosL"><img src="https://avatars.githubusercontent.com/u/32902343?v=4?s=50" width="50px;" alt=""/><br /><sub><b>SkorpiosL</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=SkorpiosL" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/always-China"><img src="https://avatars.githubusercontent.com/u/49581101?v=4?s=50" width="50px;" alt=""/><br /><sub><b>hua</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=always-China" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/wq11123"><img src="https://avatars.githubusercontent.com/u/40993206?v=4?s=50" width="50px;" alt=""/><br /><sub><b>wq11123</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=wq11123" title="Tests">⚠️</a> <a href="#video-wq11123" title="Videos">📹</a> <a href="#ideas-wq11123" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://github.com/MouMouQQ"><img src="https://avatars.githubusercontent.com/u/101631131?v=4?s=50" width="50px;" alt=""/><br /><sub><b>MouMouQQ</b></sub></a><br /><a href="#ideas-MouMouQQ" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/chatopera/cskefu/commits?author=MouMouQQ" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/tigerun"><img src="https://avatars.githubusercontent.com/u/17540364?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Tigerun</b></sub></a><br /><a href="#ideas-tigerun" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://github.com/yangbailiang"><img src="https://avatars.githubusercontent.com/u/50096675?v=4?s=50" width="50px;" alt=""/><br /><sub><b>yangbailiang</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/issues?q=author%3Ayangbailiang" title="Bug reports">🐛</a> <a href="https://github.com/chatopera/cskefu/commits?author=yangbailiang" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/lokywang"><img src="https://avatars.githubusercontent.com/u/28672424?v=4?s=50" width="50px;" alt=""/><br /><sub><b>lokywang</b></sub></a><br /><a href="#ideas-lokywang" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://github.com/jichoucc"><img src="https://avatars.githubusercontent.com/u/87190214?v=4?s=50" width="50px;" alt=""/><br /><sub><b>jichoucc</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/issues?q=author%3Ajichoucc" title="Bug reports">🐛</a> <a href="https://github.com/chatopera/cskefu/commits?author=jichoucc" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/wuyongyin"><img src="https://avatars.githubusercontent.com/u/20410234?v=4?s=50" width="50px;" alt=""/><br /><sub><b>wuyongyin</b></sub></a><br /><a href="#ideas-wuyongyin" title="Ideas, Planning, & Feedback">🤔</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/wangdayan"><img src="https://avatars.githubusercontent.com/u/62323175?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Claire</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=wangdayan" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/zc1813400107"><img src="https://avatars.githubusercontent.com/u/46372405?v=4?s=50" width="50px;" alt=""/><br /><sub><b>super</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=zc1813400107" title="Code">💻</a> <a href="https://github.com/chatopera/cskefu/commits?author=zc1813400107" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/xiaobo9"><img src="https://avatars.githubusercontent.com/u/1284376?v=4?s=50" width="50px;" alt=""/><br /><sub><b>xiaobo9</b></sub></a><br /><a href="https://github.com/chatopera/cskefu/commits?author=xiaobo9" title="Code">💻</a></td>
-  </tr>
-</table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ### 工单
 
