@@ -24,6 +24,7 @@ COPY ./assets/mysql.upgrade.db.sh /opt/chatopera
 COPY ./assets/utils.sh /opt/chatopera
 COPY ./assets/docker-entrypoint.sh /opt/chatopera
 RUN chmod +x /opt/chatopera/*.sh
+RUN touch /root/.cskefu.pep
 
 WORKDIR /opt/chatopera
 EXPOSE 8030-8050
