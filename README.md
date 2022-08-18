@@ -184,7 +184,7 @@
 
 ### 安装部署
 
-容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](https://docs.chatopera.com/products/cskefu/deploy.html)。
+支持云原生环境，容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](https://docs.chatopera.com/products/cskefu/deploy.html)。
 
 ### 系统初始化
 
