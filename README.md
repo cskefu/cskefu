@@ -4,7 +4,7 @@
 
 </div>
 
-# 春松客服：做好开源客服系统
+# 春松客服：上线开源客服系统
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/chatopera/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/chatopera/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://www.cskefu.com/2022/06/24/cskefu-opensource-license/ "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/chatopera/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![docker](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-30-orange.svg?style=flat-square)](#contributors-)
@@ -15,9 +15,7 @@
 
 :hearts: 春松客服的愿景：
 
-- 做好开源客服系统及其商业支持
-- 帮助企业快速获得开箱即用的智能客服系统
-- 成为开发者首选的客服系统开发框架
+- 公元 2032 年内，1000 万企业上线开源客服系统
 
 :innocent: 春松客服的承诺:
 
