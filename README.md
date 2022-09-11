@@ -116,7 +116,7 @@
 
 - 质检：历史会话、服务小结、服务反馈及相关报表
 
-了解功能详细介绍，参考[文档中心](https://docs.chatopera.com/products/cskefu/index.html)。
+了解功能详细介绍，参考[文档中心](https://docs.cskefu.com/)。
 
 ## 产品演示
 
@@ -182,26 +182,26 @@
 
 ### 安装部署
 
-支持云原生环境，容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](https://docs.chatopera.com/products/cskefu/deploy.html)。
+支持云原生环境，容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](http://docs.cskefu.com/docs/deploy)。
 
 ### 系统初始化
 
-部署后，进行系统初始化，为组织设定部门、权限、账号等，参考[《系统初始化文档》](https://docs.chatopera.com/products/cskefu/initialization.html)。
+部署后，进行系统初始化，为组织设定部门、权限、账号等，参考[《系统初始化文档》](https://docs.cskefu.com/docs/initialization)。
 
 ### 运维
 
-备份、升级、回滚等运维工作，参考[《系统维护文档》](https://docs.chatopera.com/products/cskefu/osc/maintainence.html)。
+备份、升级、回滚等运维工作，参考[《系统维护文档》](https://docs.cskefu.com/docs/osc/maintainence)。
 
 ### 运营使用指南
 
-关于产品的具体使用说明，请参考[《春松客服文档》](https://docs.chatopera.com/products/cskefu/index.html)。
+关于产品的具体使用说明，请参考[《春松客服文档》](https://docs.cskefu.com)。
 
 ### 立即上线机器人客服
 
 超过 85% 的春松客服企业客户通过 Chatopera 云服务上线机器人客服！7x24 小时在线，接待访客，辅助人工坐席，提升 10 倍工作效率。Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音识别等组件，标准化聊天机器人开发。
 
-- [集成 Chatopera 云服务](https://docs.chatopera.com/products/cskefu/work-chatbot/bot-agent.html)
-- [设定知识库、对话技能：欢迎语、按钮、图文消息等](https://docs.chatopera.com/products/cskefu/work-chatbot/message-types.html)
+- [集成 Chatopera 云服务](https://docs.cskefu.com/docs/work-chatbot/bot-agent)
+- [设定知识库、对话技能：欢迎语、按钮、图文消息等](https://docs.cskefu.com/docs/work-chatbot/message-types)
 
 <details>
 <summary>展开查看更多机器人客服介绍</summary>
@@ -229,7 +229,7 @@
 - 加入开源社区运营，成为社区合伙人，参考[文档](https://mp.weixin.qq.com/s/TLE87YX4k097iOXnV4WVSw)
 - 加入春松客服开源社区，参考[文档](https://www.cskefu.com/join-us/)
 - 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
-- 如何提交代码，参考[文档](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
+- 如何提交代码，参考[文档](https://docs.cskefu.com/docs/osc/contribution)
 - 如何最新的春松客服开发进展：订阅[春松客服邮件列表](https://lists.cskefu.com/cgi-bin/mailman/listinfo/dev)
 - 如何获得春松客服商业插件和服务，参考[文档](https://www.chatopera.com/price.html)
 
@@ -251,14 +251,14 @@
 ### 开发者文档
 
 - 开发环境搭建
-  - [安装依赖和启动数据库等](https://docs.chatopera.com/products/cskefu/osc/engineering.html)
-  - [IDE 配置和使用之 IntelliJ IDEA](https://docs.chatopera.com/products/cskefu/osc/ide_intelij_idea.html)
-  - [IDE 配置和使用之 Eclipse IDE](https://docs.chatopera.com/products/cskefu/osc/ide_eclipse.html)
+  - [安装依赖和启动数据库等](https://docs.cskefu.com/docs/osc/engineering)
+  - [IDE 配置和使用之 IntelliJ IDEA](https://docs.cskefu.com/docs/osc/ide_intelij_idea)
+  - [IDE 配置和使用之 Eclipse IDE](https://docs.cskefu.com/docs/osc/ide_eclipse)
 - 定制开发技能
-  - [系统集成之 RestAPIs](https://docs.chatopera.com/products/cskefu/osc/restapi.html)
+  - [系统集成之 RestAPIs](https://docs.cskefu.com/docs/osc/restapi)
   - [从零开始学习定制春松客服技能：春松客服大讲堂 PPT 课件及视频](https://github.com/chatopera/cskefu.djt)
   - [掌握春松客服前端框架 Pugjs，介绍及使用注意事项](https://blog.csdn.net/samurais/article/details/114576611)
-- [提交代码](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
+- [提交代码](https://docs.cskefu.com/docs/osc/contribution)
 
 ## 微信公众号
 
