@@ -2,7 +2,7 @@
 
 # 7.0.1
 
-- SQL 数据库升级脚本：v6 到 v7 的 Rolling Upgrade 脚本 
+- SQL 数据库升级脚本：v6 到 v7 的 Rolling Upgrade 脚本
 
 # 7.0.0
 
@@ -12,7 +12,7 @@
 
 [Blog](https://chatopera.blog.csdn.net/article/details/113786505)
 
-[Commits](https://github.com/chatopera/cskefu/issues/406)
+[Commits](https://github.com/cskefu/cskefu/issues/406)
 
 # 6.0.0
 
@@ -23,7 +23,7 @@
 
 # 5.1.1
 
-- 兼容最新的 Chatopera 机器人平台（https://bot.chatopera.com）
+- 兼容最新的 Chatopera 机器人平台（<https://bot.chatopera.com>）
 
 # 5.0.0
 

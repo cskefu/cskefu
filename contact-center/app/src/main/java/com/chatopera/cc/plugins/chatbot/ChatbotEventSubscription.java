@@ -272,7 +272,7 @@ public class ChatbotEventSubscription {
                                 itemResp.setExpmsg(null);
 
                                 // 处理不同答案类型
-                                // 数据格式：https://github.com/chatopera/cskefu/issues/468
+                                // 数据格式：https://github.com/cskefu/cskefu/issues/468
                                 if (item.getString("type").equals("plain")) {
                                     itemResp.setMessage(item.getString("content"));
                                     chatbotProxy.saveAndPublish(itemResp);

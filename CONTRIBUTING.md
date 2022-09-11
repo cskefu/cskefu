@@ -4,29 +4,28 @@
 
 ## 提交反馈
 
-在[春松客服 GitHub Issues](https://github.com/chatopera/cskefu/issues)中，先搜索是否有重复的。然后进行补充或新建 Issue。
+在[春松客服 GitHub Issues](https://github.com/cskefu/cskefu/issues)中，先搜索是否有重复的。然后进行补充或新建 Issue。
 
 ## 提交代码
 
 从零开始，一步步介绍：
-[https://docs.chatopera.com/products/cskefu/osc/contribution.html](https://docs.chatopera.com/products/cskefu/osc/contribution.html)
+[https://docs.cskefu.com/docs/osc/contribution](https://docs.cskefu.com/docs/osc/contribution)
 
 ## 提交文档
 
 春松客服文档中心的项目，也是开源的，地址在：
 
-[https://github.com/chatopera/docs](https://github.com/chatopera/docs)
+[https://github.com/cskefu/cskefu-docs](https://github.com/cskefu/cskefu-docs)
 
 春松客服文档 Markdown 文件路径：
 
-[https://github.com/chatopera/docs/tree/master/docfx_project/products/cskefu](https://github.com/chatopera/docs/tree/master/docfx_project/products/cskefu)
+[https://github.com/cskefu/cskefu-docs/tree/main/docs](https://github.com/cskefu/cskefu-docs/tree/main/docs)
 
 更新文档：
 
-1）提交 PR 到[春松客服文档中心 GitHub 仓库](https://github.com/chatopera/docs)，一步到位。
+1）提交 PR 到[春松客服文档中心 GitHub 仓库](https://github.com/cskefu/cskefu-docs/tree/main/docs)，一步到位。
 
-2）提交 Issue 到[春松客服 Issues](https://github.com/chatopera/cskefu/issues/new)， 并撰写文档内容，使用该方案则需要后续其他协作者提交到 [春松客服文档中心 GitHub 仓库](https://github.com/chatopera/docs) 中。
-
+2）提交 Issue 到[春松客服 Issues](https://github.com/cskefu/cskefu/issues/new)， 并撰写文档内容，使用该方案则需要后续其他协作者提交到 [春松客服文档中心 GitHub 仓库](https://github.com/cskefu/cskefu-docs) 中。
 
 ## 期待您成为春松客服贡献者
 

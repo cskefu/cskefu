@@ -10,11 +10,11 @@
 开源社区：https://www.cskefu.com
 
 系统进行初始化，第一次安装后，根据文档进行配置
-https://docs.chatopera.com/products/cskefu/initialization.html
+https://docs.cskefu.com/cskefu-docs/docs/initialization
 
 开发者社区、使用维护等文档
-https://docs.chatopera.com/products/cskefu/osc/index.html
+https://docs.cskefu.com/cskefu-docs/docs/osc/
 
 反馈建议& 提交 BUG
-https://github.com/chatopera/cskefu/issues
+https://github.com/cskefu/cskefu/issues
 ----------------------------------------------------------------

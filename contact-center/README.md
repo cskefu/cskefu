@@ -4,4 +4,4 @@
 
 ## 文档
 
-https://docs.chatopera.com/products/cskefu/index.html
+<https://docs.cskefu.com>
