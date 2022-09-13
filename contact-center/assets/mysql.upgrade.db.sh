@@ -9,7 +9,7 @@ source $baseDir/utils.sh
 MYSQL_WRITEMODE_IP=`parse_host ${SPRING_DATASOURCE_URL}`
 MYSQL_WRITEMODE_PORT=`parse_port ${SPRING_DATASOURCE_URL}`
 CONTACT_CENTER_DB=`parse_dbname ${SPRING_DATASOURCE_URL}`
-CONTACT_CENTER_WAR=/opt/chatopera/contact-center.war
+CONTACT_CENTER_WAR=/opt/cskefu/contact-center.war
 APP_WAR_EXTRACTED=/tmp/ROOT
 UPGRADE_DB_SCRIPT_DIR=$APP_WAR_EXTRACTED/upgrade
 
@@ -46,7 +46,7 @@ function extract_war(){
 [ -z "${BASH_SOURCE[0]}" -o "${BASH_SOURCE[0]}" = "$0" ] || return
 println "[upgrade] connecting to $MYSQL_WRITEMODE_IP:$MYSQL_WRITEMODE_PORT/$CONTACT_CENTER_DB with $SPRING_DATASOURCE_USERNAME/****"
 ## check upgrade footprint
-if [ -f /opt/chatopera/upgrade.his ]; then
+if [ -f /opt/cskefu/upgrade.his ]; then
     echo "[upgrade] upgrade has been done with previous start."
     exit 0
 fi
@@ -76,6 +76,6 @@ if [ -d $UPGRADE_DB_SCRIPT_DIR ]; then
 fi
 
 ## touch upgrade footprint
-if [ ! -f /opt/chatopera/upgrade.his ]; then
-    touch /opt/chatopera/upgrade.his
+if [ ! -f /opt/cskefu/upgrade.his ]; then
+    touch /opt/cskefu/upgrade.his
 fi

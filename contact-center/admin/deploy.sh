@@ -22,7 +22,7 @@ if [[ $PACKAGE_VERSION == *SNAPSHOT ]]; then
     mvn deploy:deploy-file \
         -Dmaven.test.skip=true \
         -Dfile=./target/contact-center.jar \
-        -DgroupId=com.chatopera.cc \
+        -DgroupId=com.cskefu.cc \
         -DartifactId=cc-core \
         -Dversion=$PACKAGE_VERSION \
         -Dpackaging=jar \
@@ -37,7 +37,7 @@ else
     mvn deploy:deploy-file \
         -Dmaven.test.skip=true \
         -Dfile=./target/contact-center.jar \
-        -DgroupId=com.chatopera.cc \
+        -DgroupId=com.cskefu.cc \
         -DartifactId=cc-core \
         -Dversion=$PACKAGE_VERSION \
         -Dpackaging=jar \

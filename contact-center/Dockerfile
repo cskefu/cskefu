@@ -17,15 +17,15 @@ LABEL org.label-schema.vcs-ref=$VCS_REF \
 RUN /bin/bash -c "mkdir -p /{data,logs}"
 
 # build WAR
-RUN mkdir -p /opt/chatopera
-COPY ./app/target/contact-center.war /opt/chatopera/contact-center.war
-COPY ./assets/mysql.setup.db.sh /opt/chatopera
-COPY ./assets/mysql.upgrade.db.sh /opt/chatopera
-COPY ./assets/utils.sh /opt/chatopera
-COPY ./assets/docker-entrypoint.sh /opt/chatopera
-RUN chmod +x /opt/chatopera/*.sh
+RUN mkdir -p /opt/cskefu
+COPY ./app/target/contact-center.war /opt/cskefu/contact-center.war
+COPY ./assets/mysql.setup.db.sh /opt/cskefu
+COPY ./assets/mysql.upgrade.db.sh /opt/cskefu
+COPY ./assets/utils.sh /opt/cskefu
+COPY ./assets/docker-entrypoint.sh /opt/cskefu
+RUN chmod +x /opt/cskefu/*.sh
 RUN touch /root/.cskefu.pep
 
-WORKDIR /opt/chatopera
+WORKDIR /opt/cskefu
 EXPOSE 8030-8050
 CMD ["./docker-entrypoint.sh"]

@@ -15,7 +15,8 @@
  */
 package com.chatopera.cc.util;
 
-import com.chatopera.cc.basic.MainUtils;
+import com.cskefu.cc.basic.MainUtils;
+import com.cskefu.cc.util.CronTools;
 import org.junit.Test;
 
 import java.text.ParseException;

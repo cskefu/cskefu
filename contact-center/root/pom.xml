@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.chatopera.cc</groupId>
+    <groupId>com.cskefu.cc</groupId>
     <artifactId>cc-root</artifactId>
     <version>7.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -430,8 +430,8 @@
         <developer>
             <id>hain</id>
             <name>Hai Liang Wang</name>
-            <email>hain@chatopera.com</email>
-            <url>https://github.com/Samurais</url>
+            <email>h@cskefu.com</email>
+            <url>https://github.com/hailiang-wang</url>
             <organization>Chatopera Inc.</organization>
             <organizationUrl>https://www.chatopera.com</organizationUrl>
             <roles>

@@ -9,7 +9,7 @@ source $baseDir/utils.sh
 MYSQL_WRITEMODE_IP=`parse_host ${SPRING_DATASOURCE_URL}`
 MYSQL_WRITEMODE_PORT=`parse_port ${SPRING_DATASOURCE_URL}`
 CONTACT_CENTER_DB=`parse_dbname ${SPRING_DATASOURCE_URL}`
-CONTACT_CENTER_WAR=/opt/chatopera/contact-center.war
+CONTACT_CENTER_WAR=/opt/cskefu/contact-center.war
 MYSQL_SCRIPT_NAME=cosinee-MySQL-slim.sql
 
 # functions
