@@ -154,7 +154,7 @@
 
 ### 坐席工作台
 
-[https://cc.chatopera.com/](https://cc.chatopera.com/)
+[https://demo.cskefu.com/](https://demo.cskefu.com/)
 
 | **登录账号** | **密码**  | **角色**       |
 | ------------ | --------- | -------------- |
@@ -163,7 +163,7 @@
 
 ### 网页端访客示例
 
-[https://cc.chatopera.com/testclient.html](http://cc.chatopera.com/testclient.html)
+[https://demo.cskefu.com/testclient.html](http://demo.cskefu.com/testclient.html)
 
 - 登录张三后可接待访客，否则显示没有客服人员在线
 
