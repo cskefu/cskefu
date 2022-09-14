@@ -14,7 +14,7 @@ services:
       - contact-center
 
   contact-center:
-    image: ${CC_IMAGE:-chatopera/contact-center:develop}
+    image: ${CC_IMAGE:-cskefu/contact-center:develop}
     restart: always
     ports:
       - "${CC_WEB_PORT:-8035}:8035"
@@ -60,7 +60,7 @@ services:
       - activemq
 
   activemq:
-    image: chatopera/activemq:5.14.3
+    image: cskefu/activemq:5.14.3
     restart: always
     environment:
       - ACTIVEMQ_ADMIN_LOGIN=admin
@@ -77,7 +77,7 @@ services:
       - "${ACTIVEMQ_PORT3:-8053}:61613"
 
   mysql:
-    image: chatopera/mysql:5.7
+    image: cskefu/mysql:5.7
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWD:-123456}
@@ -90,7 +90,7 @@ services:
     command: --max_allowed_packet=32505856
 
   redis:
-    image: chatopera/redis:5.0.5
+    image: cskefu/redis:5.0.5
     environment:
       - REDIS_PASSWORD=${DB_PASSWD:-123456}
     restart: always
@@ -100,7 +100,7 @@ services:
       - "${REDIS_PORT:-8041}:6379"
 
   elasticsearch:
-    image: elasticsearch:2.4.6
+    image: cskefu/elasticsearch:2.4.6
     restart: always
     volumes:
       - ./database/elasticsearch/data:/usr/share/elasticsearch/data

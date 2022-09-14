@@ -5,15 +5,25 @@
 
 # constants
 baseDir=$(cd `dirname "$0"`;pwd)
-registryName=dockerhub.qingcloud.com
-imagename=chatopera/contact-center
-PACKAGE_VERSION=w4l
+appHome=$baseDir/..
+registryPrefix=
+imagename=cskefu/contact-center
+PACKAGE_VERSION=
 
 # functions
 
 # main 
 [ -z "${BASH_SOURCE[0]}" -o "${BASH_SOURCE[0]}" = "$0" ] || return
-cd $baseDir/
+cd $appHome/
+
+if [ -d ../private ]; then
+    registryPrefix=dockerhub.qingcloud.com/
+fi
+
+TIMESTAMP=`date "+%Y%m%d.%H%M%S"`
+PACKAGE_VERSION=`git rev-parse --short HEAD`
+
+cd $baseDir
 docker run -it --rm \
     -p 9035:8035 \
     -p 9036:8036 \
@@ -39,4 +49,4 @@ docker run -it --rm \
     -e SPRING_DATA_ELASTICSEARCH_CLUSTER_NODES=elasticsearch:8040 \
     -e SPRING_DATA_ELASTICSEARCH_LOCAL=false \
     -e SPRING_DATA_ELASTICSEARCH_REPOSITORIES_ENABLED=true \
-    $registryName/$imagename:$PACKAGE_VERSION
+    $registryPrefix$imagename:$PACKAGE_VERSION
