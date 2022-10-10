@@ -1,9 +1,0 @@
-# dev profile
-src/main/resources/application-dev.properties
-
-# ignore app views within plugins
-src/main/resources/templates/apps/callout
-src/main/resources/templates/apps/callcenter
-
-# ignore logs
-logs/
