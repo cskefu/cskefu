@@ -1,7 +1,7 @@
 name: PR Checks Package
 on:
   pull_request:
-    branches: [osc]
+    branches: [develop]
     types: [opened, synchronize, closed]
 jobs:
   build:
