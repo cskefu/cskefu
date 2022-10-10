@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+
+  cloud:
+    # sentinel配置
+    sentinel:
+      eager: true
+      transport:
+        dashboard:
+          127.0.0.1:8848
+        port: 8719
+        heartbeat-interval-ms: 5000
+    nacos:
+      # 注册中心配置
+      discovery:
+        server-addr: localhost:8848
+        namespace: xxxxxxx
+#      # 配置中心
+#      config:
+#        server-addr: 127.0.0.1:8848
+#        file-extension: yaml
+#        namespace: jm-live-dev
+#        shared-configs[0]:
+#          group: sentinel
+#          data-id: sentinel-shared.yaml
+#          refresh: true
