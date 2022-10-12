@@ -3,10 +3,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <groupId>com.cskefu</groupId>
-    <artifactId>cskefu-session</artifactId>
+    <artifactId>cskefu-conversation</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <modelVersion>4.0.0</modelVersion>
-    <name>cskefu-session</name>
+    <name>cskefu-conversation</name>
     <url>https://www.cskefu.com/</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
