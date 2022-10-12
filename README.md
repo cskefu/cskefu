@@ -6,4 +6,10 @@
 
 # 春松客服：上线开源客服系统
 
-CSKeFu v8 Upcoming ...
+新版本研发启动，进入 [develop](https://github.com/cskefu/cskefu/issues/750) / CSKeFu v8 Upcoming ...
+
+## 其他版本
+
+* 春松客服当前维护版本：<https://github.com/cskefu/cskefu/tree/master>
+
+* 春松客服历史版本：<https://github.com/cskefu/cskefu/tags>
