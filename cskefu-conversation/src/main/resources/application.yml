@@ -1,6 +1,6 @@
 spring:
   application:
-    name: cskefu
+    name: cskefu-conversation
   profiles:
     active: dev
   datasource:

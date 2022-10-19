@@ -4,10 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class Result<T> {
-
-    public interface View {
-    }
-
     private final boolean success;
     private final int code;
     private final T data;
@@ -71,7 +67,7 @@ public class Result<T> {
         }
 
         public Result<T> build() {
-            return new Result<>(this.success, this.code, this.data, this.message);
+            return new Result(this.success, this.code, this.data, this.message);
         }
 
         @Override
