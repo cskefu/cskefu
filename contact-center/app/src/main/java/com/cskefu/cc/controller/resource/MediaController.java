@@ -44,6 +44,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.regex.Pattern;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -98,6 +99,9 @@ public class MediaController extends Handler {
     @Menu(type = "resouce", subtype = "image", access = true)
     public void url(HttpServletResponse response, @Valid String url) throws IOException {
         if (StringUtils.isBlank(url)) {
+            return;
+        }
+        if(!Pattern.matches("^https?://.*/.*$", url)) { //只允许http/https协议
             return;
         }
         byte[] data = new byte[1024];
