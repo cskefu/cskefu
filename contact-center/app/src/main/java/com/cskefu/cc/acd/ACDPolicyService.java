@@ -168,7 +168,7 @@ public class ACDPolicyService {
         }
 
         if (agentUser != null && StringUtils.isNotBlank(agentUser.getAgentno())) {
-            User user = userRes.findById(agentUser.getUserid());
+            User user = userRes.findById(agentUser.getAgentno());
             if (user != null && !user.isSuperadmin()) {
                 // 用户不为空，并且不是超级管理员
                 // 指定坐席
