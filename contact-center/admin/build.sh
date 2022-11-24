@@ -20,7 +20,7 @@ if [ -d ../private ]; then
 fi
 
 TIMESTAMP=`date "+%Y%m%d.%H%M%S"`
-PACKAGE_VERSION=`git rev-parse --short HEAD`
+PACKAGE_VERSION='9bbacaa'
 APPLICATION_CUSTOMER_ENTITY=${APPLICATION_CUSTOMER_ENTITY:-"OpenSource Community"}
 
 $baseDir/package.sh
@@ -30,11 +30,11 @@ if [ ! $? -eq 0 ]; then
 fi
 
 set -x
-docker build --build-arg VCS_REF=$PACKAGE_VERSION \
-    --build-arg APPLICATION_BUILD_DATESTR=$TIMESTAMP \
-    --build-arg APPLICATION_CUSTOMER_ENTITY="$APPLICATION_CUSTOMER_ENTITY" \
+docker build --build-arg VCS_REF=9bbacaa \
+    --build-arg APPLICATION_BUILD_DATESTR=`date "+%Y%m%d.%H%M%S"` \
+    --build-arg APPLICATION_CUSTOMER_ENTITY=OSC \
     --no-cache \
-    --force-rm=true --tag $registryPrefix$imagename:$PACKAGE_VERSION .
+    --force-rm=true --tag inteagle/contact-center:9bbacaa .
 
 if [ $? -eq 0 ]; then
     docker tag $registryPrefix$imagename:$PACKAGE_VERSION $registryPrefix$imagename:develop

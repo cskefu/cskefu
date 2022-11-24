@@ -14,7 +14,7 @@ services:
       - contact-center
 
   contact-center:
-    image: ${CC_IMAGE:-cskefu/contact-center:develop}
+    build: ${CC_IMAGE:-cskefu/contact-center:develop}
     restart: always
     ports:
       - "${CC_WEB_PORT:-8035}:8035"

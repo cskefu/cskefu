@@ -37,7 +37,7 @@ block content
                                                                 p 信息提示区域显示的名称
                                                                 p(style="color:#888888;font-size:13px;margin-top:10px;") 默认显示信息 企业名称
                                                             .col-lg-4
-                                                                input.layui-input(type="text", name="dialog_name", value=(inviteData.dialog_name ? inviteData.dialog_name : '春松客服'), autocomplete="off", oninput="$('#dialog_name').text($(this).val())", onchange="$('#dialog_name').text($(this).val())")
+                                                                input.layui-input(type="text", name="dialog_name", value=(inviteData.dialog_name ? inviteData.dialog_name : '鹰腾客服'), autocomplete="off", oninput="$('#dialog_name').text($(this).val())", onchange="$('#dialog_name').text($(this).val())")
                                                 .ukefu-webim-prop
                                                     .ukefu-webim-tl(style="clear:both;") 2、企业地址信息
                                                     .box-item
@@ -79,7 +79,7 @@ block content
                                                     .box-item
                                                         .row
                                                             .col-lg-12
-                                                                textarea.layui-input(name="dialog_message", autocomplete="off", oninput="$('#dialog_message').text($(this).val())", style="height:60px;line-height:22px;")= inviteData.dialog_message ? inviteData.dialog_message : '欢迎使用春松客服！如需帮助请联系 info@chatopera.com'
+                                                                textarea.layui-input(name="dialog_message", autocomplete="off", oninput="$('#dialog_message').text($(this).val())", style="height:60px;line-height:22px;")= inviteData.dialog_message ? inviteData.dialog_message : '您好，非常高兴的为您服务，有什么可以为您效劳'
                                                 .ukefu-webim-prop
                                                     .ukefu-webim-tl 7、自定义形象图片 （建议尺寸：276*236）
                                                     .box-item(style="position: relative;")
@@ -157,14 +157,14 @@ block content
                                                                             p(style="color:#888888;font-size:13px;margin-top:10px;") 在访客邀请按钮的坐席分组窗口上显示的标题
                                                                         .col-lg-4
                                                                             .layui-input-block
-                                                                                input.layui-input(type="text", name="consult_skill_title", value=(inviteData.consult_skill_title ? inviteData.consult_skill_title : '春松客服'), autocomplete="off")
+                                                                                input.layui-input(type="text", name="consult_skill_title", value=(inviteData.consult_skill_title ? inviteData.consult_skill_title : '鹰腾客服'), autocomplete="off")
                                                                     .row(style="margin-bottom:20px;")
                                                                         .col-lg-8
                                                                             p b、坐席组窗口底部显示内容
                                                                             p(style="color:#888888;font-size:13px;margin-top:10px;") 在访客邀请按钮的坐席分组窗口底部显示的文本内容
                                                                         .col-lg-4
                                                                             .layui-input-block
-                                                                                input.layui-input(type="text", name="consult_skill_bottomtitle", value=(inviteData.consult_skill_bottomtitle ? inviteData.consult_skill_bottomtitle : '春松客服多渠道智能客服'), autocomplete="off")
+                                                                                input.layui-input(type="text", name="consult_skill_bottomtitle", value=(inviteData.consult_skill_bottomtitle ? inviteData.consult_skill_bottomtitle : '鹰腾客服多渠道智能客服'), autocomplete="off")
                                                                     .row(style="margin-bottom:20px;")
                                                                         .col-lg-8
                                                                             p c、最多显示技能组数
@@ -331,7 +331,7 @@ block content
                                                         span(style="float:right;")
                                                             i.layui-icon(style="font:size:12px;color:#ffffff;") ဆ
                                                     .ukefu-im-preview-wrap(style="border:1px solid #EAEAEA")
-                                                        #dialog_message.ukefu-im-preview-tip(style="width:90%;height:5px;font-size:12px;height:32px;overflow:hidden;border-radius: 10px;padding: 2px 10px 2px 10px;")= inviteData.dialog_message ? inviteData.dialog_message : '欢迎您来咨询！欢迎使用春松客服！如需帮助请联系 info@chatopera.com'
+                                                        #dialog_message.ukefu-im-preview-tip(style="width:90%;height:5px;font-size:12px;height:32px;overflow:hidden;border-radius: 10px;padding: 2px 10px 2px 10px;")= inviteData.dialog_message ? inviteData.dialog_message : '您好，非常高兴的为您服务，有什么可以为您效劳'
                                                         .ukefu-im-preview-customer
                                                             i.layui-icon(style="color:#377FED;float:left;") 
                                                             .ukefu-im-preview-customer-message.ukefu-im-preview-customer-arrow
@@ -350,7 +350,7 @@ block content
                                                         .ukefu-profile-title(style="clear:both;") 信息提示
                                                         .box-item(style="padding:5px;white-space: nowrap;text-overflow: ellipsis;")
                                                             | 名称：
-                                                            label#dialog_name=  inviteData.dialog_name ? inviteData.dialog_name : '春松客服'
+                                                            label#dialog_name=  inviteData.dialog_name ? inviteData.dialog_name : '鹰腾客服'
                                                         .box-item(style="padding:5px;white-space: nowrap;text-overflow: ellipsis;")
                                                             | 地址：
                                                             label#dialog_address= inviteData.dialog_address ? inviteData.dialog_address : '北京'

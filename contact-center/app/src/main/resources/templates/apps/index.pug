@@ -19,9 +19,9 @@ html(xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xm
         meta(http-equiv="Cache-Control" content="no-siteapp")
         meta(name="viewport" content="width=device-width, maximum-scale=1.0, initial-scale=1.0,initial-scale=1.0,user-scalable=no")
         meta(name="apple-mobile-web-app-capable" content="yes")
-        meta(name="sourcecode-author", content="春松客服")
+        meta(name="sourcecode-author", content="鹰腾客服")
         meta(name="sourcecode-license", content="Apache 2.0")
-        title= systemConfig.title ? systemConfig.title : '春松客服 | 多渠道智能客服_联络中心'
+        title= systemConfig.title ? systemConfig.title : '鹰腾客服 | 多渠道智能客服_联络中心'
         if systemConfig && systemConfig.favlogo
             link(rel="shortcut icon" type="image/x-icon" href='/res/image.html?id=' + systemConfig.favlogo)
         else
@@ -195,12 +195,12 @@ html(xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xm
                             dl.layui-nav-child
                                 dd
                                     a(href="/apps/profile.html" data-toggle="ajax" data-width="750" data-title="修改资料") 个人资料
-                                dd
-                                    a(href="javascript:void(0)" onclick="showSystemBuildInfo()") 关于产品
-                                dd
-                                    a(href="https://www.cskefu.com/moment/825.html/" target="_blank") 使用指南
-                                dd
-                                    a(href="https://github.com/cskefu/cskefu/issues" target="_blank") 反馈建议
+                                //dd
+                                //    a(href="javascript:void(0)" onclick="showSystemBuildInfo()") 关于产品
+                                //dd
+                                //    a(href="https://www.inteagle.com/moment/825.html/" target="_blank") 使用指南
+                                //dd
+                                //    a(href="https://github.com/cskefu/cskefu/issues" target="_blank") 反馈建议
                                 dd
                                     a(href="javascript:void(0)" onclick="quitSystem()") 退出系统
             .layui-side.layui-bg-black
@@ -307,7 +307,7 @@ html(xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xm
             });
             // 展示系统构建信息
             function showSystemBuildInfo() {
-                layer.confirm('<div style="text-align:center;"> <img src="/images/favicon.ico" width="50px" height="50px"><p>春松客服<span>&#174;</span> Release: #{appVersionNumber}</p></div>Build: #{appBuildDate}.<a href="https://github.com/cskefu/cskefu/commit/#{appVersionAbbrev}" target="_blank">#{appVersionAbbrev}</a> <br> Copyright (2018-2022) <a href="https://www.chatopera.com" target="_blank">北京华夏春松科技有限公司</a>, 开源许可协议: <a href="https://www.cskefu.com/2022/06/24/cskefu-opensource-license/" target="_blank">Apache 2.0</a> <br> <a href="https://docs.cskefu.com" target="_blank">文档中心</a> | <a href="https://www.cskefu.com/join-us/" target="_blank">加入开源社区</a> | <a href="https://www.chatopera.com/price.html" target="_blank">购买企业服务</a>',
+                layer.confirm('<div style="text-align:center;"> <img src="/images/favicon.ico" width="50px" height="50px"><p>鹰腾客服<span>&#174;</span> Release: #{appVersionNumber}</p></div>Build: #{appBuildDate}. <br> Copyright (2018-2022) <a href="https://www.inteagle.com" target="_blank">鹰腾微视科技有限公司</a>',
                     {icon: -1, title: '关于产品', btn: ["关闭"]}, function (index, layero) {
                         //do something
                         layer.close(index);
@@ -355,9 +355,6 @@ html(xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xm
                     }
                 });
             });
-            console.info("春松客服：越是重视客户服务，越是好的企业 https://www.cskefu.com/")
-            console.info("   * 鼓励我们不断的优化春松客服，给春松客服点赞 https://github.com/chatopera/cskefu/stargazers");
-            console.info("   * 商务洽谈、技术支持等联系方式查看 https://dwz.chatopera.com/A51h6m");
         if webrtc
             script.
                 // 呼叫中心连接信息

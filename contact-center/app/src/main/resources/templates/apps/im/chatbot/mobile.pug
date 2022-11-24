@@ -376,7 +376,7 @@ html
                 button#offcoop-btn(style='border-color:#009688 !important;color:#FFFFFF;display: inline-block;height: 38px;line-height: 38px;padding: 0 18px;background-color: #009688;color: #fff;white-space: nowrap;text-align: center;font-size: 14px;margin-right:10px;border: none;border-radius: 2px;cursor: pointer;opacity: .9;filter: alpha(opacity=90);background-color: #377FED !important;border:1px solid #FFFFFF;', onclick='offCoop();') 退出协作
         .chat-above#above
             .clearfix.message.welcome
-                span#welcome-message= inviteData.dialog_message ? inviteData.dialog_message : '欢迎您来咨询！欢迎使用春松客服！如需帮助请联系 info@chatopera.com'
+                span#welcome-message= inviteData.dialog_message ? inviteData.dialog_message : '欢迎您来咨询！您好，非常高兴的为您服务，有什么可以为您效劳'
             for chatMessage in pugHelper.reverse(chatMessageList.content)
                 if chatMessage.userid && userid && chatMessage.calltype && chatMessage.calltype == "呼入"
                     .clearfix.chat-block

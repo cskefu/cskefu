@@ -2378,7 +2378,7 @@ CREATE TABLE `uk_consult_invite` (
 
 LOCK TABLES `uk_consult_invite` WRITE;
 /*!40000 ALTER TABLE `uk_consult_invite` DISABLE KEYS */;
-INSERT INTO `uk_consult_invite` VALUES ('2c9e80867d65eb5c017d65f6e2690071',NULL,'cskefu','4028cac3614cd2f901614cf8be1f0324',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2021-11-28 17:53:38','localhost',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'104eac',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'春松客服','','','','','欢迎使用春松客服！如需帮助请联系 info@chatopera.com',NULL,0,NULL,NULL,0,NULL,0,0,0,0,0,0,1,NULL,'click',1,NULL,1,'2c9e80867d65eb5c017d65f17ceb0019',NULL,'春松客服',NULL,'工作时间<br>08:30~17:30',5,1,'春松客服多渠道智能客服',1,0,0,0,NULL,'','',0,0,0,0,0,'您好，请填写以下信息，方便我们更好的为您服务！',0,0,0,0,NULL,'您好，您所在的地区没有在线客服人员！','',0,NULL,NULL,0,0,0,0);
+INSERT INTO `uk_consult_invite` VALUES ('2c9e80867d65eb5c017d65f6e2690071',NULL,'cskefu','4028cac3614cd2f901614cf8be1f0324',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2021-11-28 17:53:38','localhost',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'104eac',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'春松客服','','','','','您好，非常高兴的为您服务，有什么可以为您效劳',NULL,0,NULL,NULL,0,NULL,0,0,0,0,0,0,1,NULL,'click',1,NULL,1,'2c9e80867d65eb5c017d65f17ceb0019',NULL,'春松客服',NULL,'工作时间<br>08:30~17:30',5,1,'春松客服多渠道智能客服',1,0,0,0,NULL,'','',0,0,0,0,0,'您好，请填写以下信息，方便我们更好的为您服务！',0,0,0,0,NULL,'您好，您所在的地区没有在线客服人员！','',0,NULL,NULL,0,0,0,0);
 /*!40000 ALTER TABLE `uk_consult_invite` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -5017,7 +5017,7 @@ CREATE TABLE `uk_systemconfig` (
 
 LOCK TABLES `uk_systemconfig` WRITE;
 /*!40000 ALTER TABLE `uk_systemconfig` DISABLE KEYS */;
-INSERT INTO `uk_systemconfig` VALUES ('2c93809364e0a6d00164ef6722270582',NULL,'春松客服-多渠道智能客服',NULL,'cskefu',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'4028cac3614cd2f901614cf8be1f0324','2018-07-31 08:14:30',NULL,NULL,NULL,NULL,NULL,'01','info',0,NULL,NULL,'',0,0,'','','','','','',NULL,0,0,0,0,'','',NULL,NULL,'','',NULL,0,0,NULL,NULL,NULL,0,'',NULL,0,0,'租户',0,0,NULL,NULL,NULL);
+INSERT INTO `uk_systemconfig` VALUES ('2c93809364e0a6d00164ef6722270582',NULL,'鹰腾客服用心创造服务',NULL,'cskefu',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'4028cac3614cd2f901614cf8be1f0324','2018-07-31 08:14:30',NULL,NULL,NULL,NULL,NULL,'01','info',0,NULL,NULL,'',0,0,'','','','','','',NULL,0,0,0,0,'','',NULL,NULL,'','',NULL,0,0,NULL,NULL,NULL,0,'',NULL,0,0,'租户',0,0,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `uk_systemconfig` ENABLE KEYS */;
 UNLOCK TABLES;
 
