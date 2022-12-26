@@ -18,3 +18,11 @@ export DATE_WITH_TIME=`date "+%Y%m%d-%H%M%S"` #add %3N as we want millisecond to
 [ -z "${BASH_SOURCE[0]}" -o "${BASH_SOURCE[0]}" = "$0" ] || return
 cd $baseDir/..
 mvn -DskipTests clean package deploy
+
+if [ $? -eq 0 ]; then
+    echo "Deploy success."
+    exit 0
+else
+    echo "Error happens during deployment."
+    exit 1
+fi
