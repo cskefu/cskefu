@@ -1,20 +1,25 @@
-FROM adoptopenjdk/openjdk15:jdk-15.0.1_9-alpine-slim as build
-WORKDIR /workspace/app
-COPY target/core*.jar /workspace/app
-RUN mkdir -p /workspace/app/dependency && (cd /workspace/app/dependency; jar -xf ../*.jar)
+FROM chatopera/java:17
 
+MAINTAINER Hai Liang Wang <h@cskefu.com>
+# base image is built with config/base/build.sh
 
-FROM adoptopenjdk/openjdk15:jdk-15.0.1_9-alpine-slim
-VOLUME /tmp
+ARG DEBIAN_FRONTEND=noninteractive
+ARG VCS_REF
+ARG APPLICATION_CUSTOMER_ENTITY
+ARG APPLICATION_BUILD_DATESTR
 
-ARG DEPENDENCY=/workspace/app/dependency
-RUN addgroup --system app_group && adduser --system app_user --ingroup app_group --home /app
-COPY --from=build --chown=app_user ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY --from=build --chown=app_user ${DEPENDENCY}/META-INF /app/META-INF
-COPY --chown=app_user target/internal-bundles /app/internal-bundles
-COPY --from=build --chown=app_user ${DEPENDENCY}/BOOT-INF/classes /app
+ENV APPLICATION_CUSTOMER_ENTITY=$APPLICATION_CUSTOMER_ENTITY
+ENV APPLICATION_BUILD_DATESTR=$APPLICATION_BUILD_DATESTR
 
-USER app_user:app_group
-WORKDIR /app
+LABEL org.label-schema.vcs-ref=$VCS_REF \
+          org.label-schema.vcs-url="https://github.com/cskefu/cskefu"
 
-ENTRYPOINT ["java","-cp","./:lib/*","com.cskefu.serving.api.SampleApplication"]
+RUN rm -rf /opt/cskefu && mkdir /opt/cskefu
+COPY ./target/serving-api.jar /opt/cskefu/serving-api.jar
+COPY ./target/internal-bundles /opt/cskefu/internal-bundles
+COPY ./assets/*.sh /opt/cskefu
+RUN chmod +x /opt/cskefu/*.sh
+
+WORKDIR /opt/cskefu
+EXPOSE 6500-6700
+CMD ["./docker-entrypoint.sh"]
