@@ -10,11 +10,12 @@ ARG APPLICATION_BUILD_DATESTR
 
 ENV APPLICATION_CUSTOMER_ENTITY=$APPLICATION_CUSTOMER_ENTITY
 ENV APPLICATION_BUILD_DATESTR=$APPLICATION_BUILD_DATESTR
+ENV SPRING_PROFILES_ACTIVE=docker
 
 LABEL org.label-schema.vcs-ref=$VCS_REF \
           org.label-schema.vcs-url="https://github.com/cskefu/cskefu"
 
-RUN rm -rf /opt/cskefu && mkdir /opt/cskefu
+RUN rm -rf /opt/cskefu && mkdir /opt/cskefu && mkdir /opt/cskefu/felix-cache
 COPY ./target/serving-api.jar /opt/cskefu/serving-api.jar
 COPY ./target/internal-bundles /opt/cskefu/internal-bundles
 COPY ./assets/*.sh /opt/cskefu
