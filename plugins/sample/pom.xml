@@ -98,4 +98,58 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>chatopera</id>
+            <name>Chatopera Inc.</name>
+            <url>https://nexus.chatopera.com/repository/maven-public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>chatopera-releases</id>
+            <name>Chatopera Nexus Releases</name>
+            <url>https://nexus.chatopera.com/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>chatopera-snapshots</id>
+            <name>Chatopera Nexus Snapshots</name>
+            <url>https://nexus.chatopera.com/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <developers>
+        <developer>
+            <id>hailiang-wang</id>
+            <name>Hai Liang Wang</name>
+            <email>h@cskefu.com</email>
+            <url>https://github.com/hailiang-wang</url>
+            <organization>Chatopera Inc.</organization>
+            <organizationUrl>https://www.chatopera.com</organizationUrl>
+            <roles>
+                <role>chief engineer</role>
+                <role>developer</role>
+            </roles>
+            <timezone>Asia/Shanghai</timezone>
+        </developer>
+    </developers>
+
+
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://github.com/cskefu/cskefu/blob/develop/LICENSE</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+
 </project>
