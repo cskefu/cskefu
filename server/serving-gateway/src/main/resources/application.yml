@@ -1,5 +1,0 @@
-spring:
-  application:
-    name: cskefu-gateway
-  profiles:
-    active: dev

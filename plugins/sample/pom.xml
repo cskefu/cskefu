@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.cskefu.plugins</groupId>
+    <artifactId>sample</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+    <name>CSKeFu Plugin Sample</name>
+
+    <properties>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <bundle.plugin.version>5.1.1</bundle.plugin.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.cskefu</groupId>
+            <artifactId>mod-plugin</artifactId>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.cskefu</groupId>
+                <artifactId>bom-plugin</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <finalName>${project.groupId}-${project.artifactId}-${project.version}.${build.time}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.10</version>
+                <executions>
+                    <execution>
+                        <id>timestamp-property</id>
+                        <goals>
+                            <goal>timestamp-property</goal>
+                        </goals>
+                        <configuration>
+                            <name>build.time</name>
+                            <pattern>yyyyMMddHHmm</pattern>
+                            <locale>zh_CN</locale>
+                            <timeZone>Asia/Shanghai</timeZone>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <!--       You might want to condider replacing this with the config from the sample-bundle-src config -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>${bundle.plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>
+                            ${project.artifactId}
+                        </Bundle-SymbolicName>
+                        <Bundle-Name>${project.name}</Bundle-Name>
+                        <Bundle-Version>${project.version}</Bundle-Version>
+                        <Bundle-Activator>com.cskefu.plugins.sample.Activator</Bundle-Activator>
+                        <Private-Package>com.cskefu.plugins.sample</Private-Package>
+                        <Import-Package>
+                            !*,org.osgi.framework,com.cskefu.mod.plugin,com.cskefu.mod.plugin.dto
+                        </Import-Package>
+                        <Embed-Dependency>
+                            <!-- Add here any custom dependency -->
+                            slf4j-api;scope=compile|runtime; type=!pom; inline=false,
+                            logback-*;scope=compile|runtime; type=!pom; inline=false
+                        </Embed-Dependency>
+                        <Export-Service>com.cskefu.plugins.sample.Sample</Export-Service>
+                        <Embed-Transitive>true</Embed-Transitive>
+                    </instructions>
+                    <buildDirectory>../../compose/plugins</buildDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

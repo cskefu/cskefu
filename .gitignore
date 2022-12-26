@@ -2,11 +2,13 @@
 *.swo
 *.sublime-*
 *.pyc
+
 jmeter.log
 __pycache__
 tmp/
 node_modules/
 sftp-config.json
+
 .DS_Store
 *.iml
 *.ipr
@@ -20,6 +22,12 @@ backups/
 build.gradle
 .vscode/
 nohup.out
+logs/
+
 docker-compose.dev.yml
 docker-compose.custom.yml
+.jqwik-database
 private
+
+target/
+dist/
