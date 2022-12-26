@@ -30,12 +30,11 @@ if [ ! $? -eq 0 ]; then
     exit 1
 fi
 
-$baseDir/package.sh
-
-if [ ! $? -eq 0 ]; then
-    echo "Error happens on package."
-    exit 1
-fi
+# $baseDir/package.sh # package happens with deploy.sh
+# if [ ! $? -eq 0 ]; then
+#     echo "Error happens on package."
+#     exit 1
+# fi
 
 set -x
 docker build --build-arg VCS_REF=$PACKAGE_VERSION \

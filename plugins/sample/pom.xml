@@ -92,7 +92,7 @@
                         <Export-Service>com.cskefu.plugins.sample.Sample</Export-Service>
                         <Embed-Transitive>true</Embed-Transitive>
                     </instructions>
-                    <buildDirectory>../../compose/server/plugins</buildDirectory>
+                    <buildDirectory>../../compose/contact-center/plugins</buildDirectory>
                 </configuration>
             </plugin>
         </plugins>

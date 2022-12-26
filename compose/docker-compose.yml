@@ -1,0 +1,49 @@
+version: "3"
+services:
+  contact-center:
+    image: ${CC_IMAGE:-cskefu/contact-center:v8}
+    restart: always
+    ports:
+      - "${SERVING_API_PORT:-6500}:6500"
+    volumes:
+      - ./contact-center/plugins:/opt/cskefu/plugins
+    environment:
+      - "JAVA_OPTS=-Xmx${CC_JAVA_XMX:-4096m} -Xms${CC_JAVA_XMS:-2048m} -XX:PermSize=256m -XX:MaxPermSize=1024m -Djava.net.preferIPv4Stack=true"
+    depends_on:
+      - mongodb
+      - redis
+      - mysql
+
+  mongodb:
+    image: "tutum/mongodb:3.2"
+    restart: always
+    volumes:
+      - ./databases/mongodb/data:/data/db
+    ports:
+      - "${MONGODB_PORT:-6303}:27017"
+      - "${MONGODB_PORT2:-6305}:27018"
+    environment:
+      - AUTH=no
+
+  redis:
+    image: cskefu/redis:5.0.5
+    environment:
+      - REDIS_PASSWORD=${DB_PASSWD:-123456}
+    restart: always
+    volumes:
+      - ./databases/redis/data:/data
+    ports:
+      - "${REDIS_PORT:-6301}:6379"
+  
+  mysql:
+    image: cskefu/mysql:5.7
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWD:-123456}
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=${DB_PASSWD:-123456}
+    ports:
+      - "${MYSQL_PORT:-6300}:3306"
+    volumes:
+      - ./databases/mysql/data:/var/lib/mysql
+    command: --max_allowed_packet=32505856
