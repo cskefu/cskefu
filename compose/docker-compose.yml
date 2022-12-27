@@ -1,7 +1,7 @@
 version: "3"
 services:
-  contact-center:
-    image: ${CC_IMAGE:-cskefu/contact-center:v8}
+  api:
+    image: ${SERVING_API_IMAGE:-cskefu/api:v8}
     restart: always
     ports:
       - "${SERVING_API_PORT:-6500}:6500"

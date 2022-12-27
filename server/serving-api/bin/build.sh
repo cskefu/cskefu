@@ -7,7 +7,7 @@
 baseDir=$(cd `dirname "$0"`;pwd)
 appHome=$baseDir/..
 registryPrefix=
-imagename=cskefu/contact-center
+imagename=cskefu/api
 
 # functions
 
