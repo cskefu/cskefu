@@ -8,6 +8,8 @@
 
 中文版｜ [English](README_en.md)
 
+**说明：当前 [develop](https://github.com/cskefu/cskefu) 分支为研发中的春松客服 v8 版本，尚未发行正式版本；使用春松客服发布的稳定版本 v7，进入 [master](https://github.com/cskefu/cskefu/tree/master) 分支。**
+
 ## 项目目录说明
 
 ```
