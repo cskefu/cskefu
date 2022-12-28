@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html  dir="ltr">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>春松客服-数据字典</title>
+        <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+        <link rel="apple-touch-icon-precomposed" href="images/apple-touch-icon.png">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.26.4/css/uikit.gradient.css">
+
+        <link rel="stylesheet" href="style.css">
+        <script src="https://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+        <script src="uikit.js"></script>
+        <script src="scripts.js"></script>
+        <script src="jquery.sticky-kit.js "></script>
+
+        <meta name="generator" content="pandoc-uikit" />
+                        <title>春松客服-数据字典</title>
+        <style type="text/css">code{white-space: pre;}</style>
+                                                       
+    </head>
+
+    <body>
+
+        <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
+
+                        <div class="uk-grid" data-uk-grid-margin>
+                <div class="uk-width-1-1">
+                    <h1 class="uk-heading-large">春松客服-数据字典</h1>
+                                                        </div>
+            </div>
+            
+            <div class="uk-grid" data-uk-grid-margin >          
+                <div class="uk-width-medium-1-4">
+                    <div class="uk-overflow-container" data-uk-sticky="{top:25,media: 768}">
+                        <div class="uk-panel uk-panel-box menu-begin" >
+
+                                                        <ul>
+                                                        <li><a
+                                                        href="#春松客服-数据字典生成日期-2022-12-28"
+                                                        id="toc-春松客服-数据字典生成日期-2022-12-28">春松客服-数据字典<span
+                                                        style="font-size:14px;color: #ccc;margin-left:20px;">(生成日期:
+                                                        2022-12-28)</span></a>
+                                                        <ul>
+                                                        <li><a
+                                                        href="#cs_group_users"
+                                                        id="toc-cs_group_users">cs_group_users </a></li>
+                                                        <li><a
+                                                        href="#cs_groups"
+                                                        id="toc-cs_groups">cs_groups </a></li>
+                                                        <li><a
+                                                        href="#cs_permission_groups"
+                                                        id="toc-cs_permission_groups">cs_permission_groups </a></li>
+                                                        <li><a
+                                                        href="#cs_permission_users"
+                                                        id="toc-cs_permission_users">cs_permission_users </a></li>
+                                                        <li><a
+                                                        href="#cs_resource_operations"
+                                                        id="toc-cs_resource_operations">cs_resource_operations </a></li>
+                                                        <li><a
+                                                        href="#cs_resources"
+                                                        id="toc-cs_resources">cs_resources </a></li>
+                                                        <li><a
+                                                        href="#cs_spaces"
+                                                        id="toc-cs_spaces">cs_spaces </a></li>
+                                                        <li><a
+                                                        href="#cs_users"
+                                                        id="toc-cs_users">cs_users </a></li>
+                                                        </ul></li>
+                                                        </ul>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <div class="uk-width-medium-3-4">
+<h1 style="text-align:center;"
+id="春松客服-数据字典生成日期-2022-12-28">春松客服-数据字典<span
+style="font-size:14px;color: #ccc;margin-left:20px;">(生成日期:
+2022-12-28)</span></h1>
+<p><span>版本：v8</span>，SQL：<a
+href="https://github.com/cskefu/cskefu">下载链接</a>，Models PDF：<a
+href="https://github.com/cskefu/cskefu">下载链接</a></p>
+<h2 id="cs_group_users">cs_group_users </h2>
+<table data-border="1" data-cellspacing="0" data-cellpadding="0"
+data-align="center">
+<caption>Users in Group</caption>
+<tbody>
+<tr class="header">
+<th>字段名</th>
+<th>数据类型</th>
+<th>默认值</th>
+<th>允许非空</th>
+<th>自动递增</th>
+<th>备注</th>
+</tr>
+
+<tr class="odd">
+<td class="c1">id</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">groupid</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> Group Id</td>
+</tr>
+<tr class="odd">
+<td class="c1">userid</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> User Id</td>
+</tr>
+<tr class="even">
+<td class="c1">createtime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> Create time</td>
+</tr>
+<tr class="odd">
+<td class="c1">updatetime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> Update time</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cs_groups">cs_groups </h2>
+<table data-border="1" data-cellspacing="0" data-cellpadding="0"
+data-align="center">
+<caption>Groups</caption>
+<tbody>
+<tr class="header">
+<th>字段名</th>
+<th>数据类型</th>
+<th>默认值</th>
+<th>允许非空</th>
+<th>自动递增</th>
+<th>备注</th>
+</tr>
+
+<tr class="odd">
+<td class="c1">id</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">name</td>
+<td class="c2">varchar(200)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> Group name</td>
+</tr>
+<tr class="odd">
+<td class="c1">description</td>
+<td class="c2">text</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Group Description</td>
+</tr>
+<tr class="even">
+<td class="c1">createtime</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> Create time</td>
+</tr>
+<tr class="odd">
+<td class="c1">updatetime</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> Update time</td>
+</tr>
+<tr class="even">
+<td class="c1">deleted</td>
+<td class="c2">tinyint(1)</td>
+<td class="c3"> 0</td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">creator</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+</tbody>
+</table>
+<h2 id="cs_permission_groups">cs_permission_groups </h2>
+<table data-border="1" data-cellspacing="0" data-cellpadding="0"
+data-align="center">
+<tbody>
+<tr class="header">
+<th>字段名</th>
+<th>数据类型</th>
+<th>默认值</th>
+<th>允许非空</th>
+<th>自动递增</th>
+<th>备注</th>
+</tr>
+
+<tr class="odd">
+<td class="c1">id</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">groupid</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> Group Id</td>
+</tr>
+<tr class="odd">
+<td class="c1">resourceoperationid</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> Resource Operation Id</td>
+</tr>
+<tr class="even">
+<td class="c1">enabled</td>
+<td class="c2">tinyint(1)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> 1</td>
+</tr>
+<tr class="odd">
+<td class="c1">createtime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">updatetime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+</tbody>
+</table>
+<h2 id="cs_permission_users">cs_permission_users </h2>
+<table data-border="1" data-cellspacing="0" data-cellpadding="0"
+data-align="center">
+<tbody>
+<tr class="header">
+<th>字段名</th>
+<th>数据类型</th>
+<th>默认值</th>
+<th>允许非空</th>
+<th>自动递增</th>
+<th>备注</th>
+</tr>
+
+<tr class="odd">
+<td class="c1">id</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">userid</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">resourcepatternid</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">enabled</td>
+<td class="c2">tinyint(1)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">createtime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">updatetime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+</tbody>
+</table>
+<h2 id="cs_resource_operations">cs_resource_operations </h2>
+<table data-border="1" data-cellspacing="0" data-cellpadding="0"
+data-align="center">
+<tbody>
+<tr class="header">
+<th>字段名</th>
+<th>数据类型</th>
+<th>默认值</th>
+<th>允许非空</th>
+<th>自动递增</th>
+<th>备注</th>
+</tr>
+
+<tr class="odd">
+<td class="c1">id</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">name</td>
+<td class="c2">varchar(30)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> Describe the operation with short chars, e.g. read,
+create, update, delete, admin</td>
+</tr>
+<tr class="odd">
+<td class="c1">description</td>
+<td class="c2">varchar(1000)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> A tooltip to describe the operation in details</td>
+</tr>
+<tr class="even">
+<td class="c1">resourceid</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> Resource Id</td>
+</tr>
+<tr class="odd">
+<td class="c1">pattern</td>
+<td class="c2">varchar(500)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> URL Path Pattern, e.g. /chat/*, /workorder/*</td>
+</tr>
+<tr class="even">
+<td class="c1">method</td>
+<td class="c2">varchar(255)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> HTTP Method: Get, Post, Put, Delete, etc.</td>
+</tr>
+<tr class="odd">
+<td class="c1">pluginid</td>
+<td class="c2">int(11)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Plugin provide this operation</td>
+</tr>
+<tr class="even">
+<td class="c1">pluginversion</td>
+<td class="c2">varchar(255)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Plugin version of pluginid</td>
+</tr>
+<tr class="odd">
+<td class="c1">createtime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">updatetime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+</tbody>
+</table>
+<h2 id="cs_resources">cs_resources </h2>
+<table data-border="1" data-cellspacing="0" data-cellpadding="0"
+data-align="center">
+<tbody>
+<tr class="header">
+<th>字段名</th>
+<th>数据类型</th>
+<th>默认值</th>
+<th>允许非空</th>
+<th>自动递增</th>
+<th>备注</th>
+</tr>
+
+<tr class="odd">
+<td class="c1">id</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">spacekey</td>
+<td class="c2">varchar(300)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">name</td>
+<td class="c2">varchar(30)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> Short name of this resource, e.g. workorder.</td>
+</tr>
+<tr class="even">
+<td class="c1">description</td>
+<td class="c2">text</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> Describe the resource in detail</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cs_spaces">cs_spaces </h2>
+<table data-border="1" data-cellspacing="0" data-cellpadding="0"
+data-align="center">
+<caption>Spaces</caption>
+<tbody>
+<tr class="header">
+<th>字段名</th>
+<th>数据类型</th>
+<th>默认值</th>
+<th>允许非空</th>
+<th>自动递增</th>
+<th>备注</th>
+</tr>
+
+<tr class="odd">
+<td class="c1">id</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">spacename</td>
+<td class="c2">varchar(300)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">spacekey</td>
+<td class="c2">varchar(300)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">creator</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">description</td>
+<td class="c2">text</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">createtime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">updatetime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+</tbody>
+</table>
+<h2 id="cs_users">cs_users </h2>
+<table data-border="1" data-cellspacing="0" data-cellpadding="0"
+data-align="center">
+<caption>Users</caption>
+<tbody>
+<tr class="header">
+<th>字段名</th>
+<th>数据类型</th>
+<th>默认值</th>
+<th>允许非空</th>
+<th>自动递增</th>
+<th>备注</th>
+</tr>
+
+<tr class="odd">
+<td class="c1">id</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">lastname</td>
+<td class="c2">varchar(200)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">username</td>
+<td class="c2">varchar(200)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">firstname</td>
+<td class="c2">varchar(100)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">realname</td>
+<td class="c2">varchar(200)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">englishname</td>
+<td class="c2">varchar(200)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">phonenumber</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">phonecountrycode</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">phoneverified</td>
+<td class="c2">tinyint(1)</td>
+<td class="c3"> 0</td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">birthday</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">country</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">province</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">city</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">street</td>
+<td class="c2">varchar(500)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">avatarurl</td>
+<td class="c2">varchar(500)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">sex</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">birthyear</td>
+<td class="c2">int(11)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">primarylanguage</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Primary Language, locale code, zh_CN, zh_TW, en_US,
+etc.</td>
+</tr>
+<tr class="odd">
+<td class="c1">bio</td>
+<td class="c2">text</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">email</td>
+<td class="c2">varchar(200)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">emailverified</td>
+<td class="c2">tinyint(1)</td>
+<td class="c3"> 0</td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">password</td>
+<td class="c2">varchar(200)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">identitytype</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Identiry File Type - ID card, passport, etc.</td>
+</tr>
+<tr class="even">
+<td class="c1">identitynumber</td>
+<td class="c2">varchar(100)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Identity File Sn.</td>
+</tr>
+<tr class="odd">
+<td class="c1">identityverified</td>
+<td class="c2">tinyint(1)</td>
+<td class="c3"> 0</td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Identity File Verified or not</td>
+</tr>
+<tr class="even">
+<td class="c1">identityverifydate</td>
+<td class="c2">datetime</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">blocked</td>
+<td class="c2">tinyint(1)</td>
+<td class="c3"> 0</td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">deleted</td>
+<td class="c2">tinyint(1)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">createtime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">updatetime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+</tbody>
+</table>
+<p>- 春松客服, <a
+href="https://www.cskefu.com">https://www.cskefu.com</a>
+-</p>                    
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
