@@ -57,6 +57,15 @@
                                                         href="#cs_permission_users"
                                                         id="toc-cs_permission_users">cs_permission_users </a></li>
                                                         <li><a
+                                                        href="#cs_plugins"
+                                                        id="toc-cs_plugins">cs_plugins </a></li>
+                                                        <li><a
+                                                        href="#cs_plugins_config_global"
+                                                        id="toc-cs_plugins_config_global">cs_plugins_config_global </a></li>
+                                                        <li><a
+                                                        href="#cs_plugins_config_space"
+                                                        id="toc-cs_plugins_config_space">cs_plugins_config_space </a></li>
+                                                        <li><a
                                                         href="#cs_resource_operations"
                                                         id="toc-cs_resource_operations">cs_resource_operations </a></li>
                                                         <li><a
@@ -214,6 +223,7 @@ data-align="center">
 <h2 id="cs_permission_groups">cs_permission_groups </h2>
 <table data-border="1" data-cellspacing="0" data-cellpadding="0"
 data-align="center">
+<caption>Permission for each group against Resource Operations</caption>
 <tbody>
 <tr class="header">
 <th>字段名</th>
@@ -277,6 +287,7 @@ data-align="center">
 <h2 id="cs_permission_users">cs_permission_users </h2>
 <table data-border="1" data-cellspacing="0" data-cellpadding="0"
 data-align="center">
+<caption>Permission for user against Resource Operations</caption>
 <tbody>
 <tr class="header">
 <th>字段名</th>
@@ -337,9 +348,396 @@ data-align="center">
 </tr>
 </tbody>
 </table>
+<h2 id="cs_plugins">cs_plugins </h2>
+<table data-border="1" data-cellspacing="0" data-cellpadding="0"
+data-align="center">
+<caption>Plugins</caption>
+<tbody>
+<tr class="header">
+<th>字段名</th>
+<th>数据类型</th>
+<th>默认值</th>
+<th>允许非空</th>
+<th>自动递增</th>
+<th>备注</th>
+</tr>
+
+<tr class="odd">
+<td class="c1">id</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">name</td>
+<td class="c2">varchar(255)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Plugin name</td>
+</tr>
+<tr class="odd">
+<td class="c1">groupid</td>
+<td class="c2">varchar(200)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> Plugin group id</td>
+</tr>
+<tr class="even">
+<td class="c1">artifactid</td>
+<td class="c2">varchar(200)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> Plugin artifact id</td>
+</tr>
+<tr class="odd">
+<td class="c1">version</td>
+<td class="c2">varchar(30)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Plugin version</td>
+</tr>
+<tr class="even">
+<td class="c1">description</td>
+<td class="c2">text</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Plugin description</td>
+</tr>
+<tr class="odd">
+<td class="c1">gridfsfileidweb</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Plugin Web file for frontend on GridFS</td>
+</tr>
+<tr class="even">
+<td class="c1">gridfsfileidjar</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Plugin install file id on GridFS</td>
+</tr>
+<tr class="odd">
+<td class="c1">pluginjson</td>
+<td class="c2">text</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> plugin.json as Metadata</td>
+</tr>
+<tr class="even">
+<td class="c1">state</td>
+<td class="c2">varchar(255)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Plugin state, e.g. installed, activated, disabled,
+expired</td>
+</tr>
+<tr class="odd">
+<td class="c1">installerid</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Installed by who</td>
+</tr>
+<tr class="even">
+<td class="c1">vendor</td>
+<td class="c2">varchar(500)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> Author, Provider name, e.g. company name, developer
+name</td>
+</tr>
+<tr class="odd">
+<td class="c1">officialsite</td>
+<td class="c2">varchar(500)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Plugin Public Official Site, URL</td>
+</tr>
+<tr class="even">
+<td class="c1">vendoremail</td>
+<td class="c2">varchar(255)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Email contact address of vendor</td>
+</tr>
+<tr class="odd">
+<td class="c1">createtime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">updatetime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">deleted</td>
+<td class="c2">tinyint(1)</td>
+<td class="c3"> 0</td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Is this plugin deleted or not</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cs_plugins_config_global">cs_plugins_config_global </h2>
+<table data-border="1" data-cellspacing="0" data-cellpadding="0"
+data-align="center">
+<caption>Plugin Configurations globally</caption>
+<tbody>
+<tr class="header">
+<th>字段名</th>
+<th>数据类型</th>
+<th>默认值</th>
+<th>允许非空</th>
+<th>自动递增</th>
+<th>备注</th>
+</tr>
+
+<tr class="odd">
+<td class="c1">id</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">plugingroupid</td>
+<td class="c2">varchar(200)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Plugin group id</td>
+</tr>
+<tr class="odd">
+<td class="c1">pluginartifactid</td>
+<td class="c2">varchar(200)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Plugin artifact id</td>
+</tr>
+<tr class="even">
+<td class="c1">pluginversion</td>
+<td class="c2">varchar(30)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Plugin version</td>
+</tr>
+<tr class="odd">
+<td class="c1">name</td>
+<td class="c2">varchar(255)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Property name</td>
+</tr>
+<tr class="even">
+<td class="c1">value</td>
+<td class="c2">text</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Property value</td>
+</tr>
+<tr class="odd">
+<td class="c1">type</td>
+<td class="c2">varchar(30)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> Property type, e.g. string, int, json, float</td>
+</tr>
+<tr class="even">
+<td class="c1">help</td>
+<td class="c2">text</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Tooltip to users to fill in value</td>
+</tr>
+<tr class="odd">
+<td class="c1">required</td>
+<td class="c2">tinyint(1)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> This property is required or not to use this plugin</td>
+</tr>
+<tr class="even">
+<td class="c1">lastmodifieduserid</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Property last updated by who</td>
+</tr>
+<tr class="odd">
+<td class="c1">createtime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">updatetime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+</tbody>
+</table>
+<h2 id="cs_plugins_config_space">cs_plugins_config_space </h2>
+<table data-border="1" data-cellspacing="0" data-cellpadding="0"
+data-align="center">
+<caption>Plugin Configurations by per Space</caption>
+<tbody>
+<tr class="header">
+<th>字段名</th>
+<th>数据类型</th>
+<th>默认值</th>
+<th>允许非空</th>
+<th>自动递增</th>
+<th>备注</th>
+</tr>
+
+<tr class="odd">
+<td class="c1">id</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> NO</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="even">
+<td class="c1">plugingroupid</td>
+<td class="c2">varchar(200)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Plugin group id</td>
+</tr>
+<tr class="odd">
+<td class="c1">pluginartifactid</td>
+<td class="c2">varchar(200)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Plugin artifact id</td>
+</tr>
+<tr class="even">
+<td class="c1">pluginversion</td>
+<td class="c2">varchar(30)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Plugin version</td>
+</tr>
+<tr class="odd">
+<td class="c1">spaceid</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Space id</td>
+</tr>
+<tr class="even">
+<td class="c1">name</td>
+<td class="c2">varchar(255)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Property name</td>
+</tr>
+<tr class="odd">
+<td class="c1">type</td>
+<td class="c2">varchar(30)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Property type</td>
+</tr>
+<tr class="even">
+<td class="c1">value</td>
+<td class="c2">text</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Property value</td>
+</tr>
+<tr class="odd">
+<td class="c1">help</td>
+<td class="c2">text</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Tooltip to users to fill in value</td>
+</tr>
+<tr class="even">
+<td class="c1">required</td>
+<td class="c2">tinyint(1)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> This property is required or not to use this plugin</td>
+</tr>
+<tr class="odd">
+<td class="c1">lastmodifieduserid</td>
+<td class="c2">varchar(45)</td>
+<td class="c3"> </td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> Property last updated by who</td>
+</tr>
+<tr class="even">
+<td class="c1">createtime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+<tr class="odd">
+<td class="c1">updatetime</td>
+<td class="c2">datetime</td>
+<td class="c3"> CURRENT_TIMESTAMP</td>
+<td class="c4"> YES</td>
+<td class="c5"> </td>
+<td class="c6"> </td>
+</tr>
+</tbody>
+</table>
 <h2 id="cs_resource_operations">cs_resource_operations </h2>
 <table data-border="1" data-cellspacing="0" data-cellpadding="0"
 data-align="center">
+<caption>Operations upon Resources</caption>
 <tbody>
 <tr class="header">
 <th>字段名</th>
@@ -369,7 +767,7 @@ create, update, delete, admin</td>
 </tr>
 <tr class="odd">
 <td class="c1">description</td>
-<td class="c2">varchar(1000)</td>
+<td class="c2">text</td>
 <td class="c3"> </td>
 <td class="c4"> NO</td>
 <td class="c5"> </td>
@@ -401,21 +799,13 @@ create, update, delete, admin</td>
 </tr>
 <tr class="odd">
 <td class="c1">pluginid</td>
-<td class="c2">int(11)</td>
+<td class="c2">varchar(45)</td>
 <td class="c3"> </td>
 <td class="c4"> YES</td>
 <td class="c5"> </td>
 <td class="c6"> Plugin provide this operation</td>
 </tr>
 <tr class="even">
-<td class="c1">pluginversion</td>
-<td class="c2">varchar(255)</td>
-<td class="c3"> </td>
-<td class="c4"> YES</td>
-<td class="c5"> </td>
-<td class="c6"> Plugin version of pluginid</td>
-</tr>
-<tr class="odd">
 <td class="c1">createtime</td>
 <td class="c2">datetime</td>
 <td class="c3"> CURRENT_TIMESTAMP</td>
@@ -423,7 +813,7 @@ create, update, delete, admin</td>
 <td class="c5"> </td>
 <td class="c6"> </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td class="c1">updatetime</td>
 <td class="c2">datetime</td>
 <td class="c3"> CURRENT_TIMESTAMP</td>
@@ -436,6 +826,7 @@ create, update, delete, admin</td>
 <h2 id="cs_resources">cs_resources </h2>
 <table data-border="1" data-cellspacing="0" data-cellpadding="0"
 data-align="center">
+<caption>Resources</caption>
 <tbody>
 <tr class="header">
 <th>字段名</th>
