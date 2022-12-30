@@ -1,0 +1,11 @@
+{
+  "name": "@cskefu/ui",
+  "version": "1.0.0",
+  "description": "cskefu ui components library base on element-plus",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kaifuny",
+  "license": "Apache-2.0"
+}
