@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "scripts": {
+    "docs": "vitepress dev docs",
+    "docs-build": "vitepress build docs"
+  },
+  "workspaces": [
+    "app/**",
+    "packages/**"
+  ]
+}
