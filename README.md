@@ -4,7 +4,7 @@
 
 </div>
 
-# 春松客服：上线开源客服系统
+# 春松客服 v7
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/cskefu/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/cskefu/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://www.cskefu.com/2022/06/24/cskefu-opensource-license/ "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![docker](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-30-orange.svg?style=flat-square)](#contributors-)
@@ -12,6 +12,11 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [https://www.cskefu.com](https://www.cskefu.com/) | [GitHub](https://github.com/cskefu/cskefu) | [Gitee](https://gitee.com/chatopera/cskefu) | [GitCode](https://gitcode.net/chatopera/cskefu)
+
+| 版本 | 文档中心 | GitHub 分支 |
+| --- | --- | --- |
+| v8.x | [Next](https://docs.cskefu.com/docs/next/) | [develop](https://github.com/cskefu/cskefu/tree/develop) |
+| v7.x | [v7](https://docs.cskefu.com/docs/) | [master](https://github.com/cskefu/cskefu/tree/master) |
 
 :hearts: 春松客服的愿景：
 

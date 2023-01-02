@@ -10,4 +10,6 @@ baseDir=$(cd `dirname "$0"`;pwd)
 # main 
 [ -z "${BASH_SOURCE[0]}" -o "${BASH_SOURCE[0]}" = "$0" ] || return
 cd $baseDir/../app
-SPRING_PROFILES_ACTIVE=dev mvn spring-boot:run
+source .env
+mvn spring-boot:run
+#java -jar target/contact-center.war
