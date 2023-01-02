@@ -10,6 +10,12 @@
 
 **说明：当前 [develop](https://github.com/cskefu/cskefu) 分支为研发中的春松客服 v8 版本，尚未发行正式版本；使用春松客服发布的稳定版本 v7，进入 [master](https://github.com/cskefu/cskefu/tree/master) 分支。**
 
+| 版本 | 文档中心 | GitHub 分支 |
+| --- | --- | --- |
+| v8.x | [Next](https://docs.cskefu.com/docs/next/) | [develop](https://github.com/cskefu/cskefu/tree/develop) |
+| v7.x | [v7](https://docs.cskefu.com/docs/) | [master](https://github.com/cskefu/cskefu/tree/master) |
+
+
 ## How-to Guides
 
 - 了解春松客服社区的活跃情况？[参考链接](https://ossinsight.io/analyze/cskefu/cskefu#overview)
