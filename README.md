@@ -6,82 +6,46 @@
 
 # 春松客服：上线开源客服系统
 
-中文版｜ [English](README_en.md)
+中文版 ｜ [English](README_en.md)
 
 **说明：当前 [develop](https://github.com/cskefu/cskefu) 分支为研发中的春松客服 v8 版本，尚未发行正式版本；使用春松客服发布的稳定版本 v7，进入 [master](https://github.com/cskefu/cskefu/tree/master) 分支。**
 
-## 项目目录说明
+## How-to Guides
 
-```
-.
-├── compose                       # 使用 Docker Compose 启动目录
-│   ├── databases
-│   │   ├── mysql
-│   │   └── redis
-│   ├── docker-compose.yml
-│   └── README.md
-├── README.md
-├── server                        # 服务器端 Server 程序
-│   ├── serving-foo               # serving 前缀的是 Application
-│   │   ├── src
-│   │   ├── bin
-│   │   ├── config
-│   │   ├── data
-│   │   ├── Dockerfile
-│   │   ├── logs
-│   │   ├── pom.xml
-│   │   └── README.md
-│   ├── mod-bar                   # mod 前缀的是模块、Lib
-│   │   ├── src
-│   │   ├── bin
-│   │   ├── config
-│   │   ├── data
-│   │   ├── pom.xml
-│   │   ├── logs
-│   │   └── README.md
-│   ├── mod-biz
-│   └── 服务端项目根目录
-└── web                           # 前端服务程序
-    └── web前端项目根目录
-```
+- 了解春松客服社区的活跃情况？[参考链接](https://ossinsight.io/analyze/cskefu/cskefu#overview)
+- 如何部署春松客服？[参考链接](https://docs.cskefu.com/docs/deploy)
+- 了解春松客服的开源许可协议？[参考链接](https://www.cskefu.com/2022/06/24/cskefu-opensource-license/)
+- 如何搭建春松客服的开发环境？[参考链接](https://docs.cskefu.com/docs/osc/)
+- 如何加入春松客服开源社区？[参考链接](https://www.cskefu.com/join-us/)
+- 如何为春松客服提交代码？[参考链接](https://www.cskefu.com/2022/10/30/how-to-sign-dco-for-pr/)
+- 如何成为春松客服核心开发者？[参考链接](https://www.cskefu.com/core-developers/)
+- 查看春松客服的开发者会议纪要？[参考链接](https://www.cskefu.com/category/conferences/)
+- 关注最新动态，关注春松客服邮件列表？[参考链接](https://lists.cskefu.com/cgi-bin/mailman/listinfo/dev)
+- 了解春松客服的设计规范、意见征集？[参考链接](https://www.cskefu.com/category/rfcs/)
+- 为春松客服提供需求、描述 BUG？[参考链接](https://github.com/cskefu/cskefu/issues)
 
-### server
-backend modules and apps.
+## Dev Conferences, regularly
 
-* module - sub module as a maven project.
-* serving - an application such as spring boot app.
+开发者会议，定期社区会议：
 
-For each module and app, following a folder structure -
+周日 10:00UTC+8（中文）（单周）。[转换为您的时区](https://www.thetimezoneconverter.com/?t=10%3A00&tz=GMT%2B8&)
 
-```
-pom.xml # for a maven project
-src/ # source codes
-config / # config file sample
-data/ # data used by this app
-logs/ # logs dir
-bin/ # scripts or binary generated with this app
-    start.sh # start this app 
-    compile.sh # compile the source code to binary
-    package.sh # package up the file
-    dev.sh # start the app in development mode
-    build.sh # build the app as a docker image
-    run.sh # run the app with docker image
-    push.sh # push the docker image into docker registry
-  
-Dockerfile # Docker file to build this app as a docker image
-```
+Resources：
 
-### web
+- [会议记录和议程](https://www.cskefu.com/category/conferences/) | [Bilibili Video](https://space.bilibili.com/34290698/channel/collectiondetail?sid=817713)
+- [会议日历](https://www.feishu.cn/calendar/share?token=e1a022850428d49e1ab84aef69e8ee5c)
+- [会议链接](https://vc.feishu.cn/j/400656075)
 
-frontend services for web clients. 
-
-### compose
-
-YML and data dirs to run with docker-compose.
-
-
-## 其他版本
+# 其他版本
 
 * 当前稳定版：<https://github.com/cskefu/cskefu/tree/master>
 
 * 其它历史版本：<https://github.com/cskefu/cskefu/tags>
+
+# OpenSource for the World
+
+- [cskefu/cskefu](https://github.com/cskefu/cskefu) - 产品核心库
+- [cskefu/cskefu-docs](https://github.com/cskefu/cskefu-docs) - 文档中心
+- [cskefu/handouts](https://github.com/cskefu/handouts) - 介绍文件：使用手册、培训 PPTs
+
+![image](https://user-images.githubusercontent.com/3538629/209596593-824729c8-6cab-445c-9b16-f69967daaeda.png)
