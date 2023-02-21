@@ -32,7 +32,15 @@ services:
       - UK_IM_SERVER_PORT=8036
       - UK_IM_SERVER_HOST=localhost
       - UK_IM_SERVER_THREADS=10
-      # set a separated port for SSL
+      # 春松客服配置 HTTPs / HTTPs for CSKeFu
+      # In detail
+      #     1) https://chatopera.blog.csdn.net/article/details/105820829
+      #     2) https://github.com/cskefu/cskefu/issues/414#issuecomment-1437767407
+      # In short
+      #     1) Setup Load Balancing / Reverse Proxy
+      #     2) Modify CS_IM_SERVER_SSL_PORT
+      #         2.1 comment out CS_IM_SERVER_SSL_PORT envronment variable to redirect HTTPs requests to 443 port
+      #         2.2 Or just remove below line .
       - CS_IM_SERVER_SSL_PORT=${CC_SOCKET_PORT:-8036}
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/cosinee?useUnicode=true&characterEncoding=UTF-8
       - SPRING_DATASOURCE_USERNAME=root
