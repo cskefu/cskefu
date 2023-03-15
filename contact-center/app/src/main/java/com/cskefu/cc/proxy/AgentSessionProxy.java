@@ -105,4 +105,11 @@ public class AgentSessionProxy {
 //        logger.info("[isInvalidSessionId] result {}", result);
         return result;
     }
+
+    public void deleteUserSession(final String agentno, final String orgi) {
+        if (cache.existUserSessionByAgentnoAndOrgi(agentno, orgi)) {
+            logger.info("[deleteUserSession] agentno {}, orgi {}", agentno, orgi);
+            cache.deleteUserSessionByAgentnoAndOrgi(agentno, orgi);
+        }
+    }
 }

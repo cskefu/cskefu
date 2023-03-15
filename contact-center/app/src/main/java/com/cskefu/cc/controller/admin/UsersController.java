@@ -38,6 +38,7 @@ import com.cskefu.cc.persistence.repository.PbxHostRepository;
 import com.cskefu.cc.persistence.repository.RoleRepository;
 import com.cskefu.cc.persistence.repository.UserRepository;
 import com.cskefu.cc.persistence.repository.UserRoleRepository;
+import com.cskefu.cc.proxy.AgentSessionProxy;
 import com.cskefu.cc.proxy.OrganProxy;
 import com.cskefu.cc.proxy.UserProxy;
 import com.cskefu.cc.util.Menu;
@@ -163,6 +164,9 @@ public class UsersController extends Handler {
                 organUserRes.delete(organUsers);
 
                 userRepository.delete(dbUser);
+
+                AgentSessionProxy agentSessionProxy = MainContext.getContext().getBean(AgentSessionProxy.class);
+                agentSessionProxy.deleteUserSession(dbUser.getId(), dbUser.getOrgi());
             }
         } else {
             msg = "admin_user_not_exist";
