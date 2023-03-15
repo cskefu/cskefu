@@ -24,6 +24,7 @@ import com.cskefu.cc.model.Dict;
 import com.cskefu.cc.model.Organ;
 import com.cskefu.cc.model.SystemConfig;
 import com.cskefu.cc.model.User;
+import com.cskefu.cc.proxy.AgentSessionProxy;
 import com.cskefu.cc.proxy.OrganProxy;
 import com.cskefu.cc.proxy.UserProxy;
 import com.cskefu.cc.util.Menu;
@@ -51,6 +52,15 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
         boolean filter = false;
         User user = (User) request.getSession(true).getAttribute(Constants.USER_SESSION_NAME);
         Organ organ = (Organ) request.getSession(true).getAttribute(Constants.ORGAN_SESSION_NAME);
+
+        if(user != null){
+            AgentSessionProxy agentSessionProxy = MainContext.getContext().getBean(AgentSessionProxy.class);
+            if(agentSessionProxy.isInvalidSessionId(user.getId(),MainUtils.getContextID(request.getSession().getId()),user.getOrgi())){
+                request.getSession().invalidate();
+                response.sendRedirect("/login.html");
+                return false;
+            }
+        }
 
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
