@@ -721,6 +721,11 @@ public class IMController extends Handler {
             if (invite != null) {
                 logger.info("[index] invite id {}, orgi {}", invite.getId(), invite.getOrgi());
                 map.addAttribute("orgi", invite.getOrgi());
+
+                if (StringUtils.isBlank(invite.getConsult_dialog_color())) {
+                    // set as default theme number, blue.
+                    invite.setConsult_dialog_color("1");
+                }
                 map.addAttribute("inviteData", invite);
 
                 if (StringUtils.isNotBlank(aiid)) {
