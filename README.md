@@ -265,7 +265,15 @@
   - [掌握春松客服前端框架 Pugjs，介绍及使用注意事项](https://blog.csdn.net/samurais/article/details/114576611)
 - [提交代码](https://docs.cskefu.com/docs/osc/contribution)
 
-## 微信公众号
+## 微信
+
+### 微信群
+
+春松客服用户和开发者交流群。
+
+![春松客服微信群](./public/assets/cskefu_opensource_community_wx_qr.jpg)
+
+### 微信公众号
 
 及时获得产品更新、活动分享等信息，关注春松客服公众号。
 
