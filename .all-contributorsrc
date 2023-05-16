@@ -292,11 +292,21 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "zhangchanglong",
+      "name": "zhangchanglong",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3481828?v=4",
+      "profile": "https://github.com/zhangchanglong",
+      "contributions": [
+        "eventOrganizing"
+      ]
     }
   ],
   "projectName": "cskefu",
-  "projectOwner": "chatopera",
+  "projectOwner": "cskefu",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": true
+  "skipCi": true,
+  "commitConvention": "angular"
 }
