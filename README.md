@@ -7,7 +7,7 @@
 # 春松客服 v7
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/cskefu/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/cskefu/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://www.cskefu.com/2022/06/24/cskefu-opensource-license/ "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![docker](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-31-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-32-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [https://www.cskefu.com](https://www.cskefu.com/) | [GitHub](https://github.com/cskefu/cskefu) | [Gitee](https://gitee.com/chatopera/cskefu) | [GitCode](https://gitcode.net/chatopera/cskefu)
@@ -90,6 +90,7 @@
       <td align="center" valign="top" width="11.11%"><a href="https://github.com/zc1813400107"><img src="https://avatars.githubusercontent.com/u/46372405?v=4?s=50" width="50px;" alt="super"/><br /><sub><b>super</b></sub></a><br /><a href="https://github.com/cskefu/cskefu/commits?author=zc1813400107" title="Code">💻</a> <a href="https://github.com/cskefu/cskefu/commits?author=zc1813400107" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="11.11%"><a href="https://github.com/xiaobo9"><img src="https://avatars.githubusercontent.com/u/1284376?v=4?s=50" width="50px;" alt="xiaobo9"/><br /><sub><b>xiaobo9</b></sub></a><br /><a href="https://github.com/cskefu/cskefu/commits?author=xiaobo9" title="Code">💻</a></td>
       <td align="center" valign="top" width="11.11%"><a href="https://github.com/zhangchanglong"><img src="https://avatars.githubusercontent.com/u/3481828?v=4?s=50" width="50px;" alt="zhangchanglong"/><br /><sub><b>zhangchanglong</b></sub></a><br /><a href="#eventOrganizing-zhangchanglong" title="Event Organizing">📋</a></td>
+      <td align="center" valign="top" width="11.11%"><a href="https://samzong.me"><img src="https://avatars.githubusercontent.com/u/13782141?v=4?s=50" width="50px;" alt="Samzong Lu"/><br /><sub><b>Samzong Lu</b></sub></a><br /><a href="#eventOrganizing-SAMZONG" title="Event Organizing">📋</a> <a href="#projectManagement-SAMZONG" title="Project Management">📆</a> <a href="#design-SAMZONG" title="Design">🎨</a></td>
     </tr>
   </tbody>
 </table>
