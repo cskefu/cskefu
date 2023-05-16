@@ -301,6 +301,17 @@
       "contributions": [
         "eventOrganizing"
       ]
+    },
+    {
+      "login": "SAMZONG",
+      "name": "Samzong Lu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13782141?v=4",
+      "profile": "https://samzong.me",
+      "contributions": [
+        "eventOrganizing",
+        "projectManagement",
+        "design"
+      ]
     }
   ],
   "projectName": "cskefu",
