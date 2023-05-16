@@ -312,6 +312,15 @@
         "projectManagement",
         "design"
       ]
+    },
+    {
+      "login": "halfray",
+      "name": "halfray",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8181982?v=4",
+      "profile": "https://github.com/halfray",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "projectName": "cskefu",
