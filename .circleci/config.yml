@@ -6,7 +6,7 @@ version: 2.1
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
-  package:
+  package-build-push:
     # These next lines define a Docker executor: https://circleci.com/docs/executor-types/
     # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # Be sure to update the Docker image tag below to openjdk version of your application.
@@ -18,21 +18,17 @@ jobs:
     steps:
       # Checkout the code as the first step.
       - checkout
-      # Use mvn clean and package as the standard maven build phase
-      - run:
-          name: Package
-          command: cd contact-center && ./admin/package.sh
-
-  publish:
-    docker:
-      - image: circleci/buildpack-deps:stretch
-    steps:
       - setup_remote_docker
       - run:
-          name: Publish Docker Image to Docker Hub
+          name: Login DockerHub
           command: |
             echo "$DOCKERHUB_USERPASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            cd contact-center && ./admin/build.sh && ./admin/push.sh
+      - run:
+          name: Build Contact Center Docker Image
+          command: cd $CIRCLE_WORKING_DIRECTORY/contact-center && ./admin/build.sh
+      - run:
+          name: Push Contact Center Docker Image to DockerHub
+          command: cd $CIRCLE_WORKING_DIRECTORY/contact-center && ./admin/push.sh
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
@@ -40,5 +36,7 @@ workflows:
   dockerize: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
-      - package
-      - publish
+      - package-build-push:
+          filters:
+            branches:
+              only: develop
