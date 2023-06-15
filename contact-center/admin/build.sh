@@ -17,9 +17,7 @@ imagename=cskefu/contact-center
 cd $appHome
 TIMESTAMP=`date "+%Y%m%d.%H%M%S"`
 PACKAGE_VERSION=`git rev-parse --short HEAD`
-APPLICATION_CUSTOMER_ENTITY=${APPLICATION_CUSTOMER_ENTITY:-"Chatopera CC Cloud"}
-
-$baseDir/package.sh
+APPLICATION_CUSTOMER_ENTITY=${APPLICATION_CUSTOMER_ENTITY:-"OpenSource Community"}
 
 if [ ! $? -eq 0 ]; then
     exit 1

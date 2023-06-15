@@ -21,7 +21,18 @@ jobs:
       # Use mvn clean and package as the standard maven build phase
       - run:
           name: Package
-          command: cd contact-center && ./admin/build.sh
+          command: cd contact-center && ./admin/package.sh
+
+  publish:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - setup_remote_docker
+      - run:
+          name: Publish Docker Image to Docker Hub
+          command: |
+            echo "$DOCKERHUB_USERPASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            cd contact-center && ./admin/build.sh && ./admin/push.sh
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
@@ -30,3 +41,4 @@ workflows:
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       - package
+      - publish
