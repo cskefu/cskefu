@@ -37,7 +37,7 @@ public class MessengerEventSubscription {
     public void onPublish(final String jsonStr) {
         JSONObject payload = JSONObject.parseObject(jsonStr);
         String otnId = payload.getString("otnId");
-        Date sendtime = payload.getTimestamp("sendtime");
+        Date sendtime = (Date) payload.getTimestamp("sendtime");
 
         FbOTN otn = otnRepository.getOne(otnId);
         FbMessenger fbMessenger = fbMessengerRepository.findOneByPageId(otn.getPageId());

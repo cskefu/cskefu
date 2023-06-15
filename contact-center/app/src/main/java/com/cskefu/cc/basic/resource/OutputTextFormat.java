@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ public class OutputTextFormat {
 	private String title ;
 	private String parent ;
 	
-	private Map<String , Object> data = new HashMap<String , Object>();
+	private Map<String , Object> data = new HashMap<>();
 	private JobDetail job ;
 	private UKDataBean dataBean ;
 	

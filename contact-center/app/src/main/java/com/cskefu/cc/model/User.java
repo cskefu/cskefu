@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,6 @@ public class User implements java.io.Serializable {
     private String secureconf = "5";
     private boolean admin;                 // 是否是管理员
     private boolean superadmin = false;    // 是否是系统管理员
-    private String orgi;
     private String creater;
     private Date createtime = new Date();
     private Date passupdatetime = new Date();
@@ -109,13 +108,16 @@ public class User implements java.io.Serializable {
     // 我的组织机构标识及附属机构们，存储机构ID
     private HashSet<String> affiliates = new HashSet<>();
 
+    // 基于当前组织机构的组织机构及附属组织机构
+    private HashSet<String> currOrganAffiliates = new HashSet<>();
+
     // Note: 此处并没有给附属部门于直属部门间的关系建立一个对象缓存，如果需要这个信息，通过API接口进行查询
 
     // 角色列表
-    private List<Role> roleList = new ArrayList<Role>();
+    private List<Role> roleList = new ArrayList<>();
 
     // 角色的权限
-    private Map<String, Object> roleAuthMap = new HashMap<String, Object>();
+    private Map<String, Object> roleAuthMap = new HashMap<>();
 
     @Transient
     private String currOrganId;   // 短时使用：浏览到该用户时，打开到组织 ID
@@ -272,16 +274,6 @@ public class User implements java.io.Serializable {
 
     public void setSecureconf(String secureconf) {
         this.secureconf = secureconf;
-    }
-
-
-    public String getOrgi() {
-        return orgi;
-    }
-
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
     }
 
 
@@ -503,7 +495,7 @@ public class User implements java.io.Serializable {
         this.ordertype = ordertype;
     }
 
-    // 某机构是不是包括我
+    // 某机构是不是包括本用户
     public boolean inAffiliates(final String organ) {
         return affiliates.contains(organ);
     }
@@ -516,6 +508,16 @@ public class User implements java.io.Serializable {
     public void setAffiliates(HashSet<String> affiliates) {
         this.affiliates = affiliates;
     }
+
+    @Transient
+    public HashSet<String> getCurrOrganAffiliates() {
+        return this.currOrganAffiliates;
+    }
+
+    public void setCurrOrganAffiliates(HashSet<String> currOrganAffiliates) {
+        this.currOrganAffiliates = currOrganAffiliates;
+    }
+
 
     @Transient
     public Map<String, Organ> getOrgans() {

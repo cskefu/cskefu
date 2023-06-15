@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,15 +23,15 @@ import java.util.List;
 
 public interface AdTypeRepository extends JpaRepository<AdType, String> {
 
-    AdType findByIdAndOrgi(String id, String orgi);
+    AdType findById(String id);
 
-    AdType findByIdAndOrgiAndSkill(String id, String orgi, String skill);
+    AdType findByIdAndSkill(String id, String skill);
 
-    int countByNameAndOrgi(String name, String orgi);
+    int countByName(String name);
 
-    List<AdType> findByOrgi(String orgi);
+    List<AdType> findAll();
 
-    List<AdType> findByOrgiAndSkill(String orgi, String skill);
+    List<AdType> findBySkill(String skill);
 
-    List<AdType> findByAdposAndOrgiAndSkill(String adpos, String orgi, String skill);
+    List<AdType> findByAdposAndSkill(String adpos, String skill);
 }

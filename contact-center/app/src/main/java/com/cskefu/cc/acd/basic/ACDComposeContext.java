@@ -23,12 +23,11 @@ import com.cskefu.cc.util.IP;
 public class ACDComposeContext extends Message {
 
     // 技能组及渠道
-    private String orgi;
     private String organid;
     private Organ organ;
     private String appid;
-    private String channel;
-    private SNSAccount snsAccount;
+    private String channeltype;
+    private Channel channel;
     private String sessionid;
 
     // 策略
@@ -55,7 +54,7 @@ public class ACDComposeContext extends Message {
 
     // 访客
     private String onlineUserId;
-    private OnlineUser onlineUser;
+    private PassportWebIMUser passportWebIMUser;
     private String onlineUserNickname;
     private String onlineUserHeadimgUrl;
 
@@ -94,20 +93,20 @@ public class ACDComposeContext extends Message {
         this.appid = appid;
     }
 
-    public String getChannel() {
+    public String getChannelType() {
+        return channeltype;
+    }
+
+    public void setChannelType(String channelType) {
+        this.channeltype = channelType;
+    }
+
+    public Channel getSnsAccount() {
         return channel;
     }
 
-    public void setChannel(String channel) {
+    public void setSnsAccount(Channel channel) {
         this.channel = channel;
-    }
-
-    public SNSAccount getSnsAccount() {
-        return snsAccount;
-    }
-
-    public void setSnsAccount(SNSAccount snsAccount) {
-        this.snsAccount = snsAccount;
     }
 
     public SessionConfig getSessionConfig() {
@@ -190,12 +189,12 @@ public class ACDComposeContext extends Message {
         this.agentUser = agentUser;
     }
 
-    public OnlineUser getOnlineUser() {
-        return onlineUser;
+    public PassportWebIMUser getOnlineUser() {
+        return passportWebIMUser;
     }
 
-    public void setOnlineUser(OnlineUser onlineUser) {
-        this.onlineUser = onlineUser;
+    public void setOnlineUser(PassportWebIMUser passportWebIMUser) {
+        this.passportWebIMUser = passportWebIMUser;
     }
 
     public AgentService getAgentService() {
@@ -284,14 +283,6 @@ public class ACDComposeContext extends Message {
 
     public void setOwnerid(String ownerid) {
         this.ownerid = ownerid;
-    }
-
-    public String getOrgi() {
-        return orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
     }
 
     public String getOnlineUserHeadimgUrl() {

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public class SysDicResourceController extends Handler{
     @RequestMapping("/dic")
     @Menu(type = "resouce" , subtype = "dic" , access = true)
     public ModelAndView index(ModelMap map , HttpServletResponse response, @Valid String id, @Valid String name, @Valid String attr , @Valid String style) throws IOException {
-    	List<SysDic> itemList = new ArrayList<SysDic>() ;
+    	List<SysDic> itemList = new ArrayList<>() ;
     	SysDic sysDic = Dict.getInstance().getDicItem(id) ;
     	if(sysDic!=null){
 	    	SysDic dic = Dict.getInstance().getDicItem(sysDic.getDicid()) ;

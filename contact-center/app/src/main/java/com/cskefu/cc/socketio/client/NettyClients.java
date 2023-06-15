@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.util.SerializeUtil;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.google.gson.JsonObject;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,14 +34,14 @@ import java.util.List;
 public class NettyClients {
 
     private final Logger logger = LoggerFactory.getLogger(NettyClient.class);
-    private static NettyClients clients = new NettyClients();
+    private static final NettyClients clients = new NettyClients();
 
     private NettyIMClient imClients = new NettyIMClient();
-    private NettyAgentClient agentClients = new NettyAgentClient();
+    private final NettyAgentClient agentClients = new NettyAgentClient();
     private NettyIMClient entIMClients = new NettyIMClient();
-    private NettyCallCenterClient callCenterClients = new NettyCallCenterClient();
-    private NettyCalloutClient calloutClients = new NettyCalloutClient();
-    private NettyChatbotClient chatbotClients = new NettyChatbotClient();
+    private final NettyCallCenterClient callCenterClients = new NettyCallCenterClient();
+    private final NettyCalloutClient calloutClients = new NettyCalloutClient();
+    private final NettyChatbotClient chatbotClients = new NettyChatbotClient();
 
     public int size() {
         return imClients.size();
@@ -70,7 +70,7 @@ public class NettyClients {
         imClients.putClient(id, userClient);
     }
 
-    public void closeIMEventClient(String id, String sessionid, String orgi) {
+    public void closeIMEventClient(String id, String sessionid) {
         List<SocketIOClient> userClients = imClients.getClients(id);
         for (SocketIOClient userClient : userClients) {
             if (MainUtils.getContextID(userClient.getSessionId().toString()).equals(sessionid)) {
@@ -79,8 +79,8 @@ public class NettyClients {
         }
     }
 
-    public int removeIMEventClient(String id, String sessionid) {
-        return imClients.removeClient(id, sessionid);
+    public void removeIMEventClient(String id, String sessionid) {
+        imClients.removeClient(id, sessionid);
     }
 
 
@@ -235,8 +235,8 @@ public class NettyClients {
         entIMClients.putClient(id, userClient);
     }
 
-    public int removeEntIMEventClient(String id, String sessionid) {
-        return entIMClients.removeClient(id, sessionid);
+    public void removeEntIMEventClient(String id, String sessionid) {
+        entIMClients.removeClient(id, sessionid);
     }
 
     public void sendEntIMEventMessage(String id, String event, Object data) {
@@ -287,8 +287,8 @@ public class NettyClients {
         chatbotClients.putClient(id, client);
     }
 
-    public int removeChatbotEventClient(String id, String sessionId) {
-        return chatbotClients.removeClient(id, sessionId);
+    public void removeChatbotEventClient(String id, String sessionId) {
+        chatbotClients.removeClient(id, sessionId);
     }
 
     public void sendChatbotEventMessage(String id, String event, Object data) {

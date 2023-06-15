@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,8 +53,8 @@ public class SystemMessageController extends Handler {
     @RequestMapping("/email/index")
     @Menu(type = "setting", subtype = "email")
     public ModelAndView index(ModelMap map, HttpServletRequest request) throws IOException {
-        Page<SystemMessage> emails = systemMessageRepository.findByMsgtypeAndOrgi("email", super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request)));
-        List<Organ> organs = organRes.findByOrgi(super.getOrgi(request));
+        Page<SystemMessage> emails = systemMessageRepository.findByMsgtype("email", new PageRequest(super.getP(request), super.getPs(request)));
+        List<Organ> organs = organRes.findAll();
 
         emails.getContent().stream().forEach(p -> {
             organs.stream().filter(o -> StringUtils.equals(p.getOrgan(), o.getId())).findAny().ifPresent(o -> p.setOrgan(o.getName()));
@@ -67,14 +67,13 @@ public class SystemMessageController extends Handler {
     @RequestMapping("/email/add")
     @Menu(type = "admin", subtype = "email")
     public ModelAndView add(ModelMap map, HttpServletRequest request) {
-        map.put("organList", organRes.findByOrgi(super.getOrgi(request)));
+        map.put("organList", organRes.findAll());
         return request(super.createView("/admin/email/add"));
     }
 
     @RequestMapping("/email/save")
     @Menu(type = "admin", subtype = "user")
     public ModelAndView save(HttpServletRequest request, @Valid SystemMessage email) throws NoSuchAlgorithmException {
-        email.setOrgi(super.getOrgi(request));
         email.setMsgtype(MainContext.SystemMessageType.EMAIL.toString());
         if (!StringUtils.isBlank(email.getSmtppassword())) {
             email.setSmtppassword(MainUtils.encryption(email.getSmtppassword()));
@@ -86,18 +85,17 @@ public class SystemMessageController extends Handler {
     @RequestMapping("/email/edit")
     @Menu(type = "admin", subtype = "email")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
-        map.put("organList", organRes.findByOrgi(super.getOrgi(request)));
-        map.addAttribute("email", systemMessageRepository.findByIdAndOrgi(id, super.getOrgi(request)));
+        map.put("organList", organRes.findAll());
+        map.addAttribute("email", systemMessageRepository.findById(id));
         return request(super.createView("/admin/email/edit"));
     }
 
     @RequestMapping("/email/update")
     @Menu(type = "admin", subtype = "user", admin = true)
     public ModelAndView update(HttpServletRequest request, @Valid SystemMessage email) throws NoSuchAlgorithmException {
-        SystemMessage temp = systemMessageRepository.findByIdAndOrgi(email.getId(), super.getOrgi(request));
+        SystemMessage temp = systemMessageRepository.findById(email.getId());
         if (email != null) {
             email.setCreatetime(temp.getCreatetime());
-            email.setOrgi(temp.getOrgi());
             email.setMsgtype(MainContext.SystemMessageType.EMAIL.toString());
             if (!StringUtils.isBlank(email.getSmtppassword())) {
                 email.setSmtppassword(MainUtils.encryption(email.getSmtppassword()));
@@ -112,7 +110,7 @@ public class SystemMessageController extends Handler {
     @RequestMapping("/email/delete")
     @Menu(type = "admin", subtype = "user")
     public ModelAndView delete(HttpServletRequest request, @Valid SystemMessage email) {
-        SystemMessage temp = systemMessageRepository.findByIdAndOrgi(email.getId(), super.getOrgi(request));
+        SystemMessage temp = systemMessageRepository.findById(email.getId());
         if (email != null) {
             systemMessageRepository.delete(temp);
         }
@@ -123,7 +121,7 @@ public class SystemMessageController extends Handler {
     @RequestMapping("/sms/index")
     @Menu(type = "setting", subtype = "sms")
     public ModelAndView smsindex(ModelMap map, HttpServletRequest request) throws IOException {
-        map.addAttribute("smsList", systemMessageRepository.findByMsgtypeAndOrgi("sms", super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request))));
+        map.addAttribute("smsList", systemMessageRepository.findByMsgtype("sms", new PageRequest(super.getP(request), super.getPs(request))));
         return request(super.createView("/admin/sms/index"));
     }
 
@@ -137,7 +135,6 @@ public class SystemMessageController extends Handler {
     @RequestMapping("/sms/save")
     @Menu(type = "admin", subtype = "sms")
     public ModelAndView smssave(HttpServletRequest request, @Valid SystemMessage sms) throws NoSuchAlgorithmException {
-        sms.setOrgi(super.getOrgi(request));
         sms.setMsgtype(MainContext.SystemMessageType.SMS.toString());
         if (!StringUtils.isBlank(sms.getSmtppassword())) {
             sms.setSmtppassword(MainUtils.encryption(sms.getSmtppassword()));
@@ -150,17 +147,16 @@ public class SystemMessageController extends Handler {
     @Menu(type = "admin", subtype = "sms")
     public ModelAndView smsedit(ModelMap map, HttpServletRequest request, @Valid String id) {
         map.addAttribute("smsType", Dict.getInstance().getDic("com.dic.sms.type"));
-        map.addAttribute("sms", systemMessageRepository.findByIdAndOrgi(id, super.getOrgi(request)));
+        map.addAttribute("sms", systemMessageRepository.findById(id));
         return request(super.createView("/admin/sms/edit"));
     }
 
     @RequestMapping("/sms/update")
     @Menu(type = "admin", subtype = "sms", admin = true)
     public ModelAndView smsupdate(HttpServletRequest request, @Valid SystemMessage sms) throws NoSuchAlgorithmException {
-        SystemMessage temp = systemMessageRepository.findByIdAndOrgi(sms.getId(), super.getOrgi(request));
+        SystemMessage temp = systemMessageRepository.findById(sms.getId());
         if (sms != null) {
             sms.setCreatetime(temp.getCreatetime());
-            sms.setOrgi(temp.getOrgi());
             sms.setMsgtype(MainContext.SystemMessageType.SMS.toString());
             if (!StringUtils.isBlank(sms.getSmtppassword())) {
                 sms.setSmtppassword(MainUtils.encryption(sms.getSmtppassword()));
@@ -175,7 +171,7 @@ public class SystemMessageController extends Handler {
     @RequestMapping("/sms/delete")
     @Menu(type = "admin", subtype = "sms")
     public ModelAndView smsdelete(HttpServletRequest request, @Valid SystemMessage sms) {
-        SystemMessage temp = systemMessageRepository.findByIdAndOrgi(sms.getId(), super.getOrgi(request));
+        SystemMessage temp = systemMessageRepository.findById(sms.getId());
         if (sms != null) {
             systemMessageRepository.delete(temp);
         }

@@ -94,40 +94,35 @@ public final class BufferedImageBuilder
 	}
 
 	/**
-	 * Sets the type of the image of the {@link BufferedImage}.
-	 * 
-	 * @param imageType		The image type to use.
-	 * @return				This {@link BufferedImageBuilder} instance.
-	 */
-	public BufferedImageBuilder imageType(int imageType)
+     * Sets the type of the image of the {@link BufferedImage}.
+     *
+     * @param imageType The image type to use.
+     */
+	public void imageType(int imageType)
 	{
 		this.imageType = imageType;
-		
-		return this;
-	}
+
+    }
 	
 	/**
-	 * Sets the size for the {@code BufferedImage}.
-	 * 
-	 * @param width			The width of the image to create.
-	 * @param height		The height of the image to create.
-	 * @return				This {@link BufferedImageBuilder} instance.
-	 */
-	public BufferedImageBuilder size(int width, int height)
+     * Sets the size for the {@code BufferedImage}.
+     *
+     * @param width  The width of the image to create.
+     * @param height The height of the image to create.
+     */
+	public void size(int width, int height)
 	{
 		width(width);
 		height(height);
-		
-		return this;
-	}
+
+    }
 	
 	/**
-	 * Sets the width for the {@link BufferedImage}.
-	 * 
-	 * @param width			The width of the image to create.
-	 * @return				This {@link BufferedImageBuilder} instance.
-	 */
-	public BufferedImageBuilder width(int width)
+     * Sets the width for the {@link BufferedImage}.
+     *
+     * @param width The width of the image to create.
+     */
+	public void width(int width)
 	{
 		if (width <= 0)
 		{
@@ -137,17 +132,15 @@ public final class BufferedImageBuilder
 		}
 		
 		this.width = width;
-		
-		return this;
-	}
+
+    }
 	
 	/**
-	 * Sets the height for the {@link BufferedImage}.
-	 * 
-	 * @param height		The height of the image to create.
-	 * @return				This {@link BufferedImageBuilder} instance.
-	 */
-	public BufferedImageBuilder height(int height)
+     * Sets the height for the {@link BufferedImage}.
+     *
+     * @param height The height of the image to create.
+     */
+	public void height(int height)
 	{
 		if (height <= 0)
 		{
@@ -157,7 +150,6 @@ public final class BufferedImageBuilder
 		}
 
 		this.height = height;
-		
-		return this;
-	}
+
+    }
 }

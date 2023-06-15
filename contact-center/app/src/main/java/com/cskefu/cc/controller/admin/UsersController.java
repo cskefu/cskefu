@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ public class UsersController extends Handler {
 
     /**
      * 只返回根用户：只属于该部门的非下级部门的用户
-     * 
+     *
      * @param map
      * @param request
      * @return
@@ -117,8 +117,8 @@ public class UsersController extends Handler {
     public ModelAndView add(ModelMap map, HttpServletRequest request) {
         ModelAndView view = request(super.createView("/admin/user/add"));
         Organ currentOrgan = super.getOrgan(request);
-        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
-        List<Role> sysRoles = roleRes.findByOrgi(super.getOrgi(request));
+        Map<String, Organ> organs = organProxy.findAllOrganByParent(currentOrgan);
+        List<Role> sysRoles = roleRes.findAll();
         map.addAttribute("currentOrgan", currentOrgan);
         map.addAttribute("organList", organs.values());
         map.addAttribute("sysRoles", sysRoles);
@@ -133,7 +133,7 @@ public class UsersController extends Handler {
         User user = userRepository.findById(id);
         if (user != null && MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER)) {
             // 加载呼叫中心信息
-            extensionRes.findByAgentnoAndOrgi(user.getId(), user.getOrgi()).ifPresent(p -> {
+            extensionRes.findByAgentno(user.getId()).ifPresent(p -> {
                 user.setExtensionId(p.getId());
                 user.setExtension(p);
 
@@ -157,7 +157,7 @@ public class UsersController extends Handler {
                 msg = "admin_user_abandoned";
             } else {
                 // 删除用户的时候，同时删除用户对应的权限数据
-                List<UserRole> userRole = userRoleRes.findByOrgiAndUser(super.getOrgi(), user);
+                List<UserRole> userRole = userRoleRes.findByUser(user);
                 userRoleRes.delete(userRole);
                 // 删除用户对应的组织机构关系
                 List<OrganUser> organUsers = organUserRes.findByUserid(user.getId());
@@ -166,7 +166,7 @@ public class UsersController extends Handler {
                 userRepository.delete(dbUser);
 
                 AgentSessionProxy agentSessionProxy = MainContext.getContext().getBean(AgentSessionProxy.class);
-                agentSessionProxy.deleteUserSession(dbUser.getId(), dbUser.getOrgi());
+                agentSessionProxy.deleteUserSession(dbUser.getId());
             }
         } else {
             msg = "admin_user_not_exist";

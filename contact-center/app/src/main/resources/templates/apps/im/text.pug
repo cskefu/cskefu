@@ -1,4 +1,4 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+//- Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
 //- 
 //- Licensed under the Apache License, Version 2.0 (the "License");
 //- you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ if inviteData
         var cskefuOnlineUserId;
         var ukefu = {
             time: new Date().getTime(),
-            chat: "/im/index.html?appid=#{appid}!{id?'&id='+id:''}!{aiid?'&aiid='+aiid:''}!{exchange?'&exchange='+exchange:''}!{name?'&name='+name:''}!{email?'&email='+email:''}!{phone?'&phone='+phone:''}&orgi=#{orgi}&client=#{client}&type=text!{skill?'&skill='+skill:''}!{agent?'&agent='+agent:''}",
+            chat: "/im/index.html?appid=#{appid}!{id?'&id='+id:''}!{aiid?'&aiid='+aiid:''}!{exchange?'&exchange='+exchange:''}!{name?'&name='+name:''}!{email?'&email='+email:''}!{phone?'&phone='+phone:''}&client=#{client}&type=text!{skill?'&skill='+skill:''}!{agent?'&agent='+agent:''}",
             config: function (d) {
                 data = d;
                 if (d.id != null && d.id != '') {

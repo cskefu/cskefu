@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ public class UKDataBean implements java.io.Serializable{
 	public String id ;
 	private String creater ;	//创建人
 	private String username;	//创建人用户名
-	private String orgi ;		//租户ID
 	private Date createtime ;	//创建时间
 	private Date updatetime ;	//修改时间
 	private MetadataTable table ;
@@ -47,7 +46,7 @@ public class UKDataBean implements java.io.Serializable{
 	private JobDetail activity ;
 	private JobDetail batch ;
 	
-	private Map<String , Object> values = new HashMap<String , Object>();
+	private Map<String , Object> values = new HashMap<>();
 
 	public String getId() {
 		return id;
@@ -71,14 +70,6 @@ public class UKDataBean implements java.io.Serializable{
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public String getOrgi() {
-		return orgi;
-	}
-
-	public void setOrgi(String orgi) {
-		this.orgi = orgi;
 	}
 
 	public Date getCreatetime() {

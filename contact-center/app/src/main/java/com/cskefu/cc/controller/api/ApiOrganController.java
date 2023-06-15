@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import com.cskefu.cc.persistence.repository.OrganRepository;
 import com.cskefu.cc.util.Menu;
 import com.cskefu.cc.util.RestResult;
 import com.cskefu.cc.util.RestResultType;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +52,7 @@ public class ApiOrganController extends Handler{
 	@RequestMapping( method = RequestMethod.GET)
 	@Menu(type = "apps" , subtype = "organ" , access = true)
     public ResponseEntity<RestResult> list(HttpServletRequest request) {
-        return new ResponseEntity<>(new RestResult(RestResultType.OK, organRepository.findByOrgi(super.getOrgi(request))), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResult(RestResultType.OK, organRepository.findAll()), HttpStatus.OK);
     }
 	
 	/**
@@ -82,7 +82,7 @@ public class ApiOrganController extends Handler{
 		RestResult result = new RestResult(RestResultType.OK) ; 
     	Organ organ = null ;
     	if(!StringUtils.isBlank(id)){
-    		organ = organRepository.findByIdAndOrgi(id, super.getOrgi(request)) ;
+    		organ = organRepository.findById(id) ;
     		if(organ != null){	//系统管理员， 不允许 使用 接口删除
     			organRepository.delete(organ);
     		}else{

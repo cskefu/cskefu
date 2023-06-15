@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,18 +25,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public interface BlackListRepository  extends JpaRepository<BlackEntity, String>{
-	
-	BlackEntity findByIdAndOrgi(String id, String orgi);
-	
-	Optional<BlackEntity> findByUseridAndOrgi(String userid, String orgi);
-	
-	Page<BlackEntity> findByOrgi(String orgi, Pageable page);
-	
-	List<BlackEntity> findByOrgi(String orgi);
+public interface BlackListRepository extends JpaRepository<BlackEntity, String> {
 
-	Page<BlackEntity> findByOrgiAndSkillIn( String orgi, Set<String> organs, Pageable page);
+    BlackEntity findById(String id);
 
-	int countByPhoneAndOrgi(String phone, String orgi) ;
+    Optional<BlackEntity> findByUserid(String userid);
+
+    Page<BlackEntity> findAll(Pageable page);
+
+    List<BlackEntity> findAll();
+
+    Page<BlackEntity> findBySkillIn(Set<String> organs, Pageable page);
+
+    int countByPhone(String phone);
 }
 

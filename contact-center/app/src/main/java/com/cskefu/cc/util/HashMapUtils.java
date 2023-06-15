@@ -16,6 +16,7 @@
 package com.cskefu.cc.util;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class HashMapUtils {
@@ -34,7 +35,7 @@ public class HashMapUtils {
      */
     public static <T> String concatKeys(final HashMap<String, T> map, String separator) {
         String result = map.entrySet().stream()
-                .map(x -> x.getKey())
+                .map(Map.Entry::getKey)
                 .collect(Collectors.joining(separator));
         return result;
     }

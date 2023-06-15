@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import com.cskefu.cc.persistence.repository.ChatbotRepository;
 import com.cskefu.cc.socketio.message.ChatMessage;
 import com.cskefu.cc.util.SerializeUtil;
 import com.cskefu.cc.util.SystemEnvHelper;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,7 +61,7 @@ public class ChatbotEventSubscription {
     private ChatMessageRepository chatMessageRes;
 
     // 机器人服务提供地址
-    private final static String botServiceProvider = SystemEnvHelper.getenv(
+    private final static String botProviderDefault = SystemEnvHelper.getenv(
             ChatbotConstants.BOT_PROVIDER, ChatbotConstants.DEFAULT_BOT_PROVIDER);
 
     // FAQ最佳回复阀值
@@ -104,25 +104,27 @@ public class ChatbotEventSubscription {
         Chatbot c = chatbotRes
                 .findOne(request.getAiid());
 
+        final String botProvider = StringUtils.isNotBlank(c.getBaseUrl()) ? c.getBaseUrl() : botProviderDefault;
+
         logger.info(
-                "[chat] chat request baseUrl {}, chatbot {}, fromUserId {}, textMessage {}", botServiceProvider,
-                c.getName(),
+                "[chat] chat request baseUrl {}, clientId {}, fromUserId {}, textMessage {}", botProvider,
+                c.getClientId(),
                 request.getUserid(), request.getMessage());
         // Get response from Conversational Engine.
         com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
-                c.getClientId(), c.getSecret(), botServiceProvider);
+                c.getClientId(), c.getSecret(), botProvider);
 
 
         JSONObject body = new JSONObject();
         body.put("fromUserId", request.getUserid());
         body.put("textMessage", request.getMessage());
-        body.put("faqBestReplyThreshold", faqBestReplyThreshold);
-        body.put("faqSuggReplyThreshold", faqSuggReplyThreshold);
+//        body.put("faqBestReplyThreshold", faqBestReplyThreshold);
+//        body.put("faqSuggReplyThreshold", faqSuggReplyThreshold);
         Response result = bot.command("POST", "/conversation/query", body);
 
         // parse response
         if (result != null) {
-            logger.info("[chat] chat response {}", result.toString());
+            logger.info("[chat] chat response {}", result.toJSON().toString());
             if (result.getRc() == 0) {
                 // reply
                 JSONObject data = (JSONObject) result.getData();
@@ -257,7 +259,7 @@ public class ChatbotEventSubscription {
                     }
 
                     // 更新聊天机器人累计值
-                    updateAgentUserWithRespData(request.getUserid(), request.getOrgi(), data);
+                    updateAgentUserWithRespData(request.getUserid(), data);
 
                     // 保存并发送
                     if (MainContext.ChannelType.WEBIM.toString().equals(resp.getChannel())) {
@@ -278,7 +280,7 @@ public class ChatbotEventSubscription {
                                     chatbotProxy.saveAndPublish(itemResp);
                                 } else if (item.getString("type").equals("card")) {
                                     if (item.has("thumbnail")) {
-                                        String thumbnailUrl = botServiceProvider + item.getString("thumbnail");
+                                        String thumbnailUrl = botProviderDefault + item.getString("thumbnail");
                                         item.put("thumbnail", thumbnailUrl);
                                         JSONArray expmsg = new JSONArray();
                                         expmsg.put(item);
@@ -332,7 +334,6 @@ public class ChatbotEventSubscription {
         ChatMessage resp = new ChatMessage();
         resp.setCalltype(MainContext.CallType.OUT.toString());
         resp.setAppid(request.getAppid());
-        resp.setOrgi(request.getOrgi());
         resp.setAiid(request.getAiid());
         resp.setTouser(request.getUserid());
         resp.setAgentserviceid(request.getAgentserviceid());
@@ -356,8 +357,8 @@ public class ChatbotEventSubscription {
      * @param userid
      * @param data
      */
-    private void updateAgentUserWithRespData(final String userid, final String orgi, final JSONObject data) throws JSONException {
-        cache.findOneAgentUserByUserIdAndOrgi(userid, orgi).ifPresent(p -> {
+    private void updateAgentUserWithRespData(final String userid, final JSONObject data) throws JSONException {
+        cache.findOneAgentUserByUserId(userid).ifPresent(p -> {
             p.setChatbotround(p.getChatbotround() + 1);
             try {
                 if (data.has("logic_is_unexpected") && data.getBoolean("logic_is_unexpected")) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import com.cskefu.cc.socketio.message.ChatMessage;
 import com.cskefu.cc.socketio.message.Message;
 import com.cskefu.cc.util.SerializeUtil;
 import com.cskefu.cc.util.SystemEnvHelper;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +79,7 @@ public class ChatbotProxy {
      * @return
      */
     public Message createMessage(ChatMessage data, String direction) {
-        if (!cache.findOneAgentUserByUserIdAndOrgi(data.getUserid(), data.getOrgi()).isPresent()) {
+        if (!cache.findOneAgentUserByUserId(data.getUserid()).isPresent()) {
             return null;
         }
 
@@ -133,16 +133,14 @@ public class ChatbotProxy {
             final String direction,
             final String chatype,
             final String msgtype,
-            final String userid,
-            final String orgi) {
-        final Chatbot c = chatbotRes.findBySnsAccountIdentifierAndOrgi(appid, orgi);
+            final String userid) {
+        final Chatbot c = chatbotRes.findBySnsAccountIdentifier(appid);
         if (c == null) // ignore event if chatbot not exist.
         {
             return null;
         }
 
         data.setAiid(c.getId());
-        data.setOrgi(orgi);
         data.setUserid(userid);
         data.setAgentserviceid(data.getContextid());
         data.setChatype(chatype);
@@ -159,11 +157,10 @@ public class ChatbotProxy {
      *
      * @param data
      * @param direction
-     * @return
      */
-    public Message createTextMessage(final ChatMessage data, final String direction) {
+    public void createTextMessage(final ChatMessage data, final String direction) {
         data.setMsgtype(MainContext.MediaType.TEXT.toString());
-        return createMessage(data, direction);
+        createMessage(data, direction);
     }
 
     /**

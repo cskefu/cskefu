@@ -63,26 +63,26 @@ public class ACDAgentDispatcher implements IACDDispatcher {
      * 1）将该坐席状态置为"非就绪"
      * 2) 将该坐席的访客重新分配给其它坐席
      *
-     * @param ctx agentno和orgi为必填
+     * @param ctx agentno为必填
      * @return 有没有成功将所有其服务的访客都分配出去
      */
     @Override
     public void dequeue(final ACDComposeContext ctx) {
         // 先将该客服切换到非就绪状态
-        final AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(ctx.getAgentno(), ctx.getOrgi());
+        final AgentStatus agentStatus = cache.findOneAgentStatusByAgentno(ctx.getAgentno());
         if (agentStatus != null) {
             agentStatus.setBusy(false);
             agentStatus.setUpdatetime(new Date());
             agentStatus.setStatus(MainContext.AgentStatusEnum.NOTREADY.toString());
             agentStatusRes.save(agentStatus);
-            cache.putAgentStatusByOrgi(agentStatus, ctx.getOrgi());
+            cache.putAgentStatus(agentStatus);
         }
 
         // 然后将该坐席的访客分配给其它坐席
         // 获得该租户在线的客服的多少
         // TODO 对于agentUser的技能组过滤，在下面再逐个考虑？
         // 该信息同样也包括当前用户
-        List<AgentUser> agentUsers = cache.findInservAgentUsersByAgentnoAndOrgi(ctx.getAgentno(), ctx.getOrgi());
+        List<AgentUser> agentUsers = cache.findInservAgentUsersByAgentno(ctx.getAgentno());
         int sz = agentUsers.size();
         for (final AgentUser x : agentUsers) {
             try {
@@ -96,7 +96,7 @@ public class ACDAgentDispatcher implements IACDDispatcher {
                 // 因为重新分配该访客，将其从撤离的坐席中服务集合中删除
                 // 此处类似于 Transfer
                 redisCommand.removeSetVal(
-                        RedisKey.getInServAgentUsersByAgentnoAndOrgi(ctx.getAgentno(), ctx.getOrgi()), x.getUserid());
+                        RedisKey.getInServAgentUsersByAgentno(ctx.getAgentno()), x.getUserid());
                 sz--;
             } catch (Exception e) {
                 logger.warn("[dequeue] throw error:", e);

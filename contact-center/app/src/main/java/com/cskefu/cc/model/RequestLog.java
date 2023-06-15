@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,6 @@ public class RequestLog implements java.io.Serializable  {
 	private String reportname;//报表名称
 	private String type;// 1操作日志  2系统日志  3登录日志  4报表日志
 	private String detailtype;// 日志小分类
-	private String orgi;//组织
 	private String ip;//ip地址
 	private String hostname ; //hostname
 	private String statues;//操作状态
@@ -131,12 +130,6 @@ public class RequestLog implements java.io.Serializable  {
 	}
 	public void setType(String type) {
 		this.type = type;
-	}
-	public String getOrgi() {
-		return orgi;
-	}
-	public void setOrgi(String orgi) {
-		this.orgi = orgi;
 	}
 	public String getIp() {
 		return ip;

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,21 +26,21 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Set;
 
-public interface ServiceSummaryRepository extends JpaRepository<AgentServiceSummary, String>{
-	
-	List<AgentServiceSummary> findByAgentserviceidAndOrgi(String agentserviceid, String orgi);
-	
-	AgentServiceSummary findByIdAndOrgi(String id, String orgi) ;
-	
-	AgentServiceSummary findByStatuseventidAndOrgi(String statuseventid, String orgi);
-	
-	Page<AgentServiceSummary> findAll(Specification<AgentServiceSummary> spec, Pageable pageable);  //分页按条件查询
+public interface ServiceSummaryRepository extends JpaRepository<AgentServiceSummary, String> {
 
-	Page<AgentServiceSummary> findByChannelAndOrgi(String string, String orgi, Pageable pageable);
-	
-	Page<AgentServiceSummary> findByChannelNotAndOrgi(String string, String orgi, Pageable pageable);
+    List<AgentServiceSummary> findByAgentserviceid(String agentserviceid);
 
-	Page<AgentServiceSummary> findByChannelNotAndOrgiAndSkillIn(String string, String orgi, Set<String> agentskill , Pageable pageable);
+    AgentServiceSummary findById(String id);
 
-	Page<AgentServiceSummary> findByChannelNotAndOrgiAndProcessTrueAndSkillIn(String string, String orgi, Set<String> agentskill , Pageable pageable);
+    AgentServiceSummary findByStatuseventid(String statuseventid);
+
+    Page<AgentServiceSummary> findAll(Specification<AgentServiceSummary> spec, Pageable pageable);  //分页按条件查询
+
+    Page<AgentServiceSummary> findByChannel(String string, Pageable pageable);
+
+    Page<AgentServiceSummary> findByChannelNot(String string, Pageable pageable);
+
+    Page<AgentServiceSummary> findByChannelNotAndSkillIn(String string, Set<String> agentskill, Pageable pageable);
+
+    Page<AgentServiceSummary> findByChannelNotAndProcessTrueAndSkillIn(String string, Set<String> agentskill, Pageable pageable);
 }

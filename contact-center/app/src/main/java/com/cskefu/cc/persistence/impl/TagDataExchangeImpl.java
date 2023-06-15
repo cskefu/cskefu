@@ -14,17 +14,17 @@ public class TagDataExchangeImpl implements DataExchangeInterface {
     @Autowired
     private TagRepository tagRes;
 
-    public String getDataByIdAndOrgi(String id, String orgi) {
-        Tag tag = tagRes.findByOrgiAndId(orgi, id);
+    public String getDataById(String id) {
+        Tag tag = tagRes.findById(id);
         return tag != null ? tag.getTag() : id;
     }
 
     @Override
-    public List<Serializable> getListDataByIdAndOrgi(String id, String creater, String orgi) {
+    public List<Serializable> getListDataById(String id, String creater) {
         return null;
     }
 
-    public void process(Object data, String orgi) {
+    public void process(Object data) {
 
     }
 }

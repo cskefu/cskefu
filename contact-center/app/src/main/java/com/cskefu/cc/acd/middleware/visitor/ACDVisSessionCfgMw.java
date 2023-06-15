@@ -46,17 +46,16 @@ public class ACDVisSessionCfgMw implements Middleware<ACDComposeContext> {
 
     @Override
     public void apply(final ACDComposeContext ctx, final Functional next) {
-        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(ctx.getOrganid(),
-                ctx.getOrgi());
+        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(ctx.getOrganid());
 
         ctx.setSessionConfig(sessionConfig);
 
         // 查询就绪的坐席，如果指定技能组则按照技能组查询
         AgentReport report;
         if (StringUtils.isNotBlank(ctx.getOrganid())) {
-            report = acdWorkMonitor.getAgentReport(ctx.getOrganid(), ctx.getOrgi());
+            report = acdWorkMonitor.getAgentReport(ctx.getOrganid());
         } else {
-            report = acdWorkMonitor.getAgentReport(ctx.getOrgi());
+            report = acdWorkMonitor.getAgentReport();
         }
 
         ctx.setAgentReport(report);
@@ -67,7 +66,7 @@ public class ACDVisSessionCfgMw implements Middleware<ACDComposeContext> {
             ctx.setMessage(sessionConfig.getNotinwhmsg());
         } else if (report.getAgents() == 0) {
             // 没有就绪的坐席
-            if (ctx.getChannel().equals(MainContext.ChannelType.MESSENGER.toString())) {
+            if (ctx.getChannelType().equals(MainContext.ChannelType.MESSENGER.toString())) {
                 next.apply();
             } else {
                 logger.info("[apply] find no agents, redirect to leave a message.");

@@ -53,8 +53,8 @@ public enum IfdType
 	SRATIONAL(5, SLONG.size() * 2),
 	;
 	
-	private int value;
-	private int size;
+	private final int value;
+	private final int size;
 	
 	private IfdType(int value, int size)
 	{

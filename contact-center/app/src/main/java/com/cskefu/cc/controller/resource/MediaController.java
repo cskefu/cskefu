@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package com.cskefu.cc.controller.resource;
 import com.alibaba.fastjson.JSONObject;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.controller.Handler;
-import com.cskefu.cc.controller.api.request.RestUtils;
+import com.cskefu.cc.util.restapi.RestUtils;
 import com.cskefu.cc.model.AttachmentFile;
 import com.cskefu.cc.model.StreamingFile;
 import com.cskefu.cc.persistence.blob.JpaBlobHelper;
@@ -66,7 +66,7 @@ public class MediaController extends Handler {
     @Autowired
     private JpaBlobHelper jpaBlobHelper;
 
-    private String TEMPLATE_DATA_PATH = "WEB-INF/data/templates/";
+    private final String TEMPLATE_DATA_PATH = "WEB-INF/data/templates/";
 
     @Autowired
     private AttachmentRepository attachementRes;
@@ -112,11 +112,10 @@ public class MediaController extends Handler {
                 out.write(data, 0, length);
             }
         }
-
     }
 
     @RequestMapping("/image/upload")
-    @Menu(type = "resouce", subtype = "imageupload", access = false)
+    @Menu(type = "resouce", subtype = "imageupload")
     public ResponseEntity<String> upload(ModelMap map,
                                          HttpServletRequest request,
                                          @RequestParam(value = "imgFile", required = false) MultipartFile multipart) throws IOException {
@@ -147,10 +146,10 @@ public class MediaController extends Handler {
     }
 
     @RequestMapping("/file")
-    @Menu(type = "resouce", subtype = "file", access = false)
+    @Menu(type = "resouce", subtype = "file")
     public void file(HttpServletResponse response, HttpServletRequest request, @Valid String id) throws IOException, SQLException {
         if (StringUtils.isNotBlank(id)) {
-            AttachmentFile attachmentFile = attachementRes.findByIdAndOrgi(id, super.getOrgi(request));
+            AttachmentFile attachmentFile = attachementRes.findById(id);
             if (attachmentFile != null && attachmentFile.getFileid() != null) {
                 StreamingFile sf = streamingFileRes.findOne(attachmentFile.getFileid());
                 if (sf != null) {
@@ -167,7 +166,7 @@ public class MediaController extends Handler {
     }
 
     @RequestMapping("/template")
-    @Menu(type = "resouce", subtype = "template", access = false)
+    @Menu(type = "resouce", subtype = "template")
     public void template(HttpServletResponse response, HttpServletRequest request, @Valid String filename) throws IOException {
         if (StringUtils.isNotBlank(filename)) {
             InputStream is = MediaController.class.getClassLoader().getResourceAsStream(TEMPLATE_DATA_PATH + filename);

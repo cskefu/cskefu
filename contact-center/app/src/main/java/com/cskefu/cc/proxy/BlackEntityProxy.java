@@ -22,7 +22,7 @@ import com.cskefu.cc.model.BlackEntity;
 import com.cskefu.cc.model.User;
 import com.cskefu.cc.persistence.repository.AgentServiceRepository;
 import com.cskefu.cc.persistence.repository.BlackListRepository;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,24 +46,20 @@ public class BlackEntityProxy {
      * @param pre
      * @param owner
      * @param userid
-     * @param orgi
      * @param agentserviceid
      * @param agentuserid
-     * @return
      */
-    public BlackEntity updateOrCreateBlackEntity(
+    public void updateOrCreateBlackEntity(
             final BlackEntity pre,
             final User owner,
             final String userid,
-            final String orgi,
             final String agentserviceid,
             final String agentuserid) {
-        final BlackEntity blackEntityUpdated = cache.findOneBlackEntityByUserIdAndOrgi(
-                userid, orgi).orElseGet(
+        final BlackEntity blackEntityUpdated = cache.findOneBlackEntityByUserId(
+                userid).orElseGet(
                 () -> {
                     BlackEntity p = new BlackEntity();
                     p.setUserid(userid);
-                    p.setOrgi(orgi);
                     p.setCreater(owner.getId());
                     return p;
                 });
@@ -71,7 +67,7 @@ public class BlackEntityProxy {
         blackEntityUpdated.setAgentid(owner.getId());
         blackEntityUpdated.setAgentserviceid(agentserviceid);
         if (agentserviceid != null){
-            AgentService service = agentServiceRes.findByIdAndOrgi(agentserviceid, orgi);
+            AgentService service = agentServiceRes.findById(agentserviceid);
             blackEntityUpdated.setSkill(service.getSkill());
             blackEntityUpdated.setAgentusername(service.getAgentusername());
         }
@@ -86,9 +82,9 @@ public class BlackEntityProxy {
                     new Date(System.currentTimeMillis() + pre.getControltime() * 3600 * 1000L));
         }
 
-        AgentService agentService = agentServiceRes.findByIdAndOrgi(agentserviceid, orgi);
+        AgentService agentService = agentServiceRes.findById(agentserviceid);
         if (agentService != null) {
-            blackEntityUpdated.setChannel(agentService.getChannel());
+            blackEntityUpdated.setChannel(agentService.getChanneltype());
             blackEntityUpdated.setAgentuser(agentService.getUsername());
             blackEntityUpdated.setSessionid(agentService.getSessionid());
             if (agentService.getSessiontimes() != 0) {
@@ -100,6 +96,5 @@ public class BlackEntityProxy {
 
         blackListRes.save(blackEntityUpdated);
 
-        return blackEntityUpdated;
     }
 }

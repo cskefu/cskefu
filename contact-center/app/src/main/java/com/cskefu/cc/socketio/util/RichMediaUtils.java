@@ -15,10 +15,9 @@
  */
 package com.cskefu.cc.socketio.util;
 
-import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.socketio.message.ChatMessage;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,10 +32,9 @@ public class RichMediaUtils {
      * @param size
      * @param name
      * @param userid
-     * @return
      */
-    public static ChatMessage uploadImage(String image, String attachid, int size, String name, String userid) {
-        return createRichMediaMessage(image, size, name, MainContext.MediaType.IMAGE.toString(), userid, attachid);
+    public static void uploadImage(String image, String attachid, int size, String name, String userid) {
+        createRichMediaMessage(image, size, name, MainContext.MediaType.IMAGE.toString(), userid, attachid);
     }
 
     /**
@@ -50,12 +48,10 @@ public class RichMediaUtils {
      * @param userid
      * @param username
      * @param appid
-     * @param orgi
-     * @return
      */
-    public static ChatMessage uploadImageWithChannel(String image, String attachid, int size, String name, String channel, String userid, String username, String appid, String orgi) {
-        return createRichMediaMessageWithChannel(
-                image, size, name, channel, MainContext.MediaType.IMAGE.toString(), userid, username, appid, orgi,
+    public static void uploadImageWithChannel(String image, String attachid, int size, String name, String channel, String userid, String username, String appid) {
+        createRichMediaMessageWithChannel(
+                image, size, name, channel, MainContext.MediaType.IMAGE.toString(), userid, username, appid,
                 attachid);
     }
 
@@ -68,10 +64,9 @@ public class RichMediaUtils {
      * @param name
      * @param userid
      * @param attachid
-     * @return
      */
-    public static ChatMessage uploadFile(String url, int size, String name, String userid, String attachid) {
-        return createRichMediaMessage(url, size, name, MainContext.MediaType.FILE.toString(), userid, attachid);
+    public static void uploadFile(String url, int size, String name, String userid, String attachid) {
+        createRichMediaMessage(url, size, name, MainContext.MediaType.FILE.toString(), userid, attachid);
     }
 
     /**
@@ -84,14 +79,11 @@ public class RichMediaUtils {
      * @param userid
      * @param username
      * @param appid
-     * @param orgi
      * @param attachid
-     * @return
      */
-    public static ChatMessage uploadFileWithChannel(String url, int size, String name, String channel, String userid, String username, String appid, String orgi, String attachid) {
-        return createRichMediaMessageWithChannel(
-                url, size, name, channel, MainContext.MediaType.FILE.toString(), userid, username, appid, orgi,
-                attachid);
+    public static void uploadFileWithChannel(String url, int size, String name, String channel, String userid, String username, String appid, String attachid) {
+        createRichMediaMessageWithChannel(
+                url, size, name, channel, MainContext.MediaType.FILE.toString(), userid, username, appid, attachid);
     }
 
     /**
@@ -115,12 +107,11 @@ public class RichMediaUtils {
         data.setMsgtype(msgtype);
         data.setType(MainContext.MessageType.MESSAGE.toString());
 
-        MainContext.getCache().findOneAgentUserByUserIdAndOrgi(userid, Constants.SYSTEM_ORGI).ifPresent(p -> {
+        MainContext.getCache().findOneAgentUserByUserId(userid).ifPresent(p -> {
             data.setUserid(p.getUserid());
             data.setUsername(p.getUsername());
             data.setTouser(p.getAgentno());
             data.setAppid(p.getAppid());
-            data.setOrgi(p.getOrgi());
             if (p.isChatbotops()) {
                 // TODO #75 create Chatbot Message
                 // https://github.com/chatopera/cosin/issues/75
@@ -144,17 +135,15 @@ public class RichMediaUtils {
      * @param userid
      * @param username
      * @param appid
-     * @param orgi
      * @param attachid
      * @return
      */
-    public static ChatMessage createRichMediaMessageWithChannel(String message, int length, String name, String channel, String msgtype, String userid, String username, String appid, String orgi, String attachid) {
+    public static ChatMessage createRichMediaMessageWithChannel(String message, int length, String name, String channel, String msgtype, String userid, String username, String appid, String attachid) {
         ChatMessage data = new ChatMessage();
         data.setUserid(userid);
         data.setUsername(username);
         data.setTouser(userid);
         data.setAppid(appid);
-        data.setOrgi(orgi);
         data.setChannel(channel);
         data.setMessage(message);
         data.setFilesize(length);
@@ -164,14 +153,14 @@ public class RichMediaUtils {
         data.setType(MainContext.MessageType.MESSAGE.toString());
 
         if (StringUtils.isNotBlank(userid)) {
-            if (MainContext.getCache().findOneAgentUserByUserIdAndOrgi(
-                    userid, Constants.SYSTEM_ORGI).filter(p -> StringUtils.equals(
+            if (MainContext.getCache().findOneAgentUserByUserId(
+                    userid).filter(p -> StringUtils.equals(
                     p.getOpttype(), MainContext.OptType.CHATBOT.toString())).isPresent()) {
                 // TODO 给聊天机器人发送图片或文字
                 // #652 创建聊天机器人插件时去掉了对它的支持，需要将来实现
 //                getChatbotProxy().createMessage(
 //                        data, appid, channel, MainContext.CallType.IN.toString(),
-//                        MainContext.ChatbotItemType.USERINPUT.toString(), msgtype, data.getUserid(), orgi);
+//                        MainContext.ChatbotItemType.USERINPUT.toString(), msgtype, data.getUserid());
             } else {
                 HumanUtils.processMessage(data, msgtype, userid);
             }

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,16 +23,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface IMGroupUserRepository extends
-		JpaRepository<IMGroupUser, String> {
-	
-	
-	IMGroupUser findByIdAndOrgi(String id, String orgi);
+public interface IMGroupUserRepository extends JpaRepository<IMGroupUser, String> {
 
-	List<IMGroupUser> findByImgroupAndOrgi(IMGroup imgroup, String orgi);
-	
-	IMGroupUser findByImgroupAndUserAndOrgi(IMGroup imgroup, User user, String orgi);
-	
-	List<IMGroupUser> findByUserAndOrgi(User user, String orgi);
-	
+    IMGroupUser findById(String id);
+
+    List<IMGroupUser> findByImgroup(IMGroup imgroup);
+
+    IMGroupUser findByImgroupAndUser(IMGroup imgroup, User user);
+
+    List<IMGroupUser> findByUser(User user);
+
 }

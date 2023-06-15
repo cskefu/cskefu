@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,101 +25,92 @@ import java.util.Date;
 @Table(name = "uk_tag")
 @org.hibernate.annotations.Proxy(lazy = false)
 public class Tag {
-	private String id ;
-	private String orgi ;
-	private Date createtime = new Date() ;
-	private int times;
-	private String creater ;
-	private String tag ;
-	private String icon ;
-	private String color ;
-	
-	private String tagtype ;
+    private String id;
+    private Date createtime = new Date();
+    private int times;
+    private String creater;
+    private String tag;
+    private String icon;
+    private String color;
 
-	private String skill ;			//组织机构ID
+    private String tagtype;
 
-	public String getSkill() {
-		return skill;
-	}
+    private String skill;            //组织机构ID
 
-	public void setSkill(String skill) {
-		this.skill = skill;
-	}
+    public String getSkill() {
+        return skill;
+    }
 
-	@Id
-	@Column(length = 32)
-	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "uuid")	
-	public String getId() {
-		return id;
-	}
+    public void setSkill(String skill) {
+        this.skill = skill;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    @Id
+    @Column(length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    public String getId() {
+        return id;
+    }
 
-	public String getOrgi() {
-		return orgi;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setOrgi(String orgi) {
-		this.orgi = orgi;
-	}
+    public Date getCreatetime() {
+        return createtime;
+    }
 
-	public Date getCreatetime() {
-		return createtime;
-	}
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
+    }
 
-	public void setCreatetime(Date createtime) {
-		this.createtime = createtime;
-	}
+    public int getTimes() {
+        return times;
+    }
 
-	public int getTimes() {
-		return times;
-	}
+    public void setTimes(int times) {
+        this.times = times;
+    }
 
-	public void setTimes(int times) {
-		this.times = times;
-	}
+    public String getCreater() {
+        return creater;
+    }
 
-	public String getCreater() {
-		return creater;
-	}
+    public void setCreater(String creater) {
+        this.creater = creater;
+    }
 
-	public void setCreater(String creater) {
-		this.creater = creater;
-	}
+    public String getTag() {
+        return tag;
+    }
 
-	public String getTag() {
-		return tag;
-	}
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
 
-	public void setTag(String tag) {
-		this.tag = tag;
-	}
+    public String getTagtype() {
+        return tagtype;
+    }
 
-	public String getTagtype() {
-		return tagtype;
-	}
+    public void setTagtype(String tagtype) {
+        this.tagtype = tagtype;
+    }
 
-	public void setTagtype(String tagtype) {
-		this.tagtype = tagtype;
-	}
+    public String getIcon() {
+        return icon;
+    }
 
-	public String getIcon() {
-		return icon;
-	}
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
+    public String getColor() {
+        return color;
+    }
 
-	public String getColor() {
-		return color;
-	}
-
-	public void setColor(String color) {
-		this.color = color;
-	}
+    public void setColor(String color) {
+        this.color = color;
+    }
 
 }

@@ -1,4 +1,4 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+//- Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
 //- 
 //- Licensed under the Apache License, Version 2.0 (the "License");
 //- you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ block content
         .ztree li span {
             display: inline-block !important;
             white-space: pre-wrap;
-            width: 90px;
+            width: 170px;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -26,7 +26,7 @@ block content
     .row(style='height:100%;')
         .col-lg-3(style='border-right:1px solid #e6e6e6;padding-right:0px;')
             h1.site-h1(style='background-color:#FFFFFF;')
-                | #{currentOrgan.name}组织机构
+                | #{currentOrgan.name}
                 span(style='float:right;')
                     button.layui-btn.layui-btn-small.green#areaadd(href='/admin/organ/add.html?' + (organData ? 'parent=' + organData.id : ''), data-toggle='ajax', data-height='400', data-width='650', data-title='创建部门')
                         | 创建部门
@@ -35,7 +35,7 @@ block content
                     ul#organTree.ztree
         span.col-lg-9
             h1.site-h1(style='background-color:#FFFFFF;')
-                span(style='width:150px;display:inline-block;;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;')
+                span(style='width:400px;display:inline-block;;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;')
                     if organData
                         | #{organData.name}
                     else

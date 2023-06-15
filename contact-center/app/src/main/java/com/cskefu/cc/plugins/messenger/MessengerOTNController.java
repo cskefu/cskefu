@@ -5,7 +5,7 @@ import com.cskefu.cc.activemq.BrokerPublisher;
 import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.controller.Handler;
-import com.cskefu.cc.controller.api.request.RestUtils;
+import com.cskefu.cc.util.restapi.RestUtils;
 import com.cskefu.cc.exception.CSKefuException;
 import com.cskefu.cc.model.*;
 import com.cskefu.cc.persistence.repository.FbMessengerRepository;
@@ -13,7 +13,7 @@ import com.cskefu.cc.persistence.repository.FbOTNRepository;
 import com.cskefu.cc.proxy.AgentProxy;
 import com.cskefu.cc.proxy.OrganProxy;
 import com.cskefu.cc.util.Menu;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,7 +56,7 @@ public class MessengerOTNController extends Handler {
     private BrokerPublisher brokerPublisher;
 
     private Map<String, Organ> getOwnOrgan(HttpServletRequest request) {
-        return organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
+        return organProxy.findAllOrganByParent(super.getOrgan(request));
     }
 
     @RequestMapping("/index")
@@ -64,7 +64,7 @@ public class MessengerOTNController extends Handler {
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String queryPageId) {
         Map<String, Organ> organs = getOwnOrgan(request);
         List<FbMessenger> fbMessengers = fbMessengerRepository.findByOrganIn(organs.keySet());
-        List<String> pageIds = fbMessengers.stream().map(p -> p.getPageId()).collect(Collectors.toList());
+        List<String> pageIds = fbMessengers.stream().map(FbMessenger::getPageId).collect(Collectors.toList());
 
         map.addAttribute("fbMessengers", fbMessengers);
 
@@ -167,7 +167,7 @@ public class MessengerOTNController extends Handler {
     }
 
     @RequestMapping("/image/upload")
-    @Menu(type = "admin", subtype = "image", access = false)
+    @Menu(type = "admin", subtype = "image")
     public ResponseEntity<String> upload(
             ModelMap map,
             HttpServletRequest request,

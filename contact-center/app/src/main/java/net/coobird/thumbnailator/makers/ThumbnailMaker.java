@@ -58,7 +58,7 @@ public abstract class ThumbnailMaker
 	protected final static class ReadinessTracker
 	{
 		private final Map<String, Boolean> alreadySetMap =
-			new HashMap<String, Boolean>();
+                new HashMap<>();
 		
 		/**
 		 * Returns whether or not the {@link ThumbnailMaker} has all its
@@ -228,14 +228,12 @@ public abstract class ThumbnailMaker
 	}
 	
 	/**
-	 * Sets the type of the {@link BufferedImage} to be the default type.
-	 * 
-	 * @return				A reference to this object.
-	 */
-	public ThumbnailMaker defaultImageType()
+     * Sets the type of the {@link BufferedImage} to be the default type.
+     */
+	public void defaultImageType()
 	{
-		return imageType(DEFAULT_IMAGE_TYPE);
-	}
+        imageType(DEFAULT_IMAGE_TYPE);
+    }
 	
 	/**
 	 * Sets the {@link Resizer} which is used for the resizing operation.

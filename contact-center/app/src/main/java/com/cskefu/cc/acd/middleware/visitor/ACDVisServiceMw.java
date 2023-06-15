@@ -22,7 +22,7 @@ import com.cskefu.cc.acd.basic.ACDMessageHelper;
 import com.cskefu.cc.basic.MainContext;
 import com.chatopera.compose4j.Functional;
 import com.chatopera.compose4j.Middleware;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,14 +53,13 @@ public class ACDVisServiceMw implements Middleware<ACDComposeContext> {
                 case INQUENE:
                     logger.info("[apply] agent user is in queue");
                     int queueIndex = acdQueueService.getQueueIndex(
-                            ctx.getAgentUser().getAgentno(), ctx.getOrgi(),
+                            ctx.getAgentUser().getAgentno(),
                             ctx.getOrganid());
                     ctx.setMessage(
                             acdMessageHelper.getQueneMessage(
                                     queueIndex,
-                                    ctx.getChannel(),
-                                    ctx.getOrganid(),
-                                    ctx.getOrgi()));
+                                    ctx.getChannelType(),
+                                    ctx.getOrganid()));
                     break;
                 case INSERVICE:
                     // 该访客与坐席正在服务中，忽略新的连接

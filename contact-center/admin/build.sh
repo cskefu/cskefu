@@ -15,13 +15,9 @@ imagename=cskefu/contact-center
 [ -z "${BASH_SOURCE[0]}" -o "${BASH_SOURCE[0]}" = "$0" ] || return
 # build
 cd $appHome
-if [ -d ../private ]; then
-    registryPrefix=dockerhub.qingcloud.com/
-fi
-
 TIMESTAMP=`date "+%Y%m%d.%H%M%S"`
 PACKAGE_VERSION=`git rev-parse --short HEAD`
-APPLICATION_CUSTOMER_ENTITY=${APPLICATION_CUSTOMER_ENTITY:-"OpenSource Community"}
+APPLICATION_CUSTOMER_ENTITY=${APPLICATION_CUSTOMER_ENTITY:-"Chatopera CC Cloud"}
 
 $baseDir/package.sh
 

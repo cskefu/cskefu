@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,6 @@ public class DataDic implements java.io.Serializable {
 	private String type ;
 	private String memo ;			//改变用处，变更为  目录序号
 	private String distitle;		//分栏时 左侧 栏目的 显示标题
-	private String orgi ;
 	private String status ;
 	private String iconclass;
 	private String cssstyle;
@@ -119,12 +118,6 @@ public class DataDic implements java.io.Serializable {
 	}
 	public void setMemo(String memo) {
 		this.memo = memo;
-	}
-	public String getOrgi() {
-		return orgi;
-	}
-	public void setOrgi(String orgi) {
-		this.orgi = orgi;
 	}
 	public String getStatus() {
 		return status;

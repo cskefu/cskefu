@@ -256,7 +256,7 @@ public abstract class AbstractQuerySpec implements QuerySpec {
         final Dialect.DatabaseProduct databaseProduct =
             dialect.getDatabaseProduct();
         final Map<String, String> groupingSetsAliases =
-            new HashMap<String, String>();
+                new HashMap<>();
         // Generate something like
         //
         //  select d0, d1, count(m0)

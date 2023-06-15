@@ -25,7 +25,7 @@ import com.cskefu.cc.controller.Handler;
 import com.cskefu.cc.exception.CSKefuException;
 import com.cskefu.cc.model.FbMessenger;
 import com.cskefu.cc.persistence.repository.FbMessengerRepository;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

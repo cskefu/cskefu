@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import java.util.HashMap;
 
 public class StreamingFileUtil {
 
-    private static StreamingFileUtil singleton = new StreamingFileUtil();
+    private static final StreamingFileUtil singleton = new StreamingFileUtil();
 
-    private final HashMap<String, String> extMap = new HashMap<String, String>();
+    private final HashMap<String, String> extMap = new HashMap<>();
 
     private StreamingFileUtil() {
         extMap.put(Constants.ATTACHMENT_TYPE_IMAGE, "gif,jpg,jpeg,png,bmp");

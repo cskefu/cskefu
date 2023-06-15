@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,19 +25,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface WorkMonitorRepository extends JpaRepository<WorkMonitor, String> {
-	
-	WorkMonitor findByIdAndOrgi(String id, String orgi);
-	
-	Page<WorkMonitor> findByAgentAndOrgi(String agent, String orgi, Pageable paramPageable);
 
-	List<WorkMonitor> findByOrgi(String orgi) ;
-	
-	int countByAgentAndDatestrAndStatusAndOrgi(String agent, String datestr, String status, String orgi) ;
+    WorkMonitor findById(String id);
 
-	List<WorkMonitor> findByOrgiAndAgentAndDatestrAndFirsttime(String orgi, String agent, String datestr, boolean firsttime) ;
-	
-	Page<WorkMonitor> findAll(Specification<WorkMonitor> spec, Pageable pageable);  //分页按条件查询
-	
-	
-	
+    Page<WorkMonitor> findByAgent(String agent, Pageable paramPageable);
+
+    List<WorkMonitor> findAll();
+
+    int countByAgentAndDatestrAndStatus(String agent, String datestr, String status);
+
+    List<WorkMonitor> findByAgentAndDatestrAndFirsttime(String agent, String datestr, boolean firsttime);
+
+    Page<WorkMonitor> findAll(Specification<WorkMonitor> spec, Pageable pageable);  //分页按条件查询
+
+
 }

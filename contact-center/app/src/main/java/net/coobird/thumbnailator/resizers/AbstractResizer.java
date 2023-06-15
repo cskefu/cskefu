@@ -41,7 +41,7 @@ public abstract class AbstractResizer implements Resizer
 			Map<RenderingHints.Key, Object> hints
 	)
 	{
-		RENDERING_HINTS = new HashMap<RenderingHints.Key, Object>();
+		RENDERING_HINTS = new HashMap<>();
 		RENDERING_HINTS.put(KEY_INTERPOLATION, interpolationValue);
 		
 		if (

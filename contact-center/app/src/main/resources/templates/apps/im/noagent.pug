@@ -1,4 +1,4 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+//- Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
 //- 
 //- Licensed under the Apache License, Version 2.0 (the "License");
 //- you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ html
         link(rel='shortcut icon', type='image/x-icon', href='/images/favicon.ico?t=1489039620156')
         link(rel='stylesheet', type='text/css', href='/im/css/ukefu.css')
         link#skin(rel='stylesheet', type='text/css', href='/im/css/default/ukefu.css')
+        //- telemetry
+        include telemetry
     body(class={'ukefu-point-text': type == 'text'},style='overflow:hidden;')
             .large.ukefu-im-theme(class="ukefu-theme-border-" + (type = 'text' ? inviteData.consult_dialog_color : ''))
                 #containter.clearfix

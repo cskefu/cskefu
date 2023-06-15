@@ -2,7 +2,7 @@ package com.cskefu.cc.peer;
 
 import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.socketio.message.ChatMessage;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class PeerUtils {
 

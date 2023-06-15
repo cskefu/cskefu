@@ -24,13 +24,13 @@ import com.cskefu.cc.cache.Cache;
 import com.cskefu.cc.model.AgentUser;
 import com.cskefu.cc.model.AgentUserContacts;
 import com.cskefu.cc.model.Contacts;
-import com.cskefu.cc.persistence.es.ContactsRepository;
+import com.cskefu.cc.persistence.repository.ContactsRepository;
 import com.cskefu.cc.persistence.repository.AgentUserContactsRepository;
 import com.cskefu.cc.proxy.AgentStatusProxy;
 import com.cskefu.cc.proxy.AgentUserProxy;
 import com.chatopera.compose4j.Functional;
 import com.chatopera.compose4j.Middleware;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +77,7 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
          * NOTE AgentUser代表一次会话记录，在上一个会话结束，并且由坐席人员点击"清除"后，会从数据库中删除
          * 此处查询到的，可能是之前的会话。其状态需要验证，所以不一定是由TA来服务本次会话。
          */
-        AgentUser agentUser = cache.findOneAgentUserByUserIdAndOrgi(ctx.getOnlineUserId(), ctx.getOrgi()).orElseGet(
+        AgentUser agentUser = cache.findOneAgentUserByUserId(ctx.getOnlineUserId()).orElseGet(
                 () -> {
                     /**
                      * NOTE 新创建的AgentUser不需要设置Status和Agentno
@@ -85,10 +85,9 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
                      */
                     AgentUser p = new AgentUser(
                             ctx.getOnlineUserId(),
-                            ctx.getChannel(),
+                            ctx.getChannelType(),
                             ctx.getOnlineUserId(),
                             ctx.getOnlineUserNickname(),
-                            ctx.getOrgi(),
                             ctx.getAppid());
                     logger.info("[apply] create new agent user id {}", p.getId());
                     return p;
@@ -97,7 +96,6 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
 
         logger.info("[apply] resolve agent user id {}", agentUser.getId());
 
-        agentUser.setOrgi(ctx.getOrgi());
         agentUser.setUsername(resolveAgentUsername(agentUser, ctx.getOnlineUserNickname()));
         agentUser.setOsname(ctx.getOsname());
         agentUser.setBrowser(ctx.getBrowser());
@@ -137,22 +135,19 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
                     ctx.setMessage(
                             acdMessageHelper.getSuccessMessage(
                                     ctx.getAgentService(),
-                                    ctx.getChannel(),
-                                    ctx.getOrgi()));
+                                    ctx.getChannelType()));
 
                     // TODO 判断 INSERVICE 时，agentService 对应的  agentUser
                     logger.info(
                             "[apply] agent service: agentno {}, \n agentuser id {} \n user {} \n channel {} \n status {} \n queue index {}",
                             ctx.getAgentService().getAgentno(), ctx.getAgentService().getAgentuserid(),
                             ctx.getAgentService().getUserid(),
-                            ctx.getAgentService().getChannel(),
+                            ctx.getAgentService().getChanneltype(),
                             ctx.getAgentService().getStatus(),
                             ctx.getAgentService().getQueneindex());
 
                     if (StringUtils.isNotBlank(ctx.getAgentService().getAgentuserid())) {
-                        agentUserProxy.findOne(ctx.getAgentService().getAgentuserid()).ifPresent(p -> {
-                            ctx.setAgentUser(p);
-                        });
+                        agentUserProxy.findOne(ctx.getAgentService().getAgentuserid()).ifPresent(ctx::setAgentUser);
                     }
 
                     // TODO 如果是 INSERVICE 那么  agentService.getAgentuserid 就一定不能为空？
@@ -168,35 +163,32 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
 //                            }
 
                     agentStatusProxy.broadcastAgentsStatus(
-                            ctx.getOrgi(), "user", MainContext.AgentUserStatusEnum.INSERVICE.toString(),
+                            "user", MainContext.AgentUserStatusEnum.INSERVICE.toString(),
                             ctx.getAgentUser().getId());
                     break;
                 case INQUENE:
                     // 处理结果：进入排队队列
                     ctx.getAgentService().setQueneindex(
                             acdQueueService.getQueueIndex(
-                                    ctx.getAgentUser().getAgentno(), ctx.getOrgi(), ctx.getAgentUser().getSkill()));
+                                    ctx.getAgentUser().getAgentno(), ctx.getAgentUser().getSkill()));
 
                     if (ctx.getAgentService().getQueneindex() > 0) {
                         // 当前有坐席，要排队
                         ctx.setMessage(acdMessageHelper.getQueneMessage(
                                 ctx.getAgentService().getQueneindex(),
-                                ctx.getAgentUser().getChannel(),
-                                ctx.getOrganid(),
-                                ctx.getOrgi()));
+                                ctx.getAgentUser().getChanneltype(),
+                                ctx.getOrganid()));
                     } else {
                         // TODO 什么是否返回 noAgentMessage, 是否在是 INQUENE 时 getQueneindex == 0
                         // 当前没有坐席，要留言
                         ctx.setNoagent(true);
                         ctx.setMessage(acdMessageHelper.getNoAgentMessage(
                                 ctx.getAgentService().getQueneindex(),
-                                ctx.getChannel(),
-                                ctx.getOrganid(),
-                                ctx.getOrgi()));
+                                ctx.getChannelType(),
+                                ctx.getOrganid()));
                     }
 
-                    agentStatusProxy.broadcastAgentsStatus(
-                            ctx.getOrgi(), "user", MainContext.AgentUserStatusEnum.INQUENE.toString(),
+                    agentStatusProxy.broadcastAgentsStatus("user", MainContext.AgentUserStatusEnum.INQUENE.toString(),
                             ctx.getAgentUser().getId());
 
                     break;
@@ -209,9 +201,8 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
             ctx.setNoagent(true);
             ctx.setMessage(acdMessageHelper.getNoAgentMessage(
                     0,
-                    ctx.getChannel(),
-                    ctx.getOrganid(),
-                    ctx.getOrgi()));
+                    ctx.getChannelType(),
+                    ctx.getOrganid()));
         }
 
         logger.info(
@@ -239,8 +230,8 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
         }
 
         // 查找会话联系人关联表
-        AgentUserContacts agentUserContact = agentUserContactsRes.findOneByUseridAndOrgi(
-                agentUser.getUserid(), agentUser.getOrgi()).orElse(null);
+        AgentUserContacts agentUserContact = agentUserContactsRes.findOneByUserid(
+                agentUser.getUserid()).orElse(null);
         if (agentUserContact != null) {
             Contacts contact = contactsRes.findOneById(agentUserContact.getContactsid()).orElseGet(null);
             if (contact != null) {

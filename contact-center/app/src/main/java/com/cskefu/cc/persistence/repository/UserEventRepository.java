@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +32,11 @@ import java.util.List;
  */
 public interface UserEventRepository extends JpaRepository<UserHistory, String> {
 
-    @Query("select count(distinct ip) as ipnums, count(id) as pvnums from UserHistory where orgi = ?1 and createtime > ?2 and createtime < ?3")
-    List<Object> findByOrgiAndCreatetimeRange(String orgi, Date start, Date end);
+    @Query("select count(distinct ip) as ipnums, count(id) as pvnums from UserHistory where createtime > ?1 and createtime < ?2")
+    List<Object> findByCreatetimeRange(Date start, Date end);
 
-    @Query("select count(distinct ip) as ipnums, count(id) as pvnums from UserHistory where orgi = ?1 and createtime > ?2 and createtime < ?3 and appid in (?4)")
-    List<Object> findByOrgiAndCreatetimeRangeAndInAppIds(String orgi, Date start, Date end, Collection<String> appids);
+    @Query("select count(distinct ip) as ipnums, count(id) as pvnums from UserHistory where createtime > ?1 and createtime < ?2 and appid in (?3)")
+    List<Object> findByCreatetimeRangeAndInAppIds(Date start, Date end, Collection<String> appids);
 
-    Page<UserHistory> findBySessionidAndOrgi(String sessionid, String orgi, Pageable page);
+    Page<UserHistory> findBySessionid(String sessionid, Pageable page);
 }

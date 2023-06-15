@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@ package com.cskefu.cc.controller.api;
 
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.controller.Handler;
-import com.cskefu.cc.model.OnlineUser;
-import com.cskefu.cc.persistence.repository.OnlineUserRepository;
+import com.cskefu.cc.model.PassportWebIMUser;
+import com.cskefu.cc.persistence.repository.PassportWebIMUserRepository;
 import com.cskefu.cc.util.Menu;
 import com.cskefu.cc.util.RestResult;
 import com.cskefu.cc.util.RestResultType;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,7 +45,7 @@ import javax.validation.Valid;
 public class ApiOnlineUserController extends Handler {
 
     @Autowired
-    private OnlineUserRepository onlineUserRepository;
+    private PassportWebIMUserRepository passportWebIMUserRepository;
 
     /**
      * 获取在线客服
@@ -57,11 +57,11 @@ public class ApiOnlineUserController extends Handler {
     @RequestMapping(method = RequestMethod.GET)
     @Menu(type = "apps", subtype = "sysdic", access = true)
     public ResponseEntity<RestResult> list(HttpServletRequest request, @Valid String userid) {
-        Page<OnlineUser> onlineUserList = null;
+        Page<PassportWebIMUser> onlineUserList = null;
         if (!StringUtils.isBlank(userid)) {
-            onlineUserList = onlineUserRepository.findByUseridAndOrgi(userid, super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
+            onlineUserList = passportWebIMUserRepository.findByUserid(userid, new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
         } else {
-            onlineUserList = onlineUserRepository.findByOrgiAndStatus(super.getOrgi(request), MainContext.OnlineUserStatusEnum.ONLINE.toString(), new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
+            onlineUserList = passportWebIMUserRepository.findByStatus(MainContext.OnlineUserStatusEnum.ONLINE.toString(), new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
         }
         return new ResponseEntity<>(new RestResult(RestResultType.OK, onlineUserList), HttpStatus.OK);
     }

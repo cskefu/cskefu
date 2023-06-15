@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +23,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface AttachmentRepository  extends JpaRepository<AttachmentFile, String>{
-	
-	AttachmentFile findByIdAndOrgi(String id, String orgi);
-	
-	List<AttachmentFile> findByDataidAndOrgi(String dataid, String orgi);
-	
-	List<AttachmentFile> findByModelidAndOrgi(String modelid, String orgi);
-	
-	Page<AttachmentFile> findByOrgi(String orgi, Pageable page);
+public interface AttachmentRepository extends JpaRepository<AttachmentFile, String> {
+
+    AttachmentFile findById(String id);
+
+    List<AttachmentFile> findByDataid(String dataid);
+
+    List<AttachmentFile> findByModelid(String modelid);
+
+    Page<AttachmentFile> findAll(Pageable page);
 }
 

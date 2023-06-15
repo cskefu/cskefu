@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,22 +28,19 @@ import java.util.List;
 public interface TagRepository  extends JpaRepository<Tag, String>
 {
 
-	Tag findByOrgiAndTag(String orgi, String tag);
+	Tag findByTagAndSkill(String tag, String skill);
 
-	Tag findByOrgiAndTagAndSkill(String orgi, String tag, String skill);
+	Tag findById(String id);
 
-	Tag findByOrgiAndId(String orgi, String id);
+	@Query(value = "select t from Tag t where :tagtype is null or t.tagtype = :tagtype")
+    Page<Tag> findByTagtype(@Param("tagtype") String tagtype, Pageable paramPageable);
 
-	@Query(value = "select t from Tag t where (:tagtype is null or t.tagtype = :tagtype) " +
-            "and t.orgi = :orgi")
-    Page<Tag> findByOrgiAndTagtype(@Param("orgi") String orgi, @Param("tagtype") String tagtype, Pageable paramPageable);
+	Page<Tag> findByTagtypeAndSkill(String tagtype, String skill, Pageable paramPageable);
 
-	Page<Tag> findByOrgiAndTagtypeAndSkill(String orgi, String tagtype, String skill, Pageable paramPageable);
-
-	List<Tag> findByOrgi(String orgi);
+	List<Tag> findAll();
 	
-	List<Tag> findByOrgiAndTagtype(String orgi, String tagtype);
+	List<Tag> findByTagtype(String tagtype);
 
-	List<Tag> findByOrgiAndTagtypeAndSkill(String orgi, String tagtype , String skill);
+	List<Tag> findByTagtypeAndSkill(String tagtype , String skill);
 }
 

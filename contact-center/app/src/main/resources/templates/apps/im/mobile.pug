@@ -1,4 +1,4 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+//- Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
 //- 
 //- Licensed under the Apache License, Version 2.0 (the "License");
 //- you may not use this file except in compliance with the License.
@@ -25,7 +25,9 @@ html
             link(rel='shortcut icon', type='image/x-icon', href='/images/favicon.ico?t=1489039620156')
         link(rel='stylesheet', type='text/css', href='/im/css/ukefu.css')
         link#skin(rel='stylesheet', type='text/css', href='/im/css/default/ukefu.css')
-        //  kindeditor 
+        //- telemetry
+        include telemetry
+        //-  kindeditor
         link(rel='stylesheet', type='text/css', href='/im/js/kindeditor/themes/default/default.css')
         script(type='text/javascript', src='/js/jquery-1.10.2.min.js')
         script(src='/js/jquery.form.js')
@@ -193,7 +195,7 @@ html
                 ul
                     if models.contains("chatbot") && inviteData.ai && inviteData.ai == true && aiid
                         li
-                            a(href="/im/index.html?appid=" + appid + "&orgi=" + orgi + (aiid ? '&aiid=' + aiid : '') + "&ai=true" + (client ? '&client=' + client : '') + (type ? '&type=' + type : '') + (skill ? '&skill=' + skill : '') + (agent ? '&agent=' + agent : '') + "&userid=" + userid + "&sessionid=" + sessionid + "&t=" + pugHelper.currentTimeMillis()) 智能客服
+                            a(href="/im/index.html?appid=" + appid + (aiid ? '&aiid=' + aiid : '') + "&ai=true" + (client ? '&client=' + client : '') + (type ? '&type=' + type : '') + (skill ? '&skill=' + skill : '') + (agent ? '&agent=' + agent : '') + "&userid=" + userid + "&sessionid=" + sessionid + "&t=" + pugHelper.currentTimeMillis()) 智能客服
                         li.cur
                             a(href="javascript:void(0)") 人工坐席
                     else
@@ -218,7 +220,7 @@ html
                             div(style="padding:0px 5px 10px 5px;border-bottom:1px solid #dedede;")
                                 a#point_ad_text(href=welcomeAd.url, title=welcomeAd.tiptext, target="_blank")= welcomeAd.content
             .clearfix.message.welcome
-                span#welcome-message= inviteData.dialog_message ? inviteData.dialog_message : '欢迎您来咨询！欢迎使用春松客服！如需帮助请联系 info@chatopera.com'
+                span#welcome-message= inviteData.dialog_message ? inviteData.dialog_message : '欢迎您来咨询！欢迎使用 Chatopera 云服务！如需帮助请联系 info@chatopera.com'
             for chatMessage in pugHelper.reverse(chatMessageList.content)
                 if chatMessage.userid && userid && chatMessage.calltype && chatMessage.calltype == "呼入"
                     .clearfix.chat-block
@@ -243,7 +245,7 @@ html
                                 .chat-content
                                     include media/message
         .mobile-chat-bottom#bottom
-            form#imgForm(action='/im/image/upload.html?userid=' + userid + '&appid=' + appid + '&username=' + username + '&orgi=' + orgi, data-toggle='ajax-form', enctype='multipart/form-data')
+            form#imgForm(action='/im/image/upload.html?userid=' + userid + '&appid=' + appid + '&username=' + username, data-toggle='ajax-form', enctype='multipart/form-data')
                 a.imgFile(href='javascript:;', onclick='closeFaceDialog(0)')
                     img.chat-type(src='/im/img/img.png', style='width:32px;height:32px;')
                     input#imgFile(type='file', name='imgFile', accept='image/*', onchange='$(\'#imgForm\').submit();$(this).val(\'\');')
@@ -455,7 +457,7 @@ html
                 } else {
                     satisComment = comInputVal;
                 }
-                R3Ajax.post("/im/satis.html?orgi=#{orgi}", function () {
+                R3Ajax.post("/im/satis.html", function () {
                     document.getElementById("dialogWrap").style.display = "none";
                     alert("服务评价已提交");
                 }, "id=" + form.id.value + "&satislevel=" + document.getElementById("satislevel_input").value + "&satiscomment=" + encodeURIComponent(satisComment));
@@ -467,7 +469,7 @@ html
             var hostname = location.hostname;
             var protocol = window.location.protocol.replace(/:/g, '');
             var username = encodeURIComponent("#{username}");
-            var socket = io(protocol + '://' + hostname + ':#{port}/im/user?userid=#{userid}&orgi=#{orgi}&session=#{sessionid}&appid=#{appid}&osname=!{osname}&browser=!{browser}!{skill ? "&skill=" + skill : ""}!{username ? "&nickname='+username+'" : ""}!{agent ? "&agent=" + agent : ""}!{title ? "&title=" + title : ""}!{traceid ? "&url=" + url : ""}!{traceid ? "&traceid=" + traceid : ""}!{isInvite ? "&isInvite=" + isInvite : ""}', {transports: ['websocket', 'polling']});
+            var socket = io(protocol + '://' + hostname + ':#{port}/im/user?userid=#{userid}&session=#{sessionid}&appid=#{appid}&osname=!{osname}&browser=!{browser}!{skill ? "&skill=" + skill : ""}!{username ? "&nickname='+username+'" : ""}!{agent ? "&agent=" + agent : ""}!{title ? "&title=" + title : ""}!{traceid ? "&url=" + url : ""}!{traceid ? "&traceid=" + traceid : ""}!{isInvite ? "&isInvite=" + isInvite : ""}', {transports: ['websocket', 'polling']});
             socket.on('connect', function () {
                 if ('#{contacts.name}') {
                     socket.emit('new', {
@@ -475,7 +477,6 @@ html
                         phone: "#{contacts.phone}",
                         email: "#{contacts.email}",
                         memo: "#{contacts.memo}",
-                        orgi: "#{inviteData.orgi}",
                         appid: "#{appid}"
                     });
                 }
@@ -588,7 +589,6 @@ html
                         channel: "webim",
                         type: "message",
                         contextid: "#{sessionid}",
-                        orgi: "#{orgi}",
                         message: message
                     });
                 }

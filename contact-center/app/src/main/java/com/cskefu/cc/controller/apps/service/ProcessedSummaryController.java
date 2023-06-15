@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.controller.Handler;
 import com.cskefu.cc.model.*;
-import com.cskefu.cc.persistence.es.ContactsRepository;
+import com.cskefu.cc.persistence.repository.ContactsRepository;
 import com.cskefu.cc.persistence.repository.AgentServiceRepository;
 import com.cskefu.cc.persistence.repository.MetadataRepository;
 import com.cskefu.cc.persistence.repository.ServiceSummaryRepository;
@@ -28,7 +28,7 @@ import com.cskefu.cc.persistence.repository.TagRepository;
 import com.cskefu.cc.proxy.OrganProxy;
 import com.cskefu.cc.util.Menu;
 import com.cskefu.cc.util.dsdata.export.ExcelExporterProcess;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -82,40 +82,34 @@ public class ProcessedSummaryController extends Handler {
      * @return
      */
     @RequestMapping(value = "/index")
-    @Menu(type = "agent", subtype = "processed", access = false)
+    @Menu(type = "agent", subtype = "processed")
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid final String ani, @Valid final String called, @Valid final String begin, @Valid final String end, @Valid final String direction) {
-        final String orgi = super.getOrgi(request);
         Organ currentOrgan = super.getOrgan(request);
-        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
-        Page<AgentServiceSummary> page = serviceSummaryRes.findAll(new Specification<AgentServiceSummary>() {
-            @Override
-            public Predicate toPredicate(Root<AgentServiceSummary> root, CriteriaQuery<?> query,
-                                         CriteriaBuilder cb) {
-                List<Predicate> list = new ArrayList<Predicate>();
-                Expression<String> exp = root.<String>get("skill");
-                list.add(exp.in(organs.keySet()));
-                list.add(cb.equal(root.get("process").as(boolean.class), 1));
-                list.add(cb.equal(root.get("orgi").as(String.class), orgi));
-                list.add(cb.notEqual(root.get("channel").as(String.class), MainContext.ChannelType.PHONE.toString()));
-                if (!StringUtils.isBlank(ani)) {
-                    list.add(cb.equal(root.get("ani").as(String.class), ani));
-                }
-                if (!StringUtils.isBlank(called)) {
-                    list.add(cb.equal(root.get("called").as(String.class), called));
-                }
-                try {
-                    if (!StringUtils.isBlank(begin) && begin.matches("[\\d]{4}-[\\d]{2}-[\\d]{2}")) {
-                        list.add(cb.greaterThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.simpleDateFormat.parse(begin)));
-                    }
-                    if (!StringUtils.isBlank(end) && end.matches("[\\d]{4}-[\\d]{2}-[\\d]{2}")) {
-                        list.add(cb.lessThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.dateFormate.parse(end + " 23:59:59")));
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                Predicate[] p = new Predicate[list.size()];
-                return cb.and(list.toArray(p));
+        Map<String, Organ> organs = organProxy.findAllOrganByParent(currentOrgan);
+        Page<AgentServiceSummary> page = serviceSummaryRes.findAll((root, query, cb) -> {
+            List<Predicate> list = new ArrayList<>();
+            Expression<String> exp = root.<String>get("skill");
+            list.add(exp.in(organs.keySet()));
+            list.add(cb.equal(root.get("process").as(boolean.class), 1));
+            list.add(cb.notEqual(root.get("channel").as(String.class), MainContext.ChannelType.PHONE.toString()));
+            if (!StringUtils.isBlank(ani)) {
+                list.add(cb.equal(root.get("ani").as(String.class), ani));
             }
+            if (!StringUtils.isBlank(called)) {
+                list.add(cb.equal(root.get("called").as(String.class), called));
+            }
+            try {
+                if (!StringUtils.isBlank(begin) && begin.matches("[\\d]{4}-[\\d]{2}-[\\d]{2}")) {
+                    list.add(cb.greaterThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.simpleDateFormat.parse(begin)));
+                }
+                if (!StringUtils.isBlank(end) && end.matches("[\\d]{4}-[\\d]{2}-[\\d]{2}")) {
+                    list.add(cb.lessThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.dateFormate.parse(end + " 23:59:59")));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Predicate[] p = new Predicate[list.size()];
+            return cb.and(list.toArray(p));
         }, new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
         map.addAttribute("summaryList", page);
         map.addAttribute("ani", ani);
@@ -123,20 +117,20 @@ public class ProcessedSummaryController extends Handler {
         map.addAttribute("begin", begin);
         map.addAttribute("end", end);
 
-        map.addAttribute("tags", tagRes.findByOrgiAndTagtype(super.getOrgi(request), MainContext.ModelType.SUMMARY.toString()));
+        map.addAttribute("tags", tagRes.findByTagtype(MainContext.ModelType.SUMMARY.toString()));
 
         return request(super.createView("/apps/service/processed/index"));
     }
 
 
     @RequestMapping(value = "/process")
-    @Menu(type = "agent", subtype = "processed", access = false)
+    @Menu(type = "agent", subtype = "processed")
     public ModelAndView process(ModelMap map, HttpServletRequest request, @Valid final String id) {
-        AgentServiceSummary summary = serviceSummaryRes.findByIdAndOrgi(id, super.getOrgi(request));
+        AgentServiceSummary summary = serviceSummaryRes.findById(id);
         map.addAttribute("summary", summary);
-        map.put("summaryTags", tagRes.findByOrgiAndTagtype(super.getOrgi(request), MainContext.ModelType.SUMMARY.toString()));
+        map.put("summaryTags", tagRes.findByTagtype(MainContext.ModelType.SUMMARY.toString()));
         if (summary != null && !StringUtils.isBlank(summary.getAgentserviceid())) {
-            AgentService service = agentServiceRes.findByIdAndOrgi(summary.getAgentserviceid(), super.getOrgi(request));
+            AgentService service = agentServiceRes.findById(summary.getAgentserviceid());
             map.addAttribute("service", service);
             if (!StringUtils.isBlank(summary.getContactsid())) {
                 Contacts contacts = contactsRes.findOne(summary.getContactsid());
@@ -148,9 +142,9 @@ public class ProcessedSummaryController extends Handler {
     }
 
     @RequestMapping(value = "/save")
-    @Menu(type = "agent", subtype = "processed", access = false)
+    @Menu(type = "agent", subtype = "processed")
     public ModelAndView save(ModelMap map, HttpServletRequest request, @Valid final AgentServiceSummary summary) {
-        AgentServiceSummary oldSummary = serviceSummaryRes.findByIdAndOrgi(summary.getId(), super.getOrgi(request));
+        AgentServiceSummary oldSummary = serviceSummaryRes.findById(summary.getId());
         if (oldSummary != null) {
             oldSummary.setProcess(true);
             oldSummary.setUpdatetime(new Date());
@@ -163,12 +157,12 @@ public class ProcessedSummaryController extends Handler {
     }
 
     @RequestMapping("/expids")
-    @Menu(type = "agent", subtype = "processed", access = false)
+    @Menu(type = "agent", subtype = "processed")
     public void expids(ModelMap map, HttpServletRequest request, HttpServletResponse response, @Valid String[] ids) throws IOException {
         if (ids != null && ids.length > 0) {
             Iterable<AgentServiceSummary> statusEventList = serviceSummaryRes.findAll(Arrays.asList(ids));
             MetadataTable table = metadataRes.findByTablename("uk_servicesummary");
-            List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+            List<Map<String, Object>> values = new ArrayList<>();
             for (AgentServiceSummary event : statusEventList) {
                 values.add(MainUtils.transBean2Map(event));
             }
@@ -183,15 +177,15 @@ public class ProcessedSummaryController extends Handler {
     }
 
     @RequestMapping("/expall")
-    @Menu(type = "agent", subtype = "processed", access = false)
+    @Menu(type = "agent", subtype = "processed")
     public void expall(ModelMap map, HttpServletRequest request, HttpServletResponse response) throws IOException {
         Organ currentOrgan = super.getOrgan(request);
-        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
-        Iterable<AgentServiceSummary> statusEventList = serviceSummaryRes.findByChannelNotAndOrgiAndProcessTrueAndSkillIn(
-                MainContext.ChannelType.PHONE.toString(), super.getOrgi(request), organs.keySet(), new PageRequest(0, 10000));
+        Map<String, Organ> organs = organProxy.findAllOrganByParent(currentOrgan);
+        Iterable<AgentServiceSummary> statusEventList = serviceSummaryRes.findByChannelNotAndProcessTrueAndSkillIn(
+                MainContext.ChannelType.PHONE.toString(), organs.keySet(), new PageRequest(0, 10000));
 
         MetadataTable table = metadataRes.findByTablename("uk_servicesummary");
-        List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> values = new ArrayList<>();
         for (AgentServiceSummary statusEvent : statusEventList) {
             values.add(MainUtils.transBean2Map(statusEvent));
         }
@@ -204,38 +198,32 @@ public class ProcessedSummaryController extends Handler {
     }
 
     @RequestMapping("/expsearch")
-    @Menu(type = "agent", subtype = "processed", access = false)
+    @Menu(type = "agent", subtype = "processed")
     public void expall(ModelMap map, HttpServletRequest request, HttpServletResponse response, @Valid final String ani, @Valid final String called, @Valid final String begin, @Valid final String end, @Valid final String direction) throws IOException {
-        final String orgi = super.getOrgi(request);
-        Page<AgentServiceSummary> page = serviceSummaryRes.findAll(new Specification<AgentServiceSummary>() {
-            @Override
-            public Predicate toPredicate(Root<AgentServiceSummary> root, CriteriaQuery<?> query,
-                                         CriteriaBuilder cb) {
-                List<Predicate> list = new ArrayList<Predicate>();
-                list.add(cb.equal(root.get("process").as(boolean.class), 1));
-                list.add(cb.equal(root.get("orgi").as(String.class), orgi));
-                if (!StringUtils.isBlank(ani)) {
-                    list.add(cb.equal(root.get("ani").as(String.class), ani));
-                }
-                if (!StringUtils.isBlank(called)) {
-                    list.add(cb.equal(root.get("called").as(String.class), called));
-                }
-                try {
-                    if (!StringUtils.isBlank(begin) && begin.matches("[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}")) {
-                        list.add(cb.greaterThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.dateFormate.parse(begin)));
-                    }
-                    if (!StringUtils.isBlank(end) && end.matches("[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}")) {
-                        list.add(cb.lessThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.dateFormate.parse(end)));
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                Predicate[] p = new Predicate[list.size()];
-                return cb.and(list.toArray(p));
+        Page<AgentServiceSummary> page = serviceSummaryRes.findAll((root, query, cb) -> {
+            List<Predicate> list = new ArrayList<>();
+            list.add(cb.equal(root.get("process").as(boolean.class), 1));
+            if (!StringUtils.isBlank(ani)) {
+                list.add(cb.equal(root.get("ani").as(String.class), ani));
             }
+            if (!StringUtils.isBlank(called)) {
+                list.add(cb.equal(root.get("called").as(String.class), called));
+            }
+            try {
+                if (!StringUtils.isBlank(begin) && begin.matches("[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}")) {
+                    list.add(cb.greaterThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.dateFormate.parse(begin)));
+                }
+                if (!StringUtils.isBlank(end) && end.matches("[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}")) {
+                    list.add(cb.lessThanOrEqualTo(root.get("createtime").as(Date.class), MainUtils.dateFormate.parse(end)));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Predicate[] p = new Predicate[list.size()];
+            return cb.and(list.toArray(p));
         }, new PageRequest(0, 10000, Sort.Direction.DESC, "createtime"));
 
-        List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> values = new ArrayList<>();
         for (AgentServiceSummary summary : page) {
             values.add(MainUtils.transBean2Map(summary));
         }

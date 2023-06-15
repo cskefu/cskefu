@@ -383,7 +383,7 @@ public final class Thumbnailator
 			throw new NullPointerException("Rename is null.");
 		}
 		
-		ArrayList<File> resultFiles = new ArrayList<File>();
+		ArrayList<File> resultFiles = new ArrayList<>();
 		
 		ThumbnailParameter param =
 			new ThumbnailParameterBuilder()

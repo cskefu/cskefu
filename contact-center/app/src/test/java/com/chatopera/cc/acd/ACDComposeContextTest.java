@@ -26,8 +26,8 @@ public class ACDComposeContextTest extends TestCase {
     public void testSetAndGet(){
         ACDComposeContext ctx = new ACDComposeContext();
         ctx.setAgentUser(new AgentUser());
-        ctx.getAgentUser().setOrgi("foo");
-        assertEquals(ctx.getAgentUser().getOrgi(), "foo");
+        ctx.getAgentUser().setAgentname("foo");
+        assertEquals(ctx.getAgentUser().getAgentname(), "foo");
     }
 
 }

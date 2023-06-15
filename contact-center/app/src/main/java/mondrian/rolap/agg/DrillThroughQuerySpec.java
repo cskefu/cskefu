@@ -58,8 +58,8 @@ class DrillThroughQuerySpec extends AbstractQuerySpec {
     }
 
     private List<String> computeDistinctColumnNames() {
-        final List<String> columnNames = new ArrayList<String>();
-        final Set<String> columnNameSet = new HashSet<String>();
+        final List<String> columnNames = new ArrayList<>();
+        final Set<String> columnNameSet = new HashSet<>();
 
         final RolapStar.Column[] columns = getColumns();
         for (RolapStar.Column column : columns) {
@@ -200,7 +200,7 @@ class DrillThroughQuerySpec extends AbstractQuerySpec {
             return;
         }
         // generate the select list
-        final Set<String> columnNameSet = new HashSet<String>();
+        final Set<String> columnNameSet = new HashSet<>();
         columnNameSet.addAll(columnNames);
 
         List<StarPredicate> predicateList = getPredicateList();

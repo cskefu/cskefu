@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,16 +24,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CallAgentRepository extends JpaRepository<CallAgent, String> {
-	
-	CallAgent findByIdAndOrgi(String id, String orgi);
-	
-	List<CallAgent> findByNameAndOrgi(String name, String orgi);
 
-	Page<CallAgent> findByOrgi(String orgi, Pageable page) ;
-	
-	List<CallAgent> findByOrgi(String orgi) ;
-	
-	List<CallAgent> findByActidAndOrgi(String actid, String orgi) ;
-	
-	List<CallAgent> findByOrgiAndActid(String orgi, String actid) ;
+    CallAgent findById(String id);
+
+    List<CallAgent> findByName(String name);
+
+    Page<CallAgent> findAll(Pageable page);
+
+    List<CallAgent> findAll();
+
+    List<CallAgent> findByActid(String actid);
 }

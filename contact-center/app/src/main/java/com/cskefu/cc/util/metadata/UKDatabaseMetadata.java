@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Properties;
 
 public class UKDatabaseMetadata{
-	private Connection connection ;
+	private final Connection connection ;
 	public UKDatabaseMetadata(Connection connection)
 			throws SQLException {
 		this.connection = connection ;
@@ -33,7 +33,7 @@ public class UKDatabaseMetadata{
 	
 	
 
-	private final List<UKTableMetaData> tables = new ArrayList<UKTableMetaData>();
+	private final List<UKTableMetaData> tables = new ArrayList<>();
 	private DatabaseMetaData meta;
 	public Properties properties ;
 	private static final String[] TYPES = { "TABLE", "VIEW" };

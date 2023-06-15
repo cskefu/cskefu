@@ -39,14 +39,14 @@ public class BlackEntityAspect {
     @After("execution(* com.cskefu.cc.persistence.repository.BlackListRepository.save(..))")
     public void save(final JoinPoint joinPoint) {
         final BlackEntity blackEntity = (BlackEntity) joinPoint.getArgs()[0];
-        logger.info("[save] blackEntity userId {}, orgi {}", blackEntity.getUserid(), blackEntity.getOrgi());
-        cache.putBlackEntityByOrgi(blackEntity, blackEntity.getOrgi());
+        logger.info("[save] blackEntity userId {}", blackEntity.getUserid());
+        cache.putBlackEntity(blackEntity);
     }
 
     @After("execution(* com.cskefu.cc.persistence.repository.BlackListRepository.delete(..))")
     public void delete(final JoinPoint joinPoint) {
         final BlackEntity blackEntity = (BlackEntity) joinPoint.getArgs()[0];
-        logger.info("[delete] blackEntity userId {}, orgi {}", blackEntity.getUserid(), blackEntity.getOrgi());
-        cache.deleteBlackEntityByUserIdAndOrgi(blackEntity.getUserid(), blackEntity.getOrgi());
+        logger.info("[delete] blackEntity userId {}", blackEntity.getUserid());
+        cache.deleteBlackEntityByUserId(blackEntity.getUserid());
     }
 }

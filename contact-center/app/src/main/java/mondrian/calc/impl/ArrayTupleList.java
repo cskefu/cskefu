@@ -123,8 +123,8 @@ public class ArrayTupleList extends AbstractEndToEndTupleList
         }
         int n = size * arity;
         ensureCapacity(n + arity);
-        for (int i = 0; i < members.size(); i++) {
-            objectData[n++] = members.get(i);
+        for (Member member : members) {
+            objectData[n++] = member;
         }
         ++size;
         return true;

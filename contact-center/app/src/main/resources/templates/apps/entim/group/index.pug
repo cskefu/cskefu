@@ -1,4 +1,4 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+//- Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
 //- 
 //- Licensed under the Apache License, Version 2.0 (the "License");
 //- you may not use this file except in compliance with the License.
@@ -251,7 +251,7 @@ block content
                 , element = layui.element(); //Tab的切换功能，切换事件监听等，需要依赖element模块
         });
         var hostname = location.hostname;
-        var socket = io.connect(location.protocol + "//" + top.hostname + ":" + top.port + "/im/ent?userid=#{user.id}&orgi=#{user.orgi}&contextid=#{contextid}&group=#{contextid}", {
+        var socket = io.connect(location.protocol + "//" + top.hostname + ":" + top.port + "/im/ent?userid=#{user.id}&contextid=#{contextid}&group=#{contextid}", {
             transports: ['websocket'],
             upgrade: false
         });
@@ -287,7 +287,6 @@ block content
                         session: "#{user.id}",
                         touser: "#{contextid}",
                         contextid: "#{contextid}",
-                        orgi: "#{user.orgi}",
                         model: "entim",
                         chatype: "group",
                         message: message

@@ -1,4 +1,4 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+//- Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
 //- 
 //- Licensed under the Apache License, Version 2.0 (the "License");
 //- you may not use this file except in compliance with the License.
@@ -32,22 +32,22 @@ block content
                                 th 创建时间
                                 th(style="white-space:nowrap;", nowrap="nowrap") 操作
                         tbody
-                            for snsAccount in snsAccountList.content
+                            for channel in snsAccountList.content
                                 tr
-                                    td(title="#{snsAccount.name}", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")= snsAccount.name
-                                    td(title="#{snsAccount.baseURL}", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")= snsAccount.baseURL
-                                    td= snsAccount.snsid
-                                    td= pugHelper.formatDate("yyyy-MM-dd HH:mm:ss", snsAccount.createtime)
+                                    td(title="#{channel.name}", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")= channel.name
+                                    td(title="#{channel.baseURL}", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")= channel.baseURL
+                                    td= channel.snsid
+                                    td= pugHelper.formatDate("yyyy-MM-dd HH:mm:ss", channel.createtime)
                                     td(style="white-space:nowrap;", nowrap="nowrap")
-                                        a(href="/admin/webim/index.html?snsid=" + snsAccount.snsid)
+                                        a(href="/admin/webim/index.html?snsid=" + channel.snsid)
                                             i.layui-icon 
                                             |                                接入
                                         if user.superadmin || user.admin
-                                            a(href="/admin/im/edit.html?id=" + snsAccount.id, data-toggle="ajax", data-width="600", data-height="300", data-title="编辑网站")
+                                            a(href="/admin/im/edit.html?id=" + channel.id, data-toggle="ajax", data-width="600", data-height="300", data-title="编辑网站")
                                                 i.layui-icon 
                                                 |                                编辑
-                                        if (user.superadmin || user.admin) && snsAccount.datastatus != true
-                                            a(href="/admin/im/delete.html?id=" + snsAccount.id, style="margin-left:10px;", data-toggle="tip", data-confirm=(secret.enable ? "请输入二次安全验证密码" : false),title="删除网站需要进行二次密码验证，请确认是否删除？")
+                                        if (user.superadmin || user.admin) && channel.datastatus != true
+                                            a(href="/admin/im/delete.html?id=" + channel.id, style="margin-left:10px;", data-toggle="tip", data-confirm=(secret.enable ? "请输入二次安全验证密码" : false),title="删除网站需要进行二次密码验证，请确认是否删除？")
                                                 i.layui-icon(style="color:red;") ဆ
                                                 |                                删除
             .row(style="padding:5px;")

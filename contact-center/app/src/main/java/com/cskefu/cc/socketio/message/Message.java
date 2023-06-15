@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,19 +29,18 @@ import java.util.List;
 public class Message extends AbstractContext {
 
     public String id;
-    private String orgi;                   // 租户
     /**
      * 发送方向：IN 访客给坐席，OUT 坐席给访客
      * NOTE callType应尽早设置
      */
     private String calltype;
     private String messageType;            // 消息类型 [必填]
-    private SNSAccount snsAccount;
+    private Channel channel;
 
     private Serializable channelMessage;
 
     // 渠道信息
-    private String channel;                 // 渠道类型
+    private String channelType;                 // 渠道类型
     private String appid;                   // 渠道应用ID
 
     private String attachmentid;
@@ -51,7 +50,7 @@ public class Message extends AbstractContext {
     private AgentStatus agentStatus;      // 坐席状态
     private AgentService agentService;    // 访客会话服务
     private String agentserviceid;        // 此值倾向于发送给前端，后端接口直接使用agentService传对象
-    private OnlineUser onlineUser;        // 访客
+    private PassportWebIMUser passportWebIMUser;        // 访客
     private User agent;                   // 坐席
     private User supervisor;              // 会话监控人员
 
@@ -83,14 +82,6 @@ public class Message extends AbstractContext {
         this.id = id;
     }
 
-    public String getOrgi() {
-        return orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
-    }
-
     public String getMessage() {
         return message;
     }
@@ -107,12 +98,12 @@ public class Message extends AbstractContext {
         this.messageType = messageType;
     }
 
-    public SNSAccount getSnsAccount() {
-        return snsAccount;
+    public Channel getSnsAccount() {
+        return channel;
     }
 
-    public void setSnsAccount(SNSAccount snsAccount) {
-        this.snsAccount = snsAccount;
+    public void setSnsAccount(Channel channel) {
+        this.channel = channel;
     }
 
     public AgentUser getAgentUser() {
@@ -195,12 +186,12 @@ public class Message extends AbstractContext {
         this.suggest = suggest;
     }
 
-    public String getChannel() {
-        return channel;
+    public String getChannelType() {
+        return channelType;
     }
 
-    public void setChannel(String channel) {
-        this.channel = channel;
+    public void setChannelType(String channelType) {
+        this.channelType = channelType;
     }
 
     public String getAppid() {
@@ -219,12 +210,12 @@ public class Message extends AbstractContext {
         this.agentService = agentService;
     }
 
-    public OnlineUser getOnlineUser() {
-        return onlineUser;
+    public PassportWebIMUser getOnlineUser() {
+        return passportWebIMUser;
     }
 
-    public void setOnlineUser(OnlineUser onlineUser) {
-        this.onlineUser = onlineUser;
+    public void setOnlineUser(PassportWebIMUser passportWebIMUser) {
+        this.passportWebIMUser = passportWebIMUser;
     }
 
     public User getAgent() {

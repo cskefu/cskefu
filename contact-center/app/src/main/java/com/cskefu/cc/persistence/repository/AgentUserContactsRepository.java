@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,18 +28,16 @@ public interface AgentUserContactsRepository extends JpaRepository<AgentUserCont
      * 一个OnlineUser只对应一个AgentUserContact，因为AgentUserContact并没有 agentUserId
      * 所以，AgentUserContact 适用于所有关联的AgentUser
      * @param userid
-     * @param orgi
      * @return
      */
-    @Query(value = "SELECT * FROM uk_agentuser_contacts WHERE userid = ?1 AND orgi = ?2 ORDER BY createtime DESC LIMIT 1", nativeQuery = true)
-    Optional<AgentUserContacts> findOneByUseridAndOrgi(final String userid, final String orgi);
+    @Query(value = "SELECT * FROM uk_agentuser_contacts WHERE userid = ?1 ORDER BY createtime DESC LIMIT 1", nativeQuery = true)
+    Optional<AgentUserContacts> findOneByUserid(final String userid);
 
     /**
      * 一个Contacts可以关联很多AgentUserContact
      * @param contactsid
-     * @param orgi
      * @return
      */
-    @Query(value = "SELECT * FROM uk_agentuser_contacts WHERE contactsid = ?1 AND orgi = ?2 ORDER BY createtime DESC LIMIT 1", nativeQuery = true)
-    Optional<AgentUserContacts> findOneByContactsidAndOrgi(final String contactsid, final String orgi);
+    @Query(value = "SELECT * FROM uk_agentuser_contacts WHERE contactsid = ?1 ORDER BY createtime DESC LIMIT 1", nativeQuery = true)
+    Optional<AgentUserContacts> findOneByContactsid(final String contactsid);
 }

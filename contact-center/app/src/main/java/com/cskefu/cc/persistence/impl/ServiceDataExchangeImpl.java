@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,20 +27,20 @@ import java.util.List;
 
 @Service("servicedata")
 public class ServiceDataExchangeImpl implements DataExchangeInterface {
-	@Autowired
-	private TagRepository tagRes ;
-	
-	public String getDataByIdAndOrgi(String id, String orgi){
-		Tag tag = tagRes.findByOrgiAndId(orgi, id) ;
-		return tag!=null ? tag.getTag() : id;
-	}
+    @Autowired
+    private TagRepository tagRes;
 
-	@Override
-	public List<Serializable> getListDataByIdAndOrgi(String id , String creater, String orgi) {
-		return null ;
-	}
-	
-	public void process(Object data , String orgi) {
-		
-	}
+    public String getDataById(String id) {
+        Tag tag = tagRes.findById(id);
+        return tag != null ? tag.getTag() : id;
+    }
+
+    @Override
+    public List<Serializable> getListDataById(String id, String creater) {
+        return null;
+    }
+
+    public void process(Object data) {
+
+    }
 }

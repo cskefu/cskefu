@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package com.cskefu.cc.controller.api;
 
 import com.cskefu.cc.controller.Handler;
 import com.cskefu.cc.controller.admin.system.SysDicController;
-import com.cskefu.cc.controller.api.request.RestUtils;
+import com.cskefu.cc.util.restapi.RestUtils;
 import com.cskefu.cc.model.Dict;
 import com.cskefu.cc.model.SysDic;
 import com.cskefu.cc.model.User;
@@ -29,7 +29,7 @@ import com.cskefu.cc.util.RestResult;
 import com.cskefu.cc.util.RestResultType;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,12 +77,12 @@ public class ApiSysDicController extends Handler {
 
     /**
      * 创建联系人类型
+     *
      * @param creator
-     * @param orgi
      * @param payload
      * @return
      */
-    private JsonObject saveCkind(final String creator, final String orgi, final JsonObject payload) {
+    private JsonObject saveCkind(final String creator, final JsonObject payload) {
         JsonObject result = new JsonObject();
         SysDic parent = sysDicRes.findByCode("com.dic.contacts.ckind");
         if (parent == null) {
@@ -94,7 +94,6 @@ public class ApiSysDicController extends Handler {
         } else {
             SysDic record = new SysDic();
             record.setCreater(creator);
-            record.setOrgi(orgi);
             record.setCreatetime(new Date());
             record.setParentid(parent.getId());
             record.setDicid(parent.getId());
@@ -105,7 +104,7 @@ public class ApiSysDicController extends Handler {
 
             record.setHaschild(false);
             sysDicRes.save(record);
-            sysDicCtrl.reloadSysDicItem(record, orgi);
+            sysDicCtrl.reloadSysDicItem(record);
 
             JsonObject data = new JsonObject();
             data.addProperty("id", record.getId());
@@ -121,6 +120,7 @@ public class ApiSysDicController extends Handler {
 
     /**
      * 数据字典
+     *
      * @param request
      * @param body
      * @return
@@ -140,13 +140,13 @@ public class ApiSysDicController extends Handler {
         } else {
             switch (StringUtils.lowerCase(j.get("ops").getAsString())) {
                 case "com.dic.contacts.ckind::create": // 增加联系人类型
-                    result = saveCkind(logined.getId(), logined.getOrgi(), j);
+                    result = saveCkind(logined.getId(), j);
                     break;
                 default:
                     logger.info("[api] unknown operation {}", j.toString());
             }
         }
-        return new ResponseEntity<String>(result.toString(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(result.toString(), headers, HttpStatus.OK);
     }
 
 

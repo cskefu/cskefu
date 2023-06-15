@@ -4,7 +4,7 @@ import com.cskefu.cc.controller.admin.OrganController;
 import com.cskefu.cc.model.Organ;
 import com.cskefu.cc.model.User;
 import com.cskefu.cc.persistence.repository.OrganRepository;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +24,9 @@ public class OrganProxy {
      *
      * @param organ
      * @param organId
-     * @param orgi
      * @return
      */
-    private boolean checkParentOrgan(Organ organ, String organId, String orgi) {
+    private boolean checkParentOrgan(Organ organ, String organId) {
         if (StringUtils.equals(organ.getParent(), "0")) {
             return true;
         }
@@ -36,26 +35,25 @@ public class OrganProxy {
             return false;
         }
 
-        Organ parent = organRes.findByIdAndOrgi(organ.getParent(), orgi);
+        Organ parent = organRes.findById(organ.getParent());
         if (parent == null) {
             return false;
         } else {
             if (StringUtils.equals(parent.getParent(), organId)) {
                 return false;
             } else {
-                return checkParentOrgan(parent, organId, orgi);
+                return checkParentOrgan(parent, organId);
             }
         }
     }
 
     /**
      * @param organ
-     * @param orgi
      * @param user
      * @return msg
      */
-    public String updateOrgan(final Organ organ, final String orgi, final User user) {
-        final Organ oldOrgan = organRes.findByNameAndOrgi(organ.getName(), orgi);
+    public String updateOrgan(final Organ organ, final User user) {
+        final Organ oldOrgan = organRes.findByName(organ.getName());
 
         String msg = "admin_organ_update_success";
 
@@ -63,15 +61,14 @@ public class OrganProxy {
             return "admin_organ_update_name_not";
         }
 
-        if (!checkParentOrgan(organ, organ.getId(), orgi)) {
+        if (!checkParentOrgan(organ, organ.getId())) {
             return "admin_organ_update_not_standard";
         }
 
-        Organ tempOrgan = organRes.findByIdAndOrgi(organ.getId(), orgi);
+        Organ tempOrgan = organRes.findById(organ.getId());
         if (tempOrgan != null) {
             tempOrgan.setName(organ.getName());
             tempOrgan.setUpdatetime(new Date());
-            tempOrgan.setOrgi(orgi);
             tempOrgan.setSkill(organ.isSkill());
             tempOrgan.setParent(organ.getParent());
             tempOrgan.setArea(organ.getArea());
@@ -87,29 +84,29 @@ public class OrganProxy {
         return organRes.findAll(organIds);
     }
 
-    private void processChild(Map<String, Organ> organs, String organId, String orgi) {
-        Organ organ = organRes.findByIdAndOrgi(organId, orgi);
+    private void processChild(Map<String, Organ> organs, String organId) {
+        Organ organ = organRes.findById(organId);
         if (organ != null) {
             organs.put(organId, organ);
-            List<Organ> childOrgans = organRes.findByOrgiAndParent(orgi, organId);
-            childOrgans.stream().forEach(o -> processChild(organs, o.getId(), orgi));
+            List<Organ> childOrgans = organRes.findByParent(organId);
+            childOrgans.stream().forEach(o -> processChild(organs, o.getId()));
         }
     }
 
-    public Map<String, Organ> findAllOrganByParentIdAndOrgi(String organId, String orgi) {
+    public Map<String, Organ> findAllOrganByParentId(String organId) {
         Map<String, Organ> result = new HashMap<>();
         if (StringUtils.isNotBlank(organId)) {
-            processChild(result, organId, orgi);
+            processChild(result, organId);
         }
         return result;
     }
 
-    public Map<String, Organ> findAllOrganByParentAndOrgi(Organ organ, String orgi) {
-        Map<String, Organ> result = new HashMap<>();
+    public Map<String, Organ> findAllOrganByParent(Organ organ) {
         if (organ != null) {
-            processChild(result, organ.getId(), orgi);
+            return findAllOrganByParentId(organ.getId());
+        } else {
+            throw new NullPointerException("Invalid organ info");
         }
-        return result;
     }
 
     public Organ getDefault(Collection<Organ> organs) {

@@ -16,7 +16,7 @@
 package com.cskefu.cc.basic.plugins;
 
 import com.cskefu.cc.basic.MainContext;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -42,12 +42,11 @@ public class PluginRegistry {
      * 添加插件
      *
      * @param plugin
-     * @return
      */
-    public boolean addPlugin(final IPluginConfigurer plugin) {
+    public void addPlugin(final IPluginConfigurer plugin) {
         for (final IPluginConfigurer x : plugins) {
             if (StringUtils.equalsIgnoreCase(x.getPluginId(), plugin.getPluginId())) {
-                return false;
+                return;
             }
         }
 
@@ -56,7 +55,6 @@ public class PluginRegistry {
         }
 
         plugins.add(plugin);
-        return true;
     }
 
     /**

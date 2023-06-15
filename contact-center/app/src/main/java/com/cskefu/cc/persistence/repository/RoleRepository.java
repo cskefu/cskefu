@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +23,10 @@ import java.util.List;
 
 public interface RoleRepository
         extends JpaRepository<Role, String> {
-    Role findByIdAndOrgi(String paramString, String orgi);
+    List<Role> findAll();
 
-    List<Role> findByOrgi(String orgi);
+    Role findByName(String name);
 
-    List<Role> findByOrgiAndOrgan(String orgi, String organ);
-
-    List<Role> findByOrgi(String orgi, String orgid);
-
-    Role findByNameAndOrgi(String paramString, String orgi);
+    Role findById(String id);
 }
 

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,15 @@
  */
 package com.cskefu.cc.persistence.repository;
 
-import com.cskefu.cc.model.WeiXinUser;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.cskefu.cc.model.PassportWechatUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface WeiXinUserRepository extends JpaRepository<WeiXinUser, String>{
-	
-	WeiXinUser findByIdAndOrgi(String id, String orgi);
+public interface WeiXinUserRepository extends JpaRepository<PassportWechatUser, String> {
 
-	List<WeiXinUser> findByOpenidAndOrgi(String openid, String orgi);
-	
-	long countBySnsidAndOrgi(String snsid, String orgi);
-	
-	long countByOpenidAndOrgi(String openid, String orgi);
-	
-	Page<WeiXinUser> findBySnsidAndOrgi(String snsid, String orgi, Pageable page);
+    PassportWechatUser findById(String id);
+
+    List<PassportWechatUser> findByOpenid(String openid);
+
 }

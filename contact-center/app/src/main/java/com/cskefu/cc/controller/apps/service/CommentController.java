@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,20 +36,20 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/service")
-public class CommentController extends Handler{
-	@Autowired
-	private AgentServiceRepository agentServiceRes ;
+public class CommentController extends Handler {
+    @Autowired
+    private AgentServiceRepository agentServiceRes;
 
-	@Autowired
-	private OrganProxy organProxy;
+    @Autowired
+    private OrganProxy organProxy;
 
-	@RequestMapping("/comment/index")
-    @Menu(type = "service" , subtype = "comment" , admin= true)
-    public ModelAndView index(ModelMap map , HttpServletRequest request , String userid , String agentservice , @Valid String channel) {
-		Organ currentOrgan = super.getOrgan(request);
-		Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
-		Page<AgentService> agentServiceList = agentServiceRes.findByOrgiAndSatisfactionAndSkillIn(super.getOrgi(request) , true ,organs.keySet(),new PageRequest(super.getP(request), super.getPs(request))) ;
-		map.addAttribute("serviceList", agentServiceList) ;
-		return request(super.createView("/apps/service/comment/index"));
+    @RequestMapping("/comment/index")
+    @Menu(type = "service", subtype = "comment", admin = true)
+    public ModelAndView index(ModelMap map, HttpServletRequest request, String userid, String agentservice, @Valid String channel) {
+        Organ currentOrgan = super.getOrgan(request);
+        Map<String, Organ> organs = organProxy.findAllOrganByParent(currentOrgan);
+        Page<AgentService> agentServiceList = agentServiceRes.findBySatisfactionAndSkillIn(true, organs.keySet(), new PageRequest(super.getP(request), super.getPs(request)));
+        map.addAttribute("serviceList", agentServiceList);
+        return request(super.createView("/apps/service/comment/index"));
     }
 }

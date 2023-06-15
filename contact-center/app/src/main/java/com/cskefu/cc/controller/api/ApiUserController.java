@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.controller.Handler;
-import com.cskefu.cc.controller.api.request.RestUtils;
+import com.cskefu.cc.util.restapi.RestUtils;
 import com.cskefu.cc.model.AgentStatus;
 import com.cskefu.cc.model.Organ;
 import com.cskefu.cc.model.OrganUser;
@@ -48,7 +48,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,17 +100,17 @@ public class ApiUserController extends Handler {
     public ResponseEntity<RestResult> list(HttpServletRequest request, @Valid String id, @Valid String username) {
         Page<User> userList = null;
         if (StringUtils.isNotBlank(id)) {
-            userList = userRes.findByIdAndOrgi(
-                    id, super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request)));
+            userList = userRes.findById(
+                    id, new PageRequest(super.getP(request), super.getPs(request)));
         } else {
             if (StringUtils.isNotBlank(username)) {
-                userList = userRes.findByDatastatusAndOrgiAndUsernameLike(
-                        false, super.getOrgi(request), username, new PageRequest(
+                userList = userRes.findByDatastatusAndUsernameLike(
+                        false, username, new PageRequest(
                                 super.getP(request),
                                 super.getPs(request)));
             } else {
-                userList = userRes.findByDatastatusAndOrgi(
-                        false, super.getOrgi(request), new PageRequest(super.getP(request), super.getPs(request)));
+                userList = userRes.findByDatastatus(
+                        false, new PageRequest(super.getP(request), super.getPs(request)));
             }
         }
         return new ResponseEntity<>(new RestResult(RestResultType.OK, userList), HttpStatus.OK);
@@ -127,11 +127,11 @@ public class ApiUserController extends Handler {
     @RequestMapping(method = RequestMethod.POST)
     @Menu(type = "apps", subtype = "user", access = true)
     public ResponseEntity<String> operations(HttpServletRequest request, @RequestBody final String body,
-            @Valid String q) {
+                                             @Valid String q) {
         logger.info("[operations] body {}, q {}", body, q);
         final JsonObject j = StringUtils.isBlank(body) ? (new JsonObject())
                 : (new JsonParser()).parse(
-                        body).getAsJsonObject();
+                body).getAsJsonObject();
         JsonObject json = new JsonObject();
         HttpHeaders headers = RestUtils.header();
 
@@ -158,7 +158,7 @@ public class ApiUserController extends Handler {
             }
         }
 
-        return new ResponseEntity<String>(json.toString(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(json.toString(), headers, HttpStatus.OK);
     }
 
     /**
@@ -189,7 +189,6 @@ public class ApiUserController extends Handler {
             UserRole userRole = new UserRole();
             userRole.setUser(user);
             userRole.setRole(role);
-            userRole.setOrgi(Constants.SYSTEM_ORGI);
             userRole.setCreater(super.getUser(request).getId());
             userRole.setOrgan(parentOrgan.getId());
             userRoleRes.save(userRole);
@@ -223,8 +222,8 @@ public class ApiUserController extends Handler {
 
                 // 由坐席切换成非坐席 判断是否坐席 以及 是否有对话
                 if (!updated.isAgent()) {
-                    AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
-                            previous.getId(), previous.getOrgi());
+                    AgentStatus agentStatus = cache.findOneAgentStatusByAgentno(
+                            previous.getId());
                     if (agentStatus != null && agentStatus.getUsers() > 0) {
                         resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
                         resp.addProperty(RestUtils.RESP_KEY_DATA, "t1");
@@ -286,7 +285,7 @@ public class ApiUserController extends Handler {
         final JsonObject resp = new JsonObject();
         if (payload.has("organ")) {
             List<OrganUser> organUsers = organUserRes.findByOrgan(payload.get("organ").getAsString());
-            List<String> userids = organUsers.stream().map(p -> p.getUserid()).collect(Collectors.toList());
+            List<String> userids = organUsers.stream().map(OrganUser::getUserid).collect(Collectors.toList());
             List<User> users = userRes.findAll(userids);
 
             JsonArray data = new JsonArray();
@@ -331,7 +330,7 @@ public class ApiUserController extends Handler {
                 // 系统管理员， 不允许 使用 接口删除
                 if (!user.isSuperadmin()) {
                     // 删除用户的时候，同时删除用户对应的权限
-                    List<UserRole> userRoles = userRoleRes.findByOrgiAndUser(user.getOrgi(), user);
+                    List<UserRole> userRoles = userRoleRes.findByUser(user);
                     userRoleRes.delete(userRoles);
                     // 删除用户对应的组织机构关系
                     List<OrganUser> organUsers = organUserRes.findByUserid(id);

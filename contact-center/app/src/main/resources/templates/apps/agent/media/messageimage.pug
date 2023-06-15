@@ -1,4 +1,4 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+//- Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
 //- 
 //- Licensed under the Apache License, Version 2.0 (the "License");
 //- you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ script(language='javascript').
                 },
                 function (index) {
                     layer.close(index);
-                    top.WebIM.sendTypeMessage("${chatMessage.id!''}", "${user.id!''}", "${agentUser.appid!''}", "${user.sessionid!''}", "${agentUser.orgi!''}", "<#if agentUser??>${agentUser.userid!''}</#if>", "${user.username!''}", "cooperation", "${chatMessage.attachmentid!''}");
+                    top.WebIM.sendTypeMessage("${chatMessage.id!''}", "${user.id!''}", "${agentUser.appid!''}", "${user.sessionid!''}", "<#if agentUser??>${agentUser.userid!''}</#if>", "${user.username!''}", "cooperation", "${chatMessage.attachmentid!''}");
                 },
                 function (index) {
                     layer.close(index);

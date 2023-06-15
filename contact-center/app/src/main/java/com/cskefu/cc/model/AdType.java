@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,6 @@ public class AdType implements java.io.Serializable {
 
     private Date updatetime;
     private String parentid;        //父级ID
-    private String orgi;
 
     private String imgurl;            //图片URL
     private String tiptext;        //title文本
@@ -140,14 +139,6 @@ public class AdType implements java.io.Serializable {
 
     public void setParentid(String parentid) {
         this.parentid = parentid;
-    }
-
-    public String getOrgi() {
-        return orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
     }
 
     public String getImgurl() {

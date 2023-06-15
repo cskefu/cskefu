@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,102 +20,99 @@ import com.cskefu.cc.model.Extension;
 
 import java.util.Date;
 
-public class CallCenterAgent implements java.io.Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -884536468331333053L;
-	private String userid ;
-	private String extno ;
-	
-	private String orgi ;
-	private Date updatetime ;
-	private String status ;
-	private String workstatus ;
-	private String siptrunk ;
-	
-	private String eventid ;
-	
-	private Extension extension;
-	
-	private String nameid ;
-	
-	public CallCenterAgent(String userid, String extno , String orgi) {
-		this.userid = userid ;
-		this.extno = extno ;
-		this.orgi = orgi ;
-	}
-	
-	public String getUserid() {
-		return userid;
-	}
-	public void setUserid(String userid) {
-		this.userid = userid;
-	}
-	public String getExtno() {
-		return extno;
-	}
-	public void setExtno(String extno) {
-		this.extno = extno;
-	}
-	public Date getUpdatetime() {
-		return updatetime;
-	}
-	public void setUpdatetime(Date updatetime) {
-		this.updatetime = updatetime;
-	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
+public class CallCenterAgent implements java.io.Serializable {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -884536468331333053L;
+    private String userid;
+    private String extno;
 
-	public String getOrgi() {
-		return orgi;
-	}
+    private Date updatetime;
+    private String status;
+    private String workstatus;
+    private String siptrunk;
 
-	public void setOrgi(String orgi) {
-		this.orgi = orgi;
-	}
+    private String eventid;
 
-	public String getEventid() {
-		return eventid;
-	}
+    private Extension extension;
 
-	public void setEventid(String eventid) {
-		this.eventid = eventid;
-	}
+    private String nameid;
 
-	public Extension getExtension() {
-		return extension;
-	}
+    public CallCenterAgent(String userid, String extno) {
+        this.userid = userid;
+        this.extno = extno;
+    }
 
-	public void setExtension(Extension extension) {
-		this.extension = extension;
-	}
+    public String getUserid() {
+        return userid;
+    }
 
-	public String getWorkstatus() {
-		return workstatus;
-	}
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
 
-	public void setWorkstatus(String workstatus) {
-		this.workstatus = workstatus;
-	}
+    public String getExtno() {
+        return extno;
+    }
 
-	public String getNameid() {
-		return nameid;
-	}
+    public void setExtno(String extno) {
+        this.extno = extno;
+    }
 
-	public void setNameid(String nameid) {
-		this.nameid = nameid;
-	}
+    public Date getUpdatetime() {
+        return updatetime;
+    }
 
-	public String getSiptrunk() {
-		return siptrunk;
-	}
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
+    }
 
-	public void setSiptrunk(String siptrunk) {
-		this.siptrunk = siptrunk;
-	}
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getEventid() {
+        return eventid;
+    }
+
+    public void setEventid(String eventid) {
+        this.eventid = eventid;
+    }
+
+    public Extension getExtension() {
+        return extension;
+    }
+
+    public void setExtension(Extension extension) {
+        this.extension = extension;
+    }
+
+    public String getWorkstatus() {
+        return workstatus;
+    }
+
+    public void setWorkstatus(String workstatus) {
+        this.workstatus = workstatus;
+    }
+
+    public String getNameid() {
+        return nameid;
+    }
+
+    public void setNameid(String nameid) {
+        this.nameid = nameid;
+    }
+
+    public String getSiptrunk() {
+        return siptrunk;
+    }
+
+    public void setSiptrunk(String siptrunk) {
+        this.siptrunk = siptrunk;
+    }
 }

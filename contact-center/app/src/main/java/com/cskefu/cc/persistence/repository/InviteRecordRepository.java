@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,12 +25,11 @@ import java.util.Date;
 
 public interface InviteRecordRepository extends JpaRepository<InviteRecord, String> {
 
-    InviteRecord findByUseridAndAgentnoAndOrgi(String userid, String agentno, String orgi);
+    InviteRecord findByUseridAndAgentno(String userid, String agentno);
 
-    Page<InviteRecord> findByUseridAndOrgiAndResultAndCreatetimeGreaterThan(final String userid,
-                                                                            final String orgi,
-                                                                            final String result,
-                                                                            final Date createtime,
-                                                                            Pageable page);
+    Page<InviteRecord> findByUseridAndResultAndCreatetimeGreaterThan(final String userid,
+                                                                     final String result,
+                                                                     final Date createtime,
+                                                                     Pageable page);
 
 }

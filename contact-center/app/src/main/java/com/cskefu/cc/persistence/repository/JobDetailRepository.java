@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +27,13 @@ import java.util.List;
 
 public interface JobDetailRepository extends JpaRepository<JobDetail, String> {
 	
-	JobDetail findByIdAndOrgi(String id, String orgi);
+	JobDetail findById(String id);
 
-	Page<JobDetail> findByTasktypeAndOrgi(String tasktype, String orgi, Pageable page) ;
+	Page<JobDetail> findByTasktype(String tasktype, Pageable page) ;
 	
 	Page<JobDetail> findByTaskstatus(String taskstatus, Pageable page) ;
 	
-	List<JobDetail> findByTasktypeAndOrgi(String tasktype, String orgi) ;
+	List<JobDetail> findByTasktype(String tasktype) ;
 	
 	Page<JobDetail> findByPlantaskAndTaskstatusAndNextfiretimeLessThan(boolean plantask, String taskstatus, Date time, Pageable page) ;
 	
@@ -41,5 +41,5 @@ public interface JobDetailRepository extends JpaRepository<JobDetail, String> {
 	
 	List<JobDetail> findAll(Specification<JobDetail> spec) ;
 	
-	List<JobDetail> findByOrgiAndTasktypeAndOrganLike(String orgi, String tasktype, String organ);
+	List<JobDetail> findByTasktypeAndOrganLike(String tasktype, String organ);
 }

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ReporterRepository extends  JpaRepository<Reporter, String> {
-	
-	Page<Reporter> findByDataidAndOrgi(String dataid, String orgi, Pageable pageable) ;
-	Page<Reporter> findByOrgi(String orgi, Pageable pageable) ;
-	Reporter findByIdAndOrgi(String id, String orgi) ;
-	Page<Reporter> findAll(Specification<Reporter> spec, Pageable page) ;
+public interface ReporterRepository extends JpaRepository<Reporter, String> {
+
+    Page<Reporter> findAll(Pageable pageable);
+
+    Reporter findById(String id);
+
+    Page<Reporter> findAll(Specification<Reporter> spec, Pageable page);
 }

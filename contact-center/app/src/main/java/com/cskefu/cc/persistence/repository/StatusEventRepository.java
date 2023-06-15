@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,26 +39,26 @@ public interface StatusEventRepository extends JpaRepository<StatusEvent, String
 
     Page<StatusEvent> findByDataid(String dataid, Pageable page);
 
-    Page<StatusEvent> findByOrgi(String orgi, Pageable page);
+    Page<StatusEvent> findAll(Pageable page);
 
-    Page<StatusEvent> findByServicestatusAndOrgi(String servicestatus, String orgi, Pageable page);
+    Page<StatusEvent> findByServicestatus(String servicestatus, Pageable page);
 
-    Page<StatusEvent> findByMisscallAndOrgi(boolean misscall, String orgi, Pageable page);
+    Page<StatusEvent> findByMisscall(boolean misscall, Pageable page);
 
-    Page<StatusEvent> findByRecordAndOrgi(boolean record, String orgi, Pageable page);
+    Page<StatusEvent> findByRecord(boolean record, Pageable page);
 
-    Page<StatusEvent> findByCalledAndOrgi(String voicemail, String orgi, Pageable page);
+    Page<StatusEvent> findByCalled(String voicemail, Pageable page);
 
     Page<StatusEvent> findAll(Specification<StatusEvent> spec, Pageable pageable);  //分页按条件查询
 
 
     /**
      * 坐席报表
+     *
      * @param channel
      * @param fromdate
      * @param enddate
      * @param organ
-     * @param orgi
      * @return
      */
     @Query(value =
@@ -80,7 +80,6 @@ public interface StatusEventRepository extends JpaRepository<StatusEvent, String
                     "  and datestr < ?3" +
                     "  and voicechannel = ?1" +
                     "  and (?4 is null or organid = ?4) " +
-                    "  and orgi = ?5" +
                     "  and agent is not null " +
                     "group by" +
                     "  agent," +
@@ -89,8 +88,7 @@ public interface StatusEventRepository extends JpaRepository<StatusEvent, String
     queryCalloutHangupAuditGroupByAgentAndDirection(String channel,
                                                     String fromdate,
                                                     String enddate,
-                                                    String organ,
-                                                    String orgi);
+                                                    String organ);
 
     /**
      * 外呼计划通话记录接通记录查询
@@ -134,6 +132,7 @@ public interface StatusEventRepository extends JpaRepository<StatusEvent, String
 
     /**
      * 外呼日报
+     *
      * @param datestr
      * @param channel
      * @param direction

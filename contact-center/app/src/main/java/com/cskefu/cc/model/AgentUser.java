@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
     private String username;
 
     private String userid;
-    private String channel;
+    private String channeltype;
     private Date logindate;
     private String source;
     private Date endtime;
@@ -66,7 +66,6 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
     private String sessiontype;
     private String contextid = MainUtils.getUUID();
     private String agentserviceid;
-    private String orgi;
     private long ordertime = System.currentTimeMillis();
     private String snsuser;
     private Date lastmessage = new Date();
@@ -90,7 +89,6 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
     private String email;
     private String phone;
     private String resion;
-
 
 
     private boolean chatbotops;    // 是否是机器人客服
@@ -132,14 +130,13 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
     public AgentUser() {
     }
 
-    public AgentUser(String userid, String channel, String snsuser,
-                     String username, String orgi, String appid) {
+    public AgentUser(String userid, String channeltype, String snsuser,
+                     String username, String appid) {
         this.userid = userid;
-        this.channel = channel;
+        this.channeltype = channeltype;
         this.snsuser = snsuser;
         this.appid = appid;
         this.username = username;
-        this.orgi = orgi;
     }
 
     @Id
@@ -186,12 +183,12 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
         this.userid = userid;
     }
 
-    public String getChannel() {
-        return this.channel;
+    public String getChanneltype() {
+        return this.channeltype;
     }
 
-    public void setChannel(String channel) {
-        this.channel = channel;
+    public void setChanneltype(String channel) {
+        this.channeltype = channel;
     }
 
     public Date getLogindate() {
@@ -224,14 +221,6 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
 
     public void setAgentserviceid(String agentserviceid) {
         this.agentserviceid = agentserviceid;
-    }
-
-    public String getOrgi() {
-        return this.orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
     }
 
     public Date getLastmessage() {
@@ -449,7 +438,7 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
 
     @Transient
     public String getTopic() {
-        return "/" + this.orgi + "/" + this.agentno;
+        return "/" + this.agentno;
     }
 
     @Transient

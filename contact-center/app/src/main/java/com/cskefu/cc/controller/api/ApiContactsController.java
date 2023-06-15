@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@ package com.cskefu.cc.controller.api;
 
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.controller.Handler;
-import com.cskefu.cc.controller.api.request.RestUtils;
+import com.cskefu.cc.util.restapi.RestUtils;
 import com.cskefu.cc.exception.CSKefuException;
 import com.cskefu.cc.model.AgentUser;
 import com.cskefu.cc.model.Contacts;
 import com.cskefu.cc.model.User;
-import com.cskefu.cc.persistence.es.ContactsRepository;
+import com.cskefu.cc.persistence.repository.ContactsRepository;
 import com.cskefu.cc.proxy.AgentUserProxy;
 import com.cskefu.cc.proxy.ContactsProxy;
 import com.cskefu.cc.util.Menu;
@@ -32,7 +32,7 @@ import com.cskefu.cc.util.RestResultType;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +75,7 @@ public class ApiContactsController extends Handler {
 
     /**
      * 返回用户列表，支持分页，分页参数为 p=1&ps=50，默认分页尺寸为 20条每页
-     *
+     * TODO 该接口需要重构，支持传入组织机构；没有传入组织结构，则需要识别登录用户的全部可见的联系人
      * @param request
      * @return
      */
@@ -83,16 +83,16 @@ public class ApiContactsController extends Handler {
     @Menu(type = "apps", subtype = "contacts", access = true)
     public ResponseEntity<RestResult> list(HttpServletRequest request, @Valid String creater, @Valid String q) {
         Page<Contacts> contactsList = null;
+
         if (!StringUtils.isBlank(creater)) {
             User user = super.getUser(request);
-            contactsList = contactsRepository.findByCreaterAndSharesAndOrgi(user.getId(), user.getId(),
-                                                                            super.getOrgi(request), false, q,
-                                                                            new PageRequest(
-                                                                                    super.getP(request),
-                                                                                    super.getPs(request)));
+            contactsList = contactsRepository.findByCreaterAndSharesAndDatastatus(user.getId(), "all", false,
+                    new PageRequest(
+                            super.getP(request),
+                            super.getPs(request)));
         } else {
-            contactsList = contactsRepository.findByOrgi(super.getOrgi(request), false, q,
-                                                         new PageRequest(super.getP(request), super.getPs(request)));
+            contactsList = contactsRepository.findByDatastatus(false,
+                    new PageRequest(super.getP(request), super.getPs(request)));
         }
         return new ResponseEntity<>(new RestResult(RestResultType.OK, contactsList), HttpStatus.OK);
     }
@@ -108,7 +108,6 @@ public class ApiContactsController extends Handler {
     public ResponseEntity<RestResult> put(HttpServletRequest request, @Valid Contacts contacts) {
         if (contacts != null && !StringUtils.isBlank(contacts.getName())) {
 
-            contacts.setOrgi(super.getOrgi(request));
             contacts.setCreater(super.getUser(request).getId());
             contacts.setUsername(super.getUser(request).getUsername());
             contacts.setCreatetime(new Date());
@@ -177,7 +176,7 @@ public class ApiContactsController extends Handler {
             }
         }
 
-        return new ResponseEntity<String>(json.toString(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(json.toString(), headers, HttpStatus.OK);
     }
 
     /**
@@ -238,7 +237,7 @@ public class ApiContactsController extends Handler {
             List<MainContext.ChannelType> channles;
             try {
                 channles = contactsProxy.liveApproachChannelsByContactid(
-                        logined, contactsid, contactsProxy.isSkypeSetup(logined.getOrgi()));
+                        logined, contactsid, contactsProxy.isSkypeSetup());
                 if (channles.size() > 0) {
                     resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
                     JsonArray data = new JsonArray();

@@ -18,7 +18,7 @@ package com.cskefu.cc.acd;
 
 import com.cskefu.cc.cache.Cache;
 import com.cskefu.cc.model.AgentUser;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +35,9 @@ public class ACDQueueService {
     private Cache cache;
 
     @SuppressWarnings("unchecked")
-    public int getQueueIndex(String agent, String orgi, String skill) {
+    public int getQueueIndex(String agent, String skill) {
         int queneUsers = 0;
-        Map<String, AgentUser> map = cache.getAgentUsersInQueByOrgi(orgi);
+        Map<String, AgentUser> map = cache.getAgentUsersInQue();
 
         for (final Map.Entry<String, AgentUser> entry : map.entrySet()) {
             if (StringUtils.isNotBlank(skill)) {

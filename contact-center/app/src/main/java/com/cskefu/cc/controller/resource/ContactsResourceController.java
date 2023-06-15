@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.cskefu.cc.controller.Handler;
 import com.cskefu.cc.model.Contacts;
-import com.cskefu.cc.persistence.es.ContactsRepository;
+import com.cskefu.cc.persistence.repository.ContactsRepository;
 import com.cskefu.cc.util.Menu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,7 +46,7 @@ public class ContactsResourceController extends Handler {
         if (q == null) {
             q = "";
         }
-        Page<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndOrgi(super.getUser(request).getId(), super.getUser(request).getId(), super.getOrgi(request), false, q, new PageRequest(0, 10));
+        Page<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndDatastatus(super.getUser(request).getId(), super.getUser(request).getId(), false, new PageRequest(0, 10));
 
         JSONArray result = new JSONArray();
         for (Contacts contact : contactsList.getContent()) {

@@ -46,7 +46,7 @@ public class PugHelper {
     }
 
     public ArrayList<Integer> range(Integer start, Integer end) {
-        ArrayList<Integer> result = new ArrayList<Integer>();
+        ArrayList<Integer> result = new ArrayList<>();
         for (Integer i = start; i < end; i++) {
             result.add(i);
         }

@@ -27,7 +27,7 @@ import com.cskefu.cc.socketio.client.NettyClients;
 import com.cskefu.cc.util.SerializeUtil;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,13 +62,12 @@ public class AgentAuditSubscription {
         try {
             final JsonObject json = new JsonParser().parse(msg).getAsJsonObject();
 
-            if (json.has("orgi") && json.has("data") &&
+            if (json.has("data") &&
                     json.has("agentUserId") &&
                     json.has("event") && json.has("agentno")) {
 
                 // 查找关联的会话监控信息
-                final AgentUserAudit agentUserAudit = cache.findOneAgentUserAuditByOrgiAndId(
-                        json.get("orgi").getAsString(),
+                final AgentUserAudit agentUserAudit = cache.findOneAgentUserAuditById(
                         json.get("agentUserId").getAsString()).orElseGet(() -> {
                     final AgentUser agentUser = agentUserRes.findOne(json.get("agentUserId").getAsString());
                     if (agentUser != null) {

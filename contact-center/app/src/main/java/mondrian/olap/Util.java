@@ -61,12 +61,12 @@ public class Util extends XOMUtil {
     /**
      * Placeholder which indicates a value NULL.
      */
-    public static final Object nullValue = new Double(FunUtil.DoubleNull);
+    public static final Object nullValue = FunUtil.DoubleNull;
 
     /**
      * Placeholder which indicates an EMPTY value.
      */
-    public static final Object EmptyValue = new Double(FunUtil.DoubleEmpty);
+    public static final Object EmptyValue = FunUtil.DoubleEmpty;
 
     /**
      * Cumulative time spent accessing the database.
@@ -267,7 +267,7 @@ public class Util extends XOMUtil {
                 // TODO Write a non-blocking queue which implements
                 // the blocking queue API so we can pass that to the
                 // executor.
-                new SynchronousQueue<Runnable>(true),
+                    new SynchronousQueue<>(true),
                 factory);
 
         // Set the rejection policy if required.
@@ -339,12 +339,11 @@ public class Util extends XOMUtil {
     /**
      * Appends a double-quoted string to a string builder.
      */
-    public static StringBuilder quoteForMdx(StringBuilder buf, String val) {
+    public static void quoteForMdx(StringBuilder buf, String val) {
         buf.append("\"");
         String s0 = replace(val, "\"", "\"\"");
         buf.append(s0);
         buf.append("\"");
-        return buf;
     }
 
     /**
@@ -569,13 +568,12 @@ public class Util extends XOMUtil {
     /**
      * Replaces all occurrences of a string in a buffer with another.
      *
-     * @param buf String buffer to act on
-     * @param start Ordinal within <code>find</code> to start searching
-     * @param find String to find
+     * @param buf     String buffer to act on
+     * @param start   Ordinal within <code>find</code> to start searching
+     * @param find    String to find
      * @param replace String to replace it with
-     * @return The string buffer
      */
-    public static StringBuilder replace(
+    public static void replace(
         StringBuilder buf,
         int start,
         String find,
@@ -589,7 +587,7 @@ public class Util extends XOMUtil {
             for (int j = buf.length(); j >= 0; --j) {
                 buf.insert(j, replace);
             }
-            return buf;
+            return;
         }
         int k = buf.length();
         while (k > 0) {
@@ -602,7 +600,6 @@ public class Util extends XOMUtil {
             // we just replaced does not cause a match.
             k = i - findLength;
         }
-        return buf;
     }
 
     /**
@@ -1369,7 +1366,7 @@ public class Util extends XOMUtil {
     {
         List<Member> calcMembers =
             reader.getCalculatedMembers(level.getHierarchy());
-        List<Member> calcMembersInThisLevel = new ArrayList<Member>();
+        List<Member> calcMembersInThisLevel = new ArrayList<>();
         for (Member calcMember : calcMembers) {
             if (calcMember.getLevel().equals(level)) {
                 calcMembersInThisLevel.add(calcMember);
@@ -1377,7 +1374,7 @@ public class Util extends XOMUtil {
         }
         if (!calcMembersInThisLevel.isEmpty()) {
             List<Member> newMemberList =
-                new ConcatenableList<Member>();
+                    new ConcatenableList<>();
             newMemberList.addAll(members);
             newMemberList.addAll(calcMembersInThisLevel);
             return newMemberList;
@@ -1509,7 +1506,7 @@ public class Util extends XOMUtil {
             }
             return list;
         }
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         final String[] strings = nameCommaList.split(",");
         for (String string : strings) {
             final int count = names.size();
@@ -1700,9 +1697,9 @@ public class Util extends XOMUtil {
         case 1:
             return Collections.singletonList(t[0]);
         case 2:
-            return new Flat2List<T>(t[0], t[1]);
+            return new Flat2List<>(t[0], t[1]);
         case 3:
-            return new Flat3List<T>(t[0], t[1], t[2]);
+            return new Flat3List<>(t[0], t[1], t[2]);
         default:
             // REVIEW: AbstractList contains a modCount field; we could
             //   write our own implementation and reduce creation overhead a
@@ -1730,9 +1727,9 @@ public class Util extends XOMUtil {
         case 1:
             return Collections.singletonList(t.get(0));
         case 2:
-            return new Flat2List<T>(t.get(0), t.get(1));
+            return new Flat2List<>(t.get(0), t.get(1));
         case 3:
-            return new Flat3List<T>(t.get(0), t.get(1), t.get(2));
+            return new Flat3List<>(t.get(0), t.get(1), t.get(2));
         default:
             // REVIEW: AbstractList contains a modCount field; we could
             //   write our own implementation and reduce creation overhead a
@@ -1838,7 +1835,7 @@ public class Util extends XOMUtil {
     public static List<Id.Segment> convert(
         List<IdentifierSegment> olap4jSegmentList)
     {
-        final List<Id.Segment> list = new ArrayList<Id.Segment>();
+        final List<Id.Segment> list = new ArrayList<>();
         for (IdentifierSegment olap4jSegment : olap4jSegmentList) {
             list.add(convert(olap4jSegment));
         }
@@ -1908,41 +1905,37 @@ public class Util extends XOMUtil {
         if (conds2.length == 0) {
             return iterable;
         }
-        return new Iterable<T>() {
-            public Iterator<T> iterator() {
-                return new Iterator<T>() {
-                    final Iterator<T> iterator = iterable.iterator();
-                    T next;
-                    boolean hasNext = moveToNext();
+        return () -> new Iterator<T>() {
+            final Iterator<T> iterator = iterable.iterator();
+            T next;
+            boolean hasNext = moveToNext();
 
-                    private boolean moveToNext() {
-                        outer:
-                        while (iterator.hasNext()) {
-                            next = iterator.next();
-                            for (Functor1<Boolean, T> cond : conds2) {
-                                if (!cond.apply(next)) {
-                                    continue outer;
-                                }
-                            }
-                            return true;
+            private boolean moveToNext() {
+                outer:
+                while (iterator.hasNext()) {
+                    next = iterator.next();
+                    for (Functor1<Boolean, T> cond : conds2) {
+                        if (!cond.apply(next)) {
+                            continue outer;
                         }
-                        return false;
                     }
+                    return true;
+                }
+                return false;
+            }
 
-                    public boolean hasNext() {
-                        return hasNext;
-                    }
+            public boolean hasNext() {
+                return hasNext;
+            }
 
-                    public T next() {
-                        T t = next;
-                        hasNext = moveToNext();
-                        return t;
-                    }
+            public T next() {
+                T t = next;
+                hasNext = moveToNext();
+                return t;
+            }
 
-                    public void remove() {
-                        throw new UnsupportedOperationException();
-                    }
-                };
+            public void remove() {
+                throw new UnsupportedOperationException();
             }
         };
     }
@@ -1951,7 +1944,7 @@ public class Util extends XOMUtil {
         Functor1<Boolean, T>[] conds)
     {
         final List<Functor1<Boolean, T>> functor1List =
-            new ArrayList<Functor1<Boolean, T>>(Arrays.asList(conds));
+                new ArrayList<>(Arrays.asList(conds));
         for (Iterator<Functor1<Boolean, T>> funcIter =
             functor1List.iterator(); funcIter.hasNext();)
         {
@@ -2108,7 +2101,7 @@ public class Util extends XOMUtil {
     }
 
     public static <T> Set<T> newIdentityHashSetFake() {
-        final HashMap<T, Boolean> map = new HashMap<T, Boolean>();
+        final HashMap<T, Boolean> map = new HashMap<>();
         return new Set<T>() {
             public int size() {
                 return map.size();
@@ -2208,7 +2201,7 @@ public class Util extends XOMUtil {
         if (!(set1 instanceof ArraySortedSet)
             || !(set2 instanceof ArraySortedSet))
         {
-            final TreeSet<E> set = new TreeSet<E>(set1);
+            final TreeSet<E> set = new TreeSet<>(set1);
             set.retainAll(set2);
             return set;
         }
@@ -2486,7 +2479,7 @@ public class Util extends XOMUtil {
      *    {@link Throwable#getCause cause}.
      */
     public static String[] convertStackToString(Throwable e) {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         while (e != null) {
             String sMsg = getErrorMessage(e);
             list.add(sMsg);
@@ -2609,10 +2602,10 @@ public class Util extends XOMUtil {
         implements Iterable<Pair<String, String>>, Serializable
     {
         List<Pair<String, String>> list =
-            new ArrayList<Pair<String, String>>();
+                new ArrayList<>();
 
         public PropertyList() {
-            this.list = new ArrayList<Pair<String, String>>();
+            this.list = new ArrayList<>();
         }
 
         private PropertyList(List<Pair<String, String>> list) {
@@ -2622,7 +2615,7 @@ public class Util extends XOMUtil {
         @SuppressWarnings({"CloneDoesntCallSuperClone"})
         @Override
         public PropertyList clone() {
-            return new PropertyList(new ArrayList<Pair<String, String>>(list));
+            return new PropertyList(new ArrayList<>(list));
         }
 
         public String get(String key) {
@@ -2630,8 +2623,7 @@ public class Util extends XOMUtil {
         }
 
         public String get(String key, String defaultValue) {
-            for (int i = 0, n = list.size(); i < n; i++) {
-                Pair<String, String> pair = list.get(i);
+            for (Pair<String, String> pair : list) {
                 if (pair.left.equalsIgnoreCase(key)) {
                     return pair.right;
                 }
@@ -2639,9 +2631,8 @@ public class Util extends XOMUtil {
             return defaultValue;
         }
 
-        public String put(String key, String value) {
-            for (int i = 0, n = list.size(); i < n; i++) {
-                Pair<String, String> pair = list.get(i);
+        public void put(String key, String value) {
+            for (Pair<String, String> pair : list) {
                 if (pair.left.equalsIgnoreCase(key)) {
                     String old = pair.right;
                     if (key.equalsIgnoreCase("Provider")) {
@@ -2650,11 +2641,10 @@ public class Util extends XOMUtil {
                     } else {
                         pair.right = value;
                     }
-                    return old;
+                    return;
                 }
             }
-            list.add(new Pair<String, String>(key, value));
-            return null;
+            list.add(new Pair<>(key, value));
         }
 
         public boolean remove(String key) {
@@ -3124,7 +3114,7 @@ public class Util extends XOMUtil {
                 List<Resolver> resolvers = funTable.getResolvers(name, syntax);
                 final Resolver resolver = resolvers.get(0);
                 final List<Resolver.Conversion> conversionList =
-                    new ArrayList<Resolver.Conversion>();
+                        new ArrayList<>();
                 final FunDef def =
                     resolver.resolve(args, this, conversionList);
                 assert conversionList.isEmpty();
@@ -3528,11 +3518,7 @@ public class Util extends XOMUtil {
         if (Util.Retrowoven
             && !(iterable instanceof Iterable))
         {
-            return new Iterable<T>() {
-                public Iterator<T> iterator() {
-                    return ((Collection<T>) iterable).iterator();
-                }
-            };
+            return () -> ((Collection<T>) iterable).iterator();
         }
         return (Iterable<T>) iterable;
     }
@@ -3980,9 +3966,8 @@ public class Util extends XOMUtil {
         }
 
         public boolean containsAll(Collection<?> c) {
-            Iterator<?> e = c.iterator();
-            while (e.hasNext()) {
-                if (!contains(e.next())) {
+            for (Object o : c) {
+                if (!contains(o)) {
                     return false;
                 }
             }
@@ -4222,11 +4207,7 @@ public class Util extends XOMUtil {
         public static <T2> Iterable<T2> over(
             final Iterable<? extends Reference<T2>> referenceIterable)
         {
-            return new Iterable<T2>() {
-                public Iterator<T2> iterator() {
-                    return new GcIterator<T2>(referenceIterable.iterator());
-                }
-            };
+            return () -> new GcIterator<>(referenceIterable.iterator());
         }
 
         private void moveToNext() {
@@ -4266,11 +4247,7 @@ public class Util extends XOMUtil {
     }
 
     private static final Functor1 IDENTITY_FUNCTOR =
-        new Functor1<Object, Object>() {
-            public Object apply(Object param) {
-                return param;
-            }
-        };
+            (Functor1<Object, Object>) param -> param;
 
     public static <PT> Functor1<Boolean, PT> trueFunctor() {
         //noinspection unchecked
@@ -4283,18 +4260,10 @@ public class Util extends XOMUtil {
     }
 
     private static final Functor1 TRUE_FUNCTOR =
-        new Functor1<Boolean, Object>() {
-            public Boolean apply(Object param) {
-                return true;
-            }
-        };
+            (Functor1<Boolean, Object>) param -> true;
 
     private static final Functor1 FALSE_FUNCTOR =
-        new Functor1<Boolean, Object>() {
-            public Boolean apply(Object param) {
-                return false;
-            }
-        };
+            (Functor1<Boolean, Object>) param -> false;
 
     /**
      * Information about memory usage.
@@ -4400,7 +4369,7 @@ public class Util extends XOMUtil {
      * modify it are made.
      */
     public static <K, V> Map<K, V> toNullValuesMap(List<K> list) {
-        return new NullValuesMap<K, V>(list);
+        return new NullValuesMap<>(list);
     }
 
     private static class NullValuesMap<K, V> extends AbstractMap<K, V> {

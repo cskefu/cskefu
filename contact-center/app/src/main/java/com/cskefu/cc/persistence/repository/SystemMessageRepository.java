@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ import java.util.List;
 
 public interface SystemMessageRepository   extends JpaRepository<SystemMessage, String>{
 	
-	SystemMessage findByIdAndOrgi(String id, String orgi);
+	SystemMessage findById(String id);
 	
-	Page<SystemMessage> findByMsgtypeAndOrgi(String msgtype, String orgi, Pageable paramPageable);
+	Page<SystemMessage> findByMsgtype(String msgtype, Pageable paramPageable);
 	
-	List<SystemMessage> findByMsgtypeAndOrgi(String msgtype, String orgi);
+	List<SystemMessage> findByMsgtype(String msgtype);
 }

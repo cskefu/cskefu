@@ -19,6 +19,7 @@ package org.eigenbase.resgen;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.PrivilegedAction;
 import java.util.*;
 
 /**
@@ -116,15 +117,13 @@ public abstract class ShadowResourceBundle extends ResourceBundle {
         final ClassLoader loader = clazz.getClassLoader();
         final String resName = clazz.getName().replace('.', '/') + ".properties";
         return (InputStream)java.security.AccessController.doPrivileged(
-            new java.security.PrivilegedAction() {
-                public Object run() {
+                (PrivilegedAction) () -> {
                     if (loader != null) {
                         return loader.getResourceAsStream(resName);
                     } else {
                         return ClassLoader.getSystemResourceAsStream(resName);
                     }
                 }
-            }
         );
     }
 

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,12 @@ import com.cskefu.cc.cache.Cache;
 import com.cskefu.cc.controller.Handler;
 import com.cskefu.cc.model.CousultInvite;
 import com.cskefu.cc.model.Organ;
+import com.cskefu.cc.model.Channel;
 import com.cskefu.cc.model.User;
 import com.cskefu.cc.persistence.repository.*;
 import com.cskefu.cc.proxy.OnlineUserProxy;
 import com.cskefu.cc.util.Menu;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/webim")
@@ -63,7 +65,7 @@ public class WebIMController extends Handler {
     private String path;
 
     @Autowired
-    private SNSAccountRepository snsAccountRes;
+    private ChannelRepository snsAccountRes;
 
     @Autowired
     private Cache cache;
@@ -71,15 +73,17 @@ public class WebIMController extends Handler {
     @RequestMapping("/index")
     @Menu(type = "app", subtype = "app", admin = true)
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String snsid) {
-        CousultInvite coultInvite = OnlineUserProxy.consult(snsid, super.getOrgi(request));
-        logger.info("[index] snsaccount Id {}, Ai {}, Aifirst {}, Ainame {}, Aisuccess {}, Aiid {}", coultInvite.getSnsaccountid(), coultInvite.isAi(), coultInvite.isAifirst(), coultInvite.getAiname(), coultInvite.getAisuccesstip(), coultInvite.getAiid());
+        CousultInvite coultInvite = OnlineUserProxy.consult(snsid);
 
         if (coultInvite != null) {
+            logger.info("[index] snsaccount Id {}, Ai {}, Aifirst {}, Ainame {}, Aisuccess {}, Aiid {}", coultInvite.getSnsaccountid(), coultInvite.isAi(), coultInvite.isAifirst(), coultInvite.getAiname(), coultInvite.getAisuccesstip(), coultInvite.getAiid());
             map.addAttribute("inviteData", coultInvite);
             map.addAttribute("skillGroups", getSkillGroups(request));
             map.addAttribute("agentList", getUsers(request));
             map.addAttribute("port", request.getServerPort());
-            map.addAttribute("snsAccount", snsAccountRes.findBySnsidAndOrgi(snsid, super.getOrgi(request)));
+
+            Optional<Channel> snsAccountOpt = snsAccountRes.findBySnsid(snsid);
+            snsAccountOpt.ifPresent(snsAccount -> map.addAttribute("channel", snsAccount));
         }
         return request(super.createView("/admin/webim/index"));
     }
@@ -101,20 +105,19 @@ public class WebIMController extends Handler {
         logger.info("[save] snsaccount Id {}, Ai {}, Aifirst {}, Ainame {}, Aisuccess {}, Aiid {}", inviteData.getSnsaccountid(), inviteData.isAi(), inviteData.isAifirst(), inviteData.getAiname(), inviteData.getAisuccesstip(), inviteData.getAiid());
 
         if (StringUtils.isNotBlank(inviteData.getSnsaccountid())) {
-            CousultInvite tempData = inviteRes.findBySnsaccountidAndOrgi(inviteData.getSnsaccountid(), super.getOrgi(request));
+            CousultInvite tempData = inviteRes.findBySnsaccountid(inviteData.getSnsaccountid());
             if (tempData != null) {
                 tempData.setConsult_vsitorbtn_model(inviteData.getConsult_vsitorbtn_model());
                 tempData.setConsult_vsitorbtn_color(inviteData.getConsult_vsitorbtn_color());
                 tempData.setConsult_vsitorbtn_position(inviteData.getConsult_vsitorbtn_position());
                 tempData.setConsult_vsitorbtn_content(inviteData.getConsult_vsitorbtn_content());
-                tempData.setConsult_vsitorbtn_display(inviteData.getConsult_vsitorbtn_display());
+                tempData.setConsult_vsitorbtn_delay(inviteData.getConsult_vsitorbtn_delay());
                 tempData.setConsult_dialog_color(inviteData.getConsult_dialog_color());
                 inviteData = tempData;
             }
         } else {
             inviteData.setSnsaccountid(super.getUser(request).getId());
         }
-        inviteData.setOrgi(super.getOrgi(request));
         // 网页品牌标识
         if (webimlogo != null && webimlogo.getOriginalFilename().lastIndexOf(".") > 0) {
             inviteData.setConsult_dialog_logo(super.saveImageFileWithMultipart(webimlogo));
@@ -125,32 +128,31 @@ public class WebIMController extends Handler {
             inviteData.setConsult_dialog_headimg(super.saveImageFileWithMultipart(agentheadimg));
         }
         inviteRes.save(inviteData);
-        cache.putConsultInviteByOrgi(inviteData.getOrgi(), inviteData);
+        cache.putConsultInvite(inviteData);
         return request(super.createView("redirect:/admin/webim/index.html?snsid=" + inviteData.getSnsaccountid()));
     }
 
     @RequestMapping("/profile")
     @Menu(type = "app", subtype = "profile", admin = true)
     public ModelAndView profile(ModelMap map, HttpServletRequest request, @Valid String snsid) {
-        CousultInvite coultInvite = OnlineUserProxy.consult(snsid, super.getOrgi(request));
-        logger.info("[profile] snsaccount Id {}, Ai {}, Aifirst {}, Ainame {}, Aisuccess {}, Aiid {}", coultInvite.getSnsaccountid(), coultInvite.isAi(), coultInvite.isAifirst(), coultInvite.getAiname(), coultInvite.getAisuccesstip(), coultInvite.getAiid());
+        CousultInvite coultInvite = OnlineUserProxy.consult(snsid);
 
         if (coultInvite != null) {
+            logger.info("[profile] snsaccount Id {}, Ai {}, Aifirst {}, Ainame {}, Aisuccess {}, Aiid {}", coultInvite.getSnsaccountid(), coultInvite.isAi(), coultInvite.isAifirst(), coultInvite.getAiname(), coultInvite.getAisuccesstip(), coultInvite.getAiid());
             map.addAttribute("inviteData", coultInvite);
             map.addAttribute("skillGroups", getSkillGroups(request));
         }
         map.addAttribute("import", request.getServerPort());
-        map.addAttribute("snsAccount", snsAccountRes.findBySnsidAndOrgi(snsid, super.getOrgi(request)));
+        Optional<Channel> snsAccountOpt = snsAccountRes.findBySnsid(snsid);
+        snsAccountOpt.ifPresent(snsAccount -> map.addAttribute("channel", snsAccount));
 
-        map.put("serviceAiList", serviceAiRes.findByOrgi(super.getOrgi(request)));
+        map.put("serviceAiList", serviceAiRes.findAll());
         return request(super.createView("/admin/webim/profile"));
     }
 
     @RequestMapping("/profile/save")
     @Menu(type = "admin", subtype = "profile", admin = true)
     public ModelAndView saveprofile(HttpServletRequest request, @Valid CousultInvite inviteData, @RequestParam(value = "dialogad", required = false) MultipartFile dialogad) throws IOException {
-        final String orgi = super.getOrgi(request);
-
         CousultInvite tempInviteData;
         logger.info("[profile/save] snsaccount Id {}, Ai {}, Aifirst {}, Ainame {}, Aisuccess {}, Aiid {}, traceUser {}",
                 inviteData.getSnsaccountid(),
@@ -163,7 +165,7 @@ public class WebIMController extends Handler {
 
         if (inviteData != null && StringUtils.isNotBlank(inviteData.getId())) {
             // 从Cache及DB加载consult
-            tempInviteData = OnlineUserProxy.consult(inviteData.getSnsaccountid(), orgi);
+            tempInviteData = OnlineUserProxy.consult(inviteData.getSnsaccountid());
 
             if (tempInviteData != null) {
                 tempInviteData.setDialog_name(inviteData.getDialog_name());
@@ -227,21 +229,22 @@ public class WebIMController extends Handler {
             inviteRes.save(inviteData);
         }
 
-        cache.putConsultInviteByOrgi(orgi, inviteData);
+        cache.putConsultInvite(inviteData);
         return request(super.createView("redirect:/admin/webim/profile.html?snsid=" + inviteData.getSnsaccountid()));
     }
 
     @RequestMapping("/invote")
     @Menu(type = "app", subtype = "invote", admin = true)
     public ModelAndView invote(ModelMap map, HttpServletRequest request, @Valid String snsid) {
-        CousultInvite coultInvite = OnlineUserProxy.consult(snsid, super.getOrgi(request));
-        logger.info("[invote] snsaccount Id {}, Ai {}, Aifirst {}, Ainame {}, Aisuccess {}, Aiid {}", coultInvite.getSnsaccountid(), coultInvite.isAi(), coultInvite.isAifirst(), coultInvite.getAiname(), coultInvite.getAisuccesstip(), coultInvite.getAiid());
+        CousultInvite coultInvite = OnlineUserProxy.consult(snsid);
 
         if (coultInvite != null) {
+            logger.info("[invote] snsaccount Id {}, Ai {}, Aifirst {}, Ainame {}, Aisuccess {}, Aiid {}", coultInvite.getSnsaccountid(), coultInvite.isAi(), coultInvite.isAifirst(), coultInvite.getAiname(), coultInvite.getAisuccesstip(), coultInvite.getAiid());
             map.addAttribute("inviteData", coultInvite);
         }
         map.addAttribute("import", request.getServerPort());
-        map.addAttribute("snsAccount", snsAccountRes.findBySnsidAndOrgi(snsid, super.getOrgi(request)));
+        Optional<Channel> snsAccountOpt = snsAccountRes.findBySnsid(snsid);
+        snsAccountOpt.ifPresent(snsAccount -> map.addAttribute("channel", snsAccount));
         return request(super.createView("/admin/webim/invote"));
     }
 
@@ -252,7 +255,7 @@ public class WebIMController extends Handler {
         logger.info("[invote/save] snsaccount Id {}, Ai {}, Aifirst {}, Ainame {}, Aisuccess {}, Aiid {}", inviteData.getSnsaccountid(), inviteData.isAi(), inviteData.isAifirst(), inviteData.getAiname(), inviteData.getAisuccesstip(), inviteData.getAiid());
 
         if (inviteData != null && StringUtils.isNotBlank(inviteData.getId())) {
-            tempInviteData = OnlineUserProxy.consult(inviteData.getSnsaccountid(), super.getOrgi(request));
+            tempInviteData = OnlineUserProxy.consult(inviteData.getSnsaccountid());
             if (tempInviteData != null) {
                 tempInviteData.setConsult_invite_enable(inviteData.isConsult_invite_enable());
                 tempInviteData.setConsult_invite_content(inviteData.getConsult_invite_content());
@@ -271,7 +274,7 @@ public class WebIMController extends Handler {
         } else {
             inviteRes.save(inviteData);
         }
-        cache.putConsultInviteByOrgi(inviteData.getOrgi(), inviteData);
+        cache.putConsultInvite(inviteData);
         return request(super.createView("redirect:/admin/webim/invote.html?snsid=" + inviteData.getSnsaccountid()));
     }
 
@@ -283,7 +286,7 @@ public class WebIMController extends Handler {
      */
     private List<Organ> getSkillGroups(HttpServletRequest request) {
         List<Organ> skillgroups = new ArrayList<>();
-        List<Organ> allgroups = organRes.findByOrgi(super.getOrgi(request));
+        List<Organ> allgroups = organRes.findAll();
         for (Organ o : allgroups) {
             if (o.isSkill()) {
                 skillgroups.add(o);
@@ -299,7 +302,7 @@ public class WebIMController extends Handler {
      * @return
      */
     private List<User> getUsers(HttpServletRequest request) {
-        List<User> userList = userRes.findByOrgiAndAgentAndDatastatus(super.getOrgi(request), true, false);
+        List<User> userList = userRes.findByAgentAndDatastatus(true, false);
         return userList;
     }
 }

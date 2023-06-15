@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import com.cskefu.cc.persistence.repository.TagRepository;
 import com.cskefu.cc.util.Menu;
 import com.cskefu.cc.util.RestResult;
 import com.cskefu.cc.util.RestResultType;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,19 +41,20 @@ import javax.validation.Valid;
 @RequestMapping("/api/tags")
 public class UkefuApiTagsController extends Handler {
 
-	@Autowired
-	private TagRepository tagRes;
-	
-	/**
-	 * 按照分类获取标签列表
-	 * 按照分类获取标签列表，Type 参数类型来自于 枚举，可选值目前有三个 ： user  workorders summary
-	 * @param request
-	 * @param type 类型
-	 * @return
-	 */
-	@RequestMapping( method = RequestMethod.GET)
-	@Menu(type = "apps" , subtype = "tags" , access = true)
-    public ResponseEntity<RestResult> list(HttpServletRequest request , @Valid String type) {
-        return new ResponseEntity<>(new RestResult(RestResultType.OK, tagRes.findByOrgiAndTagtype(super.getOrgi(request) , !StringUtils.isBlank(type) ? type : MainContext.ModelType.USER.toString())), HttpStatus.OK);
+    @Autowired
+    private TagRepository tagRes;
+
+    /**
+     * 按照分类获取标签列表
+     * 按照分类获取标签列表，Type 参数类型来自于 枚举，可选值目前有三个 ： user  workorders summary
+     *
+     * @param request
+     * @param type    类型
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET)
+    @Menu(type = "apps", subtype = "tags", access = true)
+    public ResponseEntity<RestResult> list(HttpServletRequest request, @Valid String type) {
+        return new ResponseEntity<>(new RestResult(RestResultType.OK, tagRes.findByTagtype(!StringUtils.isBlank(type) ? type : MainContext.ModelType.USER.toString())), HttpStatus.OK);
     }
 }

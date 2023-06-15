@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ public class Dimension implements java.io.Serializable{
 	private String type ;	//类型：TimeDimension
 	private String modeltype ;
 	private String cubeid;
-	private String orgi ;
 	private String allmembername ;
 	private String postop ;			//改变用处， 修改为 是否权限控制字段
 	private Dimension dim ;
@@ -82,12 +81,6 @@ public class Dimension implements java.io.Serializable{
 	}
 	public void setSortindex(int sortindex) {
 		this.sortindex = sortindex;
-	}
-	public String getOrgi() {
-		return orgi;
-	}
-	public void setOrgi(String orgi) {
-		this.orgi = orgi;
 	}
 	public Date getCreatetime() {
 		return createtime;

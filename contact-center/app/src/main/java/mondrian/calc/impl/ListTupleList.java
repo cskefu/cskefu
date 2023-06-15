@@ -135,8 +135,8 @@ public class ListTupleList extends AbstractEndToEndTupleList
         return new ListTupleList(
             arity,
             capacity < 0
-                ? new ArrayList<Member>(list)
-                : new ArrayList<Member>(capacity * arity));
+                ? new ArrayList<>(list)
+                : new ArrayList<>(capacity * arity));
     }
 
     public TupleIterator tupleIteratorInternal() {

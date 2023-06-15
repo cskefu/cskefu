@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,11 @@ package com.cskefu.cc.persistence.repository;
 
 import com.cskefu.cc.model.SystemConfig;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-public interface SystemConfigRepository  extends JpaRepository<SystemConfig, String>
-{
-	SystemConfig findByOrgi(String orgi);
+public interface SystemConfigRepository extends JpaRepository<SystemConfig, String> {
+
+    @Query(value = "SELECT * FROM uk_systemconfig LIMIT 1", nativeQuery = true)
+    SystemConfig findOne();
 }
 

@@ -65,10 +65,9 @@ public class SocketioConnEventSubscription {
         try {
             JsonParser parser = new JsonParser();
             JsonObject j = parser.parse(payload).getAsJsonObject();
-            if (j.has("userId") && j.has("orgi") && j.has("isAdmin")) {
-                final AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
-                        j.get("userId").getAsString(),
-                        j.get("orgi").getAsString());
+            if (j.has("userId") && j.has("isAdmin")) {
+                final AgentStatus agentStatus = cache.findOneAgentStatusByAgentno(
+                        j.get("userId").getAsString());
                 if (agentStatus != null && (!agentStatus.isConnected())) {
                     /**
                      * 处理该坐席为离线
@@ -76,7 +75,6 @@ public class SocketioConnEventSubscription {
                     // 重分配坐席
                     ACDComposeContext ctx = new ACDComposeContext();
                     ctx.setAgentno(agentStatus.getAgentno());
-                    ctx.setOrgi(agentStatus.getOrgi());
                     acdAgentDispatcher.dequeue(ctx);
                     if (ctx.isResolved()) {
                         logger.info("[onMessage] re-allotAgent for user's visitors successfully.");
@@ -90,19 +88,19 @@ public class SocketioConnEventSubscription {
                     agentStatus.setUpdatetime(new Date());
 
                     // 设置该坐席状态为离线
-                    cache.deleteAgentStatusByAgentnoAndOrgi(agentStatus.getAgentno(), agentStatus.getOrgi());
+                    cache.deleteAgentStatusByAgentno(agentStatus.getAgentno());
                     agentStatusRes.save(agentStatus);
 
                     // 记录坐席工作日志
                     acdWorkMonitor.recordAgentStatus(agentStatus.getAgentno(),
-                                                     agentStatus.getUsername(),
-                                                     agentStatus.getAgentno(),
-                                                     j.get("isAdmin").getAsBoolean(),
-                                                     agentStatus.getAgentno(),
-                                                     agentStatus.getStatus(),
-                                                     MainContext.AgentStatusEnum.OFFLINE.toString(),
-                                                     MainContext.AgentWorkType.MEIDIACHAT.toString(),
-                                                     agentStatus.getOrgi(), null);
+                            agentStatus.getUsername(),
+                            agentStatus.getAgentno(),
+                            j.get("isAdmin").getAsBoolean(),
+                            agentStatus.getAgentno(),
+                            agentStatus.getStatus(),
+                            MainContext.AgentStatusEnum.OFFLINE.toString(),
+                            MainContext.AgentWorkType.MEIDIACHAT.toString(),
+                            null);
                 } else if (agentStatus == null) {
                     // 该坐席已经完成离线设置
                     logger.info("[onMessage] agent is already offline, skip any further operations");

@@ -20,7 +20,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.cache.Cache;
 import com.cskefu.cc.persistence.repository.BlackListRepository;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,10 +52,9 @@ public class BlackListEventSubscription {
         try {
             final JSONObject json = JSON.parseObject(payload);
             final String userId = json.getString("userId");
-            final String orgi = json.getString("orgi");
 
-            if (StringUtils.isNotBlank(userId) && StringUtils.isNotBlank(orgi)) {
-                cache.findOneBlackEntityByUserIdAndOrgi(userId, orgi).ifPresent(blackListRes::delete);
+            if (StringUtils.isNotBlank(userId)) {
+                cache.findOneBlackEntityByUserId(userId).ifPresent(blackListRes::delete);
             } else {
                 logger.warn("[onMessage] error: invalid payload");
             }

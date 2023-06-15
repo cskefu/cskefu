@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,6 @@ public class AgentReport implements java.io.Serializable {
     private int users;            // 服务中的用户
     private int inquene;          // 队列中的用户
     private int busy;             // 队列中忙的坐席，所有在线就绪并且繁忙的坐席（包括自己置忙或达到最大服务人数的坐席）
-    private String orgi;
 
     private String worktype;
     private String workresult;
@@ -48,14 +47,6 @@ public class AgentReport implements java.io.Serializable {
     private String datestr = MainUtils.simpleDateFormat.format(new Date());
     private String hourstr = new SimpleDateFormat("HH").format(new Date());
     private String datehourstr = new SimpleDateFormat("yyyy-MM-dd HH").format(new Date());
-
-    public String getOrgi() {
-        return orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
-    }
 
     private String type = "status";    //坐席状态
 

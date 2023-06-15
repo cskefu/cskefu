@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,7 @@ import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.model.*;
 import com.cskefu.cc.persistence.repository.*;
 import com.cskefu.cc.proxy.UserProxy;
-import com.cskefu.cc.util.es.SearchTools;
-import com.cskefu.cc.util.es.UKDataBean;
-import org.apache.commons.lang.StringUtils;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.springframework.data.domain.PageImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.ui.ModelMap;
 
@@ -34,12 +30,9 @@ import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-
-import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 public class CallCenterUtils {
 
@@ -58,15 +51,15 @@ public class CallCenterUtils {
         if (extList.size() > 0) {
             Extension ext = extList.get(0);
             if (StringUtils.isNotBlank(ext.getSiptrunk())) {
-                sipTrunk = MainContext.getCache().findOneSystemByIdAndOrgi(ext.getSiptrunk(), ext.getOrgi());
+                sipTrunk = MainContext.getCache().findOneSystemById(ext.getSiptrunk());
                 if (sipTrunk == null) {
-                    sipTrunk = sipTrunkRes.findByIdAndOrgi(ext.getSiptrunk(), ext.getOrgi());
+                    sipTrunk = sipTrunkRes.findById(ext.getSiptrunk());
                     if (sipTrunk != null) {
-                        MainContext.getCache().putSystemByIdAndOrgi(sipTrunk.getId(), ext.getOrgi(), sipTrunk);
+                        MainContext.getCache().putSystemById(sipTrunk.getId(), sipTrunk);
                     }
                 }
             } else {
-                List<SipTrunk> sipTrunkList = sipTrunkRes.findByDefaultsipAndOrgi(true, ext.getOrgi());
+                List<SipTrunk> sipTrunkList = sipTrunkRes.findByDefaultsip(true);
                 if (sipTrunkList.size() > 0) {
                     sipTrunk = sipTrunkList.get(0);
                 }
@@ -93,7 +86,7 @@ public class CallCenterUtils {
             }
         }
         if (sipTrunk != null) {
-            MainContext.getCache().putSystemByIdAndOrgi(sipTrunk.getId(), sipTrunk.getOrgi(), sipTrunk);
+            MainContext.getCache().putSystemById(sipTrunk.getId(), sipTrunk);
         }
         return sipTrunk;
     }
@@ -107,18 +100,17 @@ public class CallCenterUtils {
      * @return
      */
     public static List<String> getAuthOrgan(UserRoleRepository userRoleRes, UKefuCallOutRoleRepository callOutRoleRes, User user) {
-        List<UserRole> userRole = userRoleRes.findByOrgiAndUser(user.getOrgi(), user);
-        ArrayList<String> organList = new ArrayList<String>();
+        List<UserRole> userRole = userRoleRes.findByUser(user);
+        ArrayList<String> organList = new ArrayList<>();
         if (userRole.size() > 0) {
             for (UserRole userTemp : userRole) {
-                UKefuCallOutRole roleOrgan = callOutRoleRes.findByOrgiAndRoleid(
-                        user.getOrgi(),
+                UKefuCallOutRole roleOrgan = callOutRoleRes.findByRoleid(
                         userTemp.getRole().getId());
                 if (roleOrgan != null) {
                     if (StringUtils.isNotBlank(roleOrgan.getOrganid())) {
                         String[] organ = roleOrgan.getOrganid().split(",");
-                        for (int i = 0; i < organ.length; i++) {
-                            organList.add(organ[i]);
+                        for (String s : organ) {
+                            organList.add(s);
                         }
 
                     }
@@ -151,30 +143,24 @@ public class CallCenterUtils {
 
         final List<String> organList = CallCenterUtils.getExistOrgan(user);
 
-        List<JobDetail> batchList = batchRes.findAll(new Specification<JobDetail>() {
-            @Override
-            public Predicate toPredicate(
-                    Root<JobDetail> root, CriteriaQuery<?> query,
-                    CriteriaBuilder cb) {
-                List<Predicate> list = new ArrayList<Predicate>();
-                In<Object> in = cb.in(root.get("organ"));
+        List<JobDetail> batchList = batchRes.findAll((root, query, cb) -> {
+            List<Predicate> list = new ArrayList<>();
+            In<Object> in = cb.in(root.get("organ"));
 
-                list.add(cb.equal(root.get("orgi").as(String.class), user.getOrgi()));
-                list.add(cb.equal(root.get("tasktype").as(String.class), MainContext.TaskType.BATCH.toString()));
+            list.add(cb.equal(root.get("tasktype").as(String.class), MainContext.TaskType.BATCH.toString()));
 
-                if (organList.size() > 0) {
+            if (organList.size() > 0) {
 
-                    for (String id : organList) {
-                        in.value(id);
-                    }
-                } else {
-                    in.value(Constants.CSKEFU_SYSTEM_NO_DAT);
+                for (String id : organList) {
+                    in.value(id);
                 }
-                list.add(in);
-
-                Predicate[] p = new Predicate[list.size()];
-                return cb.and(list.toArray(p));
+            } else {
+                in.value(Constants.CSKEFU_SYSTEM_NO_DAT);
             }
+            list.add(in);
+
+            Predicate[] p = new Predicate[list.size()];
+            return cb.and(list.toArray(p));
         });
 
         return batchList;
@@ -195,29 +181,22 @@ public class CallCenterUtils {
 
         final List<String> organList = CallCenterUtils.getExistOrgan(user);
 
-        List<FormFilter> formFilterList = filterRes.findAll(new Specification<FormFilter>() {
-            @Override
-            public Predicate toPredicate(
-                    Root<FormFilter> root, CriteriaQuery<?> query,
-                    CriteriaBuilder cb) {
-                List<Predicate> list = new ArrayList<Predicate>();
-                In<Object> in = cb.in(root.get("organ"));
+        List<FormFilter> formFilterList = filterRes.findAll((root, query, cb) -> {
+            List<Predicate> list = new ArrayList<>();
+            In<Object> in = cb.in(root.get("organ"));
 
-                list.add(cb.equal(root.get("orgi").as(String.class), user.getOrgi()));
+            if (organList.size() > 0) {
 
-                if (organList.size() > 0) {
-
-                    for (String id : organList) {
-                        in.value(id);
-                    }
-                } else {
-                    in.value(Constants.CSKEFU_SYSTEM_NO_DAT);
+                for (String id : organList) {
+                    in.value(id);
                 }
-                list.add(in);
-
-                Predicate[] p = new Predicate[list.size()];
-                return cb.and(list.toArray(p));
+            } else {
+                in.value(Constants.CSKEFU_SYSTEM_NO_DAT);
             }
+            list.add(in);
+
+            Predicate[] p = new Predicate[list.size()];
+            return cb.and(list.toArray(p));
         });
 
         return formFilterList;
@@ -238,30 +217,24 @@ public class CallCenterUtils {
 
         final List<String> organList = CallCenterUtils.getExistOrgan(user);
 
-        List<JobDetail> activityList = batchRes.findAll(new Specification<JobDetail>() {
-            @Override
-            public Predicate toPredicate(
-                    Root<JobDetail> root, CriteriaQuery<?> query,
-                    CriteriaBuilder cb) {
-                List<Predicate> list = new ArrayList<Predicate>();
-                In<Object> in = cb.in(root.get("organ"));
+        List<JobDetail> activityList = batchRes.findAll((root, query, cb) -> {
+            List<Predicate> list = new ArrayList<>();
+            In<Object> in = cb.in(root.get("organ"));
 
-                list.add(cb.equal(root.get("orgi").as(String.class), user.getOrgi()));
-                list.add(cb.equal(root.get("tasktype").as(String.class), MainContext.TaskType.ACTIVE.toString()));
+            list.add(cb.equal(root.get("tasktype").as(String.class), MainContext.TaskType.ACTIVE.toString()));
 
-                if (organList.size() > 0) {
+            if (organList.size() > 0) {
 
-                    for (String id : organList) {
-                        in.value(id);
-                    }
-                } else {
-                    in.value(Constants.CSKEFU_SYSTEM_NO_DAT);
+                for (String id : organList) {
+                    in.value(id);
                 }
-                list.add(in);
-
-                Predicate[] p = new Predicate[list.size()];
-                return cb.and(list.toArray(p));
+            } else {
+                in.value(Constants.CSKEFU_SYSTEM_NO_DAT);
             }
+            list.add(in);
+
+            Predicate[] p = new Predicate[list.size()];
+            return cb.and(list.toArray(p));
         });
 
         return activityList;
@@ -286,11 +259,11 @@ public class CallCenterUtils {
         List<SaleStatus> salestatusList = new ArrayList<>();
         for (JobDetail act : activityList) {
             List<SaleStatus> salestastus = MainContext.getContext().getBean(
-                    SaleStatusRepository.class).findByOrgiAndActivityid(user.getOrgi(), act.getDicid());
+                    SaleStatusRepository.class).findByActivityid(act.getDicid());
             salestatusList.addAll(salestastus);
 
         }
-        LinkedHashSet<SaleStatus> set = new LinkedHashSet<SaleStatus>(salestatusList.size());
+        LinkedHashSet<SaleStatus> set = new LinkedHashSet<>(salestatusList.size());
         set.addAll(salestatusList);
         salestatusList.clear();
         salestatusList.addAll(set);
@@ -302,25 +275,24 @@ public class CallCenterUtils {
 
             map.addAttribute(
                     "owneruserList",
-                    getUserProxy().findByOrganAndOrgiAndDatastatus(
-                            Constants.CSKEFU_SYSTEM_NO_DAT, user.getOrgi(), false));
+                    getUserProxy().findByOrganAndDatastatus(
+                            Constants.CSKEFU_SYSTEM_NO_DAT, false));
         } else {
             map.addAttribute(
-                    "owneruserList", getUserProxy().findByOrganAndOrgiAndDatastatus(ownerdept, user.getOrgi(), false));
+                    "owneruserList", getUserProxy().findByOrganAndDatastatus(ownerdept, false));
 
         }
         map.addAttribute(
                 "skillGroups", organRes.findAll(CallCenterUtils.getAuthOrgan(userRoleRes, callOutRoleRes, user)));
         map.put(
-                "taskList", MainContext.getContext().getBean(UKefuCallOutTaskRepository.class).findByActidAndOrgi(
-                        actid,
-                        user.getOrgi()));
+                "taskList", MainContext.getContext().getBean(UKefuCallOutTaskRepository.class).findByActid(
+                        actid));
         map.put(
                 "allUserList",
-                MainContext.getContext().getBean(UserRepository.class).findByOrgiAndDatastatus(user.getOrgi(), false));
-        //JobDetail act = batchRes.findByIdAndOrgi(actid, user.getOrgi());
+                MainContext.getContext().getBean(UserRepository.class).findByDatastatus(false));
+        //JobDetail act = batchRes.findByIdAndOrgi(actid);
         //if(act != null){
-        //	map.put("salestatusList",MainContext.getContext().getBean(SaleStatusRepository.class).findByOrgiAndActivityid(user.getOrgi(), act.getDicid()));
+        //	map.put("salestatusList",MainContext.getContext().getBean(SaleStatusRepository.class).findByOrgiAndActivityid(act.getDicid()));
         //}
         map.addAttribute("statusList", Dict.getInstance().getDic("com.dic.callout.activity"));
     }
@@ -336,7 +308,7 @@ public class CallCenterUtils {
 
         CallAgentRepository callAgentRes = MainContext.getContext().getBean(CallAgentRepository.class);
 
-        List<CallAgent> actList = callAgentRes.findByOrgiAndActid(user.getOrgi(), activityid);
+        List<CallAgent> actList = callAgentRes.findByActid(activityid);
         int namenum = 0;
         if (actList.size() > 0) {
             for (CallAgent callAgent : actList) {
@@ -363,9 +335,9 @@ public class CallCenterUtils {
 
         final List<String> organList = CallCenterUtils.getAuthOrgan(userRoleRes, callOutRoleRes, user);
 
-        List<Organ> organAllList = organRes.findByOrgi(user.getOrgi());
+        List<Organ> organAllList = organRes.findAll();
 
-        final List<String> tempList = new ArrayList<String>();
+        final List<String> tempList = new ArrayList<>();
 
         for (String organid : organList) {
             for (Organ organ : organAllList) {
@@ -480,21 +452,6 @@ public class CallCenterUtils {
             ukefuCallOutFilter.setNotassigned(ukefuCallOutFilter.getNotassigned() + 1);//未分配数
             callOutFilterRes.save(ukefuCallOutFilter);
         }
-    }
-
-    /**
-     * 获取指定活动，已分配的名单数
-     *
-     * @param actid
-     * @param user
-     * @return
-     */
-    public static int getActDisnum(@Valid String actid, User user, @Valid int p, @Valid int ps) {
-        BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
-        queryBuilder.must(termQuery("actid", actid));// 活动ID
-        queryBuilder.mustNot(termQuery("status", MainContext.NamesDisStatusType.NOT.toString()));
-        PageImpl<UKDataBean> dataList = SearchTools.search(queryBuilder, p, ps);
-        return dataList.getContent().size();
     }
 
     public static UserProxy getUserProxy() {

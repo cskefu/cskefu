@@ -82,7 +82,7 @@ public enum Orientation
 	LEFT_BOTTOM(8),
 	;
 	
-	private int value;
+	private final int value;
 	private Orientation(int value)
 	{
 		this.value = value;

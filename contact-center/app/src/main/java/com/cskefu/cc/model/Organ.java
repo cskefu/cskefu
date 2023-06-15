@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,7 @@ public class Organ implements java.io.Serializable {
     private String area;
     private String username;
     private Date updatetime;
-    private String orgi;
-    private String orgid;    // 企业ID
+    private String companyid;    // 企业ID
 
     @Id
     @Column(length = 32)
@@ -91,14 +90,6 @@ public class Organ implements java.io.Serializable {
         this.username = username;
     }
 
-    public String getOrgi() {
-        return orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
-    }
-
     public Date getCreatetime() {
         return createtime;
     }
@@ -139,11 +130,11 @@ public class Organ implements java.io.Serializable {
         this.area = area;
     }
 
-    public String getOrgid() {
-        return orgid;
+    public String getCompanyid() {
+        return companyid;
     }
 
-    public void setOrgid(String orgid) {
-        this.orgid = orgid;
+    public void setCompanyid(String orgid) {
+        this.companyid = orgid;
     }
 }

@@ -17,8 +17,8 @@ package com.cskefu.cc.aspect;
 
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.cache.Cache;
-import com.cskefu.cc.model.OnlineUser;
-import org.apache.commons.lang.StringUtils;
+import com.cskefu.cc.model.PassportWebIMUser;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -40,19 +40,19 @@ public class OnlineUserAspect {
      *
      * @param joinPoint
      */
-    @Before("execution(* com.cskefu.cc.persistence.repository.OnlineUserRepository.save(..))")
+    @Before("execution(* com.cskefu.cc.persistence.repository.PassportWebIMUserRepository.save(..))")
     public void save(final JoinPoint joinPoint) {
-        final OnlineUser onlineUser = (OnlineUser) joinPoint.getArgs()[0];
+        final PassportWebIMUser passportWebIMUser = (PassportWebIMUser) joinPoint.getArgs()[0];
 //        logger.info(
 //                "[save] put onlineUser id {}, status {}, invite status {}", onlineUser.getId(), onlineUser.getStatus(),
 //                onlineUser.getInvitestatus());
-        if (StringUtils.isNotBlank(onlineUser.getStatus())) {
-            switch (MainContext.OnlineUserStatusEnum.toValue(onlineUser.getStatus())) {
+        if (StringUtils.isNotBlank(passportWebIMUser.getStatus())) {
+            switch (MainContext.OnlineUserStatusEnum.toValue(passportWebIMUser.getStatus())) {
                 case OFFLINE:
-                    cache.deleteOnlineUserByIdAndOrgi(onlineUser.getId(), onlineUser.getOrgi());
+                    cache.deleteOnlineUserById(passportWebIMUser.getId());
                     break;
                 default:
-                    cache.putOnlineUserByOrgi(onlineUser, onlineUser.getOrgi());
+                    cache.putOnlineUser(passportWebIMUser);
             }
         }
     }

@@ -58,10 +58,9 @@ public class AgentAuditProxy {
     public AgentUserAudit updateAgentUserAudits(final AgentUser agentUser) {
         try {
             // get interests
-            HashMap<String, String> subscribers = agentUserProxy.getAgentUserSubscribers(
-                    agentUser.getOrgi(), agentUser);
-            AgentUserAudit audit = new AgentUserAudit(agentUser.getOrgi(), agentUser.getId(), subscribers);
-            cache.putAgentUserAuditByOrgi(agentUser.getOrgi(), audit);
+            HashMap<String, String> subscribers = agentUserProxy.getAgentUserSubscribers(agentUser);
+            AgentUserAudit audit = new AgentUserAudit(agentUser.getId(), subscribers);
+            cache.putAgentUserAudit(audit);
             return audit;
         } catch (CSKefuCacheException e) {
             logger.error("[updateAgentUserAudits] exception", e);
@@ -78,7 +77,6 @@ public class AgentAuditProxy {
      */
     public void publishMessage(final AgentUser agentUser, Serializable data, final MainContext.MessageType event) {
         JsonObject json = new JsonObject();
-        json.addProperty("orgi", agentUser.getOrgi());
         json.addProperty("data", SerializeUtil.serialize(data));
         json.addProperty("agentUserId", agentUser.getId());
         json.addProperty("event", event.toString());

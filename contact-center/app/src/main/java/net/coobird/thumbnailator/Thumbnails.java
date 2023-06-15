@@ -440,7 +440,7 @@ instance.asFiles("path/to/thumbnail");
 			{
 				return new Iterator<ImageSource<File>>() {
 					
-					Iterator<String> iter = filenames.iterator();
+					final Iterator<String> iter = filenames.iterator();
 					
 					public boolean hasNext()
 					{
@@ -474,7 +474,7 @@ instance.asFiles("path/to/thumbnail");
 			{
 				return new Iterator<ImageSource<File>>() {
 					
-					Iterator<File> iter = files.iterator();
+					final Iterator<File> iter = files.iterator();
 					
 					public boolean hasNext()
 					{
@@ -508,7 +508,7 @@ instance.asFiles("path/to/thumbnail");
 			{
 				return new Iterator<ImageSource<URL>>() {
 					
-					Iterator<URL> iter = urls.iterator();
+					final Iterator<URL> iter = urls.iterator();
 					
 					public boolean hasNext()
 					{
@@ -542,7 +542,7 @@ instance.asFiles("path/to/thumbnail");
 			{
 				return new Iterator<ImageSource<InputStream>>() {
 					
-					Iterator<? extends InputStream> iter = inputStreams.iterator();
+					final Iterator<? extends InputStream> iter = inputStreams.iterator();
 					
 					public boolean hasNext()
 					{
@@ -576,7 +576,7 @@ instance.asFiles("path/to/thumbnail");
 			{
 				return new Iterator<ImageSource<BufferedImage>>() {
 					
-					Iterator<BufferedImage> iter = image.iterator();
+					final Iterator<BufferedImage> iter = image.iterator();
 					
 					public boolean hasNext()
 					{
@@ -599,31 +599,31 @@ instance.asFiles("path/to/thumbnail");
 		private static Builder<File> ofStrings(Iterable<String> filenames)
 		{
 			Iterable<ImageSource<File>> iter = new StringImageSourceIterator(filenames);
-			return new Builder<File>(iter);
+			return new Builder<>(iter);
 		}
 		
 		private static Builder<File> ofFiles(Iterable<File> files)
 		{
 			Iterable<ImageSource<File>> iter = new FileImageSourceIterator(files);
-			return new Builder<File>(iter);
+			return new Builder<>(iter);
 		}
 		
 		private static Builder<URL> ofUrls(Iterable<URL> urls)
 		{
 			Iterable<ImageSource<URL>> iter = new URLImageSourceIterator(urls);
-			return new Builder<URL>(iter);
+			return new Builder<>(iter);
 		}
 		
 		private static Builder<InputStream> ofInputStreams(Iterable<? extends InputStream> inputStreams)
 		{
 			Iterable<ImageSource<InputStream>> iter = new InputStreamImageSourceIterator(inputStreams);
-			return new Builder<InputStream>(iter);
+			return new Builder<>(iter);
 		}
 		
 		private static Builder<BufferedImage> ofBufferedImages(Iterable<BufferedImage> images)
 		{
 			Iterable<ImageSource<BufferedImage>> iter = new BufferedImageImageSourceIterator(images);
-			return new Builder<BufferedImage>(iter);
+			return new Builder<>(iter);
 		}
 
 		private final class BufferedImageIterable implements
@@ -633,7 +633,7 @@ instance.asFiles("path/to/thumbnail");
 			{
 				return new Iterator<BufferedImage>() {
 					
-					Iterator<ImageSource<T>> sourceIter = sources.iterator();
+					final Iterator<ImageSource<T>> sourceIter = sources.iterator();
 
 					public boolean hasNext()
 					{
@@ -648,7 +648,7 @@ instance.asFiles("path/to/thumbnail");
 						try
 						{
 							Thumbnailator.createThumbnail(
-									new SourceSinkThumbnailTask<T, BufferedImage>(makeParam(), source, destination)
+                                    new SourceSinkThumbnailTask<>(makeParam(), source, destination)
 							);
 						}
 						catch (IOException e)
@@ -741,7 +741,7 @@ instance.asFiles("path/to/thumbnail");
 		/**
 		 * Map to keep track of whether a property has been properly set or not.
 		 */
-		private final Map<Properties, Status> statusMap = new HashMap<Properties, Status>();
+		private final Map<Properties, Status> statusMap = new HashMap<>();
 
 		/**
 		 * Populates the property map.
@@ -802,7 +802,7 @@ instance.asFiles("path/to/thumbnail");
 		 * {@link ThumbnailParameter#DEFAULT_IMAGE_TYPE} as the value for
 		 * imageType.
 		 */
-		private static int IMAGE_TYPE_UNSPECIFIED = -1;
+		private static final int IMAGE_TYPE_UNSPECIFIED = -1;
 		
 		private static final int DIMENSION_NOT_SPECIFIED = -1;
 		
@@ -849,7 +849,7 @@ instance.asFiles("path/to/thumbnail");
 		 * The {@link ImageFilter}s that should be applied when creating the
 		 * thumbnail.
 		 */
-		private Pipeline filterPipeline = new Pipeline();
+		private final Pipeline filterPipeline = new Pipeline();
 		
 		/**
 		 * Sets the size of the thumbnail.
@@ -2083,7 +2083,7 @@ watermark(Positions.CENTER, image, opacity);
 		private Resizer makeResizer(ScalingMode mode)
 		{
 			Map<RenderingHints.Key, Object> hints =
-				new HashMap<RenderingHints.Key, Object>();
+                    new HashMap<>();
 			
 			hints.put(RenderingHints.KEY_ALPHA_INTERPOLATION, alphaInterpolation.getValue());
 			hints.put(RenderingHints.KEY_DITHERING, dithering.getValue());
@@ -2259,7 +2259,7 @@ watermark(Positions.CENTER, image, opacity);
 		{
 			checkReadiness();
 			
-			List<BufferedImage> thumbnails = new ArrayList<BufferedImage>();
+			List<BufferedImage> thumbnails = new ArrayList<>();
 			
 			// Create thumbnails
 			for (ImageSource<T> source : sources)
@@ -2267,7 +2267,7 @@ watermark(Positions.CENTER, image, opacity);
 				BufferedImageSink destination = new BufferedImageSink();
 				
 				Thumbnailator.createThumbnail(
-					new SourceSinkThumbnailTask<T, BufferedImage>(makeParam(), source, destination)
+                        new SourceSinkThumbnailTask<>(makeParam(), source, destination)
 				);
 				
 				thumbnails.add(destination.getSink());
@@ -2304,37 +2304,35 @@ watermark(Positions.CENTER, image, opacity);
 			BufferedImageSink destination = new BufferedImageSink();
 			
 			Thumbnailator.createThumbnail(
-				new SourceSinkThumbnailTask<T, BufferedImage>(makeParam(), source, destination)
+                    new SourceSinkThumbnailTask<>(makeParam(), source, destination)
 			);
 				
 			return destination.getSink();
 		}
 		
 		/**
-		 * Creates the thumbnails and stores them to the files, and returns
-		 * a {@link List} of {@link File}s to the thumbnails.
-		 * <p>
-		 * When the destination file exists, and overwriting files has been
-		 * disabled by calling the {@link #allowOverwrite(boolean)} method
-		 * with {@code false}, then the thumbnail with the destination file
-		 * already existing will not be written and the corresponding
-		 * {@code File} object will not be included in the {@code List} returned
-		 * by this method.
-		 * <p>
-		 * The file names for the thumbnails are obtained from the given
-		 * {@link Iterable}.
-		 * 
-		 * @param iterable			An {@link Iterable} which returns an
-		 * 							{@link Iterator} which returns file names
-		 * 							which should be assigned to each thumbnail.
-		 * @return					A list of {@link File}s of the thumbnails
-		 * 							which were created.
-		 * @throws IOException		If a problem occurs while reading the
-		 * 							original images or writing the thumbnails
-		 * 							to files.
-		 * @since 	0.3.7
-		 */
-		public List<File> asFiles(Iterable<File> iterable) throws IOException
+         * Creates the thumbnails and stores them to the files, and returns
+         * a {@link List} of {@link File}s to the thumbnails.
+         * <p>
+         * When the destination file exists, and overwriting files has been
+         * disabled by calling the {@link #allowOverwrite(boolean)} method
+         * with {@code false}, then the thumbnail with the destination file
+         * already existing will not be written and the corresponding
+         * {@code File} object will not be included in the {@code List} returned
+         * by this method.
+         * <p>
+         * The file names for the thumbnails are obtained from the given
+         * {@link Iterable}.
+         *
+         * @param iterable An {@link Iterable} which returns an
+         *                 {@link Iterator} which returns file names
+         *                 which should be assigned to each thumbnail.
+         * @throws IOException If a problem occurs while reading the
+         *                     original images or writing the thumbnails
+         *                     to files.
+         * @since 0.3.7
+         */
+		public void asFiles(Iterable<File> iterable) throws IOException
 		{
 			checkReadiness();
 			
@@ -2343,7 +2341,7 @@ watermark(Positions.CENTER, image, opacity);
 				throw new NullPointerException("File name iterable is null.");
 			}
 			
-			List<File> destinationFiles = new ArrayList<File>();
+			List<File> destinationFiles = new ArrayList<>();
 			
 			Iterator<File> filenameIter = iterable.iterator();
 			
@@ -2363,7 +2361,7 @@ watermark(Positions.CENTER, image, opacity);
 				try
 				{
 					Thumbnailator.createThumbnail(
-							new SourceSinkThumbnailTask<T, File>(param, source, destination)
+                            new SourceSinkThumbnailTask<>(param, source, destination)
 					);
 					
 					destinationFiles.add(destination.getSink());
@@ -2377,9 +2375,8 @@ watermark(Positions.CENTER, image, opacity);
 					 */
 				}
 			}
-			
-			return destinationFiles;
-		}
+
+        }
 		
 		/**
 		 * Creates the thumbnails and stores them to the files.
@@ -2490,7 +2487,7 @@ watermark(Positions.CENTER, image, opacity);
 				throw new IllegalArgumentException("Given destination is not a directory.");
 			}
 
-			List<File> destinationFiles = new ArrayList<File>();
+			List<File> destinationFiles = new ArrayList<>();
 			
 			for (ImageSource<T> source : sources)
 			{
@@ -2512,7 +2509,7 @@ watermark(Positions.CENTER, image, opacity);
 				try
 				{
 					Thumbnailator.createThumbnail(
-							new SourceSinkThumbnailTask<T, File>(param, source, destination)
+                            new SourceSinkThumbnailTask<>(param, source, destination)
 					);
 					
 					destinationFiles.add(destination.getSink());
@@ -2634,7 +2631,7 @@ watermark(Positions.CENTER, image, opacity);
 			FileImageSink destination = new FileImageSink(outFile, allowOverwrite);
 			
 			Thumbnailator.createThumbnail(
-					new SourceSinkThumbnailTask<T, File>(makeParam(), source, destination)
+                    new SourceSinkThumbnailTask<>(makeParam(), source, destination)
 			);
 		}
 		
@@ -2674,7 +2671,7 @@ watermark(Positions.CENTER, image, opacity);
 			FileImageSink destination = new FileImageSink(outFilepath, allowOverwrite);
 			
 			Thumbnailator.createThumbnail(
-					new SourceSinkThumbnailTask<T, File>(makeParam(), source, destination)
+                    new SourceSinkThumbnailTask<>(makeParam(), source, destination)
 			);
 		}
 		
@@ -2725,7 +2722,7 @@ watermark(Positions.CENTER, image, opacity);
 			OutputStreamImageSink destination = new OutputStreamImageSink(os);
 			
 			Thumbnailator.createThumbnail(
-					new SourceSinkThumbnailTask<T, OutputStream>(makeParam(), source, destination)
+                    new SourceSinkThumbnailTask<>(makeParam(), source, destination)
 			);
 		}
 		
@@ -2782,7 +2779,7 @@ watermark(Positions.CENTER, image, opacity);
 				OutputStreamImageSink destination = new OutputStreamImageSink(osIter.next());
 				
 				Thumbnailator.createThumbnail(
-						new SourceSinkThumbnailTask<T, OutputStream>(makeParam(), source, destination)
+                        new SourceSinkThumbnailTask<>(makeParam(), source, destination)
 				);
 			}
 		}

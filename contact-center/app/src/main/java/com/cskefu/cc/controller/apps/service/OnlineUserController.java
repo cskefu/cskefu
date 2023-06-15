@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,12 @@ import com.cskefu.cc.cache.Cache;
 import com.cskefu.cc.controller.Handler;
 import com.cskefu.cc.model.AgentService;
 import com.cskefu.cc.model.AgentServiceSummary;
-import com.cskefu.cc.model.OnlineUser;
-import com.cskefu.cc.model.WeiXinUser;
-import com.cskefu.cc.persistence.es.ContactsRepository;
+import com.cskefu.cc.model.PassportWebIMUser;
+import com.cskefu.cc.model.PassportWechatUser;
 import com.cskefu.cc.persistence.repository.*;
 import com.cskefu.cc.proxy.AgentUserProxy;
 import com.cskefu.cc.util.Menu;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +54,7 @@ public class OnlineUserController extends Handler {
     private AgentUserProxy agentUserProxy;
 
     @Autowired
-    private OnlineUserRepository onlineUserRes;
+    private PassportWebIMUserRepository onlineUserRes;
 
     @Autowired
     private UserEventRepository userEventRes;
@@ -65,7 +64,7 @@ public class OnlineUserController extends Handler {
 
 
     @Autowired
-    private OnlineUserHisRepository onlineUserHisRes;
+    private PassportWebIMUserHistRepository onlineUserHisRes;
 
     @Autowired
     private WeiXinUserRepository weiXinUserRes;
@@ -94,28 +93,25 @@ public class OnlineUserController extends Handler {
     @RequestMapping("/online/index")
     @Menu(type = "service", subtype = "online", admin = true)
     public ModelAndView index(ModelMap map, HttpServletRequest request, String userid, String agentservice, @Valid String channel) {
-        final String orgi = super.getOrgi(request);
         if (StringUtils.isNotBlank(userid)) {
             map.put(
                     "inviteResult",
-                    MainUtils.getWebIMInviteResult(onlineUserRes.findByOrgiAndUserid(orgi, userid)));
+                    MainUtils.getWebIMInviteResult(onlineUserRes.findByUserid(userid)));
             map.put("tagRelationList", tagRelationRes.findByUserid(userid));
-            map.put("onlineUserHistList", onlineUserHisRes.findByUseridAndOrgi(userid, orgi));
+            map.put("onlineUserHistList", onlineUserHisRes.findByUserid(userid));
             map.put(
                     "agentServicesAvg", onlineUserRes.countByUserForAvagTime(
-                            orgi,
                             MainContext.AgentUserStatusEnum.END.toString(),
                             userid));
 
-            List<AgentService> agentServiceList = agentServiceRes.findByUseridAndOrgiOrderByLogindateDesc(
-                    userid, orgi);
+            List<AgentService> agentServiceList = agentServiceRes.findByUseridOrderByLogindateDesc(
+                    userid);
 
             map.put("agentServiceList", agentServiceList);
             if (agentServiceList.size() > 0) {
-                map.put("serviceCount", Integer
-                        .valueOf(this.agentServiceRes
-                                .countByUseridAndOrgiAndStatus(userid, orgi,
-                                        MainContext.AgentUserStatusEnum.END.toString())));
+                map.put("serviceCount", this.agentServiceRes
+                        .countByUseridAndStatus(userid,
+                                MainContext.AgentUserStatusEnum.END.toString()));
 
                 AgentService agentService = agentServiceList.get(0);
                 if (StringUtils.isNotBlank(agentservice)) {
@@ -128,51 +124,51 @@ public class OnlineUserController extends Handler {
                 }
 
                 if (agentService != null) {
-                    List<AgentServiceSummary> summaries = serviceSummaryRes.findByAgentserviceidAndOrgi(
-                            agentService.getId(), orgi);
+                    List<AgentServiceSummary> summaries = serviceSummaryRes.findByAgentserviceid(
+                            agentService.getId());
                     if (summaries.size() > 0) {
                         map.put("summary", summaries.get(0));
                     }
 
                 }
 
-                agentUserContactsRes.findOneByUseridAndOrgi(
-                        userid, orgi).ifPresent(p -> {
+                agentUserContactsRes.findOneByUserid(
+                        userid).ifPresent(p -> {
                     map.put("contacts", contactsRes.findOne(p.getContactsid()));
                 });
-                AgentService service = agentServiceRes.findByIdAndOrgi(agentservice, orgi);
+                AgentService service = agentServiceRes.findById(agentservice);
                 if (service != null) {
                     map.addAttribute(
-                            "tags", tagRes.findByOrgiAndTagtypeAndSkill(orgi, MainContext.ModelType.USER.toString(), service.getSkill()));
+                            "tags", tagRes.findByTagtypeAndSkill(MainContext.ModelType.USER.toString(), service.getSkill()));
                 }
                 map.put(
                         "summaryTags",
-                        tagRes.findByOrgiAndTagtype(orgi, MainContext.ModelType.SUMMARY.toString()));
+                        tagRes.findByTagtype(MainContext.ModelType.SUMMARY.toString()));
                 map.put("curAgentService", agentService);
 
 
                 map.put(
                         "agentUserMessageList",
-                        chatMessageRepository.findByAgentserviceidAndOrgi(agentService.getId(), orgi,
+                        chatMessageRepository.findByAgentserviceid(agentService.getId(),
                                 new PageRequest(
                                         0, 50, Direction.DESC,
                                         "updatetime")));
             }
 
             if (MainContext.ChannelType.WEIXIN.toString().equals(channel)) {
-                List<WeiXinUser> weiXinUserList = weiXinUserRes.findByOpenidAndOrgi(userid, orgi);
-                if (weiXinUserList.size() > 0) {
-                    WeiXinUser weiXinUser = weiXinUserList.get(0);
-                    map.put("weiXinUser", weiXinUser);
+                List<PassportWechatUser> passportWechatUserList = weiXinUserRes.findByOpenid(userid);
+                if (passportWechatUserList.size() > 0) {
+                    PassportWechatUser passportWechatUser = passportWechatUserList.get(0);
+                    map.put("weiXinUser", passportWechatUser);
                 }
             } else if (MainContext.ChannelType.WEBIM.toString().equals(channel)) {
-                OnlineUser onlineUser = onlineUserRes.findOne(userid);
-                if (onlineUser != null) {
-                    map.put("onlineUser", onlineUser);
+                PassportWebIMUser passportWebIMUser = onlineUserRes.findOne(userid);
+                if (passportWebIMUser != null) {
+                    map.put("onlineUser", passportWebIMUser);
                 }
             }
 
-            cache.findOneAgentUserByUserIdAndOrgi(userid, orgi).ifPresent(agentUser -> {
+            cache.findOneAgentUserByUserId(userid).ifPresent(agentUser -> {
                 map.put("agentUser", agentUser);
                 map.put("curagentuser", agentUser);
             });
@@ -187,7 +183,7 @@ public class OnlineUserController extends Handler {
     public ModelAndView onlinechat(ModelMap map, HttpServletRequest request, String id, String title) {
         AgentService agentService = agentServiceRes.getOne(id);
         map.put("curAgentService", agentService);
-        cache.findOneAgentUserByUserIdAndOrgi(agentService.getUserid(), super.getOrgi(request)).ifPresent(p -> {
+        cache.findOneAgentUserByUserId(agentService.getUserid()).ifPresent(p -> {
             map.put("curagentuser", p);
         });
 
@@ -197,11 +193,11 @@ public class OnlineUserController extends Handler {
 
         map.put(
                 "summaryTags",
-                tagRes.findByOrgiAndTagtype(super.getOrgi(request), MainContext.ModelType.SUMMARY.toString()));
+                tagRes.findByTagtype(MainContext.ModelType.SUMMARY.toString()));
 
         if (agentService != null) {
-            List<AgentServiceSummary> summaries = serviceSummaryRes.findByAgentserviceidAndOrgi(
-                    agentService.getId(), super.getOrgi(request));
+            List<AgentServiceSummary> summaries = serviceSummaryRes.findByAgentserviceid(
+                    agentService.getId());
             if (summaries.size() > 0) {
                 map.put("summary", summaries.get(0));
             }
@@ -210,7 +206,7 @@ public class OnlineUserController extends Handler {
 
         map.put(
                 "agentUserMessageList",
-                chatMessageRepository.findByAgentserviceidAndOrgi(agentService.getId(), super.getOrgi(request),
+                chatMessageRepository.findByAgentserviceid(agentService.getId(),
                         new PageRequest(0, 50, Direction.DESC,
                                 "updatetime")));
 
@@ -218,7 +214,7 @@ public class OnlineUserController extends Handler {
     }
 
     @RequestMapping("/trace")
-    @Menu(type = "service", subtype = "trace", admin = false)
+    @Menu(type = "service", subtype = "trace")
     public ModelAndView trace(
             final ModelMap map, final HttpServletRequest request,
             final @Valid String sessionid,
@@ -226,7 +222,7 @@ public class OnlineUserController extends Handler {
         logger.info("[trace] online user {}, sessionid {}", userid, sessionid);
         if (StringUtils.isNotBlank(sessionid)) {
             map.addAttribute(
-                    "traceHisList", userEventRes.findBySessionidAndOrgi(sessionid, super.getOrgi(request),
+                    "traceHisList", userEventRes.findBySessionid(sessionid,
                             new PageRequest(0, 100)));
         }
         return request(super.createView("/apps/service/online/trace"));

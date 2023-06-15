@@ -9,22 +9,11 @@
 
 package mondrian.olap.fun;
 
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import mondrian.calc.*;
 import mondrian.calc.impl.AbstractListCalc;
-import mondrian.calc.impl.DelegatingTupleList;
 import mondrian.mdx.ResolvedFunCall;
 import mondrian.olap.Evaluator;
 import mondrian.olap.FunDef;
-import mondrian.olap.Member;
-import mondrian.olap.Util;
-import mondrian.util.CartesianProductList;
 
 /**
  * Definition of the <code>Subset</code> MDX function.

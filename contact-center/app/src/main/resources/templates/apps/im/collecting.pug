@@ -1,4 +1,4 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+//- Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
 //- 
 //- Licensed under the Apache License, Version 2.0 (the "License");
 //- you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ html
         link(rel='stylesheet', type='text/css', href='/im/css/layui.css')
         link#skin(rel='stylesheet', type='text/css', href='/im/css/default/ukefu.css')
     body(style='overflow:hidden;',class={'ukefu-point-text': type == 'text'})
-        - var action=(schema?schema:'http')+'://'+hostname+(cskefuport!=80?':'+cskefuport:'')+'/im/index.html?userid='+userid+'&ai=false&appid='+appid+'&aiid='+aiid+'&orgi='+inviteData.orgi+'&client='+client+'&type=text'+(skill?'&skill='+skill:'')+(agent?'&agent='+agent:'')+(sessionid?'&sessionid='+sessionid:'')
+        - var action=(schema?schema:'http')+'://'+hostname+(cskefuport!=80?':'+cskefuport:'')+'/im/index.html?userid='+userid+'&ai=false&appid='+appid+'&aiid='+aiid+'&client='+client+'&type=text'+(skill?'&skill='+skill:'')+(agent?'&agent='+agent:'')+(sessionid?'&sessionid='+sessionid:'')
         form(action=action, method='post')
             .large.ukefu-im-theme(class=(type = 'text' ? 'ukefu-theme-border-' + inviteData.consult_dialog_color : ''))
                 #containter.clearfix

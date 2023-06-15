@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.cskefu.cc.config;
 
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.Http11NioProtocol;
+import org.apache.tomcat.util.http.LegacyCookieProcessor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomizer;
@@ -44,12 +45,15 @@ public class WebServerContainerConfigure {
     public EmbeddedServletContainerFactory createEmbeddedServletContainerFactory() throws IOException, NoSuchAlgorithmException {
         TomcatEmbeddedServletContainerFactory tomcatFactory = new TomcatEmbeddedServletContainerFactory();
         tomcatFactory.addConnectorCustomizers(new CSKeFuTomcatConnectorCustomizer(maxthread, maxconnections));
+        // Enable cookie value with space
+        // https://stackoverflow.com/questions/38687210/error-with-cookie-value-when-adding-a-new-spring-session
+        tomcatFactory.addContextCustomizers(context -> context.setCookieProcessor(new LegacyCookieProcessor()));
         return tomcatFactory;
     }
 
     class CSKeFuTomcatConnectorCustomizer implements TomcatConnectorCustomizer {
-        private Integer maxthread;
-        private Integer maxconnection;
+        private final Integer maxthread;
+        private final Integer maxconnection;
 
         CSKeFuTomcatConnectorCustomizer(Integer maxthread, Integer maxconnection) {
             this.maxthread = maxthread;

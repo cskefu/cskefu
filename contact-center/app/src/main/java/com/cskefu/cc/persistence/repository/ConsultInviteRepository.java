@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,13 +26,13 @@ import java.util.List;
 
 public interface ConsultInviteRepository
         extends JpaRepository<CousultInvite, String> {
-    @Query(value = "SELECT * from uk_consult_invite WHERE snsaccountid = ?1 AND orgi = ?2 LIMIT 1", nativeQuery = true)
-    CousultInvite findBySnsaccountidAndOrgi(@Param("snsaccountid") String Snsaccountid, @Param("orgi") String orgi);
+    @Query(value = "SELECT * from uk_consult_invite WHERE snsaccountid = ?1 LIMIT 1", nativeQuery = true)
+    CousultInvite findBySnsaccountid(@Param("snsaccountid") String Snsaccountid);
 
-    @Query(value = "select ci.`snsaccountid` from  `uk_consult_invite` ci  where ci.`orgi` = ?1 and ci.`consult_skill_fixed_id` in (?2)", nativeQuery = true)
-    List<String> findSNSIdByOrgiAndSkill(String orgi, Collection<String> skills);
+    @Query(value = "select ci.`snsaccountid` from  `uk_consult_invite` ci  where ci.`consult_skill_fixed_id` in (?1)", nativeQuery = true)
+    List<String> findSNSIdBySkill(Collection<String> skills);
 
-    List<CousultInvite> findByOrgi(String orgi);
+    List<CousultInvite> findAll();
 }
 
 

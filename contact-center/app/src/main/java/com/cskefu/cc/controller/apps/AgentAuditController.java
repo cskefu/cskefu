@@ -32,7 +32,7 @@ import com.cskefu.cc.persistence.repository.*;
 import com.cskefu.cc.proxy.*;
 import com.cskefu.cc.socketio.message.Message;
 import com.cskefu.cc.util.Menu;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +91,7 @@ public class AgentAuditController extends Handler {
     private UserProxy userProxy;
 
     @Autowired
-    private OnlineUserRepository onlineUserRes;
+    private PassportWebIMUserRepository onlineUserRes;
 
     @Autowired
     private TagRepository tagRes;
@@ -132,11 +132,10 @@ public class AgentAuditController extends Handler {
             @Valid final String agentno,
             @Valid String sort
     ) {
-        final String orgi = super.getOrgi(request);
         final User logined = super.getUser(request);
         logger.info("[index] skill {}, agentno {}, logined {}", skill, agentno, logined.getId());
 
-        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
+        Map<String, Organ> organs = organProxy.findAllOrganByParent(super.getOrgan(request));
 
         ModelAndView view = request(super.createView("/apps/cca/index"));
         Sort defaultSort = null;
@@ -165,23 +164,22 @@ public class AgentAuditController extends Handler {
 
         if (StringUtils.isBlank(skill) && StringUtils.isBlank(agentno)) {
             if (organs.size() > 0) {
-                agentUsers = agentUserRes.findByOrgiAndStatusAndSkillInAndAgentnoIsNotAndChatbotopsIsFalse(
-                        orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), organs.keySet(), logined.getId(), defaultSort);
+                agentUsers = agentUserRes.findByStatusAndSkillInAndAgentnoIsNotAndChatbotopsIsFalse(MainContext.AgentUserStatusEnum.INSERVICE.toString(), organs.keySet(), logined.getId(), defaultSort);
             }
         } else if (StringUtils.isNotBlank(skill) && StringUtils.isNotBlank(agentno)) {
             view.addObject("skill", skill);
             view.addObject("agentno", agentno);
-            agentUsers = agentUserRes.findByOrgiAndStatusAndSkillAndAgentno(
-                    orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), skill, agentno, defaultSort);
+            agentUsers = agentUserRes.findByStatusAndSkillAndAgentno(
+                    MainContext.AgentUserStatusEnum.INSERVICE.toString(), skill, agentno, defaultSort);
         } else if (StringUtils.isNotBlank(skill)) {
             view.addObject("skill", skill);
-            agentUsers = agentUserRes.findByOrgiAndStatusAndSkillAndAgentnoIsNot(
-                    orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), skill, agentno, defaultSort);
+            agentUsers = agentUserRes.findByStatusAndSkillAndAgentnoIsNot(
+                    MainContext.AgentUserStatusEnum.INSERVICE.toString(), skill, agentno, defaultSort);
         } else {
             // agent is not Blank
             view.addObject("agentno", agentno);
-            agentUsers = agentUserRes.findByOrgiAndStatusAndAgentno(
-                    orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), agentno, defaultSort);
+            agentUsers = agentUserRes.findByStatusAndAgentno(
+                    MainContext.AgentUserStatusEnum.INSERVICE.toString(), agentno, defaultSort);
         }
 
         logger.info("[index] agent users size: {}", agentUsers.size());
@@ -193,12 +191,12 @@ public class AgentAuditController extends Handler {
              * 当前对话
              */
             final AgentUser currentAgentUser = agentUsers.get(0);
-            agentServiceProxy.bundleDialogRequiredDataInView(view, map, currentAgentUser, orgi, logined);
+            agentServiceProxy.bundleDialogRequiredDataInView(view, map, currentAgentUser, logined);
         }
 
         // 查询所有技能组
-        List<Organ> skills = organRes.findByOrgiAndSkill(orgi, true);
-        List<User> agents = userRes.findByOrgiAndAgentAndDatastatusAndIdIsNot(orgi, true, false, logined.getId());
+        List<Organ> skills = organRes.findBySkill(true);
+        List<User> agents = userRes.findByAgentAndDatastatusAndIdIsNot(true, false, logined.getId());
 
         view.addObject("skillGroups", skills.stream().filter(s -> organs.containsKey(s.getId())).collect(Collectors.toList()));
         view.addObject("agentList", agents);
@@ -211,7 +209,6 @@ public class AgentAuditController extends Handler {
     public ModelAndView query(HttpServletRequest request, String skill, String agentno) {
         ModelAndView view = request(super.createView("/apps/cca/chatusers"));
 
-        final String orgi = super.getOrgi(request);
         final User logined = super.getUser(request);
 
         Sort defaultSort = new Sort(Sort.Direction.DESC, "status");
@@ -220,18 +217,18 @@ public class AgentAuditController extends Handler {
         List<AgentUser> agentUsers;
 
         if (StringUtils.isBlank(skill) && StringUtils.isBlank(agentno)) {
-            agentUsers = agentUserRes.findByOrgiAndStatusAndAgentnoIsNot(
-                    orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), logined.getId(), defaultSort);
+            agentUsers = agentUserRes.findByStatusAndAgentnoIsNot(
+                    MainContext.AgentUserStatusEnum.INSERVICE.toString(), logined.getId(), defaultSort);
         } else if (StringUtils.isNotBlank(skill) && StringUtils.isNotBlank(agentno)) {
-            agentUsers = agentUserRes.findByOrgiAndStatusAndSkillAndAgentno(
-                    orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), skill, agentno, defaultSort);
+            agentUsers = agentUserRes.findByStatusAndSkillAndAgentno(
+                    MainContext.AgentUserStatusEnum.INSERVICE.toString(), skill, agentno, defaultSort);
         } else if (StringUtils.isNotBlank(skill)) {
-            agentUsers = agentUserRes.findByOrgiAndStatusAndSkillAndAgentnoIsNot(
-                    orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), skill, agentno, defaultSort);
+            agentUsers = agentUserRes.findByStatusAndSkillAndAgentnoIsNot(
+                    MainContext.AgentUserStatusEnum.INSERVICE.toString(), skill, agentno, defaultSort);
         } else {
             // agent is not Blank
-            agentUsers = agentUserRes.findByOrgiAndStatusAndAgentno(
-                    orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), agentno, defaultSort);
+            agentUsers = agentUserRes.findByStatusAndAgentno(
+                    MainContext.AgentUserStatusEnum.INSERVICE.toString(), agentno, defaultSort);
         }
 
         view.addObject("agentUserList", agentUsers);
@@ -244,12 +241,11 @@ public class AgentAuditController extends Handler {
     public ModelAndView agentusers(HttpServletRequest request, String userid) {
         ModelAndView view = request(super.createView("/apps/cca/agentusers"));
         User logined = super.getUser(request);
-        final String orgi = super.getOrgi(request);
         Sort defaultSort = new Sort(Sort.Direction.DESC, "status");
         view.addObject(
-                "agentUserList", agentUserRes.findByOrgiAndStatusAndAgentnoIsNot(
-                        orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), logined.getId(), defaultSort));
-        List<AgentUser> agentUserList = agentUserRepository.findByUseridAndOrgi(userid, logined.getOrgi());
+                "agentUserList", agentUserRes.findByStatusAndAgentnoIsNot(
+                        MainContext.AgentUserStatusEnum.INSERVICE.toString(), logined.getId(), defaultSort));
+        List<AgentUser> agentUserList = agentUserRepository.findByUserid(userid);
         view.addObject(
                 "curagentuser", agentUserList != null && agentUserList.size() > 0 ? agentUserList.get(0) : null);
 
@@ -270,19 +266,18 @@ public class AgentAuditController extends Handler {
         }
         ModelAndView view = request(super.createView(mainagentuser));
         final User logined = super.getUser(request);
-        final String orgi = logined.getOrgi();
-        AgentUser agentUser = agentUserRepository.findByIdAndOrgi(id, orgi);
+        AgentUser agentUser = agentUserRepository.findById(id);
 
         if (agentUser != null) {
             view.addObject("curagentuser", agentUser);
 
-            Chatbot c = chatbotRes.findBySnsAccountIdentifierAndOrgi(agentUser.getAppid(), agentUser.getOrgi());
+            Chatbot c = chatbotRes.findBySnsAccountIdentifier(agentUser.getAppid());
             if (c != null) {
                 view.addObject("ccaAisuggest", c.isAisuggest());
             }
 
-            view.addObject("inviteData", OnlineUserProxy.consult(agentUser.getAppid(), agentUser.getOrgi()));
-            List<AgentUserTask> agentUserTaskList = agentUserTaskRes.findByIdAndOrgi(id, orgi);
+            view.addObject("inviteData", OnlineUserProxy.consult(agentUser.getAppid()));
+            List<AgentUserTask> agentUserTaskList = agentUserTaskRes.findById(id);
             if (agentUserTaskList.size() > 0) {
                 AgentUserTask agentUserTask = agentUserTaskList.get(0);
                 agentUserTask.setTokenum(0);
@@ -290,8 +285,8 @@ public class AgentAuditController extends Handler {
             }
 
             if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-                List<AgentServiceSummary> summarizes = this.serviceSummaryRes.findByAgentserviceidAndOrgi(
-                        agentUser.getAgentserviceid(), orgi);
+                List<AgentServiceSummary> summarizes = this.serviceSummaryRes.findByAgentserviceid(
+                        agentUser.getAgentserviceid());
                 if (summarizes.size() > 0) {
                     view.addObject("summary", summarizes.get(0));
                 }
@@ -299,7 +294,7 @@ public class AgentAuditController extends Handler {
 
             view.addObject(
                     "agentUserMessageList",
-                    this.chatMessageRepository.findByUsessionAndOrgi(agentUser.getUserid(), orgi,
+                    this.chatMessageRepository.findByUsession(agentUser.getUserid(),
                             new PageRequest(0, 20, Sort.Direction.DESC,
                                     "updatetime"
                             )
@@ -313,35 +308,34 @@ public class AgentAuditController extends Handler {
                     /**
                      * 获取关联数据
                      */
-                    agentServiceProxy.processRelaData(logined.getId(), orgi, agentService, map);
+                    agentServiceProxy.processRelaData(logined.getId(), agentService, map);
                 }
             }
-            if (MainContext.ChannelType.WEBIM.toString().equals(agentUser.getChannel())) {
-                OnlineUser onlineUser = onlineUserRes.findOne(agentUser.getUserid());
-                if (onlineUser != null) {
-                    if (onlineUser.getLogintime() != null) {
-                        if (MainContext.OnlineUserStatusEnum.OFFLINE.toString().equals(onlineUser.getStatus())) {
-                            onlineUser.setBetweentime(
-                                    (int) (onlineUser.getUpdatetime().getTime() - onlineUser.getLogintime().getTime()));
+            if (MainContext.ChannelType.WEBIM.toString().equals(agentUser.getChanneltype())) {
+                PassportWebIMUser passportWebIMUser = onlineUserRes.findOne(agentUser.getUserid());
+                if (passportWebIMUser != null) {
+                    if (passportWebIMUser.getLogintime() != null) {
+                        if (MainContext.OnlineUserStatusEnum.OFFLINE.toString().equals(passportWebIMUser.getStatus())) {
+                            passportWebIMUser.setBetweentime(
+                                    (int) (passportWebIMUser.getUpdatetime().getTime() - passportWebIMUser.getLogintime().getTime()));
                         } else {
-                            onlineUser.setBetweentime(
-                                    (int) (System.currentTimeMillis() - onlineUser.getLogintime().getTime()));
+                            passportWebIMUser.setBetweentime(
+                                    (int) (System.currentTimeMillis() - passportWebIMUser.getLogintime().getTime()));
                         }
                     }
-                    view.addObject("onlineUser", onlineUser);
+                    view.addObject("onlineUser", passportWebIMUser);
                 }
             }
-            view.addObject("serviceCount", Integer
-                    .valueOf(this.agentServiceRes
-                            .countByUseridAndOrgiAndStatus(agentUser
-                                            .getUserid(), orgi,
-                                    MainContext.AgentUserStatusEnum.END
-                                            .toString())));
+            view.addObject("serviceCount", this.agentServiceRes
+                    .countByUseridAndStatus(agentUser
+                                    .getUserid(),
+                            MainContext.AgentUserStatusEnum.END
+                                    .toString()));
             view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid()));
 
-            AgentService service = agentServiceRes.findByIdAndOrgi(agentUser.getAgentserviceid(), orgi);
+            AgentService service = agentServiceRes.findById(agentUser.getAgentserviceid());
             if (service != null) {
-                view.addObject("tags", tagRes.findByOrgiAndTagtypeAndSkill(orgi, MainContext.ModelType.USER.toString(), service.getSkill()));
+                view.addObject("tags", tagRes.findByTagtypeAndSkill(MainContext.ModelType.USER.toString(), service.getSkill()));
             }
         }
         return view;
@@ -369,15 +363,14 @@ public class AgentAuditController extends Handler {
             final @Valid String agentuserid
     ) {
         logger.info("[transfer] userId {}, agentUser {}", userid, agentuserid);
-        final String orgi = super.getOrgi(request);
         Organ targetOrgan = super.getOrgan(request);
-        Map<String, Organ> ownOrgans = organProxy.findAllOrganByParentAndOrgi(targetOrgan, super.getOrgi(request));
+        Map<String, Organ> ownOrgans = organProxy.findAllOrganByParent(targetOrgan);
         if (StringUtils.isNotBlank(userid) && StringUtils.isNotBlank(agentuserid)) {
             // 列出所有技能组
-            List<Organ> skillGroups = organRes.findByOrgiAndIdInAndSkill(super.getOrgi(request), ownOrgans.keySet(), true);
+            List<Organ> skillGroups = organRes.findByIdInAndSkill(ownOrgans.keySet(), true);
 
             // 选择当前用户的默认技能组
-            AgentService agentService = agentServiceRes.findByIdAndOrgi(agentserviceid, super.getOrgi(request));
+            AgentService agentService = agentServiceRes.findById(agentserviceid);
 
             String currentOrgan = agentService.getSkill();
 
@@ -389,7 +382,7 @@ public class AgentAuditController extends Handler {
 
             // 列出所有在线的坐席，排除本身
             List<String> userids = new ArrayList<>();
-            final Map<String, AgentStatus> agentStatusMap = cache.findAllReadyAgentStatusByOrgi(orgi);
+            final Map<String, AgentStatus> agentStatusMap = cache.findAllReadyAgentStatus();
 
             for (final String o : agentStatusMap.keySet()) {
                 if (!StringUtils.equals(o, agentnoid)) {
@@ -410,7 +403,7 @@ public class AgentAuditController extends Handler {
             map.addAttribute("agentuserid", agentuserid);
             map.addAttribute("agentno", agentnoid);
             map.addAttribute("skillGroups", skillGroups);
-            map.addAttribute("agentservice", this.agentServiceRes.findByIdAndOrgi(agentserviceid, orgi));
+            map.addAttribute("agentservice", this.agentServiceRes.findById(agentserviceid));
             map.addAttribute("currentorgan", currentOrgan);
         }
 
@@ -434,11 +427,10 @@ public class AgentAuditController extends Handler {
             @Valid String agentid,
             @Valid String organ
     ) {
-        final String orgi = super.getOrgi(request);
         if (StringUtils.isNotBlank(organ)) {
             List<String> userids = new ArrayList<>();
 
-            final Map<String, AgentStatus> agentStatusMap = cache.findAllReadyAgentStatusByOrgi(orgi);
+            final Map<String, AgentStatus> agentStatusMap = cache.findAllReadyAgentStatus();
 
             for (final String o : agentStatusMap.keySet()) {
                 if (!StringUtils.equals(o, agentid)) {
@@ -483,17 +475,15 @@ public class AgentAuditController extends Handler {
     ) throws CSKefuException {
         final String currentAgentno = currentAgentnoid; // 当前会话坐席的agentno
 
-        final String orgi = super.getOrgi(request);
-
         if (StringUtils.isNotBlank(userid) &&
                 StringUtils.isNotBlank(agentuserid) &&
                 StringUtils.isNotBlank(agentno)) {
             final User targetAgent = userRes.findOne(agentno);
-            final AgentService agentService = agentServiceRes.findByIdAndOrgi(agentserviceid, super.getOrgi(request));
+            final AgentService agentService = agentServiceRes.findById(agentserviceid);
             /**
              * 更新AgentUser
              */
-            final AgentUser agentUser = agentUserProxy.resolveAgentUser(userid, agentuserid, orgi);
+            final AgentUser agentUser = agentUserProxy.resolveAgentUser(userid, agentuserid);
             agentUser.setAgentno(agentno);
             agentUser.setAgentname(targetAgent.getUname());
             agentUserRes.save(agentUser);
@@ -502,18 +492,18 @@ public class AgentAuditController extends Handler {
              * 坐席状态
              */
             // 转接目标坐席
-            final AgentStatus transAgentStatus = cache.findOneAgentStatusByAgentnoAndOrig(agentno, orgi);
+            final AgentStatus transAgentStatus = cache.findOneAgentStatusByAgentno(agentno);
 
             // 转接源坐席
-            final AgentStatus currentAgentStatus = cache.findOneAgentStatusByAgentnoAndOrig(currentAgentno, orgi);
+            final AgentStatus currentAgentStatus = cache.findOneAgentStatusByAgentno(currentAgentno);
 
             if (StringUtils.equals(
                     MainContext.AgentUserStatusEnum.INSERVICE.toString(), agentUser.getStatus())) { //转接 ， 发送消息给 目标坐席
 
                 // 更新当前坐席的服务访客列表
                 if (currentAgentStatus != null) {
-                    cache.deleteOnlineUserIdFromAgentStatusByUseridAndAgentnoAndOrgi(userid, currentAgentno, orgi);
-                    agentUserProxy.updateAgentStatus(currentAgentStatus, super.getOrgi(request));
+                    cache.deleteOnlineUserIdFromAgentStatusByUseridAndAgentno(userid, currentAgentno);
+                    agentUserProxy.updateAgentStatus(currentAgentStatus);
                 }
 
                 if (transAgentStatus != null) {
@@ -525,7 +515,7 @@ public class AgentAuditController extends Handler {
                 try {
                     Message outMessage = new Message();
                     outMessage.setMessage(
-                            acdMessageHelper.getSuccessMessage(agentService, agentUser.getChannel(), orgi));
+                            acdMessageHelper.getSuccessMessage(agentService, agentUser.getChanneltype()));
                     outMessage.setMessageType(MainContext.MediaType.TEXT.toString());
                     outMessage.setCalltype(MainContext.CallType.IN.toString());
                     outMessage.setCreatetime(MainUtils.dateFormate.format(new Date()));
@@ -535,7 +525,7 @@ public class AgentAuditController extends Handler {
                     if (StringUtils.isNotBlank(agentUser.getUserid())) {
                         peerSyncIM.send(
                                 MainContext.ReceiverType.VISITOR,
-                                MainContext.ChannelType.toValue(agentUser.getChannel()),
+                                MainContext.ChannelType.toValue(agentUser.getChanneltype()),
                                 agentUser.getAppid(),
                                 MainContext.MessageType.STATUS,
                                 agentUser.getUserid(),
@@ -585,17 +575,16 @@ public class AgentAuditController extends Handler {
     @RequestMapping({"/end"})
     @Menu(type = "apps", subtype = "agent")
     public ModelAndView end(HttpServletRequest request, @Valid String id) {
-        final String orgi = super.getOrgi(request);
         final User logined = super.getUser(request);
 
-        final AgentUser agentUser = agentUserRes.findByIdAndOrgi(id, orgi);
+        final AgentUser agentUser = agentUserRes.findById(id);
 
         if (agentUser != null) {
             if ((StringUtils.equals(
                     logined.getId(), agentUser.getAgentno()) || logined.isAdmin())) {
                 // 删除访客-坐席关联关系，包括缓存
                 try {
-                    acdAgentService.finishAgentUser(agentUser, orgi);
+                    acdAgentService.finishAgentUser(agentUser);
                 } catch (CSKefuException e) {
                     // 未能删除成功
                     logger.error("[end]", e);
@@ -615,7 +604,7 @@ public class AgentAuditController extends Handler {
         map.addAttribute("agentuserid", agentuserid);
         map.addAttribute("agentserviceid", agentserviceid);
         map.addAttribute("userid", userid);
-        map.addAttribute("agentUser", agentUserRes.findByIdAndOrgi(userid, super.getOrgi(request)));
+        map.addAttribute("agentUser", agentUserRes.findById(userid));
         return request(super.createView("/apps/cca/blacklistadd"));
     }
 
@@ -630,7 +619,6 @@ public class AgentAuditController extends Handler {
             throws Exception {
         logger.info("[blacklist] userid {}", userid);
         final User logined = super.getUser(request);
-        final String orgi = logined.getOrgi();
 
         if (StringUtils.isBlank(userid)) {
             throw new CSKefuException("Invalid userid");
@@ -643,10 +631,9 @@ public class AgentAuditController extends Handler {
 
         int timeSeconds = blackEntity.getControltime() * 3600;
         payload.put("userId", userid);
-        payload.put("orgi", orgi);
         ModelAndView view = end(request, agentuserid);
         // 更新或创建黑名单
-        blackEntityProxy.updateOrCreateBlackEntity(blackEntity, logined, userid, orgi, agentserviceid, agentuserid);
+        blackEntityProxy.updateOrCreateBlackEntity(blackEntity, logined, userid, agentserviceid, agentuserid);
 
         // 创建定时任务 取消拉黑
         brokerPublisher.send(

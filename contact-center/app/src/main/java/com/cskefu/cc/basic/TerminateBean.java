@@ -12,11 +12,8 @@ package com.cskefu.cc.basic;
 
 import javax.annotation.PreDestroy;
 
-import com.chatopera.cc.BlessingAndUnblessing;
-
 public class TerminateBean {
-	@PreDestroy
-	public void onDestroy() throws Exception {
-		BlessingAndUnblessing.print();
-	}
+    @PreDestroy
+    public void onDestroy() throws Exception {
+    }
 }

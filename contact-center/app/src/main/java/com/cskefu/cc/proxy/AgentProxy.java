@@ -14,7 +14,7 @@ import com.cskefu.cc.socketio.message.ChatMessage;
 import com.cskefu.cc.socketio.message.Message;
 import com.cskefu.cc.util.HashMapUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +51,7 @@ public class AgentProxy {
     private PeerSyncIM peerSyncIM;
 
     @Autowired
-    private SNSAccountRepository snsAccountRes;
+    private ChannelRepository snsAccountRes;
 
     @Autowired
     private Cache cache;
@@ -70,25 +70,23 @@ public class AgentProxy {
      * @param agentStatus
      */
     public void ready(final User user, final AgentStatus agentStatus, final boolean busy) {
-        agentStatus.setOrgi(user.getOrgi());
         agentStatus.setUserid(user.getId());
         agentStatus.setUsername(user.getUname());
         agentStatus.setAgentno(user.getId());
         agentStatus.setLogindate(new Date());
-        agentStatus.setOrgi(agentStatus.getOrgi());
         agentStatus.setUpdatetime(new Date());
         agentStatus.setSkills(user.getSkills());
         // TODO 对于busy的判断，其实可以和AgentStatus maxuser以及users结合
         // 现在为了配合前端的行为：从未就绪到就绪设置为置闲
         agentStatus.setBusy(busy);
-//        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(agentStatus.getOrgi());
+//        SessionConfig sessionConfig = acdPolicyService.initSessionConfig();
 //        agentStatus.setMaxusers(sessionConfig.getMaxuser());
 
         /**
          * 更新当前用户状态
          */
         agentStatus.setUsers(
-                cache.getInservAgentUsersSizeByAgentnoAndOrgi(agentStatus.getAgentno(), agentStatus.getOrgi()));
+                cache.getInservAgentUsersSizeByAgentno(agentStatus.getAgentno()));
         agentStatus.setStatus(MainContext.AgentStatusEnum.READY.toString());
 
         logger.info(
@@ -114,9 +112,9 @@ public class AgentProxy {
 
         // 设置SNSAccount信息
         if (StringUtils.isNotBlank(agentUser.getAppid())) {
-            snsAccountRes.findOneBySnsTypeAndSnsIdAndOrgi(
-                    agentUser.getChannel(), agentUser.getAppid(), agentUser.getOrgi()).ifPresent(
-                    p -> outMessage.setSnsAccount(p));
+            snsAccountRes.findOneBySnsTypeAndSnsId(
+                    agentUser.getChanneltype(), agentUser.getAppid()).ifPresent(
+                    outMessage::setSnsAccount);
         }
 
         outMessage.setContextid(chatMessage.getContextid());
@@ -139,7 +137,7 @@ public class AgentProxy {
         // 发送消息给在线访客(此处也会生成对话聊天历史和会话监控消息)
         peerSyncIM.send(
                 MainContext.ReceiverType.VISITOR,
-                MainContext.ChannelType.toValue(agentUser.getChannel()),
+                MainContext.ChannelType.toValue(agentUser.getChanneltype()),
                 agentUser.getAppid(),
                 MainContext.MessageType.MESSAGE,
                 chatMessage.getTouser(),
@@ -175,11 +173,10 @@ public class AgentProxy {
         chatMessage.setId(MainUtils.getUUID());
         chatMessage.setContextid(agentUser.getContextid());
         chatMessage.setAgentserviceid(agentUser.getAgentserviceid());
-        chatMessage.setChannel(agentUser.getChannel());
+        chatMessage.setChannel(agentUser.getChanneltype());
         chatMessage.setUsession(agentUser.getUserid());
         chatMessage.setAppid(agentUser.getAppid());
         chatMessage.setUserid(creator.getId());
-        chatMessage.setOrgi(creator.getOrgi());
         chatMessage.setCreater(creator.getId());
         chatMessage.setUsername(creator.getUname());
 
@@ -188,8 +185,7 @@ public class AgentProxy {
             chatMessage.setTouser(agentUser.getUserid());
         }
 
-        if (multipart.getContentType() != null && multipart.getContentType().indexOf(
-                Constants.ATTACHMENT_TYPE_IMAGE) >= 0) {
+        if (multipart.getContentType() != null && multipart.getContentType().contains(Constants.ATTACHMENT_TYPE_IMAGE)) {
             chatMessage.setMsgtype(MainContext.MediaType.IMAGE.toString());
         } else {
             chatMessage.setMsgtype(MainContext.MediaType.FILE.toString());
@@ -214,7 +210,7 @@ public class AgentProxy {
              */
             // 发送消息给访客
             peerSyncIM.send(MainContext.ReceiverType.VISITOR,
-                    MainContext.ChannelType.toValue(agentUser.getChannel()),
+                    MainContext.ChannelType.toValue(agentUser.getChanneltype()),
                     agentUser.getAppid(), MainContext.MessageType.MESSAGE,
                     agentUser.getUserid(),
                     outMessage,
@@ -258,8 +254,7 @@ public class AgentProxy {
         /**
          * 保存到本地
          */
-        if (multipart.getContentType() != null && multipart.getContentType().indexOf(
-                Constants.ATTACHMENT_TYPE_IMAGE) >= 0) {
+        if (multipart.getContentType() != null && multipart.getContentType().contains(Constants.ATTACHMENT_TYPE_IMAGE)) {
             // 图片
             // process thumbnail
             File original = new File(webUploadPath, "upload/" + fileid + "_original");
@@ -308,7 +303,6 @@ public class AgentProxy {
         // 文件尺寸 限制 ？在 启动 配置中 设置 的最大值，其他地方不做限制
         AttachmentFile attachmentFile = new AttachmentFile();
         attachmentFile.setCreater(owner.getId());
-        attachmentFile.setOrgi(owner.getOrgi());
         attachmentFile.setModel(MainContext.ModelType.WEBIM.toString());
         attachmentFile.setFilelength((int) multipart.getSize());
         if (multipart.getContentType() != null && multipart.getContentType().length() > 255) {
@@ -322,8 +316,7 @@ public class AgentProxy {
         } else {
             attachmentFile.setTitle(uploadFile.getName());
         }
-        if (StringUtils.isNotBlank(attachmentFile.getFiletype()) && attachmentFile.getFiletype().indexOf(
-                Constants.ATTACHMENT_TYPE_IMAGE) >= 0) {
+        if (StringUtils.isNotBlank(attachmentFile.getFiletype()) && attachmentFile.getFiletype().contains(Constants.ATTACHMENT_TYPE_IMAGE)) {
             attachmentFile.setImage(true);
         }
         attachmentFile.setFileid(fileid);
@@ -337,17 +330,16 @@ public class AgentProxy {
      * 先从缓存读取，再从数据库，还没有就新建
      *
      * @param agentno
-     * @param orgi
      * @return
      */
-    public AgentStatus resolveAgentStatusByAgentnoAndOrgi(final String agentno, final String orgi, final HashMap<String, String> skills) {
+    public AgentStatus resolveAgentStatusByAgentno(final String agentno, final HashMap<String, String> skills) {
         logger.info(
                 "[resolveAgentStatusByAgentnoAndOrgi] agentno {}, skills {}", agentno,
                 HashMapUtils.concatKeys(skills, "|"));
-        AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(agentno, orgi);
+        AgentStatus agentStatus = cache.findOneAgentStatusByAgentno(agentno);
 
         if (agentStatus == null) {
-            agentStatus = agentStatusRes.findOneByAgentnoAndOrgi(agentno, orgi).orElseGet(AgentStatus::new);
+            agentStatus = agentStatusRes.findOneByAgentno(agentno).orElseGet(AgentStatus::new);
         }
 
         if (skills != null) {

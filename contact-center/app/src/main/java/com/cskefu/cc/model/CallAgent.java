@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ public class CallAgent implements java.io.Serializable{
 
 	private String id;
 
-	private String orgi; // 租户ID
 	private String organ; // 创建部门
 	private String creater; // 创建人
 
@@ -77,14 +76,6 @@ public class CallAgent implements java.io.Serializable{
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getOrgi() {
-		return orgi;
-	}
-
-	public void setOrgi(String orgi) {
-		this.orgi = orgi;
 	}
 
 	public String getOrgan() {

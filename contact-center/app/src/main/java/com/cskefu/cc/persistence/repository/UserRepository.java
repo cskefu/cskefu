@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, String> {
 
@@ -41,31 +43,24 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     User findByUsernameAndDatastatus(String username, boolean datastatus);
 
+    Optional<User> findByUsername(String username);
+
     User findByUsernameAndPasswordAndDatastatus(String username, String password, boolean datastatus);
 
     User findByUsernameAndPassword(String username, String password);
 
-    Page<User> findByOrgi(String orgi, Pageable paramPageable);
-
     // 查询所有管理员
-    List<User> findByAdminAndOrgi(boolean admin, final String orgi);
+    List<User> findByAdmin(boolean admin);
 
-    List<User> findByOrgi(String orgi);
+    Page<User> findByDatastatus(boolean datastatus, Pageable paramPageable);
 
-    Page<User> findByDatastatusAndOrgi(boolean datastatus, String orgi, Pageable paramPageable);
+    List<User> findByDatastatus(boolean datastatus);
 
-    Page<User> findByDatastatusAndOrgiAndUsernameLike(boolean datastatus, String orgi, String username, Pageable paramPageable);
+    Page<User> findByDatastatusAndUsernameLike(boolean datastatus, String username, Pageable paramPageable);
 
-    Page<User> findByIdAndOrgi(String id, String orgi, Pageable paramPageable);
+    Page<User> findById(String id, Pageable paramPageable);
 
-    List<User> findByOrgiAndDatastatusAndIdIn(
-            String orgi,
-            boolean datastatus,
-            List<String> users);
-
-    List<User> findByOrgiAndDatastatus(final String orgi, final boolean datastatus);
-
-    List<User> findByOrgiAndAgentAndDatastatus(final String orgi, final boolean agent, final boolean status);
+    List<User> findByAgentAndDatastatus(final boolean isAgent, final boolean datastatus);
 
     long countByAgentAndDatastatusAndIdIn(
             final boolean agent,
@@ -73,10 +68,6 @@ public interface UserRepository extends JpaRepository<User, String> {
             final List<String> users);
 
     List<User> findAll(Specification<User> spec);
-
-    Page<User> findByDatastatusAndOrgiAndSuperadminNot(
-            boolean datastatus, String orgi, boolean superadmin,
-            Pageable pageRequest);
 
     Page<User> findByAgentAndDatastatusAndIdIn(
             boolean agent,
@@ -93,9 +84,9 @@ public interface UserRepository extends JpaRepository<User, String> {
             final String username,
             final List<String> users, Pageable pageRequest);
 
-    List<User> findByOrgiAndAgentAndDatastatusAndIdIsNot(final String orgi, boolean agent, boolean datastatus, final String id);
+    List<User> findByAgentAndDatastatusAndIdIsNot(boolean agent, boolean datastatus, final String id);
 
-    Page<User> findByIdIn(Iterable<String> ids, Pageable pageRequest);
+    Page<User> findByIdIn(Collection<String> ids, Pageable pageRequest);
 
     List<User> findByIdIn(List<String> ids);
 }

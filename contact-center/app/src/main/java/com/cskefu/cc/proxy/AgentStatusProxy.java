@@ -41,17 +41,15 @@ public class AgentStatusProxy {
     /**
      * 向所有坐席client通知坐席状态变化
      *
-     * @param orgi
      * @param worktype
      * @param workresult
      * @param dataid
      */
-    public void broadcastAgentsStatus(final String orgi, final String worktype, final String workresult, final String dataid) {
+    public void broadcastAgentsStatus(final String worktype, final String workresult, final String dataid) {
         /**
          * 坐席状态改变，通知监测服务
          */
-        AgentReport agentReport = acdWorkMonitor.getAgentReport(orgi);
-        agentReport.setOrgi(orgi);
+        AgentReport agentReport = acdWorkMonitor.getAgentReport();
         agentReport.setWorktype(worktype);
         agentReport.setWorkresult(workresult);
         agentReport.setDataid(dataid);

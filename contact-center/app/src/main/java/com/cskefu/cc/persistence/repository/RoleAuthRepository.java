@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +24,14 @@ import java.util.List;
 
 public interface RoleAuthRepository
         extends JpaRepository<RoleAuth, String> {
-    RoleAuth findByIdAndOrgi(String paramString, String orgi);
+    RoleAuth findById(String id);
 
-    List<RoleAuth> findByRoleidAndOrgi(String roleid, String orgi);
+    List<RoleAuth> findByRoleid(String roleid);
 
     List<RoleAuth> findAll(Specification<RoleAuth> spec);
 
-    RoleAuth findByNameAndOrgi(String paramString, String orgi);
+    RoleAuth findByName(String paramString);
 
-    List<RoleAuth> findByDicvalueAndOrgi(final String dicvalue, final String orgi);
+    List<RoleAuth> findByDicvalue(final String dicvalue);
 }
 

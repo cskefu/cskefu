@@ -20,7 +20,7 @@ import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.model.AgentService;
 import com.cskefu.cc.model.AgentUser;
 import com.cskefu.cc.persistence.repository.AgentServiceRepository;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,15 +39,14 @@ public class ACDChatbotService {
      * 为访客分配机器人客服， ACD策略，此处 AgentStatus 是建议 的 坐席，  如果启用了  历史服务坐席 优先策略， 则会默认检查历史坐席是否空闲，如果空闲，则分配，如果不空闲，则 分配当前建议的坐席
      *
      * @param agentUser
-     * @param orgi
      * @return
      * @throws Exception
      */
-    public AgentService processChatbotService(final String botName, final AgentUser agentUser, final String orgi) {
+    public AgentService processChatbotService(final String botName, final AgentUser agentUser) {
         AgentService agentService = new AgentService();    //放入缓存的对象
         Date now = new Date();
         if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-            agentService = agentServiceRes.findByIdAndOrgi(agentUser.getAgentserviceid(), orgi);
+            agentService = agentServiceRes.findById(agentUser.getAgentserviceid());
             agentService.setEndtime(now);
             if (agentService.getServicetime() != null) {
                 agentService.setSessiontimes(System.currentTimeMillis() - agentService.getServicetime().getTime());
@@ -56,12 +55,11 @@ public class ACDChatbotService {
         } else {
             agentService.setServicetime(now);
             agentService.setLogindate(now);
-            agentService.setOrgi(orgi);
             agentService.setOwner(agentUser.getContextid());
             agentService.setSessionid(agentUser.getSessionid());
             agentService.setRegion(agentUser.getRegion());
             agentService.setUsername(agentUser.getUsername());
-            agentService.setChannel(agentUser.getChannel());
+            agentService.setChanneltype(agentUser.getChanneltype());
             if (botName != null) {
                 agentService.setAgentusername(botName);
             }

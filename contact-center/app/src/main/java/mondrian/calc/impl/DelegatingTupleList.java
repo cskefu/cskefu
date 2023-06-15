@@ -91,8 +91,8 @@ public class DelegatingTupleList extends AbstractTupleList
         return new DelegatingTupleList(
             arity,
             capacity < 0
-                ? new ArrayList<List<Member>>(list)
-                : new ArrayList<List<Member>>(capacity));
+                ? new ArrayList<>(list)
+                : new ArrayList<>(capacity));
     }
 
     @Override

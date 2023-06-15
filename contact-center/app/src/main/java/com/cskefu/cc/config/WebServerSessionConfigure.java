@@ -17,7 +17,7 @@ package com.cskefu.cc.config;
 
 import com.cskefu.cc.basic.auth.AuthRedisTemplate;
 import com.cskefu.cc.cache.RedisKey;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -87,7 +87,7 @@ public class WebServerSessionConfigure {
         }
         factory.setTimeout(timeout);
         factory.afterPropertiesSet();
-        RedisTemplate<Object, Object> template = new RedisTemplate<Object, Object>();
+        RedisTemplate<Object, Object> template = new RedisTemplate<>();
         template.setKeySerializer(new StringRedisSerializer());
         template.setHashKeySerializer(new StringRedisSerializer());
         template.setConnectionFactory(factory);

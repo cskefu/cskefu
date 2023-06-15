@@ -36,8 +36,8 @@ import com.cskefu.cc.persistence.repository.*;
 import com.cskefu.cc.socketio.message.ChatMessage;
 import com.cskefu.cc.socketio.message.Message;
 import com.cskefu.cc.util.HttpClientUtil;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -65,13 +65,13 @@ public class MessengerMessageProxy {
     private final String FACEBOOK_MESSAGES_API = "https://graph.facebook.com/v2.6/me/messages";
 
     @Autowired
-    private OnlineUserRepository onlineUserRes;
+    private PassportWebIMUserRepository onlineUserRes;
 
     @Autowired
     private AgentUserRepository agentUserRes;
 
     @Autowired
-    private SNSAccountRepository snsAccountRes;
+    private ChannelRepository snsAccountRes;
 
     @Autowired
     private ACDMessageHelper acdMessageHelper;
@@ -161,50 +161,49 @@ public class MessengerMessageProxy {
     }
 
     public void accept(String fromId, String toId, MainContext.MediaType msgType, String msg) throws CSKefuException, ChatbotException, MalformedURLException {
-        Optional<SNSAccount> optionalSNSAccount = snsAccountRes.findBySnsid(toId);
+        Optional<Channel> optionalSNSAccount = snsAccountRes.findBySnsid(toId);
 
         if (!optionalSNSAccount.isPresent()) {
             logger.warn("[handle] SnsAccount is null.");
             return;
         }
 
-        SNSAccount snsAccount = optionalSNSAccount.get();
+        Channel channel = optionalSNSAccount.get();
 
         Date now = new Date();
 
-        OnlineUser onlineUser = onlineUserRes.findOneByUseridAndOrgi(fromId, Constants.SYSTEM_ORGI);
-        if (onlineUser == null) {
-            onlineUser = new OnlineUser();
+        PassportWebIMUser passportWebIMUser = onlineUserRes.findOneByUserid(fromId);
+        if (passportWebIMUser == null) {
+            passportWebIMUser = new PassportWebIMUser();
         }
 
-        if (StringUtils.isBlank(onlineUser.getUserid())) {
+        if (StringUtils.isBlank(passportWebIMUser.getUserid())) {
             Map<String, String> profile = getPersonName(toId, fromId);
 
             // 创建新的Onlineuser
-            onlineUser.setId(MainUtils.getUUID());
-            onlineUser.setUpdatetime(now);
-            onlineUser.setUsername(profile.get("name"));
-            onlineUser.setHeadimgurl(profile.get("profile_pic"));
-            onlineUser.setCreatetime(now);
-            onlineUser.setLogintime(now);
-            onlineUser.setChannel(MainContext.ChannelType.MESSENGER.toString());
-            onlineUser.setAppid(snsAccount.getSnsid());
-            onlineUser.setStatus(MainContext.OnlineUserStatusEnum.ONLINE.toString());
-            onlineUser.setOrgi(Constants.SYSTEM_ORGI);
-            onlineUser.setUserid(fromId);
-            onlineUser.setUsertype(MainContext.OnlineUserType.MESSENGER.toString());
-            onlineUserRes.save(onlineUser);
-        } else if (cache.existBlackEntityByUserIdAndOrgi(onlineUser.getUserid(), Constants.SYSTEM_ORGI)) {
+            passportWebIMUser.setId(MainUtils.getUUID());
+            passportWebIMUser.setUpdatetime(now);
+            passportWebIMUser.setUsername(profile.get("name"));
+            passportWebIMUser.setHeadimgurl(profile.get("profile_pic"));
+            passportWebIMUser.setCreatetime(now);
+            passportWebIMUser.setLogintime(now);
+            passportWebIMUser.setChannel(MainContext.ChannelType.MESSENGER.toString());
+            passportWebIMUser.setAppid(channel.getSnsid());
+            passportWebIMUser.setStatus(MainContext.OnlineUserStatusEnum.ONLINE.toString());
+            passportWebIMUser.setUserid(fromId);
+            passportWebIMUser.setUsertype(MainContext.OnlineUserType.MESSENGER.toString());
+            onlineUserRes.save(passportWebIMUser);
+        } else if (cache.existBlackEntityByUserId(passportWebIMUser.getUserid())) {
             // 检查该访客是否被拉黑
-            logger.info("[handle] online user {} is in black list.", onlineUser.getId());
+            logger.info("[handle] online user {} is in black list.", passportWebIMUser.getId());
             return;
         }
 
-        Chatbot c = chatbotRes.findBySnsAccountIdentifierAndOrgi(toId, Constants.SYSTEM_ORGI);
+        Chatbot c = chatbotRes.findBySnsAccountIdentifier(toId);
         if (c != null && c.isEnabled()) {
 
             if (!StringUtils.equals(Constants.CHATBOT_HUMAN_FIRST, c.getWorkmode())) {
-                Boolean sendService = messengerChatbot.receiveMessage(c.getId(), fromId, toId, onlineUser, msgType, msg);
+                Boolean sendService = messengerChatbot.receiveMessage(c.getId(), fromId, toId, passportWebIMUser, msgType, msg);
                 if (sendService) {
                     return;
                 }
@@ -212,7 +211,7 @@ public class MessengerMessageProxy {
         } else if (c != null && !c.isEnabled() && StringUtils.equals(Constants.CHATBOT_CHATBOT_ONLY, c.getWorkmode())) {
             return;
         } else {
-            agentUserRes.findOneByUseridAndStatusNotAndChannelAndOrgi(fromId, MainContext.AgentUserStatusEnum.END.toString(), MainContext.ChannelType.MESSENGER.toString(), Constants.SYSTEM_ORGI).ifPresent(p -> {
+            agentUserRes.findOneByUseridAndStatusNotAndChanneltype(fromId, MainContext.AgentUserStatusEnum.END.toString(), MainContext.ChannelType.MESSENGER.toString()).ifPresent(p -> {
                 if (p.isChatbotops()) {
                     messengerChatbot.switchManualCustomerService(fromId);
                 }
@@ -224,8 +223,8 @@ public class MessengerMessageProxy {
          * 因为AgentUser是和OnlineUser关联的
          */
         // 一个OnlineUser可以对应多个agentUser, 此处获得
-        AgentUser agentUser = agentUserRes.findOneByUseridAndStatusNotAndChannelAndOrgi(fromId, MainContext.AgentUserStatusEnum.END.toString(), MainContext.ChannelType.MESSENGER.toString(), Constants.SYSTEM_ORGI)
-                .orElseGet(() -> new AgentUser());
+        AgentUser agentUser = agentUserRes.findOneByUseridAndStatusNotAndChanneltype(fromId, MainContext.AgentUserStatusEnum.END.toString(), MainContext.ChannelType.MESSENGER.toString())
+                .orElseGet(AgentUser::new);
 
         AgentService agentService;
 
@@ -237,7 +236,7 @@ public class MessengerMessageProxy {
 
             // 没有加载到进行中的AgentUser，创建一个新的
             agentService = scheduleMessengerAgentUser(
-                    agentUser, onlineUser, snsAccount, Constants.SYSTEM_ORGI).orElseThrow(
+                    agentUser, passportWebIMUser, channel).orElseThrow(
                     () -> new CSKefuException("Can not resolve AgentService Object."));
         } else {
             agentService = agentServiceRes.findOne(agentUser.getAgentserviceid());
@@ -252,7 +251,6 @@ public class MessengerMessageProxy {
             Message outMessage = new Message();
 
             chatMessage.setMessage(msg);
-            chatMessage.setOrgi(Constants.SYSTEM_ORGI);
             chatMessage.setUsername(agentUser.getName());
             chatMessage.setCalltype(MainContext.CallType.IN.toString());
             if (StringUtils.isNotBlank(agentUser.getAgentno())) {
@@ -311,41 +309,38 @@ public class MessengerMessageProxy {
     /**
      * 创建新的AgentUser
      *
-     * @param onlineUser 访客
+     * @param passportWebIMUser 访客
      * @param snsAccount 社交信息账号
-     * @param orgi       租户ID
      * @return
      */
     public Optional<AgentService> scheduleMessengerAgentUser(
             final AgentUser agentUser,
-            final OnlineUser onlineUser,
-            final SNSAccount snsAccount,
-            final String orgi) throws CSKefuException {
+            final PassportWebIMUser passportWebIMUser,
+            final Channel snsAccount) throws CSKefuException {
         if (agentUser == null) {
             throw new CSKefuException("Invalid param for agentUser, should not be null.");
         }
 
         String channel = MainContext.ChannelType.MESSENGER.toString();
         Date now = new Date();
-        agentUser.setUsername(onlineUser.getUsername());
+        agentUser.setUsername(passportWebIMUser.getUsername());
         agentUser.setSkill(snsAccount.getOrgan());
-        agentUser.setOrgi(orgi);
-        agentUser.setNickname(onlineUser.getUsername());
-        agentUser.setUserid(onlineUser.getUserid());
+        agentUser.setNickname(passportWebIMUser.getUsername());
+        agentUser.setUserid(passportWebIMUser.getUserid());
         agentUser.setStatus(MainContext.AgentUserStatusEnum.END.toString());
         agentUser.setLogindate(now);
         agentUser.setServicetime(now);
         agentUser.setCreatetime(now);
         agentUser.setUpdatetime(now);
         agentUser.setSessiontimes(System.currentTimeMillis() - now.getTime());
-        agentUser.setChannel(channel);
+        agentUser.setChanneltype(channel);
         agentUser.setAppid(snsAccount.getSnsid());
         agentUserRes.save(agentUser);
 
         // 为访客安排坐席
         ACDComposeContext ctx = acdMessageHelper.getComposeContextWithAgentUser(
                 agentUser, false, MainContext.ChatInitiatorType.USER.toString());
-        ctx.setOnlineUserHeadimgUrl(onlineUser.getHeadimgurl());
+        ctx.setOnlineUserHeadimgUrl(passportWebIMUser.getHeadimgurl());
 
         acdVisitorDispatcher.enqueue(ctx);
         acdAgentService.notifyAgentUserProcessResult(ctx);
@@ -503,7 +498,7 @@ public class MessengerMessageProxy {
         logger.info("send messenger fromId:{} toId:{} msg:{}", fromId, toId, msg);
 
         JSONObject message = new JSONObject();
-        message.put("text", StringEscapeUtils.unescapeHtml(msg));
+        message.put("text", StringEscapeUtils.unescapeHtml4(msg));
 
         send(fromId, toId, message);
     }

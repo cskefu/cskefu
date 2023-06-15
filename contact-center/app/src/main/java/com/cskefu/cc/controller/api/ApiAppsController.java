@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2022 Chatopera Inc, All rights reserved.
+ * Copyright (C) 2018-2023 Chatopera Inc, All rights reserved.
  * <https://www.chatopera.com>
  * This software and related documentation are provided under a license agreement containing
  * restrictions on use and disclosure and are protected by intellectual property laws.
@@ -12,16 +12,16 @@ package com.cskefu.cc.controller.api;
 
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.controller.Handler;
-import com.cskefu.cc.controller.api.request.RestUtils;
+import com.cskefu.cc.util.restapi.RestUtils;
 import com.cskefu.cc.model.InviteRecord;
-import com.cskefu.cc.model.OnlineUser;
+import com.cskefu.cc.model.PassportWebIMUser;
 import com.cskefu.cc.persistence.repository.InviteRecordRepository;
-import com.cskefu.cc.persistence.repository.OnlineUserRepository;
+import com.cskefu.cc.persistence.repository.PassportWebIMUserRepository;
 import com.cskefu.cc.proxy.OnlineUserProxy;
 import com.cskefu.cc.util.Menu;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class ApiAppsController extends Handler {
     private final static Logger logger = LoggerFactory.getLogger(ApiAppsController.class);
 
     @Autowired
-    private OnlineUserRepository onlineUserRes;
+    private PassportWebIMUserRepository onlineUserRes;
 
     @Autowired
     private InviteRecordRepository inviteRecordRes;
@@ -71,7 +71,7 @@ public class ApiAppsController extends Handler {
             }
         }
 
-        return new ResponseEntity<String>(json.toString(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(json.toString(), headers, HttpStatus.OK);
 
     }
 
@@ -84,31 +84,29 @@ public class ApiAppsController extends Handler {
      */
     private JsonObject invite(final HttpServletRequest request, final JsonObject j) {
         JsonObject resp = new JsonObject();
-        final String orgi = super.getOrgi(request);
         final String agentno = super.getUser(request).getId();
 
         final String userid = j.get("userid").getAsString();
 
         logger.info("[invite] agentno {} invite onlineUser {}", agentno, userid);
-        OnlineUser onlineUser = OnlineUserProxy.onlineuser(userid, orgi);
+        PassportWebIMUser passportWebIMUser = OnlineUserProxy.onlineuser(userid);
 
-        if (onlineUser != null) {
-            logger.info("[invite] userid {}, agentno {}, orgi {}", userid, agentno, orgi);
-            onlineUser.setInvitestatus(MainContext.OnlineUserInviteStatus.INVITE.toString());
-            onlineUser.setInvitetimes(onlineUser.getInvitetimes() + 1);
-            onlineUserRes.save(onlineUser);
+        if (passportWebIMUser != null) {
+            logger.info("[invite] userid {}, agentno {}", userid, agentno);
+            passportWebIMUser.setInvitestatus(MainContext.OnlineUserInviteStatus.INVITE.toString());
+            passportWebIMUser.setInvitetimes(passportWebIMUser.getInvitetimes() + 1);
+            onlineUserRes.save(passportWebIMUser);
 
             InviteRecord record = new InviteRecord();
             record.setAgentno(super.getUser(request).getId());
             // 对于OnlineUser, 其userId与id是相同的
-            record.setUserid(onlineUser.getUserid());
-            record.setAppid(onlineUser.getAppid());
-            record.setOrgi(super.getOrgi(request));
+            record.setUserid(passportWebIMUser.getUserid());
+            record.setAppid(passportWebIMUser.getAppid());
             inviteRecordRes.save(record);
-            logger.info("[invite] new invite record {} of onlineUser id {} saved.", record.getId(), onlineUser.getId());
+            logger.info("[invite] new invite record {} of onlineUser id {} saved.", record.getId(), passportWebIMUser.getId());
 
             try {
-                OnlineUserProxy.sendWebIMClients(onlineUser.getUserid(), "invite:" + agentno);
+                OnlineUserProxy.sendWebIMClients(passportWebIMUser.getUserid(), "invite:" + agentno);
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
             } catch (Exception e) {
                 logger.error("[invite] error", e);

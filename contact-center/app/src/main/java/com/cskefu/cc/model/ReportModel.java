@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,6 @@ public class ReportModel implements java.io.Serializable {
 	private String measure ;		//逗号分隔
 	private String dstype ;		//数据源类型cube or table
 	private String dbtype;      //数据库类型：sqlserver oracle mysql hive ....
-	private String orgi ;
 	private String objectid ;
 	private Date createtime ;
 	private String filterstr;
@@ -142,12 +141,12 @@ public class ReportModel implements java.io.Serializable {
 	private String sorttype;//排序类型
 	private String sortname;//排序列名称；
 	
-	private List<ColumnProperties> properties = new ArrayList<ColumnProperties>();
-	private List<ColumnProperties> colproperties = new ArrayList<ColumnProperties>();
+	private List<ColumnProperties> properties = new ArrayList<>();
+	private List<ColumnProperties> colproperties = new ArrayList<>();
 	
-	private List<ColumnProperties> measures = new ArrayList<ColumnProperties>();
-	private List<ReportFilter> filters = new ArrayList<ReportFilter>() ;
-	private List<DrillDown> drilldown = new ArrayList<DrillDown>();
+	private List<ColumnProperties> measures = new ArrayList<>();
+	private List<ReportFilter> filters = new ArrayList<>() ;
+	private List<DrillDown> drilldown = new ArrayList<>();
 	
 	private ReportData reportData ;
 	
@@ -298,12 +297,6 @@ public class ReportModel implements java.io.Serializable {
 	}
 	public void setDbtype(String dbtype) {
 		this.dbtype = dbtype;
-	}
-	public String getOrgi() {
-		return orgi;
-	}
-	public void setOrgi(String orgi) {
-		this.orgi = orgi;
 	}
 	public String getObjectid() {
 		return objectid;

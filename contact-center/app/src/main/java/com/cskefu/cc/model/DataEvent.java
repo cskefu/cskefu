@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,6 @@ public class DataEvent implements java.io.Serializable{
 	private String id ;
 	private String name ;
 	
-	private String orgi ;
 	private String modifyid;	//变更 ID， UUID，随机生成
 	
 	private User user ;
@@ -71,14 +70,6 @@ public class DataEvent implements java.io.Serializable{
 		this.name = name;
 	}
 
-	public String getOrgi() {
-		return orgi;
-	}
-
-	public void setOrgi(String orgi) {
-		this.orgi = orgi;
-	}
-
 	public String getModifyid() {
 		return modifyid;
 	}
@@ -87,7 +78,7 @@ public class DataEvent implements java.io.Serializable{
 		this.modifyid = modifyid;
 	}
 	@OneToOne
-    @JoinColumn(name="creater",insertable=false , updatable = false,unique=false)  
+    @JoinColumn(name="creater",insertable=false , updatable = false)
 	public User getUser() {
 		return user;
 	}

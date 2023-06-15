@@ -79,10 +79,10 @@ public class SqlStatement {
     public int rowCount;
     private long startTimeNanos;
     private long startTimeMillis;
-    private final List<Accessor> accessors = new ArrayList<Accessor>();
+    private final List<Accessor> accessors = new ArrayList<>();
     private State state = State.FRESH;
     private final long id;
-    private Functor1<Void, Statement> callback;
+    private final Functor1<Void, Statement> callback;
 
     /**
      * Creates a SqlStatement.
@@ -363,46 +363,32 @@ public class SqlStatement {
         final int columnPlusOne = column + 1;
         switch (type) {
         case OBJECT:
-            return new Accessor() {
-                public Object get() throws SQLException {
-                    return resultSet.getObject(columnPlusOne);
-                }
-            };
+            return () -> resultSet.getObject(columnPlusOne);
         case STRING:
-            return new Accessor() {
-                public Object get() throws SQLException {
-                    return resultSet.getString(columnPlusOne);
-                }
-            };
+            return () -> resultSet.getString(columnPlusOne);
         case INT:
-            return new Accessor() {
-                public Object get() throws SQLException {
-                    final int val = resultSet.getInt(columnPlusOne);
-                    if (val == 0 && resultSet.wasNull()) {
-                        return null;
-                    }
-                    return val;
+            return () -> {
+                final int val = resultSet.getInt(columnPlusOne);
+                if (val == 0 && resultSet.wasNull()) {
+                    return null;
                 }
+                return val;
             };
         case LONG:
-            return new Accessor() {
-                public Object get() throws SQLException {
-                    final long val = resultSet.getLong(columnPlusOne);
-                    if (val == 0 && resultSet.wasNull()) {
-                        return null;
-                    }
-                    return val;
+            return () -> {
+                final long val = resultSet.getLong(columnPlusOne);
+                if (val == 0 && resultSet.wasNull()) {
+                    return null;
                 }
+                return val;
             };
         case DOUBLE:
-            return new Accessor() {
-                public Object get() throws SQLException {
-                    final double val = resultSet.getDouble(columnPlusOne);
-                    if (val == 0 && resultSet.wasNull()) {
-                        return null;
-                    }
-                    return val;
+            return () -> {
+                final double val = resultSet.getDouble(columnPlusOne);
+                if (val == 0 && resultSet.wasNull()) {
+                    return null;
                 }
+                return val;
             };
         default:
             throw Util.unexpected(type);
@@ -413,7 +399,7 @@ public class SqlStatement {
         final ResultSetMetaData metaData = resultSet.getMetaData();
         final int columnCount = metaData.getColumnCount();
         assert this.types == null || this.types.size() == columnCount;
-        List<Type> types = new ArrayList<Type>();
+        List<Type> types = new ArrayList<>();
 
         for (int i = 0; i < columnCount; i++) {
             final Type suggestedType =

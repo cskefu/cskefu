@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,8 @@ public class UKTableMetaData {
 	private final String catalog;
 	private final String schema;
 	private String name;
-	private final List<UKColumnMetadata> columnMetaData = new ArrayList<UKColumnMetadata>();
-	private final Map<String, Object> columName = new HashMap<String, Object>() ;
+	private final List<UKColumnMetadata> columnMetaData = new ArrayList<>();
+	private final Map<String, Object> columName = new HashMap<>() ;
 	/**
 	 * 
 	 * @param rs
@@ -177,7 +177,7 @@ public class UKTableMetaData {
 	private void initColumns(ResultSetMetaData meta) throws SQLException {
 		for(int i=1 ; i<=meta.getColumnCount(); i++){
 			Object tbName = meta.getColumnName(i) ;
-			if(tbName!=null && String.valueOf(tbName).toLowerCase().indexOf("rownum")<0){
+			if(tbName!=null && !String.valueOf(tbName).toLowerCase().contains("rownum")){
 				addSqlColumn(meta.getColumnName(i) , meta.getColumnTypeName(i) , meta.getColumnType(i) , meta.getColumnDisplaySize(i));
 			}
 		}

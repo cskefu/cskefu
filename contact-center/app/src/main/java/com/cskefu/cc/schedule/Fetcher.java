@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import com.cskefu.cc.basic.resource.Resource;
 import com.cskefu.cc.cache.Cache;
 import com.cskefu.cc.model.JobDetail;
 import com.cskefu.cc.persistence.repository.ReporterRepository;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.io.IOException;
 import java.util.Date;
@@ -34,9 +34,9 @@ public class Fetcher implements Runnable {
     private static ReporterRepository reporterRes;
     private static Cache cache;
     private JobDetail job = null;
-    private AtomicInteger activeThreads = new AtomicInteger(0);
+    private final AtomicInteger activeThreads = new AtomicInteger(0);
     private AtomicInteger pages = new AtomicInteger(0); // total pages fetched
-    private AtomicInteger errors = new AtomicInteger(0); // total pages fetched
+    private final AtomicInteger errors = new AtomicInteger(0); // total pages fetched
     private Resource resource = null;
     private int processpages = 0;
 
@@ -118,7 +118,6 @@ public class Fetcher implements Runnable {
                     e.printStackTrace();
                 }
             }
-            this.job.getReport().setOrgi(this.job.getOrgi());
             this.job.getReport().setDataid(this.job.getId());
             this.job.getReport().setTitle(this.job.getName() + "_" + MainUtils.dateFormate.format(new Date()));
 
@@ -160,7 +159,7 @@ public class Fetcher implements Runnable {
             this.job.getReport().setPages(this.pages.intValue());
             this.job.getReport().setThreads(activeThreads.intValue());
             this.job.getReport().setStatus(new StringBuffer().append("已处理：").append(this.job.getReport().getPages()).append(", 错误：").append(this.job.getReport().getErrors()).append("，处理速度：").append(job.getReport().getSpeed()).append("条/秒，线程数：").append(this.job.getReport().getThreads()).append(this.job.getReport().getDetailmsg() != null ? "，详细信息：" + this.job.getReport().getDetailmsg() : "").toString());
-            Fetcher.getCache().putJobByIdAndOrgi(job.getId(), job.getOrgi(), job);
+            Fetcher.getCache().putJobById(job.getId(), job);
         }
     }
 
@@ -171,8 +170,8 @@ public class Fetcher implements Runnable {
     }
 
 
-    private static Cache getCache(){
-        if(cache == null)
+    private static Cache getCache() {
+        if (cache == null)
             cache = MainContext.getContext().getBean(Cache.class);
         return cache;
     }

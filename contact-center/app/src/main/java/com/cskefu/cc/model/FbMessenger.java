@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package com.cskefu.cc.model;
 
 import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

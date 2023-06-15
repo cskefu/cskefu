@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,14 @@ package com.cskefu.cc.plugins.chatbot;
 import com.cskefu.cc.controller.Handler;
 import com.cskefu.cc.exception.CSKefuException;
 import com.cskefu.cc.model.Chatbot;
-import com.cskefu.cc.model.SNSAccount;
+import com.cskefu.cc.model.Channel;
 import com.cskefu.cc.model.User;
 import com.cskefu.cc.persistence.repository.ChatbotRepository;
-import com.cskefu.cc.persistence.repository.SNSAccountRepository;
+import com.cskefu.cc.persistence.repository.ChannelRepository;
 import com.cskefu.cc.proxy.UserProxy;
 import com.cskefu.cc.util.Menu;
 import com.cskefu.cc.util.SystemEnvHelper;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +38,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/admin/system/chatbot")
@@ -49,13 +50,13 @@ public class ChatbotController extends Handler {
     private ChatbotRepository chatbotRes;
 
     @Autowired
-    private SNSAccountRepository snsAccountRes;
+    private ChannelRepository snsAccountRes;
 
     @Autowired
     private UserProxy userProxy;
 
     @Autowired
-    private SNSAccountRepository snsAccountRepository;
+    private ChannelRepository channelRepository;
 
     private final static String botServiceProvider = SystemEnvHelper.getenv(
             ChatbotConstants.BOT_PROVIDER, ChatbotConstants.DEFAULT_BOT_PROVIDER);
@@ -67,7 +68,7 @@ public class ChatbotController extends Handler {
         logger.info("[index] chatbot id {}", chatbotid);
 
         ModelAndView view = request(super.createView("/admin/system/chatbot/index"));
-        List<Chatbot> chatbots = chatbotRes.findByOrgi(super.getOrgi(request));
+        List<Chatbot> chatbots = chatbotRes.findAll();
         Chatbot currentbot = null;
 
 
@@ -109,10 +110,9 @@ public class ChatbotController extends Handler {
             }
             // 隶属渠道
             if (StringUtils.isNotBlank(currentbot.getSnsAccountIdentifier())) {
-                snsAccountRepository.findOneBySnsTypeAndSnsIdAndOrgi(
+                channelRepository.findOneBySnsTypeAndSnsId(
                         currentbot.getChannel(),
-                        currentbot.getSnsAccountIdentifier(),
-                        currentbot.getOrgi()).ifPresent(p -> {
+                        currentbot.getSnsAccountIdentifier()).ifPresent(p -> {
                     view.addObject("snsAccountName", p.getName());
                     view.addObject("snsAccountId", p.getId());
                 });
@@ -132,10 +132,10 @@ public class ChatbotController extends Handler {
         ModelAndView view = request(super.createView("/admin/system/chatbot/edit"));
         if (id != null) {
             Chatbot c = chatbotRes.findOne(id);
-            SNSAccount snsAccount = snsAccountRes.findBySnsidAndOrgi(c.getSnsAccountIdentifier(), curruser.getOrgi());
-            view.addObject("snsurl", snsAccount.getSnstype() == "webim" ? snsAccount.getBaseURL() : snsAccount.getName());
+            Optional<Channel> snsAccountOpt = snsAccountRes.findBySnsid(c.getSnsAccountIdentifier());
+            view.addObject("snsurl", snsAccountOpt.get().getType() == "webim" ? snsAccountOpt.get().getBaseURL() : snsAccountOpt.get().getName());
             view.addObject("bot", c);
-            view.addObject("snstype", snsAccount.getSnstype());
+            view.addObject("type", snsAccountOpt.get().getType());
 
         }
 

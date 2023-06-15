@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class NettyChatbotClient implements NettyClient {
 
-    private ArrayListMultimap<String, SocketIOClient> _map = ArrayListMultimap.create();
+    private final ArrayListMultimap<String, SocketIOClient> _map = ArrayListMultimap.create();
 
     public List<SocketIOClient> getClients(String key) {
         return _map.get(key);

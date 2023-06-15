@@ -300,11 +300,11 @@ public class ThumbnailParameter
 		// Creating a new ArrayList, as `filters` should be mutable as of 0.4.3.
 		if (filters == null)
 		{
-			this.filters = new ArrayList<ImageFilter>();
+			this.filters = new ArrayList<>();
 		}
 		else
 		{
-			this.filters = new ArrayList<ImageFilter>(filters);
+			this.filters = new ArrayList<>(filters);
 		}
 				
 		if (resizerFactory == null)

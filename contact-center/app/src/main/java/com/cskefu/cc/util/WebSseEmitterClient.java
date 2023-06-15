@@ -17,7 +17,7 @@
 package com.cskefu.cc.util;
 
 import com.cskefu.cc.proxy.OnlineUserProxy;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,12 +29,12 @@ import java.util.concurrent.ConcurrentMap;
 
 public class WebSseEmitterClient {
     private final static Logger logger = LoggerFactory.getLogger(WebSseEmitterClient.class);
-    private ConcurrentMap<String, WebIMClient> imClientsMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, WebIMClient> imClientsMap = new ConcurrentHashMap<>();
 
     public List<WebIMClient> getClients(String userid) {
 
         Collection<WebIMClient> values = imClientsMap.values();
-        List<WebIMClient> clients = new ArrayList<WebIMClient>();
+        List<WebIMClient> clients = new ArrayList<>();
         for (WebIMClient client : values) {
             if (client.getUserid().equals(userid)) {
                 clients.add(client);
@@ -66,7 +66,7 @@ public class WebSseEmitterClient {
             }
         }
         if (keyClients.size() == 0 && timeout == true) {
-            OnlineUserProxy.offline(userid, userid);
+            OnlineUserProxy.offline(userid);
 //            logger.info("[removeClient] set onlineUser {} as offline.", userid);
         }
     }

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package com.cskefu.cc.util.bi;
 import com.cskefu.cc.util.bi.model.Level;
 import com.cskefu.cc.util.bi.model.RequestData;
 import com.cskefu.cc.util.bi.model.ValueData;
-import org.apache.lucene.queryparser.flexible.core.nodes.PathQueryNode.QueryText;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,7 +38,6 @@ public class CubeReportData implements ReportData, Cloneable {
 	private int page ;
 	private long numFound = 0 ;
 	private RequestData reqdata;
-	private QueryText queryText ;
 	private Map<String , Object> options ;
 	private long queryTime ;
 	private long total ;
@@ -122,17 +120,17 @@ public class CubeReportData implements ReportData, Cloneable {
 		this.row.setColspan(this.row.getRowspan()) ;
 		this.row.setRowspan(colspan) ;
 		
- 		List<List<ValueData>> tempList = new ArrayList<List<ValueData>>();
-		for(int i=0 ; i<data.size() ; i++){
-			for(int j=0 ; j<data.get(i).size() ; j++){
-				if(tempList.size()<=j){
-					tempList.add(new ArrayList<ValueData>()) ;
-				}
-				if(tempList.get(j)!=null){
-					tempList.get(j).add(data.get(i).get(j)) ;
-				}
-			}
-		}
+ 		List<List<ValueData>> tempList = new ArrayList<>();
+        for (List<ValueData> datum : data) {
+            for (int j = 0; j < datum.size(); j++) {
+                if (tempList.size() <= j) {
+                    tempList.add(new ArrayList<ValueData>());
+                }
+                if (tempList.get(j) != null) {
+                    tempList.get(j).add(datum.get(j));
+                }
+            }
+        }
 		this.data.clear();
 		this.data = tempList ;
 	}
@@ -185,14 +183,6 @@ public class CubeReportData implements ReportData, Cloneable {
 
 	public void setPage(int page) {
 		this.page = page;
-	}
-
-	public QueryText getQueryText() {
-		return queryText;
-	}
-
-	public void setQueryText(QueryText queryText) {
-		this.queryText = queryText;
 	}
 
 	public Map<String, Object> getOptions() {

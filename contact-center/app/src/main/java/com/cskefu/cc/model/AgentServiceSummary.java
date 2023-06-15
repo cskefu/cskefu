@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,16 +38,11 @@ public class AgentServiceSummary implements Serializable{
 	private long times;
 	private Date servicetime;
 	private Date createtime ;
-
 	private String agentserviceid ;
 	private String userid;
-	
 	private String statuseventid ;
 	private String contactsid ;
-	
-	private String orgi;
 	private String id;
-	
 	private String creater ;
 	private String username;
 	private String channel;
@@ -113,14 +108,6 @@ public class AgentServiceSummary implements Serializable{
 
 	public void setServicetime(Date servicetime) {
 		this.servicetime = servicetime;
-	}
-
-	public String getOrgi() {
-		return orgi;
-	}
-
-	public void setOrgi(String orgi) {
-		this.orgi = orgi;
 	}
 
 	@Id

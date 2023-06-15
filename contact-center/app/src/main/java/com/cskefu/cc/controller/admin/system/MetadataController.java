@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
  */
 package com.cskefu.cc.controller.admin.system;
 
-import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.controller.Handler;
 import com.cskefu.cc.model.*;
@@ -24,12 +23,11 @@ import com.cskefu.cc.persistence.hibernate.BaseService;
 import com.cskefu.cc.persistence.repository.MetadataRepository;
 import com.cskefu.cc.persistence.repository.SysDicRepository;
 import com.cskefu.cc.persistence.repository.TablePropertiesRepository;
-import com.cskefu.cc.util.CskefuList;
 import com.cskefu.cc.util.Menu;
 import com.cskefu.cc.util.metadata.DatabaseMetaDataHandler;
 import com.cskefu.cc.util.metadata.UKColumnMetadata;
 import com.cskefu.cc.util.metadata.UKTableMetaData;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 import org.slf4j.Logger;
@@ -37,7 +35,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,7 +49,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 @Controller
 @RequestMapping("/admin/metadata")
@@ -185,14 +181,12 @@ public class MetadataController extends Handler {
     public ModelAndView imptb(final ModelMap map, HttpServletRequest request) throws Exception {
 
         Session session = (Session) em.getDelegate();
-        session.doWork(new Work() {
-            public void execute(Connection connection) throws SQLException {
-                try {
-                    map.addAttribute("tablesList",
-                            DatabaseMetaDataHandler.getTables(connection));
-                } catch (Exception e) {
-                    logger.error("When import metadata", e);
-                }
+        session.doWork(connection -> {
+            try {
+                map.addAttribute("tablesList",
+                        DatabaseMetaDataHandler.getTables(connection));
+            } catch (Exception e) {
+                logger.error("When import metadata", e);
             }
         });
 
@@ -207,29 +201,26 @@ public class MetadataController extends Handler {
         if (tables != null && tables.length > 0) {
             Session session = (Session) em.getDelegate();
             session.doWork(
-                    new Work() {
-                        public void execute(Connection connection) throws SQLException {
-                            try {
-                                for (String table : tables) {
-                                    int count = metadataRes.countByTablename(table);
-                                    if (count == 0) {
-                                        MetadataTable metaDataTable = new MetadataTable();
-                                        //当前记录没有被添加过，进行正常添加
-                                        metaDataTable.setTablename(table);
-                                        metaDataTable.setOrgi(user.getOrgi());
-                                        metaDataTable.setId(MainUtils.md5(metaDataTable.getTablename()));
-                                        metaDataTable.setTabledirid("0");
-                                        metaDataTable.setCreater(user.getId());
-                                        metaDataTable.setCreatername(user.getUsername());
-                                        metaDataTable.setName(table);
-                                        metaDataTable.setUpdatetime(new Date());
-                                        metaDataTable.setCreatetime(new Date());
-                                        metadataRes.save(processMetadataTable(DatabaseMetaDataHandler.getTable(connection, metaDataTable.getTablename()), metaDataTable));
-                                    }
+                    connection -> {
+                        try {
+                            for (String table : tables) {
+                                int count = metadataRes.countByTablename(table);
+                                if (count == 0) {
+                                    MetadataTable metaDataTable = new MetadataTable();
+                                    //当前记录没有被添加过，进行正常添加
+                                    metaDataTable.setTablename(table);
+                                    metaDataTable.setId(MainUtils.md5(metaDataTable.getTablename()));
+                                    metaDataTable.setTabledirid("0");
+                                    metaDataTable.setCreater(user.getId());
+                                    metaDataTable.setCreatername(user.getUsername());
+                                    metaDataTable.setName(table);
+                                    metaDataTable.setUpdatetime(new Date());
+                                    metaDataTable.setCreatetime(new Date());
+                                    metadataRes.save(processMetadataTable(DatabaseMetaDataHandler.getTable(connection, metaDataTable.getTablename()), metaDataTable));
                                 }
-                            } catch (Exception e) {
-                                logger.error("When import metadata", e);
                             }
+                        } catch (Exception e) {
+                            logger.error("When import metadata", e);
                         }
                     }
             );
@@ -240,12 +231,10 @@ public class MetadataController extends Handler {
     }
 
     private MetadataTable processMetadataTable(UKTableMetaData metaData, MetadataTable table) {
-        table.setTableproperty(new ArrayList<TableProperties>());
+        table.setTableproperty(new ArrayList<>());
         if (metaData != null) {
             for (UKColumnMetadata colum : metaData.getColumnMetadatas()) {
                 TableProperties tablePorperties = new TableProperties(colum.getName().toLowerCase(), colum.getTypeName(), colum.getColumnSize(), metaData.getName().toLowerCase());
-                tablePorperties.setOrgi(table.getOrgi());
-
                 tablePorperties.setDatatypecode(0);
                 tablePorperties.setLength(colum.getColumnSize());
                 tablePorperties.setDatatypename(getDataTypeName(colum.getTypeName()));
@@ -267,7 +256,7 @@ public class MetadataController extends Handler {
 
     public String getDataTypeName(String type) {
         String typeName = "text";
-        if (type.indexOf("varchar") >= 0) {
+        if (type.contains("varchar")) {
             typeName = "text";
         } else if (type.equalsIgnoreCase("date") || type.equalsIgnoreCase("datetime")) {
             typeName = type.toLowerCase();
@@ -282,16 +271,6 @@ public class MetadataController extends Handler {
     public ModelAndView clean(ModelMap map, HttpServletRequest request, @Valid String id) throws SQLException, BeansException, ClassNotFoundException {
         if (!StringUtils.isBlank(id)) {
             MetadataTable table = metadataRes.findById(id);
-            if (table.isFromdb() && !StringUtils.isBlank(table.getListblocktemplet())) {
-                SysDic dic = Dict.getInstance().getDicItem(table.getListblocktemplet());
-                if (dic != null) {
-                    Object bean = MainContext.getContext().getBean(Class.forName(dic.getCode()));
-                    if (bean instanceof ElasticsearchRepository) {
-                        ElasticsearchRepository<?, ?> jpa = (ElasticsearchRepository<?, ?>) bean;
-                        jpa.deleteAll();
-                    }
-                }
-            }
         }
         return request(super.createView("redirect:/admin/metadata/index.html"));
     }
@@ -304,24 +283,6 @@ public class MetadataController extends Handler {
             MetadataTable table = metadataRes.findById(id);
             if (table.isFromdb() && !StringUtils.isBlank(table.getListblocktemplet())) {
                 SysDic dic = Dict.getInstance().getDicItem(table.getListblocktemplet());
-
-                if (dic != null) {
-                    Object bean = MainContext.getContext().getBean(Class.forName(dic.getCode()));
-                    if (bean instanceof ElasticsearchRepository) {
-                        ElasticsearchRepository jpa = (ElasticsearchRepository) bean;
-                        if (!StringUtils.isBlank(table.getPreviewtemplet())) {
-                            SysDic jpaDic = Dict.getInstance().getDicItem(table.getPreviewtemplet());
-                            List dataList = service.list(jpaDic.getCode());
-                            List values = new CskefuList();
-                            for (Object object : dataList) {
-                                values.add(object);
-                            }
-                            if (dataList.size() > 0) {
-                                jpa.save(values);
-                            }
-                        }
-                    }
-                }
             }
         }
         return request(super.createView("redirect:/admin/metadata/index.html"));
@@ -335,20 +296,6 @@ public class MetadataController extends Handler {
             MetadataTable table = metadataRes.findById(id);
             if (table.isFromdb() && !StringUtils.isBlank(table.getListblocktemplet())) {
                 SysDic dic = Dict.getInstance().getDicItem(table.getListblocktemplet());
-
-                if (dic != null) {
-                    Object bean = MainContext.getContext().getBean(Class.forName(dic.getCode()));
-                    if (bean instanceof ElasticsearchRepository) {
-                        ElasticsearchRepository jpa = (ElasticsearchRepository) bean;
-                        if (!StringUtils.isBlank(table.getPreviewtemplet())) {
-                            Iterable dataList = jpa.findAll();
-                            for (Object object : dataList) {
-                                service.delete(object);
-                                service.save(object);
-                            }
-                        }
-                    }
-                }
             }
         }
         return request(super.createView("redirect:/admin/metadata/index.html"));

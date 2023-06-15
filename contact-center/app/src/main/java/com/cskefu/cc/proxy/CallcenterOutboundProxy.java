@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,9 @@
  */
 package com.cskefu.cc.proxy;
 
-import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.util.freeswitch.model.CallCenterAgent;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,8 +34,8 @@ public class CallcenterOutboundProxy {
      */
     @SuppressWarnings("unchecked")
     public static List<CallCenterAgent> service() {
-        List<CallCenterAgent> agentList = new ArrayList<CallCenterAgent>();
-        final Map<String, CallCenterAgent> map = MainContext.getCache().findAllCallCenterAgentsByOrgi(Constants.SYSTEM_ORGI);
+        List<CallCenterAgent> agentList = new ArrayList<>();
+        final Map<String, CallCenterAgent> map = MainContext.getCache().findAllCallCenterAgents();
         for (Map.Entry<String, CallCenterAgent> entry : map.entrySet()) {
             if (StringUtils.equals(entry.getValue().getWorkstatus(), "callout")) {
                 agentList.add(entry.getValue());
@@ -53,8 +52,8 @@ public class CallcenterOutboundProxy {
      */
     @SuppressWarnings("unchecked")
     public static List<CallCenterAgent> service(String sip) {
-        List<CallCenterAgent> agentList = new ArrayList<CallCenterAgent>();
-        final Map<String, CallCenterAgent> map = MainContext.getCache().findAllCallCenterAgentsByOrgi(Constants.SYSTEM_ORGI);
+        List<CallCenterAgent> agentList = new ArrayList<>();
+        final Map<String, CallCenterAgent> map = MainContext.getCache().findAllCallCenterAgents();
         for (Map.Entry<String, CallCenterAgent> entry : map.entrySet()) {
             if (StringUtils.equals(entry.getValue().getSiptrunk(), sip)) {
                 agentList.add(entry.getValue());
@@ -71,8 +70,8 @@ public class CallcenterOutboundProxy {
      */
     @SuppressWarnings("unchecked")
     public static List<CallCenterAgent> extention(String extno) {
-        List<CallCenterAgent> agentList = new ArrayList<CallCenterAgent>();
-        Map<String, CallCenterAgent> map = MainContext.getCache().findAllCallCenterAgentsByOrgi(Constants.SYSTEM_ORGI);
+        List<CallCenterAgent> agentList = new ArrayList<>();
+        Map<String, CallCenterAgent> map = MainContext.getCache().findAllCallCenterAgents();
         for (Map.Entry<String, CallCenterAgent> entry : map.entrySet()) {
             if (StringUtils.equals(entry.getValue().getExtno(), extno)) {
                 agentList.add(entry.getValue());

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import java.util.Date;
 @org.hibernate.annotations.Proxy(lazy = false)
 public class LeaveMsg {
     private String id;
-    private String orgi;
     private Date createtime = new Date();
     private String creater;
     private String name;
@@ -44,7 +43,7 @@ public class LeaveMsg {
     private String snsId;
 
     @Transient
-    private SNSAccount channel;
+    private Channel channel;
 
     @Id
     @Column(length = 32)
@@ -56,14 +55,6 @@ public class LeaveMsg {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getOrgi() {
-        return orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
     }
 
     public Date getCreatetime() {
@@ -164,11 +155,11 @@ public class LeaveMsg {
     }
 
     @Transient
-    public SNSAccount getChannel() {
+    public Channel getChannel() {
         return channel;
     }
 
-    public void setChannel(SNSAccount channel) {
+    public void setChannel(Channel channel) {
         this.channel = channel;
     }
 }

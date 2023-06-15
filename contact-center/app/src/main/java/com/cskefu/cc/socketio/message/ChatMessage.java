@@ -20,7 +20,6 @@ import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.proxy.OnlineUserProxy;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -29,7 +28,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "uk_chat_message")
-@Document(indexName = "cskefu", type = "chat_message")
 @org.hibernate.annotations.Proxy(lazy = false)
 public class ChatMessage implements java.io.Serializable, Cloneable {
     /**
@@ -62,7 +60,6 @@ public class ChatMessage implements java.io.Serializable, Cloneable {
     private String message;
     private String expmsg;        // 语音消息时，显示为ASR的识别结果，文字消息时，显示为附带的动态业务字段
 
-    private String orgi;
     private String channel;
     private String model;            //消息所属模块， WebIM/EntIM
     private String chatype;        //对话类型，是私聊还是群聊 或者是智能机器人对话
@@ -137,14 +134,6 @@ public class ChatMessage implements java.io.Serializable, Cloneable {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public String getOrgi() {
-        return orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
     }
 
     public String getTouser() {

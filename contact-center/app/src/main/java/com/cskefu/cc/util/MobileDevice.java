@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,19 +32,19 @@ public class MobileDevice {
     // \b 是单词边界(连着的两个(字母字符 与 非字母字符) 之间的逻辑上的间隔),    
     // 字符串在编译时会被转码一次,所以是 "\\b"    
     // \B 是单词内部逻辑间隔(连着的两个字母字符之间的逻辑上的间隔)    
-    static String phoneReg = "\\b(ip(hone|od)|android|opera m(ob|in)i"
+    static final String phoneReg = "\\b(ip(hone|od)|android|opera m(ob|in)i"
             + "|windows (phone|ce)|blackberry"
             + "|s(ymbian|eries60|amsung)|p(laybook|alm|rofile/midp"
             + "|laystation portable)|nokia|fennec|htc[-_]"
             + "|mobile|up.browser|[1-4][0-9]{2}x[1-4][0-9]{2})\\b";
-    static String tableReg = "\\b(ipad|tablet|(Nexus 7)|up.browser"
+    static final String tableReg = "\\b(ipad|tablet|(Nexus 7)|up.browser"
             + "|[1-4][0-9]{2}x[1-4][0-9]{2})\\b";
-    static String wechatReg = "MicroMessenger";
+    static final String wechatReg = "MicroMessenger";
 
     //移动设备正则匹配：手机端、平板  
-    static Pattern phonePat = Pattern.compile(phoneReg, Pattern.CASE_INSENSITIVE);
-    static Pattern tablePat = Pattern.compile(tableReg, Pattern.CASE_INSENSITIVE);
-    static Pattern wechatPat = Pattern.compile(wechatReg, Pattern.CASE_INSENSITIVE);
+    static final Pattern phonePat = Pattern.compile(phoneReg, Pattern.CASE_INSENSITIVE);
+    static final Pattern tablePat = Pattern.compile(tableReg, Pattern.CASE_INSENSITIVE);
+    static final Pattern wechatPat = Pattern.compile(wechatReg, Pattern.CASE_INSENSITIVE);
 
     /**
      * 检测是否是移动设备访问

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  */
 package com.cskefu.cc.util.mobile;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,10 +26,10 @@ import java.util.Map;
 
 public class MobileNumberUtils {
 	private static final Logger logger = LoggerFactory.getLogger(MobileNumberUtils.class);
-	private static Map<String , MobileAddress> mobileAddressMap  = new HashMap<String ,MobileAddress>();
+	private static final Map<String , MobileAddress> mobileAddressMap  = new HashMap<>();
 	private static boolean isInited = false;
 	
-	public static int init() throws IOException{
+	public static void init() throws IOException{
 		File file = new File( MobileNumberUtils.class.getResource("/config/mobile.data").getFile());
         logger.info("init with file [{}]", file.getAbsolutePath());
 		if(file.exists()){
@@ -65,8 +65,7 @@ public class MobileNumberUtils {
 				reader.close();
 			}
 		}
-		return mobileAddressMap.size() ;
-	}
+    }
 	/**
 	 * 根据呼入号码 找到对应 城市 , 需要传入的号码是 手机号 或者 固话号码，位数为 11位
 	 * @param phoneNumber

@@ -18,16 +18,14 @@ package com.cskefu.cc.model;
 
 import com.cskefu.cc.basic.MainUtils;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import java.util.Date;
 
-@Document(indexName = "cskefu", type = "contact_notes")
 @Entity
 @Table(name = "cs_contact_notes")
 @org.hibernate.annotations.Proxy(lazy = false)
-public class ContactNotes {
+public class ContactNotes implements java.io.Serializable {
 
     private String id = MainUtils.getUUID();
     private String contactid;
@@ -39,7 +37,6 @@ public class ContactNotes {
     private boolean datastatus;
     private String agentuser;
     private String onlineuser;
-    private String orgi;
 
     @Id
     @Column(length = 32)
@@ -123,13 +120,5 @@ public class ContactNotes {
 
     public void setOnlineuser(String onlineuser) {
         this.onlineuser = onlineuser;
-    }
-
-    public String getOrgi() {
-        return orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
     }
 }

@@ -39,12 +39,12 @@ public class AgentStatusAspect {
     @After("execution(* com.cskefu.cc.persistence.repository.AgentStatusRepository.save(..))")
     public void save(final JoinPoint joinPoint) {
         final AgentStatus agentStatus = (AgentStatus) joinPoint.getArgs()[0];
-        cache.putAgentStatusByOrgi(agentStatus, agentStatus.getOrgi());
+        cache.putAgentStatus(agentStatus);
     }
 
     @After("execution(* com.cskefu.cc.persistence.repository.AgentStatusRepository.delete(..))")
     public void delete(final JoinPoint joinPoint) {
         final AgentStatus agentStatus = (AgentStatus) joinPoint.getArgs()[0];
-        cache.deleteAgentStatusByAgentnoAndOrgi(agentStatus.getAgentno(), agentStatus.getOrgi());
+        cache.deleteAgentStatusByAgentno(agentStatus.getAgentno());
     }
 }

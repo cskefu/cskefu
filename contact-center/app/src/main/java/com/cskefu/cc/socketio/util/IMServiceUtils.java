@@ -12,8 +12,8 @@ public class IMServiceUtils {
     private static Cache cache;
     private static AgentUserProxy agentUserProxy;
 
-    public static void shiftOpsType(final String userId, final String orgi, final MainContext.OptType opsType) {
-        getCache().findOneAgentUserByUserIdAndOrgi(userId, orgi).ifPresent(p -> {
+    public static void shiftOpsType(final String userId, final MainContext.OptType opsType) {
+        getCache().findOneAgentUserByUserId(userId).ifPresent(p -> {
             switch (opsType) {
                 case CHATBOT:
                     p.setOpttype(MainContext.OptType.CHATBOT.toString());

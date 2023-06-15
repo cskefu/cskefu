@@ -26,11 +26,8 @@ public class AgentUserAudit implements Serializable {
 
     private String agentUserId;                  // AgentUserId
     private HashMap<String, String> subscribers; // 订阅者 userId:权限
-    private String orgi;                         // 租户ID
 
-
-    public AgentUserAudit(final String orgi, final String agentUserId, final HashMap<String, String> subscribers) {
-        this.orgi = orgi;
+    public AgentUserAudit(final String agentUserId, final HashMap<String, String> subscribers) {
         this.subscribers = subscribers;
         this.agentUserId = agentUserId;
     }
@@ -84,14 +81,6 @@ public class AgentUserAudit implements Serializable {
 
     public void setSubscribers(HashMap<String, String> subscribers) {
         this.subscribers = subscribers;
-    }
-
-    public String getOrgi() {
-        return orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
     }
 
 }

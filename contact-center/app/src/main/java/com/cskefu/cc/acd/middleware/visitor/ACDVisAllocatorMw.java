@@ -47,18 +47,18 @@ public class ACDVisAllocatorMw implements Middleware<ACDComposeContext> {
          * 查询条件，当前在线的 坐席，并且 未达到最大 服务人数的坐席
          */
         final List<AgentStatus> agentStatuses = acdPolicyService.filterOutAvailableAgentStatus(
-                ctx.getAgentUser(), ctx.getOrgi(), ctx.getSessionConfig());
+                ctx.getAgentUser(), ctx.getSessionConfig());
 
         /**
          * 处理ACD 的 技能组请求和 坐席请求
          */
         AgentStatus agentStatus = acdPolicyService.filterOutAgentStatusWithPolicies(
-                ctx.getSessionConfig(), agentStatuses, ctx.getOrgi(), ctx.getOnlineUserId(), ctx.isInvite());
+                ctx.getSessionConfig(), agentStatuses, ctx.getOnlineUserId(), ctx.isInvite());
 
         AgentService agentService = null;
         try {
             agentService = acdAgentService.resolveAgentService(
-                    agentStatus, ctx.getAgentUser(), ctx.getOrgi(), false);
+                    agentStatus, ctx.getAgentUser(), false);
         } catch (Exception ex) {
             logger.warn("[allotAgent] exception: ", ex);
         }

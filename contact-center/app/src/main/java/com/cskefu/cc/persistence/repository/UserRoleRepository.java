@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,23 +28,23 @@ import java.util.Collection;
 import java.util.List;
 
 public interface UserRoleRepository extends JpaRepository<UserRole, String> {
-	List<UserRole> findByOrganAndRole(String organ, Role role);
+    List<UserRole> findByOrganAndRole(String organ, Role role);
 
-	Page<UserRole> findByOrganAndRole(String organ, Role role,
-			Pageable paramPageable);
+    Page<UserRole> findByOrganAndRole(String organ, Role role,
+                                      Pageable paramPageable);
 
-	Page<UserRole> findByOrganInAndRole(Collection<String> organ, Role role,
-			Pageable paramPageable);
+    Page<UserRole> findByOrganInAndRole(Collection<String> organ, Role role,
+                                        Pageable paramPageable);
 
-	Page<UserRole> findByOrgiAndRole(String orgi, Role role, Pageable paramPageable);
+    Page<UserRole> findByRole(Role role, Pageable paramPageable);
 
-	List<UserRole> findByOrgiAndRole(String orgi, Role role);
+    List<UserRole> findByRole(Role role);
 
-	List<UserRole> findByOrgiAndUser(String orgi, User user);
+    List<UserRole> findByUser(User user);
 
-	List<UserRole> findByOrganAndUser(String organ, User user);
+    List<UserRole> findByOrganAndUser(String organ, User user);
 
-	@Query(value = "SELECT u.user_id FROM uk_userrole u WHERE u.orgi = ?1 AND u.role_id = ?2", nativeQuery = true)
-	List<String> findByOrgiAndRoleId(final String orgi, final String roleid);
+    @Query(value = "SELECT u.user_id FROM uk_userrole u WHERE u.role_id = ?1", nativeQuery = true)
+    List<String> findByRoleId(final String roleid);
 
 }

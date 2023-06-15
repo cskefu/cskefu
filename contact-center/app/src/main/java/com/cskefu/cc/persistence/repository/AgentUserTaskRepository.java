@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,12 @@ import java.util.List;
 
 public interface AgentUserTaskRepository  extends JpaRepository<AgentUserTask, String>{
 	
-	List<AgentUserTask> findByIdAndOrgi(String id, String orgi);
+	List<AgentUserTask> findById(String id);
 	
-	List<AgentUserTask> findByLastmessageLessThanAndStatusAndOrgi(Date start, String status, String orgi) ;
+	List<AgentUserTask> findByLastmessageLessThanAndStatus(Date start, String status) ;
 	
-	List<AgentUserTask> findByLastgetmessageLessThanAndStatusAndOrgi(Date start, String status, String orgi) ;
+	List<AgentUserTask> findByLastgetmessageLessThanAndStatus(Date start, String status) ;
 	
-	List<AgentUserTask> findByLogindateLessThanAndStatusAndOrgi(Date start, String status, String orgi) ;
+	List<AgentUserTask> findByLogindateLessThanAndStatus(Date start, String status) ;
 }
 

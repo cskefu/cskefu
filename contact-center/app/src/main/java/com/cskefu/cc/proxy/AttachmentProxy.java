@@ -15,7 +15,7 @@ import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.model.AttachmentFile;
 import com.cskefu.cc.persistence.repository.AttachmentRepository;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -36,7 +36,6 @@ public class AttachmentProxy {
     public String processAttachmentFile(
             final MultipartFile file,
             final String fileid,
-            final String orgi,
             final String creator
     ) throws IOException {
         String id = null;
@@ -44,7 +43,6 @@ public class AttachmentProxy {
         if (file.getSize() > 0) {            //文件尺寸 限制 ？在 启动 配置中 设置 的最大值，其他地方不做限制
             AttachmentFile attachmentFile = new AttachmentFile();
             attachmentFile.setCreater(creator);
-            attachmentFile.setOrgi(orgi);
             attachmentFile.setModel(MainContext.ModelType.WEBIM.toString());
             attachmentFile.setFilelength((int) file.getSize());
             if (file.getContentType() != null && file.getContentType().length() > 255) {
@@ -59,7 +57,7 @@ public class AttachmentProxy {
             } else {
                 attachmentFile.setTitle(uploadFile.getName());
             }
-            if (StringUtils.isNotBlank(attachmentFile.getFiletype()) && attachmentFile.getFiletype().indexOf("image") >= 0) {
+            if (StringUtils.isNotBlank(attachmentFile.getFiletype()) && attachmentFile.getFiletype().contains("image")) {
                 attachmentFile.setImage(true);
             }
             attachmentFile.setFileid(fileid);

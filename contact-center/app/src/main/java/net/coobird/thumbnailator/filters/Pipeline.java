@@ -67,7 +67,7 @@ public final class Pipeline implements ImageFilter
 			"list of image filters.");
 		}
 		
-		filtersToApply = new ArrayList<ImageFilter>(filters);
+		filtersToApply = new ArrayList<>(filters);
 		unmodifiableFiltersToApply =
 			Collections.unmodifiableList(filtersToApply);
 	}

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,11 +101,7 @@ public class MessagingServerConfigure {
                 threads) : 100;
         config.setWorkerThreads(workThreads);
 //		config.setStoreFactory(new HazelcastStoreFactory());
-        config.setAuthorizationListener(new AuthorizationListener() {
-            public boolean isAuthorized(HandshakeData data) {
-                return true;
-            }
-        });
+        config.setAuthorizationListener(data -> true);
         config.getSocketConfig().setReuseAddress(true);
         config.getSocketConfig().setSoLinger(0);
         config.getSocketConfig().setTcpNoDelay(true);

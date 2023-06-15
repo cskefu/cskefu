@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,8 @@ import java.util.Date;
 public class Task implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(Task.class);
 
-    private JobDetail jobDetail;
-    private JobDetailRepository jobDetailRes;
+    private final JobDetail jobDetail;
+    private final JobDetailRepository jobDetailRes;
 
     public Task(JobDetail jobDetail, JobDetailRepository jobDetailRes) {
         this.jobDetail = jobDetail;
@@ -79,13 +79,13 @@ public class Task implements Runnable {
             jobDetail.setPause(false);
             jobDetail.setTaskstatus(MainContext.TaskStatusType.NORMAL.getType());
             jobDetail.setCrawltaskid(null);
-			jobDetail.setLastdate(new Date()) ;
+            jobDetail.setLastdate(new Date());
             jobDetailRes.save(jobDetail);
 
             /**
              * 存储历史信息
              */
-            MainContext.getCache().deleteJobByJobIdAndOrgi(this.jobDetail.getId(), this.jobDetail.getOrgi());
+            MainContext.getCache().deleteJobByJobId(this.jobDetail.getId());
         }
     }
 }

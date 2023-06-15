@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ public class NettyAgentClient implements NettyClient {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyAgentClient.class);
 
-    private ArrayListMultimap<String, SocketIOClient> agentClientsMap = ArrayListMultimap.create();
+    private final ArrayListMultimap<String, SocketIOClient> agentClientsMap = ArrayListMultimap.create();
 
     public List<SocketIOClient> getClients(String key) {
         return agentClientsMap.get(key);
@@ -37,8 +37,7 @@ public class NettyAgentClient implements NettyClient {
 //        logger.info("[putClient] userId {}", key);
         agentClientsMap.put(key, client);
 //        // 更新缓存
-//        MainContext.getCache().putWebIMAgentSocketioSessionId(key, Constants.SYSTEM_ORGI,
-//                                                              MainUtils.getContextID(client.getSessionId().toString()));
+//        MainContext.getCache().putWebIMAgentSocketioSessionId(key, MainUtils.getContextID(client.getSessionId().toString()));
     }
 
     @Deprecated

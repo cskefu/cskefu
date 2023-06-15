@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,7 +107,7 @@ public abstract class Resource {
 	 */
 	public boolean val(String inputFile , String acceptDocType){
 		String file = inputFile!=null ? inputFile.toLowerCase() :null ;
-		return file!=null && acceptDocType!=null && ((acceptDocType.indexOf(file.substring(file.lastIndexOf(".")+1))>=0||acceptDocType.indexOf("all")>=0)) ;
+		return file!=null && acceptDocType!=null && ((acceptDocType.contains(file.substring(file.lastIndexOf(".") + 1)) || acceptDocType.contains("all"))) ;
 	}
 	
 }

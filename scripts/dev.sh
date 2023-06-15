@@ -10,4 +10,4 @@ baseDir=$(cd `dirname "$0"`;pwd)
 # main 
 [ -z "${BASH_SOURCE[0]}" -o "${BASH_SOURCE[0]}" = "$0" ] || return
 cd $baseDir/..
-docker-compose up elasticsearch mysql redis
+docker-compose up mysql redis activemq

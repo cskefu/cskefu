@@ -62,12 +62,10 @@ public class RedisCommand {
      *
      * @param key
      * @param serialized
-     * @return
      */
-    public boolean put(final String key, final String serialized) {
+    public void put(final String key, final String serialized) {
         boolean result = true;
         redisValOps.set(key, serialized);
-        return result;
     }
 
     public String get(final String key) {
@@ -270,15 +268,12 @@ public class RedisCommand {
      *
      * @param key 键
      * @param map 对应多个键值
-     * @return true 成功 false 失败
      */
-    public boolean hmset(final String key, final Map<String, String> map) {
+    public void hmset(final String key, final Map<String, String> map) {
         try {
             redisHashOps.putAll(key, map);
-            return true;
         } catch (Exception e) {
             logger.error("hmset bad things happen", e);
-            return false;
         }
     }
 

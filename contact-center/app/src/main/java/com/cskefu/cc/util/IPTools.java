@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package com.cskefu.cc.util;
 
 import com.cskefu.cc.basic.MainContext;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.lionsoul.ip2region.DataBlock;
 import org.lionsoul.ip2region.DbConfig;
 import org.lionsoul.ip2region.DbMakerConfigException;
@@ -28,8 +28,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class IPTools {
-	private String IP_DATA_PATH = "WEB-INF/data/ip/ip2region.db";
-	private static IPTools iptools = new IPTools();
+	private final String IP_DATA_PATH = "WEB-INF/data/ip/ip2region.db";
+	private static final IPTools iptools = new IPTools();
 	private DbSearcher _searcher = null ;
 	
 	public static IPTools getInstance(){

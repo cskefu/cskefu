@@ -109,23 +109,22 @@ public final class ScaledThumbnailMaker extends ThumbnailMaker
 	}
 	
 	/**
-	 * <p>
-	 * Sets the scaling factor for the thumbnail.
-	 * </p>
-	 * <p>
-	 * The aspect ratio of the resulting image is unaltered from the original.
-	 * </p>
-	 * 
-	 * @param factor			The scaling factor to apply when resizing an
-	 * 							image to create a thumbnail.
-	 * @return					A reference to this object.
-	 * @throws IllegalStateException	If the scaling factor has already
-	 * 									been previously set.
-	 */
-	public ScaledThumbnailMaker scale(double factor)
+     * <p>
+     * Sets the scaling factor for the thumbnail.
+     * </p>
+     * <p>
+     * The aspect ratio of the resulting image is unaltered from the original.
+     * </p>
+     *
+     * @param factor The scaling factor to apply when resizing an
+     *               image to create a thumbnail.
+     * @throws IllegalStateException If the scaling factor has already
+     *                               been previously set.
+     */
+	public void scale(double factor)
 	{
-		return scale(factor, factor);
-	}
+        scale(factor, factor);
+    }
 	
 	/**
 	 * <p>

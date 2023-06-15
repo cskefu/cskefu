@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,14 +27,14 @@ import java.util.Optional;
 
 public interface AgentStatusRepository extends
         JpaRepository<AgentStatus, String> {
-    AgentStatus findByIdAndOrgi(String paramString, String orgi);
+    AgentStatus findById(String paramString);
 
-    @Query(value = "SELECT * FROM uk_agentstatus WHERE agentno = ?1 AND orgi = ?2 ORDER BY createtime DESC LIMIT 1", nativeQuery = true)
-    Optional<AgentStatus> findOneByAgentnoAndOrgi(final String agentid, final String orgi);
+    @Query(value = "SELECT * FROM uk_agentstatus WHERE agentno = ?1 ORDER BY createtime DESC LIMIT 1", nativeQuery = true)
+    Optional<AgentStatus> findOneByAgentno(final String agentid);
 
     AgentStatus findByAgentno(String agentid);
 
-    Page<AgentStatus> findByOrgi(String orgi, Pageable page);
+    Page<AgentStatus> findAll(Pageable page);
 
-    List<AgentStatus> findByOrgi(String orgi);
+    List<AgentStatus> findAll();
 }

@@ -12,8 +12,6 @@
 
 package com.cskefu.cc.model;
 
-import com.cskefu.cc.model.keys.OrganUserId;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -33,12 +31,13 @@ import java.util.Date;
 @IdClass(OrganUserId.class)
 public class OrganUser implements java.io.Serializable {
 
-    @Id private String userid;     // 用户标识
-    @Id private String organ;      // 部门标识
+    @Id
+    private String userid;     // 用户标识
+    @Id
+    private String organ;      // 部门标识
     private Date createtime;   // 创建时间
     private String creator;    // 创建人
     private Date updatetime;   // 更新时间
-    private String orgi;       // 租户ID
 
     public String getUserid() {
         return userid;
@@ -80,11 +79,4 @@ public class OrganUser implements java.io.Serializable {
         this.updatetime = updatetime;
     }
 
-    public String getOrgi() {
-        return orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
-    }
 }

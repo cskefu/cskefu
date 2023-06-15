@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
  */
 @Configuration
 public class ExecutorConfig {
-	private static int CORE_POOL_SIZE = 7;
-	private static int MAX_POOL_SIZE = 100;
+	private static final int CORE_POOL_SIZE = 7;
+	private static final int MAX_POOL_SIZE = 100;
 
 	/**
 	 * 作业平台使用的线程池

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ import java.util.Date;
 public class AgentEventHandler {
     final static private Logger logger = LoggerFactory.getLogger(AgentEventHandler.class);
 
-    protected SocketIOServer server;
+    protected final SocketIOServer server;
 
     public AgentEventHandler(SocketIOServer server) {
         this.server = server;
@@ -71,18 +71,17 @@ public class AgentEventHandler {
     @OnConnect
     public void onConnect(SocketIOClient client) {
         final String userid = client.getHandshakeData().getSingleUrlParam("userid");
-        final String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
         final String session = client.getHandshakeData().getSingleUrlParam("session");
         final String admin = client.getHandshakeData().getSingleUrlParam("admin");
         final String connectid = MainUtils.getUUID();
         logger.info(
-                "[onConnect] user: {}, orgi: {}, session: {}, admin: {}, connectid {}", userid, orgi, session, admin,
+                "[onConnect] user: {}, session: {}, admin: {}, connectid {}", userid, session, admin,
                 connectid);
 
         if (StringUtils.isNotBlank(userid) && StringUtils.isNotBlank(session)) {
 
             // 验证当前的SSO中的session是否和传入的session匹配
-            if (getAgentSessionProxy().isInvalidSessionId(userid, session, orgi)) {
+            if (getAgentSessionProxy().isInvalidSessionId(userid, session)) {
                 // 该session信息不合法
                 logger.info("[onConnect] invalid sessionId {}", session);
                 return;
@@ -93,7 +92,7 @@ public class AgentEventHandler {
             client.set("connectid", connectid);
 
             // 更新AgentStatus到数据库
-            getAgentStatusRes().findOneByAgentnoAndOrgi(userid, orgi).ifPresent(p -> {
+            getAgentStatusRes().findOneByAgentno(userid).ifPresent(p -> {
                 p.setUpdatetime(new Date());
                 p.setConnected(true);
                 // 设置agentSkills
@@ -106,18 +105,18 @@ public class AgentEventHandler {
             String ip = MainUtils.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString());
 
             WorkSessionRepository workSessionRepository = MainContext.getContext().getBean(WorkSessionRepository.class);
-            int count = workSessionRepository.countByAgentAndDatestrAndOrgi(
-                    userid, MainUtils.simpleDateFormat.format(new Date()), orgi);
+            int count = workSessionRepository.countByAgentAndDatestr(
+                    userid, MainUtils.simpleDateFormat.format(new Date()));
 
             workSessionRepository.save(
                     MainUtils.createWorkSession(userid, MainUtils.getContextID(client.getSessionId().toString()),
-                            session, orgi, ip, address.getHostName(), admin, count == 0));
+                            session, ip, address.getHostName(), admin, count == 0));
 
             NettyClients.getInstance().putAgentEventClient(userid, client);
 
-            final AgentStatus agentStatus = MainContext.getCache().findOneAgentStatusByAgentnoAndOrig(userid, orgi);
+            final AgentStatus agentStatus = MainContext.getCache().findOneAgentStatusByAgentno(userid);
             if (agentStatus != null && agentStatus.isConnected() && StringUtils.equals(agentStatus.getStatus(), MainContext.AgentStatusEnum.READY.toString())) {
-                getACDAgentService().assignVisitors(userid, orgi);
+                getACDAgentService().assignVisitors(userid);
             }
         }
     }
@@ -126,12 +125,11 @@ public class AgentEventHandler {
     @OnDisconnect
     public void onDisconnect(SocketIOClient client) {
         String userid = client.getHandshakeData().getSingleUrlParam("userid");
-        String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
         String admin = client.getHandshakeData().getSingleUrlParam("admin");
         String session = client.getHandshakeData().getSingleUrlParam("session");
         String connectid = client.get("connectid");
         logger.info(
-                "[onDisconnect] userId {}, orgi {}, admin {}, session {}, connectid {}", userid, orgi, admin, session,
+                "[onDisconnect] userId {}, admin {}, session {}, connectid {}", userid, admin, session,
                 connectid);
 
         /**
@@ -142,11 +140,11 @@ public class AgentEventHandler {
             // 该坐席和服务器没有连接了，但是也不能保证该坐席是停止办公了，可能稍后TA又打开网页
             // 所以，此处做一个30秒的延迟，如果该坐席30秒内没重新建立连接，则撤退该坐席
             // 更新该坐席状态，设置为"无连接"，不会分配新访客
-            final AgentStatus agentStatus = MainContext.getCache().findOneAgentStatusByAgentnoAndOrig(userid, orgi);
+            final AgentStatus agentStatus = MainContext.getCache().findOneAgentStatusByAgentno(userid);
 
             if (agentStatus != null) {
                 agentStatus.setConnected(false);
-                MainContext.getCache().putAgentStatusByOrgi(agentStatus, agentStatus.getOrgi());
+                MainContext.getCache().putAgentStatus(agentStatus);
             }
 
             /**
@@ -155,7 +153,6 @@ public class AgentEventHandler {
              */
             JSONObject payload = new JSONObject();
             payload.put("userId", userid);
-            payload.put("orgi", orgi);
             payload.put("isAdmin", StringUtils.isNotBlank(admin) && admin.equalsIgnoreCase("true"));
             getBrokerPublisher().send(Constants.WEBIM_SOCKETIO_AGENT_DISCONNECT, payload.toJSONString(),
                     false,
@@ -202,7 +199,7 @@ public class AgentEventHandler {
 
             // 验证当前的SSO中的session是否和传入的session匹配
             if (getAgentSessionProxy().isInvalidSessionId(
-                    agentno, session, agentUser.getOrgi())) {
+                    agentno, session)) {
                 // 该session信息不合法
                 logger.info("[onIntervetionEvent] invalid sessionId {}", session);
                 // 强制退出
@@ -243,9 +240,8 @@ public class AgentEventHandler {
             chatMessage.setCreater(supervisor.getId());
             // 监控人员名字
             chatMessage.setSupervisorname(supervisor.getUname());
-            chatMessage.setChannel(agentUser.getChannel());
+            chatMessage.setChannel(agentUser.getChanneltype());
             chatMessage.setAppid(agentUser.getAppid());
-            chatMessage.setOrgi(agentUser.getOrgi());
             chatMessage.setIntervented(true);
 
 
@@ -283,15 +279,15 @@ public class AgentEventHandler {
 //        String agentno = client.getHandshakeData().getSingleUrlParam("userid");
 
         logger.info(
-                "[onMessageEvent] message: agentUserId {}, agentno {}, toUser {}, channel {}, orgi {}, appId {}, userId {}, sessionId {}, connectid {}",
+                "[onMessageEvent] message: agentUserId {}, agentno {}, toUser {}, channel {}, appId {}, userId {}, sessionId {}, connectid {}",
                 received.getAgentuser(), agentno, received.getTouser(),
-                received.getChannel(), received.getOrgi(), received.getAppid(), received.getUserid(),
+                received.getChannel(), received.getAppid(), received.getUserid(),
                 session, connectid);
 
 
         // 验证当前的SSO中的session是否和传入的session匹配
         if (getAgentSessionProxy().isInvalidSessionId(
-                agentno, session, received.getOrgi())) {
+                agentno, session)) {
             // 该session信息不合法
             logger.info("[onMessageEvent] invalid sessionId {}", session);
             // 强制退出
@@ -299,8 +295,8 @@ public class AgentEventHandler {
             return;
         }
 
-        AgentUser agentUser = MainContext.getCache().findOneAgentUserByUserIdAndOrgi(
-                received.getTouser(), received.getOrgi()).orElseGet(null);
+        AgentUser agentUser = MainContext.getCache().findOneAgentUserByUserId(
+                received.getTouser()).orElseGet(null);
 
 
         /**
@@ -322,7 +318,7 @@ public class AgentEventHandler {
             }
 
             received.setId(MainUtils.getUUID());
-            received.setChannel(agentUser.getChannel());
+            received.setChannel(agentUser.getChanneltype());
             received.setUsession(agentUser.getUserid());
             received.setUsername(agentUser.getAgentname());
             received.setContextid(agentUser.getContextid());

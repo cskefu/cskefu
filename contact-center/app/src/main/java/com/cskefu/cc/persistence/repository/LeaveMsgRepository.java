@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,15 +26,15 @@ import java.util.List;
 import java.util.Set;
 
 public interface LeaveMsgRepository extends JpaRepository<LeaveMsg, String> {
-    Page<LeaveMsg> findByOrgi(String orgi, Pageable page);
+    Page<LeaveMsg> findAll(Pageable page);
 
-    @Query(value = "SELECT o.name as skill,m.* FROM uk_leavemsg m LEFT JOIN uk_organ o ON m.skill=o.id WHERE m.skill IN (?1) AND m.orgi = ?2 ORDER BY ?#{#pageable}",
-			countQuery = "SELECT count(*) FROM uk_leavemsg WHERE skill IN (?1) AND orgi = ?2 ORDER BY ?#{#pageable}",
-			nativeQuery = true)
-    Page<LeaveMsg> findBySkillAndOrgi(Set<String> skill , String orgi , Pageable page);
+    @Query(value = "SELECT o.name as skill,m.* FROM uk_leavemsg m LEFT JOIN uk_organ o ON m.skill=o.id WHERE m.skill IN (?1) ORDER BY ?#{#pageable}",
+            countQuery = "SELECT count(*) FROM uk_leavemsg WHERE skill IN (?1) ORDER BY ?#{#pageable}",
+            nativeQuery = true)
+    Page<LeaveMsg> findBySkill(Set<String> skill, Pageable page);
 
-    List<LeaveMsg> findByOrgiAndMobile(String orgi, String mobile);
+    List<LeaveMsg> findByMobile(String mobile);
 
-    List<LeaveMsg> findByOrgiAndUserid(String orgi, String userid);
+    List<LeaveMsg> findByUserid(String userid);
 }
 

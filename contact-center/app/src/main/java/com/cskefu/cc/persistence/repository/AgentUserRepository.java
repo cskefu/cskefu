@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,77 +30,72 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface AgentUserRepository extends JpaRepository<AgentUser, String> {
-    AgentUser findByIdAndOrgi(String paramString, String orgi);
+    AgentUser findById(String paramString);
 
-    @Query(value = "SELECT * FROM uk_agentuser WHERE userid = ?1 AND orgi = ?2 ORDER BY createtime DESC LIMIT 1", nativeQuery = true)
-    Optional<AgentUser> findOneByUseridAndOrgi(String userid, String orgi);
+    @Query(value = "SELECT * FROM uk_agentuser WHERE userid = ?1 ORDER BY createtime DESC LIMIT 1", nativeQuery = true)
+    Optional<AgentUser> findOneByUserid(String userid);
 
-    @Query(value = "SELECT * FROM uk_agentuser WHERE userid = ?1 LIMIT 1", nativeQuery = true)
-    AgentUser findOneByUserid(final String userid);
-
-    List<AgentUser> findByUseridAndOrgi(String userid, String orgi);
+    List<AgentUser> findByUserid(String userid);
 
     List<AgentUser> findByUseridAndStatus(String userid, String status);
 
-    List<AgentUser> findByAgentnoAndOrgi(String agentno, String orgi, Sort sort);
+    List<AgentUser> findByAgentno(String agentno, Sort sort);
 
-    List<AgentUser> findByAgentnoAndOrgi(String agentno, String orgi);
+    List<AgentUser> findByAgentno(String agentno);
 
-    Page<AgentUser> findByOrgiAndStatus(String orgi, String status, Pageable page);
+    Page<AgentUser> findByStatus(String status, Pageable page);
 
-    Page<AgentUser> findByOrgiAndStatusAndSkillIn(String orgi, String status, Set<String> agentskill, Pageable page);
+    Page<AgentUser> findByStatusAndSkillIn(String status, Set<String> agentskill, Pageable page);
 
-    int countByOrgiAndStatusAndSkillIn(String orgi, String status, Set<String> agentskill);
+    int countByStatusAndSkillIn(String status, Set<String> agentskill);
 
-    List<AgentUser> findByOrgiAndStatus(final String orgi, final String status, final Sort sort);
+    List<AgentUser> findByStatus(final String status, final Sort sort);
 
-    List<AgentUser> findByOrgiAndStatusAndAgentnoIsNot(final String orgi, final String status, final String agentno, final Sort sort);
+    List<AgentUser> findByStatusAndAgentnoIsNot(final String status, final String agentno, final Sort sort);
 
-    List<AgentUser> findByOrgiAndStatusAndSkillAndAgentno(final String orgi, final String status, final String skill, final String agentno, Sort defaultSort);
+    List<AgentUser> findByStatusAndSkillAndAgentno(final String status, final String skill, final String agentno, Sort defaultSort);
 
-    List<AgentUser> findByAgentnoAndStatusAndOrgi(String agentno, String status, String orgi);
+    List<AgentUser> findByAgentnoAndStatus(String agentno, String status);
 
-    List<AgentUser> findByOrgiAndStatusAndSkillAndAgentnoIsNot(final String orgi, final String status, final String skill, final String agentno, final Sort sort);
+    List<AgentUser> findByStatusAndSkillAndAgentnoIsNot(final String status, final String skill, final String agentno, final Sort sort);
 
-    List<AgentUser> findByOrgiAndStatusAndSkillInAndAgentnoIsNotAndChatbotopsIsFalse(final String orgi, final String status, final Collection<String> skill, final String agentno, final Sort sort);
+    List<AgentUser> findByStatusAndSkillInAndAgentnoIsNotAndChatbotopsIsFalse(final String status, final Collection<String> skill, final String agentno, final Sort sort);
 
-    List<AgentUser> findByOrgiAndStatusAndAgentno(final String orgi, final String status, final String agentno, final Sort defaultSort);
+    List<AgentUser> findByStatusAndAgentno(final String status, final String agentno, final Sort defaultSort);
 
     @Query(value = "SELECT a FROM AgentUser a WHERE a.userid in(:userids)")
     List<AgentUser> findAllByUserids(@Param("userids") List<String> userids);
 
-    int countByAgentnoAndStatusAndOrgi(String agentno, String status, String orgi);
+    int countByAgentnoAndStatus(String agentno, String status);
 
-    int countByAgentnoAndStatusAndOrgiAndSkill(String agentno, String status, String orgi, String skill);
+    int countByAgentnoAndStatusAndSkill(String agentno, String status, String skill);
 
-    AgentUser findOneByAgentnoAndStatusAndOrgi(String id, String status, String orgi);
-
-    @Query(value = "SELECT * FROM uk_agentuser AS u " +
-            "LEFT JOIN uk_agentuser_contacts AS c " +
-            "ON u.userid = c.userid WHERE c.id = ?1 AND NOT u.status = ?2 AND c.orgi = ?3 LIMIT 1", nativeQuery = true)
-    AgentUser findOneByContactIdAndStatusNotAndOrgi(final String contactid, final String status, final String orgi);
+    AgentUser findOneByAgentnoAndStatus(String id, String status);
 
     @Query(value = "SELECT * FROM uk_agentuser AS u " +
             "LEFT JOIN uk_agentuser_contacts AS c " +
-            "ON u.userid = c.userid WHERE c.contactsid = ?1 " +
-            "AND c.channel = ?3 AND NOT u.status = ?2 AND c.orgi = ?4 " +
-            "ORDER BY u.createtime DESC LIMIT 1", nativeQuery = true)
-    Optional<AgentUser> findOneByContactIdAndStatusNotAndChannelAndOrgi(final String contactid, final String status, final String channel, final String orgi);
+            "ON u.userid = c.userid WHERE c.id = ?1 AND NOT u.status = ?2 LIMIT 1", nativeQuery = true)
+    AgentUser findOneByContactIdAndStatusNot(final String contactid, final String status);
 
     @Query(value = "SELECT * FROM uk_agentuser AS u " +
             "LEFT JOIN uk_agentuser_contacts AS c " +
             "ON u.userid = c.userid WHERE c.contactsid = ?1 " +
-            "AND c.channel = ?2 AND c.orgi = ?3 " +
+            "AND c.channeltype = ?3 AND NOT u.status = ?2 " +
             "ORDER BY u.createtime DESC LIMIT 1", nativeQuery = true)
-    Optional<AgentUser> findOneByContactIdAndChannelAndOrgi(final String contactid, final String channel, final String orgi);
+    Optional<AgentUser> findOneByContactIdAndStatusNotAndChanneltype(final String contactid, final String status, final String channeltype);
+
+    @Query(value = "SELECT * FROM uk_agentuser AS u " +
+            "LEFT JOIN uk_agentuser_contacts AS c " +
+            "ON u.userid = c.userid WHERE c.contactsid = ?1 " +
+            "AND c.channeltype = ?2 " +
+            "ORDER BY u.createtime DESC LIMIT 1", nativeQuery = true)
+    Optional<AgentUser> findOneByContactIdAndChanneltype(final String contactid, final String channeltype);
 
     @Query(value = "SELECT * FROM uk_agentuser AS u " +
             "WHERE u.userid = ?1 " +
-            "AND u.channel = ?3 AND NOT u.status = ?2 AND u.orgi = ?4 " +
+            "AND u.channeltype = ?3 AND NOT u.status = ?2 " +
             "ORDER BY u.createtime DESC LIMIT 1", nativeQuery = true)
-    Optional<AgentUser> findOneByUseridAndStatusNotAndChannelAndOrgi(final String userid, final String status, final String channel, final String orgi);
+    Optional<AgentUser> findOneByUseridAndStatusNotAndChanneltype(final String userid, final String status, final String channeltype);
 
-    AgentUser findOneByUseridAndStatusAndChannelAndOrgi(String userid, String status, String channel, String orgi);
-
-
+    AgentUser findOneByUseridAndStatusAndChanneltype(String userid, String status, String channeltype);
 }

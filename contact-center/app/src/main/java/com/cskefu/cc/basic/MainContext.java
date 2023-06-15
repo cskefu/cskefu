@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@
 
 package com.cskefu.cc.basic;
 
-import com.cskefu.cc.basic.resource.ActivityResource;
-import com.cskefu.cc.basic.resource.BatchResource;
 import com.cskefu.cc.cache.Cache;
 import com.cskefu.cc.cache.RedisCommand;
 import com.cskefu.cc.peer.PeerSyncIM;
@@ -26,11 +24,10 @@ import com.cskefu.cc.util.DateConverter;
 import com.cskefu.cc.util.SystemEnvHelper;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,13 +40,11 @@ public class MainContext {
 
     private static boolean imServerRunning = false;  // IM服务状态
 
-    private static Set<String> modules = new HashSet<String>();
+    private static final Set<String> modules = new HashSet<>();
 
-    public static Map<String, Class<?>> csKeFuResourceMap = new HashMap<String, Class<?>>();
+    public static final Map<String, Class<?>> csKeFuResourceMap = new HashMap<>();
 
     private static ApplicationContext applicationContext;
-
-    private static ElasticsearchTemplate templet;
 
     private static RedisCommand redisCommand;
 
@@ -59,8 +54,6 @@ public class MainContext {
 
     static {
         ConvertUtils.register(new DateConverter(), java.util.Date.class);
-        csKeFuResourceMap.put(TaskType.ACTIVE.toString(), ActivityResource.class);
-        csKeFuResourceMap.put(TaskType.BATCH.toString(), BatchResource.class);
     }
 
     public enum AskSectionType {
@@ -339,8 +332,8 @@ public class MainContext {
         CALLIN_DIST("呼入挂断", 8),
         CALLIN_FAIL("呼入失败", 9);
 
-        private String name;
-        private int index;
+        private final String name;
+        private final int index;
 
         CallWireEventType(final String name, final int index) {
             this.name = name;
@@ -663,8 +656,8 @@ public class MainContext {
         OFFLINE("离线", 6),
         SERVICES("服务", 7);
 
-        private String name;
-        private int index;
+        private final String name;
+        private final int index;
 
         AgentStatusEnum(final String name, final int index) {
             this.name = name;
@@ -945,14 +938,6 @@ public class MainContext {
 
     public static ApplicationContext getContext() {
         return applicationContext;
-    }
-
-    public static ElasticsearchTemplate getTemplet() {
-        return templet;
-    }
-
-    public static void setTemplet(ElasticsearchTemplate templet) {
-        MainContext.templet = templet;
     }
 
     /**

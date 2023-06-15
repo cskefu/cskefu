@@ -1,4 +1,4 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+//- Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
 //- 
 //- Licensed under the Apache License, Version 2.0 (the "License");
 //- you may not use this file except in compliance with the License.
@@ -480,7 +480,7 @@ script.
         var count = editor.count("text");
         if (count > 0) {
             var message = document.getElementById('message').value;
-            top.WebIM.sendMessage(message, "#{user.id}", "#{curagentuser.appid}", "#{user.sessionid}", "#{orgi ? orgi : ''}", "#{curagentuser.userid}", "#{user.username}");
+            top.WebIM.sendMessage(message, "#{user.id}", "#{curagentuser.appid}", "#{user.sessionid}", "#{curagentuser.userid}", "#{user.username}");
         }
         editor.html('');
         showOrHide('none');

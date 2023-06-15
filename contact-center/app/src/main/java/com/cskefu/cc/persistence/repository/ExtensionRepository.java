@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,25 +25,23 @@ import java.util.Optional;
 
 public interface ExtensionRepository extends JpaRepository<Extension, String> {
 
-    Extension findByIdAndOrgi(String id, String orgi);
+    Extension findById(String id);
 
-    List<Extension> findByHostidAndOrgi(String hostid, String orgi);
-
-    List<Extension> findByExtensionAndOrgi(String extension, String orgi);
+    List<Extension> findByHostid(String hostid);
 
     List<Extension> findByExtension(String extension);
 
-    List<Extension> findByHostidAndExtypeAndOrgi(String hostid, String extype, String orgi);
+    List<Extension> findByHostidAndExtype(String hostid, String extype);
 
-    List<Extension> findByHostidAndExtypeAndOrgiAndAgentnoIsNull(String hostid, String extype, String orgi);
+    List<Extension> findByHostidAndExtypeAndAgentnoIsNull(String hostid, String extype);
 
-    List<Extension> findByExtypeAndOrgi(String type, String orgi);
+    List<Extension> findByExtype(String type);
 
-    @Query(value = "SELECT * FROM uk_callcenter_extention WHERE extention = ?1 AND hostid = ?2 AND orgi = ?3 LIMIT 1", nativeQuery = true)
-    Optional<Extension> findOneByExtensionAndHostidAndOrgi(final String extension, final String hostid, final String orgi);
+    @Query(value = "SELECT * FROM uk_callcenter_extention WHERE extention = ?1 AND hostid = ?2 LIMIT 1", nativeQuery = true)
+    Optional<Extension> findOneByExtensionAndHostid(final String extension, final String hostid);
 
-    int countByHostidAndOrgi(final String hostid, final String orgi);
+    int countByHostid(final String hostid);
 
-    @Query(value = "SELECT * FROM uk_callcenter_extention WHERE agentno = ?1 AND orgi = ?2 LIMIT 1", nativeQuery = true)
-    Optional<Extension> findByAgentnoAndOrgi(final String agentno, final String orgi);
+    @Query(value = "SELECT * FROM uk_callcenter_extention WHERE agentno = ?1 LIMIT 1", nativeQuery = true)
+    Optional<Extension> findByAgentno(final String agentno);
 }

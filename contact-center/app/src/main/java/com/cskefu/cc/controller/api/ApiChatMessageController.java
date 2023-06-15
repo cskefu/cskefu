@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,26 +40,27 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/chatmessage")
-public class ApiChatMessageController extends Handler{
-	
-	@Autowired
-	private ChatMessageRepository chatMessageRes ;
+public class ApiChatMessageController extends Handler {
 
-	/**
-	 * 获取访客对话内容
-	 * @param request
-	 * @param serviceid		AgentServiceID
-	 * @return
-	 */
-	@RequestMapping( method = RequestMethod.GET)
-	@Menu(type = "apps" , subtype = "agentuser" , access = true)
-    public ResponseEntity<RestResult> list(HttpServletRequest request , @Valid String serviceid) {
-		ResponseEntity<RestResult> result = null ;
-		if(!StringUtils.isBlank(serviceid)) {
-			result = new ResponseEntity<>(new RestResult(RestResultType.OK , chatMessageRes.findByAgentserviceidAndOrgi(serviceid , super.getUser(request).getOrgi(),new PageRequest(super.getP(request), super.getPs(request) , Sort.Direction.DESC, "createtime"))), HttpStatus.OK) ;
-		}else {
-			result = new ResponseEntity<>(new RestResult(RestResultType.LACKDATA , RestResultType.LACKDATA.getMessage()), HttpStatus.OK) ;
-		}
-        return result ;
+    @Autowired
+    private ChatMessageRepository chatMessageRes;
+
+    /**
+     * 获取访客对话内容
+     *
+     * @param request
+     * @param serviceid AgentServiceID
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET)
+    @Menu(type = "apps", subtype = "agentuser", access = true)
+    public ResponseEntity<RestResult> list(HttpServletRequest request, @Valid String serviceid) {
+        ResponseEntity<RestResult> result = null;
+        if (!StringUtils.isBlank(serviceid)) {
+            result = new ResponseEntity<>(new RestResult(RestResultType.OK, chatMessageRes.findByAgentserviceid(serviceid, new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"))), HttpStatus.OK);
+        } else {
+            result = new ResponseEntity<>(new RestResult(RestResultType.LACKDATA, RestResultType.LACKDATA.getMessage()), HttpStatus.OK);
+        }
+        return result;
     }
 }

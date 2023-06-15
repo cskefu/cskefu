@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,32 +55,25 @@ public class CallAgentResourceController extends Handler {
             q = "";
         }
         final String search = q;
-        final String orgi = super.getOrgi(request);
         final List<String> organList = CallCenterUtils.getExistOrgan(super.getUser(request));
-        List<User> owneruserList = userRes.findAll(new Specification<User>() {
-            @Override
-            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query,
-                                         CriteriaBuilder cb) {
-                List<Predicate> list = new ArrayList<Predicate>();
-                In<Object> in = cb.in(root.get("organ"));
+        List<User> owneruserList = userRes.findAll((root, query, cb) -> {
+            List<Predicate> list = new ArrayList<>();
+            In<Object> in = cb.in(root.get("organ"));
 
-                list.add(cb.equal(root.get("orgi").as(String.class), orgi));
+            list.add(cb.or(cb.like(root.get("username").as(String.class), "%" + search + "%"), cb.like(root.get("uname").as(String.class), "%" + search + "%")));
 
-                list.add(cb.or(cb.like(root.get("username").as(String.class), "%" + search + "%"), cb.like(root.get("uname").as(String.class), "%" + search + "%")));
+            if (organList.size() > 0) {
 
-                if (organList.size() > 0) {
-
-                    for (String id : organList) {
-                        in.value(id);
-                    }
-                } else {
-                    in.value(Constants.CSKEFU_SYSTEM_NO_DAT);
+                for (String id : organList) {
+                    in.value(id);
                 }
-                list.add(in);
-
-                Predicate[] p = new Predicate[list.size()];
-                return cb.and(list.toArray(p));
+            } else {
+                in.value(Constants.CSKEFU_SYSTEM_NO_DAT);
             }
+            list.add(in);
+
+            Predicate[] p = new Predicate[list.size()];
+            return cb.and(list.toArray(p));
         });
 
         JSONArray result = new JSONArray();

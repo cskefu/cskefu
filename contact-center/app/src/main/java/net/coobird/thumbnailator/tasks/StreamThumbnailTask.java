@@ -43,11 +43,11 @@ public class StreamThumbnailTask extends ThumbnailTask<InputStream, OutputStream
 	public StreamThumbnailTask(ThumbnailParameter param, InputStream is, OutputStream os)
 	{
 		super(param);
-		this.task = new SourceSinkThumbnailTask<InputStream, OutputStream>(
-				param,
-				new InputStreamImageSource(is),
-				new OutputStreamImageSink(os)
-		);
+		this.task = new SourceSinkThumbnailTask<>(
+                param,
+                new InputStreamImageSource(is),
+                new OutputStreamImageSink(os)
+        );
 	}
 
 	@Override

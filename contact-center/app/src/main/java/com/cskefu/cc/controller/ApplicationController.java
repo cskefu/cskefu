@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,10 +96,10 @@ public class ApplicationController extends Handler {
 
         view.addObject(
                 "skills",
-                organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request)).keySet().stream().collect(Collectors.joining(","))
+                organProxy.findAllOrganByParent(currentOrgan).keySet().stream().collect(Collectors.joining(","))
         );
 
-        view.addObject("agentStatusReport", acdWorkMonitor.getAgentReport(currentOrgan != null ? currentOrgan.getId() : null, logined.getOrgi()));
+        view.addObject("agentStatusReport", acdWorkMonitor.getAgentReport(currentOrgan != null ? currentOrgan.getId() : null));
         view.addObject("istenantshare", false);
         view.addObject("timeDifference", timezone.getRawOffset());
         view.addObject("organList", organs);
@@ -112,11 +112,11 @@ public class ApplicationController extends Handler {
         view.addObject("appCustomerEntity", appCustomerEntity);
 
         // 在线坐席状态信息
-        view.addObject("agentStatus", cache.findOneAgentStatusByAgentnoAndOrig(logined.getId(), logined.getOrgi()));
+        view.addObject("agentStatus", cache.findOneAgentStatusByAgentno(logined.getId()));
 
         // 呼叫中心信息
         if (MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER) && logined.isCallcenter()) {
-            extensionRes.findByAgentnoAndOrgi(logined.getId(), logined.getOrgi()).ifPresent(ext -> {
+            extensionRes.findByAgentno(logined.getId()).ifPresent(ext -> {
                 pbxHostRes.findById(ext.getHostid()).ifPresent(pbx -> {
                     Map<String, Object> webrtcData = new HashMap<>();
                     webrtcData.put("callCenterWebrtcIP", pbx.getWebrtcaddress());
@@ -145,7 +145,7 @@ public class ApplicationController extends Handler {
     @ResponseBody
     public String setOrgan(HttpServletRequest request, @Valid String organ) {
         if (StringUtils.isNotBlank(organ)) {
-            Organ currentOrgan = organRepository.findByIdAndOrgi(organ, super.getOrgi(request));
+            Organ currentOrgan = organRepository.findById(organ);
             if (currentOrgan != null) {
                 request.getSession(true).setAttribute(Constants.ORGAN_SESSION_NAME, currentOrgan);
             }
@@ -158,7 +158,7 @@ public class ApplicationController extends Handler {
     public ModelAndView lazyAgentStatus(HttpServletRequest request) {
         ModelAndView view = request(super.createView("/public/agentstatustext"));
         Organ currentOrgan = super.getOrgan(request);
-        view.addObject("agentStatusReport", acdWorkMonitor.getAgentReport(currentOrgan != null ? currentOrgan.getId() : null, super.getOrgi(request)));
+        view.addObject("agentStatusReport", acdWorkMonitor.getAgentReport(currentOrgan != null ? currentOrgan.getId() : null));
 
         return view;
     }

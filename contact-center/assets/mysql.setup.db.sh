@@ -10,7 +10,8 @@ MYSQL_WRITEMODE_IP=`parse_host ${SPRING_DATASOURCE_URL}`
 MYSQL_WRITEMODE_PORT=`parse_port ${SPRING_DATASOURCE_URL}`
 CONTACT_CENTER_DB=`parse_dbname ${SPRING_DATASOURCE_URL}`
 CONTACT_CENTER_WAR=/opt/cskefu/contact-center.war
-MYSQL_SCRIPT_NAME=cosinee-MySQL-slim.sql
+MYSQL_SETUP_CREATE_DB=001.mysql-create-db.sql
+MYSQL_SETUP_CREATE_SCHEMAS=002.mysql-create-schemas.sql
 
 # functions
 function import_db(){
@@ -36,11 +37,16 @@ function init_db(){
         fi
 
         unzip -q $CONTACT_CENTER_WAR -d ROOT
-        if [ -f /tmp/ROOT/$MYSQL_SCRIPT_NAME ]; then
+        if [ -f /tmp/ROOT/$MYSQL_SETUP_CREATE_SCHEMAS ]; then
             println "start to import database ..."
-            import_db /tmp/ROOT/$MYSQL_SCRIPT_NAME
+            cat /tmp/ROOT/$MYSQL_SETUP_CREATE_DB > /tmp/ROOT/db_setup.sql
+            echo "" >> /tmp/ROOT/db_setup.sql
+            cat /tmp/ROOT/$MYSQL_SETUP_CREATE_SCHEMAS >> /tmp/ROOT/db_setup.sql
+
+            import_db /tmp/ROOT/db_setup.sql
             # verify status
             if [ ! $? -eq 0 ]; then
+                rm /tmp/ROOT/db_setup.sql
                 exit 1
             fi
             rm -rf /tmp/ROOT

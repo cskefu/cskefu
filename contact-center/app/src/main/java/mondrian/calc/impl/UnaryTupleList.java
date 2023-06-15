@@ -36,7 +36,7 @@ public class UnaryTupleList
      * Creates an empty UnaryTupleList.
      */
     public UnaryTupleList() {
-        this(new ArrayList<Member>());
+        this(new ArrayList<>());
     }
 
     /**
@@ -109,8 +109,8 @@ public class UnaryTupleList
     public TupleList cloneList(int capacity) {
         return new UnaryTupleList(
             capacity < 0
-                ? new ArrayList<Member>(list)
-                : new ArrayList<Member>(capacity));
+                ? new ArrayList<>(list)
+                : new ArrayList<>(capacity));
     }
 
     public TupleCursor tupleCursor() {

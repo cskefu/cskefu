@@ -16,7 +16,6 @@
 
 package com.cskefu.cc.acd;
 
-import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.cache.Cache;
@@ -25,7 +24,7 @@ import com.cskefu.cc.persistence.repository.*;
 import com.cskefu.cc.proxy.OrganProxy;
 import com.cskefu.cc.util.HashMapUtils;
 import com.cskefu.cc.util.WebIMReport;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,13 +49,13 @@ public class ACDPolicyService {
     private SessionConfigRepository sessionConfigRes;
 
     @Autowired
-    private OnlineUserRepository onlineUserRes;
+    private PassportWebIMUserRepository onlineUserRes;
 
     @Autowired
     private AgentUserRepository agentUserRes;
 
     @Autowired
-    private SNSAccountRepository snsAccountRes;
+    private ChannelRepository snsAccountRes;
 
     @Autowired
     private OrganProxy organProxy;
@@ -69,10 +68,10 @@ public class ACDPolicyService {
     @SuppressWarnings("unchecked")
     public List<SessionConfig> initSessionConfigList() {
         List<SessionConfig> sessionConfigList;
-        if ((sessionConfigList = cache.findOneSessionConfigListByOrgi(Constants.SYSTEM_ORGI)) == null) {
+        if ((sessionConfigList = cache.findOneSessionConfigList()) == null) {
             sessionConfigList = sessionConfigRes.findAll();
             if (sessionConfigList != null && sessionConfigList.size() > 0) {
-                cache.putSessionConfigListByOrgi(sessionConfigList, Constants.SYSTEM_ORGI);
+                cache.putSessionConfigList(sessionConfigList);
             }
         }
         return sessionConfigList;
@@ -81,17 +80,16 @@ public class ACDPolicyService {
     /**
      * 载入坐席 ACD策略配置
      *
-     * @param orgi
      * @return
      */
-    public SessionConfig initSessionConfig(String organid, final String orgi) {
+    public SessionConfig initSessionConfig(String organid) {
         SessionConfig sessionConfig;
-        if ((sessionConfig = cache.findOneSessionConfigByOrgi(organid, orgi)) == null) {
-            sessionConfig = sessionConfigRes.findByOrgiAndSkill(orgi, organid);
+        if ((sessionConfig = cache.findOneSessionConfig(organid)) == null) {
+            sessionConfig = sessionConfigRes.findBySkill(organid);
             if (sessionConfig == null) {
                 sessionConfig = new SessionConfig();
             } else {
-                cache.putSessionConfigByOrgi(sessionConfig, organid, orgi);
+                cache.putSessionConfig(sessionConfig, organid);
             }
         }
 
@@ -136,19 +134,17 @@ public class ACDPolicyService {
      * 优先级: 1. 指定坐席;2. 指定技能组; 3. 租户所有的坐席
      *
      * @param agentUser
-     * @param orgi
      * @return
      */
     public List<AgentStatus> filterOutAvailableAgentStatus(
             final AgentUser agentUser,
-            final String orgi,
             final SessionConfig sessionConfig) {
         logger.info(
-                "[filterOutAvailableAgentStatus] pre-conditions: agentUser.agentno {}, orgi {}, skill {}, onlineUser {}",
-                agentUser.getAgentno(), orgi, agentUser.getSkill(), agentUser.getUserid()
+                "[filterOutAvailableAgentStatus] pre-conditions: agentUser.agentno {}, skill {}, onlineUser {}",
+                agentUser.getAgentno(), agentUser.getSkill(), agentUser.getUserid()
         );
         List<AgentStatus> agentStatuses = new ArrayList<>();
-        Map<String, AgentStatus> map = cache.findAllReadyAgentStatusByOrgi(orgi);
+        Map<String, AgentStatus> map = cache.findAllReadyAgentStatus();
 
         // DEBUG
         if (map.size() > 0) {
@@ -236,9 +232,8 @@ public class ACDPolicyService {
              *
              * TODO 指定技能组无用户，停止分配
              */
-
-            SNSAccount snsAccount = snsAccountRes.findBySnsidAndOrgi(agentUser.getAppid(), orgi);
-            Map<String, Organ> allOrgan = organProxy.findAllOrganByParentIdAndOrgi(snsAccount.getOrgan(), orgi);
+            Channel channel = snsAccountRes.findBySnsid(agentUser.getAppid()).get();
+            Map<String, Organ> allOrgan = organProxy.findAllOrganByParentId(channel.getOrgan());
 //            allOrgan.keySet().retainAll
 
             // 对于该租户的所有客服
@@ -313,7 +308,6 @@ public class ACDPolicyService {
     public AgentStatus filterOutAgentStatusWithPolicies(
             final SessionConfig sessionConfig,
             final List<AgentStatus> agentStatuses,
-            final String orgi,
             final String onlineUserId,
             final boolean isInvite) {
         AgentStatus agentStatus = null;
@@ -341,7 +335,7 @@ public class ACDPolicyService {
             logger.info("[filterOutAgentStatusWithPolicies] check agent against chat history.");
             // 启用了历史坐席优先 ， 查找 历史服务坐席
             List<WebIMReport> webIMaggs = MainUtils.getWebIMDataAgg(
-                    onlineUserRes.findBySkillAndOrgiForDistinctAgent(sessionConfig.getSkill(), orgi, onlineUserId));
+                    onlineUserRes.findBySkillForDistinctAgent(sessionConfig.getSkill(), onlineUserId));
             for (WebIMReport report : webIMaggs) {
                 for (final AgentStatus o : agentStatuses) {
                     if (StringUtils.equals(
@@ -399,7 +393,7 @@ public class ACDPolicyService {
     }
 
     public int getAgentUsersBySkill(AgentStatus agentStatus, String skill) {
-        return agentUserRes.countByAgentnoAndStatusAndOrgiAndSkill(agentStatus.getAgentno(), MainContext.AgentUserStatusEnum.INSERVICE.toString(), agentStatus.getOrgi(), skill);
+        return agentUserRes.countByAgentnoAndStatusAndSkill(agentStatus.getAgentno(), MainContext.AgentUserStatusEnum.INSERVICE.toString(), skill);
     }
 
 }

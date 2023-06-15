@@ -1,4 +1,4 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+//- Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
 //- 
 //- Licensed under the Apache License, Version 2.0 (the "License");
 //- you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ block content
 
     script.
         var hostname = location.hostname;
-        var socket = io.connect(location.protocol + "//" + top.hostname + ":" + top.port + "/im/ent?userid=#{user.id}&orgi=#{user.orgi}");
+        var socket = io.connect(location.protocol + "//" + top.hostname + ":" + top.port + "/im/ent?userid=#{user.id}");
         socket.on('connect', function () {
         })
         socket.on('message', function (data) {

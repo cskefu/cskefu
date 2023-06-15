@@ -1,11 +1,11 @@
-var title = "春松客服-多渠道智能客服" ;
+var title = "春松客服-开源客服系统" ;
 var socket  , newuser = [] , newmessage = [] , ring = [];
 newuser['mp3'] = '/images/new.mp3'; 
 newmessage['mp3'] = '/images/message.mp3';
 ring['mp3'] = '/images/ring.mp3';
 $(document).ready(function(){
     var protocol = window.location.protocol.replace(/:/g,'');
-    socket = io(protocol+'://'+hostname+':'+port+'/im/agent?orgi='+orgi+"&userid="+userid+"&session="+session+"&admin="+adminuser , {transports: ['websocket'], upgrade: false});
+    socket = io(protocol+'://'+hostname+':'+port+"/im/agent?userid="+userid+"&session="+session+"&admin="+adminuser , {transports: ['websocket'], upgrade: false});
     socket.on('connect',function() {
 		console.log("[IM] 连接初始化成功");
 		//请求服务端记录 当前用户在线事件
@@ -44,12 +44,10 @@ $(document).ready(function(){
 			WebIM.audioplayer('audioplane', newuser, false); // 播放
 		}
 	}).on('status', function(data) {
-		if(orgi == data.orgi){
-			$.post('/lazyAgentStatus').success(function(html){
-				$('#agents_status').html(html);
-			});
-			// $('#agents_status').html("服务中的人数："+data.users+"人，当前排队人数："+data.inquene+"人，在线坐席数："+data.agents+"人，坐席忙："+data.busy+"人");
-		}
+		$.post('/lazyAgentStatus').success(function(html){
+			$('#agents_status').html(html);
+		});
+		// $('#agents_status').html("服务中的人数："+data.users+"人，当前排队人数："+data.inquene+"人，在线坐席数："+data.agents+"人，坐席忙："+data.busy+"人");
 	}).on('message', function(data) {
 		if($('#multiMediaDialogWin').length > 0 && multiMediaDialogWin != null && multiMediaDialogWin.$ && multiMediaDialogWin.$('#agentusers').length > 0){
 			multiMediaDialogWin.Proxy.newAgentUserMessage(data,"agent");
@@ -124,17 +122,16 @@ $(document).ready(function(){
 });
 
 var WebIM = {
-	sendMessage:function(message , userid , appid , session , orgi , touser , agentstatus, agentuserid){
-		WebIM.sendTypeMessage(message, userid, appid, session, orgi, touser, agentstatus, null , null,agentuserid) ;
+	sendMessage:function(message , userid , appid , session , touser , agentstatus, agentuserid){
+		WebIM.sendTypeMessage(message, userid, appid, session, touser, agentstatus, null , null,agentuserid) ;
 	},
-	sendTypeMessage:function(message , userid , appid , session , orgi , touser , agentstatus , msgtype , attachmentid,agentuserid){
+	sendTypeMessage:function(message , userid , appid , session , touser , agentstatus , msgtype , attachmentid,agentuserid){
 		socket.emit('message', {
 			appid : appid ,
 			userid:userid,
 			sign:session,
 			touser:touser,
 			session: session,
-			orgi:orgi,
 			username:agentstatus,
 			nickname:agentstatus,
 			message : message,

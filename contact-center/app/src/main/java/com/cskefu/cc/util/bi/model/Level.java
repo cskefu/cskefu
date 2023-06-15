@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 package com.cskefu.cc.util.bi.model;
 
 import com.cskefu.cc.basic.MainUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,15 +57,15 @@ public class Level implements java.io.Serializable{
 
 	private List<FirstTitle> firstTitle;
 	public void init() {
-		title = new ArrayList<List<Level>>();
+		title = new ArrayList<>();
 
-		title.add(new ArrayList<Level>());
+		title.add(new ArrayList<>());
 		for (Level level : childeren) {
 			title.get(0).add(level);
 		}
 		for (int i = 0; i < depth; i++) {
 			List<Level> levelList = title.get(i);
-			List<Level> next = new ArrayList<Level>();
+			List<Level> next = new ArrayList<>();
 			for (Level lv : levelList) {
 				if (lv.getChilderen() != null) {
 					for (Level tp : lv.getChilderen()) {

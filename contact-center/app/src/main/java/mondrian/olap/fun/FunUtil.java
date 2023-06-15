@@ -253,8 +253,7 @@ public class FunUtil extends Util {
         if (right.isEmpty()) {
             return;
         }
-        for (int i = 0, n = right.size(); i < n; i++) {
-            List<Member> o = right.get(i);
+        for (List<Member> o : right) {
             if (set.add(o)) {
                 left.add(o);
             }
@@ -302,14 +301,13 @@ public class FunUtil extends Util {
         return members;
     }
 
-    static List<Member> addMembers(
+    static void addMembers(
         SchemaReader schemaReader,
         List<Member> members,
         Level level)
     {
         List<Member> levelMembers = schemaReader.getLevelMembers(level, true);
         members.addAll(levelMembers);
-        return members;
     }
 
     /**
@@ -321,7 +319,7 @@ public class FunUtil extends Util {
      */
     static List<Member> removeCalculatedMembers(List<Member> memberList)
     {
-        List<Member> clone = new ArrayList<Member>();
+        List<Member> clone = new ArrayList<>();
         for (Member member : memberList) {
             if (member.isCalculated()) {
                 continue;
@@ -408,7 +406,7 @@ public class FunUtil extends Util {
         try {
             assert exp.getType() instanceof ScalarType;
             Map<Member, Object> mapMemberToValue =
-                new HashMap<Member, Object>();
+                    new HashMap<>();
             for (Member member : memberIter) {
                 if (memberList != null) {
                     memberList.add(member);
@@ -459,9 +457,8 @@ public class FunUtil extends Util {
         try {
             assert exp.getType() instanceof ScalarType;
             final Map<List<Member>, Object> mapMemberToValue =
-                    new HashMap<List<Member>, Object>();
-            for (int i = 0, count = tuples.size(); i < count; i++) {
-                List<Member> tuple = tuples.get(i);
+                    new HashMap<>();
+            for (List<Member> tuple : tuples) {
                 evaluator.setContext(tuple);
                 Object result = exp.evaluate(evaluator);
                 if (result == null) {
@@ -517,7 +514,7 @@ public class FunUtil extends Util {
             Map<Member, Object> mapMemberToValue;
             final boolean parentsToo = !brk;
             if (memberList == null) {
-                memberList = new ArrayList<Member>();
+                memberList = new ArrayList<>();
                 mapMemberToValue = evaluateMembers(
                     evaluator, exp, memberIter, memberList, parentsToo);
             } else {
@@ -564,7 +561,7 @@ public class FunUtil extends Util {
             return memberList;
         }
         if (memberList == null) {
-            memberList = new ArrayList<Member>();
+            memberList = new ArrayList<>();
             for (Member member : memberIter) {
                 memberList.add(member);
             }
@@ -628,7 +625,7 @@ public class FunUtil extends Util {
         // iterator and evaluate the sort expressions at the same time.
         List<List<Member>> tupleArrayList;
         if (tupleList == null) {
-            tupleArrayList = new ArrayList<List<Member>>();
+            tupleArrayList = new ArrayList<>();
             final TupleCursor cursor = tupleIterable.tupleCursor();
             while (cursor.forward()) {
                 tupleArrayList.add(cursor.current());
@@ -994,21 +991,19 @@ public class FunUtil extends Util {
     {
         double total = 0;
         int memberCount = members.size();
-        for (int i = 0; i < memberCount; i++) {
-            final List<Member> key = members.get(i);
+        for (final List<Member> key : members) {
             final Object o = mapMemberToValue.get(key);
             if (o instanceof Number) {
                 total += ((Number) o).doubleValue();
             }
         }
-        for (int i = 0; i < memberCount; i++) {
-            final List<Member> key = members.get(i);
+        for (final List<Member> key : members) {
             final Object o = mapMemberToValue.get(key);
             if (o instanceof Number) {
                 double d = ((Number) o).doubleValue();
                 mapMemberToValue.put(
-                    key,
-                    d / total * (double) 100);
+                        key,
+                        d / total * (double) 100);
             }
         }
     }
@@ -1351,7 +1346,7 @@ public class FunUtil extends Util {
 
     private static Object _var(SetWrapper sw, boolean biased) {
         if (sw.errorCount > 0) {
-            return new Double(Double.NaN);
+            return Double.NaN;
         } else if (sw.v.size() == 0) {
             return Util.nullValue;
         } else {
@@ -1365,7 +1360,7 @@ public class FunUtil extends Util {
             if (!biased) {
                 n--;
             }
-            return new Double(stdev / (double) n);
+            return stdev / (double) n;
         }
     }
 
@@ -1435,7 +1430,7 @@ public class FunUtil extends Util {
         if (!biased) {
             n--;
         }
-        return new Double(covar / (double) n);
+        return covar / (double) n;
     }
 
     static Object stdev(
@@ -1656,7 +1651,7 @@ public class FunUtil extends Util {
         // If m == null, then "level" was lower than member's level.
         // periodsToDate([Time].[Quarter], [Time].[1997] is valid,
         //  but will return an empty List
-        List<Member> members = new ArrayList<Member>();
+        List<Member> members = new ArrayList<>();
         if (m != null) {
             // e.g. m is [Time].[1997] and member is [Time].[1997].[Q1].[3]
             // we now have to make m to be the first member of the range,
@@ -1675,7 +1670,7 @@ public class FunUtil extends Util {
     {
         final Level level = startMember.getLevel();
         assertTrue(level == endMember.getLevel());
-        List<Member> members = new ArrayList<Member>();
+        List<Member> members = new ArrayList<>();
         evaluator.getSchemaReader().getMemberRange(
             level, startMember, endMember, members);
 
@@ -1792,16 +1787,14 @@ public class FunUtil extends Util {
             return member.getHierarchy().getNullMember();
         }
 
-        final List<Member> ancestors = new ArrayList<Member>();
+        final List<Member> ancestors = new ArrayList<>();
         final SchemaReader schemaReader = evaluator.getSchemaReader();
         schemaReader.getMemberAncestors(member, ancestors);
 
         Member result = member.getHierarchy().getNullMember();
 
         searchLoop:
-        for (int i = 0; i < ancestors.size(); i++) {
-            final Member ancestorMember = ancestors.get(i);
-
+        for (final Member ancestorMember : ancestors) {
             if (targetLevel != null) {
                 if (ancestorMember.getLevel() == targetLevel) {
                     if (schemaReader.isVisible(ancestorMember)) {
@@ -2212,7 +2205,7 @@ public class FunUtil extends Util {
         if (!includeCalcMembers) {
             memberList = removeCalculatedMembers(memberList);
         }
-        final List<Member> memberListClone = new ArrayList<Member>(memberList);
+        final List<Member> memberListClone = new ArrayList<>(memberList);
         tupleList = new UnaryTupleList(memberListClone);
         return hierarchizeTupleList(tupleList, false);
     }
@@ -2236,7 +2229,7 @@ public class FunUtil extends Util {
         } else {
             final List<Member> memberList1 = addMembers(
                 evaluator.getSchemaReader(),
-                new ConcatenableList<Member>(),
+                    new ConcatenableList<>(),
                 hierarchy);
             if (includeCalcMembers) {
                 memberList.addAll(memberList1);
@@ -2321,7 +2314,7 @@ public class FunUtil extends Util {
     public static <T> List<T> stablePartialSortArray(
         final List<T> list, final Comparator<T> comp, int limit)
     {
-        ArrayList<T> list2 = new ArrayList<T>(list);
+        ArrayList<T> list2 = new ArrayList<>(list);
         Collections.sort(list2, comp);
         return list2.subList(0, limit);
     }
@@ -2346,21 +2339,18 @@ public class FunUtil extends Util {
 
         int i = 0;
         for (T item : list) {           // O(n) to scan list
-            pairs[i] = new ObjIntPair<T>(item, i);
+            pairs[i] = new ObjIntPair<>(item, i);
             ++i;
         }
 
         Comparator<ObjIntPair<T>> pairComp =
-            new Comparator<ObjIntPair<T>>()
-        {
-            public int compare(ObjIntPair<T> x, ObjIntPair<T> y) {
-                int val = comp.compare(x.t, y.t);
-                if (val == 0) {
-                    val = x.i - y.i;
-                }
-                return val;
-            }
-        };
+                (x, y) -> {
+                    int val = comp.compare(x.t, y.t);
+                    if (val == 0) {
+                        val = x.i - y.i;
+                    }
+                    return val;
+                };
 
         final int length = Math.min(limit, n);
         // O(n + limit * log(limit)) to quicksort
@@ -2389,15 +2379,13 @@ public class FunUtil extends Util {
     {
         final ObjIntPair<T>[] pairs = new ObjIntPair[limit];
         Comparator<ObjIntPair<T>> pairComp =
-            new Comparator<ObjIntPair<T>>() {
-                public int compare(ObjIntPair<T> x, ObjIntPair<T> y) {
+                (x, y) -> {
                     int val = comp.compare(x.t, y.t);
                     if (val == 0) {
                         val = x.i - y.i;
                     }
                     return val;
-                }
-            };
+                };
 
         int filled = 0;
         T maximum = null;
@@ -2407,12 +2395,12 @@ public class FunUtil extends Util {
             switch (filled) {
             case 0:
                 maximum = item;
-                pairs[0] = new ObjIntPair<T>(item, originalIndex);
+                pairs[0] = new ObjIntPair<>(item, originalIndex);
                 filled++;
                 break;
             default:
                 if (filled < limit) {
-                    pairs[filled] = new ObjIntPair<T>(item, originalIndex);
+                    pairs[filled] = new ObjIntPair<>(item, originalIndex);
 
                     if (comp.compare(item, maximum) > 0) {
                         maximum = item;
@@ -2422,7 +2410,7 @@ public class FunUtil extends Util {
                 } else {
                     if (comp.compare(item, maximum) < 0) {
                         pairs[maximumIndex] =
-                            new ObjIntPair<T>(item, originalIndex);
+                                new ObjIntPair<>(item, originalIndex);
                         maximum = pairs[0].t;
                         maximumIndex = 0;
                         for (int i = 0; i < filled; i++) {
@@ -2454,7 +2442,7 @@ public class FunUtil extends Util {
             list.set(i, item);
         }
 
-        List<T> result = new ArrayList<T>(limit);
+        List<T> result = new ArrayList<>(limit);
         for (int i = 0; i < limit; i++) {
             result.add(list.get(pairs[i].i));
         }
@@ -2478,25 +2466,23 @@ public class FunUtil extends Util {
         final List<T> list, final Comparator<T> comp, int limit)
     {
         final Comparator<ObjIntPair<T>> comp2 =
-            new Comparator<ObjIntPair<T>>() {
-                public int compare(ObjIntPair<T> o1, ObjIntPair<T> o2) {
+                (o1, o2) -> {
                     int c = comp.compare(o1.t, o2.t);
                     if (c == 0) {
-                        c = Util.compare(o1.i, o2.i);
+                        c = compare(o1.i, o2.i);
                     }
                     return -c;
-                }
-            };
+                };
         int filled = 0;
         final PriorityQueue<ObjIntPair<T>> queue =
-            new PriorityQueue<ObjIntPair<T>>(limit, comp2);
+                new PriorityQueue<>(limit, comp2);
         for (T element : list) {
             if (filled < limit) {
-                queue.offer(new ObjIntPair<T>(element, filled++));
+                queue.offer(new ObjIntPair<>(element, filled++));
             } else {
                 ObjIntPair<T> head = queue.element();
                 if (comp.compare(element, head.t) <= 0) {
-                    ObjIntPair<T> item = new ObjIntPair<T>(element, filled++);
+                    ObjIntPair<T> item = new ObjIntPair<>(element, filled++);
                     if (comp2.compare(item, head) >= 0) {
                         ObjIntPair poll = queue.remove();
                         Util.discard(poll);
@@ -2931,7 +2917,7 @@ public class FunUtil extends Util {
             this.evaluator = evaluator;
             this.exp = exp;
             this.descMask = desc ? -1 : 1;
-            this.valueMap = new HashMap<Member, Object>();
+            this.valueMap = new HashMap<>();
         }
 
         private int maybeNegate(int c) {
@@ -2957,17 +2943,15 @@ public class FunUtil extends Util {
         Comparator<Member> wrap() {
             final MemberComparator comparator = this;
             if (LOGGER.isDebugEnabled()) {
-                return new Comparator<Member>() {
-                    public int compare(Member m1, Member m2) {
-                        final int c = comparator.compare(m1, m2);
-                        // here guaranteed that eval(m) finds a memorized value
-                        LOGGER.debug(
-                            "compare "
-                            + m1.getUniqueName() + "(" + eval(m1) + "), "
-                            + m2.getUniqueName() + "(" + eval(m2) + ")"
-                            + " yields " + c);
-                        return c;
-                    }
+                return (m1, m2) -> {
+                    final int c = comparator.compare(m1, m2);
+                    // here guaranteed that eval(m) finds a memorized value
+                    LOGGER.debug(
+                        "compare "
+                        + m1.getUniqueName() + "(" + eval(m1) + "), "
+                        + m2.getUniqueName() + "(" + eval(m2) + ")"
+                        + " yields " + c);
+                    return c;
                 };
             } else {
                 return this;
@@ -3078,7 +3062,7 @@ public class FunUtil extends Util {
      * an expression.
      */
     private static abstract class TupleExpComparator extends TupleComparator {
-        Evaluator evaluator;
+        final Evaluator evaluator;
         final Calc calc;
 
         TupleExpComparator(Evaluator evaluator, Calc calc, int arity) {
@@ -3177,7 +3161,7 @@ public class FunUtil extends Util {
     // almost the same as MemberComparator
     static abstract class TupleExpMemoComparator extends TupleExpComparator {
         private final Map<List<Member>, Object> valueMap =
-            new HashMap<List<Member>, Object>();
+                new HashMap<>();
 
         TupleExpMemoComparator(Evaluator e, Calc calc, int arity)
         {
@@ -3319,7 +3303,7 @@ public class FunUtil extends Util {
     }
 
     static class SetWrapper {
-        List v = new ArrayList();
+        final List v = new ArrayList();
         public int errorCount = 0, nullCount = 0;
 
         // private double avg = Double.NaN;
@@ -3543,7 +3527,7 @@ public class FunUtil extends Util {
         }
 
         public static String[] getNames() {
-            List<String> names = new ArrayList<String>();
+            List<String> names = new ArrayList<>();
             for (Flag flags : Flag.class.getEnumConstants()) {
                 names.add(flags.name());
             }

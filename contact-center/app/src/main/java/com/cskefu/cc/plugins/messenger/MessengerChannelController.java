@@ -22,10 +22,10 @@ import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.controller.Handler;
 import com.cskefu.cc.model.FbMessenger;
 import com.cskefu.cc.model.Organ;
-import com.cskefu.cc.model.SNSAccount;
+import com.cskefu.cc.model.Channel;
 import com.cskefu.cc.persistence.repository.FbMessengerRepository;
 import com.cskefu.cc.persistence.repository.OrganRepository;
-import com.cskefu.cc.persistence.repository.SNSAccountRepository;
+import com.cskefu.cc.persistence.repository.ChannelRepository;
 import com.cskefu.cc.proxy.OrganProxy;
 import com.cskefu.cc.util.Menu;
 import org.slf4j.Logger;
@@ -62,11 +62,10 @@ public class MessengerChannelController extends Handler {
     private OrganProxy organProxy;
 
     @Autowired
-    private SNSAccountRepository snsAccountRepository;
+    private ChannelRepository channelRepository;
 
     private Map<String, Organ> getOwnOrgan(HttpServletRequest request) {
-        return organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
-
+        return organProxy.findAllOrganByParent(super.getOrgan(request));
     }
 
     @RequestMapping("/index")
@@ -109,15 +108,14 @@ public class MessengerChannelController extends Handler {
             fbMessenger.setAiid(null);
             fbMessengerRepository.save(fbMessenger);
 
-            SNSAccount snsAccount = new SNSAccount();
-            snsAccount.setId(MainUtils.genID());
-            snsAccount.setCreatetime(new Date());
-            snsAccount.setOrgi(super.getOrgi(request));
-            snsAccount.setName(fbMessenger.getName());
-            snsAccount.setOrgan(currentOrgan.getId());
-            snsAccount.setSnsid(fbMessenger.getPageId());
-            snsAccount.setSnstype(MainContext.ChannelType.MESSENGER.toString());
-            snsAccountRepository.save(snsAccount);
+            Channel channel = new Channel();
+            channel.setId(MainUtils.genID());
+            channel.setCreatetime(new Date());
+            channel.setName(fbMessenger.getName());
+            channel.setOrgan(currentOrgan.getId());
+            channel.setSnsid(fbMessenger.getPageId());
+            channel.setType(MainContext.ChannelType.MESSENGER.toString());
+            channelRepository.save(channel);
         }
         return request(super.createView("redirect:/admin/messenger/index.html?msg=" + msg));
     }
@@ -162,8 +160,8 @@ public class MessengerChannelController extends Handler {
         FbMessenger fbMessenger = fbMessengerRepository.getOne(id);
         fbMessengerRepository.delete(id);
 
-        snsAccountRepository.findBySnsid(fbMessenger.getPageId()).ifPresent(snsAccount -> {
-            snsAccountRepository.delete(snsAccount);
+        channelRepository.findBySnsid(fbMessenger.getPageId()).ifPresent(snsAccount -> {
+            channelRepository.delete(snsAccount);
         });
 
         return request(super.createView("redirect:/admin/messenger/index.html?msg=" + msg));

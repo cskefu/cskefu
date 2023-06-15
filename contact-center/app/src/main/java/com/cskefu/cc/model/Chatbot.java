@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ public class Chatbot {
     private String fallback;
     private String welcome; // 问候语
     private String baseUrl; // 智能问答引擎服务地址
-    private String orgi;    // 租户标识
     private String creater; // 创建者
     private String channel; // 渠道类型
 
@@ -123,14 +122,6 @@ public class Chatbot {
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
-    }
-
-    public String getOrgi() {
-        return orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
     }
 
     public String getCreater() {

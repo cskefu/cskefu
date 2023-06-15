@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,11 @@ import java.util.Map;
 public class DSDataEvent {
 	public DSData dsData ;
 	
-	private String orgi ;
-	
 	private String tablename ;
 	
 	private String batid ;
 	
-	private Map<String , Object> values = new HashMap<String , Object>();
+	private Map<String , Object> values = new HashMap<>();
 	
 	private boolean failures;
 	
@@ -67,14 +65,6 @@ public class DSDataEvent {
 
 	public void setTimes(long times) {
 		this.times = times;
-	}
-
-	public String getOrgi() {
-		return orgi;
-	}
-
-	public void setOrgi(String orgi) {
-		this.orgi = orgi;
 	}
 
 	public Map<String, Object> getValues() {

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RecentUserRepository extends JpaRepository<RecentUser, String> {
-	
-	List<RecentUser> findByCreaterAndOrgi(String creater, String orgi);
-	
-	Optional<RecentUser> findByCreaterAndUserAndOrgi(String creater, User user, String orgi);
+
+    List<RecentUser> findByCreater(String creater);
+
+    Optional<RecentUser> findByCreaterAndUser(String creater, User user);
 }

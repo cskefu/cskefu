@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,16 +64,12 @@ public class ApiQualityController extends Handler {
     @RequestMapping(method = RequestMethod.GET)
     @Menu(type = "apps", subtype = "app", access = true)
     public ResponseEntity<RestResult> list(HttpServletRequest request, @Valid AgentService agentService, @Valid String begin, @Valid String end) {
-        Page<AgentService> page = agentServiceRepository.findAll(new Specification<AgentService>() {
-            @Override
-            public Predicate toPredicate(Root<AgentService> root, CriteriaQuery<?> query,
-                                         CriteriaBuilder cb) {
-                List<Predicate> list = new ArrayList<Predicate>();
-                list.add((cb.equal(root.get("qualitystatus").as(String.class), MainContext.QualityStatusEnum.NODIS.toString())));
+        Page<AgentService> page = agentServiceRepository.findAll((root, query, cb) -> {
+            List<Predicate> list = new ArrayList<>();
+            list.add((cb.equal(root.get("qualitystatus").as(String.class), MainContext.QualityStatusEnum.NODIS.toString())));
 
-                Predicate[] p = new Predicate[list.size()];
-                return cb.and(list.toArray(p));
-            }
+            Predicate[] p = new Predicate[list.size()];
+            return cb.and(list.toArray(p));
         }, new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
         return new ResponseEntity<>(new RestResult(RestResultType.OK, page), HttpStatus.OK);
     }

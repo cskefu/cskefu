@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,10 @@
 package com.cskefu.cc.config;
 
 import com.cskefu.cc.interceptor.*;
+import com.cskefu.cc.util.SystemEnvHelper;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -25,10 +29,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class CSKeFuWebAppConfigurer
         extends WebMvcConfigurerAdapter {
-
+    private final static Logger logger = LoggerFactory.getLogger(CSKeFuWebAppConfigurer.class);
+    private final static String ENABLE_LOG_REQUEST = SystemEnvHelper.parseFromApplicationProps("extras.log.request");
 
     /**
      * https://www.baeldung.com/spring-cors
+     *
      * @param registry
      */
     @Override
@@ -45,7 +51,14 @@ public class CSKeFuWebAppConfigurer
         registry.addInterceptor(new UserExperiencePlanInterceptorHandler()).addPathPatterns("/**").excludePathPatterns("/im/**", "/res/image*", "/res/file*", "/cs/**", "/messenger/webhook/*");
         registry.addInterceptor(new UserInterceptorHandler()).addPathPatterns("/**").excludePathPatterns("/login.html", "/im/**", "/res/image*", "/res/file*", "/cs/**", "/messenger/webhook/*");
         registry.addInterceptor(new CrossInterceptorHandler()).addPathPatterns("/**");
-        registry.addInterceptor(new LogIntercreptorHandler()).addPathPatterns("/**");
+
+        if (StringUtils.equalsIgnoreCase(ENABLE_LOG_REQUEST, "on")) {
+            logger.warn("Logging request into DB as in ENV: ENABLE_LOG_REQUEST=on");
+            registry.addInterceptor(new RequestLogIntercreptorHandler()).addPathPatterns("/**");
+        } else {
+            logger.info("Disable Logging request into DB.");
+        }
+
         registry.addInterceptor(new ViewsInterceptorHandler()).addPathPatterns("/**");
         super.addInterceptors(registry);
     }

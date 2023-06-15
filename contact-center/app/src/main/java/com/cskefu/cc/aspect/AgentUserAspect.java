@@ -22,7 +22,7 @@ import com.cskefu.cc.cache.RedisCommand;
 import com.cskefu.cc.cache.RedisKey;
 import com.cskefu.cc.model.AgentUser;
 import com.cskefu.cc.proxy.AgentAuditProxy;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -69,7 +69,7 @@ public class AgentUserAspect {
         agentAuditProxy.updateAgentUserAudits(agentUser);
 
         // 同步缓存
-        cache.putAgentUserByOrgi(agentUser, agentUser.getOrgi());
+        cache.putAgentUser(agentUser);
     }
 
     @After("execution(* com.cskefu.cc.persistence.repository.AgentUserRepository.delete(..))")
@@ -78,8 +78,8 @@ public class AgentUserAspect {
         logger.info(
                 "[delete] agentUser id {}, agentno {}, userId {}", agentUser.getId(), agentUser.getAgentno(),
                 agentUser.getUserid());
-        cache.deleteAgentUserAuditByOrgiAndId(agentUser.getOrgi(), agentUser.getId());
-        cache.deleteAgentUserByUserIdAndOrgi(agentUser, agentUser.getOrgi());
+        cache.deleteAgentUserAuditById(agentUser.getId());
+        cache.deleteAgentUserByUserId(agentUser);
     }
 
     /**
@@ -92,18 +92,17 @@ public class AgentUserAspect {
     @Around("@annotation(com.cskefu.cc.aspect.AgentUserAspect.LinkAgentUser)")
     public Object LinkAgentUser(ProceedingJoinPoint joinPoint) throws Throwable {
         final AgentUser updated = (AgentUser) joinPoint.getArgs()[0];
-        final String orgi = (String) joinPoint.getArgs()[1];
         Object proceed = joinPoint.proceed(); // after things are done.
         logger.info(
-                "[linkAgentUser] agentUser: status {}, userId {}, agentno {}, orgi {}", updated.getStatus(),
-                updated.getUserid(), updated.getAgentno(), orgi);
+                "[linkAgentUser] agentUser: status {}, userId {}, agentno {}", updated.getStatus(),
+                updated.getUserid(), updated.getAgentno());
         if (StringUtils.equals(updated.getStatus(), MainContext.AgentUserStatusEnum.END.toString())) {
             // 从集合中删除
             redisCommand.removeSetVal(
-                    RedisKey.getInServAgentUsersByAgentnoAndOrgi(updated.getAgentno(), orgi), updated.getUserid());
+                    RedisKey.getInServAgentUsersByAgentno(updated.getAgentno()), updated.getUserid());
         } else if (StringUtils.equals(updated.getStatus(), MainContext.AgentUserStatusEnum.INSERVICE.toString())) {
             redisCommand.insertSetVal(
-                    RedisKey.getInServAgentUsersByAgentnoAndOrgi(updated.getAgentno(), orgi), updated.getUserid());
+                    RedisKey.getInServAgentUsersByAgentno(updated.getAgentno()), updated.getUserid());
         } else if (StringUtils.equals(updated.getStatus(), MainContext.AgentUserStatusEnum.INQUENE.toString())) {
             logger.info("[linkAgentUser] ignored inque agent user, haven't resolve one agent yet.");
         } else {

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,6 @@ public class DrillDown implements java.io.Serializable  {
 	private String paramurl ;
 	private String paramname ;
 	private String targetmime ;
-	private String orgi ;
 	private String reportid ;
 	private String reportdicid;
 	private String name ;
@@ -106,12 +105,6 @@ public class DrillDown implements java.io.Serializable  {
 		this.paramname = paramname;
 	}
 	
-	public String getOrgi() {
-		return orgi;
-	}
-	public void setOrgi(String orgi) {
-		this.orgi = orgi;
-	}
 	public String getReportid() {
 		return reportid;
 	}

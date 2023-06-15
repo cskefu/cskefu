@@ -25,16 +25,16 @@ import java.util.List;
 
 public interface ChatbotRepository extends JpaRepository<Chatbot, String> {
 
-    boolean existsByClientIdAndOrgi(String clientId, String orgi);
+    boolean existsByClientId(String clientId);
 
-    boolean existsBySnsAccountIdentifierAndOrgi(String snsid, String orgi);
+    boolean existsBySnsAccountIdentifier(String snsid);
 
-    List<Chatbot> findByIdAndOrgi(String id, String orgi);
+    List<Chatbot> findById(String id);
 
-    Chatbot findBySnsAccountIdentifierAndOrgi(String snsid, String orgi);
+    Chatbot findBySnsAccountIdentifier(String snsid);
 
     @Query(value = "select c from Chatbot c")
     Page<Chatbot> findWithPagination(Pageable pageRequest);
 
-    List<Chatbot> findByOrgi(final String orgi);
+    List<Chatbot> findAll();
 }

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,16 +25,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface UKefuCallOutFilterRepository extends JpaRepository<UKefuCallOutFilter, String> {
-	
-	UKefuCallOutFilter findByIdAndOrgi(String id, String orgi);
-	
-	List<UKefuCallOutFilter> findByNameAndOrgi(String name, String orgi);
 
-	Page<UKefuCallOutFilter> findByActidAndOrgi(String actid, String orgi, Pageable page) ;
-	
-	List<UKefuCallOutFilter> findByActidAndOrgi(String actid, String orgi) ;
-	
-	Page<UKefuCallOutFilter> findByOrgi(String orgi, Pageable page) ;
-	
-	Page<UKefuCallOutFilter> findAll(Specification<UKefuCallOutFilter> spec, Pageable pageable);
+    UKefuCallOutFilter findById(String id);
+
+    List<UKefuCallOutFilter> findByName(String name);
+
+    Page<UKefuCallOutFilter> findByActid(String actid, Pageable page);
+
+    List<UKefuCallOutFilter> findByActid(String actid);
+
+    Page<UKefuCallOutFilter> findAll(Pageable page);
+
+    Page<UKefuCallOutFilter> findAll(Specification<UKefuCallOutFilter> spec, Pageable pageable);
 }

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import com.cskefu.cc.basic.MainContext.*;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.cache.Cache;
 import com.cskefu.cc.controller.Handler;
-import com.cskefu.cc.controller.api.request.RestUtils;
+import com.cskefu.cc.util.restapi.RestUtils;
 import com.cskefu.cc.exception.CSKefuException;
 import com.cskefu.cc.model.*;
 import com.cskefu.cc.peer.PeerSyncIM;
@@ -37,7 +37,7 @@ import com.cskefu.cc.util.Menu;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,7 +129,7 @@ public class ApiAgentUserController extends Handler {
             }
         }
 
-        return new ResponseEntity<String>(json.toString(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(json.toString(), headers, HttpStatus.OK);
     }
 
     /**
@@ -142,7 +142,6 @@ public class ApiAgentUserController extends Handler {
      */
     private JsonObject transout(final HttpServletRequest request, final JsonObject payload) {
         logger.info("[transout] payload ", payload.toString());
-        final String orgi = super.getOrgi(request);
         final User logined = super.getUser(request);
         JsonObject resp = new JsonObject();
 
@@ -160,14 +159,14 @@ public class ApiAgentUserController extends Handler {
                 StringUtils.isNotBlank(transAgentId) &&
                 StringUtils.isNotBlank(agentServiceId)) {
             final User targetAgent = userRes.findOne(transAgentId);
-            final AgentService agentService = agentServiceRes.findByIdAndOrgi(agentServiceId, orgi);
+            final AgentService agentService = agentServiceRes.findById(agentServiceId);
 
             /**
              * 更新AgentUser
              */
             final AgentUser agentUser = agentUserProxy.findOne(agentUserId).orElseGet(null);
             if (agentUser != null) {
-                final AgentUserAudit agentAudits = cache.findOneAgentUserAuditByOrgiAndId(orgi, agentUserId).orElseGet(
+                final AgentUserAudit agentAudits = cache.findOneAgentUserAuditById(agentUserId).orElseGet(
                         null);
 
                 // 当前服务于访客的坐席
@@ -200,18 +199,18 @@ public class ApiAgentUserController extends Handler {
                  * 坐席状态
                  */
                 // 转接目标坐席
-                final AgentStatus transAgentStatus = cache.findOneAgentStatusByAgentnoAndOrig(transAgentId, orgi);
+                final AgentStatus transAgentStatus = cache.findOneAgentStatusByAgentno(transAgentId);
 
                 // 转接源坐席
-                final AgentStatus currentAgentStatus = cache.findOneAgentStatusByAgentnoAndOrig(currentAgentno, orgi);
+                final AgentStatus currentAgentStatus = cache.findOneAgentStatusByAgentno(currentAgentno);
 
                 if (StringUtils.equals(
                         AgentUserStatusEnum.INSERVICE.toString(),
                         agentUser.getStatus())) { //转接 ， 发送消息给 目标坐席
                     // 更新当前坐席的服务访客列表
                     if (currentAgentStatus != null) {
-                        cache.deleteOnlineUserIdFromAgentStatusByUseridAndAgentnoAndOrgi(userId, currentAgentno, orgi);
-                        agentUserProxy.updateAgentStatus(currentAgentStatus, orgi);
+                        cache.deleteOnlineUserIdFromAgentStatusByUseridAndAgentno(userId, currentAgentno);
+                        agentUserProxy.updateAgentStatus(currentAgentStatus);
                     }
 
                     if (transAgentStatus != null) {
@@ -222,7 +221,7 @@ public class ApiAgentUserController extends Handler {
                     // 转接坐席提示消息
                     Message outMessage = new Message();
                     outMessage.setMessage(
-                            acdMessageHelper.getSuccessMessage(agentService, agentUser.getChannel(), orgi));
+                            acdMessageHelper.getSuccessMessage(agentService, agentUser.getChanneltype()));
                     outMessage.setMessageType(MediaType.TEXT.toString());
                     outMessage.setCalltype(CallType.IN.toString());
                     outMessage.setCreatetime(MainUtils.dateFormate.format(new Date()));
@@ -232,7 +231,7 @@ public class ApiAgentUserController extends Handler {
                     if (StringUtils.isNotBlank(agentUser.getUserid())) {
                         peerSyncIM.send(
                                 ReceiverType.VISITOR,
-                                ChannelType.toValue(agentUser.getChannel()),
+                                ChannelType.toValue(agentUser.getChanneltype()),
                                 agentUser.getAppid(),
                                 MessageType.STATUS,
                                 agentUser.getUserid(),
@@ -254,8 +253,8 @@ public class ApiAgentUserController extends Handler {
                         // 该登录用户可能是坐席监控或当前坐席，那么，如果是坐席监控，就有必要
                         // 通知前坐席这个事件
                         peerSyncIM.send(ReceiverType.AGENT, ChannelType.WEBIM, agentUser.getAppid(),
-                                        MessageType.TRANSOUT,
-                                        currentAgentno, outMessage, true);
+                                MessageType.TRANSOUT,
+                                currentAgentno, outMessage, true);
                     }
                 }
 
@@ -293,17 +292,16 @@ public class ApiAgentUserController extends Handler {
      */
     private JsonObject end(final HttpServletRequest request, final JsonObject payload) {
         logger.info("[end] payload {}", payload.toString());
-        final String orgi = super.getOrgi(request);
         final User logined = super.getUser(request);
         JsonObject resp = new JsonObject();
 
-        final AgentUser agentUser = agentUserRes.findByIdAndOrgi(payload.get("id").getAsString(), orgi);
+        final AgentUser agentUser = agentUserRes.findById(payload.get("id").getAsString());
         if (agentUser != null) {
             if ((StringUtils.equals(
                     logined.getId(), agentUser.getAgentno()) || logined.isAdmin())) {
                 // 删除访客-坐席关联关系，包括缓存
                 try {
-                    acdAgentService.finishAgentUser(agentUser, orgi);
+                    acdAgentService.finishAgentUser(agentUser);
                 } catch (CSKefuException e) {
                     // 未能删除成功
                     logger.error("[end]", e);
@@ -335,7 +333,6 @@ public class ApiAgentUserController extends Handler {
         JsonObject resp = new JsonObject();
         ACDComposeContext ctx = new ACDComposeContext();
         ctx.setAgentno(super.getUser(request).getId());
-        ctx.setOrgi(super.getOrgi(request));
         acdAgentDispatcher.dequeue(ctx);
         resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
         return resp;
@@ -354,15 +351,15 @@ public class ApiAgentUserController extends Handler {
         JsonObject resp = new JsonObject();
         JsonArray data = new JsonArray();
 
-        List<AgentUser> lis = cache.findInservAgentUsersByAgentnoAndOrgi(
-                super.getUser(request).getId(), super.getOrgi(request));
+        List<AgentUser> lis = cache.findInservAgentUsersByAgentno(
+                super.getUser(request).getId());
         for (final AgentUser au : lis) {
             JsonObject obj = new JsonObject();
             obj.addProperty("id", au.getId());
             obj.addProperty("userid", au.getUserid());
             obj.addProperty("status", au.getStatus());
             obj.addProperty("agentno", au.getAgentno());
-            obj.addProperty("channel", au.getChannel());
+            obj.addProperty("channel", au.getChanneltype());
             obj.addProperty("nickname", au.getNickname());
             data.add(obj);
         }

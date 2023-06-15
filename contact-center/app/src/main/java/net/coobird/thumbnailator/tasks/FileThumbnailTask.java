@@ -38,11 +38,11 @@ public class FileThumbnailTask extends ThumbnailTask<File, File>
 	public FileThumbnailTask(ThumbnailParameter param, File sourceFile, File destinationFile)
 	{
 		super(param);
-		this.task = new SourceSinkThumbnailTask<File, File>(
-				param,
-				new FileImageSource(sourceFile),
-				new FileImageSink(destinationFile)
-		);
+		this.task = new SourceSinkThumbnailTask<>(
+                param,
+                new FileImageSource(sourceFile),
+                new FileImageSink(destinationFile)
+        );
 	}
 
 	@Override

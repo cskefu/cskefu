@@ -1,4 +1,4 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+//- Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
 //- 
 //- Licensed under the Apache License, Version 2.0 (the "License");
 //- you may not use this file except in compliance with the License.
@@ -42,11 +42,11 @@ block content
                                         td.first_td_head(title=leaveMsg.channel.snstype, valign="top")
                                             p
                                                 a(href="javascript:void(0)")
-                                                    if leaveMsg.channel.snstype == "webim"
+                                                    if leaveMsg.channel.type == "webim"
                                                         | 网站
-                                                    else if leaveMsg.channel.snstype == "phone"
+                                                    else if leaveMsg.channel.type == "phone"
                                                         | 电话
-                                                    else if leaveMsg.channel.snstype == "skype"
+                                                    else if leaveMsg.channel.type == "skype"
                                                         | Skype
                                                     else
                                                         | 未知

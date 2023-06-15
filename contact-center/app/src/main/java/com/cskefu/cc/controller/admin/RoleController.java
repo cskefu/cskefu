@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import com.cskefu.cc.proxy.OrganProxy;
 import com.cskefu.cc.proxy.UserProxy;
 import com.cskefu.cc.util.Menu;
 import com.cskefu.cc.util.json.GsonTools;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +74,7 @@ public class RoleController extends Handler {
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String role, @Valid String msg) {
         Organ currentOrgan = super.getOrgan(request);
 
-        List<Role> roleList = roleRepository.findByOrgi(super.getOrgi());
+        List<Role> roleList = roleRepository.findAll();
         map.addAttribute("roleList", roleList);
         map.addAttribute("msg", msg);
         map.addAttribute("currentOrgan", currentOrgan);
@@ -91,8 +91,7 @@ public class RoleController extends Handler {
                 map.addAttribute("roleData", roleData = roleList.get(0));
             }
             if (roleData != null) {
-                Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan,
-                        super.getOrgi(request));
+                Map<String, Organ> organs = organProxy.findAllOrganByParent(currentOrgan);
                 // List<String> userIds = userProxy.findUserIdsInOrgans(organs.keySet());
 
                 // Page<UserRole> userRoleList =
@@ -130,12 +129,11 @@ public class RoleController extends Handler {
     @Menu(type = "admin", subtype = "role")
     public ModelAndView save(HttpServletRequest request, @Valid Role role) {
         Organ currentOrgan = super.getOrgan(request);
-        Role tempRole = roleRepository.findByNameAndOrgi(role.getName(), super.getOrgi());
+        Role tempRole = roleRepository.findByName(role.getName());
         String msg = "admin_role_save_success";
         if (tempRole != null) {
             msg = "admin_role_save_exist";
         } else {
-            role.setOrgi(super.getOrgi());
             role.setCreater(super.getUser(request).getId());
             role.setCreatetime(new Date());
             role.setUpdatetime(new Date());
@@ -150,8 +148,8 @@ public class RoleController extends Handler {
     public ModelAndView seluser(ModelMap map, HttpServletRequest request, @Valid String role) {
         Organ currentOrgan = super.getOrgan(request);
         map.addAttribute("userList", userProxy.findUserInOrgans(Arrays.asList(currentOrgan.getId())));
-        Role roleData = roleRepository.findByIdAndOrgi(role, super.getOrgi());
-        map.addAttribute("userRoleList", userRoleRes.findByOrgiAndRole(super.getOrgi(), roleData));
+        Role roleData = roleRepository.findById(role);
+        map.addAttribute("userRoleList", userRoleRes.findByRole(roleData));
         map.addAttribute("role", roleData);
         return request(super.createView("/admin/role/seluser"));
     }
@@ -160,8 +158,8 @@ public class RoleController extends Handler {
     @Menu(type = "admin", subtype = "saveuser", admin = true)
     public ModelAndView saveuser(HttpServletRequest request, @Valid String[] users, @Valid String role) {
         Organ currentOrgan = super.getOrgan(request);
-        Role roleData = roleRepository.findByIdAndOrgi(role, super.getOrgi());
-        List<UserRole> userRoleList = userRoleRes.findByOrganAndRole(super.getOrgi(), roleData);
+        Role roleData = roleRepository.findById(role);
+        List<UserRole> userRoleList = userRoleRes.findByRole(roleData);
         if (users != null && users.length > 0) {
             for (String user : users) {
                 boolean exist = false;
@@ -175,7 +173,6 @@ public class RoleController extends Handler {
                     UserRole userRole = new UserRole();
                     userRole.setUser(new User(user));
                     userRole.setRole(new Role(role));
-                    userRole.setOrgi(super.getOrgi());
                     userRole.setCreater(super.getUser(request).getId());
                     userRole.setOrgan(currentOrgan.getId());
                     userRoleRes.save(userRole);
@@ -198,18 +195,18 @@ public class RoleController extends Handler {
     @Menu(type = "admin", subtype = "role")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
         ModelAndView view = request(super.createView("/admin/role/edit"));
-        view.addObject("roleData", roleRepository.findByIdAndOrgi(id, super.getOrgi()));
+        view.addObject("roleData", roleRepository.findById(id));
         return view;
     }
 
     @RequestMapping("/update")
     @Menu(type = "admin", subtype = "role")
     public ModelAndView update(HttpServletRequest request, @Valid Role role) {
-        Role tempRoleExist = roleRepository.findByNameAndOrgi(role.getName(), super.getOrgi());
+        Role tempRoleExist = roleRepository.findByName(role.getName());
         String msg = "";
         if (tempRoleExist == null) {
             msg = "admin_role_update_success";
-            Role tempRole = roleRepository.findByIdAndOrgi(role.getId(), super.getOrgi());
+            Role tempRole = roleRepository.findById(role.getId());
             tempRole.setName(role.getName());
             tempRole.setUpdatetime(new Date());
             roleRepository.save(tempRole);
@@ -224,7 +221,7 @@ public class RoleController extends Handler {
     public ModelAndView delete(HttpServletRequest request, @Valid Role role) {
         String msg = "admin_role_delete";
         if (role != null) {
-            userRoleRes.delete(userRoleRes.findByOrgiAndRole(super.getOrgi(), role));
+            userRoleRes.delete(userRoleRes.findByRole(role));
             roleRepository.delete(role);
         } else {
             msg = "admin_role_not_exist";
@@ -241,9 +238,9 @@ public class RoleController extends Handler {
             map.addAttribute("resourceList", sysDicRes.findByDicid(sysDic.getId()));
         }
         map.addAttribute("sysDic", sysDic);
-        Role role = roleRepository.findByIdAndOrgi(id, super.getOrgi());
+        Role role = roleRepository.findById(id);
         map.addAttribute("role", role);
-        map.addAttribute("roleAuthList", roleAuthRes.findByRoleidAndOrgi(role.getId(), super.getOrgi()));
+        map.addAttribute("roleAuthList", roleAuthRes.findByRoleid(role.getId()));
         return request(super.createView("/admin/role/auth"));
     }
 
@@ -252,7 +249,7 @@ public class RoleController extends Handler {
     public ModelAndView authsave(HttpServletRequest request, @Valid String id, @Valid String menus) {
         // logger.info("[authsave] id {}, menus {}", id, menus);
 
-        List<RoleAuth> roleAuthList = roleAuthRes.findByRoleidAndOrgi(id, super.getOrgi());
+        List<RoleAuth> roleAuthList = roleAuthRes.findByRoleid(id);
         roleAuthRes.delete(roleAuthList);
         if (StringUtils.isNotBlank(menus)) {
             String[] menuarray = menus.split(",");
@@ -270,7 +267,6 @@ public class RoleController extends Handler {
                     logger.debug("[authsave] get sysdict {}, code {}, name {}, parent {}", sysDic.getId(),
                             sysDic.getCode(), sysDic.getName(), sysDic.getParentid());
                     roleAuth.setCreater(super.getUser(request).getId());
-                    roleAuth.setOrgi(super.getOrgi());
                     roleAuth.setCreatetime(new Date());
                     roleAuth.setName(sysDic.getName());
                     roleAuth.setDicvalue(sysDic.getCode());

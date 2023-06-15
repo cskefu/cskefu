@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,17 +30,17 @@ public class UserDataExchangeImpl implements DataExchangeInterface {
     @Autowired
     private UserRepository userRes;
 
-    public String getDataByIdAndOrgi(String id, String orgi) {
+    public String getDataById(String id) {
         User user = userRes.findById(id);
         return user != null ? user.getUsername() : id;
     }
 
     @Override
-    public List<Serializable> getListDataByIdAndOrgi(String id, String creater, String orgi) {
+    public List<Serializable> getListDataById(String id, String creater) {
         return null;
     }
 
-    public void process(Object data, String orgi) {
+    public void process(Object data) {
 
     }
 }

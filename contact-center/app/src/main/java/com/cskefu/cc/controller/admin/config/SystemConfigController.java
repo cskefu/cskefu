@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,7 +96,8 @@ public class SystemConfigController extends Handler {
         }
         map.addAttribute("server", server);
         map.addAttribute("imServerStatus", MainContext.getIMServerStatus());
-        List<Secret> secretConfig = secRes.findByOrgi(super.getOrgi(request));
+        List<Secret> secretConfig = secRes.findAll();
+
         // check out secretConfig
         if (secretConfig != null && secretConfig.size() > 0) {
             map.addAttribute("secret", secretConfig.get(0));
@@ -118,20 +119,19 @@ public class SystemConfigController extends Handler {
         if (callCenterDic != null) {
             map.addAttribute(
                     "templateList",
-                    templateRes.findByTemplettypeAndOrgi(callCenterDic.getId(), super.getOrgi(request)));
+                    templateRes.findByTemplettype(callCenterDic.getId()));
         }
         if (workOrderDic != null) {
             map.addAttribute(
                     "workOrderList",
-                    templateRes.findByTemplettypeAndOrgi(workOrderDic.getId(), super.getOrgi(request)));
+                    templateRes.findByTemplettype(workOrderDic.getId()));
         }
         if (smsDic != null) {
-            map.addAttribute("smsList", templateRes.findByTemplettypeAndOrgi(smsDic.getId(), super.getOrgi(request)));
+            map.addAttribute("smsList", templateRes.findByTemplettype(smsDic.getId()));
         }
 
         map.addAttribute(
-                "sysMessageList", systemMessageRes.findByMsgtypeAndOrgi(MainContext.SystemMessageType.EMAIL.toString(),
-                        super.getOrgi(request)));
+                "sysMessageList", systemMessageRes.findByMsgtype(MainContext.SystemMessageType.EMAIL.toString()));
 
         if (StringUtils.isNotBlank(execute) && execute.equals("false")) {
             map.addAttribute("execute", execute);
@@ -151,10 +151,10 @@ public class SystemConfigController extends Handler {
     }
 
     @RequestMapping("/stopimserver")
-    @Menu(type = "admin", subtype = "stopimserver", access = false, admin = true)
+    @Menu(type = "admin", subtype = "stopimserver", admin = true)
     public ModelAndView stopimserver(ModelMap map, HttpServletRequest request, @Valid String confirm) throws SQLException {
         boolean execute;
-        if (execute = MainUtils.secConfirm(secRes, super.getOrgi(request), confirm)) {
+        if (execute = MainUtils.secConfirm(secRes, confirm)) {
             server.stop();
             MainContext.setIMServerStatus(false);
         }
@@ -162,14 +162,14 @@ public class SystemConfigController extends Handler {
     }
 
     @RequestMapping("/startentim")
-    @Menu(type = "admin", subtype = "startentim", access = false, admin = true)
+    @Menu(type = "admin", subtype = "startentim", admin = true)
     public ModelAndView startentim(ModelMap map, HttpServletRequest request) throws SQLException {
         MainContext.enableModule(Constants.CSKEFU_MODULE_ENTIM);
         return request(super.createView("redirect:/admin/config/index.html"));
     }
 
     @RequestMapping("/stopentim")
-    @Menu(type = "admin", subtype = "stopentim", access = false, admin = true)
+    @Menu(type = "admin", subtype = "stopentim", admin = true)
     public ModelAndView stopentim(ModelMap map, HttpServletRequest request) throws SQLException {
         MainContext.removeModule(Constants.CSKEFU_MODULE_ENTIM);
         return request(super.createView("redirect:/admin/config/index.html"));
@@ -184,10 +184,10 @@ public class SystemConfigController extends Handler {
      * @throws SQLException
      */
     @RequestMapping("/stop")
-    @Menu(type = "admin", subtype = "stop", access = false, admin = true)
+    @Menu(type = "admin", subtype = "stop", admin = true)
     public ModelAndView stop(ModelMap map, HttpServletRequest request, @Valid String confirm) throws SQLException {
         boolean execute = false;
-        if (execute = MainUtils.secConfirm(secRes, super.getOrgi(request), confirm)) {
+        if (execute = MainUtils.secConfirm(secRes, confirm)) {
             server.stop();
             MainContext.setIMServerStatus(false);
             System.exit(0);
@@ -207,10 +207,7 @@ public class SystemConfigController extends Handler {
             @RequestParam(value = "consolelogo", required = false) MultipartFile consolelogo,
             @RequestParam(value = "favlogo", required = false) MultipartFile favlogo,
             @Valid Secret secret) throws SQLException, IOException, NoSuchAlgorithmException {
-    	/*SystemConfig systemConfig = systemConfigRes.findByOrgi(super.getOrgi(request)) ;
-    	config.setOrgi(super.getOrgi(request));*/
-        SystemConfig systemConfig = systemConfigRes.findByOrgi(Constants.SYSTEM_ORGI);
-        config.setOrgi(Constants.SYSTEM_ORGI);
+        SystemConfig systemConfig = systemConfigRes.findOne();
         String msg = "0";
         if (StringUtils.isBlank(config.getJkspassword())) {
             config.setJkspassword(null);
@@ -259,7 +256,7 @@ public class SystemConfigController extends Handler {
         }
 
         if (secret != null && StringUtils.isNotBlank(secret.getPassword())) {
-            List<Secret> secretConfig = secRes.findByOrgi(super.getOrgi(request));
+            List<Secret> secretConfig = secRes.findAll();
             String repassword = request.getParameter("repassword");
             if (StringUtils.isNotBlank(repassword) && repassword.equals(secret.getPassword())) {
                 if (secretConfig != null && secretConfig.size() > 0) {
@@ -274,7 +271,6 @@ public class SystemConfigController extends Handler {
                         msg = "3";
                     }
                 } else {
-                    secret.setOrgi(super.getOrgi(request));
                     secret.setCreater(super.getUser(request).getId());
                     secret.setCreatetime(new Date());
                     secret.setPassword(MainUtils.md5(secret.getPassword()));
@@ -294,7 +290,7 @@ public class SystemConfigController extends Handler {
         // 保存到数据库
         systemConfigRes.save(systemConfig);
 
-        MainContext.getCache().putSystemByIdAndOrgi("systemConfig", super.getOrgi(request), systemConfig);
+        MainContext.getCache().putSystemById("systemConfig", systemConfig);
         map.addAttribute("imServerStatus", MainContext.getIMServerStatus());
 
         return request(super.createView("redirect:/admin/config/index.html?msg=" + msg));

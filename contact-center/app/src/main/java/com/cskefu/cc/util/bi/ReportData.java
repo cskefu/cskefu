@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package com.cskefu.cc.util.bi;
 import com.cskefu.cc.util.bi.model.Level;
 import com.cskefu.cc.util.bi.model.RequestData;
 import com.cskefu.cc.util.bi.model.ValueData;
-import org.apache.lucene.queryparser.flexible.core.nodes.PathQueryNode.QueryText;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -46,9 +45,6 @@ public interface ReportData extends Serializable{
 	public Exception getException ();
 	public RequestData getRequestData();
 	public void setRequestData(RequestData data);
-	
-	public QueryText getQueryText() ;
-	public void setQueryText(QueryText queryText) ;
 	
 	public void setTotal(long total) ;
 	public long getTotal() ;

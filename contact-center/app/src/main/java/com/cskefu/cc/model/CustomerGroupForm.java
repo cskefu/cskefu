@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,15 @@ import javax.validation.Valid;
 
 public class CustomerGroupForm {
 	@Valid
-	private EntCustomer entcustomer ;
+	private Account entcustomer ;
 	
 	@Valid
 	private Contacts contacts ;
 	
-	public EntCustomer getEntcustomer() {
+	public Account getEntcustomer() {
 		return entcustomer;
 	}
-	public void setEntcustomer(EntCustomer entcustomer) {
+	public void setEntcustomer(Account entcustomer) {
 		this.entcustomer = entcustomer;
 	}
 	public Contacts getContacts() {

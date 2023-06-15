@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package com.cskefu.cc.controller;
 import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.basic.Viewport;
-import com.cskefu.cc.basic.auth.AuthToken;
+import com.cskefu.cc.basic.auth.BearerTokenMgr;
 import com.cskefu.cc.cache.Cache;
 import com.cskefu.cc.controller.api.QueryParams;
 import com.cskefu.cc.exception.CSKefuException;
@@ -29,18 +29,12 @@ import com.cskefu.cc.model.User;
 import com.cskefu.cc.persistence.blob.JpaBlobHelper;
 import com.cskefu.cc.persistence.repository.StreamingFileRepository;
 import com.cskefu.cc.proxy.OrganProxy;
-
-import org.apache.commons.lang.StringUtils;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.QueryStringQueryBuilder;
-import org.elasticsearch.index.query.QueryStringQueryBuilder.Operator;
-import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -48,10 +42,13 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.text.ParseException;
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import static org.elasticsearch.index.query.QueryBuilders.termQuery;
+import static com.cskefu.cc.basic.Constants.AUTH_TOKEN_TYPE_BASIC;
+import static com.cskefu.cc.basic.Constants.AUTH_TOKEN_TYPE_BEARER;
 
 @Controller
 @SessionAttributes
@@ -68,7 +65,7 @@ public class Handler {
     private Cache cache;
 
     @Autowired
-    private AuthToken authToken;
+    private BearerTokenMgr bearerTokenMgr;
 
     @Autowired
     private OrganProxy organProxy;
@@ -92,14 +89,26 @@ public class Handler {
                     }
                 }
             }
+
+            // trim token
             if (StringUtils.isNotBlank(authorization)) {
-                user = authToken.findUserByAuth(authorization);
+                String authorizationTrimed = authorization;
+                if (authorization.startsWith(String.format("%s ", AUTH_TOKEN_TYPE_BEARER))) {
+                    authorizationTrimed = StringUtils.substring(authorization, 7);
+                    if (StringUtils.isNotBlank(authorizationTrimed)) {
+                        user = bearerTokenMgr.retrieve(authorizationTrimed);
+                    }
+                } else if (authorization.startsWith(String.format("%s ", AUTH_TOKEN_TYPE_BASIC))) {
+                    authorizationTrimed = StringUtils.substring(authorization, 6);
+                    // TODO https://gitlab.chatopera.com/chatopera/chatopera.bot/issues/1292
+                    // get user with basic token mgr
+                }
             }
+
             if (user == null) {
                 user = new User();
                 user.setId(MainUtils.getContextID(request.getSession().getId()));
                 user.setUsername(Constants.GUEST_USER + "_" + MainUtils.genIDByKey(user.getId()));
-                user.setOrgi(Constants.SYSTEM_ORGI);
                 user.setSessionid(user.getId());
             }
         } else {
@@ -133,14 +142,35 @@ public class Handler {
     }
 
     /**
+     * 获得该用户的组织机构及附属组织机构的数组
+     *
+     * @param user
+     * @return
+     */
+    public List<String> getMyAffiliatesFlat(final User user) {
+        ArrayList<String> organIds = new ArrayList<>(user.getAffiliates());
+        return organIds;
+    }
+
+    /**
+     * 获得当前用户导航的组织机构和附属组织机构的信息
+     *
+     * @param user
+     * @return
+     */
+    public List<String> getMyCurrentAffiliatesFlat(final User user) {
+        ArrayList<String> organIds = new ArrayList<>(user.getCurrOrganAffiliates());
+        return organIds;
+    }
+
+    /**
      * 构建ElasticSearch基于部门查询的Filter
      *
      * @param request
-     * @param boolQueryBuilder
      * @return
      * @throws CSKefuException
      */
-    public boolean esOrganFilter(final HttpServletRequest request, final BoolQueryBuilder boolQueryBuilder)
+    public boolean preCheckPermissions(final HttpServletRequest request)
             throws CSKefuException {
         // 组合部门条件
         User u = getUser(request);
@@ -158,156 +188,6 @@ public class Handler {
             // return true;
         }
         return true;
-    }
-
-    /**
-     * @param queryBuilder
-     * @param request
-     */
-    public BoolQueryBuilder search(BoolQueryBuilder queryBuilder, ModelMap map, HttpServletRequest request) {
-        queryBuilder.must(termQuery("orgi", this.getOrgi(request)));
-
-        // 搜索框
-        if (StringUtils.isNotBlank(request.getParameter("q"))) {
-            String q = request.getParameter("q");
-            q = q.replaceAll("(OR|AND|NOT|:|\\(|\\))", "");
-            if (StringUtils.isNotBlank(q)) {
-                queryBuilder.must(
-                        QueryBuilders.boolQuery().must(new QueryStringQueryBuilder(q).defaultOperator(Operator.AND)));
-                map.put("q", q);
-            }
-        }
-
-        // 筛选表单
-        if (StringUtils.isNotBlank(request.getParameter("filterid"))) {
-            queryBuilder.must(termQuery("filterid", request.getParameter("filterid")));
-            map.put("filterid", request.getParameter("filterid"));
-        }
-
-        // 批次
-        if (StringUtils.isNotBlank(request.getParameter("batid"))) {
-            queryBuilder.must(termQuery("batid", request.getParameter("batid")));
-            map.put("batid", request.getParameter("batid"));
-        }
-
-        // 活动
-        if (StringUtils.isNotBlank(request.getParameter("actid"))) {
-            queryBuilder.must(termQuery("actid", request.getParameter("actid")));
-            map.put("actid", request.getParameter("actid"));
-        }
-
-        // 业务状态
-        if (StringUtils.isNotBlank(request.getParameter("workstatus"))) {
-            queryBuilder.must(termQuery("workstatus", request.getParameter("workstatus")));
-            map.put("workstatus", request.getParameter("workstatus"));
-        }
-
-        // 拨打状态
-        if (StringUtils.isNotBlank(request.getParameter("callstatus"))) {
-            queryBuilder.must(termQuery("callstatus", request.getParameter("callstatus")));
-            map.put("callstatus", request.getParameter("callstatus"));
-        }
-
-        // 预约状态
-        if (StringUtils.isNotBlank(request.getParameter("apstatus"))) {
-            queryBuilder.must(termQuery("apstatus", request.getParameter("apstatus")));
-            map.put("apstatus", request.getParameter("apstatus"));
-        }
-
-        RangeQueryBuilder rangeQuery = null;
-        // 拨打时间区间查询
-        if (StringUtils.isNotBlank(request.getParameter("callbegin")) || StringUtils.isNotBlank(
-                request.getParameter("callend"))) {
-
-            if (StringUtils.isNotBlank(request.getParameter("callbegin"))) {
-                try {
-
-                    rangeQuery = QueryBuilders.rangeQuery("calltime").from(
-                            MainUtils.dateFormate.parse(request.getParameter("callbegin")).getTime());
-                } catch (ParseException e) {
-
-                    e.printStackTrace();
-                }
-            }
-            if (StringUtils.isNotBlank(request.getParameter("callend"))) {
-
-                try {
-
-                    if (rangeQuery == null) {
-                        rangeQuery = QueryBuilders.rangeQuery("calltime").to(
-                                MainUtils.dateFormate.parse(request.getParameter("callend")).getTime());
-                    } else {
-                        rangeQuery.to(MainUtils.dateFormate.parse(request.getParameter("callend")).getTime());
-                    }
-                } catch (ParseException e) {
-
-                    e.printStackTrace();
-                }
-
-            }
-            map.put("callbegin", request.getParameter("callbegin"));
-            map.put("callend", request.getParameter("callend"));
-        }
-        // 预约时间区间查询
-        if (StringUtils.isNotBlank(request.getParameter("apbegin")) || StringUtils.isNotBlank(
-                request.getParameter("apend"))) {
-
-            if (StringUtils.isNotBlank(request.getParameter("apbegin"))) {
-                try {
-
-                    rangeQuery = QueryBuilders.rangeQuery("aptime").from(
-                            MainUtils.dateFormate.parse(request.getParameter("apbegin")).getTime());
-                } catch (ParseException e) {
-
-                    e.printStackTrace();
-                }
-            }
-            if (StringUtils.isNotBlank(request.getParameter("apend"))) {
-
-                try {
-
-                    if (rangeQuery == null) {
-                        rangeQuery = QueryBuilders.rangeQuery("aptime").to(
-                                MainUtils.dateFormate.parse(request.getParameter("apend")).getTime());
-                    } else {
-                        rangeQuery.to(MainUtils.dateFormate.parse(request.getParameter("apend")).getTime());
-                    }
-                } catch (ParseException e) {
-
-                    e.printStackTrace();
-                }
-
-            }
-            map.put("apbegin", request.getParameter("apbegin"));
-            map.put("apend", request.getParameter("apend"));
-        }
-
-        if (rangeQuery != null) {
-            queryBuilder.must(rangeQuery);
-        }
-
-        // 外呼任务id
-        if (StringUtils.isNotBlank(request.getParameter("taskid"))) {
-            queryBuilder.must(termQuery("taskid", request.getParameter("taskid")));
-            map.put("taskid", request.getParameter("taskid"));
-        }
-        // 坐席
-        if (StringUtils.isNotBlank(request.getParameter("owneruser"))) {
-            queryBuilder.must(termQuery("owneruser", request.getParameter("owneruser")));
-            map.put("owneruser", request.getParameter("owneruser"));
-        }
-        // 部门
-        if (StringUtils.isNotBlank(request.getParameter("ownerdept"))) {
-            queryBuilder.must(termQuery("ownerdept", request.getParameter("ownerdept")));
-            map.put("ownerdept", request.getParameter("ownerdept"));
-        }
-        // 分配状态
-        if (StringUtils.isNotBlank(request.getParameter("status"))) {
-            queryBuilder.must(termQuery("status", request.getParameter("status")));
-            map.put("status", request.getParameter("status"));
-        }
-
-        return queryBuilder;
     }
 
     /**
@@ -332,8 +212,7 @@ public class Handler {
             if (StringUtils.isNotBlank(nickname)) {
                 user.setUsername(nickname);
             } else {
-                Map<String, String> sessionMessage = cache.findOneSystemMapByIdAndOrgi(
-                        request.getSession().getId(), Constants.SYSTEM_ORGI);
+                Map<String, String> sessionMessage = cache.findOneSystemMapById(request.getSession().getId());
                 if (sessionMessage != null) {
                     String struname = sessionMessage.get("username");
                     String strcname = sessionMessage.get("company_name");
@@ -362,8 +241,7 @@ public class Handler {
             if (StringUtils.isNotBlank(nickname)) {
                 user.setUsername(nickname);
             } else {
-                Map<String, String> sessionMessage = cache.findOneSystemMapByIdAndOrgi(
-                        sessionid, Constants.SYSTEM_ORGI);
+                Map<String, String> sessionMessage = cache.findOneSystemMapById(sessionid);
                 if (sessionMessage != null) {
                     String struname = sessionMessage.get("username");
                     String strcname = sessionMessage.get("company_name");
@@ -476,15 +354,6 @@ public class Handler {
         return pagesize;
     }
 
-    public String getOrgi() {
-        return Constants.SYSTEM_ORGI;
-    }
-
-    // FIXME: 保存此处是为了兼容之前到代码，宜去掉
-    public String getOrgi(HttpServletRequest request) {
-        return getOrgi();
-    }
-
     public long getStarttime() {
         return starttime;
     }
@@ -507,6 +376,30 @@ public class Handler {
         sf.setMime(multipart.getContentType());
         sf.setData(jpaBlobHelper.createBlob(multipart.getInputStream(), multipart.getSize()));
         sf.setName(multipart.getOriginalFilename());
+        streamingFileRes.save(sf);
+        return fileid;
+    }
+
+    /**
+     * 使用Blob保存文件
+     *
+     * @param dataStr Data URL 图片数据
+     * @return id
+     * @throws IOException
+     */
+    public String saveImageFileWithDataURL(String dataStr) throws IOException {
+        String[] cell = dataStr.split(";");
+        String mime = cell[0].substring(5);
+        String base64Str = cell[1].substring(7);
+        byte[] buf = Base64.decodeBase64(base64Str);
+
+        StreamingFile sf = new StreamingFile();
+        final String fileid = MainUtils.getUUID();
+        sf.setId(fileid);
+        sf.setMime(mime);
+        sf.setData(jpaBlobHelper.createBlob(new ByteArrayInputStream(buf),
+                buf.length));
+        sf.setName(fileid);
         streamingFileRes.save(sf);
         return fileid;
     }

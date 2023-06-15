@@ -1,4 +1,4 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+//- Copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
 //- 
 //- Licensed under the Apache License, Version 2.0 (the "License");
 //- you may not use this file except in compliance with the License.
@@ -478,35 +478,21 @@ script.
     });
 
     if ("${massMassageToAgent}" != "") {
-        console.log("massMassageToAgent", "${massMassageToAgent}")
-
         const idslist = "${ids}".split(",");
 
         for (var i = 1; i < idslist.length; i++) {
             console.log(i, "${massMassageToAgent}", idslist, idslist[i])
 
-            top.WebIM.sendMessage("${massMassageToAgent}", '${user.id!'
-            '}' , "${curagentuser.appid!''}" , "${user.sessionid!''}" , "${orgi!''}" , idslist[i] , "${user.username!''}"
-        )
-            ;
-
-            console.log(123)
-
+            top.WebIM.sendMessage("${massMassageToAgent}", '${user.id!''}' , "${curagentuser.appid!''}" , "${user.sessionid!''}" , idslist[i] , "${user.username!''}");
         }
     }
 
     function sendMessage() {
-        console.log("skype send message", '1${user.id!'
-        '}', "2${curagentuser.appid!''}", "3${user.sessionid!''}", "4${orgi!''}", "5<#if curagentuser??>${curagentuser.userid!''}</#if>", "6${user.username!''}"
-    )
         editor.sync();
         var count = editor.count("text");
         if (count > 0) {
             var message = document.getElementById('message').value;
-            top.WebIM.sendMessage(message, '${user.id!'
-            '}' , "${curagentuser.appid!''}" , "${user.sessionid!''}" , "${orgi!''}" , "<#if curagentuser??>${curagentuser.userid!''}</#if>" , "${user.username!''}", "${curagentuser.id}"
-        )
-            ;
+            top.WebIM.sendMessage(message, '${user.id!''}' , "${curagentuser.appid!''}" , "${user.sessionid!''}" , "<#if curagentuser??>${curagentuser.userid!''}</#if>" , "${user.username!''}", "${curagentuser.id}");
 
             console.log(editor, count)
         }

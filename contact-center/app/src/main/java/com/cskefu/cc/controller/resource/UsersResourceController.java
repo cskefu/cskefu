@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,7 @@ import com.cskefu.cc.controller.Handler;
 import com.cskefu.cc.model.Organ;
 import com.cskefu.cc.model.User;
 import com.cskefu.cc.persistence.repository.OrganRepository;
-import com.cskefu.cc.persistence.repository.OrgiSkillRelRepository;
 import com.cskefu.cc.persistence.repository.UserRepository;
-import com.cskefu.cc.proxy.UserProxy;
 import com.cskefu.cc.util.Menu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,13 +44,7 @@ public class UsersResourceController extends Handler {
     private UserRepository userRes;
 
     @Autowired
-    private OrgiSkillRelRepository orgiSkillRelService;
-
-    @Autowired
     private OrganRepository organRes;
-
-    @Autowired
-    private UserProxy userProxy;
 
     @RequestMapping("/users")
     @Menu(type = "res", subtype = "users")
@@ -93,7 +85,7 @@ public class UsersResourceController extends Handler {
     }
 
     private List<User> getUsers(HttpServletRequest request) {
-        return userRes.findByOrgiAndDatastatus(super.getOrgi(request), false);
+        return userRes.findByDatastatus(false);
     }
 
     /**
@@ -107,7 +99,7 @@ public class UsersResourceController extends Handler {
         if (q == null) {
             q = "";
         }
-        Page<User> list = userRes.findByDatastatusAndOrgiAndUsernameLike(false, super.getOrgi(), "%" + q + "%", new PageRequest(0, 10));
+        Page<User> list = userRes.findByDatastatusAndUsernameLike(false, "%" + q + "%", new PageRequest(0, 10));
         return list;
     }
 
@@ -118,7 +110,7 @@ public class UsersResourceController extends Handler {
      * @return
      */
     private List<Organ> getOrgans(HttpServletRequest request) {
-        List<Organ> list = organRes.findByOrgiAndSkill(super.getOrgi(request), true);
+        List<Organ> list = organRes.findBySkill(true);
         return list;
     }
 }

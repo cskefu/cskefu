@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
+ * Modifications copyright (C) 2018-2023 Chatopera Inc, <https://www.chatopera.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,11 @@ import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.cache.Cache;
 import com.cskefu.cc.controller.Handler;
 import com.cskefu.cc.model.*;
-import com.cskefu.cc.persistence.es.ContactsRepository;
 import com.cskefu.cc.persistence.repository.*;
 import com.cskefu.cc.proxy.OrganProxy;
 import com.cskefu.cc.proxy.UserProxy;
 import com.cskefu.cc.util.Menu;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,16 +56,13 @@ public class AppsController extends Handler {
     private UserRepository userRes;
 
     @Autowired
-    private OnlineUserRepository onlineUserRes;
+    private PassportWebIMUserRepository onlineUserRes;
 
     @Autowired
     private UserEventRepository userEventRes;
 
     @Autowired
     private ContactsRepository contactsRes;
-
-    @Autowired
-    private OrgiSkillRelRepository orgiSkillRelService;
 
     @Autowired
     private Cache cache;
@@ -84,12 +80,11 @@ public class AppsController extends Handler {
     @Menu(type = "apps", subtype = "content")
     public ModelAndView content(ModelMap map, HttpServletRequest request, @Valid String msg) {
         final User user = super.getUser(request);
-        final String orgi = super.getOrgi(request);
         Organ currentOrgan = super.getOrgan(request);
-        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, orgi);
-        List<String> appids = new ArrayList<String>();
+        Map<String, Organ> organs = organProxy.findAllOrganByParent(currentOrgan);
+        List<String> appids = new ArrayList<>();
         if (organs.size() > 0) {
-            appids = invite.findSNSIdByOrgiAndSkill(orgi, organs.keySet());
+            appids = invite.findSNSIdBySkill(organs.keySet());
         }
 
 
@@ -98,8 +93,7 @@ public class AppsController extends Handler {
          ****************************/
 
 //        TODO 此处为从数据库加载
-        final Page<OnlineUser> onlineUserList = onlineUserRes.findByOrgiAndStatusAndAppidIn(
-                super.getOrgi(request),
+        final Page<PassportWebIMUser> onlineUserList = onlineUserRes.findByStatusAndAppidIn(
                 MainContext.OnlineUserStatusEnum.ONLINE.toString(),
                 appids,
                 new PageRequest(
@@ -111,16 +105,16 @@ public class AppsController extends Handler {
         );
 
         final long msec = System.currentTimeMillis();
-        final List<String> contactIds = new ArrayList<String>();
+        final List<String> contactIds = new ArrayList<>();
 
         /**
          * 设置访客状态
          *
          */
-        for (final OnlineUser onlineUser : onlineUserList.getContent()) {
-            onlineUser.setBetweentime((int) (msec - onlineUser.getLogintime().getTime()));
-            if (StringUtils.isNotBlank(onlineUser.getContactsid())) {
-                contactIds.add(onlineUser.getContactsid());
+        for (final PassportWebIMUser passportWebIMUser : onlineUserList.getContent()) {
+            passportWebIMUser.setBetweentime((int) (msec - passportWebIMUser.getLogintime().getTime()));
+            if (StringUtils.isNotBlank(passportWebIMUser.getContactsid())) {
+                contactIds.add(passportWebIMUser.getContactsid());
             }
         }
 
@@ -129,11 +123,11 @@ public class AppsController extends Handler {
          */
         if (contactIds.size() > 0) {
             final Iterable<Contacts> contacts = contactsRes.findAll(contactIds);
-            for (final OnlineUser onlineUser : onlineUserList.getContent()) {
-                if (StringUtils.isNotBlank(onlineUser.getContactsid())) {
+            for (final PassportWebIMUser passportWebIMUser : onlineUserList.getContent()) {
+                if (StringUtils.isNotBlank(passportWebIMUser.getContactsid())) {
                     for (final Contacts contact : contacts) {
-                        if (StringUtils.equals(onlineUser.getContactsid(), contact.getId())) {
-                            onlineUser.setContacts(contact);
+                        if (StringUtils.equals(passportWebIMUser.getContactsid(), contact.getId())) {
+                            passportWebIMUser.setContacts(contact);
                             break;
                         }
                     }
@@ -148,30 +142,27 @@ public class AppsController extends Handler {
         aggValues(map, request);
 
         // 获取agentStatus
-        map.put("agentStatus", cache.findOneAgentStatusByAgentnoAndOrig(user.getId(), orgi));
+        map.put("agentStatus", cache.findOneAgentStatusByAgentno(user.getId()));
         return request(super.createView("/apps/desktop/index"));
     }
 
     private void aggValues(ModelMap map, HttpServletRequest request) {
         Organ currentOrgan = super.getOrgan(request);
-        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
+        Map<String, Organ> organs = organProxy.findAllOrganByParent(currentOrgan);
 
         List<Object> onlineUsers = new ArrayList<>();
         List<Object> userEvents = new ArrayList<>();
         if (organs.size() > 0) {
-            List<String> appids = invite.findSNSIdByOrgiAndSkill(super.getOrgi(request), organs.keySet());
-
+            List<String> appids = invite.findSNSIdBySkill(organs.keySet());
             if (appids.size() > 0) {
-                onlineUsers = onlineUserRes.findByOrgiAndStatusAndInAppIds(
-                        super.getOrgi(request),
+                onlineUsers = onlineUserRes.findByStatusAndInAppIds(
                         MainContext.OnlineUserStatusEnum.ONLINE.toString(), appids);
-
-                userEvents = userEventRes.findByOrgiAndCreatetimeRangeAndInAppIds(super.getOrgi(request), MainUtils.getStartTime(),
+                userEvents = userEventRes.findByCreatetimeRangeAndInAppIds(MainUtils.getStartTime(),
                         MainUtils.getEndTime(), appids);
             }
         }
 
-        map.put("agentReport", acdWorkMonitor.getAgentReport(currentOrgan != null ? currentOrgan.getId() : null, super.getOrgi(request)));
+        map.put("agentReport", acdWorkMonitor.getAgentReport(currentOrgan != null ? currentOrgan.getId() : null));
         map.put(
                 "webIMReport", MainUtils.getWebIMReport(userEvents));
 
@@ -183,15 +174,13 @@ public class AppsController extends Handler {
 
         map.put(
                 "inviteResult", MainUtils.getWebIMInviteResult(
-                        onlineUserRes.findByOrgiAndAgentnoAndCreatetimeRange(
-                                super.getOrgi(request),
+                        onlineUserRes.findByAgentnoAndCreatetimeRange(
                                 super.getUser(request).getId(),
                                 MainUtils.getStartTime(),
                                 MainUtils.getEndTime())));
 
         map.put(
                 "agentUserCount", onlineUserRes.countByAgentForAgentUser(
-                        super.getOrgi(request),
                         MainContext.AgentUserStatusEnum.INSERVICE.toString(),
                         super.getUser(request).getId(),
                         MainUtils.getStartTime(),
@@ -199,7 +188,6 @@ public class AppsController extends Handler {
 
         map.put(
                 "agentServicesCount", onlineUserRes.countByAgentForAgentUser(
-                        super.getOrgi(request),
                         MainContext.AgentUserStatusEnum.END.toString(),
                         super.getUser(request).getId(),
                         MainUtils.getStartTime(),
@@ -207,7 +195,6 @@ public class AppsController extends Handler {
 
         map.put(
                 "agentServicesAvg", onlineUserRes.countByAgentForAvagTime(
-                        super.getOrgi(request),
                         MainContext.AgentUserStatusEnum.END.toString(),
                         super.getUser(request).getId(),
                         MainUtils.getStartTime(),
@@ -218,23 +205,22 @@ public class AppsController extends Handler {
     @RequestMapping({"/apps/onlineuser"})
     @Menu(type = "apps", subtype = "onlineuser")
     public ModelAndView onlineuser(ModelMap map, HttpServletRequest request) {
-        Page<OnlineUser> onlineUserList = this.onlineUserRes.findByOrgiAndStatus(
-                super.getOrgi(request), MainContext.OnlineUserStatusEnum.ONLINE.toString(),
+        Page<PassportWebIMUser> onlineUserList = this.onlineUserRes.findByStatus(MainContext.OnlineUserStatusEnum.ONLINE.toString(),
                 new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
-        List<String> ids = new ArrayList<String>();
-        for (OnlineUser onlineUser : onlineUserList.getContent()) {
-            onlineUser.setBetweentime((int) (System.currentTimeMillis() - onlineUser.getLogintime().getTime()));
-            if (StringUtils.isNotBlank(onlineUser.getContactsid())) {
-                ids.add(onlineUser.getContactsid());
+        List<String> ids = new ArrayList<>();
+        for (PassportWebIMUser passportWebIMUser : onlineUserList.getContent()) {
+            passportWebIMUser.setBetweentime((int) (System.currentTimeMillis() - passportWebIMUser.getLogintime().getTime()));
+            if (StringUtils.isNotBlank(passportWebIMUser.getContactsid())) {
+                ids.add(passportWebIMUser.getContactsid());
             }
         }
         if (ids.size() > 0) {
             Iterable<Contacts> contactsList = contactsRes.findAll(ids);
-            for (OnlineUser onlineUser : onlineUserList.getContent()) {
-                if (StringUtils.isNotBlank(onlineUser.getContactsid())) {
+            for (PassportWebIMUser passportWebIMUser : onlineUserList.getContent()) {
+                if (StringUtils.isNotBlank(passportWebIMUser.getContactsid())) {
                     for (Contacts contacts : contactsList) {
-                        if (onlineUser.getContactsid().equals(contacts.getId())) {
-                            onlineUser.setContacts(contacts);
+                        if (passportWebIMUser.getContactsid().equals(contacts.getId())) {
+                            passportWebIMUser.setContacts(contacts);
                         }
                     }
                 }
@@ -282,7 +268,6 @@ public class AppsController extends Handler {
                 tempUser.setAgent(true);
             }
 
-            tempUser.setOrgi(super.getOrgi());
             final Date now = new Date();
             if (StringUtils.isNotBlank(user.getPassword())) {
                 tempUser.setPassword(MainUtils.md5(user.getPassword()));
@@ -297,15 +282,14 @@ public class AppsController extends Handler {
             tempUser.setRoleAuthMap(sessionUser.getRoleAuthMap());
             tempUser.setAffiliates(sessionUser.getAffiliates());
             User u = tempUser;
-            u.setOrgi(super.getOrgi(request));
             super.setUser(request, u);
             //切换成非坐席 判断是否坐席 以及 是否有对话
             if (!user.isAgent()) {
-                AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
-                        (super.getUser(request)).getId(), super.getOrgi(request));
+                AgentStatus agentStatus = cache.findOneAgentStatusByAgentno(
+                        (super.getUser(request)).getId());
 
-                if (!(agentStatus == null && cache.getInservAgentUsersSizeByAgentnoAndOrgi(
-                        super.getUser(request).getId(), super.getOrgi(request)) == 0)) {
+                if (!(agentStatus == null && cache.getInservAgentUsersSizeByAgentno(
+                        super.getUser(request).getId()) == 0)) {
                     if (StringUtils.isBlank(index)) {
                         return request(super.createView("redirect:/apps/content.html?msg=t1"));
                     }
@@ -327,7 +311,7 @@ public class AppsController extends Handler {
      * @return
      */
     private List<User> getUsers(HttpServletRequest request) {
-        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
+        Map<String, Organ> organs = organProxy.findAllOrganByParent(super.getOrgan(request));
         List<User> userList = userProxy.findByOrganInAndAgentAndDatastatus(organs.keySet(), true, false);
         if (userList == null) {
             userList = new ArrayList<>();
