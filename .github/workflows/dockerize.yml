@@ -1,8 +1,7 @@
 name: Package
 on:
-  pull_request:
+  push:
     branches: [master, develop]
-    types: [opened, synchronize, reopened]
 jobs:
   build:
     runs-on: [self-hosted]
@@ -16,4 +15,4 @@ jobs:
           if [ -f ~/.cskefu.rc ]; then source ~/.cskefu.rc; else echo "Not found ~/.cskefu.rc; find info with https://github.com/cskefu/cskefu/issues/688"; exit 1; fi
           java -version && mvn -version
           $GITHUB_WORKSPACE/public/plugins/scripts/install-all.sh
-          cd $GITHUB_WORKSPACE/contact-center && ./admin/package.sh
+          cd $GITHUB_WORKSPACE/contact-center && ./admin/build.sh && ./admin/push.sh
