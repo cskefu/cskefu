@@ -21,12 +21,12 @@ jobs:
       # Use mvn clean and package as the standard maven build phase
       - run:
           name: Package
-          command: cd contact-center && ./admin/package.sh
+          command: cd contact-center && ./admin/build.sh
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
-  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
+  dockerize: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       - package
