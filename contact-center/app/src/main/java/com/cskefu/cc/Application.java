@@ -85,6 +85,9 @@ public class Application {
      */
     protected static void serve(final String[] args) {
         try {
+            // Tune druid params, https://github.com/cskefu/cskefu/issues/835
+            System.setProperty("druid.mysql.usePingMethod", "false");
+
             MobileNumberUtils.init();
             /************************
              *  该APP中加载多个配置文件
@@ -96,7 +99,7 @@ public class Application {
             app.setBannerMode(Banner.Mode.CONSOLE);
             app.setAddCommandLineProperties(false);
             app.addListeners(new AppCtxRefreshEventListener());
-            
+
             MainContext.setApplicationContext(app.run(args));
         } catch (IOException e) {
             logger.error("Application Startup Error", e);
