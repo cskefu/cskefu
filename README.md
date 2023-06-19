@@ -29,7 +29,7 @@
 
 春松客服宣言视频： [Bilibili](https://www.bilibili.com/video/BV1hu411o76r/) | [YouTube](https://youtu.be/ILf3BWpq4Ns)
 
-<!-- TODO 新版本介绍：[自然选择开源客服系统！春松客服 v8 版本发布 | Chatopera]() -->
+新版本介绍：[诚邀您参加 2023-07-01 春松客服 v8 新版本发布会 | CSKeFu](http://hdxu.cn/6WMz8)
 
 ## 媒体报道
 
