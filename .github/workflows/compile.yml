@@ -1,11 +1,11 @@
-name: PR Checks Package
+name: Compile Checks on PRs
 on:
   pull_request:
-    branches: [master]
-    types: [opened, synchronize, closed]
+    branches: [master, develop]
+    types: [opened, synchronize, reopened]
 jobs:
-  build:
-    runs-on: [self-hosted, linux, cskefu]
+  mvn-compile:
+    runs-on: [self-hosted]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -16,4 +16,4 @@ jobs:
           if [ -f ~/.cskefu.rc ]; then source ~/.cskefu.rc; else echo "Not found ~/.cskefu.rc; find info with https://github.com/cskefu/cskefu/issues/688"; exit 1; fi
           java -version && mvn -version
           $GITHUB_WORKSPACE/public/plugins/scripts/install-all.sh
-          cd $GITHUB_WORKSPACE/contact-center && ./admin/package.sh
+          cd $GITHUB_WORKSPACE/contact-center && ./admin/compile.sh
