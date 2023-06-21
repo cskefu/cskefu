@@ -25,8 +25,7 @@ services:
       # In short
       #     1) Setup Load Balancing / Reverse Proxy
       #     2) Modify CS_IM_SERVER_SSL_PORT
-      #         2.1 comment out CS_IM_SERVER_SSL_PORT envronment variable to redirect HTTPs requests to 443 port
-      #         2.2 Or just remove below line .
+      #         set CS_IM_SERVER_SSL_PORT=443
       - CS_IM_SERVER_SSL_PORT=${CC_SOCKET_PORT:-8036}
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/cosinee?useUnicode=true&characterEncoding=UTF-8
       - SPRING_DATASOURCE_USERNAME=root
