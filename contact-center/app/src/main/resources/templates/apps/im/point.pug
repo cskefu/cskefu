@@ -11,7 +11,9 @@
 //-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //- See the License for the specific language governing permissions and
 //- limitations under the License.
-- var baseUrl = (schema?schema:'http')+'://' + hostname + ':' + port
+- var schemaFixed = schema ? schema : 'http'
+- var portFixed = schemaFixed == "https" ? 443 : port
+- var baseUrl = schemaFixed +'://' + hostname + ':' + portFixed
 
 - var style = 'text-align:center;height: 150px;border-radius: 30px;width: 40px;margin: 0px 5px 0 0; float:left ; word-wrap: break-word;overflow: hidden;font-size:15px;color:#FFFFFF;text-align: center;padding-top: 15px;border: 1px solid #DCDCDC;background-color:#008df3;';
 if inviteData.consult_vsitorbtn_model == "2"
