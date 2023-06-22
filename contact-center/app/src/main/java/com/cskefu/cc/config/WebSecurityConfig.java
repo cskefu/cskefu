@@ -44,12 +44,14 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.addFilterAfter(tokenInfoTokenFilterSecurityInterceptor(), BasicAuthenticationFilter.class)
+        http
+                .addFilterAfter(tokenInfoTokenFilterSecurityInterceptor(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize.requestMatchers("/**").permitAll())
                 .csrf().disable().headers().frameOptions().sameOrigin()
 //                .addFilterAfter(csrfHeaderFilter(), BasicAuthenticationFilter.class)        // TODO lecjy
-                .and().addFilterAfter(apiTokenFilterSecurityInterceptor(), BasicAuthenticationFilter.class)
-                .build();
+                .and().addFilterAfter(apiTokenFilterSecurityInterceptor(), BasicAuthenticationFilter.class);
+        http.headers().contentTypeOptions().disable();
+        return http.build();
     }
 
     @Bean

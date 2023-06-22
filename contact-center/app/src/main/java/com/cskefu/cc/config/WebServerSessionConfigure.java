@@ -49,13 +49,13 @@ public class WebServerSessionConfigure {
     @Value("${server.session-timeout}")
     private long maxInactiveIntervalInSeconds;
 
-    @Value("${spring.redis.host}")
+    @Value("${spring.data.redis.host}")
     private String host;
 
-    @Value("${spring.redis.port}")
+    @Value("${spring.data.redis.port}")
     private int port;
 
-    @Value("${spring.redis.password}")
+    @Value("${spring.data.redis.password}")
     private String pass;
 
     @Value("${spring.redis.session.db}")
@@ -64,7 +64,7 @@ public class WebServerSessionConfigure {
     @Value("${spring.redis.token.db}")
     private int tokenDb;
 
-    @Value("${spring.redis.timeout}")
+    @Value("${spring.data.redis.timeout}")
     private int timeout;
 
     @Primary
