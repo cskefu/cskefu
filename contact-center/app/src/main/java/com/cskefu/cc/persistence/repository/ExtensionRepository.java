@@ -25,8 +25,6 @@ import java.util.Optional;
 
 public interface ExtensionRepository extends JpaRepository<Extension, String> {
 
-    Extension findById(String id);
-
     List<Extension> findByHostid(String hostid);
 
     List<Extension> findByExtension(String extension);
@@ -37,11 +35,11 @@ public interface ExtensionRepository extends JpaRepository<Extension, String> {
 
     List<Extension> findByExtype(String type);
 
-    @Query(value = "SELECT * FROM uk_callcenter_extention WHERE extention = ?1 AND hostid = ?2 LIMIT 1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM uk_callcenter_extention WHERE extention = ?1 AND hostid = ?2 LIMIT 1")
     Optional<Extension> findOneByExtensionAndHostid(final String extension, final String hostid);
 
     int countByHostid(final String hostid);
 
-    @Query(value = "SELECT * FROM uk_callcenter_extention WHERE agentno = ?1 LIMIT 1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM uk_callcenter_extention WHERE agentno = ?1 LIMIT 1")
     Optional<Extension> findByAgentno(final String agentno);
 }

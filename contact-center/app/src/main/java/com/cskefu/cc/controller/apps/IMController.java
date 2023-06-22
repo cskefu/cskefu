@@ -55,11 +55,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -435,7 +435,7 @@ public class IMController extends Handler {
         sessionMessage.put("uid", uid);
         cache.putSystemMapById(sessionid, sessionMessage);
 
-        PassportWebIMUser passportWebIMUser = onlineUserRes.findOne(userid);
+        PassportWebIMUser passportWebIMUser = onlineUserRes.getReferenceById(userid);
         String updateusername;
         if (passportWebIMUser != null) {
             updateusername = username + "@" + company_name;
@@ -860,7 +860,7 @@ public class IMController extends Handler {
                             agentUserRepository.findOneByUserid(userid).ifPresent(p -> {
                                 // 关联AgentService的联系人
                                 if (StringUtils.isNotBlank(p.getAgentserviceid())) {
-                                    AgentService agentService = agentServiceRepository.findOne(
+                                    AgentService agentService = agentServiceRepository.getReferenceById(
                                             p.getAgentserviceid());
                                     agentService.setContactsid(contacts1.getId());
                                 }
@@ -920,7 +920,7 @@ public class IMController extends Handler {
                     // 是否使用机器人客服
                     if (invite.isAi() && MainContext.hasModule(Constants.CSKEFU_MODULE_CHATBOT)) {
                         // 查找机器人
-                        bot = chatbotRes.findOne(invite.getAiid());
+                        bot = chatbotRes.getReferenceById(invite.getAiid());
                         if (bot != null) {
                             // 判断是否接受访客切换坐席类型
                             isEnableExchangeAgentType = !StringUtils.equals(
@@ -965,7 +965,7 @@ public class IMController extends Handler {
                     }
 
                     map.addAttribute(
-                            "chatMessageList", chatMessageRes.findByUsession(userid, new PageRequest(0, 20,
+                            "chatMessageList", chatMessageRes.findByUsession(userid, PageRequest.of(0, 20,
                                     Direction.DESC,
                                     "updatetime")));
                 }
@@ -1003,7 +1003,7 @@ public class IMController extends Handler {
                 Page<InviteRecord> inviteRecords = inviteRecordRes.findByUseridAndResultAndCreatetimeGreaterThan(
                         userid,
                         MainContext.OnlineUserInviteStatus.DEFAULT.toString(),
-                        threshold, new PageRequest(0, 1, Direction.DESC, "createtime"));
+                        threshold, PageRequest.of(0, 1, Direction.DESC, "createtime"));
                 if (inviteRecords.getContent() != null && inviteRecords.getContent().size() > 0) {
                     final InviteRecord record = inviteRecords.getContent().get(0);
                     record.setUpdatetime(new Date());
@@ -1249,7 +1249,7 @@ public class IMController extends Handler {
                 userid,
                 MainContext.OnlineUserInviteStatus.DEFAULT.toString(),
                 threshold,
-                new PageRequest(
+                PageRequest.of(
                         0,
                         1,
                         Direction.DESC,

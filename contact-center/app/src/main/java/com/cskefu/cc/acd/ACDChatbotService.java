@@ -46,7 +46,7 @@ public class ACDChatbotService {
         AgentService agentService = new AgentService();    //放入缓存的对象
         Date now = new Date();
         if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-            agentService = agentServiceRes.findById(agentUser.getAgentserviceid());
+            agentService = agentServiceRes.getReferenceById(agentUser.getAgentserviceid());
             agentService.setEndtime(now);
             if (agentService.getServicetime() != null) {
                 agentService.setSessiontimes(System.currentTimeMillis() - agentService.getServicetime().getTime());

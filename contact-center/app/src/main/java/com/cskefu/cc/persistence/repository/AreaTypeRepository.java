@@ -22,8 +22,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface AreaTypeRepository extends JpaRepository<AreaType, String> {
-	
-	AreaType findById(String id);
 
 	int countByName(String name);
 	

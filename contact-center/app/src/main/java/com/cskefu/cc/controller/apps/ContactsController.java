@@ -46,9 +46,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -117,7 +117,7 @@ public class ContactsController extends Handler {
 
         Page<Contacts> contacts = contactsRes.findByOrganInAndSharesAllAndDatastatusFalse(
                 super.getMyCurrentAffiliatesFlat(logined),
-                new PageRequest(super.getP(request), super.getPs(request)));
+                PageRequest.of(super.getP(request), super.getPs(request)));
 
         map.addAttribute("contactsList", contacts);
 
@@ -148,7 +148,7 @@ public class ContactsController extends Handler {
         Page<Contacts> contacts = contactsRes.findByCreaterAndSharesAndDatastatus(logined.getId(),
                 logined.getId(),
                 false,
-                new PageRequest(
+                PageRequest.of(
                         super.getP(request),
                         super.getPs(request)));
 
@@ -182,7 +182,7 @@ public class ContactsController extends Handler {
         Page<Contacts> contacts = contactsRes.findByCreaterAndSharesAndDatastatus(logined.getId(),
                 logined.getId(),
                 false,
-                new PageRequest(
+                PageRequest.of(
                         super.getP(request),
                         super.getPs(request)));
         map.addAttribute(
@@ -216,7 +216,7 @@ public class ContactsController extends Handler {
         Page<Contacts> contacts = contactsRes.findByCreaterAndSharesAndDatastatus(logined.getId(),
                 logined.getId(),
                 false,
-                new PageRequest(
+                PageRequest.of(
                         super.getP(request),
                         super.getPs(request)));
 
@@ -231,7 +231,7 @@ public class ContactsController extends Handler {
     @Menu(type = "contacts", subtype = "contacts")
     public ModelAndView delete(HttpServletRequest request, @Valid Contacts contacts, @Valid String p, @Valid String ckind) {
         if (contacts != null) {
-            contacts = contactsRes.findOne(contacts.getId());
+            contacts = contactsRes.getReferenceById(contacts.getId());
             contacts.setDatastatus(true);                            //客户和联系人都是 逻辑删除
             contactsRes.save(contacts);
         }
@@ -288,7 +288,7 @@ public class ContactsController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "contacts", subtype = "contacts")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String ckind) {
-        map.addAttribute("contacts", contactsRes.findOne(id));
+        map.addAttribute("contacts", contactsRes.getReferenceById(id));
         map.addAttribute("ckindId", ckind);
         return request(super.createView("/apps/contacts/edit"));
     }
@@ -299,7 +299,7 @@ public class ContactsController extends Handler {
         if (id == null) {
             return null; // id is required. Block strange requst anyway with g2.min, https://github.com/alibaba/BizCharts/issues/143
         }
-        map.addAttribute("contacts", contactsRes.findOne(id));
+        map.addAttribute("contacts", contactsRes.getReferenceById(id));
 
         return request(super.createView("/apps/contacts/detail"));
 
@@ -344,7 +344,7 @@ public class ContactsController extends Handler {
     @Menu(type = "contacts", subtype = "contacts")
     public ModelAndView update(HttpServletRequest request, @Valid Contacts contacts, @Valid String ckindId) {
         final User logined = super.getUser(request);
-        Contacts data = contactsRes.findOne(contacts.getId());
+        Contacts data = contactsRes.getReferenceById(contacts.getId());
         String msg = "";
 
         String skypeIDReplace = contactsProxy.sanitizeSkypeId(contacts.getSkypeid());
@@ -445,7 +445,7 @@ public class ContactsController extends Handler {
     @Menu(type = "contacts", subtype = "contacts")
     public void expids(ModelMap map, HttpServletRequest request, HttpServletResponse response, @Valid String[] ids) throws IOException {
         if (ids != null && ids.length > 0) {
-            Iterable<Contacts> contactsList = contactsRes.findAll(Arrays.asList(ids));
+            Iterable<Contacts> contactsList = contactsRes.findAllById(Arrays.asList(ids));
             MetadataTable table = metadataRes.findByTablename("uk_contacts");
             List<Map<String, Object>> values = new ArrayList<>();
             for (Contacts contacts : contactsList) {
@@ -481,7 +481,7 @@ public class ContactsController extends Handler {
         }
 
         Iterable<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndDatastatus(
-                logined.getId(), logined.getId(), false, new PageRequest(super.getP(request), super.getPs(request)));
+                logined.getId(), logined.getId(), false, PageRequest.of(super.getP(request), super.getPs(request)));
 
         MetadataTable table = metadataRes.findByTablename("uk_contacts");
         List<Map<String, Object>> values = new ArrayList<>();
@@ -515,7 +515,7 @@ public class ContactsController extends Handler {
         }
 
         Iterable<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndDatastatus(
-                logined.getId(), logined.getId(), false, new PageRequest(super.getP(request), super.getPs(request)));
+                logined.getId(), logined.getId(), false, PageRequest.of(super.getP(request), super.getPs(request)));
         MetadataTable table = metadataRes.findByTablename("uk_contacts");
         List<Map<String, Object>> values = new ArrayList<>();
         for (Contacts contacts : contactsList) {
@@ -552,11 +552,11 @@ public class ContactsController extends Handler {
             map.put("ckind", ckind);
         }
         if (StringUtils.isNotBlank(agentserviceid)) {
-            AgentService service = agentServiceRes.findById(agentserviceid);
+            AgentService service = agentServiceRes.getReferenceById(agentserviceid);
         }
         Page<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndDatastatus(
                 logined.getId(), logined.getId(), false,
-                new PageRequest(super.getP(request), super.getPs(request)));
+                PageRequest.of(super.getP(request), super.getPs(request)));
 
         map.addAttribute("contactsList", contactsList);
 
@@ -593,7 +593,7 @@ public class ContactsController extends Handler {
             contacts.setCreater(logined.getId());
 
             if (StringUtils.isNotBlank(agentserviceid)) {
-                AgentService agentService = agentServiceRes.findOne(agentserviceid);
+                AgentService agentService = agentServiceRes.getReferenceById(agentserviceid);
                 contacts.setOrgan(agentService.getSkill());
             }
 
@@ -613,7 +613,7 @@ public class ContactsController extends Handler {
     @RequestMapping("/embed/edit")
     @Menu(type = "contacts", subtype = "embededit")
     public ModelAndView embededit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String agentserviceid) {
-        map.addAttribute("contacts", contactsRes.findOne(id));
+        map.addAttribute("contacts", contactsRes.getReferenceById(id));
         if (StringUtils.isNotBlank(agentserviceid)) {
             map.addAttribute("agentserviceid", agentserviceid);
         }
@@ -624,7 +624,7 @@ public class ContactsController extends Handler {
     @Menu(type = "contacts", subtype = "embedupdate")
     public ModelAndView embedupdate(HttpServletRequest request, @Valid Contacts contacts, @Valid String agentserviceid) {
         final User logined = super.getUser(request);
-        Contacts data = contactsRes.findOne(contacts.getId());
+        Contacts data = contactsRes.getReferenceById(contacts.getId());
         String msg = "";
         String skypeIDReplace = contactsProxy.sanitizeSkypeId(contacts.getSkypeid());
         Contacts theOnlyContact = contactsRes.findByskypeidAndDatastatus(

@@ -32,8 +32,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -64,7 +64,7 @@ public class OnlineUserProxy {
      * @throws Exception
      */
     public static PassportWebIMUser user(final String id) {
-        return getOnlineUserRes().findOne(id);
+        return getOnlineUserRes().getReferenceById(id);
     }
 
     /**
@@ -245,7 +245,7 @@ public class OnlineUserProxy {
                     query.append(" OR ").append(contacts.getEmail());
                 }
                 Page<Contacts> contactsList = contactsRes.findByDatastatus(
-                        false, new PageRequest(0, 1));
+                        false, PageRequest.of(0, 1));
                 if (contactsList.getContent().size() > 0) {
                     contacts = contactsList.getContent().get(0);
                 } else {
@@ -270,7 +270,7 @@ public class OnlineUserProxy {
                 Optional<AgentUserContacts> agentUserContactOpt = agentUserContactsRes.findOneByUserid(
                         userid);
                 if (agentUserContactOpt.isPresent()) {
-                    contacts = getContactsRes().findOne(agentUserContactOpt.get().getContactsid());
+                    contacts = getContactsRes().getReferenceById(agentUserContactOpt.get().getContactsid());
                 }
             }
         }
@@ -516,7 +516,7 @@ public class OnlineUserProxy {
      * @throws Exception
      */
     public static void refuseInvite(final String user) {
-        PassportWebIMUser passportWebIMUser = getOnlineUserRes().findOne(user);
+        PassportWebIMUser passportWebIMUser = getOnlineUserRes().getReferenceById(user);
         if (passportWebIMUser != null) {
             passportWebIMUser.setInvitestatus(MainContext.OnlineUserInviteStatus.REFUSE.toString());
             passportWebIMUser.setRefusetimes(passportWebIMUser.getRefusetimes() + 1);

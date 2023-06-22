@@ -25,14 +25,12 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface TagRepository  extends JpaRepository<Tag, String>
-{
+public interface TagRepository  extends JpaRepository<Tag, String> {
 
 	Tag findByTagAndSkill(String tag, String skill);
 
-	Tag findById(String id);
 
-	@Query(value = "select t from Tag t where :tagtype is null or t.tagtype = :tagtype")
+	@Query("select t from Tag t where :tagtype is null or t.tagtype = :tagtype")
     Page<Tag> findByTagtype(@Param("tagtype") String tagtype, Pageable paramPageable);
 
 	Page<Tag> findByTagtypeAndSkill(String tagtype, String skill, Pageable paramPageable);

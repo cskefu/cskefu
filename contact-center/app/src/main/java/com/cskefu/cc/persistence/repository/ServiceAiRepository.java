@@ -23,8 +23,6 @@ import java.util.List;
 
 public interface ServiceAiRepository extends JpaRepository<ServiceAi, String> {
 
-    ServiceAi findById(String id);
-
     ServiceAi findByCode(String code);
 
     List<ServiceAi> findAll();

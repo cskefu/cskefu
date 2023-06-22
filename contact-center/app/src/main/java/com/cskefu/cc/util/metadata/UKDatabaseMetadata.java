@@ -16,7 +16,7 @@
  */
 package com.cskefu.cc.util.metadata;
 
-import org.hibernate.annotations.common.util.StringHelper;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -71,14 +71,12 @@ public class UKDatabaseMetadata{
 					rs = meta.getTables(catalog, schema, name, TYPES);
 				} else if ((isQuoted && meta.storesUpperCaseIdentifiers() && meta.storesUpperCaseQuotedIdentifiers())
 						|| (!isQuoted && meta.storesUpperCaseIdentifiers())) {
-					rs = meta.getTables(StringHelper.toUpperCase(catalog),
-							StringHelper.toUpperCase(schema), StringHelper
-									.toUpperCase(name), TYPES);
+					rs = meta.getTables(StringUtils.upperCase(catalog),
+							StringUtils.upperCase(schema), StringUtils.upperCase(name), TYPES);
 				} else if ((isQuoted && meta.storesLowerCaseQuotedIdentifiers())
 						|| (!isQuoted && meta.storesLowerCaseIdentifiers())) {
-					rs = meta.getTables(StringHelper.toLowerCase(catalog),
-							StringHelper.toLowerCase(schema), StringHelper
-									.toLowerCase(name), TYPES);
+					rs = meta.getTables(StringUtils.lowerCase(catalog),
+							StringUtils.lowerCase(schema), StringUtils.lowerCase(name), TYPES);
 				}else if(schema!=null && schema.equals("hive")){
 					statement = this.connection.createStatement() ;
 					if(properties.get("database")!=null){
@@ -144,14 +142,12 @@ public class UKDatabaseMetadata{
 					rs = meta.getTables(catalog, schema, name, TYPES);
 				} else if ((isQuoted && meta.storesUpperCaseQuotedIdentifiers())
 						|| (!isQuoted && meta.storesUpperCaseIdentifiers())) {
-					rs = meta.getTables(StringHelper.toUpperCase(catalog),
-							StringHelper.toUpperCase(schema), StringHelper
-									.toUpperCase(name), TYPES);
+					rs = meta.getTables(StringUtils.upperCase(catalog),
+							StringUtils.upperCase(schema), StringUtils.upperCase(name), TYPES);
 				} else if ((isQuoted && meta.storesLowerCaseQuotedIdentifiers())
 						|| (!isQuoted && meta.storesLowerCaseIdentifiers())) {
-					rs = meta.getTables(StringHelper.toLowerCase(catalog),
-							StringHelper.toLowerCase(schema), StringHelper
-									.toLowerCase(name), TYPES);
+					rs = meta.getTables(StringUtils.lowerCase(catalog),
+							StringUtils.lowerCase(schema), StringUtils.lowerCase(name), TYPES);
 				} else {
 					rs = meta.getTables(catalog, schema, name, TYPES);
 				}

@@ -69,7 +69,7 @@ public class AgentAuditSubscription {
                 // 查找关联的会话监控信息
                 final AgentUserAudit agentUserAudit = cache.findOneAgentUserAuditById(
                         json.get("agentUserId").getAsString()).orElseGet(() -> {
-                    final AgentUser agentUser = agentUserRes.findOne(json.get("agentUserId").getAsString());
+                    final AgentUser agentUser = agentUserRes.getReferenceById(json.get("agentUserId").getAsString());
                     if (agentUser != null) {
                         return agentAuditProxy.updateAgentUserAudits(agentUser);
                     } else {

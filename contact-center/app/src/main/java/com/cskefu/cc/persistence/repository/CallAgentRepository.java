@@ -25,8 +25,6 @@ import java.util.List;
 
 public interface CallAgentRepository extends JpaRepository<CallAgent, String> {
 
-    CallAgent findById(String id);
-
     List<CallAgent> findByName(String name);
 
     Page<CallAgent> findAll(Pageable page);

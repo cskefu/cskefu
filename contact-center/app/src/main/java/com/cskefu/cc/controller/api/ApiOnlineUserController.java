@@ -34,8 +34,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 /**
  * 获取在线访客功能
@@ -59,9 +59,9 @@ public class ApiOnlineUserController extends Handler {
     public ResponseEntity<RestResult> list(HttpServletRequest request, @Valid String userid) {
         Page<PassportWebIMUser> onlineUserList = null;
         if (!StringUtils.isBlank(userid)) {
-            onlineUserList = passportWebIMUserRepository.findByUserid(userid, new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
+            onlineUserList = passportWebIMUserRepository.findByUserid(userid, PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
         } else {
-            onlineUserList = passportWebIMUserRepository.findByStatus(MainContext.OnlineUserStatusEnum.ONLINE.toString(), new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
+            onlineUserList = passportWebIMUserRepository.findByStatus(MainContext.OnlineUserStatusEnum.ONLINE.toString(), PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
         }
         return new ResponseEntity<>(new RestResult(RestResultType.OK, onlineUserList), HttpStatus.OK);
     }

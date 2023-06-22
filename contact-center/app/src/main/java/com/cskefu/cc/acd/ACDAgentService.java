@@ -37,6 +37,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -61,6 +62,7 @@ public class ACDAgentService {
     private ACDPolicyService acdPolicyService;
 
     @Autowired
+    @Lazy
     private PeerSyncIM peerSyncIM;
 
     @Autowired
@@ -325,7 +327,7 @@ public class ACDAgentService {
              */
             AgentService service = null;
             if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-                service = agentServiceRes.findById(agentUser.getAgentserviceid());
+                service = agentServiceRes.getReferenceById(agentUser.getAgentserviceid());
             } else if (agentStatus != null) {
                 // 该访客没有和坐席对话，因此没有 AgentService
                 // 当做留言处理，创建一个新的 AgentService
@@ -339,7 +341,7 @@ public class ACDAgentService {
                     service.setSessiontimes(System.currentTimeMillis() - service.getServicetime().getTime());
                 }
 
-                final AgentUserTask agentUserTask = agentUserTaskRes.findOne(
+                final AgentUserTask agentUserTask = agentUserTaskRes.getReferenceById(
                         agentUser.getId());
                 if (agentUserTask != null) {
                     service.setAgentreplyinterval(agentUserTask.getAgentreplyinterval());
@@ -514,7 +516,7 @@ public class ACDAgentService {
 
         AgentService agentService = new AgentService();
         if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-            AgentService existAgentService = agentServiceRes.findById(agentUser.getAgentserviceid());
+            AgentService existAgentService = agentServiceRes.getReferenceById(agentUser.getAgentserviceid());
             if (existAgentService != null) {
                 agentService = existAgentService;
             } else {
@@ -581,7 +583,7 @@ public class ACDAgentService {
             agentService.setOwner(agentUser.getOwner());
             agentService.setTimes(0);
 
-            final User agent = userRes.findOne(agentService.getAgentno());
+            final User agent = userRes.getReferenceById(agentService.getAgentno());
             agentUser.setAgentname(agent.getUname());
             agentUser.setAgentno(agentService.getAgentno());
 

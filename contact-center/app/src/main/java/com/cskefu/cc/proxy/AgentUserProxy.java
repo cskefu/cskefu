@@ -27,14 +27,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
@@ -94,6 +95,7 @@ public class AgentUserProxy {
     private AgentStatusRepository agentStatusRes;
 
     @Autowired
+    @Lazy
     private PeerSyncIM peerSyncIM;
 
 
@@ -117,7 +119,7 @@ public class AgentUserProxy {
             String channel = StringUtils.split(channels, ",")[0];
 
             // 查找联系人
-            final Contacts contact = contactsRes.findOne(contactid);
+            final Contacts contact = contactsRes.getReferenceById(contactid);
 
             // 查找 OnlineUser
             passportWebIMUser = onlineUserRes.findOneByContactidAndChannel(
@@ -205,20 +207,20 @@ public class AgentUserProxy {
                 list.add(new Sort.Order(Sort.Direction.DESC, "status"));
                 list.add(new Sort.Order(Sort.Direction.DESC, "createtime"));
             } else if (sort.equals("default")) {
-                defaultSort = new Sort(Sort.Direction.DESC, "status");
+                defaultSort = Sort.by(Sort.Direction.DESC, "status");
                 Cookie name = new Cookie("sort", null);
                 name.setMaxAge(0);
                 response.addCookie(name);
             }
             if (list.size() > 0) {
-                defaultSort = new Sort(list);
+                defaultSort = Sort.by(list);
                 Cookie name = new Cookie("sort", sort);
                 name.setMaxAge(60 * 60 * 24 * 365);
                 response.addCookie(name);
                 map.addAttribute("sort", sort);
             }
         } else {
-            defaultSort = new Sort(Sort.Direction.DESC, "status");
+            defaultSort = Sort.by(Sort.Direction.DESC, "status");
         }
 
         List<AgentUser> agentUserList = agentUserRes.findByAgentno(
@@ -444,7 +446,7 @@ public class AgentUserProxy {
     public AgentUser resolveAgentUser(final String userid, final String agentuserid) throws CSKefuException {
         Optional<AgentUser> opt = cache.findOneAgentUserByUserId(userid);
         if (!opt.isPresent()) {
-            AgentUser au = agentUserRes.findOne(agentuserid);
+            AgentUser au = agentUserRes.getReferenceById(agentuserid);
             if (au == null) {
                 throw new CSKefuException("Invalid transfer request, agent user not exist.");
             } else {
@@ -475,7 +477,7 @@ public class AgentUserProxy {
      * @return
      */
     public Optional<AgentUser> findOne(final String id) {
-        return Optional.ofNullable(agentUserRes.findOne(id));
+        return Optional.ofNullable(agentUserRes.getReferenceById(id));
     }
 
     /**

@@ -33,8 +33,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -99,7 +99,7 @@ public class UsersResourceController extends Handler {
         if (q == null) {
             q = "";
         }
-        Page<User> list = userRes.findByDatastatusAndUsernameLike(false, "%" + q + "%", new PageRequest(0, 10));
+        Page<User> list = userRes.findByDatastatusAndUsernameLike(false, "%" + q + "%", PageRequest.of(0, 10));
         return list;
     }
 

@@ -16,7 +16,9 @@
  */
 package com.cskefu.cc.util.metadata;
 
-import org.hibernate.annotations.common.util.StringHelper;
+import io.netty.util.internal.StringUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.internal.util.StringHelper;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -150,13 +152,11 @@ public class UKTableMetaData {
 
 		try {
 			if (meta.storesUpperCaseIdentifiers()) {
-				rs = meta.getColumns(StringHelper.toUpperCase(catalog),
-						StringHelper.toUpperCase(schema), StringHelper
-								.toUpperCase(name), "%");
+				rs = meta.getColumns(StringUtils.upperCase(catalog),
+						StringUtils.upperCase(schema), StringUtils.upperCase(name), "%");
 			} else if (meta.storesLowerCaseIdentifiers()) {
-				rs = meta.getColumns(StringHelper.toLowerCase(catalog),
-						StringHelper.toLowerCase(schema), StringHelper
-								.toLowerCase(name), "%");
+				rs = meta.getColumns(StringUtils.lowerCase(catalog),
+						StringUtils.lowerCase(schema), StringUtils.lowerCase(name), "%");
 			} else {
 				rs = meta.getColumns(catalog, schema, name, "%");
 			}

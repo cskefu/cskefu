@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 标签
@@ -70,7 +70,7 @@ public class ApiTagsController extends Handler {
             tagType = j.get("tagtype").getAsString();
 
         Page<Tag> records = tagRes.findByTagtype(tagType,
-                new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
+                PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
 
         JsonArray ja = new JsonArray();
 

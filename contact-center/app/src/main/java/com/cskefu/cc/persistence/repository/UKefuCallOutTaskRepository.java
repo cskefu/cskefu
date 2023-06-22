@@ -25,8 +25,6 @@ import java.util.List;
 
 public interface UKefuCallOutTaskRepository extends JpaRepository<UKefuCallOutTask, String> {
 
-    UKefuCallOutTask findById(String id);
-
     List<UKefuCallOutTask> findByName(String name);
 
     Page<UKefuCallOutTask> findByActid(String actid, Pageable page);

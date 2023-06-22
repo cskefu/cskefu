@@ -90,7 +90,7 @@ public class AgentServiceProxy {
             final AgentService agentService,
             final ModelMap map) {
         Sort defaultSort;
-        defaultSort = new Sort(Sort.Direction.DESC, "servicetime");
+        defaultSort = Sort.by(Sort.Direction.DESC, "servicetime");
         map.addAttribute(
                 "agentServiceList",
                 agentServiceRes.findByUseridAndStatus(
@@ -147,7 +147,7 @@ public class AgentServiceProxy {
                 view.addObject("weiXinUser", passportWechatUser);
             }
         } else if (MainContext.ChannelType.WEBIM.toString().equals(agentUser.getChanneltype())) {
-            PassportWebIMUser passportWebIMUser = onlineUserRes.findOne(agentUser.getUserid());
+            PassportWebIMUser passportWebIMUser = onlineUserRes.getReferenceById(agentUser.getUserid());
             if (passportWebIMUser != null) {
                 if (StringUtils.equals(
                         MainContext.OnlineUserStatusEnum.OFFLINE.toString(), passportWebIMUser.getStatus())) {
@@ -160,12 +160,10 @@ public class AgentServiceProxy {
             }
         } else if (MainContext.ChannelType.PHONE.toString().equals(agentUser.getChanneltype())) {
             if (agentService != null && StringUtils.isNotBlank(agentService.getOwner())) {
-                StatusEvent statusEvent = statusEventRes.findById(agentService.getOwner());
+                StatusEvent statusEvent = statusEventRes.getReferenceById(agentService.getOwner());
                 if (statusEvent != null) {
                     if (StringUtils.isNotBlank(statusEvent.getHostid())) {
-                        pbxHostRes.findById(statusEvent.getHostid()).ifPresent(p -> {
-                            view.addObject("pbxHost", p);
-                        });
+                         view.addObject("pbxHost", pbxHostRes.getReferenceById(statusEvent.getHostid()));
                     }
                     view.addObject("statusEvent", statusEvent);
                 }
@@ -212,13 +210,13 @@ public class AgentServiceProxy {
             view.addObject(
                     "agentUserMessageList",
                     chatMessageRepository.findByUsession(agentUser.getUserid(),
-                            new PageRequest(0, 20, Sort.Direction.DESC,
+                            PageRequest.of(0, 20, Sort.Direction.DESC,
                                     "updatetime")));
 
             // 坐席服务记录
             AgentService agentService = null;
             if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-                agentService = agentServiceRes.findOne(agentUser.getAgentserviceid());
+                agentService = agentServiceRes.getReferenceById(agentUser.getAgentserviceid());
                 view.addObject("curAgentService", agentService);
                 /**
                  * 获取关联数据
@@ -240,7 +238,7 @@ public class AgentServiceProxy {
             view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid()));
         }
 
-        AgentService service = agentServiceRes.findById(agentUser.getAgentserviceid());
+        AgentService service = agentServiceRes.getReferenceById(agentUser.getAgentserviceid());
         if (service != null) {
             view.addObject("tags", tagRes.findByTagtypeAndSkill(MainContext.ModelType.USER.toString(), service.getSkill()));
         }

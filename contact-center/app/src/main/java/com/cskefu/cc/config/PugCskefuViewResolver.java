@@ -10,7 +10,7 @@ public class PugCskefuViewResolver extends PugViewResolver {
         AbstractUrlBasedView view = super.buildView(viewName);
         if (viewName.startsWith("/resource/css")) {
             PugView pugView = (PugView) view;
-            pugView.setContentType("text/css ; charset=UTF-8");
+            pugView.setContentType("text/css; charset=UTF-8");
         }
         return view;
     }

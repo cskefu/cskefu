@@ -34,11 +34,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,13 +64,14 @@ public class ApiLeavemsgController extends Handler {
     public ResponseEntity<RestResult> list(HttpServletRequest request, @RequestBody RequestValues<AgentService> values) {
         Page<AgentService> page = agentServiceRepository.findAll((root, query, cb) -> {
             List<Predicate> list = new ArrayList<>();
+
             list.add(cb.equal(root.get("leavemsg").as(Boolean.class), true));
 
             list.add(cb.equal(root.get("leavemsgstatus").as(String.class), MainContext.LeaveMsgStatus.NOTPROCESS.toString()));
 
             Predicate[] p = new Predicate[list.size()];
             return cb.and(list.toArray(p));
-        }, new PageRequest(super.getP(values.getQuery()), super.getPs(values.getQuery()), Sort.Direction.DESC, "createtime"));
+        }, PageRequest.of(super.getP(values.getQuery()), super.getPs(values.getQuery()), Sort.Direction.DESC, "createtime"));
         return new ResponseEntity<>(new RestResult(RestResultType.OK, page), HttpStatus.OK);
     }
 }

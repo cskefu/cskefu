@@ -34,8 +34,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.util.*;
 
 /**
@@ -143,10 +143,10 @@ public class OrganController extends Handler {
     public ModelAndView add(ModelMap map, HttpServletRequest request, @Valid String parent, @Valid String area) {
         map.addAttribute("areaList", areaRepository.findAll());
         if (!StringUtils.isBlank(parent)) {
-            map.addAttribute("organ", organRepository.findById(parent));
+            map.addAttribute("organ", organRepository.getReferenceById(parent));
         }
         if (!StringUtils.isBlank(area)) {
-            map.addAttribute("area", areaRepository.findById(area));
+            map.addAttribute("area", areaRepository.getReferenceById(area));
         }
 
         map.addAttribute("organList", getOwnOragans(request));
@@ -184,7 +184,7 @@ public class OrganController extends Handler {
     public ModelAndView seluser(ModelMap map, HttpServletRequest request, @Valid String organ) {
         Map<String, Organ> organs = organProxy.findAllOrganByParent(super.getOrgan(request));
         map.addAttribute("userList", userProxy.findUserInOrgans(organs.keySet()));
-        Organ organData = organRepository.findById(organ);
+        Organ organData = organRepository.getReferenceById(organ);
         map.addAttribute("userOrganList", userProxy
                 .findByOrganAndDatastatus(organ, false));
         map.addAttribute("organ", organData);
@@ -210,8 +210,8 @@ public class OrganController extends Handler {
 
         if (users != null && users.length > 0) {
             List<String> chosen = new ArrayList<>(Arrays.asList(users));
-            Organ organData = organRepository.findById(organ);
-            List<User> organUserList = userRepository.findAll(chosen);
+            Organ organData = organRepository.getReferenceById(organ);
+            List<User> organUserList = userRepository.findAllById(chosen);
             for (final User user : organUserList) {
                 OrganUser ou = organUserRes.findByUseridAndOrgan(user.getId(), organ);
 
@@ -254,7 +254,7 @@ public class OrganController extends Handler {
                     }
                 }
             }
-            userRepository.save(organUserList);
+            userRepository.saveAll(organUserList);
         }
 
         return request(super.createView("redirect:/admin/organ/index.html?organ=" + organ));
@@ -285,7 +285,7 @@ public class OrganController extends Handler {
         ModelAndView view = request(super.createView("/admin/organ/edit"));
         Organ currentOrgan = super.getOrgan(request);
         map.addAttribute("areaList", areaRepository.findAll());
-        view.addObject("organData", organRepository.findById(id));
+        view.addObject("organData", organRepository.getReferenceById(id));
         view.addObject("isRootOrgan", id.equals(currentOrgan.getId()));
         map.addAttribute("organList", getOwnOragans(request));
         return view;
@@ -310,14 +310,14 @@ public class OrganController extends Handler {
         }
         map.addAttribute("cacheList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_AREA_DIC));
 
-        map.addAttribute("organData", organRepository.findById(id));
+        map.addAttribute("organData", organRepository.getReferenceById(id));
         return request(super.createView("/admin/organ/area"));
     }
 
     @RequestMapping("/area/update")
     @Menu(type = "admin", subtype = "organ")
     public ModelAndView areaupdate(HttpServletRequest request, @Valid Organ organ) {
-        Organ tempOrgan = organRepository.findById(organ.getId());
+        Organ tempOrgan = organRepository.getReferenceById(organ.getId());
         String msg = "admin_organ_update_success";
         if (tempOrgan != null) {
             tempOrgan.setArea(organ.getArea());
@@ -334,7 +334,7 @@ public class OrganController extends Handler {
     public ModelAndView delete(HttpServletRequest request, @Valid Organ organ) {
         String msg = "admin_organ_delete";
 
-        Organ organSelf = organRepository.findById(organ.getId());
+        Organ organSelf = organRepository.getReferenceById(organ.getId());
         List<Organ> organParentAre = organRepository.findByParent(organSelf.getId());
         if (organ != null && organParentAre != null && organParentAre.size() > 0) {
             msg = "admin_oran_not_delete";
@@ -353,9 +353,9 @@ public class OrganController extends Handler {
     @RequestMapping("/auth/save")
     @Menu(type = "admin", subtype = "role")
     public ModelAndView authsave(HttpServletRequest request, @Valid String id, @Valid String menus) {
-        Organ organData = organRepository.findById(id);
+        Organ organData = organRepository.getReferenceById(id);
         List<OrganRole> organRoleList = organRoleRes.findByOrgan(organData);
-        organRoleRes.delete(organRoleList);
+        organRoleRes.deleteAll(organRoleList);
         if (!StringUtils.isBlank(menus)) {
             String[] menusarray = menus.split(",");
             for (String menu : menusarray) {

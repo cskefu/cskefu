@@ -50,9 +50,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -100,7 +100,7 @@ public class EntIMController extends Handler {
         Map<String, Organ> organs = new HashMap<>();
         user.getOrgans().values().stream().forEach(o -> {
             if (!StringUtils.equals(o.getParent(), "0")) {
-                Organ parent = organRes.findById(o.getParent());
+                Organ parent = organRes.getReferenceById(o.getParent());
                 organs.put(parent.getId(), parent);
             }
 
@@ -114,7 +114,7 @@ public class EntIMController extends Handler {
 
         user.getAffiliates().stream().forEach(p -> {
             if (!organs.containsKey(p)) {
-                Organ organ = organRes.findById(p);
+                Organ organ = organRes.getReferenceById(p);
                 organs.put(p, organ);
             }
         });
@@ -177,7 +177,7 @@ public class EntIMController extends Handler {
     @Menu(type = "im", subtype = "entim")
     public ModelAndView chat(HttpServletRequest request, HttpServletResponse response, @Valid String userid) {
         ModelAndView view = request(super.createView("/apps/entim/chat"));
-        User entImUser = userRes.findById(userid);
+        User entImUser = userRes.getReferenceById(userid);
 
         if (entImUser != null) {
             userProxy.attachOrgansPropertiesForUser(entImUser);
@@ -190,7 +190,7 @@ public class EntIMController extends Handler {
 
         Page<ChatMessage> chatMessageList = chatMessageRes.findByContextidAndUserid(userid,
                 super.getUser(request).getId(),
-                new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
+                PageRequest.of(0, 20, Sort.Direction.DESC, "createtime")
         );
 
         view.addObject("chatMessageList", chatMessageList);
@@ -233,7 +233,7 @@ public class EntIMController extends Handler {
 
         Page<ChatMessage> chatMessageList = chatMessageRes.findByContextidAndUseridAndCreatetimeLessThan(userid,
                 super.getUser(request).getId(), createtime,
-                new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
+                PageRequest.of(0, 20, Sort.Direction.DESC, "createtime")
         );
         view.addObject("chatMessageList", chatMessageList);
 
@@ -244,12 +244,12 @@ public class EntIMController extends Handler {
     @Menu(type = "im", subtype = "entim")
     public ModelAndView groupMore(HttpServletRequest request, HttpServletResponse response, @Valid String id) {
         ModelAndView view = request(super.createView("/apps/entim/group/index"));
-        IMGroup imGroup = imGroupRes.findById(id);
+        IMGroup imGroup = imGroupRes.getReferenceById(id);
         view.addObject("imGroup", imGroup);
         view.addObject("imGroupUserList", imGroupUserRes.findByImgroup(imGroup));
         view.addObject("contextid", id);
         view.addObject("chatMessageList", chatMessageRes.findByContextid(id,
-                new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
+                PageRequest.of(0, 20, Sort.Direction.DESC, "createtime")
         ));
         return view;
     }
@@ -262,7 +262,7 @@ public class EntIMController extends Handler {
     ) {
         ModelAndView view = request(super.createView("/apps/entim/group/more"));
         view.addObject("chatMessageList", chatMessageRes.findByContextidAndCreatetimeLessThan(id,
-                createtime, new PageRequest(0, 20, Sort.Direction.DESC, "createtime")
+                createtime, PageRequest.of(0, 20, Sort.Direction.DESC, "createtime")
         ));
         return view;
     }
@@ -278,8 +278,8 @@ public class EntIMController extends Handler {
         users.stream().forEach(u -> userProxy.attachOrgansPropertiesForUser(u));
         view.addObject("userList", users);
 
-        IMGroup imGroup = imGroupRes.findById(id);
-        List<Organ> organs = organRes.findAll(affiliates);
+        IMGroup imGroup = imGroupRes.getReferenceById(id);
+        List<Organ> organs = organRes.findAllById(affiliates);
 
         view.addObject("imGroup", imGroup);
         view.addObject("organList", organs);
@@ -331,7 +331,7 @@ public class EntIMController extends Handler {
             @Valid String tipmsg
     ) {
         ModelAndView view = request(super.createView("/apps/entim/group/tipmsg"));
-        IMGroup imGroup = imGroupRes.findById(id);
+        IMGroup imGroup = imGroupRes.getReferenceById(id);
         if (imGroup != null) {
             imGroup.setTipmessage(tipmsg);
             imGroupRes.save(imGroup);

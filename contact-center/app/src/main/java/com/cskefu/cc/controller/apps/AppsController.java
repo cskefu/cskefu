@@ -38,8 +38,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -96,7 +96,7 @@ public class AppsController extends Handler {
         final Page<PassportWebIMUser> onlineUserList = onlineUserRes.findByStatusAndAppidIn(
                 MainContext.OnlineUserStatusEnum.ONLINE.toString(),
                 appids,
-                new PageRequest(
+                PageRequest.of(
                         super.getP(request),
                         super.getPs(request),
                         Sort.Direction.DESC,
@@ -122,7 +122,7 @@ public class AppsController extends Handler {
          * 获得在线访客与联系人的关联信息
          */
         if (contactIds.size() > 0) {
-            final Iterable<Contacts> contacts = contactsRes.findAll(contactIds);
+            final Iterable<Contacts> contacts = contactsRes.findAllById(contactIds);
             for (final PassportWebIMUser passportWebIMUser : onlineUserList.getContent()) {
                 if (StringUtils.isNotBlank(passportWebIMUser.getContactsid())) {
                     for (final Contacts contact : contacts) {
@@ -206,7 +206,7 @@ public class AppsController extends Handler {
     @Menu(type = "apps", subtype = "onlineuser")
     public ModelAndView onlineuser(ModelMap map, HttpServletRequest request) {
         Page<PassportWebIMUser> onlineUserList = this.onlineUserRes.findByStatus(MainContext.OnlineUserStatusEnum.ONLINE.toString(),
-                new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
+                PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
         List<String> ids = new ArrayList<>();
         for (PassportWebIMUser passportWebIMUser : onlineUserList.getContent()) {
             passportWebIMUser.setBetweentime((int) (System.currentTimeMillis() - passportWebIMUser.getLogintime().getTime()));
@@ -215,7 +215,7 @@ public class AppsController extends Handler {
             }
         }
         if (ids.size() > 0) {
-            Iterable<Contacts> contactsList = contactsRes.findAll(ids);
+            Iterable<Contacts> contactsList = contactsRes.findAllById(ids);
             for (PassportWebIMUser passportWebIMUser : onlineUserList.getContent()) {
                 if (StringUtils.isNotBlank(passportWebIMUser.getContactsid())) {
                     for (Contacts contacts : contactsList) {
@@ -243,7 +243,7 @@ public class AppsController extends Handler {
     @RequestMapping({"/apps/profile/save"})
     @Menu(type = "apps", subtype = "content")
     public ModelAndView profile(ModelMap map, HttpServletRequest request, @Valid User user, @Valid String index) {
-        User tempUser = userRes.getOne(user.getId());
+        User tempUser = userRes.getReferenceById(user.getId());
         final User logined = super.getUser(request);
         // 用户名不可修改
         user.setUsername(logined.getUsername());

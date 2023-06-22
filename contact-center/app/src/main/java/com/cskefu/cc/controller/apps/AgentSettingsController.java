@@ -40,8 +40,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -150,7 +150,7 @@ public class AgentSettingsController extends Handler {
         Organ currentOrgan = super.getOrgan(request);
         Map<String, Organ> organs = organProxy.findAllOrganByParent(currentOrgan);
 
-        Page<BlackEntity> blackList = blackListRes.findBySkillIn(organs.keySet(), new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "endtime"));
+        Page<BlackEntity> blackList = blackListRes.findBySkillIn(organs.keySet(), PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "endtime"));
 
 
         map.put("blackList", blackList);
@@ -162,7 +162,7 @@ public class AgentSettingsController extends Handler {
     @Menu(type = "setting", subtype = "tag")
     public ModelAndView blacklistdelete(ModelMap map, HttpServletRequest request, @Valid String id) {
         if (!StringUtils.isBlank(id)) {
-            BlackEntity tempBlackEntity = blackListRes.findById(id);
+            BlackEntity tempBlackEntity = blackListRes.getReferenceById(id);
             if (tempBlackEntity != null) {
                 blackListRes.delete(tempBlackEntity);
                 cache.deleteSystembyId(tempBlackEntity.getUserid());
@@ -192,7 +192,7 @@ public class AgentSettingsController extends Handler {
             map.put("tagType", tagType);
         }
         if (tagType != null && currentOrgan != null) {
-            map.put("tagList", tagRes.findByTagtypeAndSkill(tagType.getCode(), currentOrgan.getId(), new PageRequest(super.getP(request), super.getPs(request))));
+            map.put("tagList", tagRes.findByTagtypeAndSkill(tagType.getCode(), currentOrgan.getId(), PageRequest.of(super.getP(request), super.getPs(request))));
         }
         map.put("tagTypeList", tagList);
         return request(super.createView("/apps/setting/agent/tag"));
@@ -208,7 +208,7 @@ public class AgentSettingsController extends Handler {
     @RequestMapping("/tag/edit")
     @Menu(type = "setting", subtype = "tag")
     public ModelAndView tagedit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String tagtype) {
-        map.put("tag", tagRes.findOne(id));
+        map.put("tag", tagRes.getReferenceById(id));
         map.addAttribute("tagtype", tagtype);
         return request(super.createView("/apps/setting/agent/tagedit"));
     }
@@ -247,7 +247,7 @@ public class AgentSettingsController extends Handler {
     @RequestMapping("/tag/delete")
     @Menu(type = "setting", subtype = "tag")
     public ModelAndView tagdelete(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String tagtype) {
-        tagRes.delete(id);
+        tagRes.deleteById(id);
         return request(super.createView("redirect:/setting/tag.html?code=" + tagtype));
     }
 
@@ -324,7 +324,7 @@ public class AgentSettingsController extends Handler {
     @Menu(type = "setting", subtype = "adv")
     public ModelAndView advedit(ModelMap map, HttpServletRequest request, @Valid String adpos, @Valid String id) {
         map.addAttribute("adpos", adpos);
-        map.put("ad", adTypeRes.findById(id));
+        map.put("ad", adTypeRes.getReferenceById(id));
         return request(super.createView("/apps/setting/agent/adedit"));
     }
 
@@ -358,9 +358,9 @@ public class AgentSettingsController extends Handler {
     @RequestMapping("/adv/delete")
     @Menu(type = "setting", subtype = "adv")
     public ModelAndView advdelete(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String adpos) {
-        AdType adType = adTypeRes.findById(id);
+        AdType adType = adTypeRes.getReferenceById(id);
         if (adType != null) {
-            adTypeRes.delete(id);
+            adTypeRes.deleteById(id);
             MainUtils.initAdv(adType.getSkill());
         }
         return request(super.createView("redirect:/setting/adv.html?adpos=" + adpos));

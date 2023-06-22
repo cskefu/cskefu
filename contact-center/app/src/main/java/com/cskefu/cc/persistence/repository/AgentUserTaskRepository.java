@@ -23,9 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface AgentUserTaskRepository  extends JpaRepository<AgentUserTask, String>{
-	
-	List<AgentUserTask> findById(String id);
-	
+
 	List<AgentUserTask> findByLastmessageLessThanAndStatus(Date start, String status) ;
 	
 	List<AgentUserTask> findByLastgetmessageLessThanAndStatus(Date start, String status) ;

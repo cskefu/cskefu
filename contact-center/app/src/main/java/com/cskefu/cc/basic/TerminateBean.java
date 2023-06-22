@@ -10,7 +10,7 @@
  */
 package com.cskefu.cc.basic;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 
 public class TerminateBean {
     @PreDestroy

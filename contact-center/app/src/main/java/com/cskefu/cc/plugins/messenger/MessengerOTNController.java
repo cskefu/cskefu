@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
@@ -73,7 +73,7 @@ public class MessengerOTNController extends Handler {
             pageIds = Arrays.asList(queryPageId);
         }
 
-        Page<FbOTN> otns = otnRepository.findByPageIdIn(pageIds, new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
+        Page<FbOTN> otns = otnRepository.findByPageIdIn(pageIds, PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
         map.addAttribute("otns", otns);
         return request(super.createView("/admin/channel/messenger/otn/index"));
     }
@@ -110,7 +110,7 @@ public class MessengerOTNController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "messenger")
     public ModelAndView edit(ModelMap map, @Valid String id, HttpServletRequest request) {
-        map.addAttribute("otn", otnRepository.getOne(id));
+        map.addAttribute("otn", otnRepository.getReferenceById(id));
         return request(super.createView("/admin/channel/messenger/otn/edit"));
     }
 
@@ -118,7 +118,7 @@ public class MessengerOTNController extends Handler {
     @Menu(type = "admin", subtype = "messenger")
     public ModelAndView update(ModelMap map, @Valid FbOTN otn, HttpServletRequest request) {
         String msg = "update_ok";
-        FbOTN oldOtn = otnRepository.findOne(otn.getId());
+        FbOTN oldOtn = otnRepository.getReferenceById(otn.getId());
         if (oldOtn != null) {
             Date oldSendtime = oldOtn.getSendtime();
 
@@ -152,7 +152,7 @@ public class MessengerOTNController extends Handler {
     public ModelAndView send(ModelMap map, @Valid String id, HttpServletRequest request) {
         String msg = "send_ok";
 
-        FbOTN otn = otnRepository.getOne(id);
+        FbOTN otn = otnRepository.getReferenceById(id);
         FbMessenger fbMessenger = fbMessengerRepository.findOneByPageId(otn.getPageId());
         if (fbMessenger != null && otn != null && otn.getStatus().equals("create")) {
             otn.setStatus("sending");
@@ -196,7 +196,7 @@ public class MessengerOTNController extends Handler {
     @Menu(type = "admin", subtype = "messenger")
     public ModelAndView delete(ModelMap map, HttpServletRequest request, @Valid String id) {
         String msg = "delete_ok";
-        otnRepository.delete(id);
+        otnRepository.deleteById(id);
 
         return request(super.createView("redirect:/apps/messenger/otn/index.html?msg=" + msg));
     }

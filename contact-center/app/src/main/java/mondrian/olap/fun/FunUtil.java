@@ -21,7 +21,8 @@ import mondrian.util.*;
 
 import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.collections.comparators.ComparatorChain;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -34,7 +35,7 @@ import java.util.*;
  */
 public class FunUtil extends Util {
     private static final Logger LOGGER =
-        Logger.getLogger(FunUtil.class);
+        LoggerFactory.getLogger(FunUtil.class);
     private static final String SORT_TIMING_NAME = "Sort";
     private static final String SORT_EVAL_TIMING_NAME = "EvalForSort";
 
@@ -2683,7 +2684,7 @@ public class FunUtil extends Util {
         public final int TOO_SMALL = 8;
 
         private static final Logger LOGGER =
-            Logger.getLogger(Quicksorter.class);
+            LoggerFactory.getLogger(Quicksorter.class);
         private final T[] vec;
         private final Comparator<T> comp;
         private final boolean traced;
@@ -2905,7 +2906,7 @@ public class FunUtil extends Util {
     private static abstract class MemberComparator implements Comparator<Member>
     {
         private static final Logger LOGGER =
-            Logger.getLogger(MemberComparator.class);
+            LoggerFactory.getLogger(MemberComparator.class);
         final Evaluator evaluator;
         final Calc exp;
 

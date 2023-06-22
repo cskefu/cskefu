@@ -49,9 +49,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -113,7 +113,7 @@ public class AccountController extends Handler {
 
         map.addAttribute("entCustomerList", accountRes.findByOrganInAndSharesAllAndDatastatusFalse(
                 super.getMyCurrentAffiliatesFlat(logined),
-                new PageRequest(super.getP(request), super.getPs(request))));
+                PageRequest.of(super.getP(request), super.getPs(request))));
 
         return request(super.createView("/apps/customer/index"));
     }
@@ -138,7 +138,7 @@ public class AccountController extends Handler {
         map.addAttribute("entCustomerList", accountRes.findByCreaterAndSharesAndDatastatus(super.getUser(request).getId(),
                 super.getUser(request).getId(),
                 false,
-                new PageRequest(super.getP(request), super.getPs(request))));
+                PageRequest.of(super.getP(request), super.getPs(request))));
 
         return request(super.createView("/apps/customer/index"));
     }
@@ -164,7 +164,7 @@ public class AccountController extends Handler {
 
         map.addAttribute("entCustomerList", accountRes.findByCreaterAndSharesAndDatastatus(super.getUser(request).getId(), super.getUser(request).getId(),
                 false,
-                new PageRequest(super.getP(request), super.getPs(request))));
+                PageRequest.of(super.getP(request), super.getPs(request))));
 
         return request(super.createView("/apps/customer/index"));
     }
@@ -190,7 +190,7 @@ public class AccountController extends Handler {
         map.addAttribute("entCustomerList", accountRes.findByCreaterAndSharesAndDatastatus(super.getUser(request).getId(),
                 super.getUser(request).getId(),
                 false,
-                new PageRequest(super.getP(request), super.getPs(request))));
+                PageRequest.of(super.getP(request), super.getPs(request))));
         return request(super.createView("/apps/customer/index"));
     }
 
@@ -215,7 +215,7 @@ public class AccountController extends Handler {
         map.addAttribute("entCustomerList", accountRes.findByCreaterAndSharesAndDatastatus(super.getUser(request).getId(),
                 super.getUser(request).getId(),
                 false,
-                new PageRequest(super.getP(request), super.getPs(request))));
+                PageRequest.of(super.getP(request), super.getPs(request))));
         return request(super.createView("/apps/customer/index"));
     }
 
@@ -238,7 +238,7 @@ public class AccountController extends Handler {
             map.put("q", q);
         }
 
-        map.addAttribute("entCustomerList", accountRes.findByCreaterAndSharesAndDatastatus(super.getUser(request).getId(), super.getUser(request).getId(), false, new PageRequest(super.getP(request), super.getPs(request))));
+        map.addAttribute("entCustomerList", accountRes.findByCreaterAndSharesAndDatastatus(super.getUser(request).getId(), super.getUser(request).getId(), false, PageRequest.of(super.getP(request), super.getPs(request))));
         return request(super.createView("/apps/customer/index"));
     }
 
@@ -285,7 +285,7 @@ public class AccountController extends Handler {
     @Menu(type = "customer", subtype = "customer")
     public ModelAndView delete(HttpServletRequest request, @Valid Account account, @Valid String p, @Valid String ekind) {
         if (account != null) {
-            account = accountRes.findOne(account.getId());
+            account = accountRes.getReferenceById(account.getId());
             account.setDatastatus(true);                            //客户和联系人都是 逻辑删除
             accountRes.save(account);
         }
@@ -295,7 +295,7 @@ public class AccountController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "customer", subtype = "customer")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String ekind) {
-        map.addAttribute("entCustomer", accountRes.findOne(id));
+        map.addAttribute("entCustomer", accountRes.getReferenceById(id));
         map.addAttribute("ekindId", ekind);
         return request(super.createView("/apps/customer/edit"));
     }
@@ -304,7 +304,7 @@ public class AccountController extends Handler {
     @Menu(type = "customer", subtype = "customer")
     public ModelAndView update(HttpServletRequest request, @Valid CustomerGroupForm customerGroupForm, @Valid String ekindId) {
         final User logined = super.getUser(request);
-        Account customer = accountRes.findOne(customerGroupForm.getEntcustomer().getId());
+        Account customer = accountRes.getReferenceById(customerGroupForm.getEntcustomer().getId());
         String msg = "";
 
         List<PropertiesEvent> events = PropertiesEventUtil.processPropertiesModify(request, customerGroupForm.getEntcustomer(), customer, "id", "creater", "createtime", "updatetime");    //记录 数据变更 历史
@@ -372,7 +372,7 @@ public class AccountController extends Handler {
     @Menu(type = "customer", subtype = "customer")
     public void expids(ModelMap map, HttpServletRequest request, HttpServletResponse response, @Valid String[] ids) throws IOException {
         if (ids != null && ids.length > 0) {
-            Iterable<Account> entCustomerList = accountRes.findAll(Arrays.asList(ids));
+            Iterable<Account> entCustomerList = accountRes.findAllById(Arrays.asList(ids));
             MetadataTable table = metadataRes.findByTablename("uk_entcustomer");
             List<Map<String, Object>> values = new ArrayList<>();
             for (Account customer : entCustomerList) {
@@ -403,7 +403,7 @@ public class AccountController extends Handler {
             map.put("ekind", ekind);
         }
 
-        Iterable<Account> entCustomerList = accountRes.findByCreaterAndSharesAndDatastatus(super.getUser(request).getId(), super.getUser(request).getId(), false, new PageRequest(super.getP(request), super.getPs(request)));
+        Iterable<Account> entCustomerList = accountRes.findByCreaterAndSharesAndDatastatus(super.getUser(request).getId(), super.getUser(request).getId(), false, PageRequest.of(super.getP(request), super.getPs(request)));
 
         MetadataTable table = metadataRes.findByTablename("uk_entcustomer");
         List<Map<String, Object>> values = new ArrayList<>();
@@ -441,7 +441,7 @@ public class AccountController extends Handler {
                 super.getUser(request).getId(),
 
                 false,
-                new PageRequest(super.getP(request), super.getPs(request)));
+                PageRequest.of(super.getP(request), super.getPs(request)));
         MetadataTable table = metadataRes.findByTablename("uk_entcustomer");
         List<Map<String, Object>> values = new ArrayList<>();
         for (Account customer : entCustomerList) {

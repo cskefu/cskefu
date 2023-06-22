@@ -35,8 +35,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -131,7 +131,7 @@ public class ChatbotController extends Handler {
 
         ModelAndView view = request(super.createView("/admin/system/chatbot/edit"));
         if (id != null) {
-            Chatbot c = chatbotRes.findOne(id);
+            Chatbot c = chatbotRes.getReferenceById(id);
             Optional<Channel> snsAccountOpt = snsAccountRes.findBySnsid(c.getSnsAccountIdentifier());
             view.addObject("snsurl", snsAccountOpt.get().getType() == "webim" ? snsAccountOpt.get().getBaseURL() : snsAccountOpt.get().getName());
             view.addObject("bot", c);

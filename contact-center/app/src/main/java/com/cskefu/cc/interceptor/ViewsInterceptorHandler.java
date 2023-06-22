@@ -20,12 +20,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-public class ViewsInterceptorHandler extends HandlerInterceptorAdapter {
+public class ViewsInterceptorHandler implements HandlerInterceptor {
     private final static Logger logger = LoggerFactory.getLogger(ViewsInterceptorHandler.class);
 
     @Override

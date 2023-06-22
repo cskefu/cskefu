@@ -24,12 +24,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PassportWebIMUserHistRepository extends JpaRepository<PassportWebIMUserHist, String> {
-    PassportWebIMUserHist findById(String paramString);
 
     List<PassportWebIMUserHist> findByUserid(String userid);
 
     List<PassportWebIMUserHist> findBySessionid(String sessionId);
 
-    @Query(value = "SELECT * FROM cs_passport_webim_user_his WHERE sessionid = ?1 ORDER BY createtime DESC LIMIT 1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM cs_passport_webim_user_his WHERE sessionid = ?1 ORDER BY createtime DESC LIMIT 1")
     Optional<PassportWebIMUserHist> findOneBySessionid(String sessionId);
 }

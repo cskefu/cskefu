@@ -25,11 +25,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface AgentStatusRepository extends
-        JpaRepository<AgentStatus, String> {
-    AgentStatus findById(String paramString);
+public interface AgentStatusRepository extends JpaRepository<AgentStatus, String> {
 
-    @Query(value = "SELECT * FROM uk_agentstatus WHERE agentno = ?1 ORDER BY createtime DESC LIMIT 1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM uk_agentstatus WHERE agentno = ?1 ORDER BY createtime DESC LIMIT 1")
     Optional<AgentStatus> findOneByAgentno(final String agentid);
 
     AgentStatus findByAgentno(String agentid);

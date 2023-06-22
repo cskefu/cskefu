@@ -20,7 +20,8 @@ import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.model.JobDetail;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author jaddy0302 Rivulet Resource.java 2010-3-6
@@ -28,7 +29,7 @@ import java.util.logging.Logger;
  */
 public abstract class Resource {
 	
-	public static Logger log = Logger.getLogger(Resource.class.getName()) ;
+	public static Logger log = LoggerFactory.getLogger(Resource.class.getName()) ;
 
 	public abstract void begin()  throws Exception;
 	

@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -69,6 +70,7 @@ public class WebIMTask {
     private TaskExecutor webimTaskExecutor;
 
     @Autowired
+    @Lazy
     private PeerSyncIM peerSyncIM;
 
     @Autowired
@@ -210,7 +212,7 @@ public class WebIMTask {
     public void onlineuser() {
         final Page<PassportWebIMUser> pages = onlineUserRes.findByStatusAndCreatetimeLessThan(
                 MainContext.OnlineUserStatusEnum.ONLINE.toString(),
-                MainUtils.getLastTime(60), new PageRequest(0, 1000));
+                MainUtils.getLastTime(60), PageRequest.of(0, 1000));
         if (pages.getContent().size() > 0) {
             for (final PassportWebIMUser passportWebIMUser : pages.getContent()) {
                 try {
@@ -319,10 +321,10 @@ public class WebIMTask {
     public void jobDetail() {
         List<JobDetail> allJob = new ArrayList<>();
         Page<JobDetail> readyTaskList = jobDetailRes.findByTaskstatus(
-                MainContext.TaskStatusType.READ.getType(), new PageRequest(0, 100));
+                MainContext.TaskStatusType.READ.getType(), PageRequest.of(0, 100));
         allJob.addAll(readyTaskList.getContent());
         Page<JobDetail> planTaskList = jobDetailRes.findByPlantaskAndTaskstatusAndNextfiretimeLessThan(
-                true, MainContext.TaskStatusType.NORMAL.getType(), new Date(), new PageRequest(0, 100));
+                true, MainContext.TaskStatusType.NORMAL.getType(), new Date(), PageRequest.of(0, 100));
         allJob.addAll(planTaskList.getContent());
         if (allJob.size() > 0) {
             for (JobDetail jobDetail : allJob) {

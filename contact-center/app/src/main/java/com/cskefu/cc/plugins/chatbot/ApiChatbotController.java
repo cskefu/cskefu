@@ -44,7 +44,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.List;
@@ -187,7 +187,7 @@ public class ApiChatbotController extends Handler {
         }
 
         final String id = j.get("id").getAsString();
-        Chatbot c = chatbotRes.findOne(id);
+        Chatbot c = chatbotRes.getReferenceById(id);
 
         if (c == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
@@ -246,7 +246,7 @@ public class ApiChatbotController extends Handler {
         }
 
         final String id = j.get("id").getAsString();
-        Chatbot c = chatbotRes.findOne(id);
+        Chatbot c = chatbotRes.getReferenceById(id);
 
         if (c == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
@@ -290,7 +290,7 @@ public class ApiChatbotController extends Handler {
         }
         final String id = j.get("id").getAsString();
 
-        Chatbot c = chatbotRes.findOne(id);
+        Chatbot c = chatbotRes.getReferenceById(id);
 
         if (c == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
@@ -403,7 +403,7 @@ public class ApiChatbotController extends Handler {
             return resp;
         }
 
-        Page<Chatbot> records = chatbotRes.findWithPagination(new PageRequest(p, ps, Sort.Direction.DESC, "createtime"));
+        Page<Chatbot> records = chatbotRes.findWithPagination(PageRequest.of(p, ps, Sort.Direction.DESC, "createtime"));
 
         JsonArray ja = new JsonArray();
         for (Chatbot c : records) {
@@ -429,7 +429,7 @@ public class ApiChatbotController extends Handler {
             o.addProperty("snsurl", snsAccountOpt.get().getBaseURL());
 
             // 创建人
-            User user = userRes.findById(c.getCreater());
+            User user = userRes.getReferenceById(c.getCreater());
             if (user != null) {
                 o.addProperty("creater", c.getCreater());
                 o.addProperty("creatername", user.getUname());
@@ -464,7 +464,7 @@ public class ApiChatbotController extends Handler {
         }
         final String id = j.get("id").getAsString();
 
-        Chatbot c = chatbotRes.findOne(id);
+        Chatbot c = chatbotRes.getReferenceById(id);
         if (c == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，不存在该聊天机器人。");

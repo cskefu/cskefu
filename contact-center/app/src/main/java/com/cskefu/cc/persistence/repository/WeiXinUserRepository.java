@@ -23,8 +23,6 @@ import java.util.List;
 
 public interface WeiXinUserRepository extends JpaRepository<PassportWechatUser, String> {
 
-    PassportWechatUser findById(String id);
-
     List<PassportWechatUser> findByOpenid(String openid);
 
 }

@@ -25,13 +25,12 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface PbxHostRepository extends JpaRepository<PbxHost, String> {
-    Optional<PbxHost> findById(final String id);
 
     List<PbxHost> findAll();
 
     List<PbxHost> findByHostnameOrIpaddr(String hostname, String ip);
 
-    @Query(value = "SELECT * FROM uk_callcenter_pbxhost WHERE ipaddr = ?1 LIMIT 1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM uk_callcenter_pbxhost WHERE ipaddr = ?1 LIMIT 1")
     Optional<PbxHost> findByIpaddr(String ipaddr);
 
     List<PbxHost> findByOrganIn(Set<String> organs);

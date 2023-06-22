@@ -22,8 +22,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface TablePropertiesRepository extends JpaRepository<TableProperties, String>{
-	
-	TableProperties findById(String id);
 
 	List<TableProperties> findByDbtableid(String dbtableid) ;
 	

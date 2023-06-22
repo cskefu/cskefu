@@ -8,6 +8,7 @@
 */
 package mondrian.rolap;
 
+import com.cskefu.cc.acd.middleware.visitor.ACDVisBindingMw;
 import mondrian.olap.*;
 import mondrian.olap.Util.Functor1;
 import mondrian.server.Execution;
@@ -15,6 +16,8 @@ import mondrian.server.Locus;
 import mondrian.server.monitor.*;
 import mondrian.server.monitor.SqlStatementEvent.Purpose;
 import mondrian.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
@@ -57,6 +60,10 @@ import javax.sql.DataSource;
  * @since 2.3
  */
 public class SqlStatement {
+
+    private final static Logger SQL_LOGGER = LoggerFactory.getLogger("mondrian.sql");
+    private final static Logger LOGGER = LoggerFactory.getLogger(SqlStatement.class);
+
     private static final String TIMING_NAME = "SqlStatement-";
 
     // used for SQL logging, allows for a SQL Statement UID
@@ -139,7 +146,8 @@ public class SqlStatement {
             querySemaphore.acquire();
             haveSemaphore = true;
             // Trace start of execution.
-            if (RolapUtil.SQL_LOGGER.isDebugEnabled()) {
+            // TODO lecjy
+            if (SQL_LOGGER.isDebugEnabled()) {
                 StringBuilder sqllog = new StringBuilder();
                 sqllog.append(id)
                     .append(": ")
@@ -152,7 +160,7 @@ public class SqlStatement {
                 }
                 sqllog.append(sql);
                 sqllog.append(']');
-                RolapUtil.SQL_LOGGER.debug(sqllog.toString());
+                SQL_LOGGER.debug(sqllog.toString());
             }
 
             // Execute hook.
@@ -251,10 +259,11 @@ public class SqlStatement {
             // Now handle this exception.
             throw handle(e);
         } finally {
-            RolapUtil.SQL_LOGGER.debug(id + ": " + status);
+            // TODO lecjy
+            SQL_LOGGER.debug(id + ": " + status);
 
-            if (RolapUtil.LOGGER.isDebugEnabled()) {
-                RolapUtil.LOGGER.debug(
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(
                     locus.component + ": executing sql [" + sql + "]" + status);
             }
         }
@@ -304,17 +313,17 @@ public class SqlStatement {
 
         locus.execution.getQueryTiming().markFull(
             TIMING_NAME + locus.component, totalMs);
-
-        RolapUtil.SQL_LOGGER.debug(id + ": " + status);
+        // TODO lecjy
+        SQL_LOGGER.debug(id + ": " + status);
 
         Counters.SQL_STATEMENT_CLOSE_COUNT.incrementAndGet();
         boolean remove = Counters.SQL_STATEMENT_EXECUTING_IDS.remove(id);
         status += ", ex=" + Counters.SQL_STATEMENT_EXECUTE_COUNT.get()
             + ", close=" + Counters.SQL_STATEMENT_CLOSE_COUNT.get()
             + ", open=" + Counters.SQL_STATEMENT_EXECUTING_IDS;
-
-        if (RolapUtil.LOGGER.isDebugEnabled()) {
-            RolapUtil.LOGGER.debug(
+        // TODO lecjy
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
                 locus.component + ": done executing sql [" + sql + "]"
                 + status);
         }

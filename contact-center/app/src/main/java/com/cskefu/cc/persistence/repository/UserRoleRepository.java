@@ -44,7 +44,7 @@ public interface UserRoleRepository extends JpaRepository<UserRole, String> {
 
     List<UserRole> findByOrganAndUser(String organ, User user);
 
-    @Query(value = "SELECT u.user_id FROM uk_userrole u WHERE u.role_id = ?1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT u.user_id FROM uk_userrole u WHERE u.role_id = ?1")
     List<String> findByRoleId(final String roleid);
 
 }

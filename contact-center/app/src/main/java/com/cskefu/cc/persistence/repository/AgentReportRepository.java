@@ -21,9 +21,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface AgentReportRepository  extends JpaRepository<AgentReport, String>
-{
-  AgentReport findById(String id);
-  
+public interface AgentReportRepository  extends JpaRepository<AgentReport, String> {
   List<AgentReport> findAll();
 }

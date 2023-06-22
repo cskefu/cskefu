@@ -39,7 +39,7 @@ public interface ContactsRepository extends JpaRepository<Contacts, String> {
 
     Contacts findByIdAndDatastatus(String id, Boolean datastatus);
 
-    @Query(value = "SELECT * FROM uk_contacts WHERE id = ?1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM uk_contacts WHERE id = ?1")
     Optional<Contacts> findOneById(final String id);
 
     Page<Contacts> findByCreaterAndSharesAndDatastatus(String id, String shares, boolean datastatus, Pageable pageRequest);
@@ -52,7 +52,7 @@ public interface ContactsRepository extends JpaRepository<Contacts, String> {
      * @param pageRequest
      * @return
      */
-    @Query(value = "select c from Contacts c where c.organ IN :organs AND c.shares = 'all' AND c.datastatus = false")
+    @Query("select c from Contacts c where c.organ IN :organs AND c.shares = 'all' AND c.datastatus = false")
     Page<Contacts> findByOrganInAndSharesAllAndDatastatusFalse(@Param("organs") Collection<String> organs, Pageable pageRequest);
 
     Page<Contacts> findByDatastatus(boolean b, Pageable pageRequest);

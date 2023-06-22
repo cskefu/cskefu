@@ -123,7 +123,7 @@ public class MessengerChatbot {
         agentUserRes.findOneByUseridAndStatusNotAndChanneltype(fromId, MainContext.AgentUserStatusEnum.END.toString(), MainContext.ChannelType.MESSENGER.toString()).ifPresent(agentUser -> {
             if (agentUser.isChatbotops()) {
                 Date now = new Date();
-                AgentService agentService = agentServiceRes.findOne(agentUser.getAgentserviceid());
+                AgentService agentService = agentServiceRes.getReferenceById(agentUser.getAgentserviceid());
                 agentService.setStatus(MainContext.AgentUserStatusEnum.END.toString());
                 agentService.setEndtime(now);
                 agentServiceRes.save(agentService);

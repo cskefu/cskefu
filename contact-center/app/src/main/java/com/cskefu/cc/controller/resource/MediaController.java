@@ -41,9 +41,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.util.regex.Pattern;
 import java.io.File;
 import java.io.IOException;
@@ -77,7 +77,7 @@ public class MediaController extends Handler {
                       @Valid String id,
                       @RequestParam(value = "original", required = false) boolean original,
                       @RequestParam(value = "cooperation", required = false) boolean cooperation) throws IOException, SQLException {
-        StreamingFile sf = streamingFileRes.findOne(id);
+        StreamingFile sf = streamingFileRes.getReferenceById(id);
         if (sf != null) {
             response.setHeader("Content-Type", sf.getMime());
             response.setContentType(sf.getMime());
@@ -149,9 +149,9 @@ public class MediaController extends Handler {
     @Menu(type = "resouce", subtype = "file")
     public void file(HttpServletResponse response, HttpServletRequest request, @Valid String id) throws IOException, SQLException {
         if (StringUtils.isNotBlank(id)) {
-            AttachmentFile attachmentFile = attachementRes.findById(id);
+            AttachmentFile attachmentFile = attachementRes.getReferenceById(id);
             if (attachmentFile != null && attachmentFile.getFileid() != null) {
-                StreamingFile sf = streamingFileRes.findOne(attachmentFile.getFileid());
+                StreamingFile sf = streamingFileRes.getReferenceById(attachmentFile.getFileid());
                 if (sf != null) {
                     response.setContentType(attachmentFile.getFiletype());
                     response.setHeader("Content-Disposition", "attachment;filename=" + java.net.URLEncoder.encode(attachmentFile.getTitle(), "UTF-8"));

@@ -22,7 +22,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface SystemConfigRepository extends JpaRepository<SystemConfig, String> {
 
-    @Query(value = "SELECT * FROM uk_systemconfig LIMIT 1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM uk_systemconfig LIMIT 1")
     SystemConfig findOne();
 }
 

@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,6 +49,7 @@ public class AgentProxy {
     private StreamingFileRepository streamingFileRepository;
 
     @Autowired
+    @Lazy
     private PeerSyncIM peerSyncIM;
 
     @Autowired
@@ -124,7 +126,7 @@ public class AgentProxy {
         outMessage.setChannelMessage(chatMessage);
 
         // 处理超时回复
-        AgentUserTask agentUserTask = agentUserTaskRes.getOne(agentUser.getId());
+        AgentUserTask agentUserTask = agentUserTaskRes.getReferenceById(agentUser.getId());
         agentUserTask.setWarnings("0");
         agentUserTask.setWarningtime(null);
 

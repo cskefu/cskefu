@@ -62,8 +62,8 @@ import org.springframework.beans.FatalBeanException;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -891,7 +891,7 @@ public class MainUtils {
         Template templet = null;
         if ((templet = MainContext.getCache().findOneSystemById(id)) == null) {
             TemplateRepository templateRes = MainContext.getContext().getBean(TemplateRepository.class);
-            templet = templateRes.findById(id);
+            templet = templateRes.getReferenceById(id);
             MainContext.getCache().putSystemById(id, templet);
         }
         return templet;
@@ -1030,7 +1030,7 @@ public class MainUtils {
         SystemConfig config = MainUtils.getSystemConfig();
         if (config != null && config.isEnablemail() && config.getEmailid() != null) {
             SystemMessage systemMessage = MainContext.getContext().getBean(
-                    SystemMessageRepository.class).findById(config.getEmailid());
+                    SystemMessageRepository.class).getReferenceById(config.getEmailid());
             MailSender sender = new MailSender(
                     systemMessage.getSmtpserver(), systemMessage.getMailfrom(), systemMessage.getSmtpuser(),
                     decryption(systemMessage.getSmtppassword()), systemMessage.getSeclev(), systemMessage.getSslport());
@@ -1234,7 +1234,7 @@ public class MainUtils {
         SystemConfig config = MainUtils.getSystemConfig();
         if (config != null) {
             SystemMessage systemMessage = MainContext.getContext().getBean(
-                    SystemMessageRepository.class).findById(id);
+                    SystemMessageRepository.class).getReferenceById(id);
             if (systemMessage == null) {
                 return false;
             }

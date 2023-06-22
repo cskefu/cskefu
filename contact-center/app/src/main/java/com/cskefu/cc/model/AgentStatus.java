@@ -20,7 +20,7 @@ import com.cskefu.cc.acd.ACDServiceRouter;
 import com.cskefu.cc.basic.MainContext;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 import java.util.HashMap;
 

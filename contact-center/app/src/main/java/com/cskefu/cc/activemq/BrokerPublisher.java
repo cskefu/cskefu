@@ -12,15 +12,18 @@
 package com.cskefu.cc.activemq;
 
 import com.alibaba.fastjson.JSONObject;
+import jakarta.annotation.PostConstruct;
 import org.apache.activemq.ScheduledMessage;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.core.MessagePostProcessor;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
 
 @Component
@@ -35,7 +38,6 @@ public class BrokerPublisher {
     public void setup() {
         logger.info("[ActiveMQ Publisher] setup successfully.");
     }
-
 
     /**
      * 时延消息

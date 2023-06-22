@@ -23,7 +23,6 @@ import java.util.List;
 
 public interface TemplateRepository extends JpaRepository<Template, String> {
 	
-	Template findById(String id);
 	List<Template> findByTemplettype(String templettype);
 	List<Template> findAll() ;
 }

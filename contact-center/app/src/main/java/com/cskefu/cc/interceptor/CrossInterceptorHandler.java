@@ -18,12 +18,12 @@ package com.cskefu.cc.interceptor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-public class CrossInterceptorHandler extends HandlerInterceptorAdapter {
+public class CrossInterceptorHandler implements HandlerInterceptor {
     private final static Logger logger = LoggerFactory.getLogger(CrossInterceptorHandler.class);
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)

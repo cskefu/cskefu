@@ -26,8 +26,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface JobDetailRepository extends JpaRepository<JobDetail, String> {
-	
-	JobDetail findById(String id);
 
 	Page<JobDetail> findByTasktype(String tasktype, Pageable page) ;
 	

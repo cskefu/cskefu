@@ -16,12 +16,13 @@
  */
 package com.cskefu.cc.controller.api;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 import com.cskefu.cc.cache.Cache;
 import com.cskefu.cc.basic.Constants;
@@ -54,6 +55,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -100,17 +102,16 @@ public class ApiUserController extends Handler {
     public ResponseEntity<RestResult> list(HttpServletRequest request, @Valid String id, @Valid String username) {
         Page<User> userList = null;
         if (StringUtils.isNotBlank(id)) {
-            userList = userRes.findById(
-                    id, new PageRequest(super.getP(request), super.getPs(request)));
+            userList = userRes.findByIdIn(Collections.singleton(id), PageRequest.of(super.getP(request), super.getPs(request)));
         } else {
             if (StringUtils.isNotBlank(username)) {
                 userList = userRes.findByDatastatusAndUsernameLike(
-                        false, username, new PageRequest(
+                        false, username, PageRequest.of(
                                 super.getP(request),
                                 super.getPs(request)));
             } else {
                 userList = userRes.findByDatastatus(
-                        false, new PageRequest(super.getP(request), super.getPs(request)));
+                        false, PageRequest.of(super.getP(request), super.getPs(request)));
             }
         }
         return new ResponseEntity<>(new RestResult(RestResultType.OK, userList), HttpStatus.OK);
@@ -173,7 +174,7 @@ public class ApiUserController extends Handler {
         String parent = payload.get("parent").getAsString();
         Organ parentOrgan = super.getOrgan(request);
         if (StringUtils.isNotEmpty(parent)) {
-            parentOrgan = organRes.getOne(parent);
+            parentOrgan = organRes.getReferenceById(parent);
         }
 
         String roleId = payload.get("role").getAsString();
@@ -185,7 +186,7 @@ public class ApiUserController extends Handler {
         JsonObject resp = userProxy.createNewUser(user, parentOrgan);
 
         if (StringUtils.isNotEmpty(roleId)) {
-            Role role = roleRes.getOne(roleId);
+            Role role = roleRes.getReferenceById(roleId);
             UserRole userRole = new UserRole();
             userRole.setUser(user);
             userRole.setRole(role);
@@ -215,7 +216,7 @@ public class ApiUserController extends Handler {
             return resp;
         }
 
-        final User previous = userRes.findById(updated.getId());
+        final User previous = userRes.getReferenceById(updated.getId());
         if (previous != null) {
             String msg = userProxy.validUserUpdate(updated, previous);
             if (StringUtils.equals(msg, "edit_user_success")) {
@@ -286,7 +287,7 @@ public class ApiUserController extends Handler {
         if (payload.has("organ")) {
             List<OrganUser> organUsers = organUserRes.findByOrgan(payload.get("organ").getAsString());
             List<String> userids = organUsers.stream().map(OrganUser::getUserid).collect(Collectors.toList());
-            List<User> users = userRes.findAll(userids);
+            List<User> users = userRes.findAllById(userids);
 
             JsonArray data = new JsonArray();
             users.stream().forEach(u -> {
@@ -319,7 +320,7 @@ public class ApiUserController extends Handler {
         if (payload.has("id")) {
             String id = payload.get("id").getAsString();
             if (StringUtils.isNotBlank(id)) {
-                User user = userRes.findById(id);
+                User user = userRes.getReferenceById(id);
                 if (user == null) {
                     // 用户不存在
                     resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
@@ -331,10 +332,10 @@ public class ApiUserController extends Handler {
                 if (!user.isSuperadmin()) {
                     // 删除用户的时候，同时删除用户对应的权限
                     List<UserRole> userRoles = userRoleRes.findByUser(user);
-                    userRoleRes.delete(userRoles);
+                    userRoleRes.deleteAll(userRoles);
                     // 删除用户对应的组织机构关系
                     List<OrganUser> organUsers = organUserRes.findByUserid(id);
-                    organUserRes.delete(organUsers);
+                    organUserRes.deleteAll(organUsers);
                     // 删除用户
                     userRes.delete(user);
                     resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);

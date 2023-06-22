@@ -26,8 +26,6 @@ import java.util.List;
 
 public interface UKefuCallOutRoleRepository extends JpaRepository<UKefuCallOutRole, String> {
 
-    UKefuCallOutRole findById(String id);
-
     Page<UKefuCallOutRole> findAll(Pageable paramPageable);
 
     List<UKefuCallOutRole> findAll();

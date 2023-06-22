@@ -25,11 +25,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.ui.ModelMap;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaBuilder.In;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -53,7 +53,7 @@ public class CallCenterUtils {
             if (StringUtils.isNotBlank(ext.getSiptrunk())) {
                 sipTrunk = MainContext.getCache().findOneSystemById(ext.getSiptrunk());
                 if (sipTrunk == null) {
-                    sipTrunk = sipTrunkRes.findById(ext.getSiptrunk());
+                    sipTrunk = sipTrunkRes.getReferenceById(ext.getSiptrunk());
                     if (sipTrunk != null) {
                         MainContext.getCache().putSystemById(sipTrunk.getId(), sipTrunk);
                     }
@@ -283,7 +283,7 @@ public class CallCenterUtils {
 
         }
         map.addAttribute(
-                "skillGroups", organRes.findAll(CallCenterUtils.getAuthOrgan(userRoleRes, callOutRoleRes, user)));
+                "skillGroups", organRes.findAllById(CallCenterUtils.getAuthOrgan(userRoleRes, callOutRoleRes, user)));
         map.put(
                 "taskList", MainContext.getContext().getBean(UKefuCallOutTaskRepository.class).findByActid(
                         actid));

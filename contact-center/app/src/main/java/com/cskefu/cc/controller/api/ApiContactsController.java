@@ -46,8 +46,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -87,12 +87,12 @@ public class ApiContactsController extends Handler {
         if (!StringUtils.isBlank(creater)) {
             User user = super.getUser(request);
             contactsList = contactsRepository.findByCreaterAndSharesAndDatastatus(user.getId(), "all", false,
-                    new PageRequest(
+                    PageRequest.of(
                             super.getP(request),
                             super.getPs(request)));
         } else {
             contactsList = contactsRepository.findByDatastatus(false,
-                    new PageRequest(super.getP(request), super.getPs(request)));
+                    PageRequest.of(super.getP(request), super.getPs(request)));
         }
         return new ResponseEntity<>(new RestResult(RestResultType.OK, contactsList), HttpStatus.OK);
     }
@@ -131,7 +131,7 @@ public class ApiContactsController extends Handler {
     public ResponseEntity<RestResult> delete(HttpServletRequest request, @Valid String id) {
         RestResult result = new RestResult(RestResultType.OK);
         if (!StringUtils.isBlank(id)) {
-            Contacts contacts = contactsRepository.findOne(id);
+            Contacts contacts = contactsRepository.getReferenceById(id);
             if (contacts != null) {    //系统管理员， 不允许 使用 接口删除
                 contacts.setDatastatus(true);
                 contactsRepository.save(contacts);

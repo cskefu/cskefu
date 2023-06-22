@@ -28,9 +28,8 @@ import java.util.Set;
 public interface LeaveMsgRepository extends JpaRepository<LeaveMsg, String> {
     Page<LeaveMsg> findAll(Pageable page);
 
-    @Query(value = "SELECT o.name as skill,m.* FROM uk_leavemsg m LEFT JOIN uk_organ o ON m.skill=o.id WHERE m.skill IN (?1) ORDER BY ?#{#pageable}",
-            countQuery = "SELECT count(*) FROM uk_leavemsg WHERE skill IN (?1) ORDER BY ?#{#pageable}",
-            nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT o.name as skill,m.* FROM uk_leavemsg m LEFT JOIN uk_organ o ON m.skill=o.id WHERE m.skill IN (?1) ORDER BY ?#{#pageable}",
+            countQuery = "SELECT count(*) FROM uk_leavemsg WHERE skill IN (?1) ORDER BY ?#{#pageable}")
     Page<LeaveMsg> findBySkill(Set<String> skill, Pageable page);
 
     List<LeaveMsg> findByMobile(String mobile);

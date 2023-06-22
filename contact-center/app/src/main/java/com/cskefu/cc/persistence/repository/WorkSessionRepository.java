@@ -23,9 +23,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WorkSessionRepository extends JpaRepository<WorkSession, String> {
-	
-	WorkSession findById(String id);
-	
+
 	Page<WorkSession> findAll(Specification<WorkSession> spec, Pageable pageable);  //分页按条件查询
 	
 	int countByAgentAndDatestr(String agent, String datestr) ;

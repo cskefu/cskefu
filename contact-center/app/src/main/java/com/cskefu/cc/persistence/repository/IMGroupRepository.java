@@ -21,9 +21,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface IMGroupRepository extends
-		JpaRepository<IMGroup, String> {
-	IMGroup findById(String id);
+public interface IMGroupRepository extends JpaRepository<IMGroup, String> {
 
 	List<IMGroup> findByCreater(String user);
 	

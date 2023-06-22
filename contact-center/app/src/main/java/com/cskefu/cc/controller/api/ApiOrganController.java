@@ -30,8 +30,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 /**
  * 组织机构/部门/技能组功能
@@ -82,7 +82,7 @@ public class ApiOrganController extends Handler{
 		RestResult result = new RestResult(RestResultType.OK) ; 
     	Organ organ = null ;
     	if(!StringUtils.isBlank(id)){
-    		organ = organRepository.findById(id) ;
+    		organ = organRepository.getReferenceById(id) ;
     		if(organ != null){	//系统管理员， 不允许 使用 接口删除
     			organRepository.delete(organ);
     		}else{

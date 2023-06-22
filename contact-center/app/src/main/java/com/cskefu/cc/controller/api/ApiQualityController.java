@@ -34,12 +34,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,7 +70,7 @@ public class ApiQualityController extends Handler {
 
             Predicate[] p = new Predicate[list.size()];
             return cb.and(list.toArray(p));
-        }, new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
+        }, PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
         return new ResponseEntity<>(new RestResult(RestResultType.OK, page), HttpStatus.OK);
     }
 }

@@ -24,12 +24,11 @@ import org.springframework.data.repository.query.Param;
 import java.util.Collection;
 import java.util.List;
 
-public interface ConsultInviteRepository
-        extends JpaRepository<CousultInvite, String> {
-    @Query(value = "SELECT * from uk_consult_invite WHERE snsaccountid = ?1 LIMIT 1", nativeQuery = true)
+public interface ConsultInviteRepository extends JpaRepository<CousultInvite, String> {
+    @Query(nativeQuery = true, value = "SELECT * from uk_consult_invite WHERE snsaccountid = ?1 LIMIT 1")
     CousultInvite findBySnsaccountid(@Param("snsaccountid") String Snsaccountid);
 
-    @Query(value = "select ci.`snsaccountid` from  `uk_consult_invite` ci  where ci.`consult_skill_fixed_id` in (?1)", nativeQuery = true)
+    @Query(nativeQuery = true, value = "select ci.`snsaccountid` from  `uk_consult_invite` ci  where ci.`consult_skill_fixed_id` in (?1)")
     List<String> findSNSIdBySkill(Collection<String> skills);
 
     List<CousultInvite> findAll();

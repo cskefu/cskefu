@@ -25,11 +25,9 @@ import java.util.Optional;
 
 public interface SipTrunkRepository extends JpaRepository<SipTrunk, String> {
 
-    SipTrunk findById(String id);
-
     List<SipTrunk> findByHostid(String hostid);
 
-    @Query(value = "SELECT * FROM uk_callcenter_siptrunk WHERE hostid = ?1 AND name <> ?2 LIMIT 1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM uk_callcenter_siptrunk WHERE hostid = ?1 AND name <> ?2 LIMIT 1")
     Optional<SipTrunk> findOneByHostidAndNameNot(final String hostid, final String name);
 
     int countByHostid(final String hostid);

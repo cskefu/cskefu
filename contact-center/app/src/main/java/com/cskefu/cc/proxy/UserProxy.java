@@ -26,7 +26,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Predicate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -92,7 +92,6 @@ public class UserProxy {
                 ou.setOrgan(organ.getId());
                 organUserRes.save(ou);
             }
-
         }
         // 新账号未通过验证，返回创建失败信息msg
         result.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
@@ -101,7 +100,7 @@ public class UserProxy {
     }
 
     public User findOne(final String id) {
-        return userRes.findOne(id);
+        return userRes.getReferenceById(id);
     }
 
     public List<String> findUserIdsInOrgan(final String organ) {
@@ -149,7 +148,7 @@ public class UserProxy {
         for (final OrganUser z : x) {
             y.add(z.getUserid());
         }
-        return userRes.findAll(y);
+        return userRes.findAllById(y);
     }
 
     public Page<User> findUserInOrgans(final Collection<String> organs,
@@ -172,7 +171,7 @@ public class UserProxy {
      */
     public HashMap<String, String> getSkillsMapByAgentno(final String agentno) {
 
-        final User user = userRes.findOne(agentno);
+        final User user = userRes.getReferenceById(agentno);
         if (user == null)
             return new HashMap<>();
 
@@ -456,9 +455,9 @@ public class UserProxy {
 
         // 检查作为呼叫中心坐席的信息
         if (MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER) && user.isCallcenter()) {
-            final PbxHost pbxHost = pbxHostRes.findOne(user.getPbxhostId());
+            final PbxHost pbxHost = pbxHostRes.getReferenceById(user.getPbxhostId());
             if (pbxHost != null) {
-                Extension extension = extensionRes.findOne(user.getExtensionId());
+                Extension extension = extensionRes.getReferenceById(user.getExtensionId());
                 if (extension != null) {
                     if (StringUtils.isNotBlank(extension.getAgentno())) {
                         // 呼叫中心该分机已经绑定
@@ -616,7 +615,7 @@ public class UserProxy {
 
         for (final OrganUser organ : organs) {
             // 添加直属部门到organs
-            final Organ o = organRes.findOne(organ.getOrgan());
+            final Organ o = organRes.getReferenceById(organ.getOrgan());
             user.getOrgans().put(organ.getOrgan(), o);
             if (o.isSkill()) {
                 skills.put(o.getId(), o.getName());

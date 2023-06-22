@@ -32,15 +32,15 @@ import com.cskefu.cc.util.PugHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.web.BasicErrorController;
+import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-public class UserInterceptorHandler extends HandlerInterceptorAdapter {
+public class UserInterceptorHandler implements HandlerInterceptor {
     private final static Logger logger = LoggerFactory.getLogger(UserInterceptorHandler.class);
     private static UserProxy userProxy;
     private static OrganProxy organProxy;

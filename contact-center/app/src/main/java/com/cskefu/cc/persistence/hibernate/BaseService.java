@@ -16,12 +16,17 @@
  */
 package com.cskefu.cc.persistence.hibernate;
 
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManagerFactory;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -113,11 +118,21 @@ public class BaseService<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<T> list(final String bean) {
-        List<T> dataList = null;
-        Session session = hibernateFactory.openSession();
+    public List<?> list(final String bean) {
+        List<?> dataList = null;
+        Session session = new Configuration()
+                .configure()
+                .buildSessionFactory()
+                .openSession();
         try {
-            dataList = session.createCriteria(Class.forName(bean)).list();
+            dataList = new ArrayList<>();
+            // TODO lecjy
+            Class<?> clazz = Class.forName(bean);
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<?> criteriaQuery = criteriaBuilder.createQuery(clazz);
+            criteriaQuery.from(clazz);
+            Query<?> query = session.createQuery(criteriaQuery);
+            dataList = query.getResultList();
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {

@@ -41,6 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,8 +50,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -76,6 +77,7 @@ public class ApiAgentUserController extends Handler {
     private Cache cache;
 
     @Autowired
+    @Lazy
     private PeerSyncIM peerSyncIM;
 
     @Autowired
@@ -158,8 +160,8 @@ public class ApiAgentUserController extends Handler {
         if (StringUtils.isNotBlank(agentUserId) &&
                 StringUtils.isNotBlank(transAgentId) &&
                 StringUtils.isNotBlank(agentServiceId)) {
-            final User targetAgent = userRes.findOne(transAgentId);
-            final AgentService agentService = agentServiceRes.findById(agentServiceId);
+            final User targetAgent = userRes.getReferenceById(transAgentId);
+            final AgentService agentService = agentServiceRes.getReferenceById(agentServiceId);
 
             /**
              * 更新AgentUser
@@ -295,7 +297,7 @@ public class ApiAgentUserController extends Handler {
         final User logined = super.getUser(request);
         JsonObject resp = new JsonObject();
 
-        final AgentUser agentUser = agentUserRes.findById(payload.get("id").getAsString());
+        final AgentUser agentUser = agentUserRes.getReferenceById(payload.get("id").getAsString());
         if (agentUser != null) {
             if ((StringUtils.equals(
                     logined.getId(), agentUser.getAgentno()) || logined.isAdmin())) {

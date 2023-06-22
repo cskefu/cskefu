@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 
@@ -129,7 +129,7 @@ public class ApiContactTagsController extends Handler {
 
         final String tagId = j.get("tagId").getAsString();
         final String contactid = j.get("contactid").getAsString();
-        Tag tag = tagRes.findOne(tagId);
+        Tag tag = tagRes.getReferenceById(tagId);
 
         if (tag == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_2);
@@ -167,7 +167,7 @@ public class ApiContactTagsController extends Handler {
             return resp;
         }
 
-        TagRelation t = tagRelationRes.findOne(j.get("xid").getAsString());
+        TagRelation t = tagRelationRes.getReferenceById(j.get("xid").getAsString());
         if (t == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "该联系人没有打这个标签。");

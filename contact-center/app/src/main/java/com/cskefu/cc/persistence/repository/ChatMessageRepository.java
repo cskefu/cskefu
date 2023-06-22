@@ -26,25 +26,22 @@ import org.springframework.data.repository.query.Param;
 import java.util.Date;
 import java.util.List;
 
-public interface ChatMessageRepository
-        extends JpaRepository<ChatMessage, String> {
-
-    ChatMessage findById(String id);
+public interface ChatMessageRepository extends JpaRepository<ChatMessage, String> {
 
     Page<ChatMessage> findByUsession(String usession, Pageable page);
 
-    @Query(value = "select *  from (select * from uk_chat_message where  usession = :usession and createtime <= :createtime order by createtime desc limit 0,10 )t3" +
+    @Query(nativeQuery = true, value = "select *  from (select * from uk_chat_message where  usession = :usession and createtime <= :createtime order by createtime desc limit 0,10 )t3" +
             " UNION " +
-            "select *  from (select * from uk_chat_message where  usession = :usession and  createtime > :createtime order by createtime  limit 0,9999)t4 ORDER BY createtime", nativeQuery = true)
+            "select *  from (select * from uk_chat_message where  usession = :usession and  createtime > :createtime order by createtime  limit 0,9999)t4 ORDER BY createtime")
     List<ChatMessage> findByCreatetime(@Param("usession") String usession, @Param("createtime") Date createtime);
 
-    @Query(value = "select u from ChatMessage u where u.usession = ?1 and u.message like %?2% and u.islabel = true")
+    @Query("select u from ChatMessage u where u.usession = ?1 and u.message like %?2% and u.islabel = true")
     Page<ChatMessage> findByislabel(String usession, String message, Pageable page);
 
-    @Query(value = "select u from ChatMessage u where u.usession = ?1 and u.message like %?2%")
+    @Query("select u from ChatMessage u where u.usession = ?1 and u.message like %?2%")
     Page<ChatMessage> findByUsessionAndMessageContaining(String usession, String message, Pageable page);
 
-    @Query(value = "select * from(select * from uk_chat_message where  usession = ?1 order by createtime desc limit ?2,20 ) c order by createtime asc", nativeQuery = true)
+    @Query(nativeQuery = true, value = "select * from(select * from uk_chat_message where  usession = ?1 order by createtime desc limit ?2,20 ) c order by createtime asc")
     List<ChatMessage> findByusession(String usession, Integer current);
 
     int countByUsessionAndCreatetimeGreaterThanEqual(String usession, Date createtime);

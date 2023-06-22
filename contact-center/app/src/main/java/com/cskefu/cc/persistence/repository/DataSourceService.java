@@ -16,17 +16,18 @@
  */
 package com.cskefu.cc.persistence.repository;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import mondrian.olap.Connection;
 import mondrian.olap.DriverManager;
 import mondrian.olap.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.sql.DataSource;
+
 @Service
 public class DataSourceService {
     @Autowired
-    private DruidDataSource dataSource;
+    private DataSource dataSource;
 
     /**
      * @param xml

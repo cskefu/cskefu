@@ -19,27 +19,26 @@ package com.cskefu.cc.controller.resource;
 import com.cskefu.cc.controller.Handler;
 import com.cskefu.cc.util.Menu;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.io.IOException;
 
 @Controller
 public class CssResourceController extends Handler{
 	
-    @RequestMapping("/res/css")
+    @RequestMapping(value = "/res/css")
     @Menu(type = "resouce" , subtype = "css" , access = true)
     public ModelAndView index(HttpServletResponse response, @Valid String id) throws IOException {
-    	response.setContentType("text/css ; charset=UTF-8");
     	return request(super.createView("/resource/css/ukefu"));
     }
     
-    @RequestMapping("/res/css/system")
+    @RequestMapping(value = "/res/css/system")
     @Menu(type = "resouce" , subtype = "css" , access = true)
     public ModelAndView system(HttpServletResponse response, @Valid String id) throws IOException {
-    	response.setContentType("text/css ; charset=UTF-8");
     	return request(super.createView("/resource/css/system"));
     }
 }

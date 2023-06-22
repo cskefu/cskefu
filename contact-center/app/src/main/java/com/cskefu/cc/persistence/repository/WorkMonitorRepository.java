@@ -26,8 +26,6 @@ import java.util.List;
 
 public interface WorkMonitorRepository extends JpaRepository<WorkMonitor, String> {
 
-    WorkMonitor findById(String id);
-
     Page<WorkMonitor> findByAgent(String agent, Pageable paramPageable);
 
     List<WorkMonitor> findAll();

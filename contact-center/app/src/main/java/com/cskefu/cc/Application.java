@@ -21,6 +21,7 @@ import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.config.AppCtxRefreshEventListener;
 import com.cskefu.cc.util.SystemEnvHelper;
 import com.cskefu.cc.util.mobile.MobileNumberUtils;
+import jakarta.servlet.MultipartConfigElement;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,15 +29,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jms.JmsPoolConnectionFactoryFactory;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
-import org.springframework.boot.web.servlet.ErrorPage;
+import org.springframework.boot.web.server.ConfigurableWebServerFactory;
+import org.springframework.boot.web.server.ErrorPage;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.util.unit.DataSize;
 
-import javax.servlet.MultipartConfigElement;
 import java.io.IOException;
 
 @SpringBootApplication
@@ -50,10 +54,10 @@ public class Application {
     private String uploaddir;
 
     @Value("${spring.servlet.multipart.max-file-size}")
-    private String multipartMaxUpload;
+    private Long multipartMaxUpload;
 
     @Value("${spring.servlet.multipart.max-request-size}")
-    private String multipartMaxRequest;
+    private Long multipartMaxRequest;
 
     /**
      * 加载模块
@@ -63,7 +67,6 @@ public class Application {
         if (StringUtils.equalsIgnoreCase(SystemEnvHelper.parseFromApplicationProps("cskefu.modules.contacts"), "true")) {
             MainContext.enableModule(Constants.CSKEFU_MODULE_CONTACTS);
         }
-
         // 会话监控模块 Customer Chats Audit
         if (StringUtils.equalsIgnoreCase(SystemEnvHelper.parseFromApplicationProps("cskefu.modules.cca"), "true")) {
             MainContext.enableModule(Constants.CSKEFU_MODULE_CCA);
@@ -99,7 +102,7 @@ public class Application {
             app.setBannerMode(Banner.Mode.CONSOLE);
             app.setAddCommandLineProperties(false);
             app.addListeners(new AppCtxRefreshEventListener());
-
+            
             MainContext.setApplicationContext(app.run(args));
         } catch (IOException e) {
             logger.error("Application Startup Error", e);
@@ -107,24 +110,34 @@ public class Application {
         }
     }
 
+  // TODO lecjy
     @Bean
     public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
-        factory.setMaxFileSize(multipartMaxUpload); //KB,MB
-        factory.setMaxRequestSize(multipartMaxRequest);
+        factory.setMaxFileSize(DataSize.ofMegabytes(multipartMaxUpload)); //KB,MB
+        factory.setMaxRequestSize(DataSize.ofMegabytes(multipartMaxRequest));
         factory.setLocation(uploaddir);
         return factory.createMultipartConfig();
     }
 
+    // TODO lecjy
     @Bean
-    public EmbeddedServletContainerCustomizer containerCustomizer() {
-        return container -> {
-            ErrorPage error = new ErrorPage("/error.html");
-            container.addErrorPages(error);
+    public WebServerFactoryCustomizer<ConfigurableWebServerFactory> webServerFactoryCustomizer() {
+        return factory -> {
+            // 定义404错误页
+            HttpStatus notFound = HttpStatus.NOT_FOUND;
+            // 定义404错误页
+            ErrorPage errorPage = new ErrorPage(notFound, "/error.html");
+            // 追加错误页，替换springboot默认的错误页
+            factory.addErrorPages(errorPage);
         };
     }
 
     public static void main(String[] args) {
-        Application.serve(args);
+        try {
+            Application.serve(args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

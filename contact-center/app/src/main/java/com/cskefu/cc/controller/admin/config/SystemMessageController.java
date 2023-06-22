@@ -34,8 +34,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -53,7 +53,7 @@ public class SystemMessageController extends Handler {
     @RequestMapping("/email/index")
     @Menu(type = "setting", subtype = "email")
     public ModelAndView index(ModelMap map, HttpServletRequest request) throws IOException {
-        Page<SystemMessage> emails = systemMessageRepository.findByMsgtype("email", new PageRequest(super.getP(request), super.getPs(request)));
+        Page<SystemMessage> emails = systemMessageRepository.findByMsgtype("email", PageRequest.of(super.getP(request), super.getPs(request)));
         List<Organ> organs = organRes.findAll();
 
         emails.getContent().stream().forEach(p -> {
@@ -86,14 +86,14 @@ public class SystemMessageController extends Handler {
     @Menu(type = "admin", subtype = "email")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
         map.put("organList", organRes.findAll());
-        map.addAttribute("email", systemMessageRepository.findById(id));
+        map.addAttribute("email", systemMessageRepository.getReferenceById(id));
         return request(super.createView("/admin/email/edit"));
     }
 
     @RequestMapping("/email/update")
     @Menu(type = "admin", subtype = "user", admin = true)
     public ModelAndView update(HttpServletRequest request, @Valid SystemMessage email) throws NoSuchAlgorithmException {
-        SystemMessage temp = systemMessageRepository.findById(email.getId());
+        SystemMessage temp = systemMessageRepository.getReferenceById(email.getId());
         if (email != null) {
             email.setCreatetime(temp.getCreatetime());
             email.setMsgtype(MainContext.SystemMessageType.EMAIL.toString());
@@ -110,7 +110,7 @@ public class SystemMessageController extends Handler {
     @RequestMapping("/email/delete")
     @Menu(type = "admin", subtype = "user")
     public ModelAndView delete(HttpServletRequest request, @Valid SystemMessage email) {
-        SystemMessage temp = systemMessageRepository.findById(email.getId());
+        SystemMessage temp = systemMessageRepository.getReferenceById(email.getId());
         if (email != null) {
             systemMessageRepository.delete(temp);
         }
@@ -121,7 +121,7 @@ public class SystemMessageController extends Handler {
     @RequestMapping("/sms/index")
     @Menu(type = "setting", subtype = "sms")
     public ModelAndView smsindex(ModelMap map, HttpServletRequest request) throws IOException {
-        map.addAttribute("smsList", systemMessageRepository.findByMsgtype("sms", new PageRequest(super.getP(request), super.getPs(request))));
+        map.addAttribute("smsList", systemMessageRepository.findByMsgtype("sms", PageRequest.of(super.getP(request), super.getPs(request))));
         return request(super.createView("/admin/sms/index"));
     }
 
@@ -147,14 +147,14 @@ public class SystemMessageController extends Handler {
     @Menu(type = "admin", subtype = "sms")
     public ModelAndView smsedit(ModelMap map, HttpServletRequest request, @Valid String id) {
         map.addAttribute("smsType", Dict.getInstance().getDic("com.dic.sms.type"));
-        map.addAttribute("sms", systemMessageRepository.findById(id));
+        map.addAttribute("sms", systemMessageRepository.getReferenceById(id));
         return request(super.createView("/admin/sms/edit"));
     }
 
     @RequestMapping("/sms/update")
     @Menu(type = "admin", subtype = "sms", admin = true)
     public ModelAndView smsupdate(HttpServletRequest request, @Valid SystemMessage sms) throws NoSuchAlgorithmException {
-        SystemMessage temp = systemMessageRepository.findById(sms.getId());
+        SystemMessage temp = systemMessageRepository.getReferenceById(sms.getId());
         if (sms != null) {
             sms.setCreatetime(temp.getCreatetime());
             sms.setMsgtype(MainContext.SystemMessageType.SMS.toString());
@@ -171,7 +171,7 @@ public class SystemMessageController extends Handler {
     @RequestMapping("/sms/delete")
     @Menu(type = "admin", subtype = "sms")
     public ModelAndView smsdelete(HttpServletRequest request, @Valid SystemMessage sms) {
-        SystemMessage temp = systemMessageRepository.findById(sms.getId());
+        SystemMessage temp = systemMessageRepository.getReferenceById(sms.getId());
         if (sms != null) {
             systemMessageRepository.delete(temp);
         }

@@ -25,9 +25,11 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.session.data.redis.RedisFlushMode;
-import org.springframework.session.data.redis.RedisOperationsSessionRepository;
+import org.springframework.session.FlushMode;
+import org.springframework.session.data.redis.RedisSessionRepository;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+
+import java.time.Duration;
 
 
 /**
@@ -39,14 +41,13 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  */
 
 @Configuration
-@EnableRedisHttpSession()
 public class WebServerSessionConfigure {
 
     /**
      * spring在多长时间后强制使redis中的session失效,默认是1800.(单位/秒)
      */
     @Value("${server.session-timeout}")
-    private int maxInactiveIntervalInSeconds;
+    private long maxInactiveIntervalInSeconds;
 
     @Value("${spring.redis.host}")
     private String host;
@@ -68,16 +69,17 @@ public class WebServerSessionConfigure {
 
     @Primary
     @Bean
-    public RedisOperationsSessionRepository sessionRepository(RedisTemplate<Object, Object> sessionRedisTemplate) {
-        RedisOperationsSessionRepository sessionRepository = new RedisOperationsSessionRepository(sessionRedisTemplate);
-        sessionRepository.setDefaultMaxInactiveInterval(maxInactiveIntervalInSeconds);
-        sessionRepository.setRedisFlushMode(RedisFlushMode.IMMEDIATE);
+    // TODO lecjy
+    public RedisSessionRepository sessionRepository(RedisTemplate<String, Object> sessionRedisTemplate) {
+        RedisSessionRepository sessionRepository = new RedisSessionRepository(sessionRedisTemplate);
+        sessionRepository.setDefaultMaxInactiveInterval(Duration.ofSeconds(maxInactiveIntervalInSeconds));
+        sessionRepository.setFlushMode(FlushMode.IMMEDIATE);
         sessionRepository.setRedisKeyNamespace(RedisKey.CACHE_SESSIONS);
         return sessionRepository;
     }
 
     @Bean
-    public RedisTemplate<Object, Object> sessionRedisTemplate() {
+    public RedisTemplate<String, Object> sessionRedisTemplate() {
         JedisConnectionFactory factory = new JedisConnectionFactory();
         factory.setHostName(host);
         factory.setPort(port);
@@ -87,7 +89,7 @@ public class WebServerSessionConfigure {
         }
         factory.setTimeout(timeout);
         factory.afterPropertiesSet();
-        RedisTemplate<Object, Object> template = new RedisTemplate<>();
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setKeySerializer(new StringRedisSerializer());
         template.setHashKeySerializer(new StringRedisSerializer());
         template.setConnectionFactory(factory);

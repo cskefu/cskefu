@@ -31,7 +31,7 @@ public class OrganDataExchangeImpl implements DataExchangeInterface {
     private OrganRepository organRes;
 
     public String getDataById(String id) {
-        Organ organ = organRes.findById(id);
+        Organ organ = organRes.getReferenceById(id);
         return organ != null ? organ.getName() : id;
     }
 

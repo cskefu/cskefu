@@ -29,8 +29,6 @@ import java.util.List;
 
 public interface StatusEventRepository extends JpaRepository<StatusEvent, String> {
 
-    StatusEvent findById(String id);
-
     StatusEvent findByIdOrBridgeid(String id, String bridgeid);
 
     Page<StatusEvent> findByAni(String ani, Pageable page);
@@ -61,7 +59,7 @@ public interface StatusEventRepository extends JpaRepository<StatusEvent, String
      * @param organ
      * @return
      */
-    @Query(value =
+    @Query(nativeQuery = true, value = 
             "select " +
                     "  agent, " +
                     "  direction, " +
@@ -83,7 +81,7 @@ public interface StatusEventRepository extends JpaRepository<StatusEvent, String
                     "  and agent is not null " +
                     "group by" +
                     "  agent," +
-                    "  direction", nativeQuery = true)
+                    "  direction")
     List<Object[]>
     queryCalloutHangupAuditGroupByAgentAndDirection(String channel,
                                                     String fromdate,
@@ -101,7 +99,7 @@ public interface StatusEventRepository extends JpaRepository<StatusEvent, String
      * @param page
      * @return
      */
-    @Query(value = "select s from StatusEvent s where (:fromdate is null or s.createtime >= :fromdate) " +
+    @Query("select s from StatusEvent s where (:fromdate is null or s.createtime >= :fromdate) " +
             "and (:enddate is null or s.createtime < :enddate) " +
             "and (:organid is null or s.organid = :organid) " +
             "and (:agent is null or s.agent = :agent) " +
@@ -120,7 +118,7 @@ public interface StatusEventRepository extends JpaRepository<StatusEvent, String
                                                       @Param("dialplan") String dialplan,
                                                       Pageable page);
 
-    @Query(value = "select s " +
+    @Query("select s " +
             "from StatusEvent s " +
             "where " +
             "  s.agent = :agent and " +
@@ -138,7 +136,7 @@ public interface StatusEventRepository extends JpaRepository<StatusEvent, String
      * @param direction
      * @return
      */
-    @Query(value = "select dialplan, " +
+    @Query(nativeQuery = true, value = "select dialplan, " +
             "datestr, " +
             "count(*) as total, " +
             "count(case duration when 0 then 1 else null end) fails, " +
@@ -149,7 +147,7 @@ public interface StatusEventRepository extends JpaRepository<StatusEvent, String
             "and status = '已挂机' " +
             "and datestr = ?1 " +
             "and voicechannel = ?2 " +
-            "group by dialplan", nativeQuery = true)
+            "group by dialplan")
     List<Object[]> queryCallOutHangupAggsGroupByDialplanByDatestrAndChannelAndDirection(String datestr,
                                                                                         String channel,
                                                                                         String direction);

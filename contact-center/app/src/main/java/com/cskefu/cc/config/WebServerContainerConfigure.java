@@ -18,11 +18,10 @@ package com.cskefu.cc.config;
 
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.Http11NioProtocol;
-import org.apache.tomcat.util.http.LegacyCookieProcessor;
+import org.apache.tomcat.util.http.Rfc6265CookieProcessor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
-import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomizer;
-import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
+import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -42,12 +41,13 @@ public class WebServerContainerConfigure {
     private String path;
 
     @Bean
-    public EmbeddedServletContainerFactory createEmbeddedServletContainerFactory() throws IOException, NoSuchAlgorithmException {
-        TomcatEmbeddedServletContainerFactory tomcatFactory = new TomcatEmbeddedServletContainerFactory();
+    public TomcatServletWebServerFactory createEmbeddedServletContainerFactory() throws IOException, NoSuchAlgorithmException {
+        TomcatServletWebServerFactory tomcatFactory = new TomcatServletWebServerFactory();
         tomcatFactory.addConnectorCustomizers(new CSKeFuTomcatConnectorCustomizer(maxthread, maxconnections));
         // Enable cookie value with space
         // https://stackoverflow.com/questions/38687210/error-with-cookie-value-when-adding-a-new-spring-session
-        tomcatFactory.addContextCustomizers(context -> context.setCookieProcessor(new LegacyCookieProcessor()));
+        // TODO lecjy
+        tomcatFactory.addContextCustomizers(context -> context.setCookieProcessor(new Rfc6265CookieProcessor()));
         return tomcatFactory;
     }
 
@@ -60,6 +60,7 @@ public class WebServerContainerConfigure {
             this.maxconnection = maxconnection;
         }
 
+        @Override
         public void customize(Connector connector) {
             Http11NioProtocol protocol = (Http11NioProtocol) connector.getProtocolHandler();
             //设置最大连接数

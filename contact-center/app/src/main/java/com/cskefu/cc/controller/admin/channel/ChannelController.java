@@ -37,8 +37,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
@@ -74,7 +74,7 @@ public class ChannelController extends Handler {
     @Menu(type = "admin", subtype = "im", admin = true)
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String execute, @RequestParam(name = "status", required = false) String status) {
         Map<String, Organ> organs = organProxy.findAllOrganByParent(super.getOrgan(request));
-        map.addAttribute("snsAccountList", snsAccountRes.findByTypeAndOrgan(MainContext.ChannelType.WEBIM.toString(), organs.keySet(), new PageRequest(super.getP(request), super.getPs(request))));
+        map.addAttribute("snsAccountList", snsAccountRes.findByTypeAndOrgan(MainContext.ChannelType.WEBIM.toString(), organs.keySet(), PageRequest.of(super.getP(request), super.getPs(request))));
 
         map.addAttribute("status", status);
         List<Secret> secretConfig = secRes.findAll();
@@ -140,7 +140,7 @@ public class ChannelController extends Handler {
     public ModelAndView delete(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String confirm) {
         boolean execute;
         if (execute = MainUtils.secConfirm(secRes, confirm)) {
-            Channel channel = snsAccountRes.findById(id);
+            Channel channel = snsAccountRes.getReferenceById(id);
             if (snsAccountRes != null) {
                 // 删除网站渠道记录
                 snsAccountRes.delete(channel);
@@ -162,8 +162,8 @@ public class ChannelController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "send", admin = true)
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
-        Channel channel = snsAccountRes.findById(id);
-        Organ organ = organRes.findOne(channel.getOrgan());
+        Channel channel = snsAccountRes.getReferenceById(id);
+        Organ organ = organRes.getReferenceById(channel.getOrgan());
         map.put("organ", organ);
         map.addAttribute("channel", channel);
         return request(super.createView("/admin/channel/im/edit"));
@@ -172,7 +172,7 @@ public class ChannelController extends Handler {
     @RequestMapping("/update")
     @Menu(type = "admin", subtype = "send", admin = true)
     public ModelAndView update(HttpServletRequest request, @Valid Channel channel) throws NoSuchAlgorithmException {
-        Channel oldChannel = snsAccountRes.findById(channel.getId());
+        Channel oldChannel = snsAccountRes.getReferenceById(channel.getId());
         if (oldChannel != null) {
             oldChannel.setName(channel.getName());
             oldChannel.setBaseURL(channel.getBaseURL());

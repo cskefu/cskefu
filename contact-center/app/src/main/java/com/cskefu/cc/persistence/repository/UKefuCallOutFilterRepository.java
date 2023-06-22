@@ -26,8 +26,6 @@ import java.util.List;
 
 public interface UKefuCallOutFilterRepository extends JpaRepository<UKefuCallOutFilter, String> {
 
-    UKefuCallOutFilter findById(String id);
-
     List<UKefuCallOutFilter> findByName(String name);
 
     Page<UKefuCallOutFilter> findByActid(String actid, Pageable page);

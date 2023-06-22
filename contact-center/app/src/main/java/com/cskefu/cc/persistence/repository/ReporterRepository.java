@@ -26,7 +26,6 @@ public interface ReporterRepository extends JpaRepository<Reporter, String> {
 
     Page<Reporter> findAll(Pageable pageable);
 
-    Reporter findById(String id);
 
     Page<Reporter> findAll(Specification<Reporter> spec, Pageable page);
 }

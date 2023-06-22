@@ -35,7 +35,7 @@ public class OrganProxy {
             return false;
         }
 
-        Organ parent = organRes.findById(organ.getParent());
+        Organ parent = organRes.getReferenceById(organ.getParent());
         if (parent == null) {
             return false;
         } else {
@@ -65,7 +65,7 @@ public class OrganProxy {
             return "admin_organ_update_not_standard";
         }
 
-        Organ tempOrgan = organRes.findById(organ.getId());
+        Organ tempOrgan = organRes.getReferenceById(organ.getId());
         if (tempOrgan != null) {
             tempOrgan.setName(organ.getName());
             tempOrgan.setUpdatetime(new Date());
@@ -81,11 +81,11 @@ public class OrganProxy {
     }
 
     public List<Organ> findOrganInIds(Collection<String> organIds) {
-        return organRes.findAll(organIds);
+        return organRes.findAllById(organIds);
     }
 
     private void processChild(Map<String, Organ> organs, String organId) {
-        Organ organ = organRes.findById(organId);
+        Organ organ = organRes.getReferenceById(organId);
         if (organ != null) {
             organs.put(organId, organ);
             List<Organ> childOrgans = organRes.findByParent(organId);

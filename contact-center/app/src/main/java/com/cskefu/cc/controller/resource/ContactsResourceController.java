@@ -30,8 +30,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 @Controller
 public class ContactsResourceController extends Handler {
@@ -46,7 +46,7 @@ public class ContactsResourceController extends Handler {
         if (q == null) {
             q = "";
         }
-        Page<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndDatastatus(super.getUser(request).getId(), super.getUser(request).getId(), false, new PageRequest(0, 10));
+        Page<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndDatastatus(super.getUser(request).getId(), super.getUser(request).getId(), false, PageRequest.of(0, 10));
 
         JSONArray result = new JSONArray();
         for (Contacts contact : contactsList.getContent()) {

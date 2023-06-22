@@ -22,9 +22,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface RoleAuthRepository
-        extends JpaRepository<RoleAuth, String> {
-    RoleAuth findById(String id);
+public interface RoleAuthRepository extends JpaRepository<RoleAuth, String> {
 
     List<RoleAuth> findByRoleid(String roleid);
 

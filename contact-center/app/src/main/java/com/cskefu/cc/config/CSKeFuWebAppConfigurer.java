@@ -22,13 +22,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.*;
 
 @Configuration
-public class CSKeFuWebAppConfigurer
-        extends WebMvcConfigurerAdapter {
+public class CSKeFuWebAppConfigurer implements WebMvcConfigurer {
     private final static Logger logger = LoggerFactory.getLogger(CSKeFuWebAppConfigurer.class);
     private final static String ENABLE_LOG_REQUEST = SystemEnvHelper.parseFromApplicationProps("extras.log.request");
 
@@ -41,6 +38,17 @@ public class CSKeFuWebAppConfigurer
     public void addCorsMappings(CorsRegistry registry) {
         // enables CORS requests from any origin to any endpoint in the application.
         registry.addMapping("/**").allowedOrigins("*");
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void configurePathMatch(PathMatchConfigurer configurer) {
+        configurer.setUseSuffixPatternMatch(Boolean.TRUE);
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
     }
 
     @Override
@@ -60,6 +68,5 @@ public class CSKeFuWebAppConfigurer
         }
 
         registry.addInterceptor(new ViewsInterceptorHandler()).addPathPatterns("/**");
-        super.addInterceptors(registry);
     }
 }

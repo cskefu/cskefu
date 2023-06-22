@@ -16,7 +16,7 @@
  */
 package com.cskefu.cc.model;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 public class CustomerGroupForm {
 	@Valid

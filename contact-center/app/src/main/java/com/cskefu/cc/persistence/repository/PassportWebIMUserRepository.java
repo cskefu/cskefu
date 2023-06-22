@@ -29,7 +29,7 @@ import java.util.Optional;
 
 public interface PassportWebIMUserRepository extends JpaRepository<PassportWebIMUser, String> {
 
-    @Query(value = "SELECT * FROM cs_passport_webim_user WHERE userid = ?1 ORDER BY createtime DESC LIMIT 1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM cs_passport_webim_user WHERE userid = ?1 ORDER BY createtime DESC LIMIT 1")
     PassportWebIMUser findOneByUserid(final String userid);
 
     Page<PassportWebIMUser> findByUserid(String userid, Pageable page);
@@ -49,7 +49,7 @@ public interface PassportWebIMUserRepository extends JpaRepository<PassportWebIM
     @Query("select result, count(id) as records from InviteRecord where agentno = ?1 and createtime > ?2 and createtime < ?3 group by result")
     List<Object> findByAgentnoAndCreatetimeRange(String agentno, Date start, Date end);
 
-    @Query("select result, count(id) as records from InviteRecord where agentno = ?2 group by result")
+    @Query("select result, count(id) as records from InviteRecord where agentno = ?1 group by result")
     List<Object> findByUserid(String userid);
 
     @Query("select count(id) from AgentService where status = ?1 and agentno = ?2 and createtime > ?3 and createtime < ?4")
@@ -76,6 +76,6 @@ public interface PassportWebIMUserRepository extends JpaRepository<PassportWebIM
     @Query("select agentno, count(id) as users from AgentService where skill = ?1 and userid = ?2 group by agentno")
     List<Object> findBySkillForDistinctAgent(String skill, String userid);
 
-    @Query(value = "SELECT * FROM cs_passport_webim_user WHERE contactsid = ?1 AND channel = ?2 LIMIT 1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM cs_passport_webim_user WHERE contactsid = ?1 AND channel = ?2 LIMIT 1")
     Optional<PassportWebIMUser> findOneByContactidAndChannel(final String contactId, final String channel);
 }

@@ -29,11 +29,10 @@ public interface ChatbotRepository extends JpaRepository<Chatbot, String> {
 
     boolean existsBySnsAccountIdentifier(String snsid);
 
-    List<Chatbot> findById(String id);
 
     Chatbot findBySnsAccountIdentifier(String snsid);
 
-    @Query(value = "select c from Chatbot c")
+    @Query("select c from Chatbot c")
     Page<Chatbot> findWithPagination(Pageable pageRequest);
 
     List<Chatbot> findAll();

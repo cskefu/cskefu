@@ -30,7 +30,7 @@ public interface AgentUserContactsRepository extends JpaRepository<AgentUserCont
      * @param userid
      * @return
      */
-    @Query(value = "SELECT * FROM uk_agentuser_contacts WHERE userid = ?1 ORDER BY createtime DESC LIMIT 1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM uk_agentuser_contacts WHERE userid = ?1 ORDER BY createtime DESC LIMIT 1")
     Optional<AgentUserContacts> findOneByUserid(final String userid);
 
     /**
@@ -38,6 +38,6 @@ public interface AgentUserContactsRepository extends JpaRepository<AgentUserCont
      * @param contactsid
      * @return
      */
-    @Query(value = "SELECT * FROM uk_agentuser_contacts WHERE contactsid = ?1 ORDER BY createtime DESC LIMIT 1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM uk_agentuser_contacts WHERE contactsid = ?1 ORDER BY createtime DESC LIMIT 1")
     Optional<AgentUserContacts> findOneByContactsid(final String contactsid);
 }

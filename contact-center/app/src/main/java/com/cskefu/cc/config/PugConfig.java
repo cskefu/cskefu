@@ -30,7 +30,6 @@ public class PugConfig {
 
     @Value("${spring.pug4j.template-loader-path}")
     private String templatePath;
-
     @Bean
     public SpringTemplateLoader templateLoader() {
         SpringTemplateLoader templateLoader = new SpringTemplateLoader();

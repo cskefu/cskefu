@@ -30,8 +30,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.util.Map;
 
 @Controller
@@ -48,7 +48,7 @@ public class CommentController extends Handler {
     public ModelAndView index(ModelMap map, HttpServletRequest request, String userid, String agentservice, @Valid String channel) {
         Organ currentOrgan = super.getOrgan(request);
         Map<String, Organ> organs = organProxy.findAllOrganByParent(currentOrgan);
-        Page<AgentService> agentServiceList = agentServiceRes.findBySatisfactionAndSkillIn(true, organs.keySet(), new PageRequest(super.getP(request), super.getPs(request)));
+        Page<AgentService> agentServiceList = agentServiceRes.findBySatisfactionAndSkillIn(true, organs.keySet(), PageRequest.of(super.getP(request), super.getPs(request)));
         map.addAttribute("serviceList", agentServiceList);
         return request(super.createView("/apps/service/comment/index"));
     }

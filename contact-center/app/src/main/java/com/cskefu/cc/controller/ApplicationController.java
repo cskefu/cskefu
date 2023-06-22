@@ -22,6 +22,7 @@ import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.cache.Cache;
 import com.cskefu.cc.model.Organ;
+import com.cskefu.cc.model.PbxHost;
 import com.cskefu.cc.model.User;
 import com.cskefu.cc.persistence.repository.ExtensionRepository;
 import com.cskefu.cc.persistence.repository.OrganRepository;
@@ -37,8 +38,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
@@ -117,19 +118,18 @@ public class ApplicationController extends Handler {
         // 呼叫中心信息
         if (MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER) && logined.isCallcenter()) {
             extensionRes.findByAgentno(logined.getId()).ifPresent(ext -> {
-                pbxHostRes.findById(ext.getHostid()).ifPresent(pbx -> {
-                    Map<String, Object> webrtcData = new HashMap<>();
-                    webrtcData.put("callCenterWebrtcIP", pbx.getWebrtcaddress());
-                    webrtcData.put("callCenterWebRtcPort", pbx.getWebrtcport());
-                    webrtcData.put("callCenterExtensionNum", ext.getExtension());
-                    try {
-                        webrtcData.put("callCenterExtensionPassword", MainUtils.decryption(ext.getPassword()));
-                    } catch (NoSuchAlgorithmException e) {
-                        logger.error("[admin]", e);
-                        webrtcData.put("callCenterError", "Invalid data for callcenter agent.");
-                    }
-                    view.addObject("webrtc", webrtcData);
-                });
+                PbxHost one = pbxHostRes.getReferenceById(ext.getHostid());
+                Map<String, Object> webrtcData = new HashMap<>();
+                webrtcData.put("callCenterWebrtcIP", one.getWebrtcaddress());
+                webrtcData.put("callCenterWebRtcPort", one.getWebrtcport());
+                webrtcData.put("callCenterExtensionNum", ext.getExtension());
+                try {
+                    webrtcData.put("callCenterExtensionPassword", MainUtils.decryption(ext.getPassword()));
+                } catch (NoSuchAlgorithmException e) {
+                    logger.error("[admin]", e);
+                    webrtcData.put("callCenterError", "Invalid data for callcenter agent.");
+                }
+                view.addObject("webrtc", webrtcData);
             });
         }
 
@@ -145,7 +145,7 @@ public class ApplicationController extends Handler {
     @ResponseBody
     public String setOrgan(HttpServletRequest request, @Valid String organ) {
         if (StringUtils.isNotBlank(organ)) {
-            Organ currentOrgan = organRepository.findById(organ);
+            Organ currentOrgan = organRepository.getReferenceById(organ);
             if (currentOrgan != null) {
                 request.getSession(true).setAttribute(Constants.ORGAN_SESSION_NAME, currentOrgan);
             }

@@ -22,8 +22,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface OrganRoleRepository  extends JpaRepository<OrganRole, String>
-{
+public interface OrganRoleRepository extends JpaRepository<OrganRole, String> {
 	
 	List<OrganRole> findAll();
 	

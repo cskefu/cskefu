@@ -28,14 +28,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ChannelRepository
-        extends JpaRepository<Channel, String> {
-
-    Channel findById(String id);
+public interface ChannelRepository extends JpaRepository<Channel, String> {
 
     boolean existsBySnsidAndType(String snsid, String type);
 
-    @Query(value = "SELECT * FROM `cs_channel` WHERE snsid = ?1 LIMIT 1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM `cs_channel` WHERE snsid = ?1 LIMIT 1")
     Optional<Channel> findBySnsid(String snsid);
 
     List<Channel> findByBaseURL(String baseurl);
@@ -48,14 +45,14 @@ public interface ChannelRepository
 
     Page<Channel> findByType(String paramString, Pageable page);
 
-    @Query(value = "select s.* from `cs_channel` s WHERE s.type = ?1 and s.`organ` in (?2) ORDER BY ?#{#pageable}",
-            countQuery = "select count(1) from `cs_channel` s WHERE s.type = ?1 and s.`organ` in (?2)", nativeQuery = true)
+    @Query(nativeQuery = true, value = "select s.* from `cs_channel` s WHERE s.type = ?1 and s.`organ` in (?2) ORDER BY ?#{#pageable}",
+            countQuery = "select count(1) from `cs_channel` s WHERE s.type = ?1 and s.`organ` in (?2)")
     Page<Channel> findByTypeAndOrgan(String type, Collection<String> organ, Pageable page);
 
-    @Query(value = "SELECT * FROM cs_channel WHERE type = ?1 AND snsid = ?2 LIMIT 1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM cs_channel WHERE type = ?1 AND snsid = ?2 LIMIT 1")
     Optional<Channel> findOneBySnsTypeAndSnsId(final String type, final String snsId);
 
-    @Query(value = "SELECT * FROM cs_channel WHERE type = ?1 LIMIT 1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM cs_channel WHERE type = ?1 LIMIT 1")
     Channel findOneByType(final String type);
 
 

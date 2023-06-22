@@ -39,10 +39,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.persistence.criteria.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.persistence.criteria.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -110,7 +110,7 @@ public class ProcessedSummaryController extends Handler {
             }
             Predicate[] p = new Predicate[list.size()];
             return cb.and(list.toArray(p));
-        }, new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
+        }, PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
         map.addAttribute("summaryList", page);
         map.addAttribute("ani", ani);
         map.addAttribute("called", called);
@@ -126,14 +126,14 @@ public class ProcessedSummaryController extends Handler {
     @RequestMapping(value = "/process")
     @Menu(type = "agent", subtype = "processed")
     public ModelAndView process(ModelMap map, HttpServletRequest request, @Valid final String id) {
-        AgentServiceSummary summary = serviceSummaryRes.findById(id);
+        AgentServiceSummary summary = serviceSummaryRes.getReferenceById(id);
         map.addAttribute("summary", summary);
         map.put("summaryTags", tagRes.findByTagtype(MainContext.ModelType.SUMMARY.toString()));
         if (summary != null && !StringUtils.isBlank(summary.getAgentserviceid())) {
-            AgentService service = agentServiceRes.findById(summary.getAgentserviceid());
+            AgentService service = agentServiceRes.getReferenceById(summary.getAgentserviceid());
             map.addAttribute("service", service);
             if (!StringUtils.isBlank(summary.getContactsid())) {
-                Contacts contacts = contactsRes.findOne(summary.getContactsid());
+                Contacts contacts = contactsRes.getReferenceById(summary.getContactsid());
                 map.addAttribute("contacts", contacts);
             }
         }
@@ -144,7 +144,7 @@ public class ProcessedSummaryController extends Handler {
     @RequestMapping(value = "/save")
     @Menu(type = "agent", subtype = "processed")
     public ModelAndView save(ModelMap map, HttpServletRequest request, @Valid final AgentServiceSummary summary) {
-        AgentServiceSummary oldSummary = serviceSummaryRes.findById(summary.getId());
+        AgentServiceSummary oldSummary = serviceSummaryRes.getReferenceById(summary.getId());
         if (oldSummary != null) {
             oldSummary.setProcess(true);
             oldSummary.setUpdatetime(new Date());
@@ -160,7 +160,7 @@ public class ProcessedSummaryController extends Handler {
     @Menu(type = "agent", subtype = "processed")
     public void expids(ModelMap map, HttpServletRequest request, HttpServletResponse response, @Valid String[] ids) throws IOException {
         if (ids != null && ids.length > 0) {
-            Iterable<AgentServiceSummary> statusEventList = serviceSummaryRes.findAll(Arrays.asList(ids));
+            Iterable<AgentServiceSummary> statusEventList = serviceSummaryRes.findAllById(Arrays.asList(ids));
             MetadataTable table = metadataRes.findByTablename("uk_servicesummary");
             List<Map<String, Object>> values = new ArrayList<>();
             for (AgentServiceSummary event : statusEventList) {
@@ -182,7 +182,7 @@ public class ProcessedSummaryController extends Handler {
         Organ currentOrgan = super.getOrgan(request);
         Map<String, Organ> organs = organProxy.findAllOrganByParent(currentOrgan);
         Iterable<AgentServiceSummary> statusEventList = serviceSummaryRes.findByChannelNotAndProcessTrueAndSkillIn(
-                MainContext.ChannelType.PHONE.toString(), organs.keySet(), new PageRequest(0, 10000));
+                MainContext.ChannelType.PHONE.toString(), organs.keySet(), PageRequest.of(0, 10000));
 
         MetadataTable table = metadataRes.findByTablename("uk_servicesummary");
         List<Map<String, Object>> values = new ArrayList<>();
@@ -221,7 +221,7 @@ public class ProcessedSummaryController extends Handler {
             }
             Predicate[] p = new Predicate[list.size()];
             return cb.and(list.toArray(p));
-        }, new PageRequest(0, 10000, Sort.Direction.DESC, "createtime"));
+        }, PageRequest.of(0, 10000, Sort.Direction.DESC, "createtime"));
 
         List<Map<String, Object>> values = new ArrayList<>();
         for (AgentServiceSummary summary : page) {

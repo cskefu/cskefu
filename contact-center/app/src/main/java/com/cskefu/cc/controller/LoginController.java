@@ -46,10 +46,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -140,7 +140,7 @@ public class LoginController extends Handler {
                             try {
                                 flagid = MainUtils.decryption(cookie.getValue());
                                 if (StringUtils.isNotBlank(flagid)) {
-                                    User user = userRepository.findById(flagid);
+                                    User user = userRepository.getReferenceById(flagid);
                                     if (user != null) {
                                         view = this.processLogin(request, user, referer);
                                     }
@@ -214,10 +214,11 @@ public class LoginController extends Handler {
                     }
 
                     // add authorization code for rest api
-                    String token = String.format("%s %s", Constants.AUTH_TOKEN_TYPE_BEARER, MainUtils.getUUID());
+                    String uuid = MainUtils.getUUID();
+                    String token = String.format("%s %s", Constants.AUTH_TOKEN_TYPE_BEARER, uuid);
                     bearerTokenMgr.update(token, loginUser);
                     userRepository.save(loginUser); // 更新登录状态到数据库
-                    response.addCookie((new Cookie("authorization", token)));
+                    response.addCookie((new Cookie("authorization", uuid)));
 
                     // 该登录用户是坐席，并且具有坐席对话的角色
                     if ((loginUser.isAgent() &&

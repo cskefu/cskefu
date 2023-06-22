@@ -30,13 +30,11 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, String> {
 
-    User findById(String id);
-
     User findByEmailAndDatastatus(String email, boolean datastatus);
 
     User findByMobileAndDatastatus(String mobile, boolean datastatus);
 
-    @Query(value = "SELECT u FROM User u WHERE u.callcenter = 1 " +
+    @Query(nativeQuery = true, value = "SELECT u FROM User u WHERE u.callcenter = 1 " +
             "AND u.datastatus = 0 " +
             "AND (:users is null OR u.id IN :users)")
     List<User> findAllByCallcenterIsTrueAndDatastatusIsFalseAndIdIn(@Param("users") List<String> users);
@@ -58,7 +56,6 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Page<User> findByDatastatusAndUsernameLike(boolean datastatus, String username, Pageable paramPageable);
 
-    Page<User> findById(String id, Pageable paramPageable);
 
     List<User> findByAgentAndDatastatus(final boolean isAgent, final boolean datastatus);
 

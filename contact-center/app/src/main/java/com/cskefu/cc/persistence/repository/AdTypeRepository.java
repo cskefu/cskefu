@@ -23,8 +23,6 @@ import java.util.List;
 
 public interface AdTypeRepository extends JpaRepository<AdType, String> {
 
-    AdType findById(String id);
-
     AdType findByIdAndSkill(String id, String skill);
 
     int countByName(String name);

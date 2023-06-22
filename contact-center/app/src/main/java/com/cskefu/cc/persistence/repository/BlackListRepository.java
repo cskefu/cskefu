@@ -27,8 +27,6 @@ import java.util.Set;
 
 public interface BlackListRepository extends JpaRepository<BlackEntity, String> {
 
-    BlackEntity findById(String id);
-
     Optional<BlackEntity> findByUserid(String userid);
 
     Page<BlackEntity> findAll(Pageable page);

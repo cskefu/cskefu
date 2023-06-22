@@ -26,8 +26,6 @@ import java.util.List;
 
 public interface FormFilterRepository extends JpaRepository<FormFilter, String> {
 
-    FormFilter findById(String id);
-
     List<FormFilter> findByName(String name);
 
     Page<FormFilter> findAll(Pageable page);

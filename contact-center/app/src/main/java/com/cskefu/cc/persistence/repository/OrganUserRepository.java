@@ -40,7 +40,7 @@ public interface OrganUserRepository extends JpaRepository<OrganUser, String> {
 
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM OrganUser o WHERE o.userid = :userid AND o.organ = :organ")
+    @Query("DELETE FROM OrganUser o WHERE o.userid = :userid AND o.organ = :organ")
     void deleteOrganUserByUseridAndOrgan(@Param("userid") final String userid,
                                          @Param("organ") final String organ);
 }

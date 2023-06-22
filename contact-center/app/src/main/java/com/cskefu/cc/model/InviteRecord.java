@@ -20,7 +20,7 @@ package com.cskefu.cc.model;
 import com.cskefu.cc.basic.MainContext;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity

@@ -24,9 +24,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface SystemMessageRepository   extends JpaRepository<SystemMessage, String>{
-	
-	SystemMessage findById(String id);
-	
+
 	Page<SystemMessage> findByMsgtype(String msgtype, Pageable paramPageable);
 	
 	List<SystemMessage> findByMsgtype(String msgtype);

@@ -25,8 +25,6 @@ import java.util.List;
 
 public interface AttachmentRepository extends JpaRepository<AttachmentFile, String> {
 
-    AttachmentFile findById(String id);
-
     List<AttachmentFile> findByDataid(String dataid);
 
     List<AttachmentFile> findByModelid(String modelid);

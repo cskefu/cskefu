@@ -30,8 +30,6 @@ public interface ServiceSummaryRepository extends JpaRepository<AgentServiceSumm
 
     List<AgentServiceSummary> findByAgentserviceid(String agentserviceid);
 
-    AgentServiceSummary findById(String id);
-
     AgentServiceSummary findByStatuseventid(String statuseventid);
 
     Page<AgentServiceSummary> findAll(Specification<AgentServiceSummary> spec, Pageable pageable);  //分页按条件查询

@@ -21,17 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.controller.Handler;
-import com.cskefu.cc.model.Organ;
-import com.cskefu.cc.model.OrganUser;
-import com.cskefu.cc.model.Role;
-import com.cskefu.cc.model.User;
-import com.cskefu.cc.model.UserRole;
+import com.cskefu.cc.model.*;
 import com.cskefu.cc.persistence.repository.ExtensionRepository;
 import com.cskefu.cc.persistence.repository.OrganUserRepository;
 import com.cskefu.cc.persistence.repository.PbxHostRepository;
@@ -103,7 +99,7 @@ public class UsersController extends Handler {
         organs.add(currentOrgan.getId());
 
         map.addAttribute("currentOrgan", currentOrgan);
-        map.addAttribute("userList", userProxy.findUserInOrgans(organs, new PageRequest(
+        map.addAttribute("userList", userProxy.findUserInOrgans(organs, PageRequest.of(
                 super.getP(request),
                 super.getPs(request),
                 Sort.Direction.ASC,
@@ -130,17 +126,16 @@ public class UsersController extends Handler {
     @Menu(type = "admin", subtype = "user")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
         ModelAndView view = request(super.createView("/admin/user/edit"));
-        User user = userRepository.findById(id);
+        User user = userRepository.getReferenceById(id);
         if (user != null && MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER)) {
             // 加载呼叫中心信息
             extensionRes.findByAgentno(user.getId()).ifPresent(p -> {
                 user.setExtensionId(p.getId());
                 user.setExtension(p);
 
-                pbxHostRes.findById(p.getHostid()).ifPresent(b -> {
-                    user.setPbxhostId(b.getId());
-                    user.setPbxHost(b);
-                });
+                PbxHost one = pbxHostRes.getReferenceById(p.getHostid());
+                user.setPbxhostId(one.getId());
+                user.setPbxHost(one);
             });
         }
         view.addObject("userData", user);
@@ -152,16 +147,16 @@ public class UsersController extends Handler {
     public ModelAndView delete(HttpServletRequest request, @Valid User user) {
         String msg = "admin_user_delete";
         if (user != null) {
-            User dbUser = userRepository.getOne(user.getId());
+            User dbUser = userRepository.getReferenceById(user.getId());
             if (dbUser.isSuperadmin()) {
                 msg = "admin_user_abandoned";
             } else {
                 // 删除用户的时候，同时删除用户对应的权限数据
                 List<UserRole> userRole = userRoleRes.findByUser(user);
-                userRoleRes.delete(userRole);
+                userRoleRes.deleteAll(userRole);
                 // 删除用户对应的组织机构关系
                 List<OrganUser> organUsers = organUserRes.findByUserid(user.getId());
-                organUserRes.delete(organUsers);
+                organUserRes.deleteAll(organUsers);
 
                 userRepository.delete(dbUser);
 

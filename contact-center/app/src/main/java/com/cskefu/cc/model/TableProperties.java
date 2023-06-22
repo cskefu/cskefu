@@ -19,7 +19,7 @@ package com.cskefu.cc.model;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * @author jaddy0302 Rivulet TableProperties.java 2010-3-22

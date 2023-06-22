@@ -38,8 +38,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -134,9 +134,9 @@ public class OnlineUserController extends Handler {
 
                 agentUserContactsRes.findOneByUserid(
                         userid).ifPresent(p -> {
-                    map.put("contacts", contactsRes.findOne(p.getContactsid()));
+                    map.put("contacts", contactsRes.getReferenceById(p.getContactsid()));
                 });
-                AgentService service = agentServiceRes.findById(agentservice);
+                AgentService service = agentServiceRes.getReferenceById(agentservice);
                 if (service != null) {
                     map.addAttribute(
                             "tags", tagRes.findByTagtypeAndSkill(MainContext.ModelType.USER.toString(), service.getSkill()));
@@ -150,7 +150,7 @@ public class OnlineUserController extends Handler {
                 map.put(
                         "agentUserMessageList",
                         chatMessageRepository.findByAgentserviceid(agentService.getId(),
-                                new PageRequest(
+                                PageRequest.of(
                                         0, 50, Direction.DESC,
                                         "updatetime")));
             }
@@ -162,7 +162,7 @@ public class OnlineUserController extends Handler {
                     map.put("weiXinUser", passportWechatUser);
                 }
             } else if (MainContext.ChannelType.WEBIM.toString().equals(channel)) {
-                PassportWebIMUser passportWebIMUser = onlineUserRes.findOne(userid);
+                PassportWebIMUser passportWebIMUser = onlineUserRes.getReferenceById(userid);
                 if (passportWebIMUser != null) {
                     map.put("onlineUser", passportWebIMUser);
                 }
@@ -181,7 +181,7 @@ public class OnlineUserController extends Handler {
     @RequestMapping("/online/chatmsg")
     @Menu(type = "service", subtype = "chatmsg", admin = true)
     public ModelAndView onlinechat(ModelMap map, HttpServletRequest request, String id, String title) {
-        AgentService agentService = agentServiceRes.getOne(id);
+        AgentService agentService = agentServiceRes.getReferenceById(id);
         map.put("curAgentService", agentService);
         cache.findOneAgentUserByUserId(agentService.getUserid()).ifPresent(p -> {
             map.put("curagentuser", p);
@@ -207,7 +207,7 @@ public class OnlineUserController extends Handler {
         map.put(
                 "agentUserMessageList",
                 chatMessageRepository.findByAgentserviceid(agentService.getId(),
-                        new PageRequest(0, 50, Direction.DESC,
+                        PageRequest.of(0, 50, Direction.DESC,
                                 "updatetime")));
 
         return request(super.createView("/apps/service/online/chatmsg"));
@@ -223,7 +223,7 @@ public class OnlineUserController extends Handler {
         if (StringUtils.isNotBlank(sessionid)) {
             map.addAttribute(
                     "traceHisList", userEventRes.findBySessionid(sessionid,
-                            new PageRequest(0, 100)));
+                            PageRequest.of(0, 100)));
         }
         return request(super.createView("/apps/service/online/trace"));
     }

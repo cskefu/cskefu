@@ -25,8 +25,6 @@ import java.util.List;
 
 public interface IMGroupUserRepository extends JpaRepository<IMGroupUser, String> {
 
-    IMGroupUser findById(String id);
-
     List<IMGroupUser> findByImgroup(IMGroup imgroup);
 
     IMGroupUser findByImgroupAndUser(IMGroup imgroup, User user);

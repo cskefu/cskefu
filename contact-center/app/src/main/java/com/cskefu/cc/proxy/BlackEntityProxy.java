@@ -67,7 +67,7 @@ public class BlackEntityProxy {
         blackEntityUpdated.setAgentid(owner.getId());
         blackEntityUpdated.setAgentserviceid(agentserviceid);
         if (agentserviceid != null){
-            AgentService service = agentServiceRes.findById(agentserviceid);
+            AgentService service = agentServiceRes.getReferenceById(agentserviceid);
             blackEntityUpdated.setSkill(service.getSkill());
             blackEntityUpdated.setAgentusername(service.getAgentusername());
         }
@@ -82,7 +82,7 @@ public class BlackEntityProxy {
                     new Date(System.currentTimeMillis() + pre.getControltime() * 3600 * 1000L));
         }
 
-        AgentService agentService = agentServiceRes.findById(agentserviceid);
+        AgentService agentService = agentServiceRes.getReferenceById(agentserviceid);
         if (agentService != null) {
             blackEntityUpdated.setChannel(agentService.getChanneltype());
             blackEntityUpdated.setAgentuser(agentService.getUsername());

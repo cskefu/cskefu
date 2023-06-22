@@ -21,15 +21,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 用户体验计划
  */
-public class UserExperiencePlanInterceptorHandler extends HandlerInterceptorAdapter {
+public class UserExperiencePlanInterceptorHandler implements HandlerInterceptor {
     private static final Logger logger = LoggerFactory.getLogger(UserExperiencePlanInterceptorHandler.class);
     public final static String FLAG_KEY = "cskefu:global:user-experience-plan";
     private static RedisCommand redis;

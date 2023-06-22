@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -86,6 +87,7 @@ public class MessengerMessageProxy {
     private Cache cache;
 
     @Autowired
+    @Lazy
     private PeerSyncIM peerSyncIM;
 
     @Autowired
@@ -95,6 +97,7 @@ public class MessengerMessageProxy {
     private ChatbotRepository chatbotRes;
 
     @Autowired
+    @Lazy
     private MessengerChatbot messengerChatbot;
 
     @Autowired
@@ -119,7 +122,7 @@ public class MessengerMessageProxy {
     private String host;
 
     public void acceptOTNReq(String fromId, String toId, String otnToken, String ref) {
-        FbOTN otn = otnRepository.findOne(ref);
+        FbOTN otn = otnRepository.getReferenceById(ref);
         if (otn != null) {
             FbOtnFollow follow = new FbOtnFollow();
             follow.setId(MainUtils.getUUID());
@@ -139,7 +142,7 @@ public class MessengerMessageProxy {
     }
 
     public void acceptMeLink(String fromId, String toId, String ref) {
-        FbOTN otn = otnRepository.findOne(ref);
+        FbOTN otn = otnRepository.getReferenceById(ref);
         if (otn != null) {
             if (StringUtils.isNotBlank(otn.getPreSubMessage())) {
                 Object obj = JSON.parse(otn.getPreSubMessage());
@@ -239,7 +242,7 @@ public class MessengerMessageProxy {
                     agentUser, passportWebIMUser, channel).orElseThrow(
                     () -> new CSKefuException("Can not resolve AgentService Object."));
         } else {
-            agentService = agentServiceRes.findOne(agentUser.getAgentserviceid());
+            agentService = agentServiceRes.getReferenceById(agentUser.getAgentserviceid());
         }
 
 

@@ -22,7 +22,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface SessionConfigRepository extends JpaRepository<SessionConfig, String> {
 
-    @Query(value = "SELECT * FROM `uk_sessionconfig` LIMIT 1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM `uk_sessionconfig` LIMIT 1")
     SessionConfig findOne();
 
     SessionConfig findBySkill(String skill);

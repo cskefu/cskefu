@@ -29,14 +29,11 @@ import java.util.Optional;
 import java.util.Set;
 
 
-public interface AgentServiceRepository
-        extends JpaRepository<AgentService, String> {
-
-    AgentService findById(String paramString);
+public interface AgentServiceRepository extends JpaRepository<AgentService, String> {
 
     List<AgentService> findByUseridOrderByLogindateDesc(String paramString);
 
-    @Query(value = "SELECT * FROM uk_agentservice WHERE userid= ?1 ORDER BY logindate DESC LIMIT 1", nativeQuery = true)
+    @Query(nativeQuery = true, value = "SELECT * FROM uk_agentservice WHERE userid= ?1 ORDER BY logindate DESC LIMIT 1")
     Optional<AgentService> findOneByUseridOrderByLogindateDesc(String userid);
 
     AgentService findFirstByUserid(String userid);

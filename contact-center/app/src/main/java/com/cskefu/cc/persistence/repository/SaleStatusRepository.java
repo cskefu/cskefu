@@ -23,8 +23,6 @@ import java.util.List;
 
 public interface SaleStatusRepository extends JpaRepository<SaleStatus, String> {
 
-    SaleStatus findById(String id);
-
     List<SaleStatus> findAll();
 
     List<SaleStatus> findByActivityid(String activityid);
