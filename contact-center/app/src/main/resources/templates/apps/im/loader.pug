@@ -13,5 +13,7 @@
 //- limitations under the License.
 if (appid)
     include loader.js
-    - var baseUrl = (schema?schema:'http')+'://' + hostname + ':' + port
+    - var schemaFixed = schema ? schema : 'http'
+    - var portFixed = schemaFixed == "https" ? 443 : port
+    - var baseUrl = schemaFixed + '://' + hostname + ':' + portFixed
     | chatoperaLoad('!{baseUrl + "/im/point/" + appid + ".html"}')
