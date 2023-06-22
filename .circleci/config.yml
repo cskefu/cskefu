@@ -12,7 +12,7 @@ jobs:
     # Be sure to update the Docker image tag below to openjdk version of your application.
     # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/openjdk
     docker:
-      - image: cimg/openjdk:11.0
+      - image: cimg/openjdk:17.0.7
     # Add steps to the job
     # See: https://circleci.com/docs/configuration-reference/#steps
     steps:

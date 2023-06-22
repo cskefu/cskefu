@@ -1,4 +1,4 @@
-FROM chatopera/java:11
+FROM chatopera/java:17
 MAINTAINER Hai Liang Wang <hain@chatopera.com>
 # base image is built with config/base/build.sh
 
