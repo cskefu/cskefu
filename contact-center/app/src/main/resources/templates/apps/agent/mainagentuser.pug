@@ -33,7 +33,7 @@ script(language='javascript').
                         button.layui-btn.layui-btn-small(style="margin:0 5px")
                             i.kfont 
                             |  转接坐席
-                    a(href="javascript:void(0)", onclick="submitEndAgentUser('#{curagentuser.id}','#{curagentuser.username}')")
+                    a(href="javascript:void(0)", onclick="submitEndAgentUser('" +curagentuser.id+"','"+curagentuser.username+"')")
                         button.layui-btn.layui-btn-small.layui-btn-danger
                             i.kfont 
                             |  结束对话

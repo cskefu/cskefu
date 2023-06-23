@@ -34,6 +34,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class AgentServiceProxy {
@@ -147,7 +148,7 @@ public class AgentServiceProxy {
                 view.addObject("weiXinUser", passportWechatUser);
             }
         } else if (MainContext.ChannelType.WEBIM.toString().equals(agentUser.getChanneltype())) {
-            PassportWebIMUser passportWebIMUser = onlineUserRes.getReferenceById(agentUser.getUserid());
+            PassportWebIMUser passportWebIMUser = onlineUserRes.findById(agentUser.getUserid()).orElse(null);
             if (passportWebIMUser != null) {
                 if (StringUtils.equals(
                         MainContext.OnlineUserStatusEnum.OFFLINE.toString(), passportWebIMUser.getStatus())) {
