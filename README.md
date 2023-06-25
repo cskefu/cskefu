@@ -1,12 +1,12 @@
 <div align=right>
 
-[主页](https://www.cskefu.com/)　|　[开源许可协议](https://www.cskefu.com/2022/06/24/cskefu-opensource-license/)　|　[邮件列表](https://lists.cskefu.com/cgi-bin/mailman/listinfo/dev)　|　[路线图](https://github.com/orgs/cskefu/projects/1)
+[主页](https://www.cskefu.com/)　|　[开源许可协议](https://docs.cskefu.com/licenses/v1.html)　|　[工单列表](https://github.com/cskefu/cskefu/issues)　|　[路线图](https://github.com/orgs/cskefu/projects/1)
 
 </div>
 
 # 春松客服
 
-[![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/cskefu/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/cskefu/cskefu/network/members) [![License](https://img.shields.io/github/license/saltstack/salt)](https://www.cskefu.com/2022/06/24/cskefu-opensource-license/ "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![docker](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/cskefu/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/cskefu/cskefu/network/members) [![License](https://cdndownload2.chatopera.com/cskefu/licenses/chunsong1.0.svg)](https://www.cskefu.com/licenses/v1.html "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![docker](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-33-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
@@ -293,8 +293,8 @@
 
 ## 开源许可协议
 
-Copyright (2018-2023) <a href="https://www.chatopera.com/" target="_blank">北京华夏春松科技有限公司</a>
+Copyright 2023 <a href="https://www.chatopera.com/" target="_blank">北京华夏春松科技有限公司</a>
 
-[Apache License Version 2.0](https://www.cskefu.com/2022/06/24/cskefu-opensource-license/)
+[Chunsong Public License, version 1.0](https://docs.cskefu.com/licenses/v1.html)
 
 ![image](./public/assets/screenshot-20220323-163051.jpg)
