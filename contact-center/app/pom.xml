@@ -7,6 +7,15 @@
     <packaging>war</packaging>
     <name>cc-core</name>
     <description>春松客服：开源客服系统</description>
+    <licenses>
+        <license>
+            <name>Chunsong Public License, version 1.0</name>
+            <url>https://docs.cskefu.com/licenses/v1.html</url>
+            <comments>
+                Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+            </comments>
+        </license>
+    </licenses>
     <parent>
         <groupId>com.cskefu.cc</groupId>
         <artifactId>cc-root</artifactId>
