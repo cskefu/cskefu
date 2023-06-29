@@ -89,7 +89,7 @@ public class AgentSummaryController extends Handler {
             List<Predicate> list = new ArrayList<>();
             Expression<String> exp = root.<String>get("skill");
             list.add(exp.in(organs.keySet()));
-            list.add(cb.equal(root.get("process").as(boolean.class), 0));
+            list.add(cb.equal(root.get("process").as(Boolean.class), Boolean.FALSE));
             list.add(cb.notEqual(root.get("channel").as(String.class), MainContext.ChannelType.PHONE.toString()));
             try {
                 if (!StringUtils.isBlank(begin) && begin.matches("[\\d]{4}-[\\d]{2}-[\\d]{2}")) {
