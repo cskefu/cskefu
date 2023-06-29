@@ -206,7 +206,7 @@ public class AgentSettingsController extends Handler {
     @RequestMapping("/tag/edit")
     @Menu(type = "setting", subtype = "tag")
     public ModelAndView tagedit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String tagtype) {
-        map.put("tag", tagRes.findById(id)).orElse(null);
+        map.put("tag", tagRes.findById(id).orElse(null));
         map.addAttribute("tagtype", tagtype);
         return request(super.createView("/apps/setting/agent/tagedit"));
     }
@@ -322,7 +322,7 @@ public class AgentSettingsController extends Handler {
     @Menu(type = "setting", subtype = "adv")
     public ModelAndView advedit(ModelMap map, HttpServletRequest request, @Valid String adpos, @Valid String id) {
         map.addAttribute("adpos", adpos);
-        map.put("ad", adTypeRes.findById(id)).orElse(null);
+        map.put("ad", adTypeRes.findById(id).orElse(null));
         return request(super.createView("/apps/setting/agent/adedit"));
     }
 

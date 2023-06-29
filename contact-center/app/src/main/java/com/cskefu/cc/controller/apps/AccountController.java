@@ -293,7 +293,7 @@ public class AccountController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "customer", subtype = "customer")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String ekind) {
-        map.addAttribute("entCustomer", accountRes.findById(id)).orElse(null);
+        map.addAttribute("entCustomer", accountRes.findById(id).orElse(null));
         map.addAttribute("ekindId", ekind);
         return request(super.createView("/apps/customer/edit"));
     }

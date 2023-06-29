@@ -84,7 +84,7 @@ public class SystemMessageController extends Handler {
     @Menu(type = "admin", subtype = "email")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
         map.put("organList", organRes.findAll());
-        map.addAttribute("email", systemMessageRepository.findById(id)).orElse(null);
+        map.addAttribute("email", systemMessageRepository.findById(id).orElse(null));
         return request(super.createView("/admin/email/edit"));
     }
 
@@ -145,7 +145,7 @@ public class SystemMessageController extends Handler {
     @Menu(type = "admin", subtype = "sms")
     public ModelAndView smsedit(ModelMap map, HttpServletRequest request, @Valid String id) {
         map.addAttribute("smsType", Dict.getInstance().getDic("com.dic.sms.type"));
-        map.addAttribute("sms", systemMessageRepository.findById(id)).orElse(null);
+        map.addAttribute("sms", systemMessageRepository.findById(id).orElse(null));
         return request(super.createView("/admin/sms/edit"));
     }
 

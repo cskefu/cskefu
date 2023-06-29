@@ -445,7 +445,7 @@
                      StatusEvent statusEvent = this.statusEventRes.findById(agentService.getOwner()).orElse(null);
                      if (statusEvent != null) {
                          if (StringUtils.isNotBlank(statusEvent.getHostid())) {
-                                 view.addObject("pbxHost", pbxHostRes.findById(statusEvent.getHostid())).orElse(null);
+                                 view.addObject("pbxHost", pbxHostRes.findById(statusEvent.getHostid()).orElse(null));
                          }
                          view.addObject("statusEvent", statusEvent);
                      }
@@ -702,7 +702,7 @@
          map.addAttribute("agentuserid", agentuserid);
          map.addAttribute("agentserviceid", agentserviceid);
          map.addAttribute("userid", userid);
-         map.addAttribute("agentUser", agentUserRes.findById(userid)).orElse(null);
+         map.addAttribute("agentUser", agentUserRes.findById(userid).orElse(null));
          return request(super.createView("/apps/agent/blacklistadd"));
      }
 
@@ -1131,7 +1131,7 @@
              map.addAttribute("agentuserid", agentuserid);
              map.addAttribute("skillGroups", skillGroups);
              map.addAttribute("agentno", agentService.getAgentno());
-             map.addAttribute("agentservice", this.agentServiceRes.findById(agentserviceid)).orElse(null);
+             map.addAttribute("agentservice", this.agentServiceRes.findById(agentserviceid).orElse(null));
              map.addAttribute("currentorgan", currentOrgan);
          }
 

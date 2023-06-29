@@ -286,7 +286,7 @@ public class ContactsController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "contacts", subtype = "contacts")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String ckind) {
-        map.addAttribute("contacts", contactsRes.findById(id)).orElse(null);
+        map.addAttribute("contacts", contactsRes.findById(id).orElse(null));
         map.addAttribute("ckindId", ckind);
         return request(super.createView("/apps/contacts/edit"));
     }
@@ -297,7 +297,7 @@ public class ContactsController extends Handler {
         if (id == null) {
             return null; // id is required. Block strange requst anyway with g2.min, https://github.com/alibaba/BizCharts/issues/143
         }
-        map.addAttribute("contacts", contactsRes.findById(id)).orElse(null);
+        map.addAttribute("contacts", contactsRes.findById(id).orElse(null));
 
         return request(super.createView("/apps/contacts/detail"));
 
@@ -611,7 +611,7 @@ public class ContactsController extends Handler {
     @RequestMapping("/embed/edit")
     @Menu(type = "contacts", subtype = "embededit")
     public ModelAndView embededit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String agentserviceid) {
-        map.addAttribute("contacts", contactsRes.findById(id)).orElse(null);
+        map.addAttribute("contacts", contactsRes.findById(id).orElse(null));
         if (StringUtils.isNotBlank(agentserviceid)) {
             map.addAttribute("agentserviceid", agentserviceid);
         }

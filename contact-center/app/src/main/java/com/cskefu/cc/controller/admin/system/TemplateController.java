@@ -95,7 +95,7 @@ public class TemplateController extends Handler {
     @RequestMapping("/list")
     @Menu(type = "admin", subtype = "template", admin = true)
     public ModelAndView list(ModelMap map, HttpServletRequest request, @Valid String type) {
-        map.addAttribute("sysDic", dicRes.findById(type)).orElse(null);
+        map.addAttribute("sysDic", dicRes.findById(type).orElse(null));
         map.addAttribute("templateList", templateRes.findByTemplettype(type));
         return request(super.createView("/admin/system/template/list"));
     }
@@ -103,7 +103,7 @@ public class TemplateController extends Handler {
     @RequestMapping("/add")
     @Menu(type = "admin", subtype = "template", admin = true)
     public ModelAndView add(ModelMap map, HttpServletRequest request, @Valid String type) {
-        map.addAttribute("sysDic", dicRes.findById(type)).orElse(null);
+        map.addAttribute("sysDic", dicRes.findById(type).orElse(null));
         return request(super.createView("/admin/system/template/add"));
     }
 
@@ -124,8 +124,8 @@ public class TemplateController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "template", admin = true)
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String type) {
-        map.addAttribute("sysDic", dicRes.findById(type)).orElse(null);
-        map.addAttribute("template", templateRes.findById(id)).orElse(null);
+        map.addAttribute("sysDic", dicRes.findById(type).orElse(null));
+        map.addAttribute("template", templateRes.findById(id).orElse(null));
         return request(super.createView("/admin/system/template/edit"));
     }
 
@@ -156,8 +156,8 @@ public class TemplateController extends Handler {
     @RequestMapping("/code")
     @Menu(type = "admin", subtype = "template", admin = true)
     public ModelAndView code(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String type) {
-        map.addAttribute("sysDic", dicRes.findById(type)).orElse(null);
-        map.addAttribute("template", templateRes.findById(id)).orElse(null);
+        map.addAttribute("sysDic", dicRes.findById(type).orElse(null));
+        map.addAttribute("template", templateRes.findById(id).orElse(null));
         return request(super.createView("/admin/system/template/code"));
     }
 

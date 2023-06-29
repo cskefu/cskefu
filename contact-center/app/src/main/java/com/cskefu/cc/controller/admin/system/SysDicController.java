@@ -78,7 +78,7 @@ public class SysDicController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "sysdic")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String p) {
-        map.addAttribute("sysDic", sysDicRes.findById(id)).orElse(null);
+        map.addAttribute("sysDic", sysDicRes.findById(id).orElse(null));
         map.addAttribute("p", p);
         return request(super.createView("/admin/system/sysdic/edit"));
     }
@@ -116,7 +116,7 @@ public class SysDicController extends Handler {
     @RequestMapping("/dicitem")
     @Menu(type = "admin", subtype = "sysdic")
     public ModelAndView dicitem(ModelMap map, HttpServletRequest request, @Valid String id) {
-        map.addAttribute("sysDic", sysDicRes.findById(id)).orElse(null);
+        map.addAttribute("sysDic", sysDicRes.findById(id).orElse(null));
         map.addAttribute("sysDicList", sysDicRes.findByParentid(id, PageRequest.of(super.getP(request), super.getPs(request), Direction.DESC, "createtime")));
         return request(super.createView("/admin/system/sysdic/dicitem"));
     }
@@ -124,7 +124,7 @@ public class SysDicController extends Handler {
     @RequestMapping("/dicitem/add")
     @Menu(type = "admin", subtype = "sysdic")
     public ModelAndView dicitemadd(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String p) {
-        map.addAttribute("sysDic", sysDicRes.findById(id)).orElse(null);
+        map.addAttribute("sysDic", sysDicRes.findById(id).orElse(null));
         map.addAttribute("p", p);
         return request(super.createView("/admin/system/sysdic/dicitemadd"));
     }
@@ -170,7 +170,7 @@ public class SysDicController extends Handler {
     @RequestMapping("/dicitem/batadd")
     @Menu(type = "admin", subtype = "sysdic")
     public ModelAndView dicitembatadd(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String p) {
-        map.addAttribute("sysDic", sysDicRes.findById(id)).orElse(null);
+        map.addAttribute("sysDic", sysDicRes.findById(id).orElse(null));
         map.addAttribute("p", p);
         return request(super.createView("/admin/system/sysdic/batadd"));
     }
@@ -198,7 +198,7 @@ public class SysDicController extends Handler {
 
             }
         }
-        reloadSysDicItem(sysDicRes.findById(sysDic.getParentid())).orElse(null);
+        reloadSysDicItem(sysDicRes.findById(sysDic.getParentid()).orElse(null));
 
         return request(super.createView("redirect:/admin/sysdic/dicitem.html?id=" + sysDic.getParentid() + "&p=" + p));
     }
@@ -206,7 +206,7 @@ public class SysDicController extends Handler {
     @RequestMapping("/dicitem/edit")
     @Menu(type = "admin", subtype = "sysdic")
     public ModelAndView dicitemedit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String p) {
-        map.addAttribute("sysDic", sysDicRes.findById(id)).orElse(null);
+        map.addAttribute("sysDic", sysDicRes.findById(id).orElse(null));
         map.addAttribute("p", p);
         return request(super.createView("/admin/system/sysdic/dicitemedit"));
     }

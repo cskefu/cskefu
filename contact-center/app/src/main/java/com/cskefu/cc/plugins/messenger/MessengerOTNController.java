@@ -120,7 +120,7 @@ public class MessengerOTNController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "messenger")
     public ModelAndView edit(ModelMap map, @Valid String id, HttpServletRequest request) {
-        map.addAttribute("otn", otnRepository.findById(id)).orElse(null);
+        map.addAttribute("otn", otnRepository.findById(id).orElse(null));
         return request(super.createView("/admin/channel/messenger/otn/edit"));
     }
 

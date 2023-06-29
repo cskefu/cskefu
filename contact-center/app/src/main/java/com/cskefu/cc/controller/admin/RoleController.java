@@ -193,7 +193,7 @@ public class RoleController extends Handler {
     @Menu(type = "admin", subtype = "role")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
         ModelAndView view = request(super.createView("/admin/role/edit"));
-        view.addObject("roleData", roleRepository.findById(id)).orElse(null);
+        view.addObject("roleData", roleRepository.findById(id).orElse(null));
         return view;
     }
 

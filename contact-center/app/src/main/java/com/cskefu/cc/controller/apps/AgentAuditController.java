@@ -399,7 +399,7 @@ public class AgentAuditController extends Handler {
             map.addAttribute("agentuserid", agentuserid);
             map.addAttribute("agentno", agentnoid);
             map.addAttribute("skillGroups", skillGroups);
-            map.addAttribute("agentservice", this.agentServiceRes.findById(agentserviceid)).orElse(null);
+            map.addAttribute("agentservice", this.agentServiceRes.findById(agentserviceid).orElse(null));
             map.addAttribute("currentorgan", currentOrgan);
         }
 
@@ -600,7 +600,7 @@ public class AgentAuditController extends Handler {
         map.addAttribute("agentuserid", agentuserid);
         map.addAttribute("agentserviceid", agentserviceid);
         map.addAttribute("userid", userid);
-        map.addAttribute("agentUser", agentUserRes.findById(userid)).orElse(null);
+        map.addAttribute("agentUser", agentUserRes.findById(userid).orElse(null));
         return request(super.createView("/apps/cca/blacklistadd"));
     }
 

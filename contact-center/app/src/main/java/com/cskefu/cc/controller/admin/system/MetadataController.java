@@ -79,7 +79,7 @@ public class MetadataController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "metadata", admin = true)
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
-        map.addAttribute("metadata", metadataRes.findById(id)).orElse(null);
+        map.addAttribute("metadata", metadataRes.findById(id).orElse(null));
         return request(super.createView("/admin/system/metadata/edit"));
     }
 
@@ -98,7 +98,7 @@ public class MetadataController extends Handler {
     @RequestMapping("/properties/edit")
     @Menu(type = "admin", subtype = "metadata", admin = true)
     public ModelAndView propertiesedit(ModelMap map, HttpServletRequest request, @Valid String id) {
-        map.addAttribute("tp", tablePropertiesRes.findById(id)).orElse(null);
+        map.addAttribute("tp", tablePropertiesRes.findById(id).orElse(null));
         map.addAttribute("sysdicList", sysDicRes.findByParentid("0"));
         map.addAttribute("dataImplList", Dict.getInstance().getDic("com.dic.data.impl"));
 
@@ -169,7 +169,7 @@ public class MetadataController extends Handler {
     public ModelAndView table(ModelMap map, HttpServletRequest request, @Valid String id) throws SQLException {
         map.addAttribute("propertiesList", tablePropertiesRes.findByDbtableid(id));
         map.addAttribute("tbid", id);
-        map.addAttribute("table", metadataRes.findById(id)).orElse(null);
+        map.addAttribute("table", metadataRes.findById(id).orElse(null));
         return request(super.createView("/admin/system/metadata/table"));
     }
 

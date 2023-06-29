@@ -132,7 +132,7 @@ public class OnlineUserController extends Handler {
 
                 agentUserContactsRes.findOneByUserid(
                         userid).ifPresent(p -> {
-                    map.put("contacts", contactsRes.findById(p.getContactsid())).orElse(null);
+                    map.put("contacts", contactsRes.findById(p.getContactsid()).orElse(null));
                 });
                 AgentService service = agentServiceRes.findById(agentservice).orElse(null);
                 if (service != null) {

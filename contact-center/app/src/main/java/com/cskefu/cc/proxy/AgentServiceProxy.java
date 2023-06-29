@@ -162,7 +162,7 @@ public class AgentServiceProxy {
                 StatusEvent statusEvent = statusEventRes.findById(agentService.getOwner()).orElse(null);
                 if (statusEvent != null) {
                     if (StringUtils.isNotBlank(statusEvent.getHostid())) {
-                         view.addObject("pbxHost", pbxHostRes.findById(statusEvent.getHostid())).orElse(null);
+                         view.addObject("pbxHost", pbxHostRes.findById(statusEvent.getHostid()).orElse(null));
                     }
                     view.addObject("statusEvent", statusEvent);
                 }

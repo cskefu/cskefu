@@ -141,10 +141,10 @@ public class OrganController extends Handler {
     public ModelAndView add(ModelMap map, HttpServletRequest request, @Valid String parent, @Valid String area) {
         map.addAttribute("areaList", areaRepository.findAll());
         if (!StringUtils.isBlank(parent)) {
-            map.addAttribute("organ", organRepository.findById(parent)).orElse(null);
+            map.addAttribute("organ", organRepository.findById(parent).orElse(null));
         }
         if (!StringUtils.isBlank(area)) {
-            map.addAttribute("area", areaRepository.findById(area)).orElse(null);
+            map.addAttribute("area", areaRepository.findById(area).orElse(null));
         }
 
         map.addAttribute("organList", getOwnOragans(request));
@@ -283,7 +283,7 @@ public class OrganController extends Handler {
         ModelAndView view = request(super.createView("/admin/organ/edit"));
         Organ currentOrgan = super.getOrgan(request);
         map.addAttribute("areaList", areaRepository.findAll());
-        view.addObject("organData", organRepository.findById(id)).orElse(null);
+        view.addObject("organData", organRepository.findById(id).orElse(null));
         view.addObject("isRootOrgan", id.equals(currentOrgan.getId()));
         map.addAttribute("organList", getOwnOragans(request));
         return view;
@@ -308,7 +308,7 @@ public class OrganController extends Handler {
         }
         map.addAttribute("cacheList", Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_AREA_DIC));
 
-        map.addAttribute("organData", organRepository.findById(id)).orElse(null);
+        map.addAttribute("organData", organRepository.findById(id).orElse(null));
         return request(super.createView("/admin/organ/area"));
     }
 
