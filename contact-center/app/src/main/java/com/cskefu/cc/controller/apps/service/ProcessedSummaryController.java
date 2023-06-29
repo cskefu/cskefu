@@ -88,7 +88,7 @@ public class ProcessedSummaryController extends Handler {
             List<Predicate> list = new ArrayList<>();
             Expression<String> exp = root.<String>get("skill");
             list.add(exp.in(organs.keySet()));
-            list.add(cb.equal(root.get("process").as(boolean.class), 1));
+            list.add(cb.equal(root.get("process").as(boolean.class), true));
             list.add(cb.notEqual(root.get("channel").as(String.class), MainContext.ChannelType.PHONE.toString()));
             if (!StringUtils.isBlank(ani)) {
                 list.add(cb.equal(root.get("ani").as(String.class), ani));
