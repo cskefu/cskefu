@@ -29,7 +29,7 @@ public class ServiceDataExchangeImpl implements DataExchangeInterface {
     private TagRepository tagRes;
 
     public String getDataById(String id) {
-        Tag tag = tagRes.getReferenceById(id);
+        Tag tag = tagRes.findById(id).orElse(null);
         return tag != null ? tag.getTag() : id;
     }
 

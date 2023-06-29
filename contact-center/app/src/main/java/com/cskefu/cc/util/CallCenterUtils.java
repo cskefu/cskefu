@@ -51,7 +51,7 @@ public class CallCenterUtils {
             if (StringUtils.isNotBlank(ext.getSiptrunk())) {
                 sipTrunk = MainContext.getCache().findOneSystemById(ext.getSiptrunk());
                 if (sipTrunk == null) {
-                    sipTrunk = sipTrunkRes.getReferenceById(ext.getSiptrunk());
+                    sipTrunk = sipTrunkRes.findById(ext.getSiptrunk()).orElse(null);
                     if (sipTrunk != null) {
                         MainContext.getCache().putSystemById(sipTrunk.getId(), sipTrunk);
                     }

@@ -266,7 +266,7 @@ public class AgentAuditController extends Handler {
         }
         ModelAndView view = request(super.createView(mainagentuser));
         final User logined = super.getUser(request);
-        AgentUser agentUser = agentUserRepository.getReferenceById(id);
+        AgentUser agentUser = agentUserRepository.findById(id).orElse(null);
 
         if (agentUser != null) {
             view.addObject("curagentuser", agentUser);
@@ -278,7 +278,7 @@ public class AgentAuditController extends Handler {
 
             view.addObject("inviteData", OnlineUserProxy.consult(agentUser.getAppid()));
 
-            AgentUserTask agentUserTask = agentUserTaskRes.getReferenceById(id);
+            AgentUserTask agentUserTask = agentUserTaskRes.findById(id).orElse(null);
             agentUserTask.setTokenum(0);
             agentUserTaskRes.save(agentUserTask);
 
@@ -298,7 +298,7 @@ public class AgentAuditController extends Handler {
             );
             AgentService agentService = null;
             if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-                agentService = this.agentServiceRes.getReferenceById(agentUser.getAgentserviceid());
+                agentService = this.agentServiceRes.findById(agentUser.getAgentserviceid()).orElse(null);
                 view.addObject("curAgentService", agentService);
                 if (agentService != null) {
                     /**
@@ -308,7 +308,7 @@ public class AgentAuditController extends Handler {
                 }
             }
             if (MainContext.ChannelType.WEBIM.toString().equals(agentUser.getChanneltype())) {
-                PassportWebIMUser passportWebIMUser = onlineUserRes.getReferenceById(agentUser.getUserid());
+                PassportWebIMUser passportWebIMUser = onlineUserRes.findById(agentUser.getUserid()).orElse(null);
                 if (passportWebIMUser != null) {
                     if (passportWebIMUser.getLogintime() != null) {
                         if (MainContext.OnlineUserStatusEnum.OFFLINE.toString().equals(passportWebIMUser.getStatus())) {
@@ -329,7 +329,7 @@ public class AgentAuditController extends Handler {
                                     .toString()));
             view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid()));
 
-            AgentService service = agentServiceRes.getReferenceById(agentUser.getAgentserviceid());
+            AgentService service = agentServiceRes.findById(agentUser.getAgentserviceid()).orElse(null);
             if (service != null) {
                 view.addObject("tags", tagRes.findByTagtypeAndSkill(MainContext.ModelType.USER.toString(), service.getSkill()));
             }
@@ -366,7 +366,7 @@ public class AgentAuditController extends Handler {
             List<Organ> skillGroups = organRes.findByIdInAndSkill(ownOrgans.keySet(), true);
 
             // 选择当前用户的默认技能组
-            AgentService agentService = agentServiceRes.getReferenceById(agentserviceid);
+            AgentService agentService = agentServiceRes.findById(agentserviceid).orElse(null);
 
             String currentOrgan = agentService.getSkill();
 
@@ -399,7 +399,7 @@ public class AgentAuditController extends Handler {
             map.addAttribute("agentuserid", agentuserid);
             map.addAttribute("agentno", agentnoid);
             map.addAttribute("skillGroups", skillGroups);
-            map.addAttribute("agentservice", this.agentServiceRes.getReferenceById(agentserviceid));
+            map.addAttribute("agentservice", this.agentServiceRes.findById(agentserviceid)).orElse(null);
             map.addAttribute("currentorgan", currentOrgan);
         }
 
@@ -474,8 +474,8 @@ public class AgentAuditController extends Handler {
         if (StringUtils.isNotBlank(userid) &&
                 StringUtils.isNotBlank(agentuserid) &&
                 StringUtils.isNotBlank(agentno)) {
-            final User targetAgent = userRes.getReferenceById(agentno);
-            final AgentService agentService = agentServiceRes.getReferenceById(agentserviceid);
+            final User targetAgent = userRes.findById(agentno).orElse(null);
+            final AgentService agentService = agentServiceRes.findById(agentserviceid).orElse(null);
             /**
              * 更新AgentUser
              */
@@ -573,7 +573,7 @@ public class AgentAuditController extends Handler {
     public ModelAndView end(HttpServletRequest request, @Valid String id) {
         final User logined = super.getUser(request);
 
-        final AgentUser agentUser = agentUserRes.getReferenceById(id);
+        final AgentUser agentUser = agentUserRes.findById(id).orElse(null);
 
         if (agentUser != null) {
             if ((StringUtils.equals(
@@ -600,7 +600,7 @@ public class AgentAuditController extends Handler {
         map.addAttribute("agentuserid", agentuserid);
         map.addAttribute("agentserviceid", agentserviceid);
         map.addAttribute("userid", userid);
-        map.addAttribute("agentUser", agentUserRes.getReferenceById(userid));
+        map.addAttribute("agentUser", agentUserRes.findById(userid)).orElse(null);
         return request(super.createView("/apps/cca/blacklistadd"));
     }
 

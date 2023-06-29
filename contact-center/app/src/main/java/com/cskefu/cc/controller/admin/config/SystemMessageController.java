@@ -84,14 +84,14 @@ public class SystemMessageController extends Handler {
     @Menu(type = "admin", subtype = "email")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
         map.put("organList", organRes.findAll());
-        map.addAttribute("email", systemMessageRepository.getReferenceById(id));
+        map.addAttribute("email", systemMessageRepository.findById(id)).orElse(null);
         return request(super.createView("/admin/email/edit"));
     }
 
     @RequestMapping("/email/update")
     @Menu(type = "admin", subtype = "user", admin = true)
     public ModelAndView update(HttpServletRequest request, @Valid SystemMessage email) throws NoSuchAlgorithmException {
-        SystemMessage temp = systemMessageRepository.getReferenceById(email.getId());
+        SystemMessage temp = systemMessageRepository.findById(email.getId()).orElse(null);
         if (email != null) {
             email.setCreatetime(temp.getCreatetime());
             email.setMsgtype(MainContext.SystemMessageType.EMAIL.toString());
@@ -108,7 +108,7 @@ public class SystemMessageController extends Handler {
     @RequestMapping("/email/delete")
     @Menu(type = "admin", subtype = "user")
     public ModelAndView delete(HttpServletRequest request, @Valid SystemMessage email) {
-        SystemMessage temp = systemMessageRepository.getReferenceById(email.getId());
+        SystemMessage temp = systemMessageRepository.findById(email.getId()).orElse(null);
         if (email != null) {
             systemMessageRepository.delete(temp);
         }
@@ -145,14 +145,14 @@ public class SystemMessageController extends Handler {
     @Menu(type = "admin", subtype = "sms")
     public ModelAndView smsedit(ModelMap map, HttpServletRequest request, @Valid String id) {
         map.addAttribute("smsType", Dict.getInstance().getDic("com.dic.sms.type"));
-        map.addAttribute("sms", systemMessageRepository.getReferenceById(id));
+        map.addAttribute("sms", systemMessageRepository.findById(id)).orElse(null);
         return request(super.createView("/admin/sms/edit"));
     }
 
     @RequestMapping("/sms/update")
     @Menu(type = "admin", subtype = "sms", admin = true)
     public ModelAndView smsupdate(HttpServletRequest request, @Valid SystemMessage sms) throws NoSuchAlgorithmException {
-        SystemMessage temp = systemMessageRepository.getReferenceById(sms.getId());
+        SystemMessage temp = systemMessageRepository.findById(sms.getId()).orElse(null);
         if (sms != null) {
             sms.setCreatetime(temp.getCreatetime());
             sms.setMsgtype(MainContext.SystemMessageType.SMS.toString());
@@ -169,7 +169,7 @@ public class SystemMessageController extends Handler {
     @RequestMapping("/sms/delete")
     @Menu(type = "admin", subtype = "sms")
     public ModelAndView smsdelete(HttpServletRequest request, @Valid SystemMessage sms) {
-        SystemMessage temp = systemMessageRepository.getReferenceById(sms.getId());
+        SystemMessage temp = systemMessageRepository.findById(sms.getId()).orElse(null);
         if (sms != null) {
             systemMessageRepository.delete(temp);
         }

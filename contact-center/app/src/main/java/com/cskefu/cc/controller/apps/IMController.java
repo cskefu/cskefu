@@ -433,7 +433,7 @@ public class IMController extends Handler {
         sessionMessage.put("uid", uid);
         cache.putSystemMapById(sessionid, sessionMessage);
 
-        PassportWebIMUser passportWebIMUser = onlineUserRes.getReferenceById(userid);
+        PassportWebIMUser passportWebIMUser = onlineUserRes.findById(userid).orElse(null);
         String updateusername;
         if (passportWebIMUser != null) {
             updateusername = username + "@" + company_name;
@@ -858,8 +858,7 @@ public class IMController extends Handler {
                             agentUserRepository.findOneByUserid(userid).ifPresent(p -> {
                                 // 关联AgentService的联系人
                                 if (StringUtils.isNotBlank(p.getAgentserviceid())) {
-                                    AgentService agentService = agentServiceRepository.getReferenceById(
-                                            p.getAgentserviceid());
+                                    AgentService agentService = agentServiceRepository.findById(p.getAgentserviceid()).orElse(null);
                                     agentService.setContactsid(contacts1.getId());
                                 }
 
@@ -918,7 +917,7 @@ public class IMController extends Handler {
                     // 是否使用机器人客服
                     if (invite.isAi() && MainContext.hasModule(Constants.CSKEFU_MODULE_CHATBOT)) {
                         // 查找机器人
-                        bot = chatbotRes.getReferenceById(invite.getAiid());
+                        bot = chatbotRes.findById(invite.getAiid()).orElse(null);
                         if (bot != null) {
                             // 判断是否接受访客切换坐席类型
                             isEnableExchangeAgentType = !StringUtils.equals(

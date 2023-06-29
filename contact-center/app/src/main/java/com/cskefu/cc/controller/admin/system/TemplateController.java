@@ -95,7 +95,7 @@ public class TemplateController extends Handler {
     @RequestMapping("/list")
     @Menu(type = "admin", subtype = "template", admin = true)
     public ModelAndView list(ModelMap map, HttpServletRequest request, @Valid String type) {
-        map.addAttribute("sysDic", dicRes.getReferenceById(type));
+        map.addAttribute("sysDic", dicRes.findById(type)).orElse(null);
         map.addAttribute("templateList", templateRes.findByTemplettype(type));
         return request(super.createView("/admin/system/template/list"));
     }
@@ -103,7 +103,7 @@ public class TemplateController extends Handler {
     @RequestMapping("/add")
     @Menu(type = "admin", subtype = "template", admin = true)
     public ModelAndView add(ModelMap map, HttpServletRequest request, @Valid String type) {
-        map.addAttribute("sysDic", dicRes.getReferenceById(type));
+        map.addAttribute("sysDic", dicRes.findById(type)).orElse(null);
         return request(super.createView("/admin/system/template/add"));
     }
 
@@ -112,7 +112,7 @@ public class TemplateController extends Handler {
     public ModelAndView save(HttpServletRequest request, @Valid Template template) {
         template.setCreatetime(new Date());
 
-        SysDic dic = dicRes.getReferenceById(template.getTemplettype());
+        SysDic dic = dicRes.findById(template.getTemplettype()).orElse(null);
         if (dic != null && StringUtils.isBlank(template.getCode())) {
             template.setCode(dic.getCode());
         }
@@ -124,17 +124,17 @@ public class TemplateController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "template", admin = true)
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String type) {
-        map.addAttribute("sysDic", dicRes.getReferenceById(type));
-        map.addAttribute("template", templateRes.getReferenceById(id));
+        map.addAttribute("sysDic", dicRes.findById(type)).orElse(null);
+        map.addAttribute("template", templateRes.findById(id)).orElse(null);
         return request(super.createView("/admin/system/template/edit"));
     }
 
     @RequestMapping("/update")
     @Menu(type = "admin", subtype = "template", admin = true)
     public ModelAndView update(HttpServletRequest request, @Valid Template template) {
-        Template oldTemplate = templateRes.getReferenceById(template.getId());
+        Template oldTemplate = templateRes.findById(template.getId()).orElse(null);
         if (oldTemplate != null) {
-            SysDic dic = dicRes.getReferenceById(oldTemplate.getTemplettype());
+            SysDic dic = dicRes.findById(oldTemplate.getTemplettype()).orElse(null);
             if (dic != null) {
                 oldTemplate.setCode(dic.getCode());
             }
@@ -156,15 +156,15 @@ public class TemplateController extends Handler {
     @RequestMapping("/code")
     @Menu(type = "admin", subtype = "template", admin = true)
     public ModelAndView code(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String type) {
-        map.addAttribute("sysDic", dicRes.getReferenceById(type));
-        map.addAttribute("template", templateRes.getReferenceById(id));
+        map.addAttribute("sysDic", dicRes.findById(type)).orElse(null);
+        map.addAttribute("template", templateRes.findById(id)).orElse(null);
         return request(super.createView("/admin/system/template/code"));
     }
 
     @RequestMapping("/codesave")
     @Menu(type = "admin", subtype = "template", admin = true)
     public ModelAndView codesave(HttpServletRequest request, @Valid Template template) {
-        Template oldTemplate = templateRes.getReferenceById(template.getId());
+        Template oldTemplate = templateRes.findById(template.getId()).orElse(null);
         if (oldTemplate != null) {
             oldTemplate.setTemplettext(template.getTemplettext());
             oldTemplate.setTemplettitle(template.getTemplettitle());

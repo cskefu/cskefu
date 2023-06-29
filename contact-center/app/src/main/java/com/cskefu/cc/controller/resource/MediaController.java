@@ -75,7 +75,7 @@ public class MediaController extends Handler {
                       @Valid String id,
                       @RequestParam(value = "original", required = false) boolean original,
                       @RequestParam(value = "cooperation", required = false) boolean cooperation) throws IOException, SQLException {
-        StreamingFile sf = streamingFileRes.getReferenceById(id);
+        StreamingFile sf = streamingFileRes.findById(id).orElse(null);
         if (sf != null) {
             response.setHeader("Content-Type", sf.getMime());
             response.setContentType(sf.getMime());
@@ -147,9 +147,9 @@ public class MediaController extends Handler {
     @Menu(type = "resouce", subtype = "file")
     public void file(HttpServletResponse response, HttpServletRequest request, @Valid String id) throws IOException, SQLException {
         if (StringUtils.isNotBlank(id)) {
-            AttachmentFile attachmentFile = attachementRes.getReferenceById(id);
+            AttachmentFile attachmentFile = attachementRes.findById(id).orElse(null);
             if (attachmentFile != null && attachmentFile.getFileid() != null) {
-                StreamingFile sf = streamingFileRes.getReferenceById(attachmentFile.getFileid());
+                StreamingFile sf = streamingFileRes.findById(attachmentFile.getFileid()).orElse(null);
                 if (sf != null) {
                     response.setContentType(attachmentFile.getFiletype());
                     response.setHeader("Content-Disposition", "attachment;filename=" + java.net.URLEncoder.encode(attachmentFile.getTitle(), "UTF-8"));

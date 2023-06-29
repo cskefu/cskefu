@@ -183,7 +183,7 @@ public class ChatServiceController extends Handler {
         Map<String, Organ> ownOrgans = organProxy.findAllOrganByParent(targetOrgan);
 
         if (StringUtils.isNotBlank(id)) {
-            AgentService agentService = agentServiceRes.getReferenceById(id);
+            AgentService agentService = agentServiceRes.findById(id).orElse(null);
             List<Organ> skillGroups = organRes.findByIdInAndSkill(ownOrgans.keySet(), true);
             Set<String> organs = ownOrgans.keySet();
             String currentOrgan = agentService.getSkill();
@@ -221,8 +221,8 @@ public class ChatServiceController extends Handler {
     @Menu(type = "apps", subtype = "transfersave")
     public ModelAndView transfersave(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String agentno, @Valid String memo) throws CharacterCodingException {
         if (StringUtils.isNotBlank(id)) {
-            AgentService agentService = agentServiceRes.getReferenceById(id);
-            final User targetAgent = userRes.getReferenceById(agentno);
+            AgentService agentService = agentServiceRes.findById(id).orElse(null);
+            final User targetAgent = userRes.findById(agentno).orElse(null);
             AgentUser agentUser = null;
             Optional<AgentUser> agentUserOpt = cache.findOneAgentUserByUserId(
                     agentService.getUserid());
@@ -288,7 +288,7 @@ public class ChatServiceController extends Handler {
                     }
                 }
             } else {
-                agentUser = agentUserRepository.getReferenceById(agentService.getAgentuserid());
+                agentUser = agentUserRepository.findById(agentService.getAgentuserid()).orElse(null);
                 if (agentUser != null) {
                     agentUser.setAgentno(agentno);
                     agentUser.setAgentname(targetAgent.getUname());
@@ -314,11 +314,10 @@ public class ChatServiceController extends Handler {
     @Menu(type = "service", subtype = "current", admin = true)
     public ModelAndView end(ModelMap map, HttpServletRequest request, @Valid String id) throws Exception {
         if (StringUtils.isNotBlank(id)) {
-            AgentService agentService = agentServiceRes.getReferenceById(id);
+            AgentService agentService = agentServiceRes.findById(id).orElse(null);
             if (agentService != null) {
                 User user = super.getUser(request);
-                AgentUser agentUser = agentUserRepository.getReferenceById(
-                        agentService.getAgentuserid());
+                AgentUser agentUser = agentUserRepository.findById(agentService.getAgentuserid()).orElse(null);
                 if (agentUser != null) {
                     acdAgentService.finishAgentUser(agentUser);
                 }
@@ -345,7 +344,7 @@ public class ChatServiceController extends Handler {
             final HttpServletRequest request,
             final @Valid String id) throws Exception {
         if (StringUtils.isNotBlank(id)) {
-            AgentService agentService = agentServiceRes.getReferenceById(id);
+            AgentService agentService = agentServiceRes.findById(id).orElse(null);
             if (agentService != null) {
                 final User user = super.getUser(request);
                 if (StringUtils.isBlank(agentService.getAgentno())) {
@@ -463,7 +462,7 @@ public class ChatServiceController extends Handler {
     @RequestMapping("/quene/transfer/save")
     @Menu(type = "service", subtype = "quenetransfer", admin = true)
     public ModelAndView transferSave(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String skillid) {
-        AgentUser agentUser = agentUserRes.getReferenceById(id);
+        AgentUser agentUser = agentUserRes.findById(id).orElse(null);
         if (agentUser != null && agentUser.getStatus().equals(MainContext.AgentUserStatusEnum.INQUENE.toString())) {
             agentUser.setAgentno(null);
             agentUser.setSkill(skillid);
@@ -479,7 +478,7 @@ public class ChatServiceController extends Handler {
     @Menu(type = "service", subtype = "invite", admin = true)
     public ModelAndView invite(ModelMap map, HttpServletRequest request, @Valid String id) throws Exception {
         final User logined = super.getUser(request);
-        AgentUser agentUser = agentUserRes.getReferenceById(id);
+        AgentUser agentUser = agentUserRes.findById(id).orElse(null);
         if (agentUser != null && agentUser.getStatus().equals(MainContext.AgentUserStatusEnum.INQUENE.toString())) {
             acdAgentService.assignVisitorAsInvite(logined.getId(), agentUser);
         }
@@ -524,7 +523,7 @@ public class ChatServiceController extends Handler {
     @Menu(type = "service", subtype = "offline", admin = true)
     public ModelAndView offline(ModelMap map, HttpServletRequest request, @Valid String id) {
 
-        AgentStatus agentStatus = agentStatusRepository.getReferenceById(id);
+        AgentStatus agentStatus = agentStatusRepository.findById(id).orElse(null);
         if (agentStatus != null) {
             agentStatusRepository.delete(agentStatus);
         }

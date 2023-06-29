@@ -172,7 +172,7 @@ public class ApiUserController extends Handler {
         String parent = payload.get("parent").getAsString();
         Organ parentOrgan = super.getOrgan(request);
         if (StringUtils.isNotEmpty(parent)) {
-            parentOrgan = organRes.getReferenceById(parent);
+            parentOrgan = organRes.findById(parent).orElse(null);
         }
 
         String roleId = payload.get("role").getAsString();
@@ -184,7 +184,7 @@ public class ApiUserController extends Handler {
         JsonObject resp = userProxy.createNewUser(user, parentOrgan);
 
         if (StringUtils.isNotEmpty(roleId)) {
-            Role role = roleRes.getReferenceById(roleId);
+            Role role = roleRes.findById(roleId).orElse(null);
             UserRole userRole = new UserRole();
             userRole.setUser(user);
             userRole.setRole(role);
@@ -214,7 +214,7 @@ public class ApiUserController extends Handler {
             return resp;
         }
 
-        final User previous = userRes.getReferenceById(updated.getId());
+        final User previous = userRes.findById(updated.getId()).orElse(null);
         if (previous != null) {
             String msg = userProxy.validUserUpdate(updated, previous);
             if (StringUtils.equals(msg, "edit_user_success")) {
@@ -318,7 +318,7 @@ public class ApiUserController extends Handler {
         if (payload.has("id")) {
             String id = payload.get("id").getAsString();
             if (StringUtils.isNotBlank(id)) {
-                User user = userRes.getReferenceById(id);
+                User user = userRes.findById(id).orElse(null);
                 if (user == null) {
                     // 用户不存在
                     resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);

@@ -159,10 +159,10 @@ public class AgentServiceProxy {
             }
         } else if (MainContext.ChannelType.PHONE.toString().equals(agentUser.getChanneltype())) {
             if (agentService != null && StringUtils.isNotBlank(agentService.getOwner())) {
-                StatusEvent statusEvent = statusEventRes.getReferenceById(agentService.getOwner());
+                StatusEvent statusEvent = statusEventRes.findById(agentService.getOwner()).orElse(null);
                 if (statusEvent != null) {
                     if (StringUtils.isNotBlank(statusEvent.getHostid())) {
-                         view.addObject("pbxHost", pbxHostRes.getReferenceById(statusEvent.getHostid()));
+                         view.addObject("pbxHost", pbxHostRes.findById(statusEvent.getHostid())).orElse(null);
                     }
                     view.addObject("statusEvent", statusEvent);
                 }
@@ -215,7 +215,7 @@ public class AgentServiceProxy {
             // 坐席服务记录
             AgentService agentService = null;
             if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-                agentService = agentServiceRes.getReferenceById(agentUser.getAgentserviceid());
+                agentService = agentServiceRes.findById(agentUser.getAgentserviceid()).orElse(null);
                 view.addObject("curAgentService", agentService);
                 /**
                  * 获取关联数据
@@ -237,7 +237,7 @@ public class AgentServiceProxy {
             view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid()));
         }
 
-        AgentService service = agentServiceRes.getReferenceById(agentUser.getAgentserviceid());
+        AgentService service = agentServiceRes.findById(agentUser.getAgentserviceid()).orElse(null);
         if (service != null) {
             view.addObject("tags", tagRes.findByTagtypeAndSkill(MainContext.ModelType.USER.toString(), service.getSkill()));
         }

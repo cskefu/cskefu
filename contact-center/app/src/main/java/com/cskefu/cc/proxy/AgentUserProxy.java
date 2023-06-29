@@ -117,7 +117,7 @@ public class AgentUserProxy {
             String channel = StringUtils.split(channels, ",")[0];
 
             // 查找联系人
-            final Contacts contact = contactsRes.getReferenceById(contactid);
+            final Contacts contact = contactsRes.findById(contactid).orElse(null);
 
             // 查找 OnlineUser
             passportWebIMUser = onlineUserRes.findOneByContactidAndChannel(
@@ -444,7 +444,7 @@ public class AgentUserProxy {
     public AgentUser resolveAgentUser(final String userid, final String agentuserid) throws CSKefuException {
         Optional<AgentUser> opt = cache.findOneAgentUserByUserId(userid);
         if (!opt.isPresent()) {
-            AgentUser au = agentUserRes.getReferenceById(agentuserid);
+            AgentUser au = agentUserRes.findById(agentuserid).orElse(null);
             if (au == null) {
                 throw new CSKefuException("Invalid transfer request, agent user not exist.");
             } else {
@@ -475,7 +475,7 @@ public class AgentUserProxy {
      * @return
      */
     public Optional<AgentUser> findOne(final String id) {
-        return Optional.ofNullable(agentUserRes.getReferenceById(id));
+        return Optional.ofNullable(agentUserRes.findById(id)).orElse(null);
     }
 
     /**

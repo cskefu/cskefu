@@ -138,7 +138,7 @@ public class LoginController extends Handler {
                             try {
                                 flagid = MainUtils.decryption(cookie.getValue());
                                 if (StringUtils.isNotBlank(flagid)) {
-                                    User user = userRepository.getReferenceById(flagid);
+                                    User user = userRepository.findById(flagid).orElse(null);
                                     if (user != null) {
                                         view = this.processLogin(request, user, referer);
                                     }

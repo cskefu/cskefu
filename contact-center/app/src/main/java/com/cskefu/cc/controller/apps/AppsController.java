@@ -241,7 +241,7 @@ public class AppsController extends Handler {
     @RequestMapping({"/apps/profile/save"})
     @Menu(type = "apps", subtype = "content")
     public ModelAndView profile(ModelMap map, HttpServletRequest request, @Valid User user, @Valid String index) {
-        User tempUser = userRes.getReferenceById(user.getId());
+        User tempUser = userRes.findById(user.getId()).orElse(null);
         final User logined = super.getUser(request);
         // 用户名不可修改
         user.setUsername(logined.getUsername());

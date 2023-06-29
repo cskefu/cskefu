@@ -120,7 +120,7 @@ public class MessengerMessageProxy {
     private String host;
 
     public void acceptOTNReq(String fromId, String toId, String otnToken, String ref) {
-        FbOTN otn = otnRepository.getReferenceById(ref);
+        FbOTN otn = otnRepository.findById(ref).orElse(null);
         if (otn != null) {
             FbOtnFollow follow = new FbOtnFollow();
             follow.setId(MainUtils.getUUID());
@@ -140,7 +140,7 @@ public class MessengerMessageProxy {
     }
 
     public void acceptMeLink(String fromId, String toId, String ref) {
-        FbOTN otn = otnRepository.getReferenceById(ref);
+        FbOTN otn = otnRepository.findById(ref).orElse(null);
         if (otn != null) {
             if (StringUtils.isNotBlank(otn.getPreSubMessage())) {
                 Object obj = JSON.parse(otn.getPreSubMessage());
@@ -240,7 +240,7 @@ public class MessengerMessageProxy {
                     agentUser, passportWebIMUser, channel).orElseThrow(
                     () -> new CSKefuException("Can not resolve AgentService Object."));
         } else {
-            agentService = agentServiceRes.getReferenceById(agentUser.getAgentserviceid());
+            agentService = agentServiceRes.findById(agentUser.getAgentserviceid()).orElse(null);
         }
 
 

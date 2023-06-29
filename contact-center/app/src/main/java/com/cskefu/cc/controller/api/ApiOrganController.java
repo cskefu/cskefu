@@ -80,7 +80,7 @@ public class ApiOrganController extends Handler{
 		RestResult result = new RestResult(RestResultType.OK) ; 
     	Organ organ = null ;
     	if(!StringUtils.isBlank(id)){
-    		organ = organRepository.getReferenceById(id) ;
+    		organ = organRepository.findById(id).orElse(null);
     		if(organ != null){	//系统管理员， 不允许 使用 接口删除
     			organRepository.delete(organ);
     		}else{

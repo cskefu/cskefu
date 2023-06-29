@@ -129,7 +129,7 @@ public class ApiContactsController extends Handler {
     public ResponseEntity<RestResult> delete(HttpServletRequest request, @Valid String id) {
         RestResult result = new RestResult(RestResultType.OK);
         if (!StringUtils.isBlank(id)) {
-            Contacts contacts = contactsRepository.getReferenceById(id);
+            Contacts contacts = contactsRepository.findById(id).orElse(null);
             if (contacts != null) {    //系统管理员， 不允许 使用 接口删除
                 contacts.setDatastatus(true);
                 contactsRepository.save(contacts);
