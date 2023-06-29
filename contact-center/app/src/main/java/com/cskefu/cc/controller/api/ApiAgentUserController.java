@@ -158,8 +158,8 @@ public class ApiAgentUserController extends Handler {
         if (StringUtils.isNotBlank(agentUserId) &&
                 StringUtils.isNotBlank(transAgentId) &&
                 StringUtils.isNotBlank(agentServiceId)) {
-            final User targetAgent = userRes.getReferenceById(transAgentId);
-            final AgentService agentService = agentServiceRes.getReferenceById(agentServiceId);
+            final User targetAgent = userRes.findById(transAgentId).orElse(null);
+            final AgentService agentService = agentServiceRes.findById(agentServiceId).orElse(null);
 
             /**
              * 更新AgentUser
@@ -295,7 +295,7 @@ public class ApiAgentUserController extends Handler {
         final User logined = super.getUser(request);
         JsonObject resp = new JsonObject();
 
-        final AgentUser agentUser = agentUserRes.getReferenceById(payload.get("id").getAsString());
+        final AgentUser agentUser = agentUserRes.findById(payload.get("id").getAsString()).orElse(null);
         if (agentUser != null) {
             if ((StringUtils.equals(
                     logined.getId(), agentUser.getAgentno()) || logined.isAdmin())) {

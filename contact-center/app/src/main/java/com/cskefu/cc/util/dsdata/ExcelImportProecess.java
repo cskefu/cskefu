@@ -297,7 +297,7 @@ public class ExcelImportProecess extends DataProcess {
                 JobDetailRepository batchRes = MainContext.getContext().getBean(JobDetailRepository.class);
                 JobDetail batch = this.event.getDSData().getJobDetail();
                 if (batch == null) {
-                    batch = batchRes.getReferenceById(event.getBatid());
+                    batch = batchRes.findById(event.getBatid()).orElse(null);
                 }
                 if (batch != null) {
                     batch.setNamenum(batch.getNamenum() + pages.intValue());

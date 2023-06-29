@@ -136,7 +136,7 @@ public class AgentProxy {
         outMessage.setChannelMessage(chatMessage);
 
         // 处理超时回复
-        AgentUserTask agentUserTask = agentUserTaskRes.getReferenceById(agentUser.getId());
+        AgentUserTask agentUserTask = agentUserTaskRes.findById(agentUser.getId()).orElse(null);
         agentUserTask.setWarnings("0");
         agentUserTask.setWarningtime(null);
 

@@ -283,7 +283,7 @@ public class AccountController extends Handler {
     @Menu(type = "customer", subtype = "customer")
     public ModelAndView delete(HttpServletRequest request, @Valid Account account, @Valid String p, @Valid String ekind) {
         if (account != null) {
-            account = accountRes.getReferenceById(account.getId());
+            account = accountRes.findById(account.getId()).orElse(null);
             account.setDatastatus(true);                            //客户和联系人都是 逻辑删除
             accountRes.save(account);
         }
@@ -293,7 +293,7 @@ public class AccountController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "customer", subtype = "customer")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String ekind) {
-        map.addAttribute("entCustomer", accountRes.getReferenceById(id));
+        map.addAttribute("entCustomer", accountRes.findById(id)).orElse(null);
         map.addAttribute("ekindId", ekind);
         return request(super.createView("/apps/customer/edit"));
     }
@@ -302,7 +302,7 @@ public class AccountController extends Handler {
     @Menu(type = "customer", subtype = "customer")
     public ModelAndView update(HttpServletRequest request, @Valid CustomerGroupForm customerGroupForm, @Valid String ekindId) {
         final User logined = super.getUser(request);
-        Account customer = accountRes.getReferenceById(customerGroupForm.getEntcustomer().getId());
+        Account customer = accountRes.findById(customerGroupForm.getEntcustomer().getId()).orElse(null);
         String msg = "";
 
         List<PropertiesEvent> events = PropertiesEventUtil.processPropertiesModify(request, customerGroupForm.getEntcustomer(), customer, "id", "creater", "createtime", "updatetime");    //记录 数据变更 历史

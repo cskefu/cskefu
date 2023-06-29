@@ -116,7 +116,7 @@ public class ApplicationController extends Handler {
         // 呼叫中心信息
         if (MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER) && logined.isCallcenter()) {
             extensionRes.findByAgentno(logined.getId()).ifPresent(ext -> {
-                PbxHost one = pbxHostRes.getReferenceById(ext.getHostid());
+                PbxHost one = pbxHostRes.findById(ext.getHostid()).orElse(null);
                 Map<String, Object> webrtcData = new HashMap<>();
                 webrtcData.put("callCenterWebrtcIP", one.getWebrtcaddress());
                 webrtcData.put("callCenterWebRtcPort", one.getWebrtcport());
@@ -143,7 +143,7 @@ public class ApplicationController extends Handler {
     @ResponseBody
     public String setOrgan(HttpServletRequest request, @Valid String organ) {
         if (StringUtils.isNotBlank(organ)) {
-            Organ currentOrgan = organRepository.getReferenceById(organ);
+            Organ currentOrgan = organRepository.findById(organ).orElse(null);
             if (currentOrgan != null) {
                 request.getSession(true).setAttribute(Constants.ORGAN_SESSION_NAME, currentOrgan);
             }

@@ -97,7 +97,7 @@ public class ComposeMw1 implements Middleware<PeerContext> {
      * @param ctx
      */
     private void prcessAgentUserTask(final PeerContext ctx) {
-        AgentUserTask agentUserTask = agentUserTaskRes.getReferenceById(ctx.getMessage().getAgentUser().getId());
+        AgentUserTask agentUserTask = agentUserTaskRes.findById(ctx.getMessage().getAgentUser().getId()).orElse(null);
 
         if (agentUserTask != null) {
             final ChatMessage received = (ChatMessage) ctx.getMessage().getChannelMessage();

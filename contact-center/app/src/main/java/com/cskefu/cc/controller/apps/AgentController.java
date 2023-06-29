@@ -277,7 +277,7 @@
              Integer current) throws IOException {
          String mainagentuserconter = "/apps/agent/mainagentuserconter";
          ModelAndView view = request(super.createView(mainagentuserconter));
-         AgentUser agentUser = agentUserRes.getReferenceById(id);
+         AgentUser agentUser = agentUserRes.findById(id).orElse(null);
          if (agentUser != null) {
              view.addObject("curagentuser", agentUser);
              view.addObject(
@@ -294,7 +294,7 @@
              String iconid) throws IOException {
          String mainagentuserconter = "/apps/agent/mainagentuserconter";
          ModelAndView view = request(super.createView(mainagentuserconter));
-         ChatMessage labelid = this.chatMessageRes.getReferenceById(iconid);
+         ChatMessage labelid = this.chatMessageRes.findById(iconid).orElse(null);
          if (labelid != null) {
              if (labelid.isIslabel() == false) {
                  labelid.setIslabel(true);
@@ -317,7 +317,7 @@
      ) throws IOException {
          String mainagentuserconter = "/apps/agent/mainagentusersearch";
          ModelAndView view = request(super.createView(mainagentuserconter));
-         AgentUser agentUser = agentUserRes.getReferenceById(id);
+         AgentUser agentUser = agentUserRes.findById(id).orElse(null);
 
          if (agentUser != null) {
              Page<ChatMessage> agentUserMessageList = null;
@@ -344,7 +344,7 @@
              String thisid) throws IOException, ParseException {
          String mainagentuserconter = "/apps/agent/mainagentuserconter";
          ModelAndView view = request(super.createView(mainagentuserconter));
-         AgentUser agentUser = agentUserRes.getReferenceById(id);
+         AgentUser agentUser = agentUserRes.findById(id).orElse(null);
          if (agentUser != null) {
              SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
              Date date = formatter.parse(createtime);
@@ -381,7 +381,7 @@
 
          ModelAndView view = request(super.createView(mainagentuser));
          final User logined = super.getUser(request);
-         AgentUser agentUser = agentUserRes.getReferenceById(id);
+         AgentUser agentUser = agentUserRes.findById(id).orElse(null);
 
          if (agentUser != null) {
              view.addObject("curagentuser", agentUser);
@@ -392,7 +392,7 @@
              }
 
              view.addObject("inviteData", OnlineUserProxy.consult(agentUser.getAppid()));
-             AgentUserTask agentUserTask = agentUserTaskRes.getReferenceById(id);
+             AgentUserTask agentUserTask = agentUserTaskRes.findById(id).orElse(null);
              agentUserTask.setTokenum(0);
              agentUserTaskRes.save(agentUserTask);
 
@@ -411,7 +411,7 @@
                                      "updatetime")));
              AgentService agentService = null;
              if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-                 agentService = this.agentServiceRes.getReferenceById(agentUser.getAgentserviceid());
+                 agentService = this.agentServiceRes.findById(agentUser.getAgentserviceid()).orElse(null);
                  view.addObject("curAgentService", agentService);
                  if (agentService != null) {
                      /**
@@ -427,7 +427,7 @@
                      view.addObject("weiXinUser", passportWechatUser);
                  }
              } else if (MainContext.ChannelType.WEBIM.toString().equals(agentUser.getChanneltype())) {
-                 PassportWebIMUser passportWebIMUser = onlineUserRes.getReferenceById(agentUser.getUserid());
+                 PassportWebIMUser passportWebIMUser = onlineUserRes.findById(agentUser.getUserid()).orElse(null);
                  if (passportWebIMUser != null) {
                      if (passportWebIMUser.getLogintime() != null) {
                          if (MainContext.OnlineUserStatusEnum.OFFLINE.toString().equals(passportWebIMUser.getStatus())) {
@@ -442,10 +442,10 @@
                  }
              } else if (MainContext.ChannelType.PHONE.toString().equals(agentUser.getChanneltype())) {
                  if (agentService != null && StringUtils.isNotBlank(agentService.getOwner())) {
-                     StatusEvent statusEvent = this.statusEventRes.getReferenceById(agentService.getOwner());
+                     StatusEvent statusEvent = this.statusEventRes.findById(agentService.getOwner()).orElse(null);
                      if (statusEvent != null) {
                          if (StringUtils.isNotBlank(statusEvent.getHostid())) {
-                                 view.addObject("pbxHost", pbxHostRes.getReferenceById(statusEvent.getHostid()));
+                                 view.addObject("pbxHost", pbxHostRes.findById(statusEvent.getHostid())).orElse(null);
                          }
                          view.addObject("statusEvent", statusEvent);
                      }
@@ -460,7 +460,7 @@
              view.addObject("tagRelationList", tagRelationRes.findByUserid(agentUser.getUserid()));
          }
 
-         AgentService service = agentServiceRes.getReferenceById(agentUser.getAgentserviceid());
+         AgentService service = agentServiceRes.findById(agentUser.getAgentserviceid()).orElse(null);
          if (service != null) {
              view.addObject("tags", tagRes.findByTagtypeAndSkill(MainContext.ModelType.USER.toString(), service.getSkill()));
          }
@@ -636,7 +636,7 @@
          for (AgentUser agentUser : agentUserList) {
              if (agentUser != null && super.getUser(request).getId().equals(agentUser.getAgentno())) {
                  acdAgentService.finishAgentUser(agentUser);
-                 AgentService agentService = agentServiceRes.getReferenceById(agentUser.getAgentserviceid());
+                 AgentService agentService = agentServiceRes.findById(agentUser.getAgentserviceid()).orElse(null);
                  if (agentService != null) {
                      agentService.setStatus(MainContext.AgentUserStatusEnum.END.toString());
                      agentServiceList.add(agentService);
@@ -664,7 +664,7 @@
          logger.info("[end] end id {}", id);
          final User logined = super.getUser(request);
 
-         final AgentUser agentUser = agentUserRes.getReferenceById(id);
+         final AgentUser agentUser = agentUserRes.findById(id).orElse(null);
 
          if (agentUser != null) {
              if ((StringUtils.equals(
@@ -689,7 +689,7 @@
      @Menu(type = "apps", subtype = "agent")
      public ModelAndView readmsg(HttpServletRequest request, @Valid String userid) {
 
-         AgentUserTask agentUserTask = agentUserTaskRes.getReferenceById(userid);
+         AgentUserTask agentUserTask = agentUserTaskRes.findById(userid).orElse(null);
          agentUserTask.setTokenum(0);
          agentUserTaskRes.save(agentUserTask);
          return request(super.createView("/public/success"));
@@ -702,7 +702,7 @@
          map.addAttribute("agentuserid", agentuserid);
          map.addAttribute("agentserviceid", agentserviceid);
          map.addAttribute("userid", userid);
-         map.addAttribute("agentUser", agentUserRes.getReferenceById(userid));
+         map.addAttribute("agentUser", agentUserRes.findById(userid)).orElse(null);
          return request(super.createView("/apps/agent/blacklistadd"));
      }
 
@@ -781,7 +781,7 @@
 
          JSONObject result = new JSONObject();
          HttpHeaders headers = RestUtils.header();
-         final AgentUser agentUser = agentUserRes.getReferenceById(id);
+         final AgentUser agentUser = agentUserRes.findById(id).orElse(null);
 
          if (multipart != null && multipart.getOriginalFilename().lastIndexOf(".") > 0) {
              try {
@@ -806,7 +806,7 @@
      @RequestMapping("/message/image")
      @Menu(type = "resouce", subtype = "image", access = true)
      public ModelAndView messageimage(HttpServletResponse response, ModelMap map, @Valid String id, @Valid String t) throws IOException {
-         ChatMessage message = chatMessageRes.getReferenceById(id);
+         ChatMessage message = chatMessageRes.findById(id).orElse(null);
          map.addAttribute("chatMessage", message);
          map.addAttribute("agentUser", cache.findOneAgentUserByUserId(message.getUserid()));
     	/*if(StringUtils.isNotBlank(t)){
@@ -835,7 +835,7 @@
                  }
                  // 写入临时文件
                  FileCopyUtils.copy(image.getBytes(), tempFile);
-                 ChatMessage chatMessage = chatMessageRes.getReferenceById(id);
+                 ChatMessage chatMessage = chatMessageRes.findById(id).orElse(null);
                  chatMessage.setCooperation(true);
                  chatMessageRes.save(chatMessage);
 
@@ -845,7 +845,7 @@
                  MainUtils.scaleImage(imageFile, tempFile, 0.1F);
 
                  // 保存到数据库
-                 StreamingFile sf = streamingFileRes.getReferenceById(fileid);
+                 StreamingFile sf = streamingFileRes.findById(fileid).orElse(null);
                  if (sf != null) {
                      sf.setCooperation(jpaBlobHelper.createBlobWithFile(imageFile));
                      streamingFileRes.save(sf);
@@ -913,7 +913,7 @@
              /**
               * 获得联系人
               */
-             Contacts contacts = contactsRes.getReferenceById(contactsid);
+             Contacts contacts = contactsRes.findById(contactsid).orElse(null);
              if (contacts != null) {
                  map.addAttribute("contacts", contacts);
              }
@@ -921,7 +921,7 @@
              /**
               * 在关联联系人后，更新AgentUser的显示的名字
               */
-             AgentUser agentUser = agentUserRes.getReferenceById(agentuserid);
+             AgentUser agentUser = agentUserRes.findById(agentuserid).orElse(null);
              if (agentUser != null) {
                  agentUser.setUsername(contacts.getName());
                  agentUser.setNickname(contacts.getName());
@@ -939,7 +939,7 @@
                  onlineUserRes.save(passportWebIMUser);
              }
 
-             AgentService agentService = agentServiceRes.getReferenceById(agentserviceid);
+             AgentService agentService = agentServiceRes.findById(agentserviceid).orElse(null);
              if (agentService != null) {
                  agentService.setContactsid(contactsid);
                  agentService.setUsername(contacts.getName());
@@ -971,7 +971,7 @@
      public ModelAndView cleanAssociated(ModelMap map, HttpServletRequest request, final @RequestParam String currentAgentUserContactsId) {
          String contactsid = null;
          if (StringUtils.isNotEmpty(currentAgentUserContactsId)) {
-             AgentUserContacts agentUserContacts = agentUserContactsRes.getReferenceById(currentAgentUserContactsId);
+             AgentUserContacts agentUserContacts = agentUserContactsRes.findById(currentAgentUserContactsId).orElse(null);
              if (agentUserContacts != null) {
                  agentUserContactsRes.delete(agentUserContacts);
              }
@@ -984,7 +984,7 @@
      @RequestMapping(value = "/evaluation")
      @Menu(type = "apps", subtype = "evaluation")
      public String evaluation(HttpServletRequest request, @Valid String agentuserid) {
-         AgentUser agentUser = agentUserRes.getReferenceById(agentuserid);
+         AgentUser agentUser = agentUserRes.findById(agentuserid).orElse(null);
 
          Message outMessage = new Message();
          outMessage.setChannelMessage(agentUser);
@@ -1012,7 +1012,7 @@
              @Valid String agentuserid,
              @Valid String channel) {
          if (StringUtils.isNotBlank(userid) && StringUtils.isNotBlank(agentuserid)) {
-             AgentUser agentUser = this.agentUserRes.getReferenceById(agentuserid);
+             AgentUser agentUser = this.agentUserRes.findById(agentuserid).orElse(null);
              if (agentUser != null && StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
                  List<AgentServiceSummary> summaries = this.serviceSummaryRes.findByAgentserviceid(
                          agentUser.getAgentserviceid());
@@ -1020,7 +1020,7 @@
                      map.addAttribute("summary", summaries.get(0));
                  }
              }
-             AgentService service = agentServiceRes.getReferenceById(agentserviceid);
+             AgentService service = agentServiceRes.findById(agentserviceid).orElse(null);
              if (service != null) {
                  map.addAttribute(
                          "tags", tagRes.findByTagtypeAndSkill(
@@ -1048,7 +1048,7 @@
          if (StringUtils.isNotBlank(userid) && StringUtils.isNotBlank(agentuserid)) {
              summary.setCreater(super.getUser(request).getId());
              summary.setCreatetime(new Date());
-             AgentService service = agentServiceRes.getReferenceById(agentserviceid);
+             AgentService service = agentServiceRes.findById(agentserviceid).orElse(null);
              summary.setAgent(service.getAgentno());
              summary.setAgentno(service.getAgentno());
              summary.setSkill(service.getSkill());
@@ -1096,7 +1096,7 @@
              List<Organ> skillGroups = organRes.findByIdInAndSkill(ownOrgans.keySet(), true);
 
              // 选择当前用户的默认技能组
-             AgentService agentService = agentServiceRes.getReferenceById(agentserviceid);
+             AgentService agentService = agentServiceRes.findById(agentserviceid).orElse(null);
 
              String currentOrgan = agentService.getSkill();
 
@@ -1131,7 +1131,7 @@
              map.addAttribute("agentuserid", agentuserid);
              map.addAttribute("skillGroups", skillGroups);
              map.addAttribute("agentno", agentService.getAgentno());
-             map.addAttribute("agentservice", this.agentServiceRes.getReferenceById(agentserviceid));
+             map.addAttribute("agentservice", this.agentServiceRes.findById(agentserviceid)).orElse(null);
              map.addAttribute("currentorgan", currentOrgan);
          }
 
@@ -1193,7 +1193,7 @@
              @RequestParam(value = "agentuser") String agentuser,
              @Valid Contacts contacts) throws CSKefuException {
          logger.info("[agent ctrl] calloutcontactsave agentuser [{}]", agentuser);
-         AgentUser au = agentUserRes.getReferenceById(agentuser);
+         AgentUser au = agentUserRes.findById(agentuser).orElse(null);
          if (au == null) {
              throw new CSKefuException("不存在该服务记录");
          }
@@ -1223,7 +1223,7 @@
      @RequestMapping("/calloutcontact/update")
      @Menu(type = "apps", subtype = "calloutcontact")
      public ModelAndView update(HttpServletRequest request, @Valid Contacts contacts) {
-         Contacts data = contactsRes.getReferenceById(contacts.getId());
+         Contacts data = contactsRes.findById(contacts.getId()).orElse(null);
          if (data != null) {
              List<PropertiesEvent> events = PropertiesEventUtil.processPropertiesModify(
                      request, contacts, data, "id", "creater", "createtime", "updatetime");    //记录 数据变更 历史

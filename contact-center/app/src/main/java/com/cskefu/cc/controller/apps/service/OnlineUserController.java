@@ -132,9 +132,9 @@ public class OnlineUserController extends Handler {
 
                 agentUserContactsRes.findOneByUserid(
                         userid).ifPresent(p -> {
-                    map.put("contacts", contactsRes.getReferenceById(p.getContactsid()));
+                    map.put("contacts", contactsRes.findById(p.getContactsid())).orElse(null);
                 });
-                AgentService service = agentServiceRes.getReferenceById(agentservice);
+                AgentService service = agentServiceRes.findById(agentservice).orElse(null);
                 if (service != null) {
                     map.addAttribute(
                             "tags", tagRes.findByTagtypeAndSkill(MainContext.ModelType.USER.toString(), service.getSkill()));
@@ -160,7 +160,7 @@ public class OnlineUserController extends Handler {
                     map.put("weiXinUser", passportWechatUser);
                 }
             } else if (MainContext.ChannelType.WEBIM.toString().equals(channel)) {
-                PassportWebIMUser passportWebIMUser = onlineUserRes.getReferenceById(userid);
+                PassportWebIMUser passportWebIMUser = onlineUserRes.findById(userid).orElse(null);
                 if (passportWebIMUser != null) {
                     map.put("onlineUser", passportWebIMUser);
                 }
@@ -179,7 +179,7 @@ public class OnlineUserController extends Handler {
     @RequestMapping("/online/chatmsg")
     @Menu(type = "service", subtype = "chatmsg", admin = true)
     public ModelAndView onlinechat(ModelMap map, HttpServletRequest request, String id, String title) {
-        AgentService agentService = agentServiceRes.getReferenceById(id);
+        AgentService agentService = agentServiceRes.findById(id).orElse(null);
         map.put("curAgentService", agentService);
         cache.findOneAgentUserByUserId(agentService.getUserid()).ifPresent(p -> {
             map.put("curagentuser", p);

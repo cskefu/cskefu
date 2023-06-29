@@ -121,9 +121,9 @@ public class MessengerChannelController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "messenger")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
-        FbMessenger fbMessenger = fbMessengerRepository.getReferenceById(id);
+        FbMessenger fbMessenger = fbMessengerRepository.findById(id).orElse(null);
 
-        Organ fbOrgan = organRepository.getReferenceById(fbMessenger.getOrgan());
+        Organ fbOrgan = organRepository.findById(fbMessenger.getOrgan()).orElse(null);
         map.addAttribute("organ", fbOrgan);
         map.addAttribute("fb", fbMessenger);
 
@@ -134,7 +134,7 @@ public class MessengerChannelController extends Handler {
     @Menu(type = "admin", subtype = "messenger")
     public ModelAndView update(ModelMap map, HttpServletRequest request, @Valid FbMessenger fbMessenger) {
         String msg = "update_ok";
-        FbMessenger oldMessenger = fbMessengerRepository.getReferenceById(fbMessenger.getId());
+        FbMessenger oldMessenger = fbMessengerRepository.findById(fbMessenger.getId()).orElse(null);
         oldMessenger.setName(fbMessenger.getName());
         if (fbMessenger.getStatus() != null) {
             oldMessenger.setStatus(fbMessenger.getStatus());
@@ -155,7 +155,7 @@ public class MessengerChannelController extends Handler {
     @Menu(type = "admin", subtype = "messenger")
     public ModelAndView delete(ModelMap map, HttpServletRequest request, @Valid String id) {
         String msg = "delete_ok";
-        FbMessenger fbMessenger = fbMessengerRepository.getReferenceById(id);
+        FbMessenger fbMessenger = fbMessengerRepository.findById(id).orElse(null);
         fbMessengerRepository.deleteById(id);
 
         channelRepository.findBySnsid(fbMessenger.getPageId()).ifPresent(snsAccount -> {
@@ -168,8 +168,8 @@ public class MessengerChannelController extends Handler {
     @RequestMapping("/setting")
     @Menu(type = "admin", subtype = "messenger")
     public ModelAndView setting(ModelMap map, HttpServletRequest request, @Valid String id) {
-        FbMessenger fbMessenger = fbMessengerRepository.getReferenceById(id);
-        Organ fbOrgan = organRepository.getReferenceById(fbMessenger.getOrgan());
+        FbMessenger fbMessenger = fbMessengerRepository.findById(id).orElse(null);
+        Organ fbOrgan = organRepository.findById(fbMessenger.getOrgan()).orElse(null);
 
         map.mergeAttributes(fbMessenger.parseConfigMap());
         map.addAttribute("organ", fbOrgan);
@@ -183,7 +183,7 @@ public class MessengerChannelController extends Handler {
     public ModelAndView saveSetting(ModelMap map, HttpServletRequest request, @Valid String id, @RequestBody MultiValueMap<String, String> formData) {
         String msg = "update_ok";
 
-        FbMessenger fbMessenger = fbMessengerRepository.getReferenceById(id);
+        FbMessenger fbMessenger = fbMessengerRepository.findById(id).orElse(null);
         if (fbMessenger != null) {
             fbMessenger.setConfigMap(formData.toSingleValueMap());
             fbMessengerRepository.save(fbMessenger);
@@ -196,7 +196,7 @@ public class MessengerChannelController extends Handler {
     @Menu(type = "admin", subtype = "messenger")
     @ResponseBody
     public String setStatus(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String status) {
-        FbMessenger fbMessenger = fbMessengerRepository.getReferenceById(id);
+        FbMessenger fbMessenger = fbMessengerRepository.findById(id).orElse(null);
         fbMessenger.setStatus(status);
         fbMessengerRepository.save(fbMessenger);
         return "ok";

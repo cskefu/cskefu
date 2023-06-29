@@ -325,7 +325,7 @@ public class ACDAgentService {
              */
             AgentService service = null;
             if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-                service = agentServiceRes.getReferenceById(agentUser.getAgentserviceid());
+                service = agentServiceRes.findById(agentUser.getAgentserviceid()).orElse(null);
             } else if (agentStatus != null) {
                 // 该访客没有和坐席对话，因此没有 AgentService
                 // 当做留言处理，创建一个新的 AgentService
@@ -339,8 +339,7 @@ public class ACDAgentService {
                     service.setSessiontimes(System.currentTimeMillis() - service.getServicetime().getTime());
                 }
 
-                final AgentUserTask agentUserTask = agentUserTaskRes.getReferenceById(
-                        agentUser.getId());
+                final AgentUserTask agentUserTask = agentUserTaskRes.findById(agentUser.getId()).orElse(null);
                 if (agentUserTask != null) {
                     service.setAgentreplyinterval(agentUserTask.getAgentreplyinterval());
                     service.setAgentreplytime(agentUserTask.getAgentreplytime());
@@ -514,7 +513,7 @@ public class ACDAgentService {
 
         AgentService agentService = new AgentService();
         if (StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-            AgentService existAgentService = agentServiceRes.getReferenceById(agentUser.getAgentserviceid());
+            AgentService existAgentService = agentServiceRes.findById(agentUser.getAgentserviceid()).orElse(null);
             if (existAgentService != null) {
                 agentService = existAgentService;
             } else {
@@ -581,7 +580,7 @@ public class ACDAgentService {
             agentService.setOwner(agentUser.getOwner());
             agentService.setTimes(0);
 
-            final User agent = userRes.getReferenceById(agentService.getAgentno());
+            final User agent = userRes.findById(agentService.getAgentno()).orElse(null);
             agentUser.setAgentname(agent.getUname());
             agentUser.setAgentno(agentService.getAgentno());
 

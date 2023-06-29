@@ -102,7 +102,7 @@ public class UserProxy {
     }
 
     public User findOne(final String id) {
-        return userRes.getReferenceById(id);
+        return userRes.findById(id).orElse(null);
     }
 
     public List<String> findUserIdsInOrgan(final String organ) {
@@ -173,7 +173,7 @@ public class UserProxy {
      */
     public HashMap<String, String> getSkillsMapByAgentno(final String agentno) {
 
-        final User user = userRes.getReferenceById(agentno);
+        final User user = userRes.findById(agentno).orElse(null);
         if (user == null)
             return new HashMap<>();
 
@@ -457,9 +457,9 @@ public class UserProxy {
 
         // 检查作为呼叫中心坐席的信息
         if (MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER) && user.isCallcenter()) {
-            final PbxHost pbxHost = pbxHostRes.getReferenceById(user.getPbxhostId());
+            final PbxHost pbxHost = pbxHostRes.findById(user.getPbxhostId()).orElse(null);
             if (pbxHost != null) {
-                Extension extension = extensionRes.getReferenceById(user.getExtensionId());
+                Extension extension = extensionRes.findById(user.getExtensionId()).orElse(null);
                 if (extension != null) {
                     if (StringUtils.isNotBlank(extension.getAgentno())) {
                         // 呼叫中心该分机已经绑定
@@ -617,7 +617,7 @@ public class UserProxy {
 
         for (final OrganUser organ : organs) {
             // 添加直属部门到organs
-            final Organ o = organRes.getReferenceById(organ.getOrgan());
+            final Organ o = organRes.findById(organ.getOrgan()).orElse(null);
             user.getOrgans().put(organ.getOrgan(), o);
             if (o.isSkill()) {
                 skills.put(o.getId(), o.getName());

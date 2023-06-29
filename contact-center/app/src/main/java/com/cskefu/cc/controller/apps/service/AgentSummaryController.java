@@ -116,14 +116,14 @@ public class AgentSummaryController extends Handler {
     @RequestMapping(value = "/process")
     @Menu(type = "agent", subtype = "agentsummary")
     public ModelAndView process(ModelMap map, HttpServletRequest request, @Valid final String id) {
-        AgentServiceSummary summary = serviceSummaryRes.getReferenceById(id);
+        AgentServiceSummary summary = serviceSummaryRes.findById(id).orElse(null);
         map.addAttribute("summary", summary);
         map.put("summaryTags", tagRes.findByTagtype(MainContext.ModelType.SUMMARY.toString()));
         if (summary != null && !StringUtils.isBlank(summary.getAgentserviceid())) {
-            AgentService service = agentServiceRes.getReferenceById(summary.getAgentserviceid());
+            AgentService service = agentServiceRes.findById(summary.getAgentserviceid()).orElse(null);
             map.addAttribute("service", service);
             if (!StringUtils.isBlank(summary.getContactsid())) {
-                Contacts contacts = contactsRes.getReferenceById(summary.getContactsid());
+                Contacts contacts = contactsRes.findById(summary.getContactsid()).orElse(null);
                 map.addAttribute("contacts", contacts);
             }
         }
@@ -134,7 +134,7 @@ public class AgentSummaryController extends Handler {
     @RequestMapping(value = "/save")
     @Menu(type = "agent", subtype = "agentsummary")
     public ModelAndView save(ModelMap map, HttpServletRequest request, @Valid final AgentServiceSummary summary) {
-        AgentServiceSummary oldSummary = serviceSummaryRes.getReferenceById(summary.getId());
+        AgentServiceSummary oldSummary = serviceSummaryRes.findById(summary.getId()).orElse(null);
         if (oldSummary != null) {
             oldSummary.setProcess(true);
             oldSummary.setUpdatetime(new Date());

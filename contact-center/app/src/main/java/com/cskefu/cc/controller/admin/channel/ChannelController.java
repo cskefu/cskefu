@@ -138,7 +138,7 @@ public class ChannelController extends Handler {
     public ModelAndView delete(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String confirm) {
         boolean execute;
         if (execute = MainUtils.secConfirm(secRes, confirm)) {
-            Channel channel = snsAccountRes.getReferenceById(id);
+            Channel channel = snsAccountRes.findById(id).orElse(null);
             if (snsAccountRes != null) {
                 // 删除网站渠道记录
                 snsAccountRes.delete(channel);
@@ -160,8 +160,8 @@ public class ChannelController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "send", admin = true)
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
-        Channel channel = snsAccountRes.getReferenceById(id);
-        Organ organ = organRes.getReferenceById(channel.getOrgan());
+        Channel channel = snsAccountRes.findById(id).orElse(null);
+        Organ organ = organRes.findById(channel.getOrgan()).orElse(null);
         map.put("organ", organ);
         map.addAttribute("channel", channel);
         return request(super.createView("/admin/channel/im/edit"));
@@ -170,7 +170,7 @@ public class ChannelController extends Handler {
     @RequestMapping("/update")
     @Menu(type = "admin", subtype = "send", admin = true)
     public ModelAndView update(HttpServletRequest request, @Valid Channel channel) throws NoSuchAlgorithmException {
-        Channel oldChannel = snsAccountRes.getReferenceById(channel.getId());
+        Channel oldChannel = snsAccountRes.findById(channel.getId()).orElse(null);
         if (oldChannel != null) {
             oldChannel.setName(channel.getName());
             oldChannel.setBaseURL(channel.getBaseURL());

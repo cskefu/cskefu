@@ -185,7 +185,7 @@ public class ApiChatbotController extends Handler {
         }
 
         final String id = j.get("id").getAsString();
-        Chatbot c = chatbotRes.getReferenceById(id);
+        Chatbot c = chatbotRes.findById(id).orElse(null);
 
         if (c == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
@@ -244,7 +244,7 @@ public class ApiChatbotController extends Handler {
         }
 
         final String id = j.get("id").getAsString();
-        Chatbot c = chatbotRes.getReferenceById(id);
+        Chatbot c = chatbotRes.findById(id).orElse(null);
 
         if (c == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
@@ -288,7 +288,7 @@ public class ApiChatbotController extends Handler {
         }
         final String id = j.get("id").getAsString();
 
-        Chatbot c = chatbotRes.getReferenceById(id);
+        Chatbot c = chatbotRes.findById(id).orElse(null);
 
         if (c == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
@@ -427,7 +427,7 @@ public class ApiChatbotController extends Handler {
             o.addProperty("snsurl", snsAccountOpt.get().getBaseURL());
 
             // 创建人
-            User user = userRes.getReferenceById(c.getCreater());
+            User user = userRes.findById(c.getCreater()).orElse(null);
             if (user != null) {
                 o.addProperty("creater", c.getCreater());
                 o.addProperty("creatername", user.getUname());
@@ -462,7 +462,7 @@ public class ApiChatbotController extends Handler {
         }
         final String id = j.get("id").getAsString();
 
-        Chatbot c = chatbotRes.getReferenceById(id);
+        Chatbot c = chatbotRes.findById(id).orElse(null);
         if (c == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，不存在该聊天机器人。");

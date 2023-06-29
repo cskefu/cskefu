@@ -98,7 +98,7 @@ public class EntIMController extends Handler {
         Map<String, Organ> organs = new HashMap<>();
         user.getOrgans().values().stream().forEach(o -> {
             if (!StringUtils.equals(o.getParent(), "0")) {
-                Organ parent = organRes.getReferenceById(o.getParent());
+                Organ parent = organRes.findById(o.getParent()).orElse(null);
                 organs.put(parent.getId(), parent);
             }
 
@@ -112,7 +112,7 @@ public class EntIMController extends Handler {
 
         user.getAffiliates().stream().forEach(p -> {
             if (!organs.containsKey(p)) {
-                Organ organ = organRes.getReferenceById(p);
+                Organ organ = organRes.findById(p).orElse(null);
                 organs.put(p, organ);
             }
         });
@@ -175,7 +175,7 @@ public class EntIMController extends Handler {
     @Menu(type = "im", subtype = "entim")
     public ModelAndView chat(HttpServletRequest request, HttpServletResponse response, @Valid String userid) {
         ModelAndView view = request(super.createView("/apps/entim/chat"));
-        User entImUser = userRes.getReferenceById(userid);
+        User entImUser = userRes.findById(userid).orElse(null);
 
         if (entImUser != null) {
             userProxy.attachOrgansPropertiesForUser(entImUser);
@@ -242,7 +242,7 @@ public class EntIMController extends Handler {
     @Menu(type = "im", subtype = "entim")
     public ModelAndView groupMore(HttpServletRequest request, HttpServletResponse response, @Valid String id) {
         ModelAndView view = request(super.createView("/apps/entim/group/index"));
-        IMGroup imGroup = imGroupRes.getReferenceById(id);
+        IMGroup imGroup = imGroupRes.findById(id).orElse(null);
         view.addObject("imGroup", imGroup);
         view.addObject("imGroupUserList", imGroupUserRes.findByImgroup(imGroup));
         view.addObject("contextid", id);
@@ -276,7 +276,7 @@ public class EntIMController extends Handler {
         users.stream().forEach(u -> userProxy.attachOrgansPropertiesForUser(u));
         view.addObject("userList", users);
 
-        IMGroup imGroup = imGroupRes.getReferenceById(id);
+        IMGroup imGroup = imGroupRes.findById(id).orElse(null);
         List<Organ> organs = organRes.findAllById(affiliates);
 
         view.addObject("imGroup", imGroup);
@@ -329,7 +329,7 @@ public class EntIMController extends Handler {
             @Valid String tipmsg
     ) {
         ModelAndView view = request(super.createView("/apps/entim/group/tipmsg"));
-        IMGroup imGroup = imGroupRes.getReferenceById(id);
+        IMGroup imGroup = imGroupRes.findById(id).orElse(null);
         if (imGroup != null) {
             imGroup.setTipmessage(tipmsg);
             imGroupRes.save(imGroup);

@@ -129,7 +129,7 @@ public class ChatbotController extends Handler {
 
         ModelAndView view = request(super.createView("/admin/system/chatbot/edit"));
         if (id != null) {
-            Chatbot c = chatbotRes.getReferenceById(id);
+            Chatbot c = chatbotRes.findById(id).orElse(null);
             Optional<Channel> snsAccountOpt = snsAccountRes.findBySnsid(c.getSnsAccountIdentifier());
             view.addObject("snsurl", snsAccountOpt.get().getType() == "webim" ? snsAccountOpt.get().getBaseURL() : snsAccountOpt.get().getName());
             view.addObject("bot", c);

@@ -55,7 +55,7 @@ public class ACDVisBindingMw implements Middleware<ACDComposeContext> {
         if (StringUtils.isNotBlank(ctx.getOrganid())) {
             logger.info("[apply] bind skill {}", ctx.getOrganid());
             // 绑定技能组
-            Organ organ = organRes.getReferenceById(ctx.getOrganid());
+            Organ organ = organRes.findById(ctx.getOrganid()).orElse(null);
             if (organ != null) {
                 ctx.getAgentUser().setSkill(organ.getId());
                 ctx.setOrgan(organ);
@@ -71,7 +71,7 @@ public class ACDVisBindingMw implements Middleware<ACDComposeContext> {
             // 绑定坐席有可能是因为前端展示了技能组和坐席
             // 也有可能是坐席发送了邀请，该访客接收邀请
             ctx.getAgentUser().setAgentno(ctx.getAgentno());
-            User agent = userRes.getReferenceById(ctx.getAgentno());
+            User agent = userRes.findById(ctx.getAgentno()).orElse(null);
             ctx.setAgent(agent);
             ctx.getAgentUser().setAgentname(agent.getUname());
         } else {

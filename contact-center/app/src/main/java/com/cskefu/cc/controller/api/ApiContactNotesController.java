@@ -84,7 +84,7 @@ public class ApiContactNotesController extends Handler {
     private JsonObject creater(final String creater) {
         JsonObject data = new JsonObject();
         // 增加创建人
-        User u = userRes.getReferenceById(creater);
+        User u = userRes.findById(creater).orElse(null);
         if (u != null) {
             data.addProperty("creater", u.getId());
             data.addProperty("creatername", u.getUname());
@@ -98,7 +98,7 @@ public class ApiContactNotesController extends Handler {
                 JsonArray y = new JsonArray();
 
                 for (final OrganUser organ : organs) {
-                    Organ o = organRes.getReferenceById(organ.getOrgan());
+                    Organ o = organRes.findById(organ.getOrgan()).orElse(null);
                     if (o != null) {
                         JsonObject x = new JsonObject();
                         x.addProperty("createrorgan", o.getName());
@@ -125,7 +125,7 @@ public class ApiContactNotesController extends Handler {
         JsonObject resp = new JsonObject();
         // TODO 增加权限检查
         if (j.has("id") && StringUtils.isNotBlank(j.get("id").getAsString())) {
-            ContactNotes cn = contactNotesRes.getReferenceById(j.get("id").getAsString());
+            ContactNotes cn = contactNotesRes.findById(j.get("id").getAsString()).orElse(null);
             if (cn != null) {
                 JsonObject data = new JsonObject();
                 data.addProperty("contactid", cn.getContactid());
@@ -211,7 +211,7 @@ public class ApiContactNotesController extends Handler {
         if ((!payload.has("contactid")) || StringUtils.isBlank(payload.get("contactid").getAsString())) {
             return "参数传递不合法，没有[contactid]。";
         } else {
-            Contacts c = contactsRes.getReferenceById(payload.get("contactid").getAsString());
+            Contacts c = contactsRes.findById(payload.get("contactid").getAsString()).orElse(null);
             if (c == null)
                 return "参数不合法，不存在该联系人。";
         }
@@ -246,7 +246,7 @@ public class ApiContactNotesController extends Handler {
             return resp;
         }
         final String cid = j.get("contactid").getAsString();
-        Contacts c = contactsRes.getReferenceById(cid);
+        Contacts c = contactsRes.findById(cid).orElse(null);
 
         if (c == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);

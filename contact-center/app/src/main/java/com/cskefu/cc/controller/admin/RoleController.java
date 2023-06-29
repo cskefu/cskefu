@@ -146,7 +146,7 @@ public class RoleController extends Handler {
     public ModelAndView seluser(ModelMap map, HttpServletRequest request, @Valid String role) {
         Organ currentOrgan = super.getOrgan(request);
         map.addAttribute("userList", userProxy.findUserInOrgans(Arrays.asList(currentOrgan.getId())));
-        Role roleData = roleRepository.getReferenceById(role);
+        Role roleData = roleRepository.findById(role).orElse(null);
         map.addAttribute("userRoleList", userRoleRes.findByRole(roleData));
         map.addAttribute("role", roleData);
         return request(super.createView("/admin/role/seluser"));
@@ -156,7 +156,7 @@ public class RoleController extends Handler {
     @Menu(type = "admin", subtype = "saveuser", admin = true)
     public ModelAndView saveuser(HttpServletRequest request, @Valid String[] users, @Valid String role) {
         Organ currentOrgan = super.getOrgan(request);
-        Role roleData = roleRepository.getReferenceById(role);
+        Role roleData = roleRepository.findById(role).orElse(null);
         List<UserRole> userRoleList = userRoleRes.findByRole(roleData);
         if (users != null && users.length > 0) {
             for (String user : users) {
@@ -193,7 +193,7 @@ public class RoleController extends Handler {
     @Menu(type = "admin", subtype = "role")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
         ModelAndView view = request(super.createView("/admin/role/edit"));
-        view.addObject("roleData", roleRepository.getReferenceById(id));
+        view.addObject("roleData", roleRepository.findById(id)).orElse(null);
         return view;
     }
 
@@ -204,7 +204,7 @@ public class RoleController extends Handler {
         String msg = "";
         if (tempRoleExist == null) {
             msg = "admin_role_update_success";
-            Role tempRole = roleRepository.getReferenceById(role.getId());
+            Role tempRole = roleRepository.findById(role.getId()).orElse(null);
             tempRole.setName(role.getName());
             tempRole.setUpdatetime(new Date());
             roleRepository.save(tempRole);
@@ -236,7 +236,7 @@ public class RoleController extends Handler {
             map.addAttribute("resourceList", sysDicRes.findByDicid(sysDic.getId()));
         }
         map.addAttribute("sysDic", sysDic);
-        Role role = roleRepository.getReferenceById(id);
+        Role role = roleRepository.findById(id).orElse(null);
         map.addAttribute("role", role);
         map.addAttribute("roleAuthList", roleAuthRes.findByRoleid(role.getId()));
         return request(super.createView("/admin/role/auth"));

@@ -887,7 +887,7 @@ public class MainUtils {
         Template templet = null;
         if ((templet = MainContext.getCache().findOneSystemById(id)) == null) {
             TemplateRepository templateRes = MainContext.getContext().getBean(TemplateRepository.class);
-            templet = templateRes.getReferenceById(id);
+            templet = templateRes.findById(id).orElse(null);
             MainContext.getCache().putSystemById(id, templet);
         }
         return templet;
@@ -1026,7 +1026,7 @@ public class MainUtils {
         SystemConfig config = MainUtils.getSystemConfig();
         if (config != null && config.isEnablemail() && config.getEmailid() != null) {
             SystemMessage systemMessage = MainContext.getContext().getBean(
-                    SystemMessageRepository.class).getReferenceById(config.getEmailid());
+                    SystemMessageRepository.class).findById(config.getEmailid()).orElse(null);
             MailSender sender = new MailSender(
                     systemMessage.getSmtpserver(), systemMessage.getMailfrom(), systemMessage.getSmtpuser(),
                     decryption(systemMessage.getSmtppassword()), systemMessage.getSeclev(), systemMessage.getSslport());
@@ -1230,7 +1230,7 @@ public class MainUtils {
         SystemConfig config = MainUtils.getSystemConfig();
         if (config != null) {
             SystemMessage systemMessage = MainContext.getContext().getBean(
-                    SystemMessageRepository.class).getReferenceById(id);
+                    SystemMessageRepository.class).findById(id).orElse(null);
             if (systemMessage == null) {
                 return false;
             }

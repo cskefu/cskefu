@@ -102,7 +102,7 @@ public class ChatbotEventHandler {
 
                 // send out welcome message
                 if (invite != null) {
-                    Chatbot chatbot = getChatbotRes().getReferenceById(invite.getAiid());
+                    Chatbot chatbot = getChatbotRes().findById(invite.getAiid()).orElse(null);
                     com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
                             chatbot.getClientId(), chatbot.getSecret(), chatbot.getBaseUrl());
                     Response result = bot.command("GET", "/");
@@ -156,7 +156,7 @@ public class ChatbotEventHandler {
 
                 InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress();
                 String ip = MainUtils.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString());
-                PassportWebIMUser passportWebIMUser = getOnlineUserRes().getReferenceById(user);
+                PassportWebIMUser passportWebIMUser = getOnlineUserRes().findById(user).orElse(null);
 
                 if (passportWebIMUser == null) {
                     passportWebIMUser = new PassportWebIMUser();

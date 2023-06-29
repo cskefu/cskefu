@@ -124,14 +124,14 @@ public class UsersController extends Handler {
     @Menu(type = "admin", subtype = "user")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
         ModelAndView view = request(super.createView("/admin/user/edit"));
-        User user = userRepository.getReferenceById(id);
+        User user = userRepository.findById(id).orElse(null);
         if (user != null && MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER)) {
             // 加载呼叫中心信息
             extensionRes.findByAgentno(user.getId()).ifPresent(p -> {
                 user.setExtensionId(p.getId());
                 user.setExtension(p);
 
-                PbxHost one = pbxHostRes.getReferenceById(p.getHostid());
+                PbxHost one = pbxHostRes.findById(p.getHostid()).orElse(null);
                 user.setPbxhostId(one.getId());
                 user.setPbxHost(one);
             });
@@ -145,7 +145,7 @@ public class UsersController extends Handler {
     public ModelAndView delete(HttpServletRequest request, @Valid User user) {
         String msg = "admin_user_delete";
         if (user != null) {
-            User dbUser = userRepository.getReferenceById(user.getId());
+            User dbUser = userRepository.findById(user.getId()).orElse(null);
             if (dbUser.isSuperadmin()) {
                 msg = "admin_user_abandoned";
             } else {

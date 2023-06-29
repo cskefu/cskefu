@@ -100,7 +100,7 @@ public class ChatbotEventSubscription {
 
     private void chat(final ChatMessage request) throws MalformedURLException, ChatbotException, JSONException {
         Chatbot c = chatbotRes
-                .getReferenceById(request.getAiid());
+                .findById(request.getAiid()).orElse(null);
 
         final String botProvider = StringUtils.isNotBlank(c.getBaseUrl()) ? c.getBaseUrl() : botProviderDefault;
 

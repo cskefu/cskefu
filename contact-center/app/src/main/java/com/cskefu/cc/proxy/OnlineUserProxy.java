@@ -62,7 +62,7 @@ public class OnlineUserProxy {
      * @throws Exception
      */
     public static PassportWebIMUser user(final String id) {
-        return getOnlineUserRes().getReferenceById(id);
+        return getOnlineUserRes().findById(id).orElse(null);
     }
 
     /**
@@ -268,7 +268,7 @@ public class OnlineUserProxy {
                 Optional<AgentUserContacts> agentUserContactOpt = agentUserContactsRes.findOneByUserid(
                         userid);
                 if (agentUserContactOpt.isPresent()) {
-                    contacts = getContactsRes().getReferenceById(agentUserContactOpt.get().getContactsid());
+                    contacts = getContactsRes().findById(agentUserContactOpt.get().getContactsid()).orElse(null);
                 }
             }
         }
@@ -514,7 +514,7 @@ public class OnlineUserProxy {
      * @throws Exception
      */
     public static void refuseInvite(final String user) {
-        PassportWebIMUser passportWebIMUser = getOnlineUserRes().getReferenceById(user);
+        PassportWebIMUser passportWebIMUser = getOnlineUserRes().findById(user).orElse(null);
         if (passportWebIMUser != null) {
             passportWebIMUser.setInvitestatus(MainContext.OnlineUserInviteStatus.REFUSE.toString());
             passportWebIMUser.setRefusetimes(passportWebIMUser.getRefusetimes() + 1);

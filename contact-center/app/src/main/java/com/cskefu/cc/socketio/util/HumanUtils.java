@@ -69,8 +69,7 @@ public class HumanUtils {
                 agentUser.getNickname()) ? agentUser.getNickname() : "";
 
         if (agentUser != null && StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-            AgentService agentService = getAgentServiceRes().getReferenceById(
-                    agentUser.getAgentserviceid());
+            AgentService agentService = getAgentServiceRes().findById(agentUser.getAgentserviceid()).orElse(null);
             if (StringUtils.isNotBlank(agentService.getUsername())) {
                 userNickName = agentService.getUsername();
             }
@@ -117,7 +116,7 @@ public class HumanUtils {
 
             if (StringUtils.equals(chatMessage.getType(), "message")) {
                 // 处理超时回复
-                AgentUserTask agentUserTask = getAgentUserTaskRes().getReferenceById(agentUser.getId());
+                AgentUserTask agentUserTask = getAgentUserTaskRes().findById(agentUser.getId()).orElse(null);
                 agentUserTask.setLastgetmessage(new Date());
                 agentUserTask.setWarnings("1");
                 agentUserTask.setWarningtime(null);

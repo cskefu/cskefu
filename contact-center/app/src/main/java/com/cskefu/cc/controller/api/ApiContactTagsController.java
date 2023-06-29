@@ -127,7 +127,7 @@ public class ApiContactTagsController extends Handler {
 
         final String tagId = j.get("tagId").getAsString();
         final String contactid = j.get("contactid").getAsString();
-        Tag tag = tagRes.getReferenceById(tagId);
+        Tag tag = tagRes.findById(tagId).orElse(null);
 
         if (tag == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_2);
@@ -165,7 +165,7 @@ public class ApiContactTagsController extends Handler {
             return resp;
         }
 
-        TagRelation t = tagRelationRes.getReferenceById(j.get("xid").getAsString());
+        TagRelation t = tagRelationRes.findById(j.get("xid").getAsString()).orElse(null);
         if (t == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "该联系人没有打这个标签。");

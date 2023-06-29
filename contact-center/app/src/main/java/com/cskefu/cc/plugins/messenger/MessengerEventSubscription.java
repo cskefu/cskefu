@@ -49,7 +49,7 @@ public class MessengerEventSubscription {
         String otnId = payload.getString("otnId");
         Date sendtime = (Date) payload.getTimestamp("sendtime");
 
-        FbOTN otn = otnRepository.getReferenceById(otnId);
+        FbOTN otn = otnRepository.findById(otnId).orElse(null);
         FbMessenger fbMessenger = fbMessengerRepository.findOneByPageId(otn.getPageId());
         if (fbMessenger != null && otn != null) {
             if (otn.getStatus().equals("create") && otn.getSendtime() != null && otn.getSendtime().equals(sendtime)) {
