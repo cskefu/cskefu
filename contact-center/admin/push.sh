@@ -22,4 +22,4 @@ if [ -d ../private ]; then
 fi
 
 docker push $registryPrefix$imagename:$PACKAGE_VERSION
-docker push $registryPrefix$imagename:develop
+docker push $registryPrefix$imagename:v7

@@ -37,7 +37,7 @@ docker build --build-arg VCS_REF=$PACKAGE_VERSION \
     --force-rm=true --tag $registryPrefix$imagename:$PACKAGE_VERSION .
 
 if [ $? -eq 0 ]; then
-    docker tag $registryPrefix$imagename:$PACKAGE_VERSION $registryPrefix$imagename:develop
+    docker tag $registryPrefix$imagename:$PACKAGE_VERSION $registryPrefix$imagename:v7
 else 
     echo "Build contact-center failure."
     exit 1

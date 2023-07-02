@@ -91,7 +91,7 @@ public class Application {
         System.out.println(">> 春松客服采用开源许可证：Apache License 2.0");
         System.out.println(">> 详细介绍：https://www.cskefu.com/cskefu-opensource-license");
         System.out.println(">> CSKeFu is released under Apache License 2.0");
-        System.out.println(">> Get details about CSKeFu License with https://www.cskefu.com/cskefu-opensource-license");
+        System.out.println(">> NOTICE: CSKeFu v8 is released on Jun. 2023, switch to v8 to gain more outcome. CSKeFu v7 is sunset since then.");
     }
 
     /**
