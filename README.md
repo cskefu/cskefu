@@ -12,10 +12,10 @@
 
 [https://www.cskefu.com](https://www.cskefu.com/)
 
-| 版本 | 文档中心 | Git 分支 |
-| --- | --- | --- |
-| v8.x | [v8](https://docs.cskefu.com/docs/) |  [GitHub](https://github.com/cskefu/cskefu/tree/develop) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/develop/) |
-| v7.x | [v7](https://docs.cskefu.com/docs/v7/) |  [GitHub](https://github.com/cskefu/cskefu/tree/master) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/master/) |
+| 版本 | 文档中心 | Git 分支 | 状态 |
+| --- | --- | --- | --- |
+| v8.x | [v8](https://docs.cskefu.com/docs/) |  [GitHub](https://github.com/cskefu/cskefu/tree/develop) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/develop/) | Active, 维护中 |
+| v7.x | [v7](https://docs.cskefu.com/docs/v7/) |  [GitHub](https://github.com/cskefu/cskefu/tree/v7) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/v7/) | Sunset, 维护终止 |
 
 :hearts: 春松客服的愿景：
 
@@ -29,7 +29,7 @@
 
 春松客服宣言视频： [Bilibili](https://www.bilibili.com/video/BV1hu411o76r/) | [YouTube](https://youtu.be/ILf3BWpq4Ns)
 
-新版本介绍：[诚邀您参加 2023-07-01 春松客服 v8 新版本发布会 | CSKeFu](http://hdxu.cn/6WMz8)
+新版本介绍：[观看春松客服 v8 新版本发布会 @ 2023-07-01](https://www.cskefu.com/2023/07/03/community-conf/)
 
 ## 媒体报道
 
