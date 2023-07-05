@@ -270,7 +270,8 @@ public class AgentProxy {
             // 图片
             // process thumbnail
             File original = new File(webUploadPath, "upload/" + fileid + "_original");
-            File thumbnail = new File(webUploadPath, "upload/" + fileid);
+            String originalFilename = multipart.getOriginalFilename();
+            File thumbnail = new File(webUploadPath, "upload/" + fileid + originalFilename.substring(originalFilename.lastIndexOf(".")));
             FileCopyUtils.copy(multipart.getBytes(), original);
             MainUtils.processImage(thumbnail, original);
             sf.setThumbnail(jpaBlobHelper.createBlobWithFile(thumbnail));

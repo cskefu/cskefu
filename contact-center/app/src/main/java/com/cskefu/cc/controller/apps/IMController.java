@@ -1333,9 +1333,9 @@ public class IMController extends Handler {
                     File imageFile = new File(path, fileName);
                     FileCopyUtils.copy(multipart.getBytes(), imageFile);
                     String thumbnailsFileName = "upload/" + fileid;
-                    File thumbnail = new File(path, thumbnailsFileName);
+                    String originalFilename = multipart.getOriginalFilename();
+                    File thumbnail = new File(path, thumbnailsFileName + originalFilename.substring(originalFilename.lastIndexOf(".")));
                     MainUtils.processImage(thumbnail, imageFile);
-
                     // 存储数据库
                     sf.setData(jpaBlobHelper.createBlob(multipart.getInputStream(), multipart.getSize()));
                     sf.setThumbnail(jpaBlobHelper.createBlobWithFile(thumbnail));
