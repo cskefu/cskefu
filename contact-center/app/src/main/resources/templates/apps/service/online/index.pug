@@ -113,7 +113,7 @@ block content
                                                     "ukefu-current-agentservice": curAgentService && curAgentService.id == agentService.id
                                                 }))
                                                     td(title=agentService.username)
-                                                        a(href="/service/online/chatmsg.html?id=#{agentService.id}", data-toggle="load", data-target="#onlinecontent")
+                                                        a(href="chatmsg.html?id=" + agentService.id + "&title=false", data-toggle="load", data-target="#onlinecontent")
                                                             | #{agentService.username}
                                                     td(title=agentService.channel)= agentService.channel
                                                     td(title=agentService.agentusername)= agentService.agentusername

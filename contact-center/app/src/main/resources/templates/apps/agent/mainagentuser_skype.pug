@@ -287,7 +287,7 @@ div(style='float:right;')
                 //                                 <#if agentServiceList?? && agentServiceList?size gt 0>
                 //                                 <#list agentServiceList as agentService>
                 //                                 <li class="ukefu-agentservice-list">
-                //                                     <a href="/service/online/chatmsg.html?id=${agentService.id!''}&title=false" data-toggle="ajax" data-width="950" data-height="500" data-title="服务记录">
+                //                                     <a href="/service/online/chatmsg.html?id=" + agentService.id + "&title=false" data-toggle="ajax" data-width="950" data-height="500" data-title="服务记录">
                 //                                         <span style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;max-width:48%;display: inline-block;" class="quick-reply" data-id="content_${agentService.id!''}" title="${agentService.username!''}">${agentService.username!''}</span>
                 //                                         <div class="ukefu-agentservice-his" style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;max-width:48%;" title="${agentService.agentusername!''}">坐席：${agentService.agentusername!''}</div>
                 //                                         <div style="color:#333;position: relative;">

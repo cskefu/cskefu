@@ -352,7 +352,7 @@ html
                                             // 								<#if agentServiceList?? && agentServiceList?size gt 0>
                                             // 								<#list agentServiceList as agentService>
                                             // 								<li class="ukefu-agentservice-list">
-                                            // 									<a href="/service/online/chatmsg.html?id=${agentService.id!''}&title=false" data-toggle="ajax" data-width="950" data-height="500" data-title="服务记录">
+                                            // 									<a href="/service/online/chatmsg.html?id=" + agentService.id + "&title=false" data-toggle="ajax" data-width="950" data-height="500" data-title="服务记录">
                                             // 										<span class="quick-reply" style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;max-width:200px;display: inline-block;" data-id="content_${agentService.id!''}">${agentService.username!''}</span>
                                             // 										<div class="ukefu-agentservice-his">坐席：${agentService.agentusername!''}</div>
                                             // 										<div style="color:#333;position: relative;">
