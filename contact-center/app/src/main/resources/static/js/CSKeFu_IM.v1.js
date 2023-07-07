@@ -98,7 +98,6 @@ $(document).ready(function(){
 		}
 	}).on('audit_new', function(data){
 		// 会话监控：新建
-		console.log();
 		if(skills.indexOf(data.skill)>-1 && $('#customerChatAudit').length > 0 && customerChatAudit != null && customerChatAudit.$){
 			customerChatAudit.Proxy.newAgentUserService(data,"cca");
 			if(data.type == 'message'){
@@ -113,6 +112,7 @@ $(document).ready(function(){
 			}
 		}
 	}).on('end', function(data) {
+		console.warn(111111, data)
     	if($('#multiMediaDialogWin').length > 0){
     		if(multiMediaDialogWin.document.getElementById('agentusers') != null){
     			multiMediaDialogWin.Proxy.endAgentUserService(data);

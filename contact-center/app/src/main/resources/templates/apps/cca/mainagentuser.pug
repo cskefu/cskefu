@@ -20,7 +20,7 @@ script(language='javascript').
         h1.site-h1
             if curagentuser
                 div(style="width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;word-wrap: break-word;word-break: break-all;")
-                    | #{curagentuser.username} #{curagentuser.channel != "messenger" ? "（" + curagentuser.region + "）" : ""}
+                    | #{curagentuser.username} #{curagentuser.channeltype != "messenger" ? "（" + curagentuser.region + "）" : ""}
                 .ukefu-service-btn(style="float:right;")
                     a(href="/apps/cca/transfer.html?userid=" + curagentuser.userid + "&agentserviceid=" + curagentuser.agentserviceid + "&agentuserid=" + curagentuser.id + "&agentnoid=" + curagentuser.agentno, data-toggle="ajax", data-width="750", data-height="550", title="选择转接对象")
                         button.layui-btn.layui-btn-small
@@ -232,11 +232,11 @@ script(language='javascript').
                                             button.layui-btn.layui-btn-small.layui-btn-radius.layui-btn-danger(href='/agent/blacklist/add.html?userid=#{curagentuser.userid}&agentserviceid=#{curagentuser.agentserviceid}&agentuserid=#{curagentuser.id}&times=#{serviceCount ? serviceCount : 0}&chattime=#{(onlineUser && onlineUser.betweentime ? onlineUser.betweentime : 0)}', data-toggle='ajax', data-title='拉黑访客', data-width='900') 拉黑访客
 
                             .box-body(style='padding:0px 10px;position: relative;')
-                                if curagentuser.channel && curagentuser.channel == "webim"
+                                if curagentuser.channeltype && curagentuser.channeltype == "webim"
                                     include /apps/agent/channel/webim.pug
-                                else if curagentuser.channel && curagentuser.channel == "messenger"
+                                else if curagentuser.channeltype && curagentuser.channeltype == "messenger"
                                     include /apps/agent/channel/messenger.pug
-                                //else if curagentuser.channel && curagentuser.channel == "skype"
+                                //else if curagentuser.channeltype && curagentuser.channeltype == "skype"
                                                     //    include /apps/agent/channel/skype.pug
                                 if curagentuser.name
                                     ul.info-list

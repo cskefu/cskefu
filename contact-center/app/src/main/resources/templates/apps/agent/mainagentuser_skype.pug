@@ -31,7 +31,7 @@ body
                 // word-break: break-all;">
                 //             ${curagentuser.username!''}<#if curagentuser.region??>  （ ${curagentuser.region!''} </#if></div>
                 //             <div style="float:right;" class="ukefu-service-btn">
-                //                 <a href="/agent/summary.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}&channel=${curagentuser.channel}" data-toggle="ajax" data-width="950" data-height="450" title="记录服务小结"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe65c;</i> 服务小结</button></a>
+                //                 <a href="/agent/summary.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}&channel=${curagentuser.channeltype}" data-toggle="ajax" data-width="950" data-height="450" title="记录服务小结"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe65c;</i> 服务小结</button></a>
                 //                 <a href="/agent/transfer.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}" data-toggle="ajax" data-width="750" data-height="550" title="选择转接对象"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe7be;</i> 转接坐席</button></a>
                 //                 <a href="/agent/end.html?id=${curagentuser.id!''}" data-toggle="tip" data-title="请确认是否关闭和用户“${curagentuser.username!''}”的对话？"><button class="layui-btn layui-btn-small layui-btn-danger"><i class="kfont">&#xe621;</i> 结束对话</button></a>
                 //             </div>
@@ -193,11 +193,11 @@ body
 div(style='float:right;')
     button.layui-btn.layui-btn-small.layui-btn-radius.layui-btn-danger(href='/agent/blacklist/add.html?userid=${curagentuser.userid!\'\'}&agentserviceid=${curagentuser.agentserviceid!\'\'}&agentuserid=${curagentuser.id}&times=${serviceCount!0}&chattime=<#if onlineUser?? && onlineUser.betweentime??>${onlineUser.betweentime}<#else>0</#if>', data-toggle='ajax', data-title='拉黑访客', data-width='900') 拉黑访客
 .box-body(style='padding:0px 10px;position: relative;')
-    //                              <#if curagentuser.channel?? && curagentuser.channel == "webim">
+    //                              <#if curagentuser.channeltype?? && curagentuser.channeltype == "webim">
     //                                 <#include "/apps/agent/channel/webim.html">
-    //                              <#elseif curagentuser.channel?? && curagentuser.channel == "weixin">
+    //                              <#elseif curagentuser.channeltype?? && curagentuser.channeltype == "weixin">
     //                                 <#include "/apps/agent/channel/weixin.html">
-    //                              <#elseif curagentuser.channel?? && curagentuser.channel == "skype">
+    //                              <#elseif curagentuser.channeltype?? && curagentuser.channeltype == "skype">
     //                                 <#include "/apps/agent/channel/skype.html">
     //                              </#if>
     //                             <#if curagentuser.name??>

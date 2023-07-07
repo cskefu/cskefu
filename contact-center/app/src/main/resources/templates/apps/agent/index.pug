@@ -27,12 +27,12 @@ block content
             #agentusers.layui-side-scroll
                 include agentusers.pug
         #ukefu-chat-agent.layui-body.ukefu-chat-agent
-            //if curagentuser.channel == "phone"
+            //if curagentuser.channeltype == "phone"
             //    include mainagentuser_callout.pug
-            //else if curagentuser.channel == "skype"
+            //else if curagentuser.channeltype == "skype"
             //    include mainagentuser_skype.pug
             //else
-            if curagentuser.channel == "messenger"
+            if curagentuser.channeltype == "messenger"
                 include mainagentuser_messenger.pug
             else
                 include mainagentuser.pug

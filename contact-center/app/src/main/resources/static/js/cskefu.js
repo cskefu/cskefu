@@ -344,18 +344,12 @@ function newMessageScorllBottom(type, msgType) {
 var Proxy = {
     newAgentUserService: function (data, type) {
         if ($('#tip_message_' + data.userid).length > 0) {
-            if (data.channel) {
-                var channel = data.channel;
-                switch (channel) {
-                    case 'weixin':
-                        $('#tip_icon_wenxin_' + data.userid).removeClass('ukefu-channel-icon-end').addClass("ukefu-channel-icon");
-                        break;
-                    case 'webim':
-                        $('#tip_icon_webim_' + data.userid).removeClass('ukefu-channel-icon-end').addClass("ukefu-channel-icon");
-                        break;
-                    case 'phone':
-                        $('#tip_icon_phone_' + data.userid).attr("src", "/images/phone-ico.png");
-                        break;
+            var channel = data.channeltype
+            if (channel) {
+                if (channel === 'phone') {
+                    $('#tip_icon_phone_' + data.userid).attr("src", "/images/phone-ico.png");
+                } else {
+                    $('#tip_icon_' +channel+ '_' + data.userid).removeClass('ukefu-channel-icon-end').addClass("ukefu-channel-icon");
                 }
             }
             $('#tip_message_' + data.userid).removeClass('bg-gray').addClass("bg-green").text('在线');
@@ -486,18 +480,12 @@ var Proxy = {
 
     endAgentUserService: function (data) {
         if ($('#tip_message_' + data.userid).length > 0) {
-            if (data.channel) {
-                var channel = data.channel;
-                switch (channel) {
-                    case 'weixin':
-                        $('#tip_icon_wenxin_' + data.userid).removeClass("ukefu-channel-icon").addClass('ukefu-channel-icon-end');
-                        break;
-                    case 'webim':
-                        $('#tip_icon_webim_' + data.userid).removeClass("ukefu-channel-icon").addClass('ukefu-channel-icon-end');
-                        break;
-                    case 'phone':
-                        $('#tip_icon_phone_' + data.userid).attr("src", "/images/cde-ico-gray.png");
-                        break;
+            var channel = data.channeltype;
+            if (channel) {
+                if (channel === 'phone') {
+                    $('#tip_icon_phone_' + data.userid).attr("src", "/images/cde-ico-gray.png");
+                } else {
+                    $('#tip_icon_'+ channel +'_' + data.userid).removeClass("ukefu-channel-icon").addClass('ukefu-channel-icon-end');
                 }
             }
             $('#tip_message_' + data.userid).removeClass("bg-green").addClass('bg-gray').text('离开');
