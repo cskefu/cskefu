@@ -35,8 +35,8 @@ block content
                                 for agentUser in agentUserList.content
                                     tr.tdHasContorllor.design-dropable-td
                                         td.first_td_head
-                                            a(href="/service/online/index.html?userid=" + agentUser.userid + "&channel=" + agentUser.channel) #{agentUser.username}
-                                        td #{agentUser.channel}
+                                            a(href="/service/online/index.html?userid=" + agentUser.userid + "&channel=" + agentuser.channeltype) #{agentUser.username}
+                                        td #{agentuser.channeltype}
                                         td #{agentUser.skillname}
                                         td #{agentUser.region}
                                         td #{pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', agentUser.createtime)}

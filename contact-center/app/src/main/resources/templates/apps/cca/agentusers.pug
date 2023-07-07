@@ -36,37 +36,37 @@
                         'chat-list-item': true,
                         'active': (curagentuser.id == agentuser.id)
                     }, id='agentuser_' + agentuser.userid, remove-id=agentuser.id, data-id=agentuser.userid)
-                        a(href='/apps/cca/agentuser.html?id=' + agentuser.id + '&channel=' + agentuser.channel, data-toggle="load", data-target="#ukefu-chat-agent", onclick="$('.chat-list-item.active').removeClass('active');$(this).closest('li.chat-list-item').addClass('active');cleanTopMsgTip(this) ;$('#last_msg_#{agentuser.userid}').text(0).hide();")
+                        a(href='/apps/cca/agentuser.html?id=' + agentuser.id + '&channel=' + agentuser.channeltype, data-toggle="load", data-target="#ukefu-chat-agent", onclick="$('.chat-list-item.active').removeClass('active');$(this).closest('li.chat-list-item').addClass('active');cleanTopMsgTip(this) ;$('#last_msg_#{agentuser.userid}').text(0).hide();")
                             img(src=(agentuser.headimgurl && agentuser.headimgurl != '' ? agentuser.headimgurl : '/images/im/user.png'), style="width:45px;height:45px;")
                             if agentuser.status && agentuser.status == 'end'
-                                if agentuser.channel && agentuser.channel == "weixin"
+                                if agentuser.channeltype && agentuser.channeltype == "weixin"
                                     i.kfont.ukefu-channel-icon-end(id="tip_icon_wenxin_#{agentuser.userid}")
                                         | &#xe64d;
-                                else if agentuser.channel && agentuser.channel == "webim"
+                                else if agentuser.channeltype && agentuser.channeltype == "webim"
                                     i.kfont.ukefu-channel-icon-end(id="tip_icon_webim_#{agentuser.userid}")
                                         | &#xe60d;
-                                else if agentuser.channel && agentuser.channel == "skype"
+                                else if agentuser.channeltype && agentuser.channeltype == "skype"
                                     i.csfont.ukefu-channel-icon-end(id="tip_icon_skype_#{agentuser.userid}")
                                         | &#59404;
-                                else if agentuser.channel && agentuser.channel == "messenger"
+                                else if agentuser.channeltype && agentuser.channeltype == "messenger"
                                     i.csfont.ukefu-channel-icon-end(id="tip_icon_messenger_#{agentuser.userid}")
                                         | &#xec11;
-                                else if agentuser.channel && agentuser.channel == "phone"
+                                else if agentuser.channeltype && agentuser.channeltype == "phone"
                                     img.ukefu-channel-image(src="/images/cde-ico-gray.png", id="tip_icon_phone_#{agentuser.userid}")
                             else
-                                if agentuser.channel && agentuser.channel == "weixin"
+                                if agentuser.channeltype && agentuser.channeltype == "weixin"
                                     i.kfont.ukefu-channel-icon(id="tip_icon_wenxin_#{agentuser.userid}")
                                         | &#xe64d;
-                                else if agentuser.channel && agentuser.channel == "webim"
+                                else if agentuser.channeltype && agentuser.channeltype == "webim"
                                     i.kfont.ukefu-channel-icon(id="tip_icon_webim_#{agentuser.userid}")
                                         | &#xe60d;
-                                else if agentuser.channel && agentuser.channel == "skype"
+                                else if agentuser.channeltype && agentuser.channeltype == "skype"
                                     i.csfont.ukefu-channel-icon(id="tip_icon_skype_#{agentuser.userid}")
                                         | &#59404;
-                                else if agentuser.channel && agentuser.channel == "messenger"
+                                else if agentuser.channeltype && agentuser.channeltype == "messenger"
                                     i.csfont.ukefu-channel-icon(id="tip_icon_messenger_#{agentuser.userid}")
                                         | &#xec11;
-                                else if agentuser.channel && agentuser.channel == "phone"
+                                else if agentuser.channeltype && agentuser.channeltype == "phone"
                                     img.ukefu-channel-image(src="/images/phone-ico.png", id="tip_icon_phone_#{agentuser.userid}")
                             .dialog-info
                                 .address

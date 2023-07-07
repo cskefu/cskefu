@@ -69,7 +69,7 @@ block content
                             h1.site-h1(style='background-color:#EEEEEE;')
                                 | 访问信息
                         .box-body(style='padding:0px 10px;position: relative;')
-                            if agentUser.channel && agentUser.channel == "webim"
+                            if agentuser.channeltype && agentuser.channeltype == "webim"
                                 include /apps/agent/channel/webim.pug
     .layui-body.ukefu-chat-agent#ukefu-chat-agent
         .main-agentuser(style='overflow-y:auto;')
