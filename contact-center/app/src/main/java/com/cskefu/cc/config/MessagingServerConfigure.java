@@ -20,37 +20,32 @@ import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
 import com.cskefu.cc.exception.InstantMessagingExceptionListener;
 import jakarta.annotation.PreDestroy;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.boot.web.server.Ssl;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.security.NoSuchAlgorithmException;
 
 @org.springframework.context.annotation.Configuration
-public class MessagingServerConfigure {
+public class MessagingServerConfigure implements ApplicationContextAware {
     @Value("${uk.im.server.host}")
     private String host;
 
     @Value("${uk.im.server.port}")
     private Integer port;
 
-    @Value("${web.upload-path}")
-    private String path;
-
-    @Value("${server.ssl.key-store}")
-    private String keyStore;
-//
-//    @Value("${server.ssl.key-store-type}")
-//    private String keyStoreType;
-
-    @Value("${server.ssl.key-store-password}")
-    private String keyStorepassword;
-
     @Value("${uk.im.server.threads}")
     private String threads;
 
     private SocketIOServer server;
+
+    private ApplicationContext applicationContext;
 
     @Bean(name = "webimport")
     public Integer getWebIMPort() {
@@ -58,7 +53,7 @@ public class MessagingServerConfigure {
     }
 
     @Bean
-    public SocketIOServer socketIOServer() throws NoSuchAlgorithmException, IOException {
+    public SocketIOServer socketIOServer() {
         Configuration config = new Configuration();
         //解决对此重启服务时，netty端口被占用问题
         com.corundumstudio.socketio.SocketConfig tmpConfig = new com.corundumstudio.socketio.SocketConfig();
@@ -83,10 +78,18 @@ public class MessagingServerConfigure {
         config.getSocketConfig().setTcpNoDelay(true);
         config.getSocketConfig().setTcpKeepAlive(true);
 
-        //设置https
-        InputStream keyStoreStream = this.getClass().getResourceAsStream("/" + keyStore.split(":")[1]);  // 读取证书文件流
-        config.setKeyStore(keyStoreStream);  // 设置证书文件
-        config.setKeyStorePassword(keyStorepassword);  // 设置证书密码
+        ServerProperties serverProperties = applicationContext.getBean(ServerProperties.class);
+
+        Ssl ssl = serverProperties.getSsl();
+        if (ssl != null) {
+            String keyStore = ssl.getKeyStore();
+            String keyStorePassword = ssl.getKeyStorePassword();
+            if (StringUtils.isNotEmpty(keyStore) && StringUtils.isNotEmpty(keyStorePassword)) {
+                InputStream keyStoreStream = this.getClass().getResourceAsStream("/" + keyStore.trim().split(":")[1]);
+                config.setKeyStore(keyStoreStream);
+                config.setKeyStorePassword(keyStorePassword);
+            }
+        }
         return server = new SocketIOServer(config);
     }
 
@@ -99,4 +102,9 @@ public class MessagingServerConfigure {
     public void destory() {
         server.stop();
     }
-}  
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+}
