@@ -102,24 +102,13 @@ public class UserInterceptorHandler implements HandlerInterceptor {
             HttpServletRequest request, HttpServletResponse response, Object arg2,
             ModelAndView view) {
         final User user = (User) request.getSession().getAttribute(Constants.USER_SESSION_NAME);
-        final String infoace = (String) request.getSession().getAttribute(
-                Constants.CSKEFU_SYSTEM_INFOACQ); // 进入信息采集模式
+        final String infoace = (String) request.getSession().getAttribute(Constants.CSKEFU_SYSTEM_INFOACQ); // 进入信息采集模式
         final SystemConfig systemConfig = MainUtils.getSystemConfig();
         if (view != null) {
             if (user != null) {
                 view.addObject("user", user);
-
-                if (systemConfig != null && systemConfig.isEnablessl()) {
-                    view.addObject("schema", "https");
-                    if (request.getServerPort() == 80) {
-                        view.addObject("port", 443);
-                    } else {
-                        view.addObject("port", request.getServerPort());
-                    }
-                } else {
-                    view.addObject("schema", request.getScheme());
-                    view.addObject("port", request.getServerPort());
-                }
+                view.addObject("schema", request.getScheme());
+                view.addObject("port", request.getServerPort());
                 view.addObject("hostname", request.getServerName());
 
                 HandlerMethod handlerMethod = (HandlerMethod) arg2;

@@ -63,7 +63,7 @@ public class InstantMessagingExceptionListener extends ExceptionListenerAdapter 
     	}else{
     		logger.error(e.getMessage(), e);
     	}
-    	ctx.close();
+//    	ctx.close();//TODO lecjy
         return true;
     }
 }

@@ -45,9 +45,6 @@ public class SystemConfig implements java.io.Serializable {
     private Date createtime;
     private Date updatetime;
     private String loglevel;
-    private boolean enablessl;
-    private String jksfile;
-    private String jkspassword;
     private String mapkey;
     private boolean workorders;    //工单启用三栏布局
     private String iconstr;            //修改服务器url地址
@@ -199,30 +196,6 @@ public class SystemConfig implements java.io.Serializable {
 
     public void setLoglevel(String loglevel) {
         this.loglevel = loglevel;
-    }
-
-    public boolean isEnablessl() {
-        return enablessl;
-    }
-
-    public void setEnablessl(boolean enablessl) {
-        this.enablessl = enablessl;
-    }
-
-    public String getJksfile() {
-        return jksfile;
-    }
-
-    public void setJksfile(String jksfile) {
-        this.jksfile = jksfile;
-    }
-
-    public String getJkspassword() {
-        return jkspassword;
-    }
-
-    public void setJkspassword(String jkspassword) {
-        this.jkspassword = jkspassword;
     }
 
     public String getMapkey() {

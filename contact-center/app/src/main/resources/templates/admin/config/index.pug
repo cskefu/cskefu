@@ -182,37 +182,6 @@ block content
                                                         option(value="info", selected = (systemConfig.loglevel == 'info'?'selected' : false)) INFO
                                                         option(value="debug", selected = (systemConfig.loglevel == 'debug'?'selected' : false)) DEBUG
                                     .ukefu-webim-prop(hidden)
-                                        .ukefu-webim-tl(style='clear:both;') 启用服务SSL安全访问
-                                        .box-item
-                                            .row
-                                                .col-lg-8
-                                                    p 启用 SSL 安全协议
-                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 启用后需要上传SSL证书和设置SSL证书密码
-                                                .col-lg-4(style='text-align:right;')
-                                                    input(type="checkbox" title="启用" name="enablessl" lay-filter="enablessl" value="1", checked=(systemConfig.enablessl?'checked':false))
-                                            .row.httpsconfig(style='margin-top:20px;display:' + (systemConfig.enablessl == false? "none;":"block;"))
-                                                .col-lg-8
-                                                    p
-                                                        | JKS 证书文件
-                                                        span(style='color:red;font-weight:bold;')= systemConfig.jksfile
-                                                    p(style='color:#888888;font-size:13px;margin-top:10px;').
-                                                        受信的SSL证书文件，请上传.JKS类型的证书文件
-                                                .col-lg-4(style='text-align:right;')
-                                                    span#jkstip
-                                                    .layui-box.layui-upload-button
-                                                        input.layui-upload-file(type='file', name='keyfile', accept='.jks', lay-ext='jks', onchange='$(\'#jkstip\').html($(this).val());')
-                                                        span.layui-upload-icon
-                                                            i.layui-icon 
-                                                            | 上传 JKS 文件
-                                            .row.httpsconfig(style='margin-top:20px;display:' + (systemConfig.enablessl == false ? 'none;':'block;'))
-                                                .col-lg-8
-                                                    p JKS证书密码
-                                                    p(style='color:#888888;font-size:13px;margin-top:10px;')
-                                                        | .JKS文件的证书密码，
-                                                        b(style='color:red;font-weight:bold;') 如无改变，不用填写
-                                                .col-lg-4(style='text-align:right;')
-                                                    input.layui-input(type='password', name='jkspassword', autocomplete='off')
-                                    .ukefu-webim-prop(hidden)
                                         .ukefu-webim-tl(style='clear:both;') 启用涉及重要操作的二次验证密码
                                         .box-item
                                             .row
@@ -514,13 +483,6 @@ block content
         layui.use('form', function(){
             var form = layui.form();
             form.render('select'); //刷新select选择框渲染
-            form.on("checkbox(enablessl)" , function(data){
-                if(data.elem.checked == true){
-                    $('.httpsconfig').show();
-                }else{
-                    $('.httpsconfig').hide();
-                }
-            })
             form.on("checkbox(enable)" , function(data){
                 if(data.elem.checked == true){
                     $('.elablesec').show();

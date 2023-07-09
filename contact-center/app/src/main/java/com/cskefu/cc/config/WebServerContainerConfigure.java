@@ -15,6 +15,7 @@
 package com.cskefu.cc.config;
 
 import org.apache.catalina.connector.Connector;
+import org.apache.coyote.ProtocolHandler;
 import org.apache.coyote.http11.Http11NioProtocol;
 import org.apache.tomcat.util.http.Rfc6265CookieProcessor;
 import org.springframework.beans.factory.annotation.Value;

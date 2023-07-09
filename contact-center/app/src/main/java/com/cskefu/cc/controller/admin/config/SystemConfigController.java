@@ -30,10 +30,8 @@ import com.cskefu.cc.persistence.repository.SystemMessageRepository;
 import com.cskefu.cc.persistence.repository.TemplateRepository;
 import com.cskefu.cc.util.Menu;
 import com.corundumstudio.socketio.SocketIOServer;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -44,24 +42,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 @Controller
 @RequestMapping("/admin/config")
 public class SystemConfigController extends Handler {
-
-    @Value("${uk.im.server.port}")
-    private Integer port;
-
-    @Value("${web.upload-path}")
-    private String path;
 
     @Autowired
     private SocketIOServer server;
@@ -207,9 +196,6 @@ public class SystemConfigController extends Handler {
             @Valid Secret secret) throws SQLException, IOException, NoSuchAlgorithmException {
         SystemConfig systemConfig = systemConfigRes.findOne();
         String msg = "0";
-        if (StringUtils.isBlank(config.getJkspassword())) {
-            config.setJkspassword(null);
-        }
         if (systemConfig == null) {
             config.setCreater(super.getUser(request).getId());
             config.setCreatetime(new Date());
@@ -217,29 +203,6 @@ public class SystemConfigController extends Handler {
         } else {
             MainUtils.copyProperties(config, systemConfig);
         }
-        if (config.isEnablessl()) {
-            if (keyfile != null && keyfile.getBytes() != null && keyfile.getBytes().length > 0 && keyfile.getOriginalFilename() != null && keyfile.getOriginalFilename().length() > 0) {
-                FileUtils.writeByteArrayToFile(
-                        new File(path, "ssl/" + keyfile.getOriginalFilename()), keyfile.getBytes());
-                systemConfig.setJksfile(keyfile.getOriginalFilename());
-                File sslFilePath = new File(path, "ssl/https.properties");
-                if (!sslFilePath.getParentFile().exists()) {
-                    sslFilePath.getParentFile().mkdirs();
-                }
-                Properties prop = new Properties();
-                FileOutputStream oFile = new FileOutputStream(sslFilePath);//true表示追加打开
-                prop.setProperty("key-store-password", MainUtils.encryption(systemConfig.getJkspassword()));
-                prop.setProperty("key-store", systemConfig.getJksfile());
-                prop.store(oFile, "SSL Properties File");
-                oFile.close();
-            }
-        } else if (new File(path, "ssl").exists()) {
-            File[] sslFiles = new File(path, "ssl").listFiles();
-            for (File sslFile : sslFiles) {
-                sslFile.delete();
-            }
-        }
-
         if (loginlogo != null && StringUtils.isNotBlank(
                 loginlogo.getOriginalFilename()) && loginlogo.getOriginalFilename().lastIndexOf(".") > 0) {
             systemConfig.setLoginlogo(super.saveImageFileWithMultipart(loginlogo));

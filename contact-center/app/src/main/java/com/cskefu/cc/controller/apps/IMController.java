@@ -85,9 +85,6 @@ public class IMController extends Handler {
     @Value("${uk.im.server.port}")
     private Integer port;
 
-    @Value("${cs.im.server.ssl.port}")
-    private Integer sslPort;
-
     @Value("${web.upload-path}")
     private String path;
 
@@ -185,18 +182,9 @@ public class IMController extends Handler {
         CousultInvite consultInvite = consultInviteRes.findBySnsaccountid(id);
         view.addObject("hostname", request.getServerName());
         SystemConfig systemConfig = MainUtils.getSystemConfig();
-        if (systemConfig != null && systemConfig.isEnablessl()) {
-            view.addObject("schema", "https");
-            if (request.getServerPort() == 80) {
-                view.addObject("port", 443);
-            } else {
-                view.addObject("port", request.getServerPort());
-            }
-        } else {
-            view.addObject("schema", super.getSchema(request));
-            view.addObject("port", request.getServerPort());
-        }
 
+        view.addObject("schema", super.getSchema(request));
+        view.addObject("port", request.getServerPort());
         view.addObject("appid", id);
         view.addObject("userid", userid);
         view.addObject("title", title);
@@ -241,17 +229,8 @@ public class IMController extends Handler {
             view.addObject("webimexist", webimexist);
 
             SystemConfig systemConfig = MainUtils.getSystemConfig();
-            if (systemConfig != null && systemConfig.isEnablessl()) {
-                view.addObject("schema", "https");
-                if (request.getServerPort() == 80) {
-                    view.addObject("port", 443);
-                } else {
-                    view.addObject("port", request.getServerPort());
-                }
-            } else {
-                view.addObject("schema", super.getSchema(request));
-                view.addObject("port", request.getServerPort());
-            }
+            view.addObject("schema", super.getSchema(request));
+            view.addObject("port", request.getServerPort());
 
             view.addObject("appid", id);
             view.addObject("client", MainUtils.getUUID());
@@ -683,13 +662,7 @@ public class IMController extends Handler {
 
             String schema = super.getSchema(request);
 
-            if (StringUtils.equals(schema, "https")) {
-                map.addAttribute("port", 443);
-            } else if (sslPort != null) {
-                map.addAttribute("port", sslPort);
-            } else {
-                map.addAttribute("port", port);
-            }
+            map.addAttribute("port", port);
 
             map.addAttribute("appid", appid);
             map.addAttribute("userid", userid);
