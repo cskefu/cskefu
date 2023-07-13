@@ -20,37 +20,41 @@ import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
 import com.cskefu.cc.exception.InstantMessagingExceptionListener;
 import jakarta.annotation.PreDestroy;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.web.server.Ssl;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.env.Environment;
 
 import java.io.InputStream;
 
 @org.springframework.context.annotation.Configuration
-public class MessagingServerConfigure implements ApplicationContextAware {
+public class MessagingServerConfigure {
     @Value("${uk.im.server.host}")
     private String host;
 
     @Value("${uk.im.server.port}")
     private Integer port;
 
+    @Value("${cs.im.server.ssl.port}")
+    private Integer sslPort;
+
     @Value("${uk.im.server.threads}")
     private String threads;
 
     private SocketIOServer server;
 
-    private ApplicationContext applicationContext;
-
     @Bean(name = "webimport")
     public Integer getWebIMPort() {
-        return port;
+        if (sslPort != null) {
+            return sslPort;
+        } else {
+            return port;
+        }
     }
+
+    @Autowired
+    private ServerProperties serverProperties;
 
     @Bean
     public SocketIOServer socketIOServer() {
@@ -61,7 +65,7 @@ public class MessagingServerConfigure implements ApplicationContextAware {
         config.setSocketConfig(tmpConfig);
 
 //		config.setHostname(host);
-        config.setPort(port);
+        config.setPort(getWebIMPort());
 
 //		config.getSocketConfig().setReuseAddress(true);
 //		config.setSocketConfig(new SocketConfig());
@@ -78,7 +82,7 @@ public class MessagingServerConfigure implements ApplicationContextAware {
         config.getSocketConfig().setTcpNoDelay(true);
         config.getSocketConfig().setTcpKeepAlive(true);
 
-        ServerProperties serverProperties = applicationContext.getBean(ServerProperties.class);
+//        ServerProperties serverProperties = applicationContext.getBean(ServerProperties.class);
 
         Ssl ssl = serverProperties.getSsl();
         if (ssl != null) {
@@ -101,10 +105,5 @@ public class MessagingServerConfigure implements ApplicationContextAware {
     @PreDestroy
     public void destory() {
         server.stop();
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
     }
 }

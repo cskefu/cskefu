@@ -1,15 +1,15 @@
 /*
- * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
- * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public
  * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * Copyright (C) 2018-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * Copyright (C) 2018-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0,
  * http://www.apache.org/licenses/LICENSE-2.0
- * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0,
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -23,6 +23,7 @@ import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.cache.Cache;
 import com.cskefu.cc.cache.RedisCommand;
+import com.cskefu.cc.config.MessagingServerConfigure;
 import com.cskefu.cc.controller.Handler;
 import com.cskefu.cc.interceptor.UserExperiencePlanInterceptorHandler;
 import com.cskefu.cc.util.restapi.RestUtils;
@@ -78,12 +79,6 @@ public class IMController extends Handler {
 
     @Autowired
     private PassportWebIMUserRepository onlineUserRes;
-
-    @Value("${uk.im.server.host}")
-    private String host;
-
-    @Value("${uk.im.server.port}")
-    private Integer port;
 
     @Value("${web.upload-path}")
     private String path;
@@ -662,8 +657,7 @@ public class IMController extends Handler {
 
             String schema = super.getSchema(request);
 
-            map.addAttribute("port", port);
-
+            map.addAttribute("port", MainContext.getContext().getBean(MessagingServerConfigure.class).getWebIMPort());
             map.addAttribute("appid", appid);
             map.addAttribute("userid", userid);
             map.addAttribute("schema", schema);
