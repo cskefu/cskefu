@@ -65,7 +65,7 @@ public class MessagingServerConfigure {
         config.setSocketConfig(tmpConfig);
 
 //		config.setHostname(host);
-        config.setPort(getWebIMPort());
+        config.setPort(port);
 
 //		config.getSocketConfig().setReuseAddress(true);
 //		config.setSocketConfig(new SocketConfig());
