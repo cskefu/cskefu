@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cskefu.cc</groupId>
     <artifactId>cc-root</artifactId>
@@ -12,7 +12,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.1.0</version>
-        <relativePath/>
+        <relativePath />
     </parent>
     <licenses>
         <license>
@@ -182,13 +182,15 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <!-- Hypermedia for actuator MVC endpoints -->
-        <!-- https://docs.spring.io/spring-boot/docs/1.5.6.RELEASE/reference/html/production-ready-endpoints.html#production-ready-endpoint-hypermedia -->
+        <!--
+        https://docs.spring.io/spring-boot/docs/1.5.6.RELEASE/reference/html/production-ready-endpoints.html#production-ready-endpoint-hypermedia -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-hateoas</artifactId>
         </dependency>
         <!-- Micrometer Prometheus registry  -->
-        <!-- https://www.callicoder.com/spring-boot-actuator-metrics-monitoring-dashboard-prometheus-grafana/ -->
+        <!--
+        https://www.callicoder.com/spring-boot-actuator-metrics-monitoring-dashboard-prometheus-grafana/ -->
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
@@ -415,6 +417,21 @@
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>2.3.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.20.0</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-1.2-api -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-1.2-api</artifactId>
+            <version>2.20.0</version>
         </dependency>
 
         <!-- For testing -->
