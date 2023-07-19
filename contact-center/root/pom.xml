@@ -85,7 +85,7 @@
         <dependency>
             <groupId>de.neuland-bfi</groupId>
             <artifactId>spring-pug4j</artifactId>
-            <version>3.0.0</version>
+            <version>3.0.1c-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
