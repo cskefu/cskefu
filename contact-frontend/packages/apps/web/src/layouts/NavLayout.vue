@@ -3,10 +3,10 @@ import { ref } from 'vue'
 import { RouterLink, RouterView, useRouter } from 'vue-router'
 
 import { Nav } from '@cskefu/shared-ui'
-
-import { NSwitch, NIcon, NAlert } from 'naive-ui'
-import { SunnyOutline, Moon, Earth } from '@vicons/ionicons5'
 import { ROUTE_NAME } from '@cskefu/models'
+
+import { NSwitch, NIcon, NAlert, NPopselect } from 'naive-ui'
+import { SunnyOutline, Moon, Earth } from '@vicons/ionicons5'
 
 const navigations = [
   { label: '首页', value: ROUTE_NAME.DASHBOARD_INDEX },
@@ -48,13 +48,24 @@ const router = useRouter()
       "
     >
       <RouterLink class="text-sm text-green-600" to="/index">
-        使用指南
+        {{ $t('message.hello') }}
       </RouterLink>
       <template #dropMenuAppend>
         <div class="flex justify-between items-center">
           <div class="flex justify-between items-center space-x-2">
             <n-icon :component="Earth" />
-            <span>中文</span>
+            <n-popselect
+              v-model:value="$i18n.locale"
+              :options="[
+                { label: 'English', value: 'en-US' },
+                { label: 'Chinese', value: 'zh-CN' },
+              ]"
+              trigger="hover"
+            >
+              <div class="hover: text-green-600 hover:underline cursor-pointer">
+                {{ $i18n.locale }}
+              </div>
+            </n-popselect>
           </div>
           <n-switch size="medium">
             <template #checked-icon>

@@ -2,6 +2,7 @@
   "extends": "../../../tsconfig.json",
   "include": ["src/**/*.ts"],
   "compilerOptions": {
+    "types": ["vite/client"],
     "composite": true,
     "skipLibCheck": true,
     "module": "ESNext",
