@@ -1,0 +1,14 @@
+{
+  "name": "@cskefu/mocks",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "node": "./src/index.ts",
+        "default": "./src/index.ts"
+      }
+    }
+  }
+}

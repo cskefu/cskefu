@@ -1,0 +1,12 @@
+**/.git
+**/node_modules
+**/public
+**/assets
+**/.husky
+**/.vscode
+**/env
+**/dist
+**/build
+**/coverage
+
+**/*.html

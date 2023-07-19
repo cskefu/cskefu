@@ -1,0 +1,54 @@
+{
+  "name": "contact-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm run -C packages/apps/web dev",
+    "mock": "vite packages/apps/web",
+    "build": "",
+    "build:web": "",
+    "build:widgets-sdk": "",
+    "lint": "eslint -c .eslintrc.cjs --ext .ts,.tsx,.vue --ignore-path .gitignore .",
+    "lint:fix": "eslint -c .eslintrc.cjs --ext .ts,.tsx,.vue --ignore-path .gitignore . --fix",
+    "test": "",
+    "test:all": "",
+    "test:coverage": "",
+    "prettier": "prettier . --write",
+    "prepare": "cd .. && husky install"
+  },
+  "dependencies": {
+    "@vicons/ionicons5": "^0.12.0",
+    "@vueuse/core": "^10.2.1",
+    "axios": "^1.4.0",
+    "pinia": "^2.1.4",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.4"
+  },
+  "devDependencies": {
+    "@intlify/unplugin-vue-i18n": "^0.12.0",
+    "@types/lodash-es": "^4.17.8",
+    "@types/node": "^20.4.2",
+    "@typescript-eslint/eslint-plugin": "^6.1.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "@vitejs/plugin-vue-jsx": "^3.0.1",
+    "@vue/eslint-config-prettier": "^7.1.0",
+    "eslint": "^8.39.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-vue": "^9.11.0",
+    "husky": "^8.0.3",
+    "lodash-es": "^4.17.21",
+    "msw": "^1.2.2",
+    "naive-ui": "^2.34.4",
+    "prettier": "3.0.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.0",
+    "vitest": "^0.33.0",
+    "vue-i18n": "^9.2.2",
+    "vue-tsc": "^1.8.3"
+  },
+  "msw": {
+    "workerDirectory": "public"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "@cskefu/web",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@cskefu/assets": "*",
+    "@cskefu/i18n": "*",
+    "@cskefu/models": "*",
+    "@cskefu/services-auth": "*",
+    "@cskefu/services-chat": "*",
+    "@cskefu/services-dashboard": "*",
+    "@cskefu/services-seats": "*",
+    "@cskefu/services-organization": "*",
+    "@cskefu/services-setting": "*",
+    "@cskefu/services-system": "*",
+    "@cskefu/services-enterprise": "*",
+    "@cskefu/services-work-order": "*",
+    "@cskefu/shared-utils": "*",
+    "@cskefu/shared-ui": "*"
+  },
+  "devDependencies": {
+    "@cskefu/setup-tailwind": "*",
+    "tailwindcss": "^3.3.3",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.26"
+  }
+}

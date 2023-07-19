@@ -1,0 +1,12 @@
+{
+  "extends": "../../../tsconfig.json",
+  "include": ["src/**/*.ts"],
+  "compilerOptions": {
+    "composite": true,
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolvePackageJsonExports": false,
+    "allowSyntheticDefaultImports": true,
+  }
+}

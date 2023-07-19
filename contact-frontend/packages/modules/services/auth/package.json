@@ -1,0 +1,29 @@
+{
+  "name": "@cskefu/services-auth",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@cskefu/assets": "*",
+    "@cskefu/mocks": "*",
+    "@cskefu/models": "*",
+    "@cskefu/i18n": "*",
+    "@cskefu/composables": "*",
+    "@cskefu/shared-utils": "*",
+    "@cskefu/shared-ui": "*"
+  },
+  "devDependencies": {
+    "@cskefu/setup-tailwind": "*",
+    "tailwindcss": "^3.3.3",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.26"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "node": "./src/index.ts",
+        "default": "./src/index.ts"
+      }
+    }
+  }
+}

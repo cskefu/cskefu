@@ -1,0 +1,24 @@
+{
+  "name": "@cskefu/shared-ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@cskefu/i18n": "*",
+    "@cskefu/assets": "*"
+  },
+  "devDependencies": {
+    "@cskefu/setup-tailwind": "*",
+    "tailwindcss": "^3.3.3",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.26"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "node": "./src/index.ts",
+        "default": "./src/index.ts"
+      }
+    }
+  }
+}

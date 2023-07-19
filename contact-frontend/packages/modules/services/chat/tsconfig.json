@@ -1,0 +1,9 @@
+{
+  "extends": "../../../../tsconfig.json",
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/index.ts"],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "types": ["vite/client", "naive-ui/volar"],
+  },
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
