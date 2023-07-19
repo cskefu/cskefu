@@ -43,11 +43,11 @@ block append head
 block content
     .uk-layui-form
         form.layui-form.uk-form
-            input#id(type='hidden', name='id', value='#{id}')
+            input#id(type='hidden', name='id', value=id)
             #create
                 .layui-form-item
                     if id
-                        input(type='hidden', name='type', value='#{type}')
+                        input(type='hidden', name='type', value=type)
                         label.layui-form-label #{type == 'webim' ? '网站渠道' : type == 'messenger' ? 'Messenger渠道' : ''}
                     else
                         .layui-input-inline.selectChannelBox(style="width: 150px;margin-left: 15px;margin-right: 5px;")
@@ -56,7 +56,7 @@ block content
                                 option(value="messenger") Messenger渠道
                     .layui-input-inline
                         if id
-                            input(type="text" name="snsurl" required lay-verify="required" value="#{snsurl}" autocomplete="off" class="layui-input" disabled)
+                            input(type="text" name="snsurl" required lay-verify="required" value=snsurl autocomplete="off" class="layui-input" disabled)
                         else
                             select(id="snsid" name="snsid" lay-verify="required")
                                 option
@@ -64,14 +64,14 @@ block content
                 .layui-form-item
                     label.layui-form-label ClientId
                     .layui-input-inline
-                        input.layui-input(type='text', name='clientId', required, lay-verify='required', placeholder='请输入ClientId', autocomplete='off', value='#{bot.clientId}')
+                        input.layui-input(type='text', name='clientId', required, lay-verify='required', placeholder='请输入ClientId', autocomplete='off', value=bot.clientId)
                     .layui-form-mid.layui-word-aux
                         | 智能机器人ClientId，还没有？
-                        a(href='#{botServiceProvider}/dashboard', target='_blank') 现在去创建！
+                        a(href=botServiceProvider + '/dashboard', target='_blank') 现在去创建！
                 .layui-form-item
                     label.layui-form-label Secret
                     .layui-input-inline
-                        input.layui-input(type='password', name='secret', required, lay-verify='required', placeholder='请输入Secret', autocomplete='off', value='#{bot.secret}')
+                        input.layui-input(type='password', name='secret', required, lay-verify='required', placeholder='请输入Secret', autocomplete='off', value=bot.secret)
                     .layui-form-mid.layui-word-aux 智能机器人Secret
                 .layui-form-item
                     label.layui-form-label 工作模式

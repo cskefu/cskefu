@@ -82,6 +82,7 @@
         <!-- pugjs, template engine surpass freemarker  https://pugjs.org/ -->
         <!-- host with Chatopera Nexus -->
         <!-- https://gitlab.chatopera.com/cskefu/spring-pug4j -->
+        <!-- https://mvnrepository.com/artifact/de.neuland-bfi/spring-pug4j -->
         <dependency>
             <groupId>de.neuland-bfi</groupId>
             <artifactId>spring-pug4j</artifactId>
