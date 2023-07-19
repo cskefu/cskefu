@@ -43,6 +43,7 @@ const router = useRouter()
       :dropdown-menus="dropdownMenus"
       @update:current="
         (name: string) => {
+          console.log(name)
           router.push({ name })
         }
       "

@@ -5,10 +5,10 @@ import Layout from '../layouts/MenusLayout.vue'
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/organization',
-    name: 'organization',
+    path: '/enterprise',
+    name: 'enterprise',
     component: Layout,
-    redirect: '/organization/index',
+    redirect: '/enterprise/index',
     children: [
       {
         path: 'index',
