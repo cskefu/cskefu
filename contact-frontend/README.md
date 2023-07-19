@@ -22,7 +22,9 @@
 │   │   │   ├── chat          # 客服对话聊天相关
 │   │   │   ├── worker-order  # 工单模块
 │   │   │   ├── seats         # 坐席模块
-│   │   │   ├── setting       # 组织设置相关
+│   │   │   ├── organization  # 组织设置模块
+│   │   │   ├── setting       # 设置相关
+│   │   │   ├── enterprise    # 企业设置模块
 │   │   │   ├── system        # 系统设置模块
 │   │   │   ├── auth          # 权限/登录相关
 │   ├── plugins               # 插件 (开发使用的三方库，例如：ProseMirror)
