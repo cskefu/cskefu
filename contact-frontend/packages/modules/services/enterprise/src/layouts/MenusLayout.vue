@@ -21,6 +21,10 @@ const menuOptions: MenuOption[] = [
     key: ROUTE_NAME.ENTERPRISE_KNOWLEDGE_INDEX,
   },
   {
+    label: '质检',
+    key: ROUTE_NAME.ENTERPRISE_KNOWLEDGE_INDEX,
+  },
+  {
     label: '账号管理',
     children: [
       {

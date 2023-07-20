@@ -96,6 +96,13 @@ const active = ref(false)
       :dropdown-menus="dropdownMenus"
       @update:current="handleClickNav"
     >
+      <template #production>
+        <div class="flex items-center space-x-2">
+          <div class="text-sm">XX公司官网</div>
+          <span>-</span>
+          <div class="text-sm">默认客服部门</div>
+        </div>
+      </template>
       <RouterLink class="text-sm text-green-600" to="/index">
         使用教程
       </RouterLink>
