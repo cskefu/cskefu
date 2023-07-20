@@ -6,8 +6,20 @@ import _ from 'lodash-es'
  * 语言支持类型
  */
 export const locales: string[] = ['zh-CN', 'en-US']
-
+export const defaultLocale = 'zh-CN'
 const localPathPrefix = './locales/'
+
+const getValidLocale = (defaults: string = defaultLocale): string => {
+  const locale = window.localStorage.getItem('locale')
+  if (locale && locales.includes(locale)) {
+    return locale
+  }
+  const param = new URLSearchParams(window.location.search).get('lang')
+  if (param && locales.includes(param)) {
+    return param
+  }
+  return defaults
+}
 
 const mergedLocalMessage = Object.entries(
   import.meta.glob('./locales/**/*.json', { eager: true })
@@ -35,10 +47,10 @@ const mergedLocalMessage = Object.entries(
 
 const i18n = createI18n({
   legacy: false,
-  locale: 'zh-CN',
+  locale: getValidLocale(defaultLocale),
   messages: mergedLocalMessage,
   globalInjection: true,
-  fallbackLocale: 'zh-CN',
+  fallbackLocale: defaultLocale,
 })
 
 const install = (app: App) => {
