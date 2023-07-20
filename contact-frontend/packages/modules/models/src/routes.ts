@@ -3,22 +3,26 @@ export enum ROUTE_NAME {
   // 公共路由
   // ==================================================================================
   PROFILE_INDEX = 'PROFILE_INDEX', // 个人中心
-  NOT_FOUND = 'NOT_FOUND', // 404
-  FORBIDDEN = 'FORBIDDEN', // 403
-  SERVER_ERROR = 'SERVER_ERROR', // 500
-  REDIRECT = 'REDIRECT', // 302
+  PAGE_NOT_FOUND = 'NOT_FOUND', // 404
+  PAGE_FORBIDDEN = 'FORBIDDEN', // 403
+  PAGE_SERVER_ERROR = 'SERVER_ERROR', // 500
+  PAGE_REDIRECT = 'REDIRECT', // 302
 
   // ==================================================================================
   // 模块路由
   // ==================================================================================
   // 认证模块
   AUTH_LOGIN = 'AUTH_LOGIN',
+
   // 看板模块
   DASHBOARD_INDEX = 'DASHBOARD_INDEX',
+
   // 对话模块
   CHAT_INDEX = 'CHAT_INDEX',
+
   // 工单模块
   WORK_ORDER_INDEX = 'WORK_ORDER_INDEX',
+
   // 坐席模块
   SEATS_INDEX = 'SEATS_INDEX',
   SEATS_DASHBOARD_INDEX = 'SEATS_DASHBOARD_INDEX', // 坐席看板
@@ -26,16 +30,19 @@ export enum ROUTE_NAME {
   SEATS_LEAVEMANAGE_INDEX = 'SEATS_LEAVEMANAGE_INDEX', // 留言管理
   SEATS_SEATSMANAGE_INDEX = 'SEATS_SEATSMANAGE_INDEX', // 坐席管理
   SEATS_ROBOTMANAGE_INDEX = 'SEATS_ROBOTMANAGE_INDEX', // 机器人管理
+
   // 组织管理模块
   ORGANIZATION_INDEX = 'ORGANIZATION_INDEX',
   ORGANIZATION_ADMIN_INDEX = 'ORGANIZATION_ADMIN_INDEX', // 管理员 - 组织管理设置
   ORGANIZATION_USERS_INDEX = 'ORGANIZATION_USERS_INDEX', // 账号管理
   ORGANIZATION_ROLES_INDEX = 'ORGANIZATION_ROLES_INDEX', // 角色管理
+
   // 设置模块
   SETTING_INDEX = 'SETTING_INDEX',
   SETTING_KNOWLEDGE_INDEX = 'SETTING_KNOWLEDGE_INDEX', // 知识库
   SETTING_WORKORDER_INDEX = 'SETTING_WORKORDER_INDEX', // 工单
   SETTING_LEAVEMESSAGE_INDEX = 'ENTERPRISE_LEAVEMESSAGE_INDEX', // 留言
+
   // 企业设置模块
   ENTERPRISE_INDEX = 'ENTERPRISE_INDEX',
   ENTERPRISE_KEFU_INDEX = 'ENTERPRISE_KEFU_INDEX', // 客服设置
