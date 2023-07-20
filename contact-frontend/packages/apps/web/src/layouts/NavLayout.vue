@@ -1,12 +1,24 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RouterLink, RouterView, useRouter } from 'vue-router'
-
 import { Nav } from '@cskefu/shared-ui'
 import { ROUTE_NAME } from '@cskefu/models'
 
-import { NSwitch, NIcon, NAlert, NPopselect } from 'naive-ui'
-import { SunnyOutline, Moon, Earth } from '@vicons/ionicons5'
+import {
+  NSwitch,
+  NIcon,
+  NAlert,
+  NPopselect,
+  NDrawer,
+  NDrawerContent,
+  NBadge,
+} from 'naive-ui'
+import {
+  SunnyOutline,
+  Moon,
+  Earth,
+  NotificationsOutline,
+} from '@vicons/ionicons5'
 
 const navigations = [
   { label: '首页', value: ROUTE_NAME.DASHBOARD_INDEX },
@@ -68,6 +80,8 @@ function handleClickNav(name: string) {
   }
   router.push({ name })
 }
+
+const active = ref(false)
 </script>
 <template>
   <div class="flex flex-col h-screen bg-gray-100">
@@ -85,6 +99,14 @@ function handleClickNav(name: string) {
       <RouterLink class="text-sm text-green-600" to="/index">
         使用教程
       </RouterLink>
+      <n-badge :value="99" :max="9" class="text-sm">
+        <n-icon
+          class="flex items-center cursor-pointer"
+          :component="NotificationsOutline"
+          size="25"
+          @click="active = !active"
+        />
+      </n-badge>
       <template #dropMenuAppend>
         <div class="flex justify-between items-center">
           <div class="flex justify-between items-center space-x-2">
@@ -113,8 +135,20 @@ function handleClickNav(name: string) {
         </div>
       </template>
     </Nav>
-    <div class="grow overflow-hidden">
+    <div id="drawer-target" class="grow relative overflow-hidden">
       <router-view></router-view>
     </div>
+    <n-drawer
+      v-model:show="active"
+      :width="502"
+      :height="200"
+      placement="right"
+      :show-mask="false"
+      :trap-focus="false"
+      :block-scroll="false"
+      to="#drawer-target"
+    >
+      <n-drawer-content title="通知中心"> 通知中心列表卡片 </n-drawer-content>
+    </n-drawer>
   </div>
 </template>
