@@ -39,9 +39,10 @@ defineEmits(['update:current'])
     <div class="px-4 sm:px-6 lg:px-8">
       <div class="flex h-16 items-center justify-between">
         <div class="flex items-center">
-          <div class="flex-shrink-0 pt-2">
+          <div class="flex-shrink-0 pt-2 mr-2">
             <img class="h-10 w-18" :src="logoUrl" alt="Your Company" />
           </div>
+          <slot name="production"></slot>
         </div>
         <div class="hidden md:block">
           <div class="ml-10 flex items-baseline space-x-4">
