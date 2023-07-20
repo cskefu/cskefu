@@ -1,116 +1,60 @@
 <script setup lang="ts">
+import { ROUTE_NAME } from '@cskefu/models'
 import { MenusLayout } from '@cskefu/shared-ui'
-import { NMenu } from 'naive-ui'
+import { MenuOption, NMenu } from 'naive-ui'
 
-const menuOptions = [
+const menuOptions: MenuOption[] = [
   {
-    label: '且听风吟',
-    key: 'hear-the-wind-sing',
-    href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
+    label: '企业服务',
+    key: ROUTE_NAME.ENTERPRISE_INDEX,
   },
   {
-    label: '1973年的弹珠玩具',
-    key: 'pinball-1973',
+    label: '客服设置',
+    key: ROUTE_NAME.ENTERPRISE_KEFU_INDEX,
+  },
+  {
+    label: '渠道接入',
+    key: ROUTE_NAME.ENTERPRISE_CHANNEL_INDEX,
+  },
+  {
+    label: '知识库',
+    key: ROUTE_NAME.ENTERPRISE_KNOWLEDGE_INDEX,
+  },
+  {
+    label: '账号管理',
     children: [
       {
-        label: '鼠',
-        key: 'rat',
+        label: '账号管理',
+        key: ROUTE_NAME.ENTERPRISE_USERS_INDEX,
+      },
+      {
+        label: '角色管理',
+        key: ROUTE_NAME.ENTERPRISE_ROLES_INDEX,
+      },
+      {
+        label: '组织架构',
+        key: ROUTE_NAME.ENTERPRISE_ROLES_INDEX,
       },
     ],
   },
   {
-    label: '寻羊冒险记',
-    key: 'a-wild-sheep-chase',
-  },
-  {
-    label: '舞，舞，舞',
-    key: 'dance-dance-dance',
+    label: '功能设置',
     children: [
       {
-        type: 'group',
-        label: '人物',
-        key: 'people',
-        children: [
-          {
-            label: '叙事者',
-            key: 'narrator',
-          },
-          {
-            label: '羊男',
-            key: 'sheep-man',
-          },
-        ],
+        label: '对话设置',
+        key: ROUTE_NAME.ENTERPRISE_CHANNEL_INDEX,
       },
       {
-        label: '饮品',
-        key: 'beverage',
-        children: [
-          {
-            label: '威士忌',
-            key: 'whisky',
-            href: 'https://baike.baidu.com/item/%E5%A8%81%E5%A3%AB%E5%BF%8C%E9%85%92/2959816?fromtitle=%E5%A8%81%E5%A3%AB%E5%BF%8C&fromid=573&fr=aladdin',
-          },
-        ],
+        label: '客户设置',
+        key: ROUTE_NAME.ENTERPRISE_CHANNEL_INDEX,
       },
       {
-        label: '食物',
-        key: 'food',
-        children: [
-          {
-            label: '三明治',
-            key: 'sandwich',
-          },
-        ],
+        label: '工单设置',
+        key: ROUTE_NAME.ENTERPRISE_CHANNEL_INDEX,
       },
       {
-        label: '过去增多，未来减少',
-        key: 'the-past-increases-the-future-recedes',
-      },
-    ],
-  },
-  {
-    label: '舞，舞，舞',
-    key: 'dance-dance-dance',
-    children: [
-      {
-        type: 'group',
-        label: '人物',
-        key: 'people',
-        children: [
-          {
-            label: '叙事者',
-            key: 'narrator',
-          },
-          {
-            label: '羊男',
-            key: 'sheep-man',
-          },
-        ],
-      },
-      {
-        label: '饮品',
-        key: 'beverage',
-        children: [
-          {
-            label: '威士忌',
-            key: 'whisky',
-            href: 'https://baike.baidu.com/item/%E5%A8%81%E5%A3%AB%E5%BF%8C%E9%85%92/2959816?fromtitle=%E5%A8%81%E5%A3%AB%E5%BF%8C&fromid=573&fr=aladdin',
-          },
-        ],
-      },
-      {
-        label: '食物',
-        key: 'food',
-        children: [
-          {
-            label: '三明治',
-            key: 'sandwich',
-          },
-        ],
-      },
-      {
-        label: '过去增多，未来减少',
-        key: 'the-past-increases-the-future-recedes',
+        label: '留言设置',
+        key: ROUTE_NAME.ENTERPRISE_CHANNEL_INDEX,
       },
     ],
   },
