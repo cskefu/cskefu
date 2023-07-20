@@ -26,7 +26,6 @@ const dropdownMenus = [
   { label: '退出登录', value: 'logout' },
 ]
 
-// TODO 根据 url 设置当前选中的导航
 const current = ref<string>(ROUTE_NAME.DASHBOARD_INDEX)
 const path = window.location.pathname.split('/')[1]
 switch (path) {
