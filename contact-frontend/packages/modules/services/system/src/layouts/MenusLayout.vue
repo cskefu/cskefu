@@ -2,7 +2,15 @@
 import { MenusLayout } from '@cskefu/shared-ui'
 import { MenuOption, NMenu } from 'naive-ui'
 
-const menuOptions: MenuOption[] = []
+import routes from '../routes'
+
+const menuOptions: MenuOption[] = routes[0]?.children?.map((route) => {
+  return {
+    label: route.meta?.title,
+    key: route.name,
+    disabled: route.meta?.disabled,
+  }
+}) as MenuOption[]
 </script>
 <template>
   <MenusLayout>
