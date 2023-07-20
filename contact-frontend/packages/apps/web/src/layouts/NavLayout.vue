@@ -83,7 +83,7 @@ function handleClickNav(name: string) {
       @update:current="handleClickNav"
     >
       <RouterLink class="text-sm text-green-600" to="/index">
-        {{ $t('message.hello') }}
+        使用教程
       </RouterLink>
       <template #dropMenuAppend>
         <div class="flex justify-between items-center">
