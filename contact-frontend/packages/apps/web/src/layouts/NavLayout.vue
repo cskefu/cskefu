@@ -27,6 +27,7 @@ const dropdownMenus = [
 ]
 
 // TODO 根据 url 设置当前选中的导航
+
 const current = ref<string>(ROUTE_NAME.DASHBOARD_INDEX)
 const router = useRouter()
 </script>
@@ -63,7 +64,7 @@ const router = useRouter()
               trigger="hover"
             >
               <div class="hover: text-green-600 hover:underline cursor-pointer">
-                {{ $i18n.locale }}
+                {{ $t($i18n.locale) }}
               </div>
             </n-popselect>
           </div>
