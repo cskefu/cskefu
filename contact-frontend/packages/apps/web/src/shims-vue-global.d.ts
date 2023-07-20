@@ -1,4 +1,3 @@
-import { locales } from '@cskefu/i18n';
 import { ComponentCustomProperties } from './shims-vue-global.d';
 
 declare module "vue" {

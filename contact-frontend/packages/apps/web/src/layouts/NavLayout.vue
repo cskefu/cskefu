@@ -66,7 +66,7 @@ switch (path) {
     current.value = ROUTE_NAME.PROFILE_INDEX
     break
   default:
-    current.value = ROUTE_NAME.NOT_FOUND
+    current.value = ROUTE_NAME.PAGE_NOT_FOUND
 }
 const router = useRouter()
 
