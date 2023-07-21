@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { RouterLink, RouterView, useRouter } from 'vue-router'
 import { Nav } from '@cskefu/shared-ui'
+import { isUrl } from '@cskefu/shared-utils'
 import { ROUTE_NAME } from '@cskefu/models'
 
 import {
@@ -71,11 +72,12 @@ switch (path) {
 const router = useRouter()
 
 function handleClickNav(name: string) {
-  if (name.startsWith('https://') || name.startsWith('http://')) {
+  if (isUrl(name)) {
     window.open(name, '_blank')
     return
   }
   if (name === 'logout') {
+    // todo
     return
   }
   router.push({ name })
