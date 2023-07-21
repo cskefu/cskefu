@@ -144,7 +144,7 @@ const active = ref(false)
         </div>
       </template>
     </Nav>
-    <div id="drawer-target" class="grow relative overflow-hidden">
+    <div class="grow relative overflow-hidden">
       <router-view></router-view>
     </div>
     <n-drawer
@@ -153,9 +153,6 @@ const active = ref(false)
       :height="200"
       placement="right"
       :show-mask="false"
-      :trap-focus="false"
-      :block-scroll="false"
-      to="#drawer-target"
     >
       <n-drawer-content title="通知中心"> 通知中心列表卡片 </n-drawer-content>
     </n-drawer>
