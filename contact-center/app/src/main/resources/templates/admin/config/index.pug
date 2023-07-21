@@ -1,16 +1,14 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
-//- 
-//- Licensed under the Apache License, Version 2.0 (the "License");
-//- you may not use this file except in compliance with the License.
-//- You may obtain a copy of the License at
-//- 
-//-  http://www.apache.org/licenses/LICENSE-2.0
-//- 
-//-  Unless required by applicable law or agreed to in writing, software
+//- Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+//- <https://www.chatopera.com>, Licensed under the Chunsong Public 
+//- License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+//- Unless required by applicable law or agreed to in writing, software
 //- distributed under the License is distributed on an "AS IS" BASIS,
-//-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //- See the License for the specific language governing permissions and
 //- limitations under the License.
+//- Copyright (C) 2018-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>
+//- Licensed under the Apache License, Version 2.0
+//- http://www.apache.org/licenses/LICENSE-2.0
 extends /admin/include/layout.pug
 block content
     form.layui-form(method='post', key='set-mine', enctype='multipart/form-data', action='/admin/config/save.html')
@@ -63,7 +61,7 @@ block content
                                                 .col-lg-8
                                                     p 登录页和产品后台页面显示标题
                                                 .col-lg-4(style='text-align:right;position: relative;')
-                                                    input.layui-input(type='text', name='title', value=systemConfig.title ? systemConfig.title: "春松客服-多渠道智能客服", autocomplete='off')
+                                                    input.layui-input(type='text', name='title', value=systemConfig.title ? systemConfig.title: "春松客服-开源客服系统", autocomplete='off')
                                     .ukefu-webim-prop
                                         .ukefu-webim-tl(style='clear:both;') 登录页欢迎Logo图片
                                         .box-item
@@ -183,37 +181,6 @@ block content
                                                     select(name='loglevel', lay-filter='sysconfig')
                                                         option(value="info", selected = (systemConfig.loglevel == 'info'?'selected' : false)) INFO
                                                         option(value="debug", selected = (systemConfig.loglevel == 'debug'?'selected' : false)) DEBUG
-                                    .ukefu-webim-prop(hidden)
-                                        .ukefu-webim-tl(style='clear:both;') 启用服务SSL安全访问
-                                        .box-item
-                                            .row
-                                                .col-lg-8
-                                                    p 启用 SSL 安全协议
-                                                    p(style='color:#888888;font-size:13px;margin-top:10px;') 启用后需要上传SSL证书和设置SSL证书密码
-                                                .col-lg-4(style='text-align:right;')
-                                                    input(type="checkbox" title="启用" name="enablessl" lay-filter="enablessl" value="1", checked=(systemConfig.enablessl?'checked':false))
-                                            .row.httpsconfig(style='margin-top:20px;display:' + (systemConfig.enablessl == false? "none;":"block;"))
-                                                .col-lg-8
-                                                    p
-                                                        | JKS 证书文件
-                                                        span(style='color:red;font-weight:bold;')= systemConfig.jksfile
-                                                    p(style='color:#888888;font-size:13px;margin-top:10px;').
-                                                        受信的SSL证书文件，请上传.JKS类型的证书文件
-                                                .col-lg-4(style='text-align:right;')
-                                                    span#jkstip
-                                                    .layui-box.layui-upload-button
-                                                        input.layui-upload-file(type='file', name='keyfile', accept='.jks', lay-ext='jks', onchange='$(\'#jkstip\').html($(this).val());')
-                                                        span.layui-upload-icon
-                                                            i.layui-icon 
-                                                            | 上传 JKS 文件
-                                            .row.httpsconfig(style='margin-top:20px;display:' + (systemConfig.enablessl == false ? 'none;':'block;'))
-                                                .col-lg-8
-                                                    p JKS证书密码
-                                                    p(style='color:#888888;font-size:13px;margin-top:10px;')
-                                                        | .JKS文件的证书密码，
-                                                        b(style='color:red;font-weight:bold;') 如无改变，不用填写
-                                                .col-lg-4(style='text-align:right;')
-                                                    input.layui-input(type='password', name='jkspassword', autocomplete='off')
                                     .ukefu-webim-prop(hidden)
                                         .ukefu-webim-tl(style='clear:both;') 启用涉及重要操作的二次验证密码
                                         .box-item
@@ -516,13 +483,6 @@ block content
         layui.use('form', function(){
             var form = layui.form();
             form.render('select'); //刷新select选择框渲染
-            form.on("checkbox(enablessl)" , function(data){
-                if(data.elem.checked == true){
-                    $('.httpsconfig').show();
-                }else{
-                    $('.httpsconfig').hide();
-                }
-            })
             form.on("checkbox(enable)" , function(data){
                 if(data.elem.checked == true){
                     $('.elablesec').show();

@@ -1,17 +1,17 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
-//- 
-//- Licensed under the Apache License, Version 2.0 (the "License");
-//- you may not use this file except in compliance with the License.
-//- You may obtain a copy of the License at
-//- 
-//-  http://www.apache.org/licenses/LICENSE-2.0
-//- 
-//-  Unless required by applicable law or agreed to in writing, software
+//- Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+//- <https://www.chatopera.com>, Licensed under the Chunsong Public 
+//- License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+//- Unless required by applicable law or agreed to in writing, software
 //- distributed under the License is distributed on an "AS IS" BASIS,
-//-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //- See the License for the specific language governing permissions and
 //- limitations under the License.
-- var baseUrl = (schema?schema:'http')+'://' + hostname + ':' + port
+//- Copyright (C) 2018-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>
+//- Licensed under the Apache License, Version 2.0
+//- http://www.apache.org/licenses/LICENSE-2.0
+- var schemaFixed = schema ? schema : 'http'
+- var portFixed = schemaFixed == "https" ? 443 : port
+- var baseUrl = schemaFixed +'://' + hostname + ':' + portFixed
 
 - var style = 'text-align:center;height: 150px;border-radius: 30px;width: 40px;margin: 0px 5px 0 0; float:left ; word-wrap: break-word;overflow: hidden;font-size:15px;color:#FFFFFF;text-align: center;padding-top: 15px;border: 1px solid #DCDCDC;background-color:#008df3;';
 if inviteData.consult_vsitorbtn_model == "2"
@@ -98,7 +98,7 @@ else if  inviteData.consult_invite_color == "6"
                                 - skillNum = skillNum + 1
             
                         div(style='padding:5px;color:#555;border:1px solid #dddddd;background-color:#efefef;')
-                            a(href=baseUrl + '/im/text/' + appid + '.html?skill=' + skill.id + '&orgi=' + orgi, onclick='return openAgentChatDialog(this.href)', style='color: #777;    text-decoration: none;') #{skill.name}（#{skillNum}）
+                            a(href=baseUrl + '/im/text/' + appid + '.html?skill=' + skill.id, onclick='return openAgentChatDialog(this.href)', style='color: #777;    text-decoration: none;') #{skill.name}（#{skillNum}）
 
                         if inviteData.consult_skill_agent && inviteData.consult_skill_agent == true
                             ul(class="ichat-list-ul", style="border: 0 none;list-style: none outside none;margin: 0;padding: 0;width: 150px;")
@@ -108,7 +108,7 @@ else if  inviteData.consult_invite_color == "6"
                                         if agent.organ && agent.organ == skill.id && agentNum < inviteData.consult_skill_maxagent
                                             - agentNum = agentNum + 1
                                             li(style="height: 23px;list-style: none outside none;margin-left: 6px;overflow: hidden;padding: 2px;")
-                                                a(href=baseUrl + '/im/text/' + appid + '.html?skill=' + skill.id + '&agent=' + agent.id + '&orgi=' + orgi, onclick='return openAgentChatDialog(this.href)', style='color: #777;    text-decoration: none;')
+                                                a(href=baseUrl + '/im/text/' + appid + '.html?skill=' + skill.id + '&agent=' + agent.id, onclick='return openAgentChatDialog(this.href)', style='color: #777;    text-decoration: none;')
                                                     img(src=baseUrl + '/images/creater.png', style='vertical-align: middle;')
                                                     | #{agent.uname}
                 else if inviteData.onlyareaskill && inviteData.areaskilltipmsg
@@ -197,7 +197,6 @@ script(type='text/javascript').
     }
 
     var appid = '#{appid}';
-    var orgi = '#{orgi}';
     var client = '#{client}';
 
     var cskefu = {
@@ -206,24 +205,20 @@ script(type='text/javascript').
         in: genUrl(appid + '/userlist.html', {
             appid: appid,
             aiid: '#{aiid}',
-            orgi: orgi,
             client: client,
         }),
         url: genUrl('online', {
             appid: appid,
-            orgi: orgi,
             client: client,
             aiid: '#{aiid}',
         }),
         chat: genUrl('index.html', {
             appid: appid,
-            orgi: orgi,
             client: client,
             aiid: '#{aiid}',
         }),
         refuse: genUrl('refuse.html', {
             appid: appid,
-            orgi: orgi,
             client: client,
             aiid: '#{aiid}',
         }),
@@ -407,36 +402,33 @@ script(type='text/javascript').
             return false;
         },
         display: function () {
+            // 注入聊天控件按钮，默认不展示
             cskefu.writepoint();
-            if (#{!(inviteData.consult_vsitorbtn_display) || (inviteData.consult_vsitorbtn_display && inviteData.consult_vsitorbtn_display == 0)}) {
 
+            // 显示聊天控件按钮
+            var isDisplayDelay = #{(inviteData.consult_vsitorbtn_delay && inviteData.consult_vsitorbtn_delay > 0)}
+            var displayDelay = 0;
+            if (isDisplayDelay){
+                displayDelay = #{inviteData.consult_vsitorbtn_delay}
+            }
+            setTimeout(function (){
+                // 入口样式：无，consult_vsitorbtn_model = 9
                 if (#{inviteData && inviteData.consult_vsitorbtn_model != '9' && inviteData.whitelist_mode == false}) {
+                    // 设置为展示对话按钮
                     document.getElementById("ukefu-point").style.display = "block";
                 }
+            }, displayDelay); //延时显示 访客入口
 
-                if (#{inviteData.consult_invite_enable}) {
-                    if (#{inviteData.consult_invite_delay && inviteData.consult_invite_delay == 0}) {
-                        cskefu.writeinvite();
-                    } else {
-                        setTimeout(function () {
-                            cskefu.writeinvite();
-                        }, !{inviteData.consult_invite_delay});
-                    }
-                } else {
+           // 显示邀请弹窗
+           if (#{inviteData.consult_invite_enable}) {
+                if (#{inviteData.consult_invite_delay && inviteData.consult_invite_delay > 0}) {
                     setTimeout(function () {
-                        document.getElementById("ukefu-point").style.display = "block";
-                        if (#{inviteData.consult_invite_enable}) {
-                            if (#{inviteData.consult_invite_delay && inviteData.consult_invite_delay == 0}) {
-                                cskefu.writeinvite();
-                            } else {
-                                setTimeout(function () {
-                                    cskefu.writeinvite();
-                                }, #{inviteData.consult_invite_delay});
-                            }
-                        }
-                    }, #{inviteData.consult_vsitorbtn_display});        //延时显示 访客入口
+                        cskefu.writeinvite();
+                    }, !{inviteData.consult_invite_delay});
+                } else {
+                        cskefu.writeinvite();
                 }
-            }
+           }
         },
         writeinvite: function () {
             document.getElementById('ukefu-invite-dialog').style.display = "block";

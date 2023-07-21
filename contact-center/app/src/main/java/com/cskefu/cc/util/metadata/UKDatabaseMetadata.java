@@ -1,22 +1,20 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.util.metadata;
 
-import org.hibernate.annotations.common.util.StringHelper;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -24,7 +22,7 @@ import java.util.List;
 import java.util.Properties;
 
 public class UKDatabaseMetadata{
-	private Connection connection ;
+	private final Connection connection ;
 	public UKDatabaseMetadata(Connection connection)
 			throws SQLException {
 		this.connection = connection ;
@@ -33,7 +31,7 @@ public class UKDatabaseMetadata{
 	
 	
 
-	private final List<UKTableMetaData> tables = new ArrayList<UKTableMetaData>();
+	private final List<UKTableMetaData> tables = new ArrayList<>();
 	private DatabaseMetaData meta;
 	public Properties properties ;
 	private static final String[] TYPES = { "TABLE", "VIEW" };
@@ -71,14 +69,12 @@ public class UKDatabaseMetadata{
 					rs = meta.getTables(catalog, schema, name, TYPES);
 				} else if ((isQuoted && meta.storesUpperCaseIdentifiers() && meta.storesUpperCaseQuotedIdentifiers())
 						|| (!isQuoted && meta.storesUpperCaseIdentifiers())) {
-					rs = meta.getTables(StringHelper.toUpperCase(catalog),
-							StringHelper.toUpperCase(schema), StringHelper
-									.toUpperCase(name), TYPES);
+					rs = meta.getTables(StringUtils.upperCase(catalog),
+							StringUtils.upperCase(schema), StringUtils.upperCase(name), TYPES);
 				} else if ((isQuoted && meta.storesLowerCaseQuotedIdentifiers())
 						|| (!isQuoted && meta.storesLowerCaseIdentifiers())) {
-					rs = meta.getTables(StringHelper.toLowerCase(catalog),
-							StringHelper.toLowerCase(schema), StringHelper
-									.toLowerCase(name), TYPES);
+					rs = meta.getTables(StringUtils.lowerCase(catalog),
+							StringUtils.lowerCase(schema), StringUtils.lowerCase(name), TYPES);
 				}else if(schema!=null && schema.equals("hive")){
 					statement = this.connection.createStatement() ;
 					if(properties.get("database")!=null){
@@ -144,14 +140,12 @@ public class UKDatabaseMetadata{
 					rs = meta.getTables(catalog, schema, name, TYPES);
 				} else if ((isQuoted && meta.storesUpperCaseQuotedIdentifiers())
 						|| (!isQuoted && meta.storesUpperCaseIdentifiers())) {
-					rs = meta.getTables(StringHelper.toUpperCase(catalog),
-							StringHelper.toUpperCase(schema), StringHelper
-									.toUpperCase(name), TYPES);
+					rs = meta.getTables(StringUtils.upperCase(catalog),
+							StringUtils.upperCase(schema), StringUtils.upperCase(name), TYPES);
 				} else if ((isQuoted && meta.storesLowerCaseQuotedIdentifiers())
 						|| (!isQuoted && meta.storesLowerCaseIdentifiers())) {
-					rs = meta.getTables(StringHelper.toLowerCase(catalog),
-							StringHelper.toLowerCase(schema), StringHelper
-									.toLowerCase(name), TYPES);
+					rs = meta.getTables(StringUtils.lowerCase(catalog),
+							StringUtils.lowerCase(schema), StringUtils.lowerCase(name), TYPES);
 				} else {
 					rs = meta.getTables(catalog, schema, name, TYPES);
 				}

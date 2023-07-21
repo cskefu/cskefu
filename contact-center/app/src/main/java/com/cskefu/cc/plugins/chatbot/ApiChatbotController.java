@@ -1,17 +1,15 @@
-/*
- * Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2019-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>, 
+ * Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.plugins.chatbot;
 
@@ -20,14 +18,14 @@ import com.chatopera.bot.sdk.Response;
 import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.controller.Handler;
-import com.cskefu.cc.controller.api.request.RestUtils;
+import com.cskefu.cc.util.restapi.RestUtils;
 import com.cskefu.cc.model.*;
 import com.cskefu.cc.persistence.repository.*;
 import com.cskefu.cc.proxy.OnlineUserProxy;
 import com.cskefu.cc.util.Menu;
 import com.cskefu.cc.util.SystemEnvHelper;
 import com.google.gson.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -44,10 +42,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -63,7 +62,7 @@ public class ApiChatbotController extends Handler {
     private ChatbotRepository chatbotRes;
 
     @Autowired
-    private SNSAccountRepository snsAccountRes;
+    private ChannelRepository snsAccountRes;
 
     @Autowired
     private UserRepository userRes;
@@ -92,7 +91,6 @@ public class ApiChatbotController extends Handler {
         JsonObject json = new JsonObject();
         HttpHeaders headers = RestUtils.header();
         final User logined = super.getUser(request);
-        final String orgi = logined.getOrgi();
 
         if (!j.has("ops")) {
             json.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_1);
@@ -102,13 +100,13 @@ public class ApiChatbotController extends Handler {
                 case "create":
                     // TODO 支持将一个用户添加到多个部门后，此处需要在Payload中传入部门ID ,即 organ
                     // 2019-10-10 Wang Hai Liang
-                    json = create(j, logined.getId(), logined.getOrgi());
+                    json = create(j, logined.getId());
                     break;
                 case "delete":
-                    json = delete(j, logined.getId(), logined.getOrgi());
+                    json = delete(j, logined.getId());
                     break;
                 case "fetch":
-                    json = fetch(j, logined.getId(), logined.isAdmin(), orgi, super.getP(request), super.getPs(request));
+                    json = fetch(j, logined.getId(), logined.isAdmin(), super.getP(request), super.getPs(request));
                     break;
                 case "update":
                     json = update(j);
@@ -126,27 +124,26 @@ public class ApiChatbotController extends Handler {
                     json = enableAiSuggest(j, false);
                     break;
                 case "vacant":
-                    json = vacant(j, orgi, logined.isAdmin());
+                    json = vacant(j, logined.isAdmin());
                     break;
                 case "faq":
-                    json = faq(j, orgi);
+                    json = faq(j);
                     break;
                 default:
                     json.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_2);
                     json.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的操作。");
             }
         }
-        return new ResponseEntity<String>(json.toString(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(json.toString(), headers, HttpStatus.OK);
     }
 
     /**
      * 获取空缺聊天机器人的网站渠道列表
      *
      * @param j
-     * @param orgi
      * @return
      */
-    private JsonObject vacant(final JsonObject j, String orgi, boolean isSuperuser) {
+    private JsonObject vacant(final JsonObject j, boolean isSuperuser) {
         JsonObject resp = new JsonObject();
         if (!isSuperuser) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
@@ -154,15 +151,15 @@ public class ApiChatbotController extends Handler {
             return resp;
         }
 
-        List<SNSAccount> records = snsAccountRes.findBySnstypeAndOrgi(j.get("snstype").getAsString(), orgi);
+        List<Channel> records = snsAccountRes.findByType(j.get("type").getAsString());
         JsonArray ja = new JsonArray();
 
-        for (SNSAccount r : records) {
-            if (!chatbotRes.existsBySnsAccountIdentifierAndOrgi(r.getSnsid(), orgi)) {
+        for (Channel r : records) {
+            if (!chatbotRes.existsBySnsAccountIdentifier(r.getSnsid())) {
                 JsonObject o = new JsonObject();
                 o.addProperty("id", r.getId());
                 o.addProperty("snsid", r.getSnsid());
-                o.addProperty("snsType", r.getSnstype());
+                o.addProperty("snsType", r.getType());
                 o.addProperty("snsurl", isWebIMChannelBySnsType(j) ? r.getBaseURL() : r.getName());
                 ja.add(o);
             }
@@ -188,7 +185,7 @@ public class ApiChatbotController extends Handler {
         }
 
         final String id = j.get("id").getAsString();
-        Chatbot c = chatbotRes.findOne(id);
+        Chatbot c = chatbotRes.findById(id).orElse(null);
 
         if (c == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
@@ -204,7 +201,7 @@ public class ApiChatbotController extends Handler {
 
                 if (c.getChannel().equals(Constants.CHANNEL_TYPE_WEBIM)) {
                     // 更新访客网站配置
-                    CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
+                    CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier());
                     invite.setAi(isEnabled);
                     consultInviteRes.save(invite);
                     OnlineUserProxy.cacheConsult(invite);
@@ -247,7 +244,7 @@ public class ApiChatbotController extends Handler {
         }
 
         final String id = j.get("id").getAsString();
-        Chatbot c = chatbotRes.findOne(id);
+        Chatbot c = chatbotRes.findById(id).orElse(null);
 
         if (c == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
@@ -260,7 +257,7 @@ public class ApiChatbotController extends Handler {
 
         if (c.getChannel().equals(Constants.CHANNEL_TYPE_WEBIM)) {
             // 更新访客网站配置
-            CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
+            CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier());
             invite.setAisuggest(isEnabled);
             consultInviteRes.save(invite);
             OnlineUserProxy.cacheConsult(invite);
@@ -291,7 +288,7 @@ public class ApiChatbotController extends Handler {
         }
         final String id = j.get("id").getAsString();
 
-        Chatbot c = chatbotRes.findOne(id);
+        Chatbot c = chatbotRes.findById(id).orElse(null);
 
         if (c == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
@@ -317,7 +314,7 @@ public class ApiChatbotController extends Handler {
         }
 
         // 更新访客网站配置
-        CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
+        CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier());
 
         if (j.has("workmode") && Constants.CHATBOT_VALID_WORKMODELS.contains(j.get("workmode").getAsString())) {
             c.setWorkmode(j.get("workmode").getAsString());
@@ -392,12 +389,11 @@ public class ApiChatbotController extends Handler {
      *
      * @param j
      * @param id
-     * @param orgi
      * @param p
      * @param ps
      * @return
      */
-    private JsonObject fetch(JsonObject j, String id, boolean isSuperuser, String orgi, int p, int ps) {
+    private JsonObject fetch(JsonObject j, String id, boolean isSuperuser, int p, int ps) {
         JsonObject resp = new JsonObject();
         if (!isSuperuser) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
@@ -405,7 +401,7 @@ public class ApiChatbotController extends Handler {
             return resp;
         }
 
-        Page<Chatbot> records = chatbotRes.findWithPagination(new PageRequest(p, ps, Sort.Direction.DESC, "createtime"));
+        Page<Chatbot> records = chatbotRes.findWithPagination(PageRequest.of(p, ps, Sort.Direction.DESC, "createtime"));
 
         JsonArray ja = new JsonArray();
         for (Chatbot c : records) {
@@ -422,16 +418,16 @@ public class ApiChatbotController extends Handler {
             o.addProperty("enabled", c.isEnabled());
 
             // SNSAccount
-            SNSAccount snsAccount = snsAccountRes.findBySnsidAndOrgi(c.getSnsAccountIdentifier(), orgi);
-            if (snsAccount == null) {
+            Optional<Channel> snsAccountOpt = snsAccountRes.findBySnsid(c.getSnsAccountIdentifier());
+            if (!snsAccountOpt.isPresent()) {
                 chatbotRes.delete(c); // 删除不存在snsAccount的机器人
                 continue; // 忽略不存在snsAccount的机器人
             }
 
-            o.addProperty("snsurl", snsAccount.getBaseURL());
+            o.addProperty("snsurl", snsAccountOpt.get().getBaseURL());
 
             // 创建人
-            User user = userRes.findById(c.getCreater());
+            User user = userRes.findById(c.getCreater()).orElse(null);
             if (user != null) {
                 o.addProperty("creater", c.getCreater());
                 o.addProperty("creatername", user.getUname());
@@ -455,10 +451,9 @@ public class ApiChatbotController extends Handler {
      *
      * @param j
      * @param uid
-     * @param orgi
      * @return
      */
-    private JsonObject delete(final JsonObject j, final String uid, final String orgi) {
+    private JsonObject delete(final JsonObject j, final String uid) {
         JsonObject resp = new JsonObject();
         if ((!j.has("id")) || StringUtils.isBlank(j.get("id").getAsString())) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
@@ -467,7 +462,7 @@ public class ApiChatbotController extends Handler {
         }
         final String id = j.get("id").getAsString();
 
-        Chatbot c = chatbotRes.findOne(id);
+        Chatbot c = chatbotRes.findById(id).orElse(null);
         if (c == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，不存在该聊天机器人。");
@@ -476,7 +471,7 @@ public class ApiChatbotController extends Handler {
 
         if (c.getChannel().equals(Constants.CHANNEL_TYPE_WEBIM)) {
             // 更新访客网站配置
-            CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
+            CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier());
             if (invite != null) {
                 invite.setAi(false);
                 invite.setAiname(null);
@@ -505,10 +500,9 @@ public class ApiChatbotController extends Handler {
      *
      * @param j
      * @param creater
-     * @param orgi
      * @return
      */
-    private JsonObject create(final JsonObject j, final String creater, final String orgi) throws Exception {
+    private JsonObject create(final JsonObject j, final String creater) throws Exception {
         JsonObject resp = new JsonObject();
         String snsid = null;
         String workmode = null;
@@ -546,20 +540,20 @@ public class ApiChatbotController extends Handler {
         } else {
             snsid = j.get("snsid").getAsString();
             // #TODO 仅支持webim
-            if (!snsAccountRes.existsBySnsidAndSnstypeAndOrgi(snsid, j.get("snstype").getAsString(), orgi)) {
+            if (!snsAccountRes.existsBySnsidAndType(snsid, j.get("type").getAsString())) {
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
                 resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，不存在【snsid】对应的网站渠道。");
                 return resp;
             }
 
-            if (chatbotRes.existsBySnsAccountIdentifierAndOrgi(snsid, orgi)) {
+            if (chatbotRes.existsBySnsAccountIdentifier(snsid)) {
                 resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
                 resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，该渠道【snsid】已经存在聊天机器人。");
                 return resp;
             }
         }
 
-        if (chatbotRes.existsByClientIdAndOrgi(clientId, orgi)) {
+        if (chatbotRes.existsByClientId(clientId)) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "不合法的参数，数据库中存在该聊天机器人。");
             return resp;
@@ -585,8 +579,7 @@ public class ApiChatbotController extends Handler {
                 c.setName(botDetails.getString("name"));
                 c.setWelcome(botDetails.getString("welcome"));
                 c.setCreater(creater);
-                c.setOrgi(orgi);
-                c.setChannel(j.get("snstype").getAsString());
+                c.setChannel(j.get("type").getAsString());
                 c.setSnsAccountIdentifier(snsid);
                 Date dt = new Date();
                 c.setCreatetime(dt);
@@ -599,7 +592,7 @@ public class ApiChatbotController extends Handler {
 
                 // 更新访客网站配置
                 if (isWebIMChannelBySnsType(j)) {
-                    CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier(), c.getOrgi());
+                    CousultInvite invite = OnlineUserProxy.consult(c.getSnsAccountIdentifier());
                     invite.setAi(enabled);
                     invite.setAifirst(StringUtils.equals(Constants.CHATBOT_CHATBOT_FIRST, workmode));
                     invite.setAiid(c.getId());
@@ -607,7 +600,7 @@ public class ApiChatbotController extends Handler {
                     invite.setAisuccesstip(c.getWelcome());
                     consultInviteRes.save(invite);
                     OnlineUserProxy.cacheConsult(invite);
-                } else if (j.get("snstype").getAsString().equals(Constants.CHANNEL_TYPE_MESSENGER)) {
+                } else if (j.get("type").getAsString().equals(Constants.CHANNEL_TYPE_MESSENGER)) {
                     FbMessenger fbMessenger = fbMessengerRepository.findOneByPageId(c.getSnsAccountIdentifier());
                     fbMessenger.setAi(enabled);
                     fbMessenger.setAiid(c.getId());
@@ -645,7 +638,7 @@ public class ApiChatbotController extends Handler {
         }
     }
 
-    private JsonObject faq(final JsonObject j, String orgi) {
+    private JsonObject faq(final JsonObject j) {
         JsonObject resp = new JsonObject();
         if ((!j.has("snsaccountid")) || StringUtils.isBlank(j.get("snsaccountid").getAsString())) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_3);
@@ -654,7 +647,7 @@ public class ApiChatbotController extends Handler {
         }
 
         final String snsaccountid = j.get("snsaccountid").getAsString();
-        Chatbot c = chatbotRes.findBySnsAccountIdentifierAndOrgi(snsaccountid, orgi);
+        Chatbot c = chatbotRes.findBySnsAccountIdentifier(snsaccountid);
 
         if (c == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
@@ -703,6 +696,6 @@ public class ApiChatbotController extends Handler {
      * @return
      */
     private boolean isWebIMChannelBySnsType(final JsonObject p) {
-        return StringUtils.equals(p.get("snstype").getAsString(), Constants.CHANNEL_TYPE_WEBIM);
+        return StringUtils.equals(p.get("type").getAsString(), Constants.CHANNEL_TYPE_WEBIM);
     }
 }

@@ -1,24 +1,22 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.model;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -32,7 +30,6 @@ public class CousultInvite implements java.io.Serializable {
     private static final long serialVersionUID = 4067131780773572811L;
     private String id;
     private String impid;
-    private String orgi;
     private String owner;
     private String processid;
     private String shares;
@@ -93,7 +90,7 @@ public class CousultInvite implements java.io.Serializable {
     private String consult_skill_bottomtitle;    //显示技能组底部标题
     private boolean consult_skill_agent;    //是否显示技能组下的坐席
 
-    private int consult_vsitorbtn_display;
+    private int consult_vsitorbtn_delay; // 访客对话按钮延迟显示
 
     private boolean recordhis;            //记录访客的网页访问记录
     private boolean traceuser;            //实时追踪访客
@@ -168,14 +165,6 @@ public class CousultInvite implements java.io.Serializable {
 
     public void setImpid(String impid) {
         this.impid = impid;
-    }
-
-    public String getOrgi() {
-        return orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
     }
 
     public String getOwner() {
@@ -498,12 +487,12 @@ public class CousultInvite implements java.io.Serializable {
         this.consult_dialog_headimg = consult_dialog_headimg;
     }
 
-    public int getConsult_vsitorbtn_display() {
-        return consult_vsitorbtn_display;
+    public int getConsult_vsitorbtn_delay() {
+        return consult_vsitorbtn_delay;
     }
 
-    public void setConsult_vsitorbtn_display(int consult_vsitorbtn_display) {
-        this.consult_vsitorbtn_display = consult_vsitorbtn_display;
+    public void setConsult_vsitorbtn_delay(int consult_vsitorbtn_display) {
+        this.consult_vsitorbtn_delay = consult_vsitorbtn_display;
     }
 
     public String getDialog_name() {

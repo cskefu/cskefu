@@ -1,16 +1,14 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
-//- 
-//- Licensed under the Apache License, Version 2.0 (the "License");
-//- you may not use this file except in compliance with the License.
-//- You may obtain a copy of the License at
-//- 
-//-  http://www.apache.org/licenses/LICENSE-2.0
-//- 
-//-  Unless required by applicable law or agreed to in writing, software
+//- Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+//- <https://www.chatopera.com>, Licensed under the Chunsong Public 
+//- License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+//- Unless required by applicable law or agreed to in writing, software
 //- distributed under the License is distributed on an "AS IS" BASIS,
-//-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //- See the License for the specific language governing permissions and
 //- limitations under the License.
+//- Copyright (C) 2018-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>
+//- Licensed under the Apache License, Version 2.0
+//- http://www.apache.org/licenses/LICENSE-2.0
 extends /apps/include/layout.pug
 block content
     style.
@@ -71,7 +69,7 @@ block content
                             h1.site-h1(style='background-color:#EEEEEE;')
                                 | 访问信息
                         .box-body(style='padding:0px 10px;position: relative;')
-                            if agentUser.channel && agentUser.channel == "webim"
+                            if agentuser.channeltype && agentuser.channeltype == "webim"
                                 include /apps/agent/channel/webim.pug
     .layui-body.ukefu-chat-agent#ukefu-chat-agent
         .main-agentuser(style='overflow-y:auto;')
@@ -115,7 +113,7 @@ block content
                                                     "ukefu-current-agentservice": curAgentService && curAgentService.id == agentService.id
                                                 }))
                                                     td(title=agentService.username)
-                                                        a(href="/service/online/chatmsg.html?id=#{agentService.id}", data-toggle="load", data-target="#onlinecontent")
+                                                        a(href="chatmsg.html?id=" + agentService.id + "&title=false", data-toggle="load", data-target="#onlinecontent")
                                                             | #{agentService.username}
                                                     td(title=agentService.channel)= agentService.channel
                                                     td(title=agentService.agentusername)= agentService.agentusername

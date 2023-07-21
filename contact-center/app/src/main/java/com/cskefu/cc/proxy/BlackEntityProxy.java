@@ -1,17 +1,15 @@
-/*
- * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>, 
+ * Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 
 package com.cskefu.cc.proxy;
@@ -22,7 +20,7 @@ import com.cskefu.cc.model.BlackEntity;
 import com.cskefu.cc.model.User;
 import com.cskefu.cc.persistence.repository.AgentServiceRepository;
 import com.cskefu.cc.persistence.repository.BlackListRepository;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,24 +44,20 @@ public class BlackEntityProxy {
      * @param pre
      * @param owner
      * @param userid
-     * @param orgi
      * @param agentserviceid
      * @param agentuserid
-     * @return
      */
-    public BlackEntity updateOrCreateBlackEntity(
+    public void updateOrCreateBlackEntity(
             final BlackEntity pre,
             final User owner,
             final String userid,
-            final String orgi,
             final String agentserviceid,
             final String agentuserid) {
-        final BlackEntity blackEntityUpdated = cache.findOneBlackEntityByUserIdAndOrgi(
-                userid, orgi).orElseGet(
+        final BlackEntity blackEntityUpdated = cache.findOneBlackEntityByUserId(
+                userid).orElseGet(
                 () -> {
                     BlackEntity p = new BlackEntity();
                     p.setUserid(userid);
-                    p.setOrgi(orgi);
                     p.setCreater(owner.getId());
                     return p;
                 });
@@ -71,7 +65,7 @@ public class BlackEntityProxy {
         blackEntityUpdated.setAgentid(owner.getId());
         blackEntityUpdated.setAgentserviceid(agentserviceid);
         if (agentserviceid != null){
-            AgentService service = agentServiceRes.findByIdAndOrgi(agentserviceid, orgi);
+            AgentService service = agentServiceRes.findById(agentserviceid).orElse(null);
             blackEntityUpdated.setSkill(service.getSkill());
             blackEntityUpdated.setAgentusername(service.getAgentusername());
         }
@@ -86,9 +80,9 @@ public class BlackEntityProxy {
                     new Date(System.currentTimeMillis() + pre.getControltime() * 3600 * 1000L));
         }
 
-        AgentService agentService = agentServiceRes.findByIdAndOrgi(agentserviceid, orgi);
+        AgentService agentService = agentServiceRes.findById(agentserviceid).orElse(null);
         if (agentService != null) {
-            blackEntityUpdated.setChannel(agentService.getChannel());
+            blackEntityUpdated.setChannel(agentService.getChanneltype());
             blackEntityUpdated.setAgentuser(agentService.getUsername());
             blackEntityUpdated.setSessionid(agentService.getSessionid());
             if (agentService.getSessiontimes() != 0) {
@@ -100,6 +94,5 @@ public class BlackEntityProxy {
 
         blackListRes.save(blackEntityUpdated);
 
-        return blackEntityUpdated;
     }
 }

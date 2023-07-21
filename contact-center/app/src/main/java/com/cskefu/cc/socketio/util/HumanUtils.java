@@ -1,18 +1,16 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.socketio.util;
 
@@ -28,7 +26,7 @@ import com.cskefu.cc.persistence.repository.AgentServiceRepository;
 import com.cskefu.cc.persistence.repository.AgentUserTaskRepository;
 import com.cskefu.cc.socketio.message.ChatMessage;
 import com.cskefu.cc.socketio.message.Message;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,8 +56,8 @@ public class HumanUtils {
      */
     protected static void processMessage(final ChatMessage chatMessage, final String msgtype, final String userid) {
         logger.info("[processMessage] userid {}, msgtype {}", userid, msgtype);
-        AgentUser agentUser = MainContext.getCache().findOneAgentUserByUserIdAndOrgi(
-                userid, Constants.SYSTEM_ORGI).orElse(null);
+        AgentUser agentUser = MainContext.getCache().findOneAgentUserByUserId(
+                userid).orElse(null);
 
         Message outMessage = new Message();
 
@@ -71,8 +69,7 @@ public class HumanUtils {
                 agentUser.getNickname()) ? agentUser.getNickname() : "";
 
         if (agentUser != null && StringUtils.isNotBlank(agentUser.getAgentserviceid())) {
-            AgentService agentService = getAgentServiceRes().findOne(
-                    agentUser.getAgentserviceid());
+            AgentService agentService = getAgentServiceRes().findById(agentUser.getAgentserviceid()).orElse(null);
             if (StringUtils.isNotBlank(agentService.getUsername())) {
                 userNickName = agentService.getUsername();
             }
@@ -103,7 +100,6 @@ public class HumanUtils {
             chatMessage.setAgentuser(agentUser.getId());
             chatMessage.setAgentserviceid(agentUser.getAgentserviceid());
             chatMessage.setAppid(agentUser.getAppid());
-            chatMessage.setOrgi(agentUser.getOrgi());
             chatMessage.setMsgtype(msgtype);
             // agentUser作为 session id
             chatMessage.setUsession(agentUser.getUserid());
@@ -112,15 +108,15 @@ public class HumanUtils {
             if (StringUtils.isNotBlank(agentUser.getAgentno())) {
                 chatMessage.setTouser(agentUser.getAgentno());
             }
-            chatMessage.setChannel(agentUser.getChannel());
+            chatMessage.setChannel(agentUser.getChanneltype());
             outMessage.setContextid(agentUser.getContextid());
-            outMessage.setChannel(agentUser.getChannel());
+            outMessage.setChannelType(agentUser.getChanneltype());
             outMessage.setAgentUser(agentUser);
             outMessage.setCreatetime(Constants.DISPLAY_DATE_FORMATTER.format(chatMessage.getCreatetime()));
 
             if (StringUtils.equals(chatMessage.getType(), "message")) {
                 // 处理超时回复
-                AgentUserTask agentUserTask = getAgentUserTaskRes().getOne(agentUser.getId());
+                AgentUserTask agentUserTask = getAgentUserTaskRes().findById(agentUser.getId()).orElse(null);
                 agentUserTask.setLastgetmessage(new Date());
                 agentUserTask.setWarnings("1");
                 agentUserTask.setWarningtime(null);
@@ -136,11 +132,11 @@ public class HumanUtils {
         // 将消息返送给 访客
         if (StringUtils.isNotBlank(chatMessage.getUserid()) && MainContext.MessageType.MESSAGE.toString().equals(
                 chatMessage.getType())) {
-            MainContext.getPeerSyncIM().send(ReceiverType.VISITOR, ChannelType.toValue(outMessage.getChannel()),
+            MainContext.getPeerSyncIM().send(ReceiverType.VISITOR, ChannelType.toValue(outMessage.getChannelType()),
                     outMessage.getAppid(), MessageType.MESSAGE, chatMessage.getUserid(),
                     outMessage, true);
             if (statusMessage != null) {
-                MainContext.getPeerSyncIM().send(ReceiverType.VISITOR, ChannelType.toValue(outMessage.getChannel()),
+                MainContext.getPeerSyncIM().send(ReceiverType.VISITOR, ChannelType.toValue(outMessage.getChannelType()),
                         outMessage.getAppid(), MessageType.STATUS, chatMessage.getUserid(),
                         statusMessage, true);
             }

@@ -1,17 +1,15 @@
-/*
- * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>, 
+ * Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 
 package com.cskefu.cc.aspect;
@@ -22,7 +20,7 @@ import com.cskefu.cc.cache.RedisCommand;
 import com.cskefu.cc.cache.RedisKey;
 import com.cskefu.cc.model.AgentUser;
 import com.cskefu.cc.proxy.AgentAuditProxy;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -69,7 +67,7 @@ public class AgentUserAspect {
         agentAuditProxy.updateAgentUserAudits(agentUser);
 
         // 同步缓存
-        cache.putAgentUserByOrgi(agentUser, agentUser.getOrgi());
+        cache.putAgentUser(agentUser);
     }
 
     @After("execution(* com.cskefu.cc.persistence.repository.AgentUserRepository.delete(..))")
@@ -78,8 +76,8 @@ public class AgentUserAspect {
         logger.info(
                 "[delete] agentUser id {}, agentno {}, userId {}", agentUser.getId(), agentUser.getAgentno(),
                 agentUser.getUserid());
-        cache.deleteAgentUserAuditByOrgiAndId(agentUser.getOrgi(), agentUser.getId());
-        cache.deleteAgentUserByUserIdAndOrgi(agentUser, agentUser.getOrgi());
+        cache.deleteAgentUserAuditById(agentUser.getId());
+        cache.deleteAgentUserByUserId(agentUser);
     }
 
     /**
@@ -92,18 +90,17 @@ public class AgentUserAspect {
     @Around("@annotation(com.cskefu.cc.aspect.AgentUserAspect.LinkAgentUser)")
     public Object LinkAgentUser(ProceedingJoinPoint joinPoint) throws Throwable {
         final AgentUser updated = (AgentUser) joinPoint.getArgs()[0];
-        final String orgi = (String) joinPoint.getArgs()[1];
         Object proceed = joinPoint.proceed(); // after things are done.
         logger.info(
-                "[linkAgentUser] agentUser: status {}, userId {}, agentno {}, orgi {}", updated.getStatus(),
-                updated.getUserid(), updated.getAgentno(), orgi);
+                "[linkAgentUser] agentUser: status {}, userId {}, agentno {}", updated.getStatus(),
+                updated.getUserid(), updated.getAgentno());
         if (StringUtils.equals(updated.getStatus(), MainContext.AgentUserStatusEnum.END.toString())) {
             // 从集合中删除
             redisCommand.removeSetVal(
-                    RedisKey.getInServAgentUsersByAgentnoAndOrgi(updated.getAgentno(), orgi), updated.getUserid());
+                    RedisKey.getInServAgentUsersByAgentno(updated.getAgentno()), updated.getUserid());
         } else if (StringUtils.equals(updated.getStatus(), MainContext.AgentUserStatusEnum.INSERVICE.toString())) {
             redisCommand.insertSetVal(
-                    RedisKey.getInServAgentUsersByAgentnoAndOrgi(updated.getAgentno(), orgi), updated.getUserid());
+                    RedisKey.getInServAgentUsersByAgentno(updated.getAgentno()), updated.getUserid());
         } else if (StringUtils.equals(updated.getStatus(), MainContext.AgentUserStatusEnum.INQUENE.toString())) {
             logger.info("[linkAgentUser] ignored inque agent user, haven't resolve one agent yet.");
         } else {

@@ -1,17 +1,15 @@
-/*
- * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>, 
+ * Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.acd;
 
@@ -26,7 +24,7 @@ import com.cskefu.cc.persistence.repository.AgentServiceRepository;
 import com.cskefu.cc.persistence.repository.AgentUserRepository;
 import com.cskefu.cc.persistence.repository.WorkMonitorRepository;
 import com.cskefu.cc.proxy.OrganProxy;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,28 +56,26 @@ public class ACDWorkMonitor {
     /**
      * 获得 当前服务状态
      *
-     * @param orgi
      * @return
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public AgentReport getAgentReport(String orgi) {
-        return getAgentReport(null, orgi);
+    public AgentReport getAgentReport() {
+        return getAgentReport(null);
     }
 
     /**
      * 获得一个技能组的坐席状态
      *
      * @param organ
-     * @param orgi
      * @return
      */
-    public AgentReport getAgentReport(String organ, String orgi) {
+    public AgentReport getAgentReport(String organ) {
         /**
          * 统计当前在线的坐席数量
          */
         AgentReport report = new AgentReport();
 
-        Map<String, AgentStatus> readys = cache.getAgentStatusReadyByOrig(orgi);
+        Map<String, AgentStatus> readys = cache.getAgentStatusReady();
 
         int readyNum = 0;
         int busyNum = 0;
@@ -104,7 +100,6 @@ public class ACDWorkMonitor {
         }
         report.setAgents(readyNum);
         report.setBusy(busyNum);
-        report.setOrgi(orgi);
 
         /**
          * 统计当前服务中的用户数量
@@ -113,20 +108,20 @@ public class ACDWorkMonitor {
         if (organ != null) {
             Organ currentOrgan = new Organ();
             currentOrgan.setId(organ);
-            Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, orgi);
+            Map<String, Organ> organs = organProxy.findAllOrganByParent(currentOrgan);
 
-            report.setUsers(agentServiceRes.countByOrgiAndStatusAndAgentskillIn(orgi, MainContext.AgentUserStatusEnum.INSERVICE.toString(), organs.keySet()));
-            report.setInquene(agentUserRes.countByOrgiAndStatusAndSkillIn(orgi, MainContext.AgentUserStatusEnum.INQUENE.toString(), organs.keySet()));
+            report.setUsers(agentServiceRes.countByStatusAndAgentskillIn(MainContext.AgentUserStatusEnum.INSERVICE.toString(), organs.keySet()));
+            report.setInquene(agentUserRes.countByStatusAndSkillIn(MainContext.AgentUserStatusEnum.INQUENE.toString(), organs.keySet()));
         } else {
             // 服务中
-            report.setUsers(cache.getInservAgentUsersSizeByOrgi(orgi));
+            report.setUsers(cache.getInservAgentUsersSize());
             // 等待中
-            report.setInquene(cache.getInqueAgentUsersSizeByOrgi(orgi));
+            report.setInquene(cache.getInqueAgentUsersSize());
         }
 
         // DEBUG
         logger.info(
-                "[getAgentReport] orgi {}, organ {}, agents {}, busy {}, users {}, inqueue {}", orgi, organ,
+                "[getAgentReport] organ {}, agents {}, busy {}, users {}, inqueue {}", organ,
                 report.getAgents(), report.getBusy(), report.getUsers(), report.getInquene()
         );
         return report;
@@ -138,7 +133,6 @@ public class ACDWorkMonitor {
      * @param status   工作状态，也就是上一个状态
      * @param current  下一个工作状态
      * @param worktype 类型 ： 语音OR 文本
-     * @param orgi
      * @param lasttime
      */
     public void recordAgentStatus(
@@ -150,7 +144,6 @@ public class ACDWorkMonitor {
             String status,
             String current,
             String worktype,
-            String orgi,
             Date lasttime
     ) {
         WorkMonitor workMonitor = new WorkMonitor();
@@ -169,17 +162,16 @@ public class ACDWorkMonitor {
                 workMonitor.setBusy(true);
             }
             if (status.equals(MainContext.AgentStatusEnum.READY.toString())) {
-                int count = workMonitorRes.countByAgentAndDatestrAndStatusAndOrgi(
+                int count = workMonitorRes.countByAgentAndDatestrAndStatus(
                         agent, MainUtils.simpleDateFormat.format(new Date()),
-                        MainContext.AgentStatusEnum.READY.toString(), orgi
+                        MainContext.AgentStatusEnum.READY.toString()
                 );
                 if (count == 0) {
                     workMonitor.setFirsttime(true);
                 }
             }
             if (current.equals(MainContext.AgentStatusEnum.NOTREADY.toString())) {
-                List<WorkMonitor> workMonitorList = workMonitorRes.findByOrgiAndAgentAndDatestrAndFirsttime(
-                        orgi, agent, MainUtils.simpleDateFormat.format(new Date()), true);
+                List<WorkMonitor> workMonitorList = workMonitorRes.findByAgentAndDatestrAndFirsttime(agent, MainUtils.simpleDateFormat.format(new Date()), true);
                 if (workMonitorList.size() > 0) {
                     WorkMonitor firstWorkMonitor = workMonitorList.get(0);
                     if (firstWorkMonitor.getFirsttimes() == 0) {
@@ -193,7 +185,6 @@ public class ACDWorkMonitor {
             workMonitor.setDatestr(MainUtils.simpleDateFormat.format(new Date()));
 
             workMonitor.setName(agent);
-            workMonitor.setOrgi(orgi);
             workMonitor.setUserid(userid);
 
             workMonitorRes.save(workMonitor);

@@ -1,18 +1,16 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.persistence.repository;
 
@@ -25,20 +23,14 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface PbxHostRepository extends JpaRepository<PbxHost, String> {
-    @Query(value = "SELECT * FROM uk_callcenter_pbxhost WHERE id = ?1 AND orgi = ?2 LIMIT 1", nativeQuery = true)
-    Optional<PbxHost> findByIdAndOrgi(String id, String orgi);
 
-    Optional<PbxHost> findById(final String id);
-
-    List<PbxHost> findByOrgi(String orgi);
+    List<PbxHost> findAll();
 
     List<PbxHost> findByHostnameOrIpaddr(String hostname, String ip);
 
-    int countByHostnameAndOrgi(String hostname, String orgi);
+    @Query(nativeQuery = true, value = "SELECT * FROM uk_callcenter_pbxhost WHERE ipaddr = ?1 LIMIT 1")
+    Optional<PbxHost> findByIpaddr(String ipaddr);
 
-    @Query(value = "SELECT * FROM uk_callcenter_pbxhost WHERE ipaddr = ?1 AND orgi = ?2 LIMIT 1", nativeQuery = true)
-    Optional<PbxHost> findByIpaddrAndOrgi(String ipaddr, String orgi);
-
-    List<PbxHost> findByOrganInAndOrgi(Set<String> organs, String orgi);
+    List<PbxHost> findByOrganIn(Set<String> organs);
 }
 

@@ -1,18 +1,16 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.persistence.repository;
 
@@ -29,8 +27,6 @@ import java.util.List;
 
 public interface StatusEventRepository extends JpaRepository<StatusEvent, String> {
 
-    StatusEvent findById(String id);
-
     StatusEvent findByIdOrBridgeid(String id, String bridgeid);
 
     Page<StatusEvent> findByAni(String ani, Pageable page);
@@ -39,29 +35,29 @@ public interface StatusEventRepository extends JpaRepository<StatusEvent, String
 
     Page<StatusEvent> findByDataid(String dataid, Pageable page);
 
-    Page<StatusEvent> findByOrgi(String orgi, Pageable page);
+    Page<StatusEvent> findAll(Pageable page);
 
-    Page<StatusEvent> findByServicestatusAndOrgi(String servicestatus, String orgi, Pageable page);
+    Page<StatusEvent> findByServicestatus(String servicestatus, Pageable page);
 
-    Page<StatusEvent> findByMisscallAndOrgi(boolean misscall, String orgi, Pageable page);
+    Page<StatusEvent> findByMisscall(boolean misscall, Pageable page);
 
-    Page<StatusEvent> findByRecordAndOrgi(boolean record, String orgi, Pageable page);
+    Page<StatusEvent> findByRecord(boolean record, Pageable page);
 
-    Page<StatusEvent> findByCalledAndOrgi(String voicemail, String orgi, Pageable page);
+    Page<StatusEvent> findByCalled(String voicemail, Pageable page);
 
     Page<StatusEvent> findAll(Specification<StatusEvent> spec, Pageable pageable);  //分页按条件查询
 
 
     /**
      * 坐席报表
+     *
      * @param channel
      * @param fromdate
      * @param enddate
      * @param organ
-     * @param orgi
      * @return
      */
-    @Query(value =
+    @Query(nativeQuery = true, value = 
             "select " +
                     "  agent, " +
                     "  direction, " +
@@ -80,17 +76,15 @@ public interface StatusEventRepository extends JpaRepository<StatusEvent, String
                     "  and datestr < ?3" +
                     "  and voicechannel = ?1" +
                     "  and (?4 is null or organid = ?4) " +
-                    "  and orgi = ?5" +
                     "  and agent is not null " +
                     "group by" +
                     "  agent," +
-                    "  direction", nativeQuery = true)
+                    "  direction")
     List<Object[]>
     queryCalloutHangupAuditGroupByAgentAndDirection(String channel,
                                                     String fromdate,
                                                     String enddate,
-                                                    String organ,
-                                                    String orgi);
+                                                    String organ);
 
     /**
      * 外呼计划通话记录接通记录查询
@@ -103,7 +97,7 @@ public interface StatusEventRepository extends JpaRepository<StatusEvent, String
      * @param page
      * @return
      */
-    @Query(value = "select s from StatusEvent s where (:fromdate is null or s.createtime >= :fromdate) " +
+    @Query("select s from StatusEvent s where (:fromdate is null or s.createtime >= :fromdate) " +
             "and (:enddate is null or s.createtime < :enddate) " +
             "and (:organid is null or s.organid = :organid) " +
             "and (:agent is null or s.agent = :agent) " +
@@ -122,7 +116,7 @@ public interface StatusEventRepository extends JpaRepository<StatusEvent, String
                                                       @Param("dialplan") String dialplan,
                                                       Pageable page);
 
-    @Query(value = "select s " +
+    @Query("select s " +
             "from StatusEvent s " +
             "where " +
             "  s.agent = :agent and " +
@@ -134,12 +128,13 @@ public interface StatusEventRepository extends JpaRepository<StatusEvent, String
 
     /**
      * 外呼日报
+     *
      * @param datestr
      * @param channel
      * @param direction
      * @return
      */
-    @Query(value = "select dialplan, " +
+    @Query(nativeQuery = true, value = "select dialplan, " +
             "datestr, " +
             "count(*) as total, " +
             "count(case duration when 0 then 1 else null end) fails, " +
@@ -150,7 +145,7 @@ public interface StatusEventRepository extends JpaRepository<StatusEvent, String
             "and status = '已挂机' " +
             "and datestr = ?1 " +
             "and voicechannel = ?2 " +
-            "group by dialplan", nativeQuery = true)
+            "group by dialplan")
     List<Object[]> queryCallOutHangupAggsGroupByDialplanByDatestrAndChannelAndDirection(String datestr,
                                                                                         String channel,
                                                                                         String direction);

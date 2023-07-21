@@ -1,16 +1,14 @@
-// Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
-// 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//  http://www.apache.org/licenses/LICENSE-2.0
-// 
-//  Unless required by applicable law or agreed to in writing, software
+// Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+// <https://www.chatopera.com>, Licensed under the Chunsong Public 
+// License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+// Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+// Copyright (C) 2018-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 doctype html
 html
     head
@@ -19,9 +17,9 @@ html
         meta(http-equiv="Cache-Control" content="no-siteapp")
         meta(name="viewport" content="width=device-width, maximum-scale=1.0, initial-scale=1.0,initial-scale=1.0,user-scalable=no")
         meta(name="apple-mobile-web-app-capable" content="yes")
-        meta(name="sourcecode-author", content="春松客服")
-        meta(name="sourcecode-license", content="Apache 2.0")
-        title= systemConfig.title ? systemConfig.title : '春松客服 | 多渠道智能客服_联络中心'
+        meta(name="sourcecode-author", content="Beijing Huaxia Chunsong Technology Co., Ltd.")
+        meta(name="sourcecode-license", content="Chunsong Public License, version 1.0, https://docs.cskefu.com/licenses/v1.html")
+        title= systemConfig.title ? systemConfig.title : '春松客服 | 开源客服系统_联络中心'
         if systemConfig.favlogo
             link(rel="shortcut icon" type="image/x-icon" href='/res/image.html?id=' + systemConfig.favlogo)
         else
@@ -57,9 +55,6 @@ html
                 if (uid) {
                     document.getElementById("username").value = uid;
                 }
-                console.info("春松客服：上线开源客服系统 https://www.cskefu.com/")
-                console.info("   * 鼓励我们不断的优化春松客服，给春松客服点赞 https://github.com/cskefu/cskefu/stargazers");
-                console.info("   * 加入春松客服开源社区 https://www.cskefu.com/join-us/");
             }
             if ('#{tongjiBaiduSiteKey}') {
                 var _hmt = _hmt || [];

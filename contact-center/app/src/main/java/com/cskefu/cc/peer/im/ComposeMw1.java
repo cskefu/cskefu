@@ -1,16 +1,25 @@
+/*
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.cskefu.cc.peer.im;
 
+import com.chatopera.compose4j.Functional;
+import com.chatopera.compose4j.Middleware;
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.model.AgentUserTask;
 import com.cskefu.cc.peer.PeerContext;
 import com.cskefu.cc.peer.PeerUtils;
-import com.cskefu.cc.persistence.es.ChatMessageEsRepository;
 import com.cskefu.cc.persistence.repository.AgentUserTaskRepository;
 import com.cskefu.cc.persistence.repository.ChatMessageRepository;
 import com.cskefu.cc.socketio.message.ChatMessage;
-import com.chatopera.compose4j.Functional;
-import com.chatopera.compose4j.Middleware;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +35,6 @@ public class ComposeMw1 implements Middleware<PeerContext> {
 
     @Autowired
     private ChatMessageRepository chatMessageRes;
-
-    @Autowired
-    private ChatMessageEsRepository chatMessageEsRes;
 
     @Autowired
     private AgentUserTaskRepository agentUserTaskRes;
@@ -77,7 +83,6 @@ public class ComposeMw1 implements Middleware<PeerContext> {
                         if (!PeerUtils.isMessageInWritting(msg)) {
                             // 消息已经发送，保存到数据库
                             chatMessageRes.save(msg);
-                            chatMessageEsRes.save(msg);
                             logger.info("[apply] chat message saved.");
                         }
                     }
@@ -92,7 +97,7 @@ public class ComposeMw1 implements Middleware<PeerContext> {
      * @param ctx
      */
     private void prcessAgentUserTask(final PeerContext ctx) {
-        AgentUserTask agentUserTask = agentUserTaskRes.getOne(ctx.getMessage().getAgentUser().getId());
+        AgentUserTask agentUserTask = agentUserTaskRes.findById(ctx.getMessage().getAgentUser().getId()).orElse(null);
 
         if (agentUserTask != null) {
             final ChatMessage received = (ChatMessage) ctx.getMessage().getChannelMessage();

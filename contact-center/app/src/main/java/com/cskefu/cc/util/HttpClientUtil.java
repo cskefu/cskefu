@@ -1,18 +1,16 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.util;
 
@@ -60,8 +58,8 @@ import java.util.Map;
 @SuppressWarnings("deprecation")
 public class HttpClientUtil {
 
-	private static PoolingHttpClientConnectionManager connMgr;  
-    private static RequestConfig requestConfig;  
+	private static final PoolingHttpClientConnectionManager connMgr;
+    private static final RequestConfig requestConfig;
     private static final int MAX_TIMEOUT = 7000;  
   
     static {  
@@ -90,7 +88,7 @@ public class HttpClientUtil {
      * @throws IOException 
      */  
     public static String doGet(String url) throws IOException {  
-        return doGet(url, new HashMap<String, Object>());  
+        return doGet(url, new HashMap<>());
     }  
   
     /** 
@@ -280,7 +278,7 @@ public class HttpClientUtil {
   
         try {  
             httpPost.setConfig(requestConfig);  
-            List<NameValuePair> pairList = new ArrayList<NameValuePair>(params.size());  
+            List<NameValuePair> pairList = new ArrayList<>(params.size());
             for (Map.Entry<String, Object> entry : params.entrySet()) {  
                 NameValuePair pair = new BasicNameValuePair(entry.getKey(), entry  
                         .getValue().toString());  
@@ -368,12 +366,7 @@ public class HttpClientUtil {
     private static SSLConnectionSocketFactory createSSLConnSocketFactory() {  
         SSLConnectionSocketFactory sslsf = null;  
         try {  
-            SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {  
-  
-                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {  
-                    return true;  
-                }  
-            }).build();  
+            SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, (chain, authType) -> true).build();
             sslsf = new SSLConnectionSocketFactory(sslContext, new X509HostnameVerifier() {  
   
                 @Override  

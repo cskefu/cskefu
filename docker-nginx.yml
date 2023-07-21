@@ -1,0 +1,14 @@
+version: "3"
+services:
+  nginx:
+    image: nginx
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/logs:/var/log/nginx
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/certs:/certs
+    depends_on:
+      - contact-center

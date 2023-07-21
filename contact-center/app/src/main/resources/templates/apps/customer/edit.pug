@@ -1,21 +1,19 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
-//- 
-//- Licensed under the Apache License, Version 2.0 (the "License");
-//- you may not use this file except in compliance with the License.
-//- You may obtain a copy of the License at
-//- 
-//-  http://www.apache.org/licenses/LICENSE-2.0
-//- 
-//-  Unless required by applicable law or agreed to in writing, software
+//- Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+//- <https://www.chatopera.com>, Licensed under the Chunsong Public 
+//- License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+//- Unless required by applicable law or agreed to in writing, software
 //- distributed under the License is distributed on an "AS IS" BASIS,
-//-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //- See the License for the specific language governing permissions and
 //- limitations under the License.
+//- Copyright (C) 2018-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>
+//- Licensed under the Apache License, Version 2.0
+//- http://www.apache.org/licenses/LICENSE-2.0
 include /mixins/dic.mixin.pug
 
 .uk-layui-form
     form.layui-form(action="/apps/customer/update.html", method="post")
-        input(type="hidden", name="entcustomer.id", value=entCustomer.id)
+        input(type="hidden", name="entcustomer.id", value=account.id)
         input(type="hidden", name="ekindId", value=ekindId)
         input(type="hidden", name="entcustomer.shares", value="all")
         input(type="hidden", name="contacts.shares", value="all")
@@ -27,7 +25,7 @@ include /mixins/dic.mixin.pug
                         .layui-inline
                             label.layui-form-label 获得时间：
                             .layui-input-inline
-                                input#getdate.layui-input(type="text", name="entcustomer.touchtime", readonly="readOnly", lay-verify="date", autocomplete="off", value=(entCustomer.touchtime ? pugHelper.formatDate('yyyy-MM-dd', entCustomer.touchtime) : ''))
+                                input#getdate.layui-input(type="text", name="entcustomer.touchtime", readonly="readOnly", lay-verify="date", autocomplete="off", value=(account.touchtime ? pugHelper.formatDate('yyyy-MM-dd', account.touchtime) : ''))
                                 i.layui-icon(style="position: absolute;right: 3px;top: 6px;font-size: 25px;") 
                         .layui-inline
                             font(color="red") *（必填项）
@@ -44,63 +42,63 @@ include /mixins/dic.mixin.pug
                         .layui-inline
                             label#cusname.layui-form-label 客户名称：
                             .layui-input-inline
-                                input.layui-input(type="text", name="entcustomer.name", required="", lay-verify="customer_username", autocomplete="off", value=entCustomer.name)
+                                input.layui-input(type="text", name="entcustomer.name", required="", lay-verify="customer_username", autocomplete="off", value=account.name)
                         .layui-inline
                             font(color="red") *（必填项）
                     .layui-form-item
                         .layui-inline
                             label.layui-form-label 联系电话：
                             .layui-input-inline
-                                input.layui-input(type="text", name="entcustomer.phone", autocomplete="off", value=entCustomer.phone)
+                                input.layui-input(type="text", name="entcustomer.phone", autocomplete="off", value=account.phone)
                         .layui-inline.uckefu-inline
                             label.layui-form-label 电子邮件：
                             .layui-input-inline
-                                input.layui-input(type="text", name="entcustomer.email", lay-verify="entemail", autocomplete="off", value=entCustomer.email)
+                                input.layui-input(type="text", name="entcustomer.email", lay-verify="entemail", autocomplete="off", value=account.email)
                     .layui-form-item
                         .layui-inline
                             label.layui-form-label 省份：
                             .layui-input-inline(style="width:80px;")
-                                +sysDicSelect('com.dic.address.area','entcustomer.province',entCustomer.province,{'lay-ignore': true},'width:85px;')
+                                +sysDicSelect('com.dic.address.area','entcustomer.province',account.province,{'lay-ignore': true},'width:85px;')
                         .layui-inline
                             #city.layui-input-inline(style="width:80px;")
-                                +sysDicSelect(entCustomer.city + '.subdic','entcustomer.city',entCustomer.city,{'lay-ignore': true},'width:86px;')
+                                +sysDicSelect(account.city + '.subdic','entcustomer.city',account.city,{'lay-ignore': true},'width:86px;')
                     .layui-form-item
                         .layui-inline
                             label.layui-form-label 客户地址：
                             .layui-input-inline(style="width: 664px;")
-                                input.layui-input(type="text", name="entcustomer.address", autocomplete="off", value=entCustomer.address)
+                                input.layui-input(type="text", name="entcustomer.address", autocomplete="off", value=account.address)
                     .layui-form-item
                         .layui-inline
                             label.layui-form-label 客户类型：
                             .layui-input-inline
-                                +sysDicSelect('com.dic.contacts.entype','entcustomer.ekind',entCustomer.ekind,{'lay-ignore': true})
+                                +sysDicSelect('com.dic.contacts.entype','entcustomer.ekind',account.ekind,{'lay-ignore': true})
                         .layui-inline.uckefu-inline
                             label.layui-form-label 客户级别：
                             .layui-input-inline
-                                +sysDicSelect('com.dic.contacts.elevel','entcustomer.elevel',entCustomer.elevel,{'lay-ignore': true})
+                                +sysDicSelect('com.dic.contacts.elevel','entcustomer.elevel',account.elevel,{'lay-ignore': true})
                     .layui-form-item
                         .layui-inline
                             label.layui-form-label 客户来源：
                             .layui-input-inline
-                                +sysDicSelect('com.dic.contacts.esource','entcustomer.esource',entCustomer.esource,{'lay-ignore': true})
+                                +sysDicSelect('com.dic.contacts.esource','entcustomer.esource',account.esource,{'lay-ignore': true})
                         .layui-inline.uckefu-inline
                             label.layui-form-label 成熟度：
                             .layui-input-inline
-                                +sysDicSelect('com.dic.contacts.maturity','entcustomer.maturity',entCustomer.maturity,{'lay-ignore': true})
+                                +sysDicSelect('com.dic.contacts.maturity','entcustomer.maturity',account.maturity,{'lay-ignore': true})
                     .layui-form-item
                         .layui-inline
                             label.layui-form-label 行业：
                             .layui-input-inline
-                                +sysDicSelect('com.dic.contacts.industry','entcustomer.industry',entCustomer.industry,{'lay-ignore': true})
+                                +sysDicSelect('com.dic.contacts.industry','entcustomer.industry',account.industry,{'lay-ignore': true})
                         .layui-inline.uckefu-inline
                             label.layui-form-label 客户状态：
                             .layui-input-inline
-                                +sysDicSelect('com.dic.contacts.validstatus','entcustomer.validstatus',entCustomer.validstatus,{'lay-ignore': true})
+                                +sysDicSelect('com.dic.contacts.validstatus','entcustomer.validstatus',account.validstatus,{'lay-ignore': true})
                     .layui-form-item
                         .layui-inline
                             label.layui-form-label 客户说明：
                             .layui-input-inline(style="width: 664px;")
-                                textarea.layui-textarea(name="entcustomer.description", placeholder="请输入内容", style="resize:none;")= entCustomer.description
+                                textarea.layui-textarea(name="entcustomer.description", placeholder="请输入内容", style="resize:none;")= account.description
         .layui-form-button
             .layui-button-block
                 button.layui-btn(lay-submit="", lay-filter="formDemo") 立即提交

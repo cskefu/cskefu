@@ -1,18 +1,16 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.controller.admin;
 
@@ -21,17 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.controller.Handler;
-import com.cskefu.cc.model.Organ;
-import com.cskefu.cc.model.OrganUser;
-import com.cskefu.cc.model.Role;
-import com.cskefu.cc.model.User;
-import com.cskefu.cc.model.UserRole;
+import com.cskefu.cc.model.*;
 import com.cskefu.cc.persistence.repository.ExtensionRepository;
 import com.cskefu.cc.persistence.repository.OrganUserRepository;
 import com.cskefu.cc.persistence.repository.PbxHostRepository;
@@ -89,7 +83,7 @@ public class UsersController extends Handler {
 
     /**
      * 只返回根用户：只属于该部门的非下级部门的用户
-     * 
+     *
      * @param map
      * @param request
      * @return
@@ -103,7 +97,7 @@ public class UsersController extends Handler {
         organs.add(currentOrgan.getId());
 
         map.addAttribute("currentOrgan", currentOrgan);
-        map.addAttribute("userList", userProxy.findUserInOrgans(organs, new PageRequest(
+        map.addAttribute("userList", userProxy.findUserInOrgans(organs, PageRequest.of(
                 super.getP(request),
                 super.getPs(request),
                 Sort.Direction.ASC,
@@ -117,8 +111,8 @@ public class UsersController extends Handler {
     public ModelAndView add(ModelMap map, HttpServletRequest request) {
         ModelAndView view = request(super.createView("/admin/user/add"));
         Organ currentOrgan = super.getOrgan(request);
-        Map<String, Organ> organs = organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request));
-        List<Role> sysRoles = roleRes.findByOrgi(super.getOrgi(request));
+        Map<String, Organ> organs = organProxy.findAllOrganByParent(currentOrgan);
+        List<Role> sysRoles = roleRes.findAll();
         map.addAttribute("currentOrgan", currentOrgan);
         map.addAttribute("organList", organs.values());
         map.addAttribute("sysRoles", sysRoles);
@@ -130,17 +124,16 @@ public class UsersController extends Handler {
     @Menu(type = "admin", subtype = "user")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
         ModelAndView view = request(super.createView("/admin/user/edit"));
-        User user = userRepository.findById(id);
+        User user = userRepository.findById(id).orElse(null);
         if (user != null && MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER)) {
             // 加载呼叫中心信息
-            extensionRes.findByAgentnoAndOrgi(user.getId(), user.getOrgi()).ifPresent(p -> {
+            extensionRes.findByAgentno(user.getId()).ifPresent(p -> {
                 user.setExtensionId(p.getId());
                 user.setExtension(p);
 
-                pbxHostRes.findById(p.getHostid()).ifPresent(b -> {
-                    user.setPbxhostId(b.getId());
-                    user.setPbxHost(b);
-                });
+                PbxHost one = pbxHostRes.findById(p.getHostid()).orElse(null);
+                user.setPbxhostId(one.getId());
+                user.setPbxHost(one);
             });
         }
         view.addObject("userData", user);
@@ -152,21 +145,21 @@ public class UsersController extends Handler {
     public ModelAndView delete(HttpServletRequest request, @Valid User user) {
         String msg = "admin_user_delete";
         if (user != null) {
-            User dbUser = userRepository.getOne(user.getId());
+            User dbUser = userRepository.findById(user.getId()).orElse(null);
             if (dbUser.isSuperadmin()) {
                 msg = "admin_user_abandoned";
             } else {
                 // 删除用户的时候，同时删除用户对应的权限数据
-                List<UserRole> userRole = userRoleRes.findByOrgiAndUser(super.getOrgi(), user);
-                userRoleRes.delete(userRole);
+                List<UserRole> userRole = userRoleRes.findByUser(user);
+                userRoleRes.deleteAll(userRole);
                 // 删除用户对应的组织机构关系
                 List<OrganUser> organUsers = organUserRes.findByUserid(user.getId());
-                organUserRes.delete(organUsers);
+                organUserRes.deleteAll(organUsers);
 
                 userRepository.delete(dbUser);
 
                 AgentSessionProxy agentSessionProxy = MainContext.getContext().getBean(AgentSessionProxy.class);
-                agentSessionProxy.deleteUserSession(dbUser.getId(), dbUser.getOrgi());
+                agentSessionProxy.deleteUserSession(dbUser.getId());
             }
         } else {
             msg = "admin_user_not_exist";

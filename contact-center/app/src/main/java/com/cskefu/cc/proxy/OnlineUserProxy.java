@@ -1,18 +1,16 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.proxy;
 
@@ -21,22 +19,19 @@ import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.cache.Cache;
 import com.cskefu.cc.model.*;
-import com.cskefu.cc.persistence.es.ContactsRepository;
 import com.cskefu.cc.persistence.repository.*;
-import com.cskefu.cc.socketio.message.OtherMessageItem;
 import com.cskefu.cc.util.*;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -47,16 +42,15 @@ import java.util.*;
 
 public class OnlineUserProxy {
     private final static Logger logger = LoggerFactory.getLogger(OnlineUserProxy.class);
-    public static WebSseEmitterClient webIMClients = new WebSseEmitterClient();
-    public static ObjectMapper objectMapper = new ObjectMapper();
+    public static final WebSseEmitterClient webIMClients = new WebSseEmitterClient();
+    public static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private static OnlineUserRepository onlineUserRes;
+    private static PassportWebIMUserRepository onlineUserRes;
     private static UserRepository userRes;
     private static Cache cache;
     private static ConsultInviteRepository consultInviteRes;
-    private static OnlineUserHisRepository onlineUserHisRes;
+    private static PassportWebIMUserHistRepository onlineUserHisRes;
     private static UserTraceRepository userTraceRes;
-    private static OrgiSkillRelRepository orgiSkillRelRes;
     private static AgentUserContactsRepository agentUserContactsRes;
     private static ContactsRepository contactsRes;
     private static UserProxy userProxy;
@@ -67,8 +61,8 @@ public class OnlineUserProxy {
      * @return
      * @throws Exception
      */
-    public static OnlineUser user(final String orgi, final String id) {
-        return getOnlineUserRes().findOne(id);
+    public static PassportWebIMUser user(final String id) {
+        return getOnlineUserRes().findById(id).orElse(null);
     }
 
     /**
@@ -77,22 +71,20 @@ public class OnlineUserProxy {
      * @param consultInvite
      */
     public static void cacheConsult(final CousultInvite consultInvite) {
-        logger.info("[cacheConsult] snsid {}, orgi {}", consultInvite.getSnsaccountid(), consultInvite.getOrgi());
-        getCache().putConsultInviteByOrgi(consultInvite.getOrgi(), consultInvite);
+        logger.info("[cacheConsult] snsid {}", consultInvite.getSnsaccountid());
+        getCache().putConsultInvite(consultInvite);
     }
 
     /**
      * @param snsid
-     * @param orgi
      * @return
      */
-    public static CousultInvite consult(final String snsid, final String orgi) {
-//        logger.info("[consult] snsid {}, orgi {}", snsid, orgi);
-        CousultInvite consultInvite = MainContext.getCache().findOneConsultInviteBySnsidAndOrgi(snsid, orgi);
+    public static CousultInvite consult(final String snsid) {
+        CousultInvite consultInvite = MainContext.getCache().findOneConsultInviteBySnsid(snsid);
         if (consultInvite == null) {
-            consultInvite = getConsultInviteRes().findBySnsaccountidAndOrgi(snsid, orgi);
+            consultInvite = getConsultInviteRes().findBySnsaccountid(snsid);
             if (consultInvite != null) {
-                getCache().putConsultInviteByOrgi(orgi, consultInvite);
+                getCache().putConsultInvite(consultInvite);
             }
         }
         return consultInvite;
@@ -103,58 +95,52 @@ public class OnlineUserProxy {
      * 在Cache中查询OnlineUser，或者从数据库中根据UserId，Orgi和Invite查询
      *
      * @param userid
-     * @param orgi
      * @return
      */
-    public static OnlineUser onlineuser(String userid, String orgi) {
+    public static PassportWebIMUser onlineuser(String userid) {
         // 从Cache中查找
-        OnlineUser onlineUser = getCache().findOneOnlineUserByUserIdAndOrgi(userid, orgi);
+        PassportWebIMUser passportWebIMUser = getCache().findOneOnlineUserByUserId(userid);
 
-        if (onlineUser == null) {
+        if (passportWebIMUser == null) {
             logger.info(
                     "[onlineuser] !!! fail to resolve user {} with both cache and database, maybe this user is first presents.",
                     userid);
         }
 
-        return onlineUser;
+        return passportWebIMUser;
     }
 
 
     /**
-     * @param orgi
      * @param ipdata
      * @param invite
      * @param isJudgeShare 是否判断是否共享租户
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static List<Organ> organ(
-            String orgi, final IP ipdata,
-            final CousultInvite invite, boolean isJudgeShare) {
-        String origOrig = orgi;
+    public static List<Organ> organ(final IP ipdata,
+                                    final CousultInvite invite, boolean isJudgeShare) {
         boolean isShare = false;
         if (isJudgeShare) {
             SystemConfig systemConfig = MainUtils.getSystemConfig();
             if (systemConfig != null && systemConfig.isEnabletneant() && systemConfig.isTenantshare()) {
-                orgi = Constants.SYSTEM_ORGI;
                 isShare = true;
             }
         }
-        List<Organ> skillGroups = getCache().findOneSystemByIdAndOrgi(Constants.CACHE_SKILL + origOrig, origOrig);
+        List<Organ> skillGroups = getCache().findOneSystemById(Constants.CACHE_SKILL);
         if (skillGroups == null) {
             OrganRepository service = MainContext.getContext().getBean(OrganRepository.class);
-            skillGroups = service.findByOrgiAndSkill(orgi, true);
+            skillGroups = service.findBySkill(true);
             // 租户共享时 查出该租住要显的绑定的技能组
-            if (isShare && !(StringUtils.equals(
-                    Constants.SYSTEM_ORGI, (invite == null ? origOrig : invite.getOrgi())))) {
-                OrgiSkillRelRepository orgiSkillRelService = MainContext.getContext().getBean(
+            if (isShare) {
+                OrgiSkillRelRepository skillRelService = MainContext.getContext().getBean(
                         OrgiSkillRelRepository.class);
-                List<OrgiSkillRel> orgiSkillRelList = null;
-                orgiSkillRelList = orgiSkillRelService.findByOrgi((invite == null ? origOrig : invite.getOrgi()));
+                List<OrgiSkillRel> skillRelList = null;
+                skillRelList = skillRelService.findAll();
                 List<Organ> skillTempList = new ArrayList<>();
-                if (!orgiSkillRelList.isEmpty()) {
+                if (!skillRelList.isEmpty()) {
                     for (Organ organ : skillGroups) {
-                        for (OrgiSkillRel rel : orgiSkillRelList) {
+                        for (OrgiSkillRel rel : skillRelList) {
                             if (organ.getId().equals(rel.getSkillid())) {
                                 skillTempList.add(organ);
                             }
@@ -165,7 +151,7 @@ public class OnlineUserProxy {
             }
 
             if (skillGroups.size() > 0) {
-                getCache().putSystemListByIdAndOrgi(Constants.CACHE_SKILL + origOrig, origOrig, skillGroups);
+                getCache().putSystemListById(Constants.CACHE_SKILL, skillGroups);
             }
         }
 
@@ -173,11 +159,10 @@ public class OnlineUserProxy {
             return skillGroups;
         }
 
-        List<Organ> regOrganList = new ArrayList<Organ>();
+        List<Organ> regOrganList = new ArrayList<>();
         for (Organ organ : skillGroups) {
             if (StringUtils.isNotBlank(organ.getArea())) {
-                if (organ.getArea().indexOf(ipdata.getProvince()) >= 0 || organ.getArea().indexOf(
-                        ipdata.getCity()) >= 0) {
+                if (organ.getArea().contains(ipdata.getProvince()) || organ.getArea().contains(ipdata.getCity())) {
                     regOrganList.add(organ);
                 }
             } else {
@@ -189,20 +174,19 @@ public class OnlineUserProxy {
 
 
     /**
-     * @param orgi
      * @param isJudgeShare
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static List<Organ> organ(String orgi, boolean isJudgeShare) {
-        return organ(orgi, null, null, isJudgeShare);
+    public static List<Organ> organ(boolean isJudgeShare) {
+        return organ(null, null, isJudgeShare);
     }
 
     private static List<AreaType> getAreaTypeList(String area, List<AreaType> areaTypeList) {
-        List<AreaType> atList = new ArrayList<AreaType>();
+        List<AreaType> atList = new ArrayList<>();
         if (areaTypeList != null && areaTypeList.size() > 0) {
             for (AreaType areaType : areaTypeList) {
-                if (StringUtils.isNotBlank(area) && area.indexOf(areaType.getId()) >= 0) {
+                if (StringUtils.isNotBlank(area) && area.contains(areaType.getId())) {
                     atList.add(areaType);
                 }
             }
@@ -211,16 +195,13 @@ public class OnlineUserProxy {
     }
 
     /**
-     * @param orgi
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static List<User> agents(String orgi) {
-        String origOrig = orgi;
-
-        List<User> agentList = getUserRes().findByOrgiAndAgentAndDatastatus(orgi, true, false);
-        List<User> agentTempList = new ArrayList<User>();
-        List<Organ> skillOrgansByOrgi = getOrganRes().findByOrgiAndSkill(origOrig, true);
+    public static List<User> agents() {
+        List<User> agentList = getUserRes().findByAgentAndDatastatus(true, false);
+        List<User> agentTempList = new ArrayList<>();
+        List<Organ> skillOrgansByOrgi = getOrganRes().findBySkill(true);
 
         if (!skillOrgansByOrgi.isEmpty()) {
             for (User user : agentList) {
@@ -228,7 +209,7 @@ public class OnlineUserProxy {
                 if (user.isSuperadmin()) continue;
 
                 // 只显示在线的客服，跳过离线的客服
-                if (getCache().findOneAgentStatusByAgentnoAndOrig(user.getId(), origOrig) == null) continue;
+                if (getCache().findOneAgentStatusByAgentno(user.getId()) == null) continue;
 
                 // 一个用户可隶属于多个组织
                 getUserProxy().attachOrgansPropertiesForUser(user);
@@ -245,7 +226,6 @@ public class OnlineUserProxy {
     }
 
     public static Contacts processContacts(
-            final String orgi,
             Contacts contacts,
             final String appid,
             final String userid) {
@@ -262,8 +242,8 @@ public class OnlineUserProxy {
                 if (StringUtils.isNotBlank(contacts.getEmail())) {
                     query.append(" OR ").append(contacts.getEmail());
                 }
-                Page<Contacts> contactsList = contactsRes.findByOrgi(
-                        orgi, false, query.toString(), new PageRequest(0, 1));
+                Page<Contacts> contactsList = contactsRes.findByDatastatus(
+                        false, PageRequest.of(0, 1));
                 if (contactsList.getContent().size() > 0) {
                     contacts = contactsList.getContent().get(0);
                 } else {
@@ -275,21 +255,20 @@ public class OnlineUserProxy {
             }
 
             if (contacts != null && StringUtils.isNotBlank(contacts.getId())) {
-                if (!getAgentUserContactsRes().findOneByUseridAndOrgi(userid, orgi).isPresent()) {
+                if (!getAgentUserContactsRes().findOneByUserid(userid).isPresent()) {
                     AgentUserContacts agentUserContacts = new AgentUserContacts();
                     agentUserContacts.setAppid(appid);
-                    agentUserContacts.setChannel(MainContext.ChannelType.WEBIM.toString());
+                    agentUserContacts.setChanneltype(MainContext.ChannelType.WEBIM.toString());
                     agentUserContacts.setContactsid(contacts.getId());
                     agentUserContacts.setUserid(userid);
-                    agentUserContacts.setOrgi(orgi);
                     agentUserContacts.setCreatetime(new Date());
                     agentUserContactsRes.save(agentUserContacts);
                 }
             } else if (StringUtils.isNotBlank(userid)) {
-                Optional<AgentUserContacts> agentUserContactOpt = agentUserContactsRes.findOneByUseridAndOrgi(
-                        userid, orgi);
+                Optional<AgentUserContacts> agentUserContactOpt = agentUserContactsRes.findOneByUserid(
+                        userid);
                 if (agentUserContactOpt.isPresent()) {
-                    contacts = getContactsRes().findOne(agentUserContactOpt.get().getContactsid());
+                    contacts = getContactsRes().findById(agentUserContactOpt.get().getContactsid()).orElse(null);
                 }
             }
         }
@@ -301,7 +280,6 @@ public class OnlineUserProxy {
      * 根据user判断追踪，在浏览器里，用fingerprint2生成的ID作为唯一标识
      *
      * @param user
-     * @param orgi
      * @param sessionid
      * @param optype
      * @param request
@@ -309,12 +287,10 @@ public class OnlineUserProxy {
      * @param appid
      * @param contacts
      * @param invite
-     * @return
      * @throws CharacterCodingException
      */
-    public static OnlineUser online(
+    public static void online(
             final User user,
-            final String orgi,
             final String sessionid,
             final String optype,
             final HttpServletRequest request,
@@ -323,117 +299,116 @@ public class OnlineUserProxy {
             final Contacts contacts,
             final CousultInvite invite) {
 //        logger.info(
-//                "[online] user {}, orgi {}, sessionid {}, optype {}, channel {}", user.getId(), orgi, sessionid, optype,
+//                "[online] user {}, sessionid {}, optype {}, channel {}", user.getId(), sessionid, optype,
 //                channel);
-        OnlineUser onlineUser = null;
+        PassportWebIMUser passportWebIMUser = null;
         final Date now = new Date();
         if (invite != null) {
             // resolve user from cache or db.
-            onlineUser = onlineuser(user.getId(), orgi);
+            passportWebIMUser = onlineuser(user.getId());
 
-            if (onlineUser == null) {
+            if (passportWebIMUser == null) {
 //                logger.info("[online] create new online user.");
-                onlineUser = new OnlineUser();
-                onlineUser.setId(user.getId());
-                onlineUser.setCreater(user.getId());
-                onlineUser.setUsername(user.getUsername());
-                onlineUser.setCreatetime(now);
-                onlineUser.setUpdatetime(now);
-                onlineUser.setUpdateuser(user.getUsername());
-                onlineUser.setSessionid(sessionid);
+                passportWebIMUser = new PassportWebIMUser();
+                passportWebIMUser.setId(user.getId());
+                passportWebIMUser.setCreater(user.getId());
+                passportWebIMUser.setUsername(user.getUsername());
+                passportWebIMUser.setCreatetime(now);
+                passportWebIMUser.setUpdatetime(now);
+                passportWebIMUser.setUpdateuser(user.getUsername());
+                passportWebIMUser.setSessionid(sessionid);
 
                 if (contacts != null) {
-                    onlineUser.setContactsid(contacts.getId());
+                    passportWebIMUser.setContactsid(contacts.getId());
                 }
 
-                onlineUser.setOrgi(orgi);
-                onlineUser.setChannel(channel);
+                passportWebIMUser.setChannel(channel);
 
                 // 从Server session信息中查找该用户相关的历史信息
                 String cookie = getCookie(request, "R3GUESTUSEKEY");
                 if ((StringUtils.isBlank(cookie))
                         || (StringUtils.equals(user.getSessionid(), cookie))) {
-                    onlineUser.setOlduser("0");
+                    passportWebIMUser.setOlduser("0");
                 } else {
                     // 之前有session的访客
-                    onlineUser.setOlduser("1");
+                    passportWebIMUser.setOlduser("1");
                 }
-                onlineUser.setMobile(MobileDevice.isMobile(request
+                passportWebIMUser.setMobile(MobileDevice.isMobile(request
                         .getHeader("User-Agent")) ? "1" : "0");
 
                 // onlineUser.setSource(user.getId());
 
                 String url = request.getHeader("referer");
-                onlineUser.setUrl(url);
+                passportWebIMUser.setUrl(url);
                 if (StringUtils.isNotBlank(url)) {
                     try {
                         URL referer = new URL(url);
-                        onlineUser.setSource(referer.getHost());
+                        passportWebIMUser.setSource(referer.getHost());
                     } catch (MalformedURLException e) {
                         logger.info("[online] error when parsing URL", e);
                     }
                 }
-                onlineUser.setAppid(appid);
-                onlineUser.setUserid(user.getId());
-                onlineUser.setUsername(user.getUsername());
+                passportWebIMUser.setAppid(appid);
+                passportWebIMUser.setUserid(user.getId());
+                passportWebIMUser.setUsername(user.getUsername());
 
                 if (StringUtils.isNotBlank(request.getParameter("title"))) {
                     String title = request.getParameter("title");
                     if (title.length() > 255) {
-                        onlineUser.setTitle(title.substring(0, 255));
+                        passportWebIMUser.setTitle(title.substring(0, 255));
                     } else {
-                        onlineUser.setTitle(title);
+                        passportWebIMUser.setTitle(title);
                     }
                 }
 
-                onlineUser.setLogintime(now);
+                passportWebIMUser.setLogintime(now);
 
                 // 地理信息
                 String ip = MainUtils.getIpAddr(request);
-                onlineUser.setIp(ip);
+                passportWebIMUser.setIp(ip);
                 IP ipdata = IPTools.getInstance().findGeography(ip);
-                onlineUser.setCountry(ipdata.getCountry());
-                onlineUser.setProvince(ipdata.getProvince());
-                onlineUser.setCity(ipdata.getCity());
-                onlineUser.setIsp(ipdata.getIsp());
-                onlineUser.setRegion(ipdata.toString() + "（"
+                passportWebIMUser.setCountry(ipdata.getCountry());
+                passportWebIMUser.setProvince(ipdata.getProvince());
+                passportWebIMUser.setCity(ipdata.getCity());
+                passportWebIMUser.setIsp(ipdata.getIsp());
+                passportWebIMUser.setRegion(ipdata.toString() + "（"
                         + ip + "）");
 
-                onlineUser.setDatestr(new SimpleDateFormat("yyyMMdd")
+                passportWebIMUser.setDatestr(new SimpleDateFormat("yyyMMdd")
                         .format(now));
 
-                onlineUser.setHostname(ip);
-                onlineUser.setSessionid(sessionid);
-                onlineUser.setOptype(optype);
-                onlineUser.setStatus(MainContext.OnlineUserStatusEnum.ONLINE.toString());
+                passportWebIMUser.setHostname(ip);
+                passportWebIMUser.setSessionid(sessionid);
+                passportWebIMUser.setOptype(optype);
+                passportWebIMUser.setStatus(MainContext.OnlineUserStatusEnum.ONLINE.toString());
                 final BrowserClient client = MainUtils.parseClient(request);
 
                 // 浏览器信息
-                onlineUser.setOpersystem(client.getOs());
-                onlineUser.setBrowser(client.getBrowser());
-                onlineUser.setUseragent(client.getUseragent());
+                passportWebIMUser.setOpersystem(client.getOs());
+                passportWebIMUser.setBrowser(client.getBrowser());
+                passportWebIMUser.setUseragent(client.getUseragent());
 
                 logger.info("[online] new online user is created but not persisted.");
             } else {
                 // 从DB或缓存找到OnlineUser
-                onlineUser.setCreatetime(now); // 刷新创建时间
-                if ((StringUtils.isNotBlank(onlineUser.getSessionid()) && !StringUtils.equals(
-                        onlineUser.getSessionid(), sessionid)) ||
+                passportWebIMUser.setCreatetime(now); // 刷新创建时间
+                if ((StringUtils.isNotBlank(passportWebIMUser.getSessionid()) && !StringUtils.equals(
+                        passportWebIMUser.getSessionid(), sessionid)) ||
                         !StringUtils.equals(
-                                MainContext.OnlineUserStatusEnum.ONLINE.toString(), onlineUser.getStatus())) {
+                                MainContext.OnlineUserStatusEnum.ONLINE.toString(), passportWebIMUser.getStatus())) {
                     // 当新的session与从DB或缓存查找的session不一致时，或者当数据库或缓存的OnlineUser状态不是ONLINE时
                     // 代表该用户登录了新的Session或从离线变为上线！
 
-                    onlineUser.setStatus(MainContext.OnlineUserStatusEnum.ONLINE.toString()); // 设置用户到上线
-                    onlineUser.setChannel(channel);          // 设置渠道
-                    onlineUser.setAppid(appid);
-                    onlineUser.setUpdatetime(now);           // 刷新更新时间
-                    if (StringUtils.isNotBlank(onlineUser.getSessionid()) && !StringUtils.equals(
-                            onlineUser.getSessionid(), sessionid)) {
-                        onlineUser.setInvitestatus(MainContext.OnlineUserInviteStatus.DEFAULT.toString());
-                        onlineUser.setSessionid(sessionid);  // 设置新的session信息
-                        onlineUser.setLogintime(now);        // 设置更新时间
-                        onlineUser.setInvitetimes(0);        // 重置邀请次数
+                    passportWebIMUser.setStatus(MainContext.OnlineUserStatusEnum.ONLINE.toString()); // 设置用户到上线
+                    passportWebIMUser.setChannel(channel);          // 设置渠道
+                    passportWebIMUser.setAppid(appid);
+                    passportWebIMUser.setUpdatetime(now);           // 刷新更新时间
+                    if (StringUtils.isNotBlank(passportWebIMUser.getSessionid()) && !StringUtils.equals(
+                            passportWebIMUser.getSessionid(), sessionid)) {
+                        passportWebIMUser.setInvitestatus(MainContext.OnlineUserInviteStatus.DEFAULT.toString());
+                        passportWebIMUser.setSessionid(sessionid);  // 设置新的session信息
+                        passportWebIMUser.setLogintime(now);        // 设置更新时间
+                        passportWebIMUser.setInvitetimes(0);        // 重置邀请次数
                     }
                 }
 
@@ -442,20 +417,20 @@ public class OnlineUserProxy {
                     // 当关联到联系人
                     if (StringUtils.isNotBlank(contacts.getId()) && StringUtils.isNotBlank(
                             contacts.getName()) && (StringUtils.isBlank(
-                            onlineUser.getContactsid()) || !contacts.getName().equals(onlineUser.getUsername()))) {
-                        if (StringUtils.isBlank(onlineUser.getContactsid())) {
-                            onlineUser.setContactsid(contacts.getId());
+                            passportWebIMUser.getContactsid()) || !contacts.getName().equals(passportWebIMUser.getUsername()))) {
+                        if (StringUtils.isBlank(passportWebIMUser.getContactsid())) {
+                            passportWebIMUser.setContactsid(contacts.getId());
                         }
-                        if (!contacts.getName().equals(onlineUser.getUsername())) {
-                            onlineUser.setUsername(contacts.getName());
+                        if (!contacts.getName().equals(passportWebIMUser.getUsername())) {
+                            passportWebIMUser.setUsername(contacts.getName());
                         }
-                        onlineUser.setUpdatetime(now);
+                        passportWebIMUser.setUpdatetime(now);
                     }
                 }
 
-                if (StringUtils.isBlank(onlineUser.getUsername()) && StringUtils.isNotBlank(user.getUsername())) {
-                    onlineUser.setUseragent(user.getUsername());
-                    onlineUser.setUpdatetime(now);
+                if (StringUtils.isBlank(passportWebIMUser.getUsername()) && StringUtils.isNotBlank(user.getUsername())) {
+                    passportWebIMUser.setUseragent(user.getUsername());
+                    passportWebIMUser.setUpdatetime(now);
                 }
             }
 
@@ -464,22 +439,20 @@ public class OnlineUserProxy {
                 trace.setId(request.getParameter("traceid"));
                 trace.setTitle(request.getParameter("title"));
                 trace.setUrl(request.getParameter("url"));
-                trace.setOrgi(invite.getOrgi());
                 trace.setUpdatetime(new Date());
-                trace.setUsername(onlineUser.getUsername());
+                trace.setUsername(passportWebIMUser.getUsername());
                 getUserTraceRes().save(trace);
             }
 
             // 完成获取及更新OnlineUser, 将信息加入缓存
-            if (onlineUser != null && StringUtils.isNotBlank(onlineUser.getUserid())) {
+            if (passportWebIMUser != null && StringUtils.isNotBlank(passportWebIMUser.getUserid())) {
 //                logger.info(
 //                        "[online] onlineUser id {}, status {}, invite status {}", onlineUser.getId(),
 //                        onlineUser.getStatus(), onlineUser.getInvitestatus());
                 // 存储到缓存及数据库
-                getOnlineUserRes().save(onlineUser);
+                getOnlineUserRes().save(passportWebIMUser);
             }
         }
-        return onlineUser;
     }
 
     /**
@@ -502,52 +475,50 @@ public class OnlineUserProxy {
 
     /**
      * @param user
-     * @param orgi
      * @throws Exception
      */
-    public static void offline(String user, String orgi) {
+    public static void offline(String user) {
         if (MainContext.getContext() != null) {
-            OnlineUser onlineUser = getCache().findOneOnlineUserByUserIdAndOrgi(user, orgi);
-            if (onlineUser != null) {
-                onlineUser.setStatus(MainContext.OnlineUserStatusEnum.OFFLINE.toString());
-                onlineUser.setInvitestatus(MainContext.OnlineUserInviteStatus.DEFAULT.toString());
-                onlineUser.setBetweentime((int) (new Date().getTime() - onlineUser.getLogintime().getTime()));
-                onlineUser.setUpdatetime(new Date());
-                getOnlineUserRes().save(onlineUser);
+            PassportWebIMUser passportWebIMUser = getCache().findOneOnlineUserByUserId(user);
+            if (passportWebIMUser != null) {
+                passportWebIMUser.setStatus(MainContext.OnlineUserStatusEnum.OFFLINE.toString());
+                passportWebIMUser.setInvitestatus(MainContext.OnlineUserInviteStatus.DEFAULT.toString());
+                passportWebIMUser.setBetweentime((int) (new Date().getTime() - passportWebIMUser.getLogintime().getTime()));
+                passportWebIMUser.setUpdatetime(new Date());
+                getOnlineUserRes().save(passportWebIMUser);
 
-                final OnlineUserHis his = getOnlineUserHisRes().findOneBySessionidAndOrgi(
-                        onlineUser.getSessionid(), onlineUser.getOrgi()).orElseGet(OnlineUserHis::new);
-                MainUtils.copyProperties(onlineUser, his);
-                his.setDataid(onlineUser.getId());
+                final PassportWebIMUserHist his = getOnlineUserHisRes().findOneBySessionid(
+                        passportWebIMUser.getSessionid()).orElseGet(PassportWebIMUserHist::new);
+                MainUtils.copyProperties(passportWebIMUser, his);
+                his.setDataid(passportWebIMUser.getId());
                 getOnlineUserHisRes().save(his);
             }
-            getCache().deleteOnlineUserByIdAndOrgi(user, orgi);
+            getCache().deleteOnlineUserById(user);
         }
     }
 
     /**
      * 设置onlineUser为离线
      *
-     * @param onlineUser
+     * @param passportWebIMUser
      * @throws Exception
      */
-    public static void offline(OnlineUser onlineUser) {
-        if (onlineUser != null) {
-            offline(onlineUser.getId(), onlineUser.getOrgi());
+    public static void offline(PassportWebIMUser passportWebIMUser) {
+        if (passportWebIMUser != null) {
+            offline(passportWebIMUser.getId());
         }
     }
 
     /**
      * @param user
-     * @param orgi
      * @throws Exception
      */
-    public static void refuseInvite(final String user, final String orgi) {
-        OnlineUser onlineUser = getOnlineUserRes().findOne(user);
-        if (onlineUser != null) {
-            onlineUser.setInvitestatus(MainContext.OnlineUserInviteStatus.REFUSE.toString());
-            onlineUser.setRefusetimes(onlineUser.getRefusetimes() + 1);
-            getOnlineUserRes().save(onlineUser);
+    public static void refuseInvite(final String user) {
+        PassportWebIMUser passportWebIMUser = getOnlineUserRes().findById(user).orElse(null);
+        if (passportWebIMUser != null) {
+            passportWebIMUser.setInvitestatus(MainContext.OnlineUserInviteStatus.REFUSE.toString());
+            passportWebIMUser.setRefusetimes(passportWebIMUser.getRefusetimes() + 1);
+            getOnlineUserRes().save(passportWebIMUser);
         }
     }
 
@@ -563,7 +534,7 @@ public class OnlineUserProxy {
     }
 
     public static String getKeyword(String url) {
-        Map<String, String[]> values = new HashMap<String, String[]>();
+        Map<String, String[]> values = new HashMap<>();
         try {
             OnlineUserUtils.parseParameters(values, url, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -617,66 +588,6 @@ public class OnlineUserProxy {
         }
     }
 
-    public static OtherMessageItem suggestdetail(AiConfig aiCofig, String id, String orgi, User user) throws IOException {
-        OtherMessageItem otherMessageItem = null;
-        String param = "";
-        if (StringUtils.isNotBlank(aiCofig.getOqrdetailinput())) {
-            Template templet = MainUtils.getTemplate(aiCofig.getOqrdetailinput());
-            Map<String, Object> values = new HashMap<String, Object>();
-            values.put("id", id);
-            values.put("user", user);
-            param = MainUtils.getTemplet(templet.getTemplettext(), values);
-        }
-        if (StringUtils.isNotBlank(aiCofig.getOqrdetailurl())) {
-            String result = HttpClientUtil.doPost(aiCofig.getOqrdetailurl(), param), text = null;
-            if (StringUtils.isNotBlank(aiCofig.getOqrdetailoutput()) && !result.equals("error")) {
-                Template templet = MainUtils.getTemplate(aiCofig.getOqrdetailoutput());
-                @SuppressWarnings("unchecked")
-                Map<String, Object> jsonData = objectMapper.readValue(result, Map.class);
-                Map<String, Object> values = new HashMap<String, Object>();
-                values.put("id", id);
-                values.put("user", user);
-                values.put("data", jsonData);
-                text = MainUtils.getTemplet(templet.getTemplettext(), values);
-            }
-            if (StringUtils.isNotBlank(text)) {
-                otherMessageItem = objectMapper.readValue(text, OtherMessageItem.class);
-            }
-        }
-        return otherMessageItem;
-    }
-
-//    public static OtherMessageItem detail(String id, String orgi, User user) throws IOException, TemplateException {
-//        OtherMessageItem otherMessageItem = null;
-//        String param = "";
-//        SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(
-//                orgi);
-//        if (StringUtils.isNotBlank(sessionConfig.getOqrdetailinput())) {
-//            Template templet = MainUtils.getTemplate(sessionConfig.getOqrdetailinput());
-//            Map<String, Object> values = new HashMap<String, Object>();
-//            values.put("id", id);
-//            values.put("user", user);
-//            param = MainUtils.getTemplet(templet.getTemplettext(), values);
-//        }
-//        if (StringUtils.isNotBlank(sessionConfig.getOqrdetailurl())) {
-//            String result = HttpClientUtil.doPost(sessionConfig.getOqrdetailurl(), param), text = null;
-//            if (StringUtils.isNotBlank(sessionConfig.getOqrdetailoutput()) && !result.equals("error")) {
-//                Template templet = MainUtils.getTemplate(sessionConfig.getOqrdetailoutput());
-//                @SuppressWarnings("unchecked")
-//                Map<String, Object> jsonData = objectMapper.readValue(result, Map.class);
-//                Map<String, Object> values = new HashMap<String, Object>();
-//                values.put("id", id);
-//                values.put("user", user);
-//                values.put("data", jsonData);
-//                text = MainUtils.getTemplet(templet.getTemplettext(), values);
-//            }
-//            if (StringUtils.isNotBlank(text)) {
-//                otherMessageItem = objectMapper.readValue(text, OtherMessageItem.class);
-//            }
-//        }
-//        return otherMessageItem;
-//    }
-
     public static JavaType getCollectionType(Class<?> collectionClass, Class<?>... elementClasses) {
         return objectMapper.getTypeFactory().constructParametricType(collectionClass, elementClasses);
     }
@@ -689,26 +600,25 @@ public class OnlineUserProxy {
      * @param logined
      * @return
      */
-    public static OnlineUser createNewOnlineUserWithContactAndChannel(final Contacts contact, final User logined, final String channel) {
+    public static PassportWebIMUser createNewOnlineUserWithContactAndChannel(final Contacts contact, final User logined, final String channel) {
         final Date now = new Date();
-        OnlineUser onlineUser = new OnlineUser();
-        onlineUser.setId(MainUtils.getUUID());
-        onlineUser.setUserid(onlineUser.getId());
-        onlineUser.setLogintime(now);
-        onlineUser.setUpdateuser(logined.getId());
-        onlineUser.setContactsid(contact.getId());
-        onlineUser.setUsername(contact.getName());
-        onlineUser.setChannel(channel);
-        onlineUser.setCity(contact.getCity());
-        onlineUser.setOrgi(logined.getOrgi());
-        onlineUser.setCreater(logined.getId());
+        PassportWebIMUser passportWebIMUser = new PassportWebIMUser();
+        passportWebIMUser.setId(MainUtils.getUUID());
+        passportWebIMUser.setUserid(passportWebIMUser.getId());
+        passportWebIMUser.setLogintime(now);
+        passportWebIMUser.setUpdateuser(logined.getId());
+        passportWebIMUser.setContactsid(contact.getId());
+        passportWebIMUser.setUsername(contact.getName());
+        passportWebIMUser.setChannel(channel);
+        passportWebIMUser.setCity(contact.getCity());
+        passportWebIMUser.setCreater(logined.getId());
 
         logger.info(
-                "[createNewOnlineUserWithContactAndChannel] onlineUser id {}, userId {}", onlineUser.getId(),
-                onlineUser.getUserid());
+                "[createNewOnlineUserWithContactAndChannel] onlineUser id {}, userId {}", passportWebIMUser.getId(),
+                passportWebIMUser.getUserid());
         // TODO 此处没有创建 onlineUser 的 appid
-        getOnlineUserRes().save(onlineUser);
-        return onlineUser;
+        getOnlineUserRes().save(passportWebIMUser);
+        return passportWebIMUser;
 
     }
 
@@ -728,9 +638,9 @@ public class OnlineUserProxy {
     }
 
 
-    private static OnlineUserRepository getOnlineUserRes() {
+    private static PassportWebIMUserRepository getOnlineUserRes() {
         if (onlineUserRes == null) {
-            onlineUserRes = MainContext.getContext().getBean(OnlineUserRepository.class);
+            onlineUserRes = MainContext.getContext().getBean(PassportWebIMUserRepository.class);
         }
         return onlineUserRes;
 
@@ -751,9 +661,9 @@ public class OnlineUserProxy {
         return consultInviteRes;
     }
 
-    private static OnlineUserHisRepository getOnlineUserHisRes() {
+    private static PassportWebIMUserHistRepository getOnlineUserHisRes() {
         if (onlineUserHisRes == null) {
-            onlineUserHisRes = MainContext.getContext().getBean(OnlineUserHisRepository.class);
+            onlineUserHisRes = MainContext.getContext().getBean(PassportWebIMUserHistRepository.class);
         }
         return onlineUserHisRes;
     }
@@ -777,13 +687,6 @@ public class OnlineUserProxy {
             organRes = MainContext.getContext().getBean(OrganRepository.class);
         }
         return organRes;
-    }
-
-    private static OrgiSkillRelRepository getOrgiSkillRelRes() {
-        if (orgiSkillRelRes == null) {
-            orgiSkillRelRes = MainContext.getContext().getBean(OrgiSkillRelRepository.class);
-        }
-        return orgiSkillRelRes;
     }
 
     public static UserProxy getUserProxy() {

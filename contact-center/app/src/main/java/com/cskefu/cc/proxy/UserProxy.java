@@ -1,12 +1,14 @@
-/*
- * Copyright (C) 2019-2022 Chatopera Inc, All rights reserved.
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * Copyright (C) 2019-2022 Chatopera Inc, All rights reserved. 
  * <https://www.chatopera.com>
- * This software and related documentation are provided under a license agreement containing
- * restrictions on use and disclosure and are protected by intellectual property laws.
- * Except as expressly permitted in your license agreement or allowed by law, you may not use,
- * copy, reproduce, translate, broadcast, modify, license, transmit, distribute, exhibit, perform,
- * publish, or display any part, in any form, or by any means. Reverse engineering, disassembly,
- * or decompilation of this software, unless required by law for interoperability, is prohibited.
  */
 
 package com.cskefu.cc.proxy;
@@ -14,23 +16,19 @@ package com.cskefu.cc.proxy;
 import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.basic.MainUtils;
-import com.cskefu.cc.controller.api.request.RestUtils;
 import com.cskefu.cc.model.*;
 import com.cskefu.cc.persistence.repository.*;
+import com.cskefu.cc.util.restapi.RestUtils;
 import com.google.gson.JsonObject;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import jakarta.persistence.criteria.Predicate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,9 +60,13 @@ public class UserProxy {
     @Autowired
     private UserRoleRepository userRoleRes;
 
-    public JsonObject createNewUser(final User user) {
-        return this.createNewUser(user, null);
+    @Autowired
+    private OrganProxy organProxy;
+
+    public void createNewUser(final User user) {
+        this.createNewUser(user, null);
     }
+
 
     /**
      * 创建新用户
@@ -80,7 +82,6 @@ public class UserProxy {
         if (StringUtils.equalsIgnoreCase(msg, "new_user_success")) {
             // 此时 msg 是 new_user_success
             user.setSuperadmin(false); // 不支持创建第二个系统管理员
-            user.setOrgi(Constants.SYSTEM_ORGI);
 
             if (StringUtils.isNotBlank(user.getPassword())) {
                 user.setPassword(MainUtils.md5(user.getPassword()));
@@ -93,7 +94,6 @@ public class UserProxy {
                 ou.setOrgan(organ.getId());
                 organUserRes.save(ou);
             }
-
         }
         // 新账号未通过验证，返回创建失败信息msg
         result.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
@@ -102,7 +102,7 @@ public class UserProxy {
     }
 
     public User findOne(final String id) {
-        return userRes.findOne(id);
+        return userRes.findById(id).orElse(null);
     }
 
     public List<String> findUserIdsInOrgan(final String organ) {
@@ -150,11 +150,11 @@ public class UserProxy {
         for (final OrganUser z : x) {
             y.add(z.getUserid());
         }
-        return userRes.findAll(y);
+        return userRes.findAllById(y);
     }
 
     public Page<User> findUserInOrgans(final Collection<String> organs,
-            Pageable pageRequest) {
+                                       Pageable pageRequest) {
         List<OrganUser> x = organUserRes.findByOrganIn(organs);
         if (x.size() == 0)
             return null;
@@ -173,12 +173,30 @@ public class UserProxy {
      */
     public HashMap<String, String> getSkillsMapByAgentno(final String agentno) {
 
-        final User user = userRes.findOne(agentno);
+        final User user = userRes.findById(agentno).orElse(null);
         if (user == null)
             return new HashMap<>();
 
         attachOrgansPropertiesForUser(user);
         return user.getSkills();
+    }
+
+    /**
+     * 根据用户 username 重置用户的密码
+     *
+     * @param uname
+     * @param password
+     * @return boolean
+     */
+    public boolean resetAccountPasswordByUsername(final String uname, final String password) {
+        User user = userRes.findByUsernameAndDatastatus(uname, false);
+        if (user != null) {
+            user.setPassword(MainUtils.md5(password));
+            userRes.save(user);
+        } else {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -250,13 +268,13 @@ public class UserProxy {
         return userRes.findByDatastatusAndUsernameLikeAndIdIn(datastatus, username, users, pageRequest);
     }
 
-    public List<User> findByOrganAndOrgiAndDatastatus(final String organ, final String orgi, final boolean datastatus) {
+    public List<User> findByOrganAndDatastatus(final String organ, final boolean datastatus) {
         List<String> users = findUserIdsInOrgan(organ);
 
         if (users == null)
             return null;
 
-        return userRes.findByOrgiAndDatastatusAndIdIn(orgi, datastatus, users);
+        return userRes.findByDatastatusAndIdIn(datastatus, users);
 
     }
 
@@ -439,9 +457,9 @@ public class UserProxy {
 
         // 检查作为呼叫中心坐席的信息
         if (MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER) && user.isCallcenter()) {
-            final PbxHost pbxHost = pbxHostRes.findOne(user.getPbxhostId());
+            final PbxHost pbxHost = pbxHostRes.findById(user.getPbxhostId()).orElse(null);
             if (pbxHost != null) {
-                Extension extension = extensionRes.findOne(user.getExtensionId());
+                Extension extension = extensionRes.findById(user.getExtensionId()).orElse(null);
                 if (extension != null) {
                     if (StringUtils.isNotBlank(extension.getAgentno())) {
                         // 呼叫中心该分机已经绑定
@@ -473,14 +491,12 @@ public class UserProxy {
     /**
      * 通过租户ID，是否为坐席，是否有效和组织机构查询坐席数
      *
-     * @param orgi
      * @param agent
      * @param datastatus
      * @param organ
      * @return
      */
-    public long countByOrgiAndAgentAndDatastatusAndOrgan(
-            final String orgi,
+    public long countByAgentAndDatastatusAndOrgan(
             final boolean agent,
             final boolean datastatus,
             final String organ) {
@@ -497,26 +513,20 @@ public class UserProxy {
     public void attachRolesMap(final User user, Organ organ) {
 
         // 获取用户的角色权限，进行授权
-        List<RoleAuth> roleAuthList = roleAuthRes.findAll(new Specification<RoleAuth>() {
-            @Override
-            public Predicate toPredicate(
-                    Root<RoleAuth> root, CriteriaQuery<?> query,
-                    CriteriaBuilder cb) {
-                List<Predicate> criteria = new ArrayList<Predicate>();
+        List<RoleAuth> roleAuthList = roleAuthRes.findAll((root, query, cb) -> {
+            List<Predicate> criteria = new ArrayList<>();
 
-                String organId = organ != null ? organ.getId() : null;
+            String organId = organ != null ? organ.getId() : null;
 
-                List<UserRole> userRoleList = userRoleRes.findByOrganAndUser(organId, user);
-                List<Role> roles = userRoleList.stream().map(ur -> ur.getRole()).collect(Collectors.toList());
-                if (roles.size() > 0) {
-                    for (Role role : roles) {
-                        criteria.add(cb.equal(root.get("roleid").as(String.class), role.getId()));
-                    }
+            List<UserRole> userRoleList = userRoleRes.findByOrganAndUser(organId, user);
+            List<Role> roles = userRoleList.stream().map(ur -> ur.getRole()).collect(Collectors.toList());
+            if (roles.size() > 0) {
+                for (Role role : roles) {
+                    criteria.add(cb.equal(root.get("roleid").as(String.class), role.getId()));
                 }
-                Predicate[] p = new Predicate[criteria.size()];
-                cb.and(cb.equal(root.get("orgi").as(String.class), user.getOrgi()));
-                return cb.or(criteria.toArray(p));
             }
+            Predicate[] p = new Predicate[criteria.size()];
+            return cb.or(criteria.toArray(p));
         });
 
         // clear previous auth map values, ensure the changes are token effect in real
@@ -549,7 +559,6 @@ public class UserProxy {
     // }
     // }
     // Predicate[] p = new Predicate[criteria.size()];
-    // cb.and(cb.equal(root.get("orgi").as(String.class), user.getOrgi()));
     // return cb.or(criteria.toArray(p));
     // }
     // });
@@ -582,7 +591,7 @@ public class UserProxy {
         user.getAffiliates().add(organ.getId());
 
         // 获得子部门
-        List<Organ> y = organRes.findByOrgiAndParent(user.getOrgi(), organ.getId());
+        List<Organ> y = organRes.findByParent(organ.getId());
 
         for (Organ x : y) {
             try {
@@ -608,7 +617,7 @@ public class UserProxy {
 
         for (final OrganUser organ : organs) {
             // 添加直属部门到organs
-            final Organ o = organRes.findOne(organ.getOrgan());
+            final Organ o = organRes.findById(organ.getOrgan()).orElse(null);
             user.getOrgans().put(organ.getOrgan(), o);
             if (o.isSkill()) {
                 skills.put(o.getId(), o.getName());
@@ -620,4 +629,26 @@ public class UserProxy {
 
         user.setSkills(skills);
     }
+
+    /**
+     * 为本用户设置当前所在组织机构和其附属组织机构的信息
+     *
+     * @param user
+     * @param currentOrgan
+     */
+    public void attachCurrentOrgansPropertiesForUser(final User user, final Organ currentOrgan) {
+        if (currentOrgan != null) {
+            user.setCurrOrganAffiliates(new HashSet<>());
+            user.getCurrOrganAffiliates().add(currentOrgan.getId());
+            Map<String, Organ> subs = organProxy.findAllOrganByParent(currentOrgan);
+
+            for (Map.Entry<String, Organ> entry : subs.entrySet()) {
+                user.getCurrOrganAffiliates().add(entry.getKey());
+            }
+
+        } else {
+            user.setCurrOrganAffiliates(new HashSet<>());
+        }
+    }
+
 }

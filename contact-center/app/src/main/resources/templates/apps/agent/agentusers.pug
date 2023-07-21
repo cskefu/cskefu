@@ -1,16 +1,14 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
-//- 
-//- Licensed under the Apache License, Version 2.0 (the "License");
-//- you may not use this file except in compliance with the License.
-//- You may obtain a copy of the License at
-//- 
-//-  http://www.apache.org/licenses/LICENSE-2.0
-//- 
-//-  Unless required by applicable law or agreed to in writing, software
+//- Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+//- <https://www.chatopera.com>, Licensed under the Chunsong Public 
+//- License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+//- Unless required by applicable law or agreed to in writing, software
 //- distributed under the License is distributed on an "AS IS" BASIS,
-//-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //- See the License for the specific language governing permissions and
 //- limitations under the License.
+//- Copyright (C) 2018-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>
+//- Licensed under the Apache License, Version 2.0
+//- http://www.apache.org/licenses/LICENSE-2.0
 .row
     .col-lg-12
         h1.site-h1
@@ -37,38 +35,38 @@
                         'chat-list-item': true,
                         'active': (curagentuser.id == agentuser.id)
                     }, id='agentuser_' + agentuser.userid, remove-id=agentuser.id, data-id=agentuser.userid)
-                        a(href='/agent/agentuser.html?id=' + agentuser.id + '&channel=' + agentuser.channel, data-toggle="load", data-target="#ukefu-chat-agent", onclick="$('.chat-list-item.active').removeClass('active');$(this).closest('li.chat-list-item').addClass('active');cleanTopMsgTip(this) ;$('#last_msg_#{agentuser.userid}').text(0).hide();")
+                        a(href='/agent/agentuser.html?id=' + agentuser.id + '&channel=' + agentuser.channeltype, data-toggle="load", data-target="#ukefu-chat-agent", onclick="$('.chat-list-item.active').removeClass('active');$(this).closest('li.chat-list-item').addClass('active');cleanTopMsgTip(this) ;$('#last_msg_" + agentuser.userid + "').text(0).hide();")
                             img(src=(agentuser.headimgurl && agentuser.headimgurl != '' ? agentuser.headimgurl : '/images/im/user.png'), style="width:45px;height:45px;")
                             if agentuser.status && agentuser.status == 'end'
-                                if agentuser.channel && agentuser.channel == "weixin"
-                                    i.kfont.ukefu-channel-icon-end(id="tip_icon_wenxin_#{agentuser.userid}")
+                                if agentuser.channeltype && agentuser.channeltype == "weixin"
+                                    i.kfont.ukefu-channel-icon-end(id="tip_icon_wenxin_" + agentuser.userid)
                                         | &#xe64d;
-                                else if agentuser.channel && agentuser.channel == "webim"
-                                    i.kfont.ukefu-channel-icon-end(id="tip_icon_webim_#{agentuser.userid}")
+                                else if agentuser.channeltype && agentuser.channeltype == "webim"
+                                    i.kfont.ukefu-channel-icon-end(id="tip_icon_webim_" + agentuser.userid)
                                         | &#xe60d;
-                                else if agentuser.channel && agentuser.channel == "skype"
-                                    i.csfont.ukefu-channel-icon-end(id="tip_icon_skype_#{agentuser.userid}")
+                                else if agentuser.channeltype && agentuser.channeltype == "skype"
+                                    i.csfont.ukefu-channel-icon-end(id="tip_icon_skype_" + agentuser.userid)
                                         | &#59404;
-                                else if agentuser.channel && agentuser.channel == "messenger"
-                                    i.csfont.ukefu-channel-icon-end(id="tip_icon_messenger_#{agentuser.userid}")
+                                else if agentuser.channeltype && agentuser.channeltype == "messenger"
+                                    i.csfont.ukefu-channel-icon-end(id="tip_icon_messenger_" + agentuser.userid)
                                         | &#xec11;
-                                else if agentuser.channel && agentuser.channel == "phone"
-                                    img.ukefu-channel-image(src="/images/cde-ico-gray.png", id="tip_icon_phone_#{agentuser.userid}")
+                                else if agentuser.channeltype && agentuser.channeltype == "phone"
+                                    img.ukefu-channel-image(src="/images/cde-ico-gray.png", id="tip_icon_phone_" + agentuser.userid)
                             else
-                                if agentuser.channel && agentuser.channel == "weixin"
-                                    i.kfont.ukefu-channel-icon(id="tip_icon_wenxin_#{agentuser.userid}")
+                                if agentuser.channeltype && agentuser.channeltype == "weixin"
+                                    i.kfont.ukefu-channel-icon(id="tip_icon_wenxin_" + agentuser.userid)
                                         | &#xe64d;
-                                else if agentuser.channel && agentuser.channel == "webim"
-                                    i.kfont.ukefu-channel-icon(id="tip_icon_webim_#{agentuser.userid}")
+                                else if agentuser.channeltype && agentuser.channeltype == "webim"
+                                    i.kfont.ukefu-channel-icon(id="tip_icon_webim_" + agentuser.userid)
                                         | &#xe60d;
-                                else if agentuser.channel && agentuser.channel == "skype"
-                                    i.csfont.ukefu-channel-icon(id="tip_icon_skype_#{agentuser.userid}")
+                                else if agentuser.channeltype && agentuser.channeltype == "skype"
+                                    i.csfont.ukefu-channel-icon(id="tip_icon_skype_" + agentuser.userid)
                                         | &#59404;
-                                else if agentuser.channel && agentuser.channel == "messenger"
-                                    i.csfont.ukefu-channel-icon(id="tip_icon_messenger_#{agentuser.userid}")
+                                else if agentuser.channeltype && agentuser.channeltype == "messenger"
+                                    i.csfont.ukefu-channel-icon(id="tip_icon_messenger_" + agentuser.userid)
                                         | &#xec11;
-                                else if agentuser.channel && agentuser.channel == "phone"
-                                    img.ukefu-channel-image(src="/images/phone-ico.png", id="tip_icon_phone_#{agentuser.userid}")
+                                else if agentuser.channeltype && agentuser.channeltype == "phone"
+                                    img.ukefu-channel-image(src="/images/phone-ico.png", id="tip_icon_phone_" + agentuser.userid)
                             .dialog-info
                                 .address
                                     span(style="width:90px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;word-wrap: break-word;word-break: break-all;")
@@ -76,9 +74,9 @@
                                 .news
                                     | #{pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', agentuser.servicetime)}
                                     if agentuser.status && agentuser.status == 'end'
-                                        small.label.bg-gray.pull-right(id="tip_message_#{agentuser.userid}") 离开
+                                        small.label.bg-gray.pull-right(id="tip_message_" + agentuser.userid) 离开
                                     else
-                                        small.label.bg-green.pull-right(id="tip_message_#{agentuser.userid}") 在线
+                                        small.label.bg-green.pull-right(id="tip_message_" + agentuser.userid) 在线
                             .last-msg
-                                small.ukefu-badge.bg-red(id="last_msg_#{agentuser.userid}",style="#{(agentuser.tokenum == 0 || (curagentuser && curagentuser.id == agentuser.id)) ? 'display:none' : ''}")
+                                small.ukefu-badge.bg-red(id="last_msg_" + agentuser.userid,style="#{(agentuser.tokenum == 0 || (curagentuser && curagentuser.id == agentuser.id)) ? 'display:none' : ''}")
                                     | #{agentuser.tokenum ? agentuser.tokenum : 0}

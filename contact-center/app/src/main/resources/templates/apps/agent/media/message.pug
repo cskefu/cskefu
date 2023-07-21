@@ -1,16 +1,14 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
-//- 
-//- Licensed under the Apache License, Version 2.0 (the "License");
-//- you may not use this file except in compliance with the License.
-//- You may obtain a copy of the License at
-//- 
-//-  http://www.apache.org/licenses/LICENSE-2.0
-//- 
-//-  Unless required by applicable law or agreed to in writing, software
+//- Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+//- <https://www.chatopera.com>, Licensed under the Chunsong Public 
+//- License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+//- Unless required by applicable law or agreed to in writing, software
 //- distributed under the License is distributed on an "AS IS" BASIS,
-//-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //- See the License for the specific language governing permissions and
 //- limitations under the License.
+//- Copyright (C) 2018-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>
+//- Licensed under the Apache License, Version 2.0
+//- http://www.apache.org/licenses/LICENSE-2.0
 if chatmessage.expmsg && chatmessage.expmsg.contains("hyperlink\":\"http")
     - var expmsg = pugHelper.parseStringToJsonArray(chatmessage.expmsg)[0];
     | 图文消息：#{expmsg.title}
@@ -18,10 +16,10 @@ if chatmessage.expmsg && chatmessage.expmsg.contains("hyperlink\":\"http")
     = expmsg.summary
     br
     a(href="#{expmsg.hyperlink}", target="_blank")
-        img.ukefu-media-image(src="!{chatmessage.message ? chatmessage.message : ''}", id="#{chatmessage.id}")
+        img.ukefu-media-image(src=chatmessage.message ? chatmessage.message : '', id=chatmessage.id)
 else if chatmessage.msgtype && chatmessage.msgtype == "image"
     a(href="/agent/message/image.html?id=" + chatmessage.id, data-toggle="ajax", data-width="950", data-height="600", title="图片")
-        img.ukefu-media-image(src="!{chatmessage.message ? chatmessage.message : ''}", id="#{chatmessage.id}")
+        img.ukefu-media-image(src=chatmessage.message ? chatmessage.message : '', id=chatmessage.id)
 else if chatmessage.msgtype && chatmessage.msgtype == "cooperation"
     a(href="/agent/message/image.html?t=review&id=" + chatmessage.message, data-toggle="ajax", data-width="950", data-height="600", title="图片")
         | 系统发送了一个协作邀请

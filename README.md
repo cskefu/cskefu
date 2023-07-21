@@ -1,21 +1,21 @@
 <div align=right>
 
-[主页](https://www.cskefu.com/)　|　[开源许可协议](https://www.cskefu.com/2022/06/24/cskefu-opensource-license/)　|　[邮件列表](https://lists.cskefu.com/cgi-bin/mailman/listinfo/dev)　|　[路线图](https://chatopera.github.io/cskefu.roadmap/)
+[主页](https://www.cskefu.com/)　|　[开源许可协议](https://docs.cskefu.com/licenses/v1.html)　|　[工单列表](https://github.com/cskefu/cskefu/issues)　|　[路线图](https://github.com/orgs/cskefu/projects/1)
 
 </div>
 
 # 春松客服
 
-[![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/cskefu/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/cskefu/cskefu/network/members) [![License](https://img.shields.io/github/license/chatopera/cskefu.svg)](https://www.cskefu.com/2022/06/24/cskefu-opensource-license/ "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![docker](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/cskefu/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/cskefu/cskefu/network/members) [![License](https://cdndownload2.chatopera.com/cskefu/licenses/chunsong1.0.svg)](https://www.cskefu.com/licenses/v1.html "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![docker](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-33-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [https://www.cskefu.com](https://www.cskefu.com/)
 
-| 版本 | 文档中心 | Git 分支 |
-| --- | --- | --- |
-| v8.x | [v8](https://docs.cskefu.com/docs/) |  [GitHub](https://github.com/cskefu/cskefu/tree/develop) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/develop/) |
-| v7.x | [v7](https://docs.cskefu.com/docs/v7/) |  [GitHub](https://github.com/cskefu/cskefu/tree/master) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/master/) |
+| 版本 | 文档中心 | Git 分支 | 状态 |
+| --- | --- | --- | --- |
+| v8.x | [v8](https://docs.cskefu.com/docs/) |  [GitHub](https://github.com/cskefu/cskefu/tree/develop) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/develop/) | Active, 维护中 |
+| v7.x | [v7](https://docs.cskefu.com/docs/v7/) |  [GitHub](https://github.com/cskefu/cskefu/tree/v7) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/v7/) | Sunset, 维护终止 |
 
 :hearts: 春松客服的愿景：
 
@@ -29,7 +29,7 @@
 
 春松客服宣言视频： [Bilibili](https://www.bilibili.com/video/BV1hu411o76r/) | [YouTube](https://youtu.be/ILf3BWpq4Ns)
 
-<!-- TODO 新版本介绍：[自然选择开源客服系统！春松客服 v8 版本发布 | Chatopera]() -->
+新版本介绍：[观看春松客服 v8 新版本发布会 @ 2023-07-01](https://www.cskefu.com/2023/07/03/community-conf/)
 
 ## 媒体报道
 
@@ -233,7 +233,7 @@
 
 在春松客服开源社区，我们建立关系、发现认同、合作共赢！
 
-- 了解春松客服采用的开源许可协议，参考[文档](https://www.cskefu.com/2022/06/24/cskefu-opensource-license/)
+- 了解春松客服采用的开源许可协议，参考[文档](https://www.cskefu.com/2023/06/25/chunsong-public-license-1-0/)
 - 了解春松客服的开发计划，参考[文档](https://chatopera.github.io/cskefu.roadmap/)
 - 加入开源社区运营，成为社区合伙人，参考[文档](https://mp.weixin.qq.com/s/TLE87YX4k097iOXnV4WVSw)
 - 加入春松客服开源社区，参考[文档](https://www.cskefu.com/join-us/)
@@ -293,8 +293,8 @@
 
 ## 开源许可协议
 
-Copyright (2018-2023) <a href="https://www.chatopera.com/" target="_blank">北京华夏春松科技有限公司</a>
+Copyright 2023 <a href="https://www.chatopera.com/" target="_blank">Beijing Huaxia Chunsong Technology Co., Ltd.</a>
 
-[Apache License Version 2.0](https://www.cskefu.com/2022/06/24/cskefu-opensource-license/)
+[Chunsong Public License, version 1.0](https://docs.cskefu.com/licenses/v1.html)
 
 ![image](./public/assets/screenshot-20220323-163051.jpg)

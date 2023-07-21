@@ -1,17 +1,15 @@
-/*
- * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>, 
+ * Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 
 package com.cskefu.cc.acd.basic;
@@ -23,12 +21,11 @@ import com.cskefu.cc.util.IP;
 public class ACDComposeContext extends Message {
 
     // 技能组及渠道
-    private String orgi;
     private String organid;
     private Organ organ;
     private String appid;
-    private String channel;
-    private SNSAccount snsAccount;
+    private String channeltype;
+    private Channel channel;
     private String sessionid;
 
     // 策略
@@ -55,7 +52,7 @@ public class ACDComposeContext extends Message {
 
     // 访客
     private String onlineUserId;
-    private OnlineUser onlineUser;
+    private PassportWebIMUser passportWebIMUser;
     private String onlineUserNickname;
     private String onlineUserHeadimgUrl;
 
@@ -94,20 +91,20 @@ public class ACDComposeContext extends Message {
         this.appid = appid;
     }
 
-    public String getChannel() {
+    public String getChannelType() {
+        return channeltype;
+    }
+
+    public void setChannelType(String channelType) {
+        this.channeltype = channelType;
+    }
+
+    public Channel getSnsAccount() {
         return channel;
     }
 
-    public void setChannel(String channel) {
+    public void setSnsAccount(Channel channel) {
         this.channel = channel;
-    }
-
-    public SNSAccount getSnsAccount() {
-        return snsAccount;
-    }
-
-    public void setSnsAccount(SNSAccount snsAccount) {
-        this.snsAccount = snsAccount;
     }
 
     public SessionConfig getSessionConfig() {
@@ -190,12 +187,12 @@ public class ACDComposeContext extends Message {
         this.agentUser = agentUser;
     }
 
-    public OnlineUser getOnlineUser() {
-        return onlineUser;
+    public PassportWebIMUser getOnlineUser() {
+        return passportWebIMUser;
     }
 
-    public void setOnlineUser(OnlineUser onlineUser) {
-        this.onlineUser = onlineUser;
+    public void setOnlineUser(PassportWebIMUser passportWebIMUser) {
+        this.passportWebIMUser = passportWebIMUser;
     }
 
     public AgentService getAgentService() {
@@ -284,14 +281,6 @@ public class ACDComposeContext extends Message {
 
     public void setOwnerid(String ownerid) {
         this.ownerid = ownerid;
-    }
-
-    public String getOrgi() {
-        return orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
     }
 
     public String getOnlineUserHeadimgUrl() {

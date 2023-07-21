@@ -1,22 +1,20 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.util.mobile;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,10 +24,10 @@ import java.util.Map;
 
 public class MobileNumberUtils {
 	private static final Logger logger = LoggerFactory.getLogger(MobileNumberUtils.class);
-	private static Map<String , MobileAddress> mobileAddressMap  = new HashMap<String ,MobileAddress>();
+	private static final Map<String , MobileAddress> mobileAddressMap  = new HashMap<>();
 	private static boolean isInited = false;
 	
-	public static int init() throws IOException{
+	public static void init() throws IOException{
 		File file = new File( MobileNumberUtils.class.getResource("/config/mobile.data").getFile());
         logger.info("init with file [{}]", file.getAbsolutePath());
 		if(file.exists()){
@@ -65,8 +63,7 @@ public class MobileNumberUtils {
 				reader.close();
 			}
 		}
-		return mobileAddressMap.size() ;
-	}
+    }
 	/**
 	 * 根据呼入号码 找到对应 城市 , 需要传入的号码是 手机号 或者 固话号码，位数为 11位
 	 * @param phoneNumber

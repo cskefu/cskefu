@@ -1,4 +1,4 @@
-function chatoperaLoad(url) {
+function chatoperaLoad(pointUrl) {
     function injectLoader(node) {
         var newScript = document.createElement("SCRIPT");
         newScript.innerHTML = node.innerHTML;
@@ -21,21 +21,23 @@ function chatoperaLoad(url) {
         }
     }
 
-    var xhr;
-    if (window.XMLHttpRequest) {
-        xhr = new XMLHttpRequest();
-    } else {
-        xhr = new ActiveXObject('Microsoft.XMLHTTP');
-    }
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-            var status = xhr.status;
-            if (status >= 200 && status < 300) {
-                append(document.body, xhr.responseText);
-            }
+    if(pointUrl){
+        var xhr;
+        if (window.XMLHttpRequest) {
+            xhr = new XMLHttpRequest();
+        } else {
+            xhr = new ActiveXObject('Microsoft.XMLHTTP');
         }
-    };
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4) {
+                var status = xhr.status;
+                if (status >= 200 && status < 300) {
+                    append(document.body, xhr.responseText);
+                }
+            }
+        };
 
-    xhr.open('GET', url);
-    xhr.send(null);
+        xhr.open('GET', pointUrl);
+        xhr.send(null);
+    }
 }

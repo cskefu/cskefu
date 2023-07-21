@@ -1,12 +1,14 @@
-/*
- * Copyright (C) 2019-2022 Chatopera Inc, All rights reserved.
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * Copyright (C) 2019-2022 Chatopera Inc, All rights reserved. 
  * <https://www.chatopera.com>
- * This software and related documentation are provided under a license agreement containing
- * restrictions on use and disclosure and are protected by intellectual property laws.
- * Except as expressly permitted in your license agreement or allowed by law, you may not use,
- * copy, reproduce, translate, broadcast, modify, license, transmit, distribute, exhibit, perform,
- * publish, or display any part, in any form, or by any means. Reverse engineering, disassembly,
- * or decompilation of this software, unless required by law for interoperability, is prohibited.
  */
 package com.cskefu.cc.activemq;
 
@@ -27,7 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.util.Date;
 
 /**
@@ -65,10 +67,9 @@ public class SocketioConnEventSubscription {
         try {
             JsonParser parser = new JsonParser();
             JsonObject j = parser.parse(payload).getAsJsonObject();
-            if (j.has("userId") && j.has("orgi") && j.has("isAdmin")) {
-                final AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
-                        j.get("userId").getAsString(),
-                        j.get("orgi").getAsString());
+            if (j.has("userId") && j.has("isAdmin")) {
+                final AgentStatus agentStatus = cache.findOneAgentStatusByAgentno(
+                        j.get("userId").getAsString());
                 if (agentStatus != null && (!agentStatus.isConnected())) {
                     /**
                      * 处理该坐席为离线
@@ -76,7 +77,6 @@ public class SocketioConnEventSubscription {
                     // 重分配坐席
                     ACDComposeContext ctx = new ACDComposeContext();
                     ctx.setAgentno(agentStatus.getAgentno());
-                    ctx.setOrgi(agentStatus.getOrgi());
                     acdAgentDispatcher.dequeue(ctx);
                     if (ctx.isResolved()) {
                         logger.info("[onMessage] re-allotAgent for user's visitors successfully.");
@@ -90,19 +90,19 @@ public class SocketioConnEventSubscription {
                     agentStatus.setUpdatetime(new Date());
 
                     // 设置该坐席状态为离线
-                    cache.deleteAgentStatusByAgentnoAndOrgi(agentStatus.getAgentno(), agentStatus.getOrgi());
+                    cache.deleteAgentStatusByAgentno(agentStatus.getAgentno());
                     agentStatusRes.save(agentStatus);
 
                     // 记录坐席工作日志
                     acdWorkMonitor.recordAgentStatus(agentStatus.getAgentno(),
-                                                     agentStatus.getUsername(),
-                                                     agentStatus.getAgentno(),
-                                                     j.get("isAdmin").getAsBoolean(),
-                                                     agentStatus.getAgentno(),
-                                                     agentStatus.getStatus(),
-                                                     MainContext.AgentStatusEnum.OFFLINE.toString(),
-                                                     MainContext.AgentWorkType.MEIDIACHAT.toString(),
-                                                     agentStatus.getOrgi(), null);
+                            agentStatus.getUsername(),
+                            agentStatus.getAgentno(),
+                            j.get("isAdmin").getAsBoolean(),
+                            agentStatus.getAgentno(),
+                            agentStatus.getStatus(),
+                            MainContext.AgentStatusEnum.OFFLINE.toString(),
+                            MainContext.AgentWorkType.MEIDIACHAT.toString(),
+                            null);
                 } else if (agentStatus == null) {
                     // 该坐席已经完成离线设置
                     logger.info("[onMessage] agent is already offline, skip any further operations");

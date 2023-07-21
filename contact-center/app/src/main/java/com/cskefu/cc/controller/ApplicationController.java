@@ -1,18 +1,16 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.controller;
 
@@ -22,6 +20,7 @@ import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.cache.Cache;
 import com.cskefu.cc.model.Organ;
+import com.cskefu.cc.model.PbxHost;
 import com.cskefu.cc.model.User;
 import com.cskefu.cc.persistence.repository.ExtensionRepository;
 import com.cskefu.cc.persistence.repository.OrganRepository;
@@ -37,8 +36,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
@@ -96,10 +95,10 @@ public class ApplicationController extends Handler {
 
         view.addObject(
                 "skills",
-                organProxy.findAllOrganByParentAndOrgi(currentOrgan, super.getOrgi(request)).keySet().stream().collect(Collectors.joining(","))
+                organProxy.findAllOrganByParent(currentOrgan).keySet().stream().collect(Collectors.joining(","))
         );
 
-        view.addObject("agentStatusReport", acdWorkMonitor.getAgentReport(currentOrgan != null ? currentOrgan.getId() : null, logined.getOrgi()));
+        view.addObject("agentStatusReport", acdWorkMonitor.getAgentReport(currentOrgan != null ? currentOrgan.getId() : null));
         view.addObject("istenantshare", false);
         view.addObject("timeDifference", timezone.getRawOffset());
         view.addObject("organList", organs);
@@ -112,24 +111,23 @@ public class ApplicationController extends Handler {
         view.addObject("appCustomerEntity", appCustomerEntity);
 
         // 在线坐席状态信息
-        view.addObject("agentStatus", cache.findOneAgentStatusByAgentnoAndOrig(logined.getId(), logined.getOrgi()));
+        view.addObject("agentStatus", cache.findOneAgentStatusByAgentno(logined.getId()));
 
         // 呼叫中心信息
         if (MainContext.hasModule(Constants.CSKEFU_MODULE_CALLCENTER) && logined.isCallcenter()) {
-            extensionRes.findByAgentnoAndOrgi(logined.getId(), logined.getOrgi()).ifPresent(ext -> {
-                pbxHostRes.findById(ext.getHostid()).ifPresent(pbx -> {
-                    Map<String, Object> webrtcData = new HashMap<>();
-                    webrtcData.put("callCenterWebrtcIP", pbx.getWebrtcaddress());
-                    webrtcData.put("callCenterWebRtcPort", pbx.getWebrtcport());
-                    webrtcData.put("callCenterExtensionNum", ext.getExtension());
-                    try {
-                        webrtcData.put("callCenterExtensionPassword", MainUtils.decryption(ext.getPassword()));
-                    } catch (NoSuchAlgorithmException e) {
-                        logger.error("[admin]", e);
-                        webrtcData.put("callCenterError", "Invalid data for callcenter agent.");
-                    }
-                    view.addObject("webrtc", webrtcData);
-                });
+            extensionRes.findByAgentno(logined.getId()).ifPresent(ext -> {
+                PbxHost one = pbxHostRes.findById(ext.getHostid()).orElse(null);
+                Map<String, Object> webrtcData = new HashMap<>();
+                webrtcData.put("callCenterWebrtcIP", one.getWebrtcaddress());
+                webrtcData.put("callCenterWebRtcPort", one.getWebrtcport());
+                webrtcData.put("callCenterExtensionNum", ext.getExtension());
+                try {
+                    webrtcData.put("callCenterExtensionPassword", MainUtils.decryption(ext.getPassword()));
+                } catch (NoSuchAlgorithmException e) {
+                    logger.error("[admin]", e);
+                    webrtcData.put("callCenterError", "Invalid data for callcenter agent.");
+                }
+                view.addObject("webrtc", webrtcData);
             });
         }
 
@@ -145,7 +143,7 @@ public class ApplicationController extends Handler {
     @ResponseBody
     public String setOrgan(HttpServletRequest request, @Valid String organ) {
         if (StringUtils.isNotBlank(organ)) {
-            Organ currentOrgan = organRepository.findByIdAndOrgi(organ, super.getOrgi(request));
+            Organ currentOrgan = organRepository.findById(organ).orElse(null);
             if (currentOrgan != null) {
                 request.getSession(true).setAttribute(Constants.ORGAN_SESSION_NAME, currentOrgan);
             }
@@ -158,7 +156,7 @@ public class ApplicationController extends Handler {
     public ModelAndView lazyAgentStatus(HttpServletRequest request) {
         ModelAndView view = request(super.createView("/public/agentstatustext"));
         Organ currentOrgan = super.getOrgan(request);
-        view.addObject("agentStatusReport", acdWorkMonitor.getAgentReport(currentOrgan != null ? currentOrgan.getId() : null, super.getOrgi(request)));
+        view.addObject("agentStatusReport", acdWorkMonitor.getAgentReport(currentOrgan != null ? currentOrgan.getId() : null));
 
         return view;
     }

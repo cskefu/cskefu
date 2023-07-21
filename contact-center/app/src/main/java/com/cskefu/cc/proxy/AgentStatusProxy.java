@@ -1,17 +1,15 @@
-/*
- * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>, 
+ * Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 
 package com.cskefu.cc.proxy;
@@ -41,17 +39,15 @@ public class AgentStatusProxy {
     /**
      * 向所有坐席client通知坐席状态变化
      *
-     * @param orgi
      * @param worktype
      * @param workresult
      * @param dataid
      */
-    public void broadcastAgentsStatus(final String orgi, final String worktype, final String workresult, final String dataid) {
+    public void broadcastAgentsStatus(final String worktype, final String workresult, final String dataid) {
         /**
          * 坐席状态改变，通知监测服务
          */
-        AgentReport agentReport = acdWorkMonitor.getAgentReport(orgi);
-        agentReport.setOrgi(orgi);
+        AgentReport agentReport = acdWorkMonitor.getAgentReport();
         agentReport.setWorktype(worktype);
         agentReport.setWorkresult(workresult);
         agentReport.setDataid(dataid);

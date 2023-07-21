@@ -1,25 +1,23 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.model;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -41,16 +39,12 @@ public class SystemConfig implements java.io.Serializable {
     private String favlogo;        //系统Fav图片，icon格式，小图标
 
     private String code;
-    private String orgi;
     private String description;
     private String memo;
     private String creater;
     private Date createtime;
     private Date updatetime;
     private String loglevel;
-    private boolean enablessl;
-    private String jksfile;
-    private String jkspassword;
     private String mapkey;
     private boolean workorders;    //工单启用三栏布局
     private String iconstr;            //修改服务器url地址
@@ -156,14 +150,6 @@ public class SystemConfig implements java.io.Serializable {
         this.code = code;
     }
 
-    public String getOrgi() {
-        return orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -210,30 +196,6 @@ public class SystemConfig implements java.io.Serializable {
 
     public void setLoglevel(String loglevel) {
         this.loglevel = loglevel;
-    }
-
-    public boolean isEnablessl() {
-        return enablessl;
-    }
-
-    public void setEnablessl(boolean enablessl) {
-        this.enablessl = enablessl;
-    }
-
-    public String getJksfile() {
-        return jksfile;
-    }
-
-    public void setJksfile(String jksfile) {
-        this.jksfile = jksfile;
-    }
-
-    public String getJkspassword() {
-        return jkspassword;
-    }
-
-    public void setJkspassword(String jkspassword) {
-        this.jkspassword = jkspassword;
     }
 
     public String getMapkey() {

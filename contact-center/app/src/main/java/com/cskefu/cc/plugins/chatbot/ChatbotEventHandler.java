@@ -1,17 +1,15 @@
-/*
- * Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2019-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>, 
+ * Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.plugins.chatbot;
 
@@ -29,7 +27,7 @@ import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.model.*;
 import com.cskefu.cc.persistence.repository.AgentUserRepository;
 import com.cskefu.cc.persistence.repository.ChatbotRepository;
-import com.cskefu.cc.persistence.repository.OnlineUserRepository;
+import com.cskefu.cc.persistence.repository.PassportWebIMUserRepository;
 import com.cskefu.cc.proxy.OnlineUserProxy;
 import com.cskefu.cc.socketio.client.NettyClients;
 import com.cskefu.cc.socketio.message.AgentStatusMessage;
@@ -38,7 +36,7 @@ import com.cskefu.cc.socketio.message.Message;
 import com.cskefu.cc.socketio.util.IMServiceUtils;
 import com.cskefu.cc.util.IP;
 import com.cskefu.cc.util.IPTools;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,10 +48,10 @@ import java.util.Date;
 public class ChatbotEventHandler {
     private static final Logger logger = LoggerFactory.getLogger(ChatbotEventHandler.class);
 
-    protected SocketIOServer server;
+    protected final SocketIOServer server;
 
     private static AgentUserRepository agentUserRes;
-    private static OnlineUserRepository onlineUserRes;
+    private static PassportWebIMUserRepository onlineUserRes;
     private static ChatbotRepository chatbotRes;
     private static ChatbotProxy chatbotProxy;
 
@@ -67,7 +65,6 @@ public class ChatbotEventHandler {
         try {
             String user = client.getHandshakeData().getSingleUrlParam("userid");
             String nickname = client.getHandshakeData().getSingleUrlParam("nickname");
-            String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
             String session = MainUtils.getContextID(client.getHandshakeData().getSingleUrlParam("session"));
             String appid = client.getHandshakeData().getSingleUrlParam("appid");
             String aiid = client.getHandshakeData().getSingleUrlParam("aiid");
@@ -79,7 +76,6 @@ public class ChatbotEventHandler {
             client.set("session", session);
             client.set("userid", user);
             client.set("appid", appid);
-            client.set("orgi", orgi);
 
             Date now = new Date();
 
@@ -88,12 +84,12 @@ public class ChatbotEventHandler {
                  * 加入到 缓存列表
                  */
                 NettyClients.getInstance().putChatbotEventClient(user, client);
-                CousultInvite invite = OnlineUserProxy.consult(appid, orgi);
+                CousultInvite invite = OnlineUserProxy.consult(appid);
 
                 /**
                  * 更新坐席服务类型
                  */
-                IMServiceUtils.shiftOpsType(user, orgi, MainContext.OptType.CHATBOT);
+                IMServiceUtils.shiftOpsType(user, MainContext.OptType.CHATBOT);
 
                 // send out tip
                 Message tip = new Message();
@@ -106,7 +102,7 @@ public class ChatbotEventHandler {
 
                 // send out welcome message
                 if (invite != null) {
-                    Chatbot chatbot = getChatbotRes().findOne(invite.getAiid());
+                    Chatbot chatbot = getChatbotRes().findById(invite.getAiid()).orElse(null);
                     com.chatopera.bot.sdk.Chatbot bot = new com.chatopera.bot.sdk.Chatbot(
                             chatbot.getClientId(), chatbot.getSecret(), chatbot.getBaseUrl());
                     Response result = bot.command("GET", "/");
@@ -119,7 +115,6 @@ public class ChatbotEventHandler {
                         if (StringUtils.isNotBlank(welcomeTextMessage)) {
                             welcome.setCalltype(MainContext.CallType.OUT.toString());
                             welcome.setAppid(appid);
-                            welcome.setOrgi(orgi);
                             welcome.setAiid(aiid);
                             welcome.setMessage(welcomeTextMessage);
                             welcome.setTouser(user);
@@ -141,7 +136,6 @@ public class ChatbotEventHandler {
                                 ChatMessage faqhotmsg = new ChatMessage();
                                 faqhotmsg.setCalltype(MainContext.CallType.OUT.toString());
                                 faqhotmsg.setAppid(appid);
-                                faqhotmsg.setOrgi(orgi);
                                 faqhotmsg.setAiid(aiid);
                                 faqhotmsg.setMessage(faqhotdata.getString("string"));
                                 faqhotmsg.setExpmsg(faqhotdata.getJSONArray("params").toString());
@@ -162,60 +156,58 @@ public class ChatbotEventHandler {
 
                 InetSocketAddress address = (InetSocketAddress) client.getRemoteAddress();
                 String ip = MainUtils.getIpAddr(client.getHandshakeData().getHttpHeaders(), address.getHostString());
-                OnlineUser onlineUser = getOnlineUserRes().findOne(user);
+                PassportWebIMUser passportWebIMUser = getOnlineUserRes().findById(user).orElse(null);
 
-                if (onlineUser == null) {
-                    onlineUser = new OnlineUser();
-                    onlineUser.setAppid(appid);
+                if (passportWebIMUser == null) {
+                    passportWebIMUser = new PassportWebIMUser();
+                    passportWebIMUser.setAppid(appid);
                     if (StringUtils.isNotBlank(nickname)) {
-                        onlineUser.setUsername(nickname);
+                        passportWebIMUser.setUsername(nickname);
                     } else {
-                        onlineUser.setUsername(Constants.GUEST_USER + "_" + MainUtils.genIDByKey(user));
+                        passportWebIMUser.setUsername(Constants.GUEST_USER + "_" + MainUtils.genIDByKey(user));
                     }
 
-                    onlineUser.setSessionid(session);
-                    onlineUser.setOptype(MainContext.OptType.CHATBOT.toString());
-                    onlineUser.setUserid(user);
-                    onlineUser.setId(user);
-                    onlineUser.setOrgi(orgi);
-                    onlineUser.setChannel(MainContext.ChannelType.WEBIM.toString());
-                    onlineUser.setIp(ip);
-                    onlineUser.setUpdatetime(now);
-                    onlineUser.setLogintime(now);
-                    onlineUser.setCreatetime(now);
+                    passportWebIMUser.setSessionid(session);
+                    passportWebIMUser.setOptype(MainContext.OptType.CHATBOT.toString());
+                    passportWebIMUser.setUserid(user);
+                    passportWebIMUser.setId(user);
+                    passportWebIMUser.setChannel(MainContext.ChannelType.WEBIM.toString());
+                    passportWebIMUser.setIp(ip);
+                    passportWebIMUser.setUpdatetime(now);
+                    passportWebIMUser.setLogintime(now);
+                    passportWebIMUser.setCreatetime(now);
                     IP ipdata = IPTools.getInstance().findGeography(ip);
-                    onlineUser.setCity(ipdata.getCity());
-                    onlineUser.setCountry(ipdata.getCountry());
-                    onlineUser.setProvince(ipdata.getProvince());
-                    onlineUser.setIsp(ipdata.getIsp());
-                    onlineUser.setRegion(ipdata.getRegion());
-                    onlineUser.setStatus(MainContext.OnlineUserStatusEnum.ONLINE.toString());
+                    passportWebIMUser.setCity(ipdata.getCity());
+                    passportWebIMUser.setCountry(ipdata.getCountry());
+                    passportWebIMUser.setProvince(ipdata.getProvince());
+                    passportWebIMUser.setIsp(ipdata.getIsp());
+                    passportWebIMUser.setRegion(ipdata.getRegion());
+                    passportWebIMUser.setStatus(MainContext.OnlineUserStatusEnum.ONLINE.toString());
                 }
 
                 // 在线客服访客咨询记录
                 AgentUser agentUser = new AgentUser(
-                        onlineUser.getId(),
+                        passportWebIMUser.getId(),
                         MainContext.ChannelType.WEBIM.toString(), // callout
-                        onlineUser.getId(),
-                        onlineUser.getUsername(),
-                        Constants.SYSTEM_ORGI,
+                        passportWebIMUser.getId(),
+                        passportWebIMUser.getUsername(),
                         appid);
 
                 agentUser.setServicetime(now);
                 agentUser.setCreatetime(now);
                 agentUser.setUpdatetime(now);
                 agentUser.setSessionid(session);
-                agentUser.setRegion(onlineUser.getRegion());
+                agentUser.setRegion(passportWebIMUser.getRegion());
 
                 // 聊天机器人处理的请求
                 agentUser.setOpttype(MainContext.OptType.CHATBOT.toString());
                 agentUser.setAgentno(aiid); // 聊天机器人ID
                 agentUser.setAgentname(invite != null ? invite.getAiname() : "机器人客服");
-                agentUser.setCity(onlineUser.getCity());
-                agentUser.setProvince(onlineUser.getProvince());
-                agentUser.setCountry(onlineUser.getCountry());
+                agentUser.setCity(passportWebIMUser.getCity());
+                agentUser.setProvince(passportWebIMUser.getProvince());
+                agentUser.setCountry(passportWebIMUser.getCountry());
                 AgentService agentService = ACDServiceRouter.getAcdChatbotService().processChatbotService(
-                        invite != null ? invite.getAiname() : "机器人客服", agentUser, orgi);
+                        invite != null ? invite.getAiname() : "机器人客服", agentUser);
                 agentUser.setAgentserviceid(agentService.getId());
 
                 // 标记为机器人坐席
@@ -223,7 +215,7 @@ public class ChatbotEventHandler {
 
                 // 保存到MySQL
                 getAgentUserRes().save(agentUser);
-                getOnlineUserRes().save(onlineUser);
+                getOnlineUserRes().save(passportWebIMUser);
             }
         } catch (Exception e) {
             logger.info("[onConnect] error", e);
@@ -234,23 +226,22 @@ public class ChatbotEventHandler {
     @OnDisconnect
     public void onDisconnect(SocketIOClient client) {
         String user = client.getHandshakeData().getSingleUrlParam("userid");
-        String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
         if (StringUtils.isNotBlank(user)) {
             NettyClients.getInstance().removeChatbotEventClient(
                     user, MainUtils.getContextID(client.getSessionId().toString()));
-            OnlineUser onlineUser = MainContext.getCache().findOneOnlineUserByUserIdAndOrgi(user, orgi);
+            PassportWebIMUser passportWebIMUser = MainContext.getCache().findOneOnlineUserByUserId(user);
 
-            MainContext.getCache().findOneAgentUserByUserIdAndOrgi(user, orgi).ifPresent(p -> {
-                ACDServiceRouter.getAcdChatbotService().processChatbotService(null, p, orgi);
+            MainContext.getCache().findOneAgentUserByUserId(user).ifPresent(p -> {
+                ACDServiceRouter.getAcdChatbotService().processChatbotService(null, p);
 
-                MainContext.getCache().deleteAgentUserByUserIdAndOrgi(p, orgi);
-                MainContext.getCache().deleteOnlineUserByIdAndOrgi(user, orgi);
+                MainContext.getCache().deleteAgentUserByUserId(p);
+                MainContext.getCache().deleteOnlineUserById(user);
 
                 p.setStatus(MainContext.AgentUserStatusEnum.END.toString());
-                onlineUser.setStatus(MainContext.OnlineUserStatusEnum.OFFLINE.toString());
+                passportWebIMUser.setStatus(MainContext.OnlineUserStatusEnum.OFFLINE.toString());
 
                 getAgentUserRes().save(p);
-                getOnlineUserRes().save(onlineUser);
+                getOnlineUserRes().save(passportWebIMUser);
             });
         }
         client.disconnect();
@@ -271,25 +262,24 @@ public class ChatbotEventHandler {
     // 消息接收入口，收发消息，用户向机器人发送消息
     @OnEvent(value = "message")
     public void onEvent(SocketIOClient client, AckRequest request, ChatMessage data) {
-        String orgi = client.get("orgi");
         String aiid = client.get("aiid");
         String user = client.get("userid");
         String sessionid = client.get("session");
         String appid = client.get("appid");
         logger.info(
-                "[onEvent]  message: session {}, aiid {}, userid {}, dataType {}, appid {}, orgi {}", sessionid, aiid,
-                user, data.getType(), appid, orgi);
+                "[onEvent]  message: session {}, aiid {}, userid {}, dataType {}, appid {}", sessionid, aiid,
+                user, data.getType(), appid);
 
         // ignore event if dataType is not message.
         if (!StringUtils.equals(data.getType(), Constants.IM_MESSAGE_TYPE_MESSAGE)) {
             return;
         }
 
-        MainContext.getCache().findOneAgentUserByUserIdAndOrgi(user, orgi).ifPresent(p -> {
+        MainContext.getCache().findOneAgentUserByUserId(user).ifPresent(p -> {
             /**
              * 以下代码主要用于检查 访客端的字数限制
              */
-            CousultInvite invite = OnlineUserProxy.consult(data.getAppid(), data.getOrgi());
+            CousultInvite invite = OnlineUserProxy.consult(data.getAppid());
             // ignore event if no invite found.
             if (invite == null) {
                 return;
@@ -316,7 +306,7 @@ public class ChatbotEventHandler {
             data.setUsername(p.getUsername());
             data.setAiid(aiid);
             data.setAgentserviceid(p.getAgentserviceid());
-            data.setChannel(p.getChannel());
+            data.setChannel(p.getChanneltype());
             data.setContextid(p.getAgentserviceid()); // 一定要设置 ContextID
             data.setCalltype(MainContext.CallType.IN.toString());
 
@@ -363,9 +353,9 @@ public class ChatbotEventHandler {
         return chatbotProxy;
     }
 
-    private OnlineUserRepository getOnlineUserRes() {
+    private PassportWebIMUserRepository getOnlineUserRes() {
         if (onlineUserRes == null) {
-            onlineUserRes = MainContext.getContext().getBean(OnlineUserRepository.class);
+            onlineUserRes = MainContext.getContext().getBean(PassportWebIMUserRepository.class);
         }
 
         return onlineUserRes;

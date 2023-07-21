@@ -1,253 +1,243 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.model;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 批次表，导入批次
- * @author iceworld
  *
+ * @author iceworld
  */
 @Entity
 @Table(name = "uk_act_filter_his")
 @org.hibernate.annotations.Proxy(lazy = false)
-public class UKefuCallOutFilter implements Serializable{
+public class UKefuCallOutFilter implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2258870729818431384L;
-	
-	private String id ;
-	
-	private String orgi ;		//租户ID
-	private String organ ;		//创建部门
-	private String creater ;	//创建人
-	
-	private String actid ;		//活动ID
-	private String batid ;		//批次ID
-	private String filterid ;	//筛选表单ID
-	
-	private Date createtime = new Date();	//创建时间
-	
-	private Date updatetime = new Date();
-	
-	private String datastatus;	//数据状态（逻辑删除）
-	private String status ;		//状态		正常，已处理完，已过期
-	
-	private int namenum ;		//批次名单总数
-	
-	private int renum ;		//回收数量
-	private int reorgannum ;		//回收到部门数量
-	
-	private int execnum ;		//执行次数
-	private String exectype ;	//任务类型
-	
-	private int assigned ;		//已分配到坐席
-	private int assignedorgan ;	//已分配到部门
-	private int notassigned;	//未分配
-	private String description ;//备注
-	
-	private String name;		//导入的任务名称 ， 自动生成， 规则为 yyyyMMdd--ORDER
-	
-	private int assignedai;	//已分配到AI
+    /**
+     *
+     */
+    private static final long serialVersionUID = -2258870729818431384L;
 
-	@Id
-	@Column(length = 32)
-	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "uuid")	
-	public String getId() {
-		return id;
-	}
+    private String id;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    private String organ;        //创建部门
+    private String creater;    //创建人
 
-	public String getOrgi() {
-		return orgi;
-	}
+    private String actid;        //活动ID
+    private String batid;        //批次ID
+    private String filterid;    //筛选表单ID
 
-	public void setOrgi(String orgi) {
-		this.orgi = orgi;
-	}
+    private Date createtime = new Date();    //创建时间
 
-	public String getOrgan() {
-		return organ;
-	}
+    private Date updatetime = new Date();
 
-	public void setOrgan(String organ) {
-		this.organ = organ;
-	}
-	public String getCreater() {
-		return creater;
-	}
+    private String datastatus;    //数据状态（逻辑删除）
+    private String status;        //状态		正常，已处理完，已过期
 
-	public void setCreater(String creater) {
-		this.creater = creater;
-	}
+    private int namenum;        //批次名单总数
 
-	public String getActid() {
-		return actid;
-	}
+    private int renum;        //回收数量
+    private int reorgannum;        //回收到部门数量
 
-	public void setActid(String actid) {
-		this.actid = actid;
-	}
+    private int execnum;        //执行次数
+    private String exectype;    //任务类型
 
-	public String getBatid() {
-		return batid;
-	}
+    private int assigned;        //已分配到坐席
+    private int assignedorgan;    //已分配到部门
+    private int notassigned;    //未分配
+    private String description;//备注
 
-	public void setBatid(String batid) {
-		this.batid = batid;
-	}
+    private String name;        //导入的任务名称 ， 自动生成， 规则为 yyyyMMdd--ORDER
 
-	public String getFilterid() {
-		return filterid;
-	}
+    private int assignedai;    //已分配到AI
 
-	public void setFilterid(String filterid) {
-		this.filterid = filterid;
-	}
+    @Id
+    @Column(length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    public String getId() {
+        return id;
+    }
 
-	public Date getCreatetime() {
-		return createtime;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setCreatetime(Date createtime) {
-		this.createtime = createtime;
-	}
+    public String getOrgan() {
+        return organ;
+    }
 
-	public Date getUpdatetime() {
-		return updatetime;
-	}
+    public void setOrgan(String organ) {
+        this.organ = organ;
+    }
 
-	public void setUpdatetime(Date updatetime) {
-		this.updatetime = updatetime;
-	}
+    public String getCreater() {
+        return creater;
+    }
 
-	public String getDatastatus() {
-		return datastatus;
-	}
+    public void setCreater(String creater) {
+        this.creater = creater;
+    }
 
-	public void setDatastatus(String datastatus) {
-		this.datastatus = datastatus;
-	}
+    public String getActid() {
+        return actid;
+    }
 
-	public String getStatus() {
-		return status;
-	}
+    public void setActid(String actid) {
+        this.actid = actid;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public String getBatid() {
+        return batid;
+    }
 
-	public int getNamenum() {
-		return namenum;
-	}
+    public void setBatid(String batid) {
+        this.batid = batid;
+    }
 
-	public void setNamenum(int namenum) {
-		this.namenum = namenum;
-	}
+    public String getFilterid() {
+        return filterid;
+    }
 
-	public int getExecnum() {
-		return execnum;
-	}
+    public void setFilterid(String filterid) {
+        this.filterid = filterid;
+    }
 
-	public void setExecnum(int execnum) {
-		this.execnum = execnum;
-	}
+    public Date getCreatetime() {
+        return createtime;
+    }
 
-	public int getAssigned() {
-		return assigned;
-	}
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
+    }
 
-	public void setAssigned(int assigned) {
-		this.assigned = assigned;
-	}
+    public Date getUpdatetime() {
+        return updatetime;
+    }
 
-	public int getNotassigned() {
-		return notassigned;
-	}
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
+    }
 
-	public void setNotassigned(int notassigned) {
-		this.notassigned = notassigned;
-	}
+    public String getDatastatus() {
+        return datastatus;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public void setDatastatus(String datastatus) {
+        this.datastatus = datastatus;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public int getNamenum() {
+        return namenum;
+    }
 
-	public int getAssignedorgan() {
-		return assignedorgan;
-	}
+    public void setNamenum(int namenum) {
+        this.namenum = namenum;
+    }
 
-	public void setAssignedorgan(int assignedorgan) {
-		this.assignedorgan = assignedorgan;
-	}
+    public int getExecnum() {
+        return execnum;
+    }
 
-	public String getExectype() {
-		return exectype;
-	}
+    public void setExecnum(int execnum) {
+        this.execnum = execnum;
+    }
 
-	public void setExectype(String exectype) {
-		this.exectype = exectype;
-	}
+    public int getAssigned() {
+        return assigned;
+    }
 
-	public int getRenum() {
-		return renum;
-	}
+    public void setAssigned(int assigned) {
+        this.assigned = assigned;
+    }
 
-	public void setRenum(int renum) {
-		this.renum = renum;
-	}
+    public int getNotassigned() {
+        return notassigned;
+    }
 
-	public int getReorgannum() {
-		return reorgannum;
-	}
+    public void setNotassigned(int notassigned) {
+        this.notassigned = notassigned;
+    }
 
-	public void setReorgannum(int reorgannum) {
-		this.reorgannum = reorgannum;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public int getAssignedai() {
-		return assignedai;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setAssignedai(int assignedai) {
-		this.assignedai = assignedai;
-	}
-	
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAssignedorgan() {
+        return assignedorgan;
+    }
+
+    public void setAssignedorgan(int assignedorgan) {
+        this.assignedorgan = assignedorgan;
+    }
+
+    public String getExectype() {
+        return exectype;
+    }
+
+    public void setExectype(String exectype) {
+        this.exectype = exectype;
+    }
+
+    public int getRenum() {
+        return renum;
+    }
+
+    public void setRenum(int renum) {
+        this.renum = renum;
+    }
+
+    public int getReorgannum() {
+        return reorgannum;
+    }
+
+    public void setReorgannum(int reorgannum) {
+        this.reorgannum = reorgannum;
+    }
+
+    public int getAssignedai() {
+        return assignedai;
+    }
+
+    public void setAssignedai(int assignedai) {
+        this.assignedai = assignedai;
+    }
+
 }

@@ -15,6 +15,7 @@ if [ -d ./private/plugins ]; then
     ./private/plugins/scripts/install-all.sh
 fi
 
+cd $baseDir/..
 if [ -d ./public/plugins ]; then
     ./public/plugins/scripts/install-all.sh 
 fi

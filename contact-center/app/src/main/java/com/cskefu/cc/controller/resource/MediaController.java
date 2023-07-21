@@ -1,25 +1,23 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.controller.resource;
 
 import com.alibaba.fastjson.JSONObject;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.controller.Handler;
-import com.cskefu.cc.controller.api.request.RestUtils;
+import com.cskefu.cc.util.restapi.RestUtils;
 import com.cskefu.cc.model.AttachmentFile;
 import com.cskefu.cc.model.StreamingFile;
 import com.cskefu.cc.persistence.blob.JpaBlobHelper;
@@ -41,9 +39,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.util.regex.Pattern;
 import java.io.File;
 import java.io.IOException;
@@ -66,7 +64,7 @@ public class MediaController extends Handler {
     @Autowired
     private JpaBlobHelper jpaBlobHelper;
 
-    private String TEMPLATE_DATA_PATH = "WEB-INF/data/templates/";
+    private final String TEMPLATE_DATA_PATH = "WEB-INF/data/templates/";
 
     @Autowired
     private AttachmentRepository attachementRes;
@@ -77,7 +75,7 @@ public class MediaController extends Handler {
                       @Valid String id,
                       @RequestParam(value = "original", required = false) boolean original,
                       @RequestParam(value = "cooperation", required = false) boolean cooperation) throws IOException, SQLException {
-        StreamingFile sf = streamingFileRes.findOne(id);
+        StreamingFile sf = streamingFileRes.findById(id).orElse(null);
         if (sf != null) {
             response.setHeader("Content-Type", sf.getMime());
             response.setContentType(sf.getMime());
@@ -112,11 +110,10 @@ public class MediaController extends Handler {
                 out.write(data, 0, length);
             }
         }
-
     }
 
     @RequestMapping("/image/upload")
-    @Menu(type = "resouce", subtype = "imageupload", access = false)
+    @Menu(type = "resouce", subtype = "imageupload")
     public ResponseEntity<String> upload(ModelMap map,
                                          HttpServletRequest request,
                                          @RequestParam(value = "imgFile", required = false) MultipartFile multipart) throws IOException {
@@ -147,12 +144,12 @@ public class MediaController extends Handler {
     }
 
     @RequestMapping("/file")
-    @Menu(type = "resouce", subtype = "file", access = false)
+    @Menu(type = "resouce", subtype = "file")
     public void file(HttpServletResponse response, HttpServletRequest request, @Valid String id) throws IOException, SQLException {
         if (StringUtils.isNotBlank(id)) {
-            AttachmentFile attachmentFile = attachementRes.findByIdAndOrgi(id, super.getOrgi(request));
+            AttachmentFile attachmentFile = attachementRes.findById(id).orElse(null);
             if (attachmentFile != null && attachmentFile.getFileid() != null) {
-                StreamingFile sf = streamingFileRes.findOne(attachmentFile.getFileid());
+                StreamingFile sf = streamingFileRes.findById(attachmentFile.getFileid()).orElse(null);
                 if (sf != null) {
                     response.setContentType(attachmentFile.getFiletype());
                     response.setHeader("Content-Disposition", "attachment;filename=" + java.net.URLEncoder.encode(attachmentFile.getTitle(), "UTF-8"));
@@ -167,7 +164,7 @@ public class MediaController extends Handler {
     }
 
     @RequestMapping("/template")
-    @Menu(type = "resouce", subtype = "template", access = false)
+    @Menu(type = "resouce", subtype = "template")
     public void template(HttpServletResponse response, HttpServletRequest request, @Valid String filename) throws IOException {
         if (StringUtils.isNotBlank(filename)) {
             InputStream is = MediaController.class.getClassLoader().getResourceAsStream(TEMPLATE_DATA_PATH + filename);

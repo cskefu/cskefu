@@ -1,18 +1,16 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.util.bi;
 
@@ -330,59 +328,59 @@ public class UKExcelUtil{
 				
 				cell2.setCellStyle(firstStyle); 
 				//weidu
-				for(int c = 0;c<rowlst.size();c++){
-					int rowspan = 0 ;
-					Cell cell3 = row2.createCell(cellNum);
-					List<Level> leveList = rowlst.get(c) ;
-					Level currentLevel = null ;
-					for(Level level : leveList){
-						if(rowspan == r){
-							currentLevel = level ;
-							break ;
-						}
-						rowspan = rowspan + (level.getRowspan()>0 ? level.getRowspan() : 1 );
-						
-					}
-					if(currentLevel!=null){
-						String value = String.valueOf(currentLevel.getName());
-						if(!"".equals(value)){
-							if(value.indexOf("%") >-1){
-								value = value.replace("%","");
-								if(checkIsNumber(String.valueOf(value)) ){
-									cell3.setCellValue(Double.parseDouble(value) /100);
-									datastyle.setDataFormat(wb.createDataFormat().getFormat("0.00%") );
-									cell3.setCellStyle(datastyle);
-								}else{
+                for (List<Level> levels : rowlst) {
+                    int rowspan = 0;
+                    Cell cell3 = row2.createCell(cellNum);
+                    List<Level> leveList = levels;
+                    Level currentLevel = null;
+                    for (Level level : leveList) {
+                        if (rowspan == r) {
+                            currentLevel = level;
+                            break;
+                        }
+                        rowspan = rowspan + (level.getRowspan() > 0 ? level.getRowspan() : 1);
+
+                    }
+                    if (currentLevel != null) {
+                        String value = String.valueOf(currentLevel.getName());
+                        if (!"".equals(value)) {
+                            if (value.contains("%")) {
+                                value = value.replace("%", "");
+                                if (checkIsNumber(String.valueOf(value))) {
+                                    cell3.setCellValue(Double.parseDouble(value) / 100);
+                                    datastyle.setDataFormat(wb.createDataFormat().getFormat("0.00%"));
+                                    cell3.setCellStyle(datastyle);
+                                } else {
 //										style.setDataFormat(wb.createDataFormat().getFormat(""));
-									cell3.setCellValue("");
-									cell3.setCellStyle(style);
-								}
-								
-							}else{
-								if(checkIsNumber(String.valueOf(value)) ){
-									cell3.setCellValue(Double.parseDouble(String.valueOf(value)));
-									cell3.setCellStyle(style);
-								}else{
-									cell3.setCellValue(String.valueOf(value));
-									cell3.setCellStyle(style);
-								}
-							}
-							
-						}else{
-							cell3.setCellValue("");
-							cell3.setCellStyle(style);
-						}
-						if(currentLevel!=null && currentLevel.getRowspan()>1){
-							sbRol.append(rowNum).append(",").append(cellNum).append(",").append(currentLevel.getRowspan()).append(";");//开始行；开始列；合并行数
-						}else if(currentLevel!=null && currentLevel.getColspan()>1){
-							sbCol.append(rowNum).append(",").append(cellNum).append(",").append(currentLevel.getColspan()).append(";");//开始行；开始列；合并列数
-						}
-					}else{
-						cell3.setCellValue("");
-						cell3.setCellStyle(style);
-					}
-					cellNum++;
-				}
+                                    cell3.setCellValue("");
+                                    cell3.setCellStyle(style);
+                                }
+
+                            } else {
+                                if (checkIsNumber(String.valueOf(value))) {
+                                    cell3.setCellValue(Double.parseDouble(String.valueOf(value)));
+                                    cell3.setCellStyle(style);
+                                } else {
+                                    cell3.setCellValue(String.valueOf(value));
+                                    cell3.setCellStyle(style);
+                                }
+                            }
+
+                        } else {
+                            cell3.setCellValue("");
+                            cell3.setCellStyle(style);
+                        }
+                        if (currentLevel != null && currentLevel.getRowspan() > 1) {
+                            sbRol.append(rowNum).append(",").append(cellNum).append(",").append(currentLevel.getRowspan()).append(";");//开始行；开始列；合并行数
+                        } else if (currentLevel != null && currentLevel.getColspan() > 1) {
+                            sbCol.append(rowNum).append(",").append(cellNum).append(",").append(currentLevel.getColspan()).append(";");//开始行；开始列；合并列数
+                        }
+                    } else {
+                        cell3.setCellValue("");
+                        cell3.setCellStyle(style);
+                    }
+                    cellNum++;
+                }
 				//zhibiao
 				for(int j = 0;j<dataList.get(r).size();j++){
 					Cell cell3 = row2.createCell(cellNum); 
@@ -393,7 +391,7 @@ public class UKExcelUtil{
 						sbDataCol.append(rowNum).append(",").append(cellNum).append(",").append(dataList.get(r).get(j).getColspan()).append(";");//开始行；开始列；合并列数
 					}
 					if(!"".equals(value)){
-						if(value.indexOf("%") >-1){
+						if(value.contains("%")){
 							value = value.replace("%","");
 							if(checkIsNumber(String.valueOf(value)) ){
 								cell3.setCellValue(Double.parseDouble(value) /100);

@@ -1,11 +1,24 @@
-var title = "春松客服-多渠道智能客服" ;
+/*!
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * Copyright (C) 2018-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>
+ * Licensed under the Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+var title = "春松客服-开源客服系统" ;
 var socket  , newuser = [] , newmessage = [] , ring = [];
 newuser['mp3'] = '/images/new.mp3'; 
 newmessage['mp3'] = '/images/message.mp3';
 ring['mp3'] = '/images/ring.mp3';
 $(document).ready(function(){
     var protocol = window.location.protocol.replace(/:/g,'');
-    socket = io(protocol+'://'+hostname+':'+port+'/im/agent?orgi='+orgi+"&userid="+userid+"&session="+session+"&admin="+adminuser , {transports: ['websocket'], upgrade: false});
+    socket = io(protocol+'://'+hostname+':'+port+"/im/agent?userid="+userid+"&session="+session+"&admin="+adminuser , {transports: ['websocket'], upgrade: false});
     socket.on('connect',function() {
 		console.log("[IM] 连接初始化成功");
 		//请求服务端记录 当前用户在线事件
@@ -44,12 +57,10 @@ $(document).ready(function(){
 			WebIM.audioplayer('audioplane', newuser, false); // 播放
 		}
 	}).on('status', function(data) {
-		if(orgi == data.orgi){
-			$.post('/lazyAgentStatus').success(function(html){
-				$('#agents_status').html(html);
-			});
-			// $('#agents_status').html("服务中的人数："+data.users+"人，当前排队人数："+data.inquene+"人，在线坐席数："+data.agents+"人，坐席忙："+data.busy+"人");
-		}
+		$.post('/lazyAgentStatus').success(function(html){
+			$('#agents_status').html(html);
+		});
+		// $('#agents_status').html("服务中的人数："+data.users+"人，当前排队人数："+data.inquene+"人，在线坐席数："+data.agents+"人，坐席忙："+data.busy+"人");
 	}).on('message', function(data) {
 		if($('#multiMediaDialogWin').length > 0 && multiMediaDialogWin != null && multiMediaDialogWin.$ && multiMediaDialogWin.$('#agentusers').length > 0){
 			multiMediaDialogWin.Proxy.newAgentUserMessage(data,"agent");
@@ -87,7 +98,6 @@ $(document).ready(function(){
 		}
 	}).on('audit_new', function(data){
 		// 会话监控：新建
-		console.log();
 		if(skills.indexOf(data.skill)>-1 && $('#customerChatAudit').length > 0 && customerChatAudit != null && customerChatAudit.$){
 			customerChatAudit.Proxy.newAgentUserService(data,"cca");
 			if(data.type == 'message'){
@@ -102,6 +112,7 @@ $(document).ready(function(){
 			}
 		}
 	}).on('end', function(data) {
+		console.warn(111111, data)
     	if($('#multiMediaDialogWin').length > 0){
     		if(multiMediaDialogWin.document.getElementById('agentusers') != null){
     			multiMediaDialogWin.Proxy.endAgentUserService(data);
@@ -124,17 +135,16 @@ $(document).ready(function(){
 });
 
 var WebIM = {
-	sendMessage:function(message , userid , appid , session , orgi , touser , agentstatus, agentuserid){
-		WebIM.sendTypeMessage(message, userid, appid, session, orgi, touser, agentstatus, null , null,agentuserid) ;
+	sendMessage:function(message , userid , appid , session , touser , agentstatus, agentuserid){
+		WebIM.sendTypeMessage(message, userid, appid, session, touser, agentstatus, null , null,agentuserid) ;
 	},
-	sendTypeMessage:function(message , userid , appid , session , orgi , touser , agentstatus , msgtype , attachmentid,agentuserid){
+	sendTypeMessage:function(message , userid , appid , session , touser , agentstatus , msgtype , attachmentid,agentuserid){
 		socket.emit('message', {
 			appid : appid ,
 			userid:userid,
 			sign:session,
 			touser:touser,
 			session: session,
-			orgi:orgi,
 			username:agentstatus,
 			nickname:agentstatus,
 			message : message,

@@ -1,17 +1,15 @@
-/*
- * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>, 
+ * Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.cache;
 
@@ -22,7 +20,7 @@ import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -62,12 +60,10 @@ public class RedisCommand {
      *
      * @param key
      * @param serialized
-     * @return
      */
-    public boolean put(final String key, final String serialized) {
+    public void put(final String key, final String serialized) {
         boolean result = true;
         redisValOps.set(key, serialized);
-        return result;
     }
 
     public String get(final String key) {
@@ -270,15 +266,12 @@ public class RedisCommand {
      *
      * @param key 键
      * @param map 对应多个键值
-     * @return true 成功 false 失败
      */
-    public boolean hmset(final String key, final Map<String, String> map) {
+    public void hmset(final String key, final Map<String, String> map) {
         try {
             redisHashOps.putAll(key, map);
-            return true;
         } catch (Exception e) {
             logger.error("hmset bad things happen", e);
-            return false;
         }
     }
 

@@ -1,17 +1,15 @@
-/*
- * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>, 
+ * Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.basic;
 
@@ -29,7 +27,6 @@ public class Constants {
     /**
      * 系统配置
      */
-    public static final String SYSTEM_ORGI = "cskefu";
     public static final String USER_SESSION_NAME = "user";
     public static final String ORGAN_SESSION_NAME = "organ";
     public static final String GUEST_USER = "guest";
@@ -208,11 +205,16 @@ public class Constants {
     /**
      * 聊天机器人
      */
-    public static final HashSet<String> CHATBOT_VALID_LANGS = new HashSet<String>(Arrays.asList("zh_CN", "en_US"));
+    public static final HashSet<String> CHATBOT_VALID_LANGS = new HashSet<>(Arrays.asList("zh_CN", "en_US"));
     public static final String CHATBOT_CHATBOT_FIRST = "机器人客服优先";
     public static final String CHATBOT_HUMAN_FIRST = "人工客服优先";
     public static final String CHATBOT_CHATBOT_ONLY = "仅机器人客服";
-    public static final HashSet<String> CHATBOT_VALID_WORKMODELS = new HashSet<String>(Arrays.asList(CHATBOT_CHATBOT_FIRST, CHATBOT_HUMAN_FIRST, CHATBOT_CHATBOT_ONLY));
+    public static final HashSet<String> CHATBOT_VALID_WORKMODELS = new HashSet<>(Arrays.asList(CHATBOT_CHATBOT_FIRST, CHATBOT_HUMAN_FIRST, CHATBOT_CHATBOT_ONLY));
 
+    /**
+     * AUTH
+     */
+    public static final String AUTH_TOKEN_TYPE_BEARER = "Bearer";
+    public static final String AUTH_TOKEN_TYPE_BASIC = "Basic";
 
 }

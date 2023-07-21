@@ -1,15 +1,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cskefu.cc</groupId>
     <artifactId>contact-center</artifactId>
     <packaging>war</packaging>
     <name>cc-core</name>
-    <description>春松客服：上线开源客服系统</description>
+    <description>春松客服：开源客服系统</description>
+    <licenses>
+        <license>
+            <name>Chunsong Public License, version 1.0</name>
+            <url>https://docs.cskefu.com/licenses/v1.html</url>
+            <comments>
+                Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+            </comments>
+        </license>
+    </licenses>
     <parent>
         <groupId>com.cskefu.cc</groupId>
         <artifactId>cc-root</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
+        <version>8.0.0-SNAPSHOT</version>
         <!-- for Chatopera Nexus reference if file is available with latest version -->
         <!-- <relativePath/> -->
         <!-- for local reference if file is available with latest version -->
@@ -18,21 +28,6 @@
     <build>
         <finalName>contact-center</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
@@ -73,28 +68,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <fork>true</fork>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>springloaded</artifactId>
-                        <version>1.2.8.RELEASE</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
@@ -110,7 +83,29 @@
                         </resource>
                     </webResources>
                 </configuration>
-                <version>2.1.1</version>
+                <version>3.3.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>springloaded</artifactId>
+                        <version>1.2.8.RELEASE</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
             </plugin>
         </plugins>
         <defaultGoal>compile</defaultGoal>
@@ -132,7 +127,7 @@
         <developer>
             <id>hain</id>
             <name>Hai Liang Wang</name>
-            <email>h@cskefu.com</email>
+            <email>hai@chatopera.com</email>
             <url>https://github.com/hailiang-wang</url>
             <organization>Chatopera Inc.</organization>
             <organizationUrl>https://www.chatopera.com</organizationUrl>

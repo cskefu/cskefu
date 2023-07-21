@@ -1,18 +1,16 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.model;
 
@@ -20,7 +18,7 @@ import com.cskefu.cc.acd.ACDServiceRouter;
 import com.cskefu.cc.basic.MainContext;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -38,7 +36,6 @@ public class AgentStatus implements java.io.Serializable, Comparable<AgentStatus
     private String agentno;                // 坐席号码
     private Date logindate;                // 登陆时间
     private String status = MainContext.AgentStatusEnum.NOTREADY.toString();        //坐席状态
-    private String orgi;                   // 租户ID
     private String agentserviceid;         // 会话ID
     private int serusernum = 10;           // 最大服务用户数量
 
@@ -100,14 +97,6 @@ public class AgentStatus implements java.io.Serializable, Comparable<AgentStatus
         this.status = status;
     }
 
-    public String getOrgi() {
-        return orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
-    }
-
     public String getAgentserviceid() {
         return agentserviceid;
     }
@@ -165,7 +154,7 @@ public class AgentStatus implements java.io.Serializable, Comparable<AgentStatus
     @Transient
     public int getMaxusers() {
         int allMaxuser = this.skills.keySet().stream().mapToInt(k -> {
-            SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(k, this.orgi);
+            SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(k);
             return sessionConfig != null ? sessionConfig.getMaxuser() : 0;
         }).sum();
 
@@ -184,7 +173,7 @@ public class AgentStatus implements java.io.Serializable, Comparable<AgentStatus
     @Transient
     public int getInitmaxusers() {
         int allInitmaxuser = this.skills.keySet().stream().mapToInt(k -> {
-            SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(k, this.orgi);
+            SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(k);
             return sessionConfig != null ? sessionConfig.getInitmaxuser() : 0;
         }).sum();
         return allInitmaxuser > 0 ? allInitmaxuser : getMaxusers();
@@ -230,8 +219,7 @@ public class AgentStatus implements java.io.Serializable, Comparable<AgentStatus
     public int compareTo(AgentStatus o) {
         int retValue = 0;
         // TODO sessionConfig 组织机构
-//        SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig(
-//                this.orgi);
+//        SessionConfig sessionConfig = ACDServiceRouter.getAcdPolicyService().initSessionConfig();
 //        if (sessionConfig != null && !StringUtils.isBlank(
 //                sessionConfig.getDistribution()) && sessionConfig.getDistribution().equals("0")) {
 //            if (this.getUpdatetime() != null && o.getUpdatetime() != null) {

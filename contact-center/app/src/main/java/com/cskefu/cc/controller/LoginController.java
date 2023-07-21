@@ -1,18 +1,16 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.controller;
 
@@ -20,7 +18,7 @@ import com.cskefu.cc.acd.ACDWorkMonitor;
 import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.basic.MainUtils;
-import com.cskefu.cc.basic.auth.AuthToken;
+import com.cskefu.cc.basic.auth.BearerTokenMgr;
 import com.cskefu.cc.model.AgentStatus;
 import com.cskefu.cc.model.Organ;
 import com.cskefu.cc.model.SystemConfig;
@@ -30,9 +28,10 @@ import com.cskefu.cc.persistence.repository.UserRepository;
 import com.cskefu.cc.persistence.repository.UserRoleRepository;
 import com.cskefu.cc.proxy.AgentProxy;
 import com.cskefu.cc.proxy.AgentSessionProxy;
+import com.cskefu.cc.proxy.OrganProxy;
 import com.cskefu.cc.proxy.UserProxy;
 import com.cskefu.cc.util.Menu;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +44,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -69,7 +68,7 @@ public class LoginController extends Handler {
     private UserRoleRepository userRoleRes;
 
     @Autowired
-    private AuthToken authToken;
+    private BearerTokenMgr bearerTokenMgr;
 
     @Autowired
     private AgentProxy agentProxy;
@@ -119,7 +118,7 @@ public class LoginController extends Handler {
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     @Menu(type = "apps", subtype = "user", access = true)
     public ModelAndView login(HttpServletRequest request, HttpServletResponse response,
-            @RequestHeader(value = "referer", required = false) String referer, @Valid String msg) {
+                              @RequestHeader(value = "referer", required = false) String referer, @Valid String msg) {
         ModelAndView view = new ModelAndView("redirect:/");
         if (request.getSession(true).getAttribute(Constants.USER_SESSION_NAME) == null) {
             view = new ModelAndView("/login");
@@ -139,7 +138,7 @@ public class LoginController extends Handler {
                             try {
                                 flagid = MainUtils.decryption(cookie.getValue());
                                 if (StringUtils.isNotBlank(flagid)) {
-                                    User user = userRepository.findById(flagid);
+                                    User user = userRepository.findById(flagid).orElse(null);
                                     if (user != null) {
                                         view = this.processLogin(request, user, referer);
                                     }
@@ -160,9 +159,9 @@ public class LoginController extends Handler {
             view.addObject("msg", msg);
         }
         SystemConfig systemConfig = MainUtils.getSystemConfig();
-        if (systemConfig != null && systemConfig.isEnableregorgi()) {
-            view.addObject("show", true);
-        }
+
+        // is Enable reg tenant
+//        view.addObject("show", false);
         if (systemConfig != null) {
             view.addObject("systemConfig", systemConfig);
         }
@@ -213,11 +212,11 @@ public class LoginController extends Handler {
                     }
 
                     // add authorization code for rest api
-                    final String orgi = loginUser.getOrgi();
-                    String auth = MainUtils.getUUID();
-                    authToken.putUserByAuth(auth, loginUser);
+                    String uuid = MainUtils.getUUID();
+                    String token = String.format("%s %s", Constants.AUTH_TOKEN_TYPE_BEARER, uuid);
+                    bearerTokenMgr.update(token, loginUser);
                     userRepository.save(loginUser); // 更新登录状态到数据库
-                    response.addCookie((new Cookie("authorization", auth)));
+                    response.addCookie((new Cookie("authorization", uuid)));
 
                     // 该登录用户是坐席，并且具有坐席对话的角色
                     if ((loginUser.isAgent() &&
@@ -229,8 +228,8 @@ public class LoginController extends Handler {
                              * 登录成功，设置该坐席为就绪状态（默认）
                              ****************************************/
                             // https://gitlab.chatopera.com/chatopera/cosinee.w4l/issues/306
-                            final AgentStatus agentStatus = agentProxy.resolveAgentStatusByAgentnoAndOrgi(
-                                    loginUser.getId(), orgi, loginUser.getSkills());
+                            final AgentStatus agentStatus = agentProxy.resolveAgentStatusByAgentno(
+                                    loginUser.getId(), loginUser.getSkills());
                             agentStatus.setBusy(false);
                             agentProxy.ready(loginUser, agentStatus, false);
 
@@ -243,7 +242,7 @@ public class LoginController extends Handler {
                                     MainContext.AgentStatusEnum.OFFLINE.toString(),
                                     MainContext.AgentStatusEnum.READY.toString(),
                                     MainContext.AgentWorkType.MEIDIACHAT.toString(),
-                                    orgi, null);
+                                    null);
 
                         } catch (Exception e) {
                             logger.error("[login] set agent status", e);
@@ -262,9 +261,9 @@ public class LoginController extends Handler {
             }
         }
         SystemConfig systemConfig = MainUtils.getSystemConfig();
-        if (systemConfig != null && systemConfig.isEnableregorgi()) {
-            view.addObject("show", true);
-        }
+        // is Enable reg tenant
+//        view.addObject("show", false);
+
         if (systemConfig != null) {
             view.addObject("systemConfig", systemConfig);
         }
@@ -287,7 +286,7 @@ public class LoginController extends Handler {
             loginUser.setLogin(true);
             // 更新redis session信息，用以支持sso
             agentSessionProxy.updateUserSession(
-                    loginUser.getId(), MainUtils.getContextID(request.getSession().getId()), loginUser.getOrgi());
+                    loginUser.getId(), MainUtils.getContextID(request.getSession().getId()));
             loginUser.setSessionid(MainUtils.getContextID(request.getSession().getId()));
 
             if (StringUtils.isNotBlank(referer)) {
@@ -302,17 +301,19 @@ public class LoginController extends Handler {
                     && !loginUser.isAdmin()) {
                 view = new ModelAndView("redirect:/apps/tenant/index");
             }
-            List<UserRole> userRoleList = userRoleRes.findByOrgiAndUser(loginUser.getOrgi(), loginUser);
+            List<UserRole> userRoleList = userRoleRes.findByUser(loginUser);
             if (userRoleList != null && userRoleList.size() > 0) {
                 for (UserRole userRole : userRoleList) {
                     loginUser.getRoleList().add(userRole.getRole());
                 }
             }
 
-            // 获取用户部门以及下级部门
+            // 获取用户所在部门及附属部门的信息
             userProxy.attachOrgansPropertiesForUser(loginUser);
 
+
             Organ currentOrgan = super.getOrgan(request);
+            userProxy.attachCurrentOrgansPropertiesForUser(loginUser, currentOrgan);
 
             // 添加角色信息
             userProxy.attachRolesMap(loginUser, currentOrgan);
@@ -338,7 +339,7 @@ public class LoginController extends Handler {
      */
     @RequestMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response,
-            @RequestParam(value = "code", required = false) String code) throws UnsupportedEncodingException {
+                         @RequestParam(value = "code", required = false) String code) throws UnsupportedEncodingException {
         final User user = super.getUser(request);
         request.getSession().removeAttribute(Constants.USER_SESSION_NAME);
         request.getSession().invalidate();
@@ -388,7 +389,6 @@ public class LoginController extends Handler {
             if (StringUtils.isNotBlank(user.getPassword())) {
                 user.setPassword(MainUtils.md5(user.getPassword()));
             }
-            user.setOrgi(super.getOrgi());
             userRepository.save(user);
         }
         ModelAndView view = this.processLogin(request, user, "");

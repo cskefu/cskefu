@@ -1,18 +1,16 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.model;
 
@@ -20,7 +18,7 @@ import com.cskefu.cc.basic.MainUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Proxy;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -35,7 +33,7 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
     private String username;
 
     private String userid;
-    private String channel;
+    private String channeltype;
     private Date logindate;
     private String source;
     private Date endtime;
@@ -66,7 +64,6 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
     private String sessiontype;
     private String contextid = MainUtils.getUUID();
     private String agentserviceid;
-    private String orgi;
     private long ordertime = System.currentTimeMillis();
     private String snsuser;
     private Date lastmessage = new Date();
@@ -90,7 +87,6 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
     private String email;
     private String phone;
     private String resion;
-
 
 
     private boolean chatbotops;    // 是否是机器人客服
@@ -132,14 +128,13 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
     public AgentUser() {
     }
 
-    public AgentUser(String userid, String channel, String snsuser,
-                     String username, String orgi, String appid) {
+    public AgentUser(String userid, String channeltype, String snsuser,
+                     String username, String appid) {
         this.userid = userid;
-        this.channel = channel;
+        this.channeltype = channeltype;
         this.snsuser = snsuser;
         this.appid = appid;
         this.username = username;
-        this.orgi = orgi;
     }
 
     @Id
@@ -186,12 +181,12 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
         this.userid = userid;
     }
 
-    public String getChannel() {
-        return this.channel;
+    public String getChanneltype() {
+        return this.channeltype;
     }
 
-    public void setChannel(String channel) {
-        this.channel = channel;
+    public void setChanneltype(String channel) {
+        this.channeltype = channel;
     }
 
     public Date getLogindate() {
@@ -224,14 +219,6 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
 
     public void setAgentserviceid(String agentserviceid) {
         this.agentserviceid = agentserviceid;
-    }
-
-    public String getOrgi() {
-        return this.orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
     }
 
     public Date getLastmessage() {
@@ -449,7 +436,7 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
 
     @Transient
     public String getTopic() {
-        return "/" + this.orgi + "/" + this.agentno;
+        return "/" + this.agentno;
     }
 
     @Transient

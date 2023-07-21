@@ -1,16 +1,14 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
-//- 
-//- Licensed under the Apache License, Version 2.0 (the "License");
-//- you may not use this file except in compliance with the License.
-//- You may obtain a copy of the License at
-//- 
-//-  http://www.apache.org/licenses/LICENSE-2.0
-//- 
-//-  Unless required by applicable law or agreed to in writing, software
+//- Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+//- <https://www.chatopera.com>, Licensed under the Chunsong Public 
+//- License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+//- Unless required by applicable law or agreed to in writing, software
 //- distributed under the License is distributed on an "AS IS" BASIS,
-//-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //- See the License for the specific language governing permissions and
 //- limitations under the License.
+//- Copyright (C) 2018-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>
+//- Licensed under the Apache License, Version 2.0
+//- http://www.apache.org/licenses/LICENSE-2.0
 extends /apps/include/layout.pug
 
 include /mixins/client.mixin.pug
@@ -94,28 +92,28 @@ block content
                                             i.layui-icon 
                                             div(style="") 还没有客户信息
                             else
-                                for entCustomer in entCustomerList.content
+                                for account in entCustomerList.content
                                     .tdHasContorllor.design-dropable-td
                                         tr.tdHasContorllor.design-dropable-td
                                             td(style="width:1%;")
-                                                input.ids(type="checkbox", name="ids", value=entCustomer.id)
-                                            td.first_td_head(style="width: 90px")= entCustomer.name
-                                            td= uKeFuDic[entCustomer.ekind].name
-                                            td= uKeFuDic[entCustomer.city].name != '市辖区' && uKeFuDic[entCustomer.city].name != "县" ? uKeFuDic[entCustomer.city].name : uKeFuDic[entCustomer.province].name
-                                            td= uKeFuDic[entCustomer.validstatus].name
-                                            td= uKeFuDic[entCustomer.industry].name
-                                            td= uKeFuDic[entCustomer.maturity].name
+                                                input.ids(type="checkbox", name="ids", value=account.id)
+                                            td.first_td_head(style="width: 90px")= account.name
+                                            td= uKeFuDic[account.ekind].name
+                                            td= uKeFuDic[account.city].name != '市辖区' && uKeFuDic[account.city].name != "县" ? uKeFuDic[account.city].name : uKeFuDic[account.province].name
+                                            td= uKeFuDic[account.validstatus].name
+                                            td= uKeFuDic[account.industry].name
+                                            td= uKeFuDic[account.maturity].name
                                             td
-                                                if entCustomer.touchtime
-                                                    | #{pugHelper.formatDate('yyyy-MM-dd', entCustomer.touchtime)}
+                                                if account.touchtime
+                                                    | #{pugHelper.formatDate('yyyy-MM-dd', account.touchtime)}
                                             td
-                                                if entCustomer.user
-                                                    | #{entCustomer.user.username}
+                                                if account.user
+                                                    | #{account.user.username}
                                             td(style="white-space:nowrap;width:1%;", nowrap="nowrap")
-                                                a(href="/apps/customer/edit.html?id=" + entCustomer.id + "&ekind=" + ekind, data-toggle="ajax", data-width="950", data-height="600", data-title="编辑用户信息")
+                                                a(href="/apps/customer/edit.html?id=" + account.id + "&ekind=" + ekind, data-toggle="ajax", data-width="950", data-height="600", data-title="编辑用户信息")
                                                     i.layui-icon 
                                                     |                         编辑
-                                                a(href="/apps/customer/delete.html?id=" + entCustomer.id + "&ekind=" + ekind, style="margin-left:10px;", data-toggle="tip", data-title="请确认是否删除记录？")
+                                                a(href="/apps/customer/delete.html?id=" + account.id + "&ekind=" + ekind, style="margin-left:10px;", data-toggle="tip", data-title="请确认是否删除记录？")
                                                     i.layui-icon(style="color:red;") ဆ
                                                     |                     删除
 

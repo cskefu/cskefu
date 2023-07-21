@@ -1,3 +1,13 @@
+/*
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.cskefu.cc.plugins.messenger;
 
 import com.chatopera.bot.exception.ChatbotException;
@@ -34,7 +44,7 @@ public class MessengerChatbot {
     private ChatMessageRepository chatMessageRes;
 
     @Autowired
-    private SNSAccountRepository snsAccountRes;
+    private ChannelRepository snsAccountRes;
 
     @Autowired
     private AgentServiceRepository agentServiceRes;
@@ -43,46 +53,44 @@ public class MessengerChatbot {
     private MessengerMessageProxy messengerMessageProxy;
 
     @Autowired
-    private OnlineUserRepository onlineUserRes;
+    private PassportWebIMUserRepository onlineUserRes;
 
-    public boolean receiveMessage(String chatbotId, String fromId, String snsID, OnlineUser onlineUser, MainContext.MediaType msgType, String msg) throws ChatbotException, MalformedURLException {
+    public boolean receiveMessage(String chatbotId, String fromId, String snsID, PassportWebIMUser passportWebIMUser, MainContext.MediaType msgType, String msg) throws ChatbotException, MalformedURLException {
         logger.info("[receiveMessage]  message: chatbotId {},fromId {},toId {},msg {} ", chatbotId, fromId, snsID, msg);
         // 在线客服访客咨询记录
         Date now = new Date();
-        Optional<SNSAccount> optionalSNSAccount = snsAccountRes.findBySnsid(snsID);
-        SNSAccount snsAccount = optionalSNSAccount.get();
-        CousultInvite invite = OnlineUserProxy.consult(onlineUser.getAppid(), Constants.SYSTEM_ORGI);
-        AgentUser agentUser = agentUserRes.findOneByUseridAndStatusNotAndChannelAndOrgi(fromId, MainContext.AgentUserStatusEnum.END.toString(), MainContext.ChannelType.MESSENGER.toString(), Constants.SYSTEM_ORGI).orElseGet(() -> {
+        Optional<Channel> snsAccountOpt = snsAccountRes.findBySnsid(snsID);
+        Channel channel = snsAccountOpt.get();
+        CousultInvite invite = OnlineUserProxy.consult(passportWebIMUser.getAppid());
+        AgentUser agentUser = agentUserRes.findOneByUseridAndStatusNotAndChanneltype(fromId, MainContext.AgentUserStatusEnum.END.toString(), MainContext.ChannelType.MESSENGER.toString()).orElseGet(() -> {
             AgentUser au = new AgentUser(
-                    onlineUser.getUserid(),
+                    passportWebIMUser.getUserid(),
                     MainContext.ChannelType.MESSENGER.toString(),
-                    onlineUser.getId(),
-                    onlineUser.getUsername(),
-                    Constants.SYSTEM_ORGI,
-                    onlineUser.getAppid());
+                    passportWebIMUser.getId(),
+                    passportWebIMUser.getUsername(),
+                    passportWebIMUser.getAppid());
 
             au.setServicetime(now);
             au.setCreatetime(now);
             au.setUpdatetime(now);
             au.setLogindate(now);
-            au.setSessionid(onlineUser.getSessionid());
-            au.setRegion(onlineUser.getRegion());
-            au.setUsername(onlineUser.getUsername());
-            au.setSkill(snsAccount.getOrgan());
-            au.setAppid(snsAccount.getSnsid());
-            au.setOrgi(Constants.SYSTEM_ORGI);
-            au.setNickname(onlineUser.getUsername());
+            au.setSessionid(passportWebIMUser.getSessionid());
+            au.setRegion(passportWebIMUser.getRegion());
+            au.setUsername(passportWebIMUser.getUsername());
+            au.setSkill(channel.getOrgan());
+            au.setAppid(channel.getSnsid());
+            au.setNickname(passportWebIMUser.getUsername());
             au.setStatus(MainContext.AgentUserStatusEnum.INSERVICE.toString());
 
             // 聊天机器人处理的请求
             au.setOpttype(MainContext.OptType.CHATBOT.toString());
             au.setAgentno(chatbotId); // 聊天机器人ID
             au.setAgentname(invite != null ? invite.getAiname() : "机器人客服");
-            au.setCity(onlineUser.getCity());
-            au.setProvince(onlineUser.getProvince());
-            au.setCountry(onlineUser.getCountry());
+            au.setCity(passportWebIMUser.getCity());
+            au.setProvince(passportWebIMUser.getProvince());
+            au.setCountry(passportWebIMUser.getCountry());
             AgentService agentService = ACDServiceRouter.getAcdChatbotService().processChatbotService(
-                    invite != null ? invite.getAiname() : "机器人客服", au, Constants.SYSTEM_ORGI);
+                    invite != null ? invite.getAiname() : "机器人客服", au);
             au.setAgentserviceid(agentService.getId());
             // 标记为机器人坐席
             au.setChatbotops(true);
@@ -103,8 +111,7 @@ public class MessengerChatbot {
             data.setUsername(agentUser.getUsername());
             data.setAiid(chatbotId);
             data.setAgentserviceid(agentUser.getAgentserviceid());
-            data.setChannel(agentUser.getChannel());
-            data.setOrgi(Constants.SYSTEM_ORGI);
+            data.setChannel(agentUser.getChanneltype());
             data.setContextid(agentUser.getAgentserviceid()); // 一定要设置 ContextID
             data.setCalltype(MainContext.CallType.IN.toString());
             data.setMsgtype(msgType.toString());
@@ -123,10 +130,10 @@ public class MessengerChatbot {
     }
 
     public void switchManualCustomerService(String fromId) {
-        agentUserRes.findOneByUseridAndStatusNotAndChannelAndOrgi(fromId, MainContext.AgentUserStatusEnum.END.toString(), MainContext.ChannelType.MESSENGER.toString(), Constants.SYSTEM_ORGI).ifPresent(agentUser -> {
+        agentUserRes.findOneByUseridAndStatusNotAndChanneltype(fromId, MainContext.AgentUserStatusEnum.END.toString(), MainContext.ChannelType.MESSENGER.toString()).ifPresent(agentUser -> {
             if (agentUser.isChatbotops()) {
                 Date now = new Date();
-                AgentService agentService = agentServiceRes.findOne(agentUser.getAgentserviceid());
+                AgentService agentService = agentServiceRes.findById(agentUser.getAgentserviceid()).orElse(null);
                 agentService.setStatus(MainContext.AgentUserStatusEnum.END.toString());
                 agentService.setEndtime(now);
                 agentServiceRes.save(agentService);
@@ -136,9 +143,9 @@ public class MessengerChatbot {
                 agentUserRes.save(agentUser);
 
                 snsAccountRes.findBySnsid(agentUser.getAppid()).ifPresent(snsAccount -> {
-                    OnlineUser onlineUser = onlineUserRes.findOneByUseridAndOrgi(fromId, Constants.SYSTEM_ORGI);
+                    PassportWebIMUser passportWebIMUser = onlineUserRes.findOneByUserid(fromId);
                     try {
-                        messengerMessageProxy.scheduleMessengerAgentUser(agentUser, onlineUser, snsAccount, Constants.SYSTEM_ORGI);
+                        messengerMessageProxy.scheduleMessengerAgentUser(agentUser, passportWebIMUser, snsAccount);
                     } catch (CSKefuException e) {
                         e.printStackTrace();
                     }

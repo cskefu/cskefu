@@ -1,16 +1,14 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
-//- 
-//- Licensed under the Apache License, Version 2.0 (the "License");
-//- you may not use this file except in compliance with the License.
-//- You may obtain a copy of the License at
-//- 
-//-  http://www.apache.org/licenses/LICENSE-2.0
-//- 
-//-  Unless required by applicable law or agreed to in writing, software
+//- Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+//- <https://www.chatopera.com>, Licensed under the Chunsong Public 
+//- License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+//- Unless required by applicable law or agreed to in writing, software
 //- distributed under the License is distributed on an "AS IS" BASIS,
-//-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //- See the License for the specific language governing permissions and
 //- limitations under the License.
+//- Copyright (C) 2018-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>
+//- Licensed under the Apache License, Version 2.0
+//- http://www.apache.org/licenses/LICENSE-2.0
 doctype html
 html
     head
@@ -26,7 +24,9 @@ html
             link(rel='shortcut icon', type='image/x-icon', href='/images/favicon.ico?t=1489039620156')
         link(rel='stylesheet', type='text/css', href='/im/css/ukefu.css')
         link#skin(rel='stylesheet', type='text/css', href='/im/css/default/ukefu.css')
-        //  kindeditor
+        //- telemetry
+        include telemetry
+        //-  kindeditor
         link(rel='stylesheet', type='text/css', href='/im/js/kindeditor/themes/default/default.css')
         script(src='/js/jquery-1.10.2.min.js')
         script(type='text/javascript', src='/im/js/kindeditor/kindeditor.js')
@@ -102,7 +102,6 @@ html
                                 userid: "#{userid}",
                                 type: "writing",
                                 session: "#{sessionid}",
-                                orgi: "#{orgi}",
                                 message: strValue
                             });
                         }
@@ -303,7 +302,7 @@ html
                 } else {
                     satisComment = comInputVal;
                 }
-                R3Ajax.post("/im/satis.html?orgi=#{orgi}", function () {
+                R3Ajax.post("/im/satis.html", function () {
                     document.getElementById("diaShade").style.display = "none";
                     document.getElementById("dialogWrap").style.display = "none";
                     if (isAgentEnds) {
@@ -361,7 +360,7 @@ html
                             if models.contains("chatbot") && inviteData.ai && aiid
                                 if exchange == "true"
                                     li
-                                        a(href="/im/index.html?appid=" + appid + "&orgi=" + orgi + (aiid ? "&aiid=" + aiid : "") + "&ai=true" + (client ? "&client=" + client : '') + (type ? "&type=text" : "") + (skill ? "&skill=" + skill : '') + (agent ? "&agent=" + agent : '') + (title ? "&title=" + title : '') + (url ? "&url=" + url : '') + (traceid ? "&traceid=" + traceid : '') + "&userid=" + userid + "&sessionid=" + sessionid + "&t=" + pugHelper.currentTimeMillis()) 智能客服
+                                        a(href="/im/index.html?appid=" + appid + (aiid ? "&aiid=" + aiid : "") + "&ai=true" + (client ? "&client=" + client : '') + (type ? "&type=text" : "") + (skill ? "&skill=" + skill : '') + (agent ? "&agent=" + agent : '') + (title ? "&title=" + title : '') + (url ? "&url=" + url : '') + (traceid ? "&traceid=" + traceid : '') + "&userid=" + userid + "&sessionid=" + sessionid + "&t=" + pugHelper.currentTimeMillis()) 智能客服
                                 li.cur
                                     a(href="javascript:void(0)") 人工坐席
                             else
@@ -380,7 +379,7 @@ html
                                             a#point_ad_text(href=welcomeAd.url, title=welcomeAd.tiptext, target="_blank")= welcomeAd.content
 
                         .clearfix.message.welcome
-                            span#welcome-message= inviteData.dialog_message ? inviteData.dialog_message : '欢迎您来咨询！欢迎使用春松客服！如需帮助请联系 info@chatopera.com'
+                            span#welcome-message= inviteData.dialog_message ? inviteData.dialog_message : '欢迎您来咨询！欢迎使用 Chatopera 云服务！如需帮助请联系 info@chatopera.com'
 
                         if sessionConfig && sessionConfig.sessionmsg
                             div(style='text-align:center;')
@@ -459,8 +458,10 @@ html
                                         div(style="padding:1px 5px 1px 7px")
                                             a#point_ad_text(href=figureAd.url, title=figureAd.tiptext, target="_blank")= figureAd.content
                         else if inviteData.dialog_ad
-                            img(src="/res/image.html?id=" + inviteData.dialog_ad, style="height:190px;width:100%;")
-
+                            - var dialog_ad = inviteData.dialog_ad.startsWith("/")?inviteData.dialog_ad : "/res/image.html?id=" + inviteData.dialog_ad
+                            img(src=dialog_ad, style="height:190px;width:100%;")
+                        else
+                            img(src="/im/img/pic01.jpg", style="height:190px;width:100%;")
     #footer
         //- 调查问卷弹框
     if sessionConfig.satisfaction
@@ -547,7 +548,7 @@ html
         var hostname = location.hostname;
         var protocol = window.location.protocol.replace(/:/g, '');
         var username = encodeURIComponent("#{username}");
-        var socket = io(protocol + '://' + hostname + ':#{port}/im/user?userid=#{userid}&orgi=#{orgi}&session=#{sessionid}&appid=#{appid}&osname=!{osname}&browser=!{browser}!{skill ? "&skill=" + skill : ""}!{username ? "&nickname='+username+'" : ""}!{agent ? "&agent=" + agent : ""}!{title ? "&title=" + title : ""}!{traceid ? "&url=" + url : ""}!{traceid ? "&traceid=" + traceid : ""}!{isInvite ? "&isInvite=" + isInvite : ""}', {transports: ['websocket', 'polling']});
+        var socket = io(protocol + '://' + hostname + ':#{port}/im/user?userid=#{userid}&session=#{sessionid}&appid=#{appid}&osname=!{osname}&browser=!{browser}!{skill ? "&skill=" + skill : ""}!{username ? "&nickname='+username+'" : ""}!{agent ? "&agent=" + agent : ""}!{title ? "&title=" + title : ""}!{traceid ? "&url=" + url : ""}!{traceid ? "&traceid=" + traceid : ""}!{isInvite ? "&isInvite=" + isInvite : ""}', {transports: ['websocket', 'polling']});
 
         console.log('connect debug', protocol, hostname);
 
@@ -559,7 +560,6 @@ html
                     phone: "#{contacts.phone}",
                     email: "#{contacts.email}",
                     memo: "#{contacts.memo}",
-                    orgi: "#{inviteData.orgi}",
                     appid: "#{appid}"
                 });
             }
@@ -644,7 +644,6 @@ html
                         userid: "#{userid}",
                         type: "message",
                         session: "#{sessionid}",
-                        orgi: "#{orgi}",
                         message: message
                     });
                 }

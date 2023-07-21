@@ -1,28 +1,26 @@
-/*
- * Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2019-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>, 
+ * Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.controller.api;
 
 import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.controller.Handler;
-import com.cskefu.cc.controller.api.request.RestUtils;
+import com.cskefu.cc.util.restapi.RestUtils;
 import com.cskefu.cc.exception.CSKefuRestException;
 import com.cskefu.cc.model.*;
-import com.cskefu.cc.persistence.es.ContactNotesRepository;
-import com.cskefu.cc.persistence.es.ContactsRepository;
+import com.cskefu.cc.persistence.repository.ContactNotesRepository;
+import com.cskefu.cc.persistence.repository.ContactsRepository;
 import com.cskefu.cc.persistence.repository.OrganRepository;
 import com.cskefu.cc.persistence.repository.OrganUserRepository;
 import com.cskefu.cc.persistence.repository.UserRepository;
@@ -31,7 +29,7 @@ import com.cskefu.cc.util.json.GsonTools;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +43,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -86,12 +84,12 @@ public class ApiContactNotesController extends Handler {
     private JsonObject creater(final String creater) {
         JsonObject data = new JsonObject();
         // 增加创建人
-        User u = userRes.findById(creater);
+        User u = userRes.findById(creater).orElse(null);
         if (u != null) {
             data.addProperty("creater", u.getId());
             data.addProperty("creatername", u.getUname());
 
-            final List<OrganUser> organs = organUserRes.findByUseridAndOrgi(u.getId(), u.getOrgi());
+            final List<OrganUser> organs = organUserRes.findByUserid(u.getId());
 
 
             // 获取创建者部门
@@ -100,7 +98,7 @@ public class ApiContactNotesController extends Handler {
                 JsonArray y = new JsonArray();
 
                 for (final OrganUser organ : organs) {
-                    Organ o = organRes.findOne(organ.getOrgan());
+                    Organ o = organRes.findById(organ.getOrgan()).orElse(null);
                     if (o != null) {
                         JsonObject x = new JsonObject();
                         x.addProperty("createrorgan", o.getName());
@@ -127,7 +125,7 @@ public class ApiContactNotesController extends Handler {
         JsonObject resp = new JsonObject();
         // TODO 增加权限检查
         if (j.has("id") && StringUtils.isNotBlank(j.get("id").getAsString())) {
-            ContactNotes cn = contactNotesRes.findOne(j.get("id").getAsString());
+            ContactNotes cn = contactNotesRes.findById(j.get("id").getAsString()).orElse(null);
             if (cn != null) {
                 JsonObject data = new JsonObject();
                 data.addProperty("contactid", cn.getContactid());
@@ -170,7 +168,6 @@ public class ApiContactNotesController extends Handler {
         cn.setCategory(payload.get("category").getAsString());
         cn.setContent(payload.get("content").getAsString());
         cn.setCreater(payload.get("creater").getAsString());
-        cn.setOrgi(payload.get("orgi").getAsString());
         cn.setContactid(payload.get("contactid").getAsString());
         cn.setDatastatus(false);
 
@@ -214,7 +211,7 @@ public class ApiContactNotesController extends Handler {
         if ((!payload.has("contactid")) || StringUtils.isBlank(payload.get("contactid").getAsString())) {
             return "参数传递不合法，没有[contactid]。";
         } else {
-            Contacts c = contactsRes.findOne(payload.get("contactid").getAsString());
+            Contacts c = contactsRes.findById(payload.get("contactid").getAsString()).orElse(null);
             if (c == null)
                 return "参数不合法，不存在该联系人。";
         }
@@ -230,12 +227,6 @@ public class ApiContactNotesController extends Handler {
      */
     private String querybuilder(final JsonObject j) {
         StringBuffer sb = new StringBuffer();
-        if (j.has("orgi")) {
-            sb.append("orgi:");
-            sb.append(j.get("orgi").getAsString());
-            sb.append(" ");
-        }
-
         return sb.toString();
     }
 
@@ -255,7 +246,7 @@ public class ApiContactNotesController extends Handler {
             return resp;
         }
         final String cid = j.get("contactid").getAsString();
-        Contacts c = contactsRes.findOne(cid);
+        Contacts c = contactsRes.findById(cid).orElse(null);
 
         if (c == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
@@ -265,8 +256,7 @@ public class ApiContactNotesController extends Handler {
 
         String q = querybuilder(j);
 
-        Page<ContactNotes> cns = contactNotesRes.findByContactidAndOrgiOrderByCreatetimeDesc(cid,
-                q, new PageRequest(super.getP(request), super.getPs(request)));
+        Page<ContactNotes> cns = contactNotesRes.findByContactidOrderByCreatetimeDesc(cid, PageRequest.of(super.getP(request), super.getPs(request)));
 
         resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
         resp.addProperty("size", cns.getSize());
@@ -312,7 +302,6 @@ public class ApiContactNotesController extends Handler {
         JsonObject json = new JsonObject();
         HttpHeaders headers = RestUtils.header();
         j.addProperty("creater", super.getUser(request).getId());
-        j.addProperty("orgi", Constants.SYSTEM_ORGI);
 
         if (!j.has("ops")) {
             json.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_1);
@@ -334,7 +323,7 @@ public class ApiContactNotesController extends Handler {
                     break;
             }
         }
-        return new ResponseEntity<String>(json.toString(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(json.toString(), headers, HttpStatus.OK);
     }
 
 

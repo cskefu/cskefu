@@ -1,23 +1,21 @@
-/*
- * Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2019-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>, 
+ * Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 
 package com.cskefu.cc.controller.api;
 
 import com.cskefu.cc.controller.Handler;
-import com.cskefu.cc.controller.api.request.RestUtils;
+import com.cskefu.cc.util.restapi.RestUtils;
 import com.cskefu.cc.exception.CSKefuRestException;
 import com.cskefu.cc.model.Tag;
 import com.cskefu.cc.model.TagRelation;
@@ -28,7 +26,7 @@ import com.cskefu.cc.util.json.GsonTools;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 
@@ -72,14 +70,14 @@ public class ApiContactTagsController extends Handler {
             String contactid = j.get("contactid").getAsString();
             // 获取联系人所有标签
             List<TagRelation> rels = tagRelationRes.findByUserid(contactid);
-            HashMap<String, String> tagged = new HashMap<String, String>();
+            HashMap<String, String> tagged = new HashMap<>();
 
             for (TagRelation t : rels) {
                 tagged.put(t.getTagid(), t.getId());
             }
 
             // 获取所有标签
-            List<Tag> all = tagRes.findByOrgiAndTagtype(j.get("orgi").getAsString(), TAGTYPE_USER);
+            List<Tag> all = tagRes.findByTagtype(TAGTYPE_USER);
             JsonArray data = new JsonArray();
 
             for (Tag t : all) {
@@ -129,7 +127,7 @@ public class ApiContactTagsController extends Handler {
 
         final String tagId = j.get("tagId").getAsString();
         final String contactid = j.get("contactid").getAsString();
-        Tag tag = tagRes.findOne(tagId);
+        Tag tag = tagRes.findById(tagId).orElse(null);
 
         if (tag == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_2);
@@ -167,7 +165,7 @@ public class ApiContactTagsController extends Handler {
             return resp;
         }
 
-        TagRelation t = tagRelationRes.findOne(j.get("xid").getAsString());
+        TagRelation t = tagRelationRes.findById(j.get("xid").getAsString()).orElse(null);
         if (t == null) {
             resp.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_4);
             resp.addProperty(RestUtils.RESP_KEY_ERROR, "该联系人没有打这个标签。");
@@ -191,7 +189,6 @@ public class ApiContactTagsController extends Handler {
         JsonObject json = new JsonObject();
         HttpHeaders headers = RestUtils.header();
         j.addProperty("creater", super.getUser(request).getId());
-        j.addProperty("orgi", super.getOrgi(request));
 
         if (!j.has("ops")) {
             json.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_FAIL_1);
@@ -213,7 +210,7 @@ public class ApiContactTagsController extends Handler {
                     break;
             }
         }
-        return new ResponseEntity<String>(json.toString(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(json.toString(), headers, HttpStatus.OK);
     }
 
 }

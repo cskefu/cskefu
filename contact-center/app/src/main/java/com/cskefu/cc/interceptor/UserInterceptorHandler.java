@@ -1,18 +1,16 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.interceptor;
 
@@ -29,18 +27,18 @@ import com.cskefu.cc.proxy.OrganProxy;
 import com.cskefu.cc.proxy.UserProxy;
 import com.cskefu.cc.util.Menu;
 import com.cskefu.cc.util.PugHelper;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.web.BasicErrorController;
+import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-public class UserInterceptorHandler extends HandlerInterceptorAdapter {
+public class UserInterceptorHandler implements HandlerInterceptor {
     private final static Logger logger = LoggerFactory.getLogger(UserInterceptorHandler.class);
     private static UserProxy userProxy;
     private static OrganProxy organProxy;
@@ -53,9 +51,9 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
         User user = (User) request.getSession(true).getAttribute(Constants.USER_SESSION_NAME);
         Organ organ = (Organ) request.getSession(true).getAttribute(Constants.ORGAN_SESSION_NAME);
 
-        if(user != null){
+        if (user != null) {
             AgentSessionProxy agentSessionProxy = MainContext.getContext().getBean(AgentSessionProxy.class);
-            if(agentSessionProxy.isInvalidSessionId(user.getId(),MainUtils.getContextID(request.getSession().getId()),user.getOrgi())){
+            if (agentSessionProxy.isInvalidSessionId(user.getId(), MainUtils.getContextID(request.getSession().getId()))) {
                 request.getSession().invalidate();
                 response.sendRedirect("/login.html");
                 return false;
@@ -78,8 +76,9 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
                      * TODO 此处代码执行频率高，但是并不是每次都要执行，存在很多冗余
                      * 待用更好的方法实现
                      */
-                    getUserProxy().attachOrgansPropertiesForUser(user);
-                    getUserProxy().attachRolesMap(user, organ);
+                    getUserProxy().attachOrgansPropertiesForUser(user);                    // 用户的所有组织机构和附属组织机构信息
+                    getUserProxy().attachCurrentOrgansPropertiesForUser(user, organ);      // 用户的当前组织机构和附属组织机构信息
+                    getUserProxy().attachRolesMap(user, organ);                            // 用户的角色权限集合
 
                     request.getSession(true).setAttribute(Constants.USER_SESSION_NAME, user);
                 }
@@ -103,24 +102,13 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
             HttpServletRequest request, HttpServletResponse response, Object arg2,
             ModelAndView view) {
         final User user = (User) request.getSession().getAttribute(Constants.USER_SESSION_NAME);
-        final String infoace = (String) request.getSession().getAttribute(
-                Constants.CSKEFU_SYSTEM_INFOACQ); // 进入信息采集模式
+        final String infoace = (String) request.getSession().getAttribute(Constants.CSKEFU_SYSTEM_INFOACQ); // 进入信息采集模式
         final SystemConfig systemConfig = MainUtils.getSystemConfig();
         if (view != null) {
             if (user != null) {
                 view.addObject("user", user);
-
-                if (systemConfig != null && systemConfig.isEnablessl()) {
-                    view.addObject("schema", "https");
-                    if (request.getServerPort() == 80) {
-                        view.addObject("port", 443);
-                    } else {
-                        view.addObject("port", request.getServerPort());
-                    }
-                } else {
-                    view.addObject("schema", request.getScheme());
-                    view.addObject("port", request.getServerPort());
-                }
+                view.addObject("schema", request.getScheme());
+                view.addObject("port", request.getServerPort());
                 view.addObject("hostname", request.getServerName());
 
                 HandlerMethod handlerMethod = (HandlerMethod) arg2;
@@ -130,7 +118,6 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
                     view.addObject("maintype", menu.type());
                     view.addObject("typename", menu.name());
                 }
-                view.addObject("orgi", user.getOrgi());
             }
             if (StringUtils.isNotBlank(infoace)) {
                 view.addObject("infoace", infoace); // 进入信息采集模式
@@ -159,9 +146,8 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
             view.addObject("uKeFuDic", Dict.getInstance()); // 处理系统 字典数据 ， 通过 字典code 获取
 
             view.addObject(
-                    "uKeFuSecField", MainContext.getCache().findOneSystemByIdAndOrgi(
-                            Constants.CSKEFU_SYSTEM_SECFIELD,
-                            Constants.SYSTEM_ORGI)); // 处理系统 需要隐藏号码的字段， 启动的时候加载
+                    "uKeFuSecField", MainContext.getCache().findOneSystemById(
+                            Constants.CSKEFU_SYSTEM_SECFIELD)); // 处理系统 需要隐藏号码的字段， 启动的时候加载
 
             if (systemConfig != null) {
                 view.addObject("systemConfig", systemConfig);
@@ -179,7 +165,7 @@ public class UserInterceptorHandler extends HandlerInterceptorAdapter {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
-            Exception ex) {
+                                Exception ex) {
     }
 
     private static Integer getWebimport() {

@@ -1,18 +1,16 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.basic;
 
@@ -25,7 +23,6 @@ import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import com.cskefu.cc.model.*;
 import com.cskefu.cc.persistence.repository.*;
-import com.cskefu.cc.util.WebIMReport;
 import com.cskefu.cc.util.*;
 import com.cskefu.cc.util.asr.AsrResult;
 import com.cskefu.cc.util.mail.MailSender;
@@ -42,13 +39,14 @@ import de.neuland.pug4j.parser.node.Node;
 import de.neuland.pug4j.template.PugTemplate;
 import de.neuland.pug4j.template.ReaderTemplateLoader;
 import io.netty.handler.codec.http.HttpHeaders;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.Converter;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -62,8 +60,6 @@ import org.springframework.beans.FatalBeanException;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -83,13 +79,13 @@ import java.util.regex.Pattern;
 public class MainUtils {
     private final static Logger logger = LoggerFactory.getLogger(MainUtils.class);
 
-    private static MD5 md5 = new MD5();
+    private static final MD5 md5 = new MD5();
 
-    public static SimpleDateFormat dateFormate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static final SimpleDateFormat dateFormate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    public static SimpleDateFormat timeRangeDateFormat = new SimpleDateFormat("HH:mm");
+    public static final SimpleDateFormat timeRangeDateFormat = new SimpleDateFormat("HH:mm");
 
     /**
      * 当前时间+已过随机生成的 长整形数字
@@ -214,7 +210,7 @@ public class MainUtils {
      * @return
      */
     public static Map<String, Object> getRequestParam(HttpServletRequest request) {
-        Map<String, Object> values = new HashMap<String, Object>();
+        Map<String, Object> values = new HashMap<>();
         Enumeration<String> enums = request.getParameterNames();
         while (enums.hasMoreElements()) {
             String param = enums.nextElement();
@@ -232,7 +228,7 @@ public class MainUtils {
         StringBuffer strb = new StringBuffer();
         while (names.hasMoreElements()) {
             String name = names.nextElement();
-            if (name.indexOf("password") < 0) {    //不记录 任何包含 password 的参数内容
+            if (!name.contains("password")) {    //不记录 任何包含 password 的参数内容
                 if (strb.length() > 0) {
                     strb.append(",");
                 }
@@ -348,15 +344,15 @@ public class MainUtils {
 
 
         //=================OS=======================
-        if (userAgent.toLowerCase().indexOf("windows") >= 0) {
+        if (userAgent.toLowerCase().contains("windows")) {
             os = "windows";
-        } else if (userAgent.toLowerCase().indexOf("mac") >= 0) {
+        } else if (userAgent.toLowerCase().contains("mac")) {
             os = "mac";
-        } else if (userAgent.toLowerCase().indexOf("x11") >= 0) {
+        } else if (userAgent.toLowerCase().contains("x11")) {
             os = "unix";
-        } else if (userAgent.toLowerCase().indexOf("android") >= 0) {
+        } else if (userAgent.toLowerCase().contains("android")) {
             os = "android";
-        } else if (userAgent.toLowerCase().indexOf("iphone") >= 0) {
+        } else if (userAgent.toLowerCase().contains("iphone")) {
             os = "iphone";
         } else {
             os = "UnKnown";
@@ -364,8 +360,8 @@ public class MainUtils {
         //===============Browser===========================
         if (user.contains("qqbrowser")) {
             browser = "QQBrowser";
-        } else if (user.contains("msie") || user.indexOf("rv:11") > -1) {
-            if (user.indexOf("rv:11") >= 0) {
+        } else if (user.contains("msie") || user.contains("rv:11")) {
+            if (user.contains("rv:11")) {
                 browser = "IE11";
             } else {
                 String substring = userAgent.substring(userAgent.indexOf("MSIE")).split(";")[0];
@@ -388,13 +384,11 @@ public class MainUtils {
             }
         } else if (user.contains("chrome")) {
             browser = "Chrome";
-        } else if ((user.indexOf("mozilla/7.0") > -1) || (user.indexOf("netscape6") != -1) || (user.indexOf(
-                "mozilla/4.7") != -1) || (user.indexOf("mozilla/4.78") != -1) || (user.indexOf(
-                "mozilla/4.08") != -1) || (user.indexOf("mozilla/3") != -1)) {
+        } else if ((user.contains("mozilla/7.0")) || (user.contains("netscape6")) || (user.contains("mozilla/4.7")) || (user.contains("mozilla/4.78")) || (user.contains("mozilla/4.08")) || (user.contains("mozilla/3"))) {
             //browser=(userAgent.substring(userAgent.indexOf("MSIE")).split(" ")[0]).replace("/", "-");
             browser = "Netscape-?";
 
-        } else if ((user.indexOf("mozilla") > -1)) {
+        } else if ((user.contains("mozilla"))) {
             //browser=(userAgent.substring(userAgent.indexOf("MSIE")).split(" ")[0]).replace("/", "-");
             if (browserDetails.indexOf(" ") > 0) {
                 browser = browserDetails.substring(0, browserDetails.indexOf(" "));
@@ -445,8 +439,8 @@ public class MainUtils {
         WebIMReport report = new WebIMReport();
         if (values != null && values.size() > 0) {
 
-            for (int i = 0; i < values.size(); i++) {
-                Object[] value = (Object[]) values.get(i);
+            for (Object o : values) {
+                Object[] value = (Object[]) o;
                 if (value.length >= 2) {
                     String invitestatus = (String) value[0];
                     if (MainContext.OnlineUserInviteStatus.DEFAULT.toString().equals(
@@ -470,10 +464,10 @@ public class MainUtils {
      * @return
      */
     public static List<WebIMReport> getWebIMInviteAgg(List<Object> values) {
-        List<WebIMReport> webIMReportList = new ArrayList<WebIMReport>();
+        List<WebIMReport> webIMReportList = new ArrayList<>();
         if (values != null && values.size() > 0) {
-            for (int i = 0; i < values.size(); i++) {
-                Object[] value = (Object[]) values.get(i);
+            for (Object o : values) {
+                Object[] value = (Object[]) o;
                 WebIMReport report = new WebIMReport();
                 if (value.length == 3) {
                     report.setData((String) value[0]);
@@ -493,10 +487,10 @@ public class MainUtils {
      * @return
      */
     public static List<WebIMReport> getWebIMDataAgg(List<Object> values) {
-        List<WebIMReport> webIMReportList = new ArrayList<WebIMReport>();
+        List<WebIMReport> webIMReportList = new ArrayList<>();
         if (values != null && values.size() > 0) {
-            for (int i = 0; i < values.size(); i++) {
-                Object[] value = (Object[]) values.get(i);
+            for (Object o : values) {
+                Object[] value = (Object[]) o;
                 WebIMReport report = new WebIMReport();
                 if (value.length == 2) {
                     if (value[0] == null || value[0].toString().equalsIgnoreCase("null") || StringUtils.isBlank(value[0].toString())) {
@@ -522,8 +516,8 @@ public class MainUtils {
         WebIMReport report = new WebIMReport();
         if (values != null && values.size() > 0) {
 
-            for (int i = 0; i < values.size(); i++) {
-                Object[] value = (Object[]) values.get(i);
+            for (Object o : values) {
+                Object[] value = (Object[]) o;
                 if (value.length >= 2) {
                     String invitestatus = (String) value[0];
                     if (MainContext.OnlineUserInviteStatus.DEFAULT.toString().equals(
@@ -549,8 +543,8 @@ public class MainUtils {
     public static WeiXinReport getWeiXinReportResult(List<Object> values) {
         WeiXinReport report = new WeiXinReport();
         if (values != null && values.size() > 0) {
-            for (int i = 0; i < values.size(); i++) {
-                Object[] value = (Object[]) values.get(i);
+            for (Object o : values) {
+                Object[] value = (Object[]) o;
                 if (value.length >= 2) {
                     String event = (String) value[0];
                     if (MainContext.WeiXinEventType.SUB.toString().equals(event)) {
@@ -569,7 +563,7 @@ public class MainUtils {
         if (obj == null) {
             return null;
         }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(obj.getClass());
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
@@ -600,31 +594,26 @@ public class MainUtils {
     }
 
     public static void populate(Object bean, Map<Object, Object> properties) throws IllegalAccessException, InvocationTargetException {
-        ConvertUtils.register(new Converter() {
-            @SuppressWarnings("rawtypes")
-            @Override
-            public Object convert(Class arg0, Object arg1) {
-                if (arg1 == null) {
-                    return null;
-                }
-                if (arg1 instanceof Date) {
-                    return arg1;
-                } else if (!(arg1 instanceof String)) {
-                    throw new ConversionException("只支持字符串转换 !");
-                }
-                String str = (String) arg1;
-                if (str.trim().equals("")) {
-                    return null;
-                }
+        ConvertUtils.register((arg0, arg1) -> {
+            if (arg1 == null) {
+                return null;
+            }
+            if (arg1 instanceof Date) {
+                return arg1;
+            } else if (!(arg1 instanceof String)) {
+                throw new ConversionException("只支持字符串转换 !");
+            }
+            String str = (String) arg1;
+            if (str.trim().equals("")) {
+                return null;
+            }
 
-                SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-                try {
-                    return sd.parse(str);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-
+            try {
+                return sd.parse(str);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
 
         }, java.util.Date.class);
@@ -648,6 +637,12 @@ public class MainUtils {
     public static Object toObject(byte[] data) throws Exception {
         ByteArrayInputStream input = new ByteArrayInputStream(data);
         ObjectInputStream objectInput = new ObjectInputStream(input);
+
+        // https://github.com/cskefu/cskefu/issues/177
+        // https://www.davidvlijmincx.com/posts/creating_context_specific_deserialization_filters/
+        ObjectInputFilter filter = ObjectInputFilter.Config.createFilter("java.util.List;com.cskefu.cc.model;!*");
+        objectInput.setObjectInputFilter(filter);
+
         return objectInput.readObject();
     }
 
@@ -715,7 +710,7 @@ public class MainUtils {
         Elements pngs = document.select("img[src]");
         for (Element element : pngs) {
             String imgUrl = element.attr("src");
-            if (imgUrl.indexOf("/res/image") >= 0) {
+            if (imgUrl.contains("/res/image")) {
                 element.attr("class", "ukefu-media-image");
             }
         }
@@ -752,24 +747,21 @@ public class MainUtils {
         return workintTime;
     }
 
-    public static File processImage(final File destFile, final File imageFile) throws IOException {
+    public static void processImage(final File destFile, final File imageFile) throws IOException {
         if (imageFile != null && imageFile.exists()) {
             Thumbnails.of(imageFile).imageType(BufferedImage.TYPE_INT_ARGB).width(460).keepAspectRatio(true).toFile(destFile);
         }
-        return destFile;
     }
 
-    public static File scaleImage(final File destFile, final File imageFile, float quality) throws IOException {
+    public static void scaleImage(final File destFile, final File imageFile, float quality) throws IOException {
         if (imageFile != null && imageFile.exists()) {
             Thumbnails.of(imageFile).scale(1f).outputQuality(quality).toFile(destFile);
         }
-        return destFile;
     }
 
     public static String processEmoti(String message) {
         Pattern pattern = Pattern.compile("\\[([\\d]*?)\\]");
-        SystemConfig systemConfig = MainContext.getCache().findOneSystemByIdAndOrgi(
-                "systemConfig", Constants.SYSTEM_ORGI);
+        SystemConfig systemConfig = MainContext.getCache().findOneSystemById("systemConfig");
 
         Matcher matcher = pattern.matcher(message);
         StringBuffer strb = new StringBuffer();
@@ -819,12 +811,12 @@ public class MainUtils {
         return ip;
     }
 
-    public static boolean secConfirm(SecretRepository secRes, String orgi, String confirm) {
+    public static boolean secConfirm(SecretRepository secRes, String confirm) {
         /**
          * 先调用 IMServer
          */
         boolean execute = false;
-        List<Secret> secretConfig = secRes.findByOrgi(orgi);
+        List<Secret> secretConfig = secRes.findAll();
         if (StringUtils.isNotBlank(confirm)) {
             if (secretConfig != null && secretConfig.size() > 0) {
                 Secret secret = secretConfig.get(0);
@@ -844,11 +836,13 @@ public class MainUtils {
      * @return
      */
     public static SystemConfig getSystemConfig() {
-        SystemConfig systemConfig = MainContext.getCache().findOneSystemByIdAndOrgi(
-                "systemConfig", Constants.SYSTEM_ORGI);
+        SystemConfig systemConfig = MainContext.getCache().findOneSystemById("systemConfig");
         if (systemConfig == null) {
             SystemConfigRepository systemConfigRes = MainContext.getContext().getBean(SystemConfigRepository.class);
-            systemConfig = systemConfigRes.findByOrgi(Constants.SYSTEM_ORGI);
+            List<SystemConfig> systemConfigs = systemConfigRes.findAll();
+            if (systemConfigs.size() > 0) {
+                systemConfig = systemConfigs.get(0);
+            }
         }
         return systemConfig;
     }
@@ -861,8 +855,7 @@ public class MainUtils {
     public static void initSystemSecField(TablePropertiesRepository tpRes) {
         if (tpRes != null) {
             List<TableProperties> tpList = tpRes.findBySecfield(true);
-            MainContext.getCache().putSystemListByIdAndOrgi(
-                    Constants.CSKEFU_SYSTEM_SECFIELD, Constants.SYSTEM_ORGI, tpList);
+            MainContext.getCache().putSystemListById(Constants.CSKEFU_SYSTEM_SECFIELD, tpList);
         }
     }
 
@@ -872,10 +865,10 @@ public class MainUtils {
      * @return
      */
     public static void initSystemArea() {
-        MainContext.getCache().deleteSystembyIdAndOrgi(Constants.CSKEFU_SYSTEM_AREA, Constants.SYSTEM_ORGI);
+        MainContext.getCache().deleteSystembyId(Constants.CSKEFU_SYSTEM_AREA);
         AreaTypeRepository areaTypeRes = MainContext.getContext().getBean(AreaTypeRepository.class);
-        MainContext.getCache().putSystemListByIdAndOrgi(
-                Constants.CSKEFU_SYSTEM_AREA, Constants.SYSTEM_ORGI, areaTypeRes.findAll());
+        MainContext.getCache().putSystemListById(
+                Constants.CSKEFU_SYSTEM_AREA, areaTypeRes.findAll());
     }
 
     /**
@@ -883,19 +876,19 @@ public class MainUtils {
      *
      * @return
      */
-    public static void initAdv(String orgi, String skill) {
-        MainContext.getCache().deleteSystembyIdAndOrgi(Constants.CSKEFU_SYSTEM_ADV + "_" + skill, orgi);
+    public static void initAdv(String skill) {
+        MainContext.getCache().deleteSystembyId(Constants.CSKEFU_SYSTEM_ADV + "_" + skill);
         AdTypeRepository adRes = MainContext.getContext().getBean(AdTypeRepository.class);
-        MainContext.getCache().putSystemListByIdAndOrgi(
-                Constants.CSKEFU_SYSTEM_ADV + "_" + skill, orgi, adRes.findByOrgiAndSkill(orgi, skill));
+        MainContext.getCache().putSystemListById(
+                Constants.CSKEFU_SYSTEM_ADV + "_" + skill, adRes.findBySkill(skill));
     }
 
     public static Template getTemplate(String id) {
         Template templet = null;
-        if ((templet = MainContext.getCache().findOneSystemByIdAndOrgi(id, Constants.SYSTEM_ORGI)) == null) {
+        if ((templet = MainContext.getCache().findOneSystemById(id)) == null) {
             TemplateRepository templateRes = MainContext.getContext().getBean(TemplateRepository.class);
-            templet = templateRes.findByIdAndOrgi(id, Constants.SYSTEM_ORGI);
-            MainContext.getCache().putSystemByIdAndOrgi(id, Constants.SYSTEM_ORGI, templet);
+            templet = templateRes.findById(id).orElse(null);
+            MainContext.getCache().putSystemById(id, templet);
         }
         return templet;
     }
@@ -905,18 +898,17 @@ public class MainUtils {
      *
      * @param adpos
      * @param skill
-     * @param orgi
      * @return
      */
-    public static List<AdType> getPointAdvs(String adpos, String skill, String orgi) {
-        List<AdType> adTypeList = new ArrayList<AdType>();
-        List<AdType> cacheAdTypeList = MainContext.getCache().findOneSystemListByIdAndOrgi(
-                Constants.CSKEFU_SYSTEM_ADV + "_" + skill, orgi);
+    public static List<AdType> getPointAdvs(String adpos, String skill) {
+        List<AdType> adTypeList = new ArrayList<>();
+        List<AdType> cacheAdTypeList = MainContext.getCache().findOneSystemListById(
+                Constants.CSKEFU_SYSTEM_ADV + "_" + skill);
         if (cacheAdTypeList == null) {
             AdTypeRepository adRes = MainContext.getContext().getBean(AdTypeRepository.class);
-            cacheAdTypeList = adRes.findByOrgiAndSkill(orgi, skill);
-            MainContext.getCache().putSystemListByIdAndOrgi(
-                    Constants.CSKEFU_SYSTEM_ADV + "_" + skill, orgi, cacheAdTypeList);
+            cacheAdTypeList = adRes.findBySkill(skill);
+            MainContext.getCache().putSystemListById(
+                    Constants.CSKEFU_SYSTEM_ADV + "_" + skill, cacheAdTypeList);
         }
         List<SysDic> sysDicList = Dict.getInstance().getDic(Constants.CSKEFU_SYSTEM_ADPOS_DIC);
         SysDic sysDic = null;
@@ -945,12 +937,12 @@ public class MainUtils {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static AdType getPointAdv(String adpos, String skill, String orgi) {
-        List<AdType> ads = getPointAdvs(adpos, skill, orgi);
+    public static AdType getPointAdv(String adpos, String skill) {
+        List<AdType> ads = getPointAdvs(adpos, skill);
         return weitht(ads);
     }
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
     /**
      * 按照权重，获取广告内容
@@ -1034,7 +1026,7 @@ public class MainUtils {
         SystemConfig config = MainUtils.getSystemConfig();
         if (config != null && config.isEnablemail() && config.getEmailid() != null) {
             SystemMessage systemMessage = MainContext.getContext().getBean(
-                    SystemMessageRepository.class).findByIdAndOrgi(config.getEmailid(), config.getOrgi());
+                    SystemMessageRepository.class).findById(config.getEmailid()).orElse(null);
             MailSender sender = new MailSender(
                     systemMessage.getSmtpserver(), systemMessage.getMailfrom(), systemMessage.getSmtpuser(),
                     decryption(systemMessage.getSmtppassword()), systemMessage.getSeclev(), systemMessage.getSslport());
@@ -1111,7 +1103,7 @@ public class MainUtils {
      * @return
      */
     public static Object getDaysParam(String text) {
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, Object> context = new HashMap<>();
         context.put("T", processDays());
         context.put("t", processDays());
         context.put("M", processMonth());
@@ -1238,7 +1230,7 @@ public class MainUtils {
         SystemConfig config = MainUtils.getSystemConfig();
         if (config != null) {
             SystemMessage systemMessage = MainContext.getContext().getBean(
-                    SystemMessageRepository.class).findByIdAndOrgi(id, config.getOrgi());
+                    SystemMessageRepository.class).findById(id).orElse(null);
             if (systemMessage == null) {
                 return false;
             }
@@ -1302,12 +1294,11 @@ public class MainUtils {
      * @param userid
      * @param client
      * @param session
-     * @param orgi
      * @param ipaddr
      * @param hostname
      * @return
      */
-    public static WorkSession createWorkSession(String userid, String client, String session, String orgi, String ipaddr, String hostname, String admin, boolean first) {
+    public static WorkSession createWorkSession(String userid, String client, String session, String ipaddr, String hostname, String admin, boolean first) {
         WorkSession workSession = new WorkSession();
         workSession.setCreatetime(new Date());
         workSession.setBegintime(new Date());
@@ -1325,7 +1316,6 @@ public class MainUtils {
         workSession.setUserid(userid);
         workSession.setClientid(client);
         workSession.setSessionid(session);
-        workSession.setOrgi(orgi);
 
         workSession.setDatestr(MainUtils.simpleDateFormat.format(new Date()));
 

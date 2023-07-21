@@ -1,16 +1,14 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
-//- 
-//- Licensed under the Apache License, Version 2.0 (the "License");
-//- you may not use this file except in compliance with the License.
-//- You may obtain a copy of the License at
-//- 
-//-  http://www.apache.org/licenses/LICENSE-2.0
-//- 
-//-  Unless required by applicable law or agreed to in writing, software
+//- Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+//- <https://www.chatopera.com>, Licensed under the Chunsong Public 
+//- License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+//- Unless required by applicable law or agreed to in writing, software
 //- distributed under the License is distributed on an "AS IS" BASIS,
-//-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //- See the License for the specific language governing permissions and
 //- limitations under the License.
+//- Copyright (C) 2018-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>
+//- Licensed under the Apache License, Version 2.0
+//- http://www.apache.org/licenses/LICENSE-2.0
 extends /admin/include/layout.pug
 
 block content
@@ -104,7 +102,7 @@ block content
                                                         .ukefu-point-theme9
                                                             .ukefu-im-point-text
                                                                 br
-                                                                | 无
+                                                                | 无（隐藏）
                                                         .ok
                                                             i.layui-icon 
                                                 .ukefu-webim-tl(style="clear:both;") 2、选择入口颜色
@@ -156,10 +154,10 @@ block content
                                                                 p 用户访问接入网站的时候提示用户的按钮弹出延时时间
                                                                 p(style="color:#888888;font-size:13px;margin-top:10px;") 如果不设置延时时间，则页面载入即显示入口按钮
                                                             .col-lg-4
-                                                                select(name="consult_vsitorbtn_display")
-                                                                    option(value="0", selected=(!inviteData.consult_vsitorbtn_display || inviteData.consult_vsitorbtn_display == 0)) 无延时
+                                                                select(name="consult_vsitorbtn_delay")
+                                                                    option(value="0", selected=(!inviteData.consult_vsitorbtn_delay || inviteData.consult_vsitorbtn_delay == 0)) 无延时
                                                                         for i in [1,2,3,4,5,10]
-                                                                            option(value=i * 1000, selected=inviteData.consult_vsitorbtn_display == i * 1000) #{i}秒
+                                                                            option(value=i * 1000, selected=inviteData.consult_vsitorbtn_delay == i * 1000) #{i}秒
                                             .col-md-4(style="padding-top:50px;")
                                                 #ukefu-point.ukefu-im-point(style="width: 227px;height: 200px;border-radius: 2px;padding: 70px 20px;")
                                                     -

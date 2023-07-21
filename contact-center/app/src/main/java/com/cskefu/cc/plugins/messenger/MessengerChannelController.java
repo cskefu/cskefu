@@ -1,17 +1,15 @@
-/*
- * Copyright (C) 2019 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>, 
+ * Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 
 package com.cskefu.cc.plugins.messenger;
@@ -22,10 +20,10 @@ import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.controller.Handler;
 import com.cskefu.cc.model.FbMessenger;
 import com.cskefu.cc.model.Organ;
-import com.cskefu.cc.model.SNSAccount;
+import com.cskefu.cc.model.Channel;
 import com.cskefu.cc.persistence.repository.FbMessengerRepository;
 import com.cskefu.cc.persistence.repository.OrganRepository;
-import com.cskefu.cc.persistence.repository.SNSAccountRepository;
+import com.cskefu.cc.persistence.repository.ChannelRepository;
 import com.cskefu.cc.proxy.OrganProxy;
 import com.cskefu.cc.util.Menu;
 import org.slf4j.Logger;
@@ -41,8 +39,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -62,11 +60,10 @@ public class MessengerChannelController extends Handler {
     private OrganProxy organProxy;
 
     @Autowired
-    private SNSAccountRepository snsAccountRepository;
+    private ChannelRepository channelRepository;
 
     private Map<String, Organ> getOwnOrgan(HttpServletRequest request) {
-        return organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
-
+        return organProxy.findAllOrganByParent(super.getOrgan(request));
     }
 
     @RequestMapping("/index")
@@ -109,15 +106,14 @@ public class MessengerChannelController extends Handler {
             fbMessenger.setAiid(null);
             fbMessengerRepository.save(fbMessenger);
 
-            SNSAccount snsAccount = new SNSAccount();
-            snsAccount.setId(MainUtils.genID());
-            snsAccount.setCreatetime(new Date());
-            snsAccount.setOrgi(super.getOrgi(request));
-            snsAccount.setName(fbMessenger.getName());
-            snsAccount.setOrgan(currentOrgan.getId());
-            snsAccount.setSnsid(fbMessenger.getPageId());
-            snsAccount.setSnstype(MainContext.ChannelType.MESSENGER.toString());
-            snsAccountRepository.save(snsAccount);
+            Channel channel = new Channel();
+            channel.setId(MainUtils.genID());
+            channel.setCreatetime(new Date());
+            channel.setName(fbMessenger.getName());
+            channel.setOrgan(currentOrgan.getId());
+            channel.setSnsid(fbMessenger.getPageId());
+            channel.setType(MainContext.ChannelType.MESSENGER.toString());
+            channelRepository.save(channel);
         }
         return request(super.createView("redirect:/admin/messenger/index.html?msg=" + msg));
     }
@@ -125,9 +121,9 @@ public class MessengerChannelController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "messenger")
     public ModelAndView edit(ModelMap map, HttpServletRequest request, @Valid String id) {
-        FbMessenger fbMessenger = fbMessengerRepository.findOne(id);
+        FbMessenger fbMessenger = fbMessengerRepository.findById(id).orElse(null);
 
-        Organ fbOrgan = organRepository.getOne(fbMessenger.getOrgan());
+        Organ fbOrgan = organRepository.findById(fbMessenger.getOrgan()).orElse(null);
         map.addAttribute("organ", fbOrgan);
         map.addAttribute("fb", fbMessenger);
 
@@ -138,7 +134,7 @@ public class MessengerChannelController extends Handler {
     @Menu(type = "admin", subtype = "messenger")
     public ModelAndView update(ModelMap map, HttpServletRequest request, @Valid FbMessenger fbMessenger) {
         String msg = "update_ok";
-        FbMessenger oldMessenger = fbMessengerRepository.findOne(fbMessenger.getId());
+        FbMessenger oldMessenger = fbMessengerRepository.findById(fbMessenger.getId()).orElse(null);
         oldMessenger.setName(fbMessenger.getName());
         if (fbMessenger.getStatus() != null) {
             oldMessenger.setStatus(fbMessenger.getStatus());
@@ -159,11 +155,11 @@ public class MessengerChannelController extends Handler {
     @Menu(type = "admin", subtype = "messenger")
     public ModelAndView delete(ModelMap map, HttpServletRequest request, @Valid String id) {
         String msg = "delete_ok";
-        FbMessenger fbMessenger = fbMessengerRepository.getOne(id);
-        fbMessengerRepository.delete(id);
+        FbMessenger fbMessenger = fbMessengerRepository.findById(id).orElse(null);
+        fbMessengerRepository.deleteById(id);
 
-        snsAccountRepository.findBySnsid(fbMessenger.getPageId()).ifPresent(snsAccount -> {
-            snsAccountRepository.delete(snsAccount);
+        channelRepository.findBySnsid(fbMessenger.getPageId()).ifPresent(snsAccount -> {
+            channelRepository.delete(snsAccount);
         });
 
         return request(super.createView("redirect:/admin/messenger/index.html?msg=" + msg));
@@ -172,8 +168,8 @@ public class MessengerChannelController extends Handler {
     @RequestMapping("/setting")
     @Menu(type = "admin", subtype = "messenger")
     public ModelAndView setting(ModelMap map, HttpServletRequest request, @Valid String id) {
-        FbMessenger fbMessenger = fbMessengerRepository.findOne(id);
-        Organ fbOrgan = organRepository.getOne(fbMessenger.getOrgan());
+        FbMessenger fbMessenger = fbMessengerRepository.findById(id).orElse(null);
+        Organ fbOrgan = organRepository.findById(fbMessenger.getOrgan()).orElse(null);
 
         map.mergeAttributes(fbMessenger.parseConfigMap());
         map.addAttribute("organ", fbOrgan);
@@ -187,7 +183,7 @@ public class MessengerChannelController extends Handler {
     public ModelAndView saveSetting(ModelMap map, HttpServletRequest request, @Valid String id, @RequestBody MultiValueMap<String, String> formData) {
         String msg = "update_ok";
 
-        FbMessenger fbMessenger = fbMessengerRepository.findOne(id);
+        FbMessenger fbMessenger = fbMessengerRepository.findById(id).orElse(null);
         if (fbMessenger != null) {
             fbMessenger.setConfigMap(formData.toSingleValueMap());
             fbMessengerRepository.save(fbMessenger);
@@ -200,7 +196,7 @@ public class MessengerChannelController extends Handler {
     @Menu(type = "admin", subtype = "messenger")
     @ResponseBody
     public String setStatus(ModelMap map, HttpServletRequest request, @Valid String id, @Valid String status) {
-        FbMessenger fbMessenger = fbMessengerRepository.findOne(id);
+        FbMessenger fbMessenger = fbMessengerRepository.findById(id).orElse(null);
         fbMessenger.setStatus(status);
         fbMessengerRepository.save(fbMessenger);
         return "ok";

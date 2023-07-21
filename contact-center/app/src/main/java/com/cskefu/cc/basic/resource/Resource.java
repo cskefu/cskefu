@@ -1,18 +1,16 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.basic.resource;
 
@@ -20,7 +18,8 @@ import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.model.JobDetail;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author jaddy0302 Rivulet Resource.java 2010-3-6
@@ -28,7 +27,7 @@ import java.util.logging.Logger;
  */
 public abstract class Resource {
 	
-	public static Logger log = Logger.getLogger(Resource.class.getName()) ;
+	public static Logger log = LoggerFactory.getLogger(Resource.class.getName()) ;
 
 	public abstract void begin()  throws Exception;
 	
@@ -107,7 +106,7 @@ public abstract class Resource {
 	 */
 	public boolean val(String inputFile , String acceptDocType){
 		String file = inputFile!=null ? inputFile.toLowerCase() :null ;
-		return file!=null && acceptDocType!=null && ((acceptDocType.indexOf(file.substring(file.lastIndexOf(".")+1))>=0||acceptDocType.indexOf("all")>=0)) ;
+		return file!=null && acceptDocType!=null && ((acceptDocType.contains(file.substring(file.lastIndexOf(".") + 1)) || acceptDocType.contains("all"))) ;
 	}
 	
 }

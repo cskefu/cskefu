@@ -1,26 +1,23 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.model;
 
-import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.cache.RedisKey;
 import com.cskefu.cc.util.SerializeUtil;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +28,7 @@ import java.util.List;
 public class Dict<K, V> extends HashMap<K, V> {
 
     private static final long serialVersionUID = 2110217015030751243L;
-    private static Dict<Object, Object> dict = new Dict<Object, Object>();
+    private static final Dict<Object, Object> dict = new Dict<>();
     private static final Logger logger = LoggerFactory.getLogger(Dict.class);
 
 
@@ -48,7 +45,7 @@ public class Dict<K, V> extends HashMap<K, V> {
         logger.debug("[get] key {}", keystr);
         Object result = null;
 
-        String serialized = MainContext.getRedisCommand().getHashKV(RedisKey.getSysDicHashKeyByOrgi(Constants.SYSTEM_ORGI), keystr);
+        String serialized = MainContext.getRedisCommand().getHashKV(RedisKey.getSysDicHashKey(), keystr);
 
         if (StringUtils.isNotBlank(serialized)) {
             Object obj = SerializeUtil.deserialize(serialized);
@@ -59,9 +56,9 @@ public class Dict<K, V> extends HashMap<K, V> {
             }
         } else if (keystr.endsWith(".subdic") && keystr.lastIndexOf(".subdic") > 0) {
             String id = keystr.substring(0, keystr.lastIndexOf(".subdic"));
-            SysDic dic = MainContext.getCache().findOneSysDicByIdAndOrgi(id, Constants.SYSTEM_ORGI);
+            SysDic dic = MainContext.getCache().findOneSysDicById(id);
             if (dic != null) {
-                SysDic sysDic = MainContext.getCache().findOneSysDicByIdAndOrgi(dic.getDicid(), Constants.SYSTEM_ORGI);
+                SysDic sysDic = MainContext.getCache().findOneSysDicById(dic.getDicid());
                 result = getDic(sysDic.getCode(), dic.getParentid());
             }
         }
@@ -71,8 +68,8 @@ public class Dict<K, V> extends HashMap<K, V> {
 
     @SuppressWarnings("unchecked")
     public List<SysDic> getDic(final String code) {
-        List<SysDic> result = new ArrayList<SysDic>();
-        String serialized = MainContext.getRedisCommand().getHashKV(RedisKey.getSysDicHashKeyByOrgi(Constants.SYSTEM_ORGI), code);
+        List<SysDic> result = new ArrayList<>();
+        String serialized = MainContext.getRedisCommand().getHashKV(RedisKey.getSysDicHashKey(), code);
 
         if (StringUtils.isNotBlank(serialized)) {
             Object obj = SerializeUtil.deserialize(serialized);
@@ -104,8 +101,8 @@ public class Dict<K, V> extends HashMap<K, V> {
      */
     @SuppressWarnings("unchecked")
     public List<SysDic> getDic(final String code, final String id) {
-        List<SysDic> result = new ArrayList<SysDic>();
-        String serialized = MainContext.getRedisCommand().getHashKV(RedisKey.getSysDicHashKeyByOrgi(Constants.SYSTEM_ORGI), code);
+        List<SysDic> result = new ArrayList<>();
+        String serialized = MainContext.getRedisCommand().getHashKV(RedisKey.getSysDicHashKey(), code);
 
         if (StringUtils.isNotBlank(serialized)) {
             Object obj = SerializeUtil.deserialize(serialized);
@@ -139,7 +136,7 @@ public class Dict<K, V> extends HashMap<K, V> {
      */
     @SuppressWarnings("unchecked")
     public List<SysDic> getSysDic(String code) {
-        return MainContext.getCache().getSysDicItemsByCodeAndOrgi(code, Constants.SYSTEM_ORGI);
+        return MainContext.getCache().getSysDicItemsByCode(code);
     }
 
     /**
@@ -149,6 +146,6 @@ public class Dict<K, V> extends HashMap<K, V> {
      * @return
      */
     public SysDic getDicItem(String code) {
-        return MainContext.getCache().findOneSysDicByCodeAndOrgi(code, Constants.SYSTEM_ORGI);
+        return MainContext.getCache().findOneSysDicByCode(code);
     }
 }

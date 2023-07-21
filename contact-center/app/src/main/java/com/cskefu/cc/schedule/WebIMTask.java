@@ -1,17 +1,15 @@
-/*
- * Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2019-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>, 
+ * Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.schedule;
 
@@ -25,15 +23,16 @@ import com.cskefu.cc.model.*;
 import com.cskefu.cc.peer.PeerSyncIM;
 import com.cskefu.cc.persistence.repository.AgentUserTaskRepository;
 import com.cskefu.cc.persistence.repository.JobDetailRepository;
-import com.cskefu.cc.persistence.repository.OnlineUserRepository;
+import com.cskefu.cc.persistence.repository.PassportWebIMUserRepository;
 import com.cskefu.cc.proxy.OnlineUserProxy;
 import com.cskefu.cc.socketio.message.ChatMessage;
 import com.cskefu.cc.socketio.message.Message;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -60,7 +59,7 @@ public class WebIMTask {
     private AgentUserTaskRepository agentUserTaskRes;
 
     @Autowired
-    private OnlineUserRepository onlineUserRes;
+    private PassportWebIMUserRepository onlineUserRes;
 
     @Autowired
     private JobDetailRepository jobDetailRes;
@@ -69,6 +68,7 @@ public class WebIMTask {
     private TaskExecutor webimTaskExecutor;
 
     @Autowired
+    @Lazy
     private PeerSyncIM peerSyncIM;
 
     @Autowired
@@ -80,15 +80,15 @@ public class WebIMTask {
         if (sessionConfigList != null && sessionConfigList.size() > 0 && MainContext.getContext() != null) {
             for (final SessionConfig sessionConfig : sessionConfigList) {
                 if (sessionConfig.isSessiontimeout()) {        //设置了启用 超时提醒
-                    final List<AgentUserTask> agentUserTask = agentUserTaskRes.findByLastmessageLessThanAndStatusAndOrgi(
+                    final List<AgentUserTask> agentUserTask = agentUserTaskRes.findByLastmessageLessThanAndStatus(
                             MainUtils.getLastTime(sessionConfig.getTimeout()),
-                            MainContext.AgentUserStatusEnum.INSERVICE.toString(), sessionConfig.getOrgi());
+                            MainContext.AgentUserStatusEnum.INSERVICE.toString());
                     for (final AgentUserTask task : agentUserTask) {        // 超时未回复
-                        cache.findOneAgentUserByUserIdAndOrgi(
-                                task.getUserid(), Constants.SYSTEM_ORGI).ifPresent(p -> {
+                        cache.findOneAgentUserByUserId(
+                                task.getUserid()).ifPresent(p -> {
                             if (StringUtils.isNotBlank(p.getAgentno())) {
-                                AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
-                                        p.getAgentno(), task.getOrgi());
+                                AgentStatus agentStatus = cache.findOneAgentStatusByAgentno(
+                                        p.getAgentno());
                                 task.setAgenttimeouttimes(task.getAgenttimeouttimes() + 1);
                                 if (agentStatus != null && (task.getWarnings() == null || task.getWarnings().equals(
                                         "0"))) {
@@ -110,7 +110,7 @@ public class WebIMTask {
                                             sessionConfig.getServicename(),
                                             p, agentStatus, task);
                                     try {
-                                        acdAgentService.finishAgentService(p, task.getOrgi());
+                                        acdAgentService.finishAgentService(p);
                                     } catch (Exception e) {
                                         logger.warn("[task] exception: ", e);
                                     }
@@ -119,14 +119,14 @@ public class WebIMTask {
                         });
                     }
                 } else if (sessionConfig.isResessiontimeout()) {    //未启用超时提醒，只设置了超时断开
-                    List<AgentUserTask> agentUserTask = agentUserTaskRes.findByLastmessageLessThanAndStatusAndOrgi(
+                    List<AgentUserTask> agentUserTask = agentUserTaskRes.findByLastmessageLessThanAndStatus(
                             MainUtils.getLastTime(sessionConfig.getRetimeout()),
-                            MainContext.AgentUserStatusEnum.INSERVICE.toString(), sessionConfig.getOrgi());
+                            MainContext.AgentUserStatusEnum.INSERVICE.toString());
                     for (final AgentUserTask task : agentUserTask) {        // 超时未回复
-                        cache.findOneAgentUserByUserIdAndOrgi(
-                                task.getUserid(), Constants.SYSTEM_ORGI).ifPresent(p -> {
-                            AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
-                                    p.getAgentno(), task.getOrgi());
+                        cache.findOneAgentUserByUserId(
+                                task.getUserid()).ifPresent(p -> {
+                            AgentStatus agentStatus = cache.findOneAgentStatusByAgentno(
+                                    p.getAgentno());
                             if (agentStatus != null && task.getWarningtime() != null && MainUtils.getLastTime(
                                     sessionConfig.getRetimeout()).after(task.getWarningtime())) {    //再次超时未回复
                                 /**
@@ -136,7 +136,7 @@ public class WebIMTask {
                                         sessionConfig, sessionConfig.getRetimeoutmsg(), agentStatus.getUsername(),
                                         p, agentStatus, task);
                                 try {
-                                    acdAgentService.finishAgentService(p, task.getOrgi());
+                                    acdAgentService.finishAgentService(p);
                                 } catch (Exception e) {
                                     logger.warn("[task] exception: ", e);
                                 }
@@ -145,12 +145,12 @@ public class WebIMTask {
                     }
                 }
                 if (sessionConfig.isQuene()) {    // 启用排队超时功能，超时断开
-                    List<AgentUserTask> agentUserTask = agentUserTaskRes.findByLogindateLessThanAndStatusAndOrgi(
+                    List<AgentUserTask> agentUserTask = agentUserTaskRes.findByLogindateLessThanAndStatus(
                             MainUtils.getLastTime(sessionConfig.getQuenetimeout()),
-                            MainContext.AgentUserStatusEnum.INQUENE.toString(), sessionConfig.getOrgi());
+                            MainContext.AgentUserStatusEnum.INQUENE.toString());
                     for (final AgentUserTask task : agentUserTask) {        // 超时未回复
-                        cache.findOneAgentUserByUserIdAndOrgi(
-                                task.getUserid(), Constants.SYSTEM_ORGI).ifPresent(p -> {
+                        cache.findOneAgentUserByUserId(
+                                task.getUserid()).ifPresent(p -> {
                             /**
                              * 设置了超时,断开
                              */
@@ -158,7 +158,7 @@ public class WebIMTask {
                                     sessionConfig, sessionConfig.getQuenetimeoutmsg(), sessionConfig.getServicename(),
                                     p, null, task);
                             try {
-                                acdAgentService.finishAgentService(p, task.getOrgi());
+                                acdAgentService.finishAgentService(p);
                             } catch (Exception e) {
                                 logger.warn("[task] exception: ", e);
                             }
@@ -175,16 +175,16 @@ public class WebIMTask {
         if (sessionConfigList != null && sessionConfigList.size() > 0) {
             for (final SessionConfig sessionConfig : sessionConfigList) {
                 // ? 为什么还要重新取一次？
-//                sessionConfig = automaticServiceDist.initSessionConfig(sessionConfig.getOrgi());
+//                sessionConfig = automaticServiceDist.initSessionConfi);
                 if (sessionConfig != null && MainContext.getContext() != null && sessionConfig.isAgentreplaytimeout()) {
-                    List<AgentUserTask> agentUserTask = agentUserTaskRes.findByLastgetmessageLessThanAndStatusAndOrgi(
+                    List<AgentUserTask> agentUserTask = agentUserTaskRes.findByLastgetmessageLessThanAndStatus(
                             MainUtils.getLastTime(sessionConfig.getAgenttimeout()),
-                            MainContext.AgentUserStatusEnum.INSERVICE.toString(), sessionConfig.getOrgi());
+                            MainContext.AgentUserStatusEnum.INSERVICE.toString());
                     for (final AgentUserTask task : agentUserTask) {        // 超时未回复
-                        cache.findOneAgentUserByUserIdAndOrgi(
-                                task.getUserid(), Constants.SYSTEM_ORGI).ifPresent(p -> {
-                            AgentStatus agentStatus = cache.findOneAgentStatusByAgentnoAndOrig(
-                                    p.getAgentno(), task.getOrgi());
+                        cache.findOneAgentUserByUserId(
+                                task.getUserid()).ifPresent(p -> {
+                            AgentStatus agentStatus = cache.findOneAgentStatusByAgentno(
+                                    p.getAgentno());
                             if (agentStatus != null && (task.getReptimes() == null || task.getReptimes().equals("0"))) {
                                 task.setReptimes("1");
                                 task.setReptime(new Date());
@@ -208,17 +208,17 @@ public class WebIMTask {
      */
     @Scheduled(fixedDelay = 60000, initialDelay = 20000)
     public void onlineuser() {
-        final Page<OnlineUser> pages = onlineUserRes.findByStatusAndCreatetimeLessThan(
+        final Page<PassportWebIMUser> pages = onlineUserRes.findByStatusAndCreatetimeLessThan(
                 MainContext.OnlineUserStatusEnum.ONLINE.toString(),
-                MainUtils.getLastTime(60), new PageRequest(0, 1000));
+                MainUtils.getLastTime(60), PageRequest.of(0, 1000));
         if (pages.getContent().size() > 0) {
-            for (final OnlineUser onlineUser : pages.getContent()) {
+            for (final PassportWebIMUser passportWebIMUser : pages.getContent()) {
                 try {
                     logger.info(
-                            "[save] put onlineUser id {}, status {}, invite status {}", onlineUser.getId(),
-                            onlineUser.getStatus(),
-                            onlineUser.getInvitestatus());
-                    OnlineUserProxy.offline(onlineUser);
+                            "[save] put onlineUser id {}, status {}, invite status {}", passportWebIMUser.getId(),
+                            passportWebIMUser.getStatus(),
+                            passportWebIMUser.getInvitestatus());
+                    OnlineUserProxy.offline(passportWebIMUser);
                 } catch (Exception e) {
                     logger.warn("[onlineuser] error", e);
                 }
@@ -232,7 +232,6 @@ public class WebIMTask {
      * sign:session,
      * touser:touser,
      * session: session ,
-     * orgi:orgi,
      * username:agentstatus,
      * nickname:agentstatus,
      * message : message
@@ -261,7 +260,6 @@ public class WebIMTask {
                 chatMessage.setUserid(agentUser.getUserid());
                 chatMessage.setUsession(agentUser.getUserid());
                 chatMessage.setTouser(agentUser.getUserid());
-                chatMessage.setOrgi(agentUser.getOrgi());
                 chatMessage.setUsername(agentUser.getUsername());
                 chatMessage.setMessage(message);
 
@@ -274,7 +272,7 @@ public class WebIMTask {
                 if (StringUtils.isNotBlank(agentUser.getAgentno())) {
                     chatMessage.setTouser(agentUser.getUserid());
                 }
-                chatMessage.setChannel(agentUser.getChannel());
+                chatMessage.setChannel(agentUser.getChanneltype());
                 chatMessage.setUsession(agentUser.getUserid());
 
                 outMessage.setContextid(agentUser.getContextid());
@@ -294,18 +292,18 @@ public class WebIMTask {
                 // 通知坐席
                 if (agentUser != null && StringUtils.isNotBlank(agentUser.getAgentno())) {
                     peerSyncIM.send(MainContext.ReceiverType.AGENT, MainContext.ChannelType.WEBIM,
-                                    agentUser.getAppid(),
-                                    MainContext.MessageType.MESSAGE, agentUser.getAgentno(), outMessage, true);
+                            agentUser.getAppid(),
+                            MainContext.MessageType.MESSAGE, agentUser.getAgentno(), outMessage, true);
                 }
 
                 // 通知访客
                 if (StringUtils.isNotBlank(chatMessage.getTouser())) {
                     peerSyncIM.send(MainContext.ReceiverType.VISITOR,
-                                    MainContext.ChannelType.toValue(agentUser.getChannel()),
-                                    agentUser.getAppid(),
-                                    MainContext.MessageType.MESSAGE,
-                                    agentUser.getUserid(),
-                                    outMessage, true);
+                            MainContext.ChannelType.toValue(agentUser.getChanneltype()),
+                            agentUser.getAppid(),
+                            MainContext.MessageType.MESSAGE,
+                            agentUser.getUserid(),
+                            outMessage, true);
                 }
             }
         }
@@ -319,19 +317,19 @@ public class WebIMTask {
      */
     @Scheduled(fixedDelay = 600000) //
     public void jobDetail() {
-        List<JobDetail> allJob = new ArrayList<JobDetail>();
+        List<JobDetail> allJob = new ArrayList<>();
         Page<JobDetail> readyTaskList = jobDetailRes.findByTaskstatus(
-                MainContext.TaskStatusType.READ.getType(), new PageRequest(0, 100));
+                MainContext.TaskStatusType.READ.getType(), PageRequest.of(0, 100));
         allJob.addAll(readyTaskList.getContent());
         Page<JobDetail> planTaskList = jobDetailRes.findByPlantaskAndTaskstatusAndNextfiretimeLessThan(
-                true, MainContext.TaskStatusType.NORMAL.getType(), new Date(), new PageRequest(0, 100));
+                true, MainContext.TaskStatusType.NORMAL.getType(), new Date(), PageRequest.of(0, 100));
         allJob.addAll(planTaskList.getContent());
         if (allJob.size() > 0) {
             for (JobDetail jobDetail : allJob) {
-                if (!cache.existJobByIdAndOrgi(jobDetail.getId(), jobDetail.getOrgi())) {
+                if (!cache.existJobById(jobDetail.getId())) {
                     jobDetail.setTaskstatus(MainContext.TaskStatusType.QUEUE.getType());
                     jobDetailRes.save(jobDetail);
-                    cache.putJobByIdAndOrgi(jobDetail.getId(), jobDetail.getOrgi(), jobDetail);
+                    cache.putJobById(jobDetail.getId(), jobDetail);
                     /**
                      * 加入到作业执行引擎
                      */

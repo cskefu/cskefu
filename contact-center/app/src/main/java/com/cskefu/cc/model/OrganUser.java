@@ -1,23 +1,23 @@
-/*
- * Copyright (C) 2019-2022 Chatopera Inc, All rights reserved.
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * Copyright (C) 2019-2022 Chatopera Inc, All rights reserved. 
  * <https://www.chatopera.com>
- * This software and related documentation are provided under a license agreement containing
- * restrictions on use and disclosure and are protected by intellectual property laws.
- * Except as expressly permitted in your license agreement or allowed by law, you may not use,
- * copy, reproduce, translate, broadcast, modify, license, transmit, distribute, exhibit, perform,
- * publish, or display any part, in any form, or by any means. Reverse engineering, disassembly,
- * or decompilation of this software, unless required by law for interoperability, is prohibited.
  */
 
 
 package com.cskefu.cc.model;
 
-import com.cskefu.cc.model.keys.OrganUserId;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.Table;
 import java.util.Date;
 
 /**
@@ -33,12 +33,13 @@ import java.util.Date;
 @IdClass(OrganUserId.class)
 public class OrganUser implements java.io.Serializable {
 
-    @Id private String userid;     // 用户标识
-    @Id private String organ;      // 部门标识
+    @Id
+    private String userid;     // 用户标识
+    @Id
+    private String organ;      // 部门标识
     private Date createtime;   // 创建时间
     private String creator;    // 创建人
     private Date updatetime;   // 更新时间
-    private String orgi;       // 租户ID
 
     public String getUserid() {
         return userid;
@@ -80,11 +81,4 @@ public class OrganUser implements java.io.Serializable {
         this.updatetime = updatetime;
     }
 
-    public String getOrgi() {
-        return orgi;
-    }
-
-    public void setOrgi(String orgi) {
-        this.orgi = orgi;
-    }
 }

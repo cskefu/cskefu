@@ -1,16 +1,14 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
-//- 
-//- Licensed under the Apache License, Version 2.0 (the "License");
-//- you may not use this file except in compliance with the License.
-//- You may obtain a copy of the License at
-//- 
-//-  http://www.apache.org/licenses/LICENSE-2.0
-//- 
-//-  Unless required by applicable law or agreed to in writing, software
+//- Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+//- <https://www.chatopera.com>, Licensed under the Chunsong Public 
+//- License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+//- Unless required by applicable law or agreed to in writing, software
 //- distributed under the License is distributed on an "AS IS" BASIS,
-//-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //- See the License for the specific language governing permissions and
 //- limitations under the License.
+//- Copyright (C) 2018-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>
+//- Licensed under the Apache License, Version 2.0
+//- http://www.apache.org/licenses/LICENSE-2.0
 //-
     原始 Freemarker 文件位置：https://gitlab.chatopera.com/chatopera/cskefu/blob/760e130e770a96a43e8f6f2c8a1eb0885c0bbf90/contact-center/app/src/main/resources/templates/apps/agent/mainagentuser_skype.html
     该页面需要使用Skype插件，此处是没有完全转化的 Pug 文件
@@ -33,7 +31,7 @@ body
                 // word-break: break-all;">
                 //             ${curagentuser.username!''}<#if curagentuser.region??>  （ ${curagentuser.region!''} </#if></div>
                 //             <div style="float:right;" class="ukefu-service-btn">
-                //                 <a href="/agent/summary.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}&channel=${curagentuser.channel}" data-toggle="ajax" data-width="950" data-height="450" title="记录服务小结"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe65c;</i> 服务小结</button></a>
+                //                 <a href="/agent/summary.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}&channel=${curagentuser.channeltype}" data-toggle="ajax" data-width="950" data-height="450" title="记录服务小结"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe65c;</i> 服务小结</button></a>
                 //                 <a href="/agent/transfer.html?userid=${curagentuser.userid!''}&agentserviceid=${curagentuser.agentserviceid!''}&agentuserid=${curagentuser.id}" data-toggle="ajax" data-width="750" data-height="550" title="选择转接对象"><button class="layui-btn layui-btn-small"><i class="kfont">&#xe7be;</i> 转接坐席</button></a>
                 //                 <a href="/agent/end.html?id=${curagentuser.id!''}" data-toggle="tip" data-title="请确认是否关闭和用户“${curagentuser.username!''}”的对话？"><button class="layui-btn layui-btn-small layui-btn-danger"><i class="kfont">&#xe621;</i> 结束对话</button></a>
                 //             </div>
@@ -195,11 +193,11 @@ body
 div(style='float:right;')
     button.layui-btn.layui-btn-small.layui-btn-radius.layui-btn-danger(href='/agent/blacklist/add.html?userid=${curagentuser.userid!\'\'}&agentserviceid=${curagentuser.agentserviceid!\'\'}&agentuserid=${curagentuser.id}&times=${serviceCount!0}&chattime=<#if onlineUser?? && onlineUser.betweentime??>${onlineUser.betweentime}<#else>0</#if>', data-toggle='ajax', data-title='拉黑访客', data-width='900') 拉黑访客
 .box-body(style='padding:0px 10px;position: relative;')
-    //                              <#if curagentuser.channel?? && curagentuser.channel == "webim">
+    //                              <#if curagentuser.channeltype?? && curagentuser.channeltype == "webim">
     //                                 <#include "/apps/agent/channel/webim.html">
-    //                              <#elseif curagentuser.channel?? && curagentuser.channel == "weixin">
+    //                              <#elseif curagentuser.channeltype?? && curagentuser.channeltype == "weixin">
     //                                 <#include "/apps/agent/channel/weixin.html">
-    //                              <#elseif curagentuser.channel?? && curagentuser.channel == "skype">
+    //                              <#elseif curagentuser.channeltype?? && curagentuser.channeltype == "skype">
     //                                 <#include "/apps/agent/channel/skype.html">
     //                              </#if>
     //                             <#if curagentuser.name??>
@@ -289,7 +287,7 @@ div(style='float:right;')
                 //                                 <#if agentServiceList?? && agentServiceList?size gt 0>
                 //                                 <#list agentServiceList as agentService>
                 //                                 <li class="ukefu-agentservice-list">
-                //                                     <a href="/service/online/chatmsg.html?id=${agentService.id!''}&title=false" data-toggle="ajax" data-width="950" data-height="500" data-title="服务记录">
+                //                                     <a href="/service/online/chatmsg.html?id=" + agentService.id + "&title=false" data-toggle="ajax" data-width="950" data-height="500" data-title="服务记录">
                 //                                         <span style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;max-width:48%;display: inline-block;" class="quick-reply" data-id="content_${agentService.id!''}" title="${agentService.username!''}">${agentService.username!''}</span>
                 //                                         <div class="ukefu-agentservice-his" style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;max-width:48%;" title="${agentService.agentusername!''}">坐席：${agentService.agentusername!''}</div>
                 //                                         <div style="color:#333;position: relative;">
@@ -478,35 +476,21 @@ script.
     });
 
     if ("${massMassageToAgent}" != "") {
-        console.log("massMassageToAgent", "${massMassageToAgent}")
-
         const idslist = "${ids}".split(",");
 
         for (var i = 1; i < idslist.length; i++) {
             console.log(i, "${massMassageToAgent}", idslist, idslist[i])
 
-            top.WebIM.sendMessage("${massMassageToAgent}", '${user.id!'
-            '}' , "${curagentuser.appid!''}" , "${user.sessionid!''}" , "${orgi!''}" , idslist[i] , "${user.username!''}"
-        )
-            ;
-
-            console.log(123)
-
+            top.WebIM.sendMessage("${massMassageToAgent}", '${user.id!''}' , "${curagentuser.appid!''}" , "${user.sessionid!''}" , idslist[i] , "${user.username!''}");
         }
     }
 
     function sendMessage() {
-        console.log("skype send message", '1${user.id!'
-        '}', "2${curagentuser.appid!''}", "3${user.sessionid!''}", "4${orgi!''}", "5<#if curagentuser??>${curagentuser.userid!''}</#if>", "6${user.username!''}"
-    )
         editor.sync();
         var count = editor.count("text");
         if (count > 0) {
             var message = document.getElementById('message').value;
-            top.WebIM.sendMessage(message, '${user.id!'
-            '}' , "${curagentuser.appid!''}" , "${user.sessionid!''}" , "${orgi!''}" , "<#if curagentuser??>${curagentuser.userid!''}</#if>" , "${user.username!''}", "${curagentuser.id}"
-        )
-            ;
+            top.WebIM.sendMessage(message, '${user.id!''}' , "${curagentuser.appid!''}" , "${user.sessionid!''}" , "<#if curagentuser??>${curagentuser.userid!''}</#if>" , "${user.username!''}", "${curagentuser.id}");
 
             console.log(editor, count)
         }

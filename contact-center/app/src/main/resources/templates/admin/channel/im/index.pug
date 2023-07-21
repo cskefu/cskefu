@@ -1,16 +1,14 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
-//- 
-//- Licensed under the Apache License, Version 2.0 (the "License");
-//- you may not use this file except in compliance with the License.
-//- You may obtain a copy of the License at
-//- 
-//-  http://www.apache.org/licenses/LICENSE-2.0
-//- 
-//-  Unless required by applicable law or agreed to in writing, software
+//- Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+//- <https://www.chatopera.com>, Licensed under the Chunsong Public 
+//- License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+//- Unless required by applicable law or agreed to in writing, software
 //- distributed under the License is distributed on an "AS IS" BASIS,
-//-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //- See the License for the specific language governing permissions and
 //- limitations under the License.
+//- Copyright (C) 2018-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>
+//- Licensed under the Apache License, Version 2.0
+//- http://www.apache.org/licenses/LICENSE-2.0
 extends /admin/include/layout.pug
 
 block content
@@ -32,22 +30,22 @@ block content
                                 th 创建时间
                                 th(style="white-space:nowrap;", nowrap="nowrap") 操作
                         tbody
-                            for snsAccount in snsAccountList.content
+                            for channel in snsAccountList.content
                                 tr
-                                    td(title="#{snsAccount.name}", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")= snsAccount.name
-                                    td(title="#{snsAccount.baseURL}", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")= snsAccount.baseURL
-                                    td= snsAccount.snsid
-                                    td= pugHelper.formatDate("yyyy-MM-dd HH:mm:ss", snsAccount.createtime)
+                                    td(title="#{channel.name}", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")= channel.name
+                                    td(title="#{channel.baseURL}", style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;")= channel.baseURL
+                                    td= channel.snsid
+                                    td= pugHelper.formatDate("yyyy-MM-dd HH:mm:ss", channel.createtime)
                                     td(style="white-space:nowrap;", nowrap="nowrap")
-                                        a(href="/admin/webim/index.html?snsid=" + snsAccount.snsid)
+                                        a(href="/admin/webim/index.html?snsid=" + channel.snsid)
                                             i.layui-icon 
                                             |                                接入
                                         if user.superadmin || user.admin
-                                            a(href="/admin/im/edit.html?id=" + snsAccount.id, data-toggle="ajax", data-width="600", data-height="300", data-title="编辑网站")
+                                            a(href="/admin/im/edit.html?id=" + channel.id, data-toggle="ajax", data-width="600", data-height="300", data-title="编辑网站")
                                                 i.layui-icon 
                                                 |                                编辑
-                                        if (user.superadmin || user.admin) && snsAccount.datastatus != true
-                                            a(href="/admin/im/delete.html?id=" + snsAccount.id, style="margin-left:10px;", data-toggle="tip", data-confirm=(secret.enable ? "请输入二次安全验证密码" : false),title="删除网站需要进行二次密码验证，请确认是否删除？")
+                                        if (user.superadmin || user.admin) && channel.datastatus != true
+                                            a(href="/admin/im/delete.html?id=" + channel.id, style="margin-left:10px;", data-toggle="tip", data-confirm=(secret.enable ? "请输入二次安全验证密码" : false),title="删除网站需要进行二次密码验证，请确认是否删除？")
                                                 i.layui-icon(style="color:red;") ဆ
                                                 |                                删除
             .row(style="padding:5px;")

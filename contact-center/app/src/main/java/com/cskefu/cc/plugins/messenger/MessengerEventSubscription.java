@@ -1,3 +1,13 @@
+/*
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.cskefu.cc.plugins.messenger;
 
 import com.alibaba.fastjson.JSONObject;
@@ -37,9 +47,9 @@ public class MessengerEventSubscription {
     public void onPublish(final String jsonStr) {
         JSONObject payload = JSONObject.parseObject(jsonStr);
         String otnId = payload.getString("otnId");
-        Date sendtime = payload.getTimestamp("sendtime");
+        Date sendtime = (Date) payload.getTimestamp("sendtime");
 
-        FbOTN otn = otnRepository.getOne(otnId);
+        FbOTN otn = otnRepository.findById(otnId).orElse(null);
         FbMessenger fbMessenger = fbMessengerRepository.findOneByPageId(otn.getPageId());
         if (fbMessenger != null && otn != null) {
             if (otn.getStatus().equals("create") && otn.getSendtime() != null && otn.getSendtime().equals(sendtime)) {

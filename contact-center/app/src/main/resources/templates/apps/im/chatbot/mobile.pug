@@ -1,19 +1,17 @@
-//- Copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
-//- 
-//- Licensed under the Apache License, Version 2.0 (the "License");
-//- you may not use this file except in compliance with the License.
-//- You may obtain a copy of the License at
-//- 
-//-  http://www.apache.org/licenses/LICENSE-2.0
-//- 
-//-  Unless required by applicable law or agreed to in writing, software
+//- Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+//- <https://www.chatopera.com>, Licensed under the Chunsong Public 
+//- License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+//- Unless required by applicable law or agreed to in writing, software
 //- distributed under the License is distributed on an "AS IS" BASIS,
-//-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //- See the License for the specific language governing permissions and
 //- limitations under the License.
+//- Copyright (C) 2018-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>
+//- Licensed under the Apache License, Version 2.0
+//- http://www.apache.org/licenses/LICENSE-2.0
 doctype html
 // constants
-- var dialog_headimg= inviteData.consult_dialog_headimg ? '/res/image.html?id=' + inviteData.consult_dialog_headimg : '/images/agent.png'
+- var dialog_headimg = inviteData.consult_dialog_headimg ? (inviteData.consult_dialog_headimg.startsWith("http:")||inviteData.consult_dialog_headimg.startsWith("https:")?inviteData.consult_dialog_headimg:'/res/image.html?id=' + inviteData.consult_dialog_headimg) : '/images/agent.png'
 html
     head
         meta(charset='utf-8')
@@ -24,7 +22,9 @@ html
         link(rel='shortcut icon', type='image/x-icon', href='/images/favicon.ico?t=1489039620156')
         link(rel='stylesheet', type='text/css', href='/im/css/ukefu.css')
         link#skin(rel='stylesheet', type='text/css', href='/im/css/default/ukefu.css')
-        //  kindeditor
+        //- telemetry
+        include ../telemetry
+        //-  kindeditor
         link(rel='stylesheet', type='text/css', href='/im/js/kindeditor/themes/default/default.css')
         script(type='text/javascript', src='/js/jquery-1.10.2.min.js')
         script(src='/js/jquery.form.js')
@@ -237,7 +237,6 @@ html
                                     userid: "#{userid}",
                                     type: "message",
                                     session: "#{sessionid}",
-                                    orgi: "#{orgi}",
                                     message: key
                                 });
                             }
@@ -263,7 +262,6 @@ html
                                 userid: "#{userid}",
                                 type: "message",
                                 session: "#{sessionid}",
-                                orgi: "#{orgi}",
                                 message: key
                             });
                         });
@@ -355,13 +353,14 @@ html
         //  kindeditor
     body.ukefu-im-theme.ukefu-point-text(style='width:100%;overflow:hidden;height:100%;max-height:100%;position: fixed;/* 或者scroll */-webkit-overflow-scrolling: touch;/* 解决ios滑动不流畅问题 */')
         #header(class="theme" + inviteData.consult_dialog_color)
-            img(src=(inviteData.consult_dialog_logo ? '/res/image.html?id=' + inviteData.consult_dialog_logo : '/images/logo.png'), style='height:50px;padding:10px;')
+            - var dialog_logo=inviteData.consult_dialog_logo?(inviteData.consult_dialog_logo.startsWith("http://") || inviteData.consult_dialog_logo.startsWith("https://")?inviteData.consult_dialog_logo:'/res/image.html?id='+inviteData.consult_dialog_logo):'/images/logo.png'
+            img(src=dialog_logo, style='height:50px;padding:10px;')
             .ukefu-func-tab
                 ul
                     if models.contains("chatbot") && inviteData.ai && inviteData.ai == true && aiid
                         if exchange || exchange == "true"
                             li
-                                a(href="/im/index.html?appid=" + appid + "&orgi=" + orgi + (aiid ? '&aiid=' + aiid : '') + "&ai=false" + (client ? '&client=' + client : '') + (type ? '&type=' + type : '') + (skill ? '&skill=' + skill : '') + (agent ? '&agent=' + agent : '') + "&userid=" + userid + "&sessionid=" + sessionid + "&t=" + pugHelper.currentTimeMillis()) 人工客服
+                                a(href="/im/index.html?appid=" + appid + (aiid ? '&aiid=' + aiid : '') + "&ai=false" + (client ? '&client=' + client : '') + (type ? '&type=' + type : '') + (skill ? '&skill=' + skill : '') + (agent ? '&agent=' + agent : '') + "&userid=" + userid + "&sessionid=" + sessionid + "&t=" + pugHelper.currentTimeMillis()) 人工客服
                         li.cur
                             a(href="javascript:void(0)") 智能坐席
                     else
@@ -376,7 +375,7 @@ html
                 button#offcoop-btn(style='border-color:#009688 !important;color:#FFFFFF;display: inline-block;height: 38px;line-height: 38px;padding: 0 18px;background-color: #009688;color: #fff;white-space: nowrap;text-align: center;font-size: 14px;margin-right:10px;border: none;border-radius: 2px;cursor: pointer;opacity: .9;filter: alpha(opacity=90);background-color: #377FED !important;border:1px solid #FFFFFF;', onclick='offCoop();') 退出协作
         .chat-above#above
             .clearfix.message.welcome
-                span#welcome-message= inviteData.dialog_message ? inviteData.dialog_message : '欢迎您来咨询！欢迎使用春松客服！如需帮助请联系 info@chatopera.com'
+                span#welcome-message= inviteData.dialog_message ? inviteData.dialog_message : '欢迎您来咨询！欢迎使用 Chatopera 云服务！如需帮助请联系 info@chatopera.com'
             for chatMessage in pugHelper.reverse(chatMessageList.content)
                 if chatMessage.userid && userid && chatMessage.calltype && chatMessage.calltype == "呼入"
                     .clearfix.chat-block
@@ -462,7 +461,7 @@ html
             var hostname = location.hostname;
             var protocol = window.location.protocol.replace(/:/g, '');
             var username = encodeURIComponent("#{username}");
-            var socket = io(protocol + '://' + hostname + ':#{port}/im/chatbot?userid=#{userid}&orgi=#{orgi}&session=#{sessionid}&appid=#{appid}&osname=!{osname}&browser=!{browser}!{skill ? "&skill=" + skill : ""}!{username ? "&nickname='+username+'" : ""}!{agent ? "&agent=" + agent : ""}!{title ? "&title=" + encodeURIComponent(title) : ""}!{traceid ? "&url=" + url : ""}!{traceid ? "&traceid=" + traceid : ""}!{aiid ? "&aiid=" + aiid : ""}', {transports: ['websocket', 'polling']});
+            var socket = io(protocol + '://' + hostname + ':#{port}/im/chatbot?userid=#{userid}&session=#{sessionid}&appid=#{appid}&osname=!{osname}&browser=!{browser}!{skill ? "&skill=" + skill : ""}!{username ? "&nickname='+username+'" : ""}!{agent ? "&agent=" + agent : ""}!{title ? "&title=" + encodeURIComponent(title) : ""}!{traceid ? "&url=" + url : ""}!{traceid ? "&traceid=" + traceid : ""}!{aiid ? "&aiid=" + aiid : ""}', {transports: ['websocket', 'polling']});
             socket.on('connect', function () {
                 //service.sendRequestMessage();
                 //output('<span id="callOutConnect-message">'+ new Date().format("yyyy-MM-dd hh:mm:ss") + ' 开始沟通' +'</span>' , 'message callOutConnect-message');
@@ -572,7 +571,6 @@ html
                         channel: "webim",
                         type: "message",
                         contextid: "#{sessionid}",
-                        orgi: "#{orgi}",
                         message: message
                     });
                 }

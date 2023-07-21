@@ -1,3 +1,13 @@
+/*
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.cskefu.cc.peer;
 
 import com.cskefu.cc.basic.MainContext;
@@ -7,7 +17,7 @@ import com.cskefu.cc.persistence.repository.ChatMessageRepository;
 import com.cskefu.cc.persistence.repository.RecentUserRepository;
 import com.cskefu.cc.socketio.client.NettyClients;
 import com.cskefu.cc.socketio.message.ChatMessage;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -28,12 +38,11 @@ public class PeerSyncEntIM {
     public void send(
             final String user,
             final String group,
-            final String orgi,
             final MainContext.MessageType msgType,
             final ChatMessage data
     ) {
         logger.info(
-                "[send] userid {}, group {}, group {}, msgType {}, outMessage {}", user, group, orgi, msgType, data);
+                "[send] userid {}, group {}, msgType {}, outMessage {}", user, group, msgType, data);
 
         if (data.getType() == null) {
             data.setType("message");
@@ -64,7 +73,7 @@ public class PeerSyncEntIM {
             chatMessageRes.save(data);    //每条消息存放两条，一个是我的对话记录 ， 另一条是对方的对话历史， 情况当前聊天记录的时候，只清理自己的
             NettyClients.getInstance().sendEntIMEventMessage(data.getTouser(), msgType.toString(), data);    //发送消息给目标用户
 
-            recentUserRes.findByCreaterAndUserAndOrgi(data.getTouser(), new User(user), orgi).ifPresent(u -> {
+            recentUserRes.findByCreaterAndUser(data.getTouser(), new User(user)).ifPresent(u -> {
                 u.setNewmsg(u.getNewmsg() + 1);
                 if (data.getMessage() != null && data.getMessage().length() > 50) {
                     u.setLastmsg(data.getMessage().substring(0, 50));

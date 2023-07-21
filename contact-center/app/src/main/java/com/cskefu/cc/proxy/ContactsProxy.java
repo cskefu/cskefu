@@ -1,12 +1,14 @@
-/*
- * Copyright (C) 2019-2022 Chatopera Inc, All rights reserved.
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * Copyright (C) 2019-2022 Chatopera Inc, All rights reserved. 
  * <https://www.chatopera.com>
- * This software and related documentation are provided under a license agreement containing
- * restrictions on use and disclosure and are protected by intellectual property laws.
- * Except as expressly permitted in your license agreement or allowed by law, you may not use,
- * copy, reproduce, translate, broadcast, modify, license, transmit, distribute, exhibit, perform,
- * publish, or display any part, in any form, or by any means. Reverse engineering, disassembly,
- * or decompilation of this software, unless required by law for interoperability, is prohibited.
  */
 package com.cskefu.cc.proxy;
 
@@ -16,13 +18,13 @@ import com.cskefu.cc.cache.Cache;
 import com.cskefu.cc.exception.CSKefuException;
 import com.cskefu.cc.model.AgentUser;
 import com.cskefu.cc.model.Contacts;
-import com.cskefu.cc.model.OnlineUser;
+import com.cskefu.cc.model.PassportWebIMUser;
 import com.cskefu.cc.model.User;
-import com.cskefu.cc.persistence.es.ContactsRepository;
+import com.cskefu.cc.persistence.repository.ContactsRepository;
 import com.cskefu.cc.persistence.repository.AgentUserRepository;
-import com.cskefu.cc.persistence.repository.OnlineUserRepository;
-import com.cskefu.cc.persistence.repository.SNSAccountRepository;
-import org.apache.commons.lang.StringUtils;
+import com.cskefu.cc.persistence.repository.PassportWebIMUserRepository;
+import com.cskefu.cc.persistence.repository.ChannelRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,13 +53,13 @@ public class ContactsProxy {
     private ContactsRepository contactsRes;
 
     @Autowired
-    private OnlineUserRepository onlineUserRes;
+    private PassportWebIMUserRepository onlineUserRes;
 
     @Value("${web.upload-path}")
     private String path;
 
     @Autowired
-    private SNSAccountRepository snsAccountRes;
+    private ChannelRepository snsAccountRes;
 
 
     /**
@@ -96,14 +98,13 @@ public class ContactsProxy {
             final Contacts contact = contactOpt.get();
 
             // 查看 WebIM 渠道
-            agentUserRes.findOneByContactIdAndStatusNotAndChannelAndOrgi(
-                    contact.getId(),
-                    MainContext.AgentUserStatusEnum.END.toString(),
-                    MainContext.ChannelType.WEBIM.toString(),
-                    contact.getOrgi())
+            agentUserRes.findOneByContactIdAndStatusNotAndChanneltype(
+                            contact.getId(),
+                            MainContext.AgentUserStatusEnum.END.toString(),
+                            MainContext.ChannelType.WEBIM.toString())
                     .filter(p -> StringUtils.equals(p.getAgentno(), logined.getId()))
                     .ifPresent(p -> {
-                        if (!cache.existBlackEntityByUserIdAndOrgi(p.getUserid(), logined.getOrgi())) {
+                        if (!cache.existBlackEntityByUserId(p.getUserid())) {
                             // 访客在线 WebIM，排队或服务中
                             result.add(MainContext.ChannelType.WEBIM);
                         } else {
@@ -115,17 +116,16 @@ public class ContactsProxy {
             if (isCheckSkype && StringUtils.isNotBlank(
                     contact.getSkypeid())) {
                 // 查找匹配的OnlineUser
-                Optional<OnlineUser> opt = onlineUserRes.findOneByContactidAndOrigAndChannel(
+                Optional<PassportWebIMUser> opt = onlineUserRes.findOneByContactidAndChannel(
                         contactid,
-                        logined.getOrgi(),
                         Constants.CSKEFU_MODULE_SKYPE);
                 if (opt.isPresent()) {
                     // 联系人存在访客信息
                     // 并且该访客没有被拉黑
-                    if (!cache.existBlackEntityByUserIdAndOrgi(
-                            opt.get().getId(), logined.getOrgi())) {
-                        Optional<AgentUser> agentUserOpt = cache.findOneAgentUserByUserIdAndOrgi(
-                                opt.get().getId(), logined.getOrgi());
+                    if (!cache.existBlackEntityByUserId(
+                            opt.get().getId())) {
+                        Optional<AgentUser> agentUserOpt = cache.findOneAgentUserByUserId(
+                                opt.get().getId());
                         if (agentUserOpt.isPresent()) {
                             AgentUser agentUser = agentUserOpt.get();
                             if ((StringUtils.equals(
@@ -171,7 +171,7 @@ public class ContactsProxy {
         Set<String> approachable = new HashSet<>();
         for (final Contacts c : contacts.getContent()) {
             try {
-                if (liveApproachChannelsByContactid(user, c.getId(), isSkypeSetup(user.getOrgi())).size() > 0) {
+                if (liveApproachChannelsByContactid(user, c.getId(), isSkypeSetup()).size() > 0) {
                     approachable.add(c.getId());
                 }
             } catch (CSKefuException e) {
@@ -187,9 +187,9 @@ public class ContactsProxy {
      *
      * @return
      */
-    public boolean isSkypeSetup(final String orgi) {
-        if (MainContext.hasModule(Constants.CSKEFU_MODULE_SKYPE) && snsAccountRes.countBySnstypeAndOrgi(
-                Constants.CSKEFU_MODULE_SKYPE, orgi) > 0) {
+    public boolean isSkypeSetup() {
+        if (MainContext.hasModule(Constants.CSKEFU_MODULE_SKYPE) && snsAccountRes.countByType(
+                Constants.CSKEFU_MODULE_SKYPE) > 0) {
             return true;
         }
         return false;

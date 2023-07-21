@@ -1,17 +1,15 @@
-/*
- * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+/* 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>, 
+ * Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.proxy;
 
@@ -21,21 +19,21 @@ import com.cskefu.cc.cache.Cache;
 import com.cskefu.cc.exception.CSKefuException;
 import com.cskefu.cc.model.*;
 import com.cskefu.cc.peer.PeerSyncIM;
-import com.cskefu.cc.persistence.es.ContactsRepository;
 import com.cskefu.cc.persistence.repository.*;
 import com.cskefu.cc.socketio.message.Message;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
@@ -74,7 +72,7 @@ public class AgentUserProxy {
     private AgentServiceRepository agentServiceRes;
 
     @Autowired
-    private SNSAccountRepository snsAccountRes;
+    private ChannelRepository snsAccountRes;
 
     @Autowired
     private AgentServiceProxy agentServiceProxy;
@@ -83,7 +81,7 @@ public class AgentUserProxy {
     private ContactsRepository contactsRes;
 
     @Autowired
-    private OnlineUserRepository onlineUserRes;
+    private PassportWebIMUserRepository onlineUserRes;
 
     @Autowired
     private AgentUserContactsRepository agentUserContactsRes;
@@ -95,6 +93,7 @@ public class AgentUserProxy {
     private AgentStatusRepository agentStatusRes;
 
     @Autowired
+    @Lazy
     private PeerSyncIM peerSyncIM;
 
 
@@ -110,7 +109,7 @@ public class AgentUserProxy {
     public AgentUser figureAgentUserBeforeChatWithContactInfo(final String channels, final String contactid, final User logined) throws CSKefuException {
         // 聊天依赖的对象
         AgentUser agentUser = null;
-        OnlineUser onlineUser;
+        PassportWebIMUser passportWebIMUser;
 
         // 检查触达方式是否存在
         if (StringUtils.isNotBlank(channels)) {
@@ -118,17 +117,16 @@ public class AgentUserProxy {
             String channel = StringUtils.split(channels, ",")[0];
 
             // 查找联系人
-            final Contacts contact = contactsRes.findOne(contactid);
+            final Contacts contact = contactsRes.findById(contactid).orElse(null);
 
             // 查找 OnlineUser
-            onlineUser = onlineUserRes.findOneByContactidAndOrigAndChannel(
-                    contactid, logined.getOrgi(), channel).orElseGet(() -> {
+            passportWebIMUser = onlineUserRes.findOneByContactidAndChannel(
+                    contactid, channel).orElseGet(() -> {
                 return OnlineUserProxy.createNewOnlineUserWithContactAndChannel(contact, logined, channel);
             });
 
             // 查找满足条件的 AgentUser
-            final Optional<AgentUser> op = agentUserRes.findOneByContactIdAndChannelAndOrgi(contactid, channel,
-                    logined.getOrgi());
+            final Optional<AgentUser> op = agentUserRes.findOneByContactIdAndChanneltype(contactid, channel);
             if (op.isPresent()) {
                 if (StringUtils.equals(op.get().getAgentno(), logined.getId())) {
                     agentUser = op.get();
@@ -141,7 +139,7 @@ public class AgentUserProxy {
             } else {
                 // 创建新的AgentUser
                 agentUser = createAgentUserWithContactAndAgentAndChannelAndStatus(
-                        onlineUser, contact, logined, channel, MainContext.AgentUserStatusEnum.INSERVICE.toString(),
+                        passportWebIMUser, contact, logined, channel, MainContext.AgentUserStatusEnum.INSERVICE.toString(),
                         logined);
             }
         }
@@ -176,7 +174,6 @@ public class AgentUserProxy {
      * @param response
      * @param sort
      * @param logined
-     * @param orgi
      * @throws IOException
      */
     public void buildIndexViewWithModels(
@@ -186,7 +183,6 @@ public class AgentUserProxy {
             final HttpServletResponse response,
             String sort,
             final User logined,
-            final String orgi,
             final AgentUser agentUser) throws IOException {
         Sort defaultSort = null;
         if (StringUtils.isBlank(sort)) {
@@ -201,7 +197,7 @@ public class AgentUserProxy {
             }
         }
         if (StringUtils.isNotBlank(sort)) {
-            List<Sort.Order> list = new ArrayList<Sort.Order>();
+            List<Sort.Order> list = new ArrayList<>();
             if (sort.equals("lastmessage")) {
                 list.add(new Sort.Order(Sort.Direction.DESC, "status"));
                 list.add(new Sort.Order(Sort.Direction.DESC, "lastmessage"));
@@ -209,24 +205,24 @@ public class AgentUserProxy {
                 list.add(new Sort.Order(Sort.Direction.DESC, "status"));
                 list.add(new Sort.Order(Sort.Direction.DESC, "createtime"));
             } else if (sort.equals("default")) {
-                defaultSort = new Sort(Sort.Direction.DESC, "status");
+                defaultSort = Sort.by(Sort.Direction.DESC, "status");
                 Cookie name = new Cookie("sort", null);
                 name.setMaxAge(0);
                 response.addCookie(name);
             }
             if (list.size() > 0) {
-                defaultSort = new Sort(list);
+                defaultSort = Sort.by(list);
                 Cookie name = new Cookie("sort", sort);
                 name.setMaxAge(60 * 60 * 24 * 365);
                 response.addCookie(name);
                 map.addAttribute("sort", sort);
             }
         } else {
-            defaultSort = new Sort(Sort.Direction.DESC, "status");
+            defaultSort = Sort.by(Sort.Direction.DESC, "status");
         }
 
-        List<AgentUser> agentUserList = agentUserRes.findByAgentnoAndOrgi(
-                logined.getId(), logined.getOrgi(), defaultSort);
+        List<AgentUser> agentUserList = agentUserRes.findByAgentno(
+                logined.getId(), defaultSort);
 
         if (agentUserList.size() > 0) {
             if (agentUser != null) {
@@ -246,27 +242,26 @@ public class AgentUserProxy {
             agentUserList.add(agentUser);
         }
 
-//        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(agentUser.getSkill(), logined.getOrgi());
+//        SessionConfig sessionConfig = acdPolicyService.initSessionConfig(agentUser.getSkill());
 //        view.addObject("sessionConfig", sessionConfig);
 //       if (sessionConfig.isOtherquickplay()) {
-//           view.addObject("topicList", OnlineUserProxy.search(null, logined.getOrgi(), logined));
+//           view.addObject("topicList", OnlineUserProxy.search(null, logined));
 //       }
 
         if (agentUserList.size() > 0) {
             view.addObject("agentUserList", agentUserList);
             agentServiceProxy.bundleDialogRequiredDataInView(view,
-                    map, agentUserList.get(0), orgi, logined);
+                    map, agentUserList.get(0), logined);
         }
     }
 
     /**
      * 获得坐席访客会话相关的订阅者（会话监控人员）
      *
-     * @param orgi
      * @param agentUser
      * @return
      */
-    public HashMap<String, String> getAgentUserSubscribers(final String orgi, final AgentUser agentUser) {
+    public HashMap<String, String> getAgentUserSubscribers(final AgentUser agentUser) {
         HashMap<String, String> result = new HashMap<>();
         HashSet<String> bypass = new HashSet<>();
 
@@ -276,7 +271,7 @@ public class AgentUserProxy {
         }
 
         // 首先查看管理员
-        List<User> admins = userRes.findByAdminAndOrgi(true, orgi);
+        List<User> admins = userRes.findByAdmin(true);
 
         for (final User user : admins) {
             if (bypass.contains(user.getId())) continue;
@@ -285,13 +280,13 @@ public class AgentUserProxy {
         }
 
         // 查看浏览权限
-        loadPermissionsFromDB(orgi, AUTH_KEY_AUDIT_READ, bypass, result);
+        loadPermissionsFromDB(AUTH_KEY_AUDIT_READ, bypass, result);
 
         // 查看回复权限
-        loadPermissionsFromDB(orgi, AUTH_KEY_AUDIT_WRITE, bypass, result);
+        loadPermissionsFromDB(AUTH_KEY_AUDIT_WRITE, bypass, result);
 
         // 查看转接权限
-        loadPermissionsFromDB(orgi, AUTH_KEY_AUDIT_TRANS, bypass, result);
+        loadPermissionsFromDB(AUTH_KEY_AUDIT_TRANS, bypass, result);
 
         // DEBUG
         for (final String userId : result.keySet()) {
@@ -311,10 +306,10 @@ public class AgentUserProxy {
      * @param bypass
      * @param result
      */
-    private void loadPermissionsFromDB(final String orgi, final String key, final HashSet<String> bypass, final HashMap<String, String> result) {
-        List<RoleAuth> roleAuths = roleAuthRes.findByDicvalueAndOrgi(key, orgi);
+    private void loadPermissionsFromDB(final String key, final HashSet<String> bypass, final HashMap<String, String> result) {
+        List<RoleAuth> roleAuths = roleAuthRes.findByDicvalue(key);
         for (final RoleAuth roleAuth : roleAuths) {
-            List<String> users = userRoleRes.findByOrgiAndRoleId(orgi, roleAuth.getRoleid());
+            List<String> users = userRoleRes.findByRoleId(roleAuth.getRoleid());
             for (String user : users) {
                 if (!bypass.contains(user)) {
                     addPermission(user, key, result);
@@ -372,7 +367,7 @@ public class AgentUserProxy {
     /**
      * 创建AgentUser
      *
-     * @param onlineUser
+     * @param passportWebIMUser
      * @param contact
      * @param agent
      * @param channel
@@ -382,7 +377,7 @@ public class AgentUserProxy {
      * @throws CSKefuException
      */
     public AgentUser createAgentUserWithContactAndAgentAndChannelAndStatus(
-            final OnlineUser onlineUser,
+            final PassportWebIMUser passportWebIMUser,
             final Contacts contact,
             final User agent,
             final String channel,
@@ -396,18 +391,17 @@ public class AgentUserProxy {
         agentUser.setAgentname(agent.getUname());
         agentUser.setCreatetime(now);
         agentUser.setUpdatetime(now);
-        agentUser.setChannel(channel);
+        agentUser.setChanneltype(channel);
         agentUser.setLogindate(now);
-        agentUser.setUserid(onlineUser.getId());
+        agentUser.setUserid(passportWebIMUser.getId());
         agentUser.setCreater(creator.getId());
         agentUser.setStatus(status);
         agentUser.setServicetime(now);
-        agentUser.setOrgi(creator.getOrgi());
 
         // 获取 appId
         if (StringUtils.equals(channel, MainContext.ChannelType.SKYPE.toString())) {
-            final SNSAccount snsAccount = snsAccountRes.findOneBySnstypeAndOrgi(
-                    MainContext.ChannelType.SKYPE.toString(), agent.getOrgi());
+            final Channel snsAccount = snsAccountRes.findOneByType(
+                    MainContext.ChannelType.SKYPE.toString());
             if (snsAccount != null) {
                 agentUser.setAppid(snsAccount.getSnsid());
             } else {
@@ -428,11 +422,10 @@ public class AgentUserProxy {
         // 创建AgentUserContact
         AgentUserContacts agentUserContact = new AgentUserContacts();
         agentUserContact.setAppid(agentUser.getAppid());
-        agentUserContact.setChannel(agentUser.getChannel());
+        agentUserContact.setChanneltype(agentUser.getChanneltype());
         agentUserContact.setContactsid(contact.getId());
-        agentUserContact.setUserid(onlineUser.getId());
+        agentUserContact.setUserid(passportWebIMUser.getId());
         agentUserContact.setCreater(creator.getId());
-        agentUserContact.setOrgi(creator.getOrgi());
         agentUserContact.setUsername(contact.getUsername());
         agentUserContact.setCreatetime(now);
         agentUserContactsRes.save(agentUserContact);
@@ -446,14 +439,12 @@ public class AgentUserProxy {
      *
      * @param userid
      * @param agentuserid
-     * @param orgi
-     * @return
      * @throws CSKefuException
      */
-    public AgentUser resolveAgentUser(final String userid, final String agentuserid, final String orgi) throws CSKefuException {
-        Optional<AgentUser> opt = cache.findOneAgentUserByUserIdAndOrgi(userid, orgi);
+    public AgentUser resolveAgentUser(final String userid, final String agentuserid) throws CSKefuException {
+        Optional<AgentUser> opt = cache.findOneAgentUserByUserId(userid);
         if (!opt.isPresent()) {
-            AgentUser au = agentUserRes.findOne(agentuserid);
+            AgentUser au = agentUserRes.findById(agentuserid).orElse(null);
             if (au == null) {
                 throw new CSKefuException("Invalid transfer request, agent user not exist.");
             } else {
@@ -469,10 +460,9 @@ public class AgentUserProxy {
      * #TODO 需要分布式锁
      *
      * @param agentStatus
-     * @param orgi
      */
-    public synchronized void updateAgentStatus(AgentStatus agentStatus, String orgi) {
-        int users = cache.getInservAgentUsersSizeByAgentnoAndOrgi(agentStatus.getAgentno(), orgi);
+    public synchronized void updateAgentStatus(AgentStatus agentStatus) {
+        int users = cache.getInservAgentUsersSizeByAgentno(agentStatus.getAgentno());
         agentStatus.setUsers(users);
         agentStatus.setUpdatetime(new Date());
         agentStatusRes.save(agentStatus);
@@ -485,7 +475,7 @@ public class AgentUserProxy {
      * @return
      */
     public Optional<AgentUser> findOne(final String id) {
-        return Optional.ofNullable(agentUserRes.findOne(id));
+        return Optional.ofNullable(agentUserRes.findById(id)).orElse(null);
     }
 
     /**

@@ -1,3 +1,13 @@
+/*
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.cskefu.cc.persistence.impl;
 
 import com.cskefu.cc.model.Tag;
@@ -14,17 +24,17 @@ public class TagDataExchangeImpl implements DataExchangeInterface {
     @Autowired
     private TagRepository tagRes;
 
-    public String getDataByIdAndOrgi(String id, String orgi) {
-        Tag tag = tagRes.findByOrgiAndId(orgi, id);
+    public String getDataById(String id) {
+        Tag tag = tagRes.findById(id).orElse(null);
         return tag != null ? tag.getTag() : id;
     }
 
     @Override
-    public List<Serializable> getListDataByIdAndOrgi(String id, String creater, String orgi) {
+    public List<Serializable> getListDataById(String id, String creater) {
         return null;
     }
 
-    public void process(Object data, String orgi) {
+    public void process(Object data) {
 
     }
 }

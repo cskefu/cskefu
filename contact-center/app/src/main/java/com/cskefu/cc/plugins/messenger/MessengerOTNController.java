@@ -1,3 +1,13 @@
+/*
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.cskefu.cc.plugins.messenger;
 
 import com.alibaba.fastjson.JSONObject;
@@ -5,7 +15,7 @@ import com.cskefu.cc.activemq.BrokerPublisher;
 import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.controller.Handler;
-import com.cskefu.cc.controller.api.request.RestUtils;
+import com.cskefu.cc.util.restapi.RestUtils;
 import com.cskefu.cc.exception.CSKefuException;
 import com.cskefu.cc.model.*;
 import com.cskefu.cc.persistence.repository.FbMessengerRepository;
@@ -13,7 +23,7 @@ import com.cskefu.cc.persistence.repository.FbOTNRepository;
 import com.cskefu.cc.proxy.AgentProxy;
 import com.cskefu.cc.proxy.OrganProxy;
 import com.cskefu.cc.util.Menu;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,8 +38,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
@@ -56,7 +66,7 @@ public class MessengerOTNController extends Handler {
     private BrokerPublisher brokerPublisher;
 
     private Map<String, Organ> getOwnOrgan(HttpServletRequest request) {
-        return organProxy.findAllOrganByParentAndOrgi(super.getOrgan(request), super.getOrgi(request));
+        return organProxy.findAllOrganByParent(super.getOrgan(request));
     }
 
     @RequestMapping("/index")
@@ -64,7 +74,7 @@ public class MessengerOTNController extends Handler {
     public ModelAndView index(ModelMap map, HttpServletRequest request, @Valid String queryPageId) {
         Map<String, Organ> organs = getOwnOrgan(request);
         List<FbMessenger> fbMessengers = fbMessengerRepository.findByOrganIn(organs.keySet());
-        List<String> pageIds = fbMessengers.stream().map(p -> p.getPageId()).collect(Collectors.toList());
+        List<String> pageIds = fbMessengers.stream().map(FbMessenger::getPageId).collect(Collectors.toList());
 
         map.addAttribute("fbMessengers", fbMessengers);
 
@@ -73,7 +83,7 @@ public class MessengerOTNController extends Handler {
             pageIds = Arrays.asList(queryPageId);
         }
 
-        Page<FbOTN> otns = otnRepository.findByPageIdIn(pageIds, new PageRequest(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
+        Page<FbOTN> otns = otnRepository.findByPageIdIn(pageIds, PageRequest.of(super.getP(request), super.getPs(request), Sort.Direction.DESC, "createtime"));
         map.addAttribute("otns", otns);
         return request(super.createView("/admin/channel/messenger/otn/index"));
     }
@@ -110,7 +120,7 @@ public class MessengerOTNController extends Handler {
     @RequestMapping("/edit")
     @Menu(type = "admin", subtype = "messenger")
     public ModelAndView edit(ModelMap map, @Valid String id, HttpServletRequest request) {
-        map.addAttribute("otn", otnRepository.getOne(id));
+        map.addAttribute("otn", otnRepository.findById(id).orElse(null));
         return request(super.createView("/admin/channel/messenger/otn/edit"));
     }
 
@@ -118,7 +128,7 @@ public class MessengerOTNController extends Handler {
     @Menu(type = "admin", subtype = "messenger")
     public ModelAndView update(ModelMap map, @Valid FbOTN otn, HttpServletRequest request) {
         String msg = "update_ok";
-        FbOTN oldOtn = otnRepository.findOne(otn.getId());
+        FbOTN oldOtn = otnRepository.findById(otn.getId()).orElse(null);
         if (oldOtn != null) {
             Date oldSendtime = oldOtn.getSendtime();
 
@@ -152,7 +162,7 @@ public class MessengerOTNController extends Handler {
     public ModelAndView send(ModelMap map, @Valid String id, HttpServletRequest request) {
         String msg = "send_ok";
 
-        FbOTN otn = otnRepository.getOne(id);
+        FbOTN otn = otnRepository.findById(id).orElse(null);
         FbMessenger fbMessenger = fbMessengerRepository.findOneByPageId(otn.getPageId());
         if (fbMessenger != null && otn != null && otn.getStatus().equals("create")) {
             otn.setStatus("sending");
@@ -167,7 +177,7 @@ public class MessengerOTNController extends Handler {
     }
 
     @RequestMapping("/image/upload")
-    @Menu(type = "admin", subtype = "image", access = false)
+    @Menu(type = "admin", subtype = "image")
     public ResponseEntity<String> upload(
             ModelMap map,
             HttpServletRequest request,
@@ -196,7 +206,7 @@ public class MessengerOTNController extends Handler {
     @Menu(type = "admin", subtype = "messenger")
     public ModelAndView delete(ModelMap map, HttpServletRequest request, @Valid String id) {
         String msg = "delete_ok";
-        otnRepository.delete(id);
+        otnRepository.deleteById(id);
 
         return request(super.createView("redirect:/apps/messenger/otn/index.html?msg=" + msg));
     }

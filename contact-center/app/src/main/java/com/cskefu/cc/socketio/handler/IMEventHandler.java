@@ -1,18 +1,16 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.socketio.handler;
 
@@ -40,7 +38,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +46,7 @@ import java.net.InetSocketAddress;
 
 public class IMEventHandler {
     private final static Logger logger = LoggerFactory.getLogger(IMEventHandler.class);
-    protected SocketIOServer server;
+    protected final SocketIOServer server;
 
     public IMEventHandler(SocketIOServer server) {
         this.server = server;
@@ -67,7 +65,6 @@ public class IMEventHandler {
     public void onConnect(SocketIOClient client) {
         try {
             final String user = client.getHandshakeData().getSingleUrlParam("userid");
-            final String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
             final String session = MainUtils.getContextID(client.getHandshakeData().getSingleUrlParam("session"));
             // 渠道标识
             final String appid = client.getHandshakeData().getSingleUrlParam("appid");
@@ -89,8 +86,8 @@ public class IMEventHandler {
             final String browser = client.getHandshakeData().getSingleUrlParam("browser");
 
             logger.info(
-                    "[onConnect] user {}, orgi {}, session {}, appid {}, agent {}, skill {}, title {}, url {}, traceid {}, nickname {}, isInvite {}",
-                    user, orgi, session, appid, agent, skill, title, url, traceid, nickname, isInvite);
+                    "[onConnect] user {}, session {}, appid {}, agent {}, skill {}, title {}, url {}, traceid {}, nickname {}, isInvite {}",
+                    user, session, appid, agent, skill, title, url, traceid, nickname, isInvite);
 
             // save connection info
             client.set("session", session);
@@ -116,7 +113,7 @@ public class IMEventHandler {
                 /**
                  * 更新坐席服务类型
                  */
-                IMServiceUtils.shiftOpsType(user, orgi, MainContext.OptType.HUMAN);
+                IMServiceUtils.shiftOpsType(user, MainContext.OptType.HUMAN);
 
                 IP ipdata = null;
                 if ((StringUtils.isNotBlank(ip))) {
@@ -131,7 +128,6 @@ public class IMEventHandler {
                 final ACDComposeContext ctx = ACDMessageHelper.getWebIMComposeContext(
                         user,
                         nickname,
-                        orgi,
                         session,
                         appid,
                         ip,
@@ -165,16 +161,14 @@ public class IMEventHandler {
     @OnDisconnect
     public void onDisconnect(SocketIOClient client) {
         final String user = client.getHandshakeData().getSingleUrlParam("userid");
-        final String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
-        logger.info("[onDisconnect] user {}, orgi {}", user, orgi);
+        logger.info("[onDisconnect] user {}", user);
         if (user != null) {
             try {
                 /**
                  * 用户主动断开服务
                  */
-                MainContext.getCache().findOneAgentUserByUserIdAndOrgi(user, orgi).ifPresent(p -> {
-                    ACDServiceRouter.getAcdAgentService().finishAgentService(p
-                            , orgi);
+                MainContext.getCache().findOneAgentUserByUserId(user).ifPresent(p -> {
+                    ACDServiceRouter.getAcdAgentService().finishAgentService(p);
                 });
             } catch (Exception e) {
                 logger.warn("[onDisconnect] error", e);
@@ -188,9 +182,8 @@ public class IMEventHandler {
     @OnEvent(value = "new")
     public void onNewEvent(SocketIOClient client, AckRequest request, Contacts contacts) {
         String user = client.getHandshakeData().getSingleUrlParam("userid");
-        String orgi = client.getHandshakeData().getSingleUrlParam("orgi");
 
-        MainContext.getCache().findOneAgentUserByUserIdAndOrgi(user, orgi).ifPresent(p -> {
+        MainContext.getCache().findOneAgentUserByUserId(user).ifPresent(p -> {
             p.setName(contacts.getName());
             p.setPhone(contacts.getPhone());
             p.setEmail(contacts.getEmail());
@@ -200,8 +193,8 @@ public class IMEventHandler {
             getAgentUserProxy().save(p);
         });
 
-        getAgentServiceRepository().findOneByUseridAndOrgiOrderByLogindateDesc(
-                user, orgi).ifPresent(p -> {
+        getAgentServiceRepository().findOneByUseridOrderByLogindateDesc(
+                user).ifPresent(p -> {
             p.setName(contacts.getName());
             p.setPhone(contacts.getPhone());
             p.setEmail(contacts.getEmail());
@@ -225,7 +218,7 @@ public class IMEventHandler {
         /**
          * 以下代码主要用于检查 访客端的字数限制
          */
-        CousultInvite invite = OnlineUserProxy.consult(data.getAppid(), data.getOrgi());
+        CousultInvite invite = OnlineUserProxy.consult(data.getAppid());
 
         int dataLength = data.getMessage().length();
         if (invite != null && invite.getMaxwordsnum() > 0) {

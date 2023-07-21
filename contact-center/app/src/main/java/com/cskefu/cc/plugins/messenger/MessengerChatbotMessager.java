@@ -1,18 +1,27 @@
+/*
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.cskefu.cc.plugins.messenger;
 
 import com.alibaba.fastjson.JSONObject;
-import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.model.FbMessenger;
-import com.cskefu.cc.model.OnlineUser;
+import com.cskefu.cc.model.PassportWebIMUser;
 import com.cskefu.cc.persistence.repository.FbMessengerRepository;
-import com.cskefu.cc.persistence.repository.OnlineUserRepository;
+import com.cskefu.cc.persistence.repository.PassportWebIMUserRepository;
 import com.cskefu.cc.plugins.chatbot.ChatbotConstants;
 import com.cskefu.cc.plugins.chatbot.ChatbotContext;
 import com.cskefu.cc.socketio.message.ChatMessage;
 import com.chatopera.compose4j.Functional;
 import com.chatopera.compose4j.Middleware;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +43,7 @@ public class MessengerChatbotMessager implements Middleware<ChatbotContext> {
     private MessengerMessageProxy messengerMessageProxy;
 
     @Autowired
-    private OnlineUserRepository onlineUserRes;
+    private PassportWebIMUserRepository onlineUserRes;
 
     @Autowired
     private FbMessengerRepository fbMessengerRepository;
@@ -56,20 +65,20 @@ public class MessengerChatbotMessager implements Middleware<ChatbotContext> {
         ChatMessage resp = ctx.getResp();
         if (MainContext.ChannelType.MESSENGER.toString().equals(resp.getChannel())) {
 
-            final OnlineUser onlineUser = onlineUserRes.findOneByUseridAndOrgi(
-                    resp.getUserid(), Constants.SYSTEM_ORGI);
+            final PassportWebIMUser passportWebIMUser = onlineUserRes.findOneByUserid(
+                    resp.getUserid());
 
             Map<String, String> configMap = messengerConfig;
-            FbMessenger fbMessenger = fbMessengerRepository.findOneByPageId(onlineUser.getAppid());
+            FbMessenger fbMessenger = fbMessengerRepository.findOneByPageId(passportWebIMUser.getAppid());
             if (fbMessenger != null && StringUtils.isNotBlank(fbMessenger.getConfig())) {
                 configMap = (Map<String, String>) JSONObject.parse(fbMessenger.getConfig());
             }
 
             if (StringUtils.isNotBlank(resp.getExpmsg())) {
                 String jsonStr = processGenericTemplate(resp.getExpmsg(), configMap);
-                messengerMessageProxy.send(onlineUser.getAppid(), onlineUser.getUserid(), JSONObject.parseObject(jsonStr), fbMessenger);
+                messengerMessageProxy.send(passportWebIMUser.getAppid(), passportWebIMUser.getUserid(), JSONObject.parseObject(jsonStr), fbMessenger);
             } else {
-                messengerMessageProxy.send(onlineUser.getAppid(), onlineUser.getUserid(), processTextTemplate(resp.getMessage(), configMap));
+                messengerMessageProxy.send(passportWebIMUser.getAppid(), passportWebIMUser.getUserid(), processTextTemplate(resp.getMessage(), configMap));
             }
         }
         next.apply();

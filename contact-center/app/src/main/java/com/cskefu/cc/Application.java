@@ -1,50 +1,48 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc;
 
-import com.chatopera.cc.BlessingAndUnblessing;
 import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.config.AppCtxRefreshEventListener;
 import com.cskefu.cc.util.SystemEnvHelper;
 import com.cskefu.cc.util.mobile.MobileNumberUtils;
-import org.apache.commons.lang.StringUtils;
+import jakarta.servlet.MultipartConfigElement;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jms.JmsPoolConnectionFactoryFactory;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
-import org.springframework.boot.web.servlet.ErrorPage;
+import org.springframework.boot.web.server.ConfigurableWebServerFactory;
+import org.springframework.boot.web.server.ErrorPage;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.util.unit.DataSize;
 
-import javax.servlet.MultipartConfigElement;
 import java.io.IOException;
 
 @SpringBootApplication
 @EnableJpaRepositories("com.cskefu.cc.persistence.repository")
-@EnableElasticsearchRepositories("com.cskefu.cc.persistence.es")
 @EnableTransactionManagement
 public class Application {
 
@@ -54,10 +52,10 @@ public class Application {
     private String uploaddir;
 
     @Value("${spring.servlet.multipart.max-file-size}")
-    private String multipartMaxUpload;
+    private Long multipartMaxUpload;
 
     @Value("${spring.servlet.multipart.max-request-size}")
-    private String multipartMaxRequest;
+    private Long multipartMaxRequest;
 
     /**
      * 加载模块
@@ -67,7 +65,6 @@ public class Application {
         if (StringUtils.equalsIgnoreCase(SystemEnvHelper.parseFromApplicationProps("cskefu.modules.contacts"), "true")) {
             MainContext.enableModule(Constants.CSKEFU_MODULE_CONTACTS);
         }
-
         // 会话监控模块 Customer Chats Audit
         if (StringUtils.equalsIgnoreCase(SystemEnvHelper.parseFromApplicationProps("cskefu.modules.cca"), "true")) {
             MainContext.enableModule(Constants.CSKEFU_MODULE_CCA);
@@ -85,20 +82,13 @@ public class Application {
     }
 
     /**
-     * 开源许可协议
-     */
-    protected static void license(){
-        System.out.println(">> 春松客服采用开源许可证：Apache License 2.0");
-        System.out.println(">> 详细介绍：https://www.cskefu.com/cskefu-opensource-license");
-        System.out.println(">> CSKeFu is released under Apache License 2.0");
-        System.out.println(">> Get details about CSKeFu License with https://www.cskefu.com/cskefu-opensource-license");
-    }
-
-    /**
      * Init local resources
      */
     protected static void serve(final String[] args) {
         try {
+            // Tune druid params, https://github.com/cskefu/cskefu/issues/835
+            System.setProperty("druid.mysql.usePingMethod", "false");
+
             MobileNumberUtils.init();
             /************************
              *  该APP中加载多个配置文件
@@ -107,8 +97,6 @@ public class Application {
             SpringApplication app = new SpringApplicationBuilder(Application.class)
                     .properties("spring.config.name:application,git")
                     .build();
-            Application.license();
-            BlessingAndUnblessing.print();
             app.setBannerMode(Banner.Mode.CONSOLE);
             app.setAddCommandLineProperties(false);
             app.addListeners(new AppCtxRefreshEventListener());
@@ -120,27 +108,34 @@ public class Application {
         }
     }
 
+  // TODO lecjy
     @Bean
     public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
-        factory.setMaxFileSize(multipartMaxUpload); //KB,MB
-        factory.setMaxRequestSize(multipartMaxRequest);
+        factory.setMaxFileSize(DataSize.ofMegabytes(multipartMaxUpload)); //KB,MB
+        factory.setMaxRequestSize(DataSize.ofMegabytes(multipartMaxRequest));
         factory.setLocation(uploaddir);
         return factory.createMultipartConfig();
     }
 
+    // TODO lecjy
     @Bean
-    public EmbeddedServletContainerCustomizer containerCustomizer() {
-        return new EmbeddedServletContainerCustomizer() {
-            @Override
-            public void customize(ConfigurableEmbeddedServletContainer container) {
-                ErrorPage error = new ErrorPage("/error.html");
-                container.addErrorPages(error);
-            }
+    public WebServerFactoryCustomizer<ConfigurableWebServerFactory> webServerFactoryCustomizer() {
+        return factory -> {
+            // 定义404错误页
+            HttpStatus notFound = HttpStatus.NOT_FOUND;
+            // 定义404错误页
+            ErrorPage errorPage = new ErrorPage(notFound, "/error.html");
+            // 追加错误页，替换springboot默认的错误页
+            factory.addErrorPages(errorPage);
         };
     }
 
     public static void main(String[] args) {
-        Application.serve(args);
+        try {
+            Application.serve(args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

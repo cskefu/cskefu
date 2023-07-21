@@ -1,18 +1,16 @@
 /*
- * Copyright (C) 2017 优客服-多渠道客服系统
- * Modifications copyright (C) 2018-2022 Chatopera Inc, <https://www.chatopera.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.persistence.repository;
 
@@ -28,23 +26,23 @@ import java.util.Collection;
 import java.util.List;
 
 public interface UserRoleRepository extends JpaRepository<UserRole, String> {
-	List<UserRole> findByOrganAndRole(String organ, Role role);
+    List<UserRole> findByOrganAndRole(String organ, Role role);
 
-	Page<UserRole> findByOrganAndRole(String organ, Role role,
-			Pageable paramPageable);
+    Page<UserRole> findByOrganAndRole(String organ, Role role,
+                                      Pageable paramPageable);
 
-	Page<UserRole> findByOrganInAndRole(Collection<String> organ, Role role,
-			Pageable paramPageable);
+    Page<UserRole> findByOrganInAndRole(Collection<String> organ, Role role,
+                                        Pageable paramPageable);
 
-	Page<UserRole> findByOrgiAndRole(String orgi, Role role, Pageable paramPageable);
+    Page<UserRole> findByRole(Role role, Pageable paramPageable);
 
-	List<UserRole> findByOrgiAndRole(String orgi, Role role);
+    List<UserRole> findByRole(Role role);
 
-	List<UserRole> findByOrgiAndUser(String orgi, User user);
+    List<UserRole> findByUser(User user);
 
-	List<UserRole> findByOrganAndUser(String organ, User user);
+    List<UserRole> findByOrganAndUser(String organ, User user);
 
-	@Query(value = "SELECT u.user_id FROM uk_userrole u WHERE u.orgi = ?1 AND u.role_id = ?2", nativeQuery = true)
-	List<String> findByOrgiAndRoleId(final String orgi, final String roleid);
+    @Query(nativeQuery = true, value = "SELECT u.user_id FROM uk_userrole u WHERE u.role_id = ?1")
+    List<String> findByRoleId(final String roleid);
 
 }

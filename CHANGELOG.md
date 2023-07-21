@@ -1,4 +1,15 @@
-以下为概述，各版本发布详情，请访问[春松客服专栏博客](https://chatopera.blog.csdn.net/)。
+各版本发布更新情况描述。
+
+# 8.0.0
+
+- 更新春松客服应用的开源许可证，使用[春松许可证, v1.0](https://www.cskefu.com/2023/06/25/chunsong-public-license-1-0)
+- 更新 MySQL 数据库表结构，大量优化 Table 定义，去掉冗余字段，大幅度提升性能
+- 使用 Java 17 API & SDK，利用 JDK 新功能，大幅度提升性能
+- 从 Springboot 1.5.x 升级到 Springboot 3.x 版本，大幅度提升性能
+- 去掉了对中间件服务 Elasticsearch 的依赖，大幅度提升性能
+- 去掉了冗余的第三方代码，提升编译性能，减少潜在风险
+- 修补若干安全漏洞，如 [#735](https://github.com/cskefu/cskefu/issues/735), [#435](https://github.com/cskefu/cskefu/issues/435), [#177](https://github.com/cskefu/cskefu/issues/177)
+- Fixed [#476](https://github.com/cskefu/cskefu/issues/476) every SQL execution slowly on first run
 
 # 7.0.1
 
