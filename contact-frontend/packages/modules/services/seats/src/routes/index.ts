@@ -16,7 +16,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '坐席看板',
-          isAuth: true,
+          requiresAuth: true,
           icon: 'el-icon-setting',
         },
       },
@@ -26,7 +26,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '会话管理',
-          isAuth: true,
+          requiresAuth: true,
           icon: 'el-icon-setting',
         },
       },
@@ -36,7 +36,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '留言管理',
-          isAuth: true,
+          requiresAuth: true,
           icon: 'el-icon-setting',
         },
       },
@@ -46,7 +46,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '坐席管理',
-          isAuth: true,
+          requiresAuth: true,
           icon: 'el-icon-setting',
         },
       },
@@ -63,7 +63,7 @@ const routes: RouteRecordRaw[] = [
             component: () => import('../views/HomeView.vue'),
             meta: {
               title: '数据统计',
-              isAuth: true,
+              requiresAuth: true,
               icon: 'el-icon-setting',
             },
           },
@@ -73,7 +73,7 @@ const routes: RouteRecordRaw[] = [
             component: () => import('../views/HomeView.vue'),
             meta: {
               title: '机器人管理',
-              isAuth: true,
+              requiresAuth: true,
               icon: 'el-icon-setting',
             },
           },
@@ -83,7 +83,7 @@ const routes: RouteRecordRaw[] = [
             component: () => import('../views/HomeView.vue'),
             meta: {
               title: '机器人设置',
-              isAuth: true,
+              requiresAuth: true,
               icon: 'el-icon-setting',
             },
           },

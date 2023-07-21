@@ -16,7 +16,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '系统信息',
-          isAuth: true,
+          requiresAuth: true,
           icon: 'el-icon-setting',
         },
       },
@@ -26,7 +26,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '第三方登录',
-          isAuth: true,
+          requiresAuth: true,
           icon: 'el-icon-setting',
         },
       },
@@ -36,7 +36,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '对象存储设置',
-          isAuth: true,
+          requiresAuth: true,
           icon: 'el-icon-setting',
         },
       },
@@ -46,7 +46,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: 'CDN 设置',
-          isAuth: true,
+          requiresAuth: true,
           icon: 'el-icon-setting',
         },
       },
@@ -56,7 +56,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '短信平台设置',
-          isAuth: true,
+          requiresAuth: true,
           icon: 'el-icon-setting',
           comingSoon: true,
           disabled: true,
@@ -68,7 +68,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '呼叫平台设置',
-          isAuth: true,
+          requiresAuth: true,
           icon: 'el-icon-setting',
           comingSoon: true,
           disabled: true,
@@ -80,7 +80,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: 'GPT 设置',
-          isAuth: true,
+          requiresAuth: true,
           icon: 'el-icon-setting',
           comingSoon: true,
           disabled: true,
@@ -92,7 +92,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '元数据',
-          isAuth: true,
+          requiresAuth: true,
           icon: 'el-icon-setting',
         },
       },
@@ -102,7 +102,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '通知设置',
-          isAuth: true,
+          requiresAuth: true,
           icon: 'el-icon-setting',
         },
       },
@@ -112,7 +112,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '日志查看',
-          isAuth: true,
+          requiresAuth: true,
           icon: 'el-icon-setting',
         },
       },
