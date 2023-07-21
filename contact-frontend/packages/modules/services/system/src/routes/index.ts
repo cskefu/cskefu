@@ -25,7 +25,7 @@ const routes: RouteRecordRaw[] = [
         name: ROUTE_NAME.SYSTEM_SOCIAL_INDEX,
         component: () => import('../views/HomeView.vue'),
         meta: {
-          title: '第三方登录',
+          title: '认证登录',
           requiresAuth: true,
           icon: 'el-icon-setting',
         },
