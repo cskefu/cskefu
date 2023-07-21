@@ -1,5 +1,7 @@
 import IndexLayout from './layouts/IndexLayout.vue'
 import MenusLayout from './layouts/MenusLayout.vue'
-import Nav from './components/Nav.vue'
 
-export { IndexLayout, MenusLayout, Nav }
+import Nav from './components/Nav.vue'
+import Menu from './components/Menus.vue'
+
+export { IndexLayout, MenusLayout, Nav, Menu }

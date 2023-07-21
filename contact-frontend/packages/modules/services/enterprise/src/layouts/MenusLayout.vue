@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { MenusLayout } from '@cskefu/shared-ui'
-import { MenuOption, NMenu } from 'naive-ui'
+import { MenuOption } from 'naive-ui'
 
 import routes from '../routes'
 import { routesToMenus } from '@cskefu/shared-utils'
+import { Menu } from '@cskefu/shared-ui'
 
 const menuOptions: MenuOption[] = routesToMenus(routes)
 </script>
 <template>
   <MenusLayout>
-    <n-menu :options="menuOptions" />
+    <Menu :options="menuOptions" />
   </MenusLayout>
 </template>
