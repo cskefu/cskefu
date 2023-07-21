@@ -105,6 +105,7 @@ const active = ref(false)
           <div class="text-sm">默认客服部门</div>
         </div>
       </template>
+
       <RouterLink class="text-sm text-green-600" to="/index">
         使用教程
       </RouterLink>
@@ -116,6 +117,7 @@ const active = ref(false)
           @click="active = !active"
         />
       </n-badge>
+
       <template #dropMenuAppend>
         <div class="flex justify-between items-center">
           <div class="flex justify-between items-center space-x-2">
@@ -144,6 +146,7 @@ const active = ref(false)
         </div>
       </template>
     </Nav>
+
     <div class="grow relative overflow-hidden">
       <router-view></router-view>
     </div>

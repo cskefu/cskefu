@@ -17,6 +17,9 @@ importers:
       axios:
         specifier: ^1.4.0
         version: 1.4.0
+      idb:
+        specifier: ^7.1.1
+        version: 7.1.1
       pinia:
         specifier: ^2.1.4
         version: 2.1.4(typescript@5.1.6)(vue@3.3.4)
@@ -2998,6 +3001,10 @@ packages:
     dependencies:
       safer-buffer: 2.1.2
     dev: true
+
+  /idb@7.1.1:
+    resolution: {integrity: sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==}
+    dev: false
 
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
