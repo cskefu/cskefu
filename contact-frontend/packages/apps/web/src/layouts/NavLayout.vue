@@ -93,7 +93,7 @@ const active = ref(false)
     </n-alert>
     <Nav
       v-model:current="current"
-      avatar-url="https://avatars.githubusercontent.com/u/499270?v=4"
+      avatar-url="https://avatars.githubusercontent.com/u/16386583?v=4"
       :navigations="navigations"
       :dropdown-menus="dropdownMenus"
       @update:current="handleClickNav"
