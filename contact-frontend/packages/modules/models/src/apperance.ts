@@ -1,4 +1,4 @@
-export type Apparence = {
+export type Apperance = {
   lang: string
   darkMode: boolean
 }
