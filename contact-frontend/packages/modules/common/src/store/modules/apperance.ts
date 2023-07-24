@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import { Apparence } from '@cskefu/models'
+import { Apperance } from '@cskefu/models'
 
-export const useApparence = defineStore('alerts', {
-  state: (): Apparence => ({ lang: 'zh-CN', darkMode: false }),
+export const useApperance = defineStore('alerts', {
+  state: (): Apperance => ({ lang: 'zh-CN', darkMode: false }),
   getters: {
     isDarkMode: (state) => state.darkMode,
     getLang: (state) => state.lang,
