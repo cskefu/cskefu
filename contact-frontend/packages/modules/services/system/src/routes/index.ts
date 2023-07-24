@@ -2,6 +2,18 @@ import { RouteRecordRaw } from 'vue-router'
 import { ROUTE_NAME } from '@cskefu/models'
 
 import Layout from '../layouts/MenusLayout.vue'
+import {
+  BeakerOutline,
+  CallOutline,
+  ChatboxEllipsesOutline,
+  ClipboardOutline,
+  FootballOutline,
+  IdCardOutline,
+  InfiniteSharp,
+  LayersOutline,
+  NotificationsOutline,
+  PlanetOutline,
+} from '@vicons/ionicons5'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -17,7 +29,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '系统信息',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: InfiniteSharp,
         },
       },
       {
@@ -27,7 +39,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '认证登录',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: IdCardOutline,
         },
       },
       {
@@ -37,7 +49,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '对象存储设置',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: LayersOutline,
         },
       },
       {
@@ -47,7 +59,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: 'CDN 设置',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: PlanetOutline,
         },
       },
       {
@@ -57,7 +69,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '短信平台设置',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: ChatboxEllipsesOutline,
           comingSoon: true,
           disabled: true,
         },
@@ -69,7 +81,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '呼叫平台设置',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: CallOutline,
           comingSoon: true,
           disabled: true,
         },
@@ -81,7 +93,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: 'GPT 设置',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: BeakerOutline,
           comingSoon: true,
           disabled: true,
         },
@@ -93,7 +105,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '元数据',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: FootballOutline,
         },
       },
       {
@@ -103,7 +115,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '通知设置',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: NotificationsOutline,
         },
       },
       {
@@ -113,7 +125,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '日志查看',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: ClipboardOutline,
         },
       },
     ],

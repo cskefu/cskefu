@@ -1,5 +1,12 @@
-import { MenuOption } from 'naive-ui'
+import { MenuOption, NIcon } from 'naive-ui'
+import { Component, h } from 'vue'
 import { RouteRecordRaw } from 'vue-router'
+
+function renderIcon(icon?: Component) {
+  if (icon) {
+    return () => h(NIcon, null, { default: () => h(icon) })
+  }
+}
 
 export function routesToMenus(
   routes: RouteRecordRaw[],
@@ -13,12 +20,14 @@ export function routesToMenus(
         result.push({
           label: route.meta?.title,
           key: route.path,
+          icon: renderIcon(route.meta?.icon),
           children: routesToMenus(route.children, true),
         })
       } else {
         result.push({
           label: route.meta?.title,
           key: route.name as string,
+          icon: renderIcon(route.meta?.icon),
           disabled: route.meta?.disabled as boolean,
           comingSoon: route.meta?.comingSoon,
         })

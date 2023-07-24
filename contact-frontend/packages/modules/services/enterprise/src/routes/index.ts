@@ -2,6 +2,11 @@ import { RouteRecordRaw } from 'vue-router'
 import { ROUTE_NAME } from '@cskefu/models'
 
 import Layout from '../layouts/MenusLayout.vue'
+import {
+  BusinessOutline,
+  GitNetworkOutline,
+  LibraryOutline,
+} from '@vicons/ionicons5'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -17,7 +22,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '企业服务',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: BusinessOutline,
         },
       },
       {
@@ -27,7 +32,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '渠道接入',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: GitNetworkOutline,
         },
       },
       {
@@ -37,7 +42,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '知识库',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: LibraryOutline,
         },
       },
       {
