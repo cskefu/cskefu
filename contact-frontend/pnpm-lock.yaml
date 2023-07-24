@@ -99,6 +99,9 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../assets
+      '@cskefu/common':
+        specifier: '*'
+        version: link:../../modules/common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../modules/i18n
@@ -154,7 +157,11 @@ importers:
 
   packages/assets: {}
 
-  packages/modules/composables: {}
+  packages/modules/common:
+    dependencies:
+      '@cskefu/models':
+        specifier: '*'
+        version: link:../models
 
   packages/modules/i18n: {}
 
@@ -167,9 +174,9 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/composables':
+      '@cskefu/common':
         specifier: '*'
-        version: link:../../composables
+        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
@@ -204,9 +211,9 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/composables':
+      '@cskefu/common':
         specifier: '*'
-        version: link:../../composables
+        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
@@ -241,9 +248,9 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/composables':
+      '@cskefu/common':
         specifier: '*'
-        version: link:../../composables
+        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
@@ -278,9 +285,9 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/composables':
+      '@cskefu/common':
         specifier: '*'
-        version: link:../../composables
+        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
@@ -315,9 +322,9 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/composables':
+      '@cskefu/common':
         specifier: '*'
-        version: link:../../composables
+        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
@@ -352,9 +359,9 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/composables':
+      '@cskefu/common':
         specifier: '*'
-        version: link:../../composables
+        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
@@ -389,9 +396,9 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/composables':
+      '@cskefu/common':
         specifier: '*'
-        version: link:../../composables
+        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
@@ -426,9 +433,9 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/composables':
+      '@cskefu/common':
         specifier: '*'
-        version: link:../../composables
+        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
@@ -463,9 +470,9 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/composables':
+      '@cskefu/common':
         specifier: '*'
-        version: link:../../composables
+        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
@@ -485,34 +492,6 @@ importers:
       '@cskefu/setup-tailwind':
         specifier: '*'
         version: link:../../../../tools/setup-tailwind
-      autoprefixer:
-        specifier: ^10.4.14
-        version: 10.4.14(postcss@8.4.26)
-      postcss:
-        specifier: ^8.4.26
-        version: 8.4.26
-      tailwindcss:
-        specifier: ^3.3.3
-        version: 3.3.3
-
-  packages/plugins:
-    dependencies:
-      '@cskefu/assets':
-        specifier: '*'
-        version: link:../assets
-      '@cskefu/i18n':
-        specifier: '*'
-        version: link:../modules/i18n
-      '@cskefu/shared-ui':
-        specifier: '*'
-        version: link:../shared/ui
-      '@cskefu/shared-utils':
-        specifier: '*'
-        version: link:../shared/utils
-    devDependencies:
-      '@cskefu/setup-tailwind':
-        specifier: '*'
-        version: link:../../tools/setup-tailwind
       autoprefixer:
         specifier: ^10.4.14
         version: 10.4.14(postcss@8.4.26)
