@@ -99,12 +99,12 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../assets
-      '@cskefu/common':
-        specifier: '*'
-        version: link:../../modules/common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../modules/i18n
+      '@cskefu/logic':
+        specifier: '*'
+        version: link:../../modules/logic
       '@cskefu/models':
         specifier: '*'
         version: link:../../modules/models
@@ -157,13 +157,13 @@ importers:
 
   packages/assets: {}
 
-  packages/modules/common:
+  packages/modules/i18n:
     dependencies:
       '@cskefu/models':
         specifier: '*'
         version: link:../models
 
-  packages/modules/i18n:
+  packages/modules/logic:
     dependencies:
       '@cskefu/models':
         specifier: '*'
@@ -178,12 +178,12 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/common':
-        specifier: '*'
-        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
+      '@cskefu/logic':
+        specifier: '*'
+        version: link:../../logic
       '@cskefu/mocks':
         specifier: '*'
         version: link:../../mocks
@@ -215,12 +215,12 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/common':
-        specifier: '*'
-        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
+      '@cskefu/logic':
+        specifier: '*'
+        version: link:../../logic
       '@cskefu/mocks':
         specifier: '*'
         version: link:../../mocks
@@ -252,12 +252,12 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/common':
-        specifier: '*'
-        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
+      '@cskefu/logic':
+        specifier: '*'
+        version: link:../../logic
       '@cskefu/mocks':
         specifier: '*'
         version: link:../../mocks
@@ -289,12 +289,12 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/common':
-        specifier: '*'
-        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
+      '@cskefu/logic':
+        specifier: '*'
+        version: link:../../logic
       '@cskefu/mocks':
         specifier: '*'
         version: link:../../mocks
@@ -326,12 +326,12 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/common':
-        specifier: '*'
-        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
+      '@cskefu/logic':
+        specifier: '*'
+        version: link:../../logic
       '@cskefu/mocks':
         specifier: '*'
         version: link:../../mocks
@@ -363,12 +363,12 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/common':
-        specifier: '*'
-        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
+      '@cskefu/logic':
+        specifier: '*'
+        version: link:../../logic
       '@cskefu/mocks':
         specifier: '*'
         version: link:../../mocks
@@ -400,12 +400,12 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/common':
-        specifier: '*'
-        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
+      '@cskefu/logic':
+        specifier: '*'
+        version: link:../../logic
       '@cskefu/mocks':
         specifier: '*'
         version: link:../../mocks
@@ -437,12 +437,12 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/common':
-        specifier: '*'
-        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
+      '@cskefu/logic':
+        specifier: '*'
+        version: link:../../logic
       '@cskefu/mocks':
         specifier: '*'
         version: link:../../mocks
@@ -474,12 +474,12 @@ importers:
       '@cskefu/assets':
         specifier: '*'
         version: link:../../../assets
-      '@cskefu/common':
-        specifier: '*'
-        version: link:../../common
       '@cskefu/i18n':
         specifier: '*'
         version: link:../../i18n
+      '@cskefu/logic':
+        specifier: '*'
+        version: link:../../logic
       '@cskefu/mocks':
         specifier: '*'
         version: link:../../mocks

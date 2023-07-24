@@ -12,7 +12,7 @@
     "@cskefu/assets": "*",
     "@cskefu/i18n": "*",
     "@cskefu/models": "*",
-    "@cskefu/common": "*",
+    "@cskefu/logic": "*",
     "@cskefu/services-auth": "*",
     "@cskefu/services-chat": "*",
     "@cskefu/services-dashboard": "*",

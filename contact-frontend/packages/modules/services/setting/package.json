@@ -8,7 +8,7 @@
     "@cskefu/mocks": "*",
     "@cskefu/models": "*",
     "@cskefu/i18n": "*",
-    "@cskefu/common": "*",
+    "@cskefu/logic": "*",
     "@cskefu/shared-utils": "*",
     "@cskefu/shared-ui": "*"
   },
