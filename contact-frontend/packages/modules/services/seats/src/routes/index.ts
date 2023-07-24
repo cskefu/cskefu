@@ -2,6 +2,16 @@ import { RouteRecordRaw } from 'vue-router'
 import { ROUTE_NAME } from '@cskefu/models'
 
 import Layout from '../layouts/MenusLayout.vue'
+import {
+  AlbumsOutline,
+  AnalyticsOutline,
+  ChatbubblesOutline,
+  DocumentAttachOutline,
+  BarChartOutline,
+  SettingsOutline,
+  HardwareChip,
+  GridOutline,
+} from '@vicons/ionicons5'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -17,7 +27,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '坐席看板',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: AnalyticsOutline,
         },
       },
       {
@@ -27,7 +37,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '会话管理',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: ChatbubblesOutline,
         },
       },
       {
@@ -37,7 +47,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '留言管理',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: DocumentAttachOutline,
         },
       },
       {
@@ -47,7 +57,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '坐席管理',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: AlbumsOutline,
         },
       },
       {
@@ -55,6 +65,7 @@ const routes: RouteRecordRaw[] = [
         name: ROUTE_NAME.SEATS_ROBOT_INDEX,
         meta: {
           title: '机器人管理',
+          icon: HardwareChip,
         },
         children: [
           {
@@ -64,7 +75,7 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '数据统计',
               requiresAuth: true,
-              icon: 'el-icon-setting',
+              icon: BarChartOutline,
             },
           },
           {
@@ -74,7 +85,7 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '机器人管理',
               requiresAuth: true,
-              icon: 'el-icon-setting',
+              icon: GridOutline,
             },
           },
           {
@@ -84,7 +95,7 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '机器人设置',
               requiresAuth: true,
-              icon: 'el-icon-setting',
+              icon: SettingsOutline,
             },
           },
         ],
