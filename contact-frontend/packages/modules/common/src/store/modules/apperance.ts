@@ -14,10 +14,10 @@ export const useApperance = defineStore('alerts', {
     getLang: (state) => state.apperance.lang,
   },
   actions: {
-    toggleDarkMode() {
+    doToggleDarkMode() {
       this.apperance.darkMode = !this.apperance.darkMode
     },
-    setLang(lang: string) {
+    doSetLang(lang: string) {
       this.apperance.lang = lang
     },
   },
