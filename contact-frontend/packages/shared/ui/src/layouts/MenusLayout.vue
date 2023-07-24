@@ -12,13 +12,35 @@ import {
   NDropdown,
   NWatermark,
 } from 'naive-ui'
+
+defineProps({
+  showWatermark: {
+    type: Boolean,
+    default: true,
+  },
+})
 </script>
 <template>
   <n-layout has-sider class="h-full">
+    <n-watermark
+      v-if="showWatermark"
+      content="大家艰苦一下，一切都会有的"
+      cross
+      fullscreen
+      :font-size="16"
+      :line-height="16"
+      :width="384"
+      :height="384"
+      :x-offset="12"
+      :y-offset="60"
+      :rotate="-15"
+    />
     <n-layout-sider bordered show-trigger="bar" collapse-mode="transform">
       <slot></slot>
     </n-layout-sider>
-    <n-layout-content content-style="padding: 10px">
+    <n-layout-content
+      content-style="display: flex; flex-direction: column;width: 100%;height:100%;padding: 10px"
+    >
       <n-page-header subtitle="subtitle">
         <template #header>
           <n-breadcrumb>
@@ -45,21 +67,10 @@ import {
             </n-dropdown>
           </n-space>
         </template>
-        <n-watermark
-          content="核心机密"
-          cross
-          selectable
-          :font-size="23"
-          :line-height="16"
-          :width="192"
-          :height="128"
-          :x-offset="12"
-          :y-offset="28"
-          :rotate="-15"
-        >
-          <router-view></router-view>
-        </n-watermark>
       </n-page-header>
+      <div class="h-full">
+        <router-view></router-view>
+      </div>
     </n-layout-content>
   </n-layout>
 </template>
