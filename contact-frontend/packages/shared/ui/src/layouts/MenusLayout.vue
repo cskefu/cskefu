@@ -10,6 +10,7 @@ import {
   NSpace,
   NButton,
   NDropdown,
+  NWatermark,
 } from 'naive-ui'
 </script>
 <template>
@@ -44,7 +45,20 @@ import {
             </n-dropdown>
           </n-space>
         </template>
-        <router-view></router-view>
+        <n-watermark
+          content="核心机密"
+          cross
+          selectable
+          :font-size="23"
+          :line-height="16"
+          :width="192"
+          :height="128"
+          :x-offset="12"
+          :y-offset="28"
+          :rotate="-15"
+        >
+          <router-view></router-view>
+        </n-watermark>
       </n-page-header>
     </n-layout-content>
   </n-layout>
