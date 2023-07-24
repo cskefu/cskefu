@@ -1,18 +1,24 @@
 import { defineStore } from 'pinia'
 import { Apperance } from '@cskefu/models'
+import { useStorage } from '@vueuse/core'
 
 export const useApperance = defineStore('alerts', {
-  state: (): Apperance => ({ lang: 'zh-CN', darkMode: false }),
+  state: () => ({
+    apperance: useStorage<Apperance>('apperance', {
+      lang: 'zh-CN',
+      darkMode: false,
+    }),
+  }),
   getters: {
-    isDarkMode: (state) => state.darkMode,
-    getLang: (state) => state.lang,
+    isDarkMode: (state) => state.apperance.darkMode,
+    getLang: (state) => state.apperance.lang,
   },
   actions: {
     toggleDarkMode() {
-      this.darkMode = !this.darkMode
+      this.apperance.darkMode = !this.apperance.darkMode
     },
-    changeLang(lang: string) {
-      this.lang = lang
+    setLang(lang: string) {
+      this.apperance.lang = lang
     },
   },
 })
