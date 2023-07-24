@@ -1,6 +1,9 @@
 import { App } from 'vue'
 import { createI18n } from 'vue-i18n'
 import _ from 'lodash-es'
+import { useLocalStorage } from '@vueuse/core'
+
+import { Apperance } from '@cskefu/models'
 
 /**
  * 语言支持类型
@@ -10,14 +13,21 @@ export const defaultLocale = 'zh-CN'
 const localPathPrefix = './locales/'
 
 const getValidLocale = (defaults: string = defaultLocale): string => {
-  const locale = window.localStorage.getItem('locale')
-  if (locale && locales.includes(locale)) {
-    return locale
-  }
+  const storage = useLocalStorage<Apperance>('apperance', {
+    lang: defaults,
+    darkMode: false,
+  })
+
   const param = new URLSearchParams(window.location.search).get('lang')
   if (param && locales.includes(param)) {
-    return param
+    storage.value.lang = param
   }
+
+  const lang = storage.value?.lang || defaults
+  if (locales.includes(lang)) {
+    return lang
+  }
+
   return defaults
 }
 

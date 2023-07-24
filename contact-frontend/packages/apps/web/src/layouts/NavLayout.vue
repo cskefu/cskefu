@@ -39,35 +39,37 @@ const dropdownMenus = [
   { label: '退出登录', value: 'logout' },
 ]
 
-const current = ref<string>(ROUTE_NAME.DASHBOARD_INDEX)
+const drawerShow = ref(false)
+const currentPath = ref<string>(ROUTE_NAME.DASHBOARD_INDEX)
+
 const path = window.location.pathname.split('/')[1]
 switch (path) {
   case 'dashboard':
-    current.value = ROUTE_NAME.DASHBOARD_INDEX
+    currentPath.value = ROUTE_NAME.DASHBOARD_INDEX
     break
   case 'chat':
-    current.value = ROUTE_NAME.CHAT_INDEX
+    currentPath.value = ROUTE_NAME.CHAT_INDEX
     break
   case 'work-order':
-    current.value = ROUTE_NAME.WORK_ORDER_INDEX
+    currentPath.value = ROUTE_NAME.WORK_ORDER_INDEX
     break
   case 'seats':
-    current.value = ROUTE_NAME.SEATS_INDEX
+    currentPath.value = ROUTE_NAME.SEATS_INDEX
     break
   case 'organization':
-    current.value = ROUTE_NAME.ORGANIZATION_INDEX
+    currentPath.value = ROUTE_NAME.ORGANIZATION_INDEX
     break
   case 'setting':
-    current.value = ROUTE_NAME.SETTING_INDEX
+    currentPath.value = ROUTE_NAME.SETTING_INDEX
     break
   case 'system':
-    current.value = ROUTE_NAME.SYSTEM_INDEX
+    currentPath.value = ROUTE_NAME.SYSTEM_INDEX
     break
   case 'profile':
-    current.value = ROUTE_NAME.PROFILE_INDEX
+    currentPath.value = ROUTE_NAME.PROFILE_INDEX
     break
   default:
-    current.value = ROUTE_NAME.PAGE_NOT_FOUND
+    currentPath.value = ROUTE_NAME.PAGE_NOT_FOUND
 }
 const router = useRouter()
 
@@ -82,8 +84,6 @@ function handleClickNav(name: string) {
   }
   router.push({ name })
 }
-
-const active = ref(false)
 </script>
 <template>
   <div class="flex flex-col h-screen bg-gray-100">
@@ -92,7 +92,7 @@ const active = ref(false)
       到期（剩余30天），如继续试用请联系管理员
     </n-alert>
     <Nav
-      v-model:current="current"
+      v-model:current="currentPath"
       avatar-url="https://avatars.githubusercontent.com/u/16386583?v=4"
       :navigations="navigations"
       :dropdown-menus="dropdownMenus"
@@ -100,7 +100,7 @@ const active = ref(false)
     >
       <template #production>
         <div class="flex items-center space-x-2">
-          <div class="text-sm">XX公司官网</div>
+          <div class="text-sm">XX 公司官网</div>
           <span>-</span>
           <div class="text-sm">默认客服部门</div>
         </div>
@@ -114,7 +114,7 @@ const active = ref(false)
           class="flex items-center cursor-pointer"
           :component="NotificationsOutline"
           size="25"
-          @click="active = !active"
+          @click="drawerShow = !drawerShow"
         />
       </n-badge>
 
@@ -151,7 +151,7 @@ const active = ref(false)
       <router-view></router-view>
     </div>
     <n-drawer
-      v-model:show="active"
+      v-model:show="drawerShow"
       :width="502"
       :height="200"
       placement="right"

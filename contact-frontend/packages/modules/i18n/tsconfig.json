@@ -2,12 +2,13 @@
   "extends": "../../../tsconfig.json",
   "include": ["src/**/*.ts"],
   "compilerOptions": {
+    "baseUrl": "./",
     "types": ["vite/client"],
     "composite": true,
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "resolvePackageJsonExports": false,
+    "resolvePackageJsonExports": true,
     "allowSyntheticDefaultImports": true,
   }
 }
