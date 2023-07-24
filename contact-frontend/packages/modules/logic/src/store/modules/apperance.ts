@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { Apperance } from '@cskefu/models'
 import { useStorage } from '@vueuse/core'
 
-export const useApperance = defineStore('alerts', {
+export const useApperance = defineStore('apperance', {
   state: () => ({
     apperance: useStorage<Apperance>('apperance', {
       lang: 'zh-CN',
