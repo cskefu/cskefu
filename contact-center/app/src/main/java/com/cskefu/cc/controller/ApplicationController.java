@@ -52,7 +52,7 @@ public class ApplicationController extends Handler {
     @Autowired
     private ACDWorkMonitor acdWorkMonitor;
 
-    @Value("${git.build.version}")
+    @Value("${cskefu.build.version}")
     private String appVersionNumber;
 
     @Value("${git.commit.id.abbrev}")
