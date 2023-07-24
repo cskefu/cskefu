@@ -21,16 +21,6 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'chat',
-        name: ROUTE_NAME.ENTERPRISE_KEFU_INDEX,
-        component: () => import('../views/HomeView.vue'),
-        meta: {
-          title: '客服入口设置',
-          requiresAuth: true,
-          icon: 'el-icon-setting',
-        },
-      },
-      {
         path: 'channel',
         name: ROUTE_NAME.ENTERPRISE_CHANNEL_INDEX,
         component: () => import('../views/HomeView.vue'),
