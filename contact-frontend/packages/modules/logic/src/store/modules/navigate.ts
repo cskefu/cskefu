@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const useApperance = defineStore('auth', {
+export const useApperance = defineStore('navigate', {
   state: () => ({
     currentPathName: '',
   }),
