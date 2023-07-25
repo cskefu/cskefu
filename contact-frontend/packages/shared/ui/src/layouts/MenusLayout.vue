@@ -4,8 +4,6 @@ import {
   NLayoutContent,
   NLayoutSider,
   NPageHeader,
-  NBreadcrumb,
-  NBreadcrumbItem,
   NSpace,
   NButton,
   NDropdown,
@@ -39,11 +37,6 @@ defineProps({
   pageIcon: {
     type: Object,
     default: null,
-    required: false,
-  },
-  pageBreadcrumbs: {
-    type: Array<typeof NBreadcrumbItem>,
-    default: () => [],
     required: false,
   },
 })
@@ -81,15 +74,6 @@ defineEmits(['update:collapsed'])
       content-style="display: flex; flex-direction: column;width: 100%;height:100%;padding: 10px"
     >
       <n-page-header :subtitle="pageSubtitle">
-        <template #header>
-          <n-breadcrumb>
-            <Component
-              :is="breadcrumb"
-              v-for="(breadcrumb, index) in pageBreadcrumbs"
-              :key="index"
-            />
-          </n-breadcrumb>
-        </template>
         <template #avatar>
           <n-icon size="large" :component="pageIcon" />
         </template>
@@ -98,7 +82,7 @@ defineEmits(['update:collapsed'])
         </template>
         <template #extra>
           <n-space>
-            <n-button size="small">Button</n-button>
+            <n-button size="tiny">Button</n-button>
             <n-dropdown placement="bottom-start">
               <n-button :bordered="false" style="padding: 0 4px">
                 ···

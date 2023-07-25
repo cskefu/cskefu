@@ -6,13 +6,13 @@ import Layout from '../layouts/MenusLayout.vue'
 const routes: RouteRecordRaw[] = [
   {
     path: '/organization',
-    name: 'organization',
+    name: ROUTE_NAME.ORGANIZATION_INDEX,
     component: Layout,
-    redirect: '/organization/index',
+    redirect: { name: ROUTE_NAME.ORGANIZATION_HOME_INDEX },
     children: [
       {
         path: 'index',
-        name: ROUTE_NAME.ORGANIZATION_INDEX,
+        name: ROUTE_NAME.ORGANIZATION_HOME_INDEX,
         component: () => import('../views/HomeView.vue'),
       },
     ],

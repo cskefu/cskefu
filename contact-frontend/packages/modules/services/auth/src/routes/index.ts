@@ -6,6 +6,7 @@ import { ROUTE_NAME } from '@cskefu/models'
 const routes: RouteRecordRaw[] = [
   {
     path: '/auth',
+    name: ROUTE_NAME.AUTH_INDEX,
     component: IndexLayout,
     redirect: { name: ROUTE_NAME.AUTH_LOGIN },
     children: [

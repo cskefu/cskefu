@@ -6,13 +6,13 @@ import { ROUTE_NAME } from '@cskefu/models'
 const routes: RouteRecordRaw[] = [
   {
     path: '/dashboard',
-    name: 'dashboard',
+    name: ROUTE_NAME.DASHBOARD_INDEX,
     component: IndexLayout,
-    redirect: { name: ROUTE_NAME.DASHBOARD_INDEX },
+    redirect: { name: ROUTE_NAME.DASHBOARD_HOME_INDEX },
     children: [
       {
         path: 'index',
-        name: ROUTE_NAME.DASHBOARD_INDEX,
+        name: ROUTE_NAME.DASHBOARD_HOME_INDEX,
         component: () => import('../views/DashboardView.vue'),
         meta: {
           title: '数据看板',
