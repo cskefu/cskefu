@@ -28,7 +28,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'index',
+        path: 'chat-manage',
         name: ROUTE_NAME.SEATS_CHATMANAGE_INDEX,
         component: () => import('../views/HomeView.vue'),
         meta: {
@@ -38,7 +38,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'index',
+        path: 'leave-message',
         name: ROUTE_NAME.SEATS_LEAVEMANAGE_INDEX,
         component: () => import('../views/HomeView.vue'),
         meta: {
@@ -48,7 +48,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'index',
+        path: 'seats-manage',
         name: ROUTE_NAME.SEATS_SEATSMANAGE_INDEX,
         component: () => import('../views/HomeView.vue'),
         meta: {
@@ -58,7 +58,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'index',
+        path: 'robot',
         name: ROUTE_NAME.SEATS_ROBOT_INDEX,
         meta: {
           title: '机器人管理',
@@ -75,7 +75,7 @@ const routes: RouteRecordRaw[] = [
             },
           },
           {
-            path: 'index',
+            path: 'manage',
             name: ROUTE_NAME.SEATS_ROBOT_MANAGE_INDEX,
             component: () => import('../views/HomeView.vue'),
             meta: {
@@ -84,7 +84,7 @@ const routes: RouteRecordRaw[] = [
             },
           },
           {
-            path: 'index',
+            path: 'setting',
             name: ROUTE_NAME.SEATS_INDEX,
             component: () => import('../views/HomeView.vue'),
             meta: {

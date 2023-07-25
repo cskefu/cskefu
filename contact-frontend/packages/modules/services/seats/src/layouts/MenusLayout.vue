@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { MenuOption } from 'naive-ui'
+import { ref, h } from 'vue'
+import { MenuOption, NBreadcrumbItem } from 'naive-ui'
 
 import { MenusLayout } from '@cskefu/shared-ui'
 import { routesToMenus } from '@cskefu/shared-utils'
 import { Menu } from '@cskefu/shared-ui'
+import { ROUTE_NAME } from '@cskefu/models'
 
 import routes from '../routes'
 
@@ -12,7 +13,19 @@ const menuOptions: MenuOption[] = routesToMenus(routes)
 const collapsed = ref<boolean>(false)
 </script>
 <template>
-  <MenusLayout v-model:collapsed="collapsed">
+  <MenusLayout
+    v-model:collapsed="collapsed"
+    :page-title="$route.meta.title"
+    :page-icon="$route.meta.icon"
+    :page-breadcrumbs="[
+      h(NBreadcrumbItem, { to: { name: ROUTE_NAME.DASHBOARD_INDEX } }, '首页'),
+      h(
+        NBreadcrumbItem,
+        { to: { name: $route.name } },
+        $route.meta.title as string
+      ),
+    ]"
+  >
     <Menu
       v-model:collapsed="collapsed"
       :options="menuOptions"
