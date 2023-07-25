@@ -6,21 +6,45 @@ import {
   NPageHeader,
   NBreadcrumb,
   NBreadcrumbItem,
-  NAvatar,
   NSpace,
   NButton,
   NDropdown,
   NWatermark,
+  NIcon,
 } from 'naive-ui'
 
 defineProps({
-  showWatermark: {
+  isWatermarkMode: {
     type: Boolean,
-    default: true,
+    default: false,
+  },
+  watermarkLabel: {
+    type: String,
+    default: '',
   },
   collapsed: {
     type: Boolean,
     default: false,
+  },
+  pageTitle: {
+    type: String,
+    default: '',
+    required: false,
+  },
+  pageSubtitle: {
+    type: String,
+    default: '',
+    required: false,
+  },
+  pageIcon: {
+    type: Object,
+    default: null,
+    required: false,
+  },
+  pageBreadcrumbs: {
+    type: Array<typeof NBreadcrumbItem>,
+    default: () => [],
+    required: false,
   },
 })
 
@@ -29,8 +53,8 @@ defineEmits(['update:collapsed'])
 <template>
   <n-layout has-sider class="h-full">
     <n-watermark
-      v-if="showWatermark"
-      content="大家艰苦一下，一切都会有的"
+      v-if="isWatermarkMode"
+      :content="watermarkLabel"
       cross
       fullscreen
       :font-size="16"
@@ -56,25 +80,25 @@ defineEmits(['update:collapsed'])
     <n-layout-content
       content-style="display: flex; flex-direction: column;width: 100%;height:100%;padding: 10px"
     >
-      <n-page-header subtitle="subtitle">
+      <n-page-header :subtitle="pageSubtitle">
         <template #header>
           <n-breadcrumb>
-            <n-breadcrumb-item>Github</n-breadcrumb-item>
-            <n-breadcrumb-item>CSKEFU</n-breadcrumb-item>
-            <n-breadcrumb-item>春松客服</n-breadcrumb-item>
+            <Component
+              :is="breadcrumb"
+              v-for="(breadcrumb, index) in pageBreadcrumbs"
+              :key="index"
+            />
           </n-breadcrumb>
         </template>
         <template #avatar>
-          <n-avatar
-            src="https://avatars.githubusercontent.com/u/16386583?v=4"
-          />
+          <n-icon size="large" :component="pageIcon" />
         </template>
         <template #title>
-          <a style="text-decoration: none; color: inherit">Title</a>
+          <a style="text-decoration: none; color: inherit">{{ pageTitle }}</a>
         </template>
         <template #extra>
           <n-space>
-            <n-button>Button</n-button>
+            <n-button size="small">Button</n-button>
             <n-dropdown placement="bottom-start">
               <n-button :bordered="false" style="padding: 0 4px">
                 ···
