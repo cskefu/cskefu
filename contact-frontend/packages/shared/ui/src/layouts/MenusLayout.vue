@@ -18,7 +18,13 @@ defineProps({
     type: Boolean,
     default: true,
   },
+  collapsed: {
+    type: Boolean,
+    default: false,
+  },
 })
+
+defineEmits(['update:collapsed'])
 </script>
 <template>
   <n-layout has-sider class="h-full">
@@ -35,7 +41,16 @@ defineProps({
       :y-offset="60"
       :rotate="-15"
     />
-    <n-layout-sider bordered show-trigger="bar" collapse-mode="transform">
+    <n-layout-sider
+      :collapsed-width="64"
+      :width="280"
+      :collapsed="collapsed"
+      bordered
+      show-trigger="bar"
+      collapse-mode="width"
+      @collapse="$emit('update:collapsed', true)"
+      @expand="$emit('update:collapsed', false)"
+    >
       <slot></slot>
     </n-layout-sider>
     <n-layout-content

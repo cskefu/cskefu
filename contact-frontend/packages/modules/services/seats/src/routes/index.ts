@@ -7,10 +7,7 @@ import {
   AnalyticsOutline,
   ChatbubblesOutline,
   DocumentAttachOutline,
-  BarChartOutline,
-  SettingsOutline,
   HardwareChip,
-  GridOutline,
 } from '@vicons/ionicons5'
 
 const routes: RouteRecordRaw[] = [
@@ -75,7 +72,6 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '数据统计',
               requiresAuth: true,
-              icon: BarChartOutline,
             },
           },
           {
@@ -85,7 +81,6 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '机器人管理',
               requiresAuth: true,
-              icon: GridOutline,
             },
           },
           {
@@ -95,7 +90,6 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '机器人设置',
               requiresAuth: true,
-              icon: SettingsOutline,
             },
           },
         ],

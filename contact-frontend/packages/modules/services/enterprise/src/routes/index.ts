@@ -6,6 +6,9 @@ import {
   BusinessOutline,
   GitNetworkOutline,
   LibraryOutline,
+  BagCheckOutline,
+  PeopleOutline,
+  OptionsOutline,
 } from '@vicons/ionicons5'
 
 const routes: RouteRecordRaw[] = [
@@ -52,7 +55,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '质检',
           requiresAuth: true,
-          icon: 'el-icon-setting',
+          icon: BagCheckOutline,
         },
       },
       {
@@ -60,6 +63,7 @@ const routes: RouteRecordRaw[] = [
         name: ROUTE_NAME.ENTERPRISE_ADMIN_INDEX,
         meta: {
           title: '组织/成员',
+          icon: PeopleOutline,
         },
         children: [
           {
@@ -69,7 +73,6 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '账号管理',
               requiresAuth: true,
-              icon: 'el-icon-setting',
             },
           },
           {
@@ -79,7 +82,6 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '角色管理',
               requiresAuth: true,
-              icon: 'el-icon-setting',
             },
           },
           {
@@ -89,7 +91,6 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '组织架构',
               requiresAuth: true,
-              icon: 'el-icon-setting',
             },
           },
         ],
@@ -99,6 +100,7 @@ const routes: RouteRecordRaw[] = [
         name: ROUTE_NAME.ENTERPRISE_FEATURE_INDEX,
         meta: {
           title: '功能设置',
+          icon: OptionsOutline,
         },
         children: [
           {
@@ -108,7 +110,6 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '对话设置',
               requiresAuth: true,
-              icon: 'el-icon-setting',
             },
           },
           {
@@ -118,7 +119,6 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '客户设置',
               requiresAuth: true,
-              icon: 'el-icon-setting',
             },
           },
           {
@@ -128,7 +128,6 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '工单设置',
               requiresAuth: true,
-              icon: 'el-icon-setting',
             },
           },
           {
@@ -138,7 +137,6 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '留言设置',
               requiresAuth: true,
-              icon: 'el-icon-setting',
             },
           },
         ],
