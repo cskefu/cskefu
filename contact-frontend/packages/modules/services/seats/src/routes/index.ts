@@ -13,7 +13,7 @@ import {
 const routes: RouteRecordRaw[] = [
   {
     path: '/seats',
-    name: 'seats',
+    name: ROUTE_NAME.SEATS_INDEX,
     component: Layout,
     redirect: '/seats/index',
     children: [
@@ -66,7 +66,7 @@ const routes: RouteRecordRaw[] = [
         },
         children: [
           {
-            path: 'index',
+            path: 'dashboard',
             name: ROUTE_NAME.SEATS_ROBOT_DASHBOARD_INDEX,
             component: () => import('../views/HomeView.vue'),
             meta: {
@@ -85,7 +85,7 @@ const routes: RouteRecordRaw[] = [
           },
           {
             path: 'setting',
-            name: ROUTE_NAME.SEATS_INDEX,
+            name: ROUTE_NAME.SEATS_ROBOT_SETTING_INDEX,
             component: () => import('../views/HomeView.vue'),
             meta: {
               title: '机器人设置',

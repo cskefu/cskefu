@@ -6,13 +6,13 @@ import Layout from '../layouts/MenusLayout.vue'
 const routes: RouteRecordRaw[] = [
   {
     path: '/setting',
-    name: 'setting',
+    name: ROUTE_NAME.SETTING_INDEX,
     component: Layout,
-    redirect: { name: ROUTE_NAME.SETTING_INDEX },
+    redirect: { name: ROUTE_NAME.SETTING_HOME_INDEX },
     children: [
       {
         path: 'index',
-        name: ROUTE_NAME.SETTING_INDEX,
+        name: ROUTE_NAME.SETTING_HOME_INDEX,
         component: () => import('../views/HomeView.vue'),
       },
     ],

@@ -14,13 +14,13 @@ import {
 const routes: RouteRecordRaw[] = [
   {
     path: '/enterprise',
-    name: 'enterprise',
+    name: ROUTE_NAME.ENTERPRISE_INDEX,
     component: Layout,
     redirect: '/enterprise/index',
     children: [
       {
         path: 'index',
-        name: ROUTE_NAME.ENTERPRISE_INDEX,
+        name: ROUTE_NAME.ENTERPRISE_SERVICES_INDEX,
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '企业服务',

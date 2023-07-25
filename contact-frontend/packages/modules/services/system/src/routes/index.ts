@@ -18,13 +18,13 @@ import {
 const routes: RouteRecordRaw[] = [
   {
     path: '/system',
-    name: 'system',
+    name: ROUTE_NAME.SYSTEM_INDEX,
     component: Layout,
     redirect: '/system/index',
     children: [
       {
         path: 'index',
-        name: ROUTE_NAME.SYSTEM_INDEX,
+        name: ROUTE_NAME.SYSTEM_INFO_INDEX,
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '系统信息',
