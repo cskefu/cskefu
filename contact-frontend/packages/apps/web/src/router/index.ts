@@ -27,6 +27,11 @@ const routes: RouteRecordRaw[] = [
     path: '/index',
     component: NavLayout,
     children: [
+      {
+        path: 'profile',
+        name: ROUTE_NAME.PROFILE_INDEX,
+        component: () => import('../views/ProfileView.vue'),
+      },
       ...dashboardRoutes,
       ...chatRoutes,
       ...workOrderRoutes,
