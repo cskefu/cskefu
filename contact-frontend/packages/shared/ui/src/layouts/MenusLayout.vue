@@ -6,7 +6,6 @@ import {
   NPageHeader,
   NSpace,
   NButton,
-  NDropdown,
   NWatermark,
   NIcon,
 } from 'naive-ui'
@@ -44,7 +43,7 @@ defineProps({
 defineEmits(['update:collapsed'])
 </script>
 <template>
-  <n-layout has-sider class="h-full">
+  <n-layout has-sider class="h-full bg-white">
     <n-watermark
       v-if="isWatermarkMode"
       :content="watermarkLabel"
@@ -57,8 +56,9 @@ defineEmits(['update:collapsed'])
       :x-offset="12"
       :y-offset="60"
       :rotate="-15"
-    />
+    ></n-watermark>
     <n-layout-sider
+      class="bg-white"
       :collapsed-width="64"
       :width="280"
       :collapsed="collapsed"
@@ -75,19 +75,14 @@ defineEmits(['update:collapsed'])
     >
       <n-page-header :subtitle="pageSubtitle">
         <template #avatar>
-          <n-icon size="large" :component="pageIcon" />
+          <n-icon size="large" :component="pageIcon"></n-icon>
         </template>
         <template #title>
-          <a style="text-decoration: none; color: inherit">{{ pageTitle }}</a>
+          <a>{{ pageTitle }}</a>
         </template>
         <template #extra>
           <n-space>
             <n-button size="tiny">Button</n-button>
-            <n-dropdown placement="bottom-start">
-              <n-button :bordered="false" style="padding: 0 4px">
-                ···
-              </n-button>
-            </n-dropdown>
           </n-space>
         </template>
       </n-page-header>
