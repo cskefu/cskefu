@@ -4,7 +4,7 @@ import { NTabs, NTab } from 'naive-ui'
 <template>
   <div class="p-4">
     <n-tabs type="line" :bar-width="32">
-      <n-tab name="users"> OSS 厂商 </n-tab>
+      <n-tab name="users"> OSS 提供方 </n-tab>
       <n-tab name="dashboard"> 使用情况 </n-tab>
       <n-tab name="setting"> 设置 </n-tab>
     </n-tabs>
