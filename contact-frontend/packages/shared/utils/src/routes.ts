@@ -1,6 +1,6 @@
 import { MenuOption, NIcon } from 'naive-ui'
 import { Component, h } from 'vue'
-import { RouteRecordRaw } from 'vue-router'
+import { RouteRecordRaw, RouterLink } from 'vue-router'
 
 function renderIcon(icon?: Component) {
   if (icon) {
@@ -18,14 +18,32 @@ export function routesToMenus(
     array.forEach((route: RouteRecordRaw) => {
       if (route.children) {
         result.push({
-          label: route.meta?.title,
+          label: h(
+            RouterLink,
+            {
+              to: {
+                name: route.name,
+              },
+            },
+            { default: () => route.meta?.title as string }
+          ),
+          title: route.meta?.title,
           key: route.path,
           icon: renderIcon(route.meta?.icon),
           children: routesToMenus(route.children, true),
         })
       } else {
         result.push({
-          label: route.meta?.title,
+          label: h(
+            RouterLink,
+            {
+              to: {
+                name: route.name,
+              },
+            },
+            { default: () => route.meta?.title as string }
+          ),
+          title: route.meta?.title,
           key: route.name as string,
           icon: renderIcon(route.meta?.icon),
           disabled: route.meta?.disabled as boolean,
