@@ -35,7 +35,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'social',
         name: ROUTE_NAME.SYSTEM_SOCIAL_INDEX,
-        component: () => import('../views/HomeView.vue'),
+        component: () => import('../views/AuthenticatorView.vue'),
         meta: {
           title: '认证登录',
           requiresAuth: true,
