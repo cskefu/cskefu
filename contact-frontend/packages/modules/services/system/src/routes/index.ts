@@ -11,7 +11,7 @@ import {
   IdCardOutline,
   InfiniteSharp,
   LayersOutline,
-  NotificationsOutline,
+  // NotificationsOutline,
   PlanetOutline,
 } from '@vicons/ionicons5'
 
@@ -108,16 +108,16 @@ const routes: RouteRecordRaw[] = [
           icon: FootballOutline,
         },
       },
-      {
-        path: 'notification',
-        name: ROUTE_NAME.SYSTEM_NOTIFICATION_INDEX,
-        component: () => import('../views/NotificationView.vue'),
-        meta: {
-          title: '通知设置',
-          requiresAuth: true,
-          icon: NotificationsOutline,
-        },
-      },
+      // {
+      //   path: 'notification',
+      //   name: ROUTE_NAME.SYSTEM_NOTIFICATION_INDEX,
+      //   component: () => import('../views/NotificationView.vue'),
+      //   meta: {
+      //     title: '通知设置',
+      //     requiresAuth: true,
+      //     icon: NotificationsOutline,
+      //   },
+      // },
       {
         path: 'log',
         name: ROUTE_NAME.SYSTEM_LOG_INDEX,
