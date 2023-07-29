@@ -45,7 +45,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'oss',
         name: ROUTE_NAME.SYSTEM_OSS_INDEX,
-        component: () => import('../views/HomeView.vue'),
+        component: () => import('../views/OSSView.vue'),
         meta: {
           title: '对象存储设置',
           requiresAuth: true,
@@ -55,7 +55,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'cdn',
         name: ROUTE_NAME.SYSTEM_CDN_INDEX,
-        component: () => import('../views/HomeView.vue'),
+        component: () => import('../views/CDNView.vue'),
         meta: {
           title: 'CDN 设置',
           requiresAuth: true,
@@ -101,7 +101,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'source',
         name: ROUTE_NAME.SYSTEM_SOURCE_INDEX,
-        component: () => import('../views/HomeView.vue'),
+        component: () => import('../views/MetaDataView.vue'),
         meta: {
           title: '元数据',
           requiresAuth: true,
@@ -111,7 +111,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'notification',
         name: ROUTE_NAME.SYSTEM_NOTIFICATION_INDEX,
-        component: () => import('../views/HomeView.vue'),
+        component: () => import('../views/NotificationView.vue'),
         meta: {
           title: '通知设置',
           requiresAuth: true,
@@ -119,9 +119,9 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'notification',
+        path: 'log',
         name: ROUTE_NAME.SYSTEM_LOG_INDEX,
-        component: () => import('../views/HomeView.vue'),
+        component: () => import('../views/LogView.vue'),
         meta: {
           title: '日志查看',
           requiresAuth: true,
