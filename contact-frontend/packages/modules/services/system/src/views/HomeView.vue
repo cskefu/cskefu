@@ -1,3 +1,3 @@
 <template>
-  <div>system home</div>
+  <div class="p-4">system home</div>
 </template>
