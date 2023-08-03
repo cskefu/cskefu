@@ -40,6 +40,26 @@ const routes: RouteRecordRaw[] = [
       ...settingRoutes,
       ...systemRoutes,
       ...enterpriseRoutes,
+      // {
+      //   path: '302',
+      //   name: ROUTE_NAME.PAGE_REDIRECT,
+      //   component: () => import('../views/common/Page302.vue'),
+      // },
+      {
+        path: '403',
+        name: ROUTE_NAME.PAGE_FORBIDDEN,
+        component: () => import('../views/common/Page403.vue'),
+      },
+      {
+        path: '404',
+        name: ROUTE_NAME.PAGE_NOT_FOUND,
+        component: () => import('../views/common/Page404.vue'),
+      },
+      {
+        path: '500',
+        name: ROUTE_NAME.PAGE_SERVER_ERROR,
+        component: () => import('../views/common/Page500.vue'),
+      },
     ],
   },
   ...authRoutes,
