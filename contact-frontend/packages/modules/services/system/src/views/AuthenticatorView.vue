@@ -9,5 +9,8 @@ import { NTabs, NTab } from 'naive-ui'
       <n-tab name="template"> 模板 </n-tab>
       <n-tab name="setting"> 设置 </n-tab>
     </n-tabs>
+    <div>
+      <router-view></router-view>
+    </div>
   </div>
 </template>
