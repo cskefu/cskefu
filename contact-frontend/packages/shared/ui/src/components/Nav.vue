@@ -44,7 +44,7 @@ defineEmits(['update:current'])
           </div>
           <slot name="production"></slot>
         </div>
-        <div class="hidden md:block">
+        <div class="hidden lg:block">
           <div class="ml-10 flex items-baseline space-x-4">
             <a
               v-for="(nav, index) in navigations"
@@ -60,7 +60,7 @@ defineEmits(['update:current'])
             </a>
           </div>
         </div>
-        <div class="hidden md:block">
+        <div class="hidden lg:block">
           <div class="flex items-center space-x-4">
             <slot></slot>
             <!-- Profile dropdown -->
@@ -88,7 +88,7 @@ defineEmits(['update:current'])
             </div>
           </div>
         </div>
-        <div class="-mr-2 flex md:hidden">
+        <div class="-mr-2 flex lg:hidden">
           <!-- Mobile menu button -->
           <button
             type="button"
@@ -133,7 +133,7 @@ defineEmits(['update:current'])
       </div>
     </div>
     <!-- Mobile menu, show/hide based on menu state. -->
-    <div v-show="dropdownFlag" class="md:hidden">
+    <div v-show="dropdownFlag" class="lg:hidden">
       <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
         <a
           v-for="(nav, index) in navigations"

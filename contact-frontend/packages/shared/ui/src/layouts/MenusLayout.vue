@@ -9,6 +9,9 @@ import {
   NWatermark,
   NIcon,
 } from 'naive-ui'
+import { useWindowSize } from '@vueuse/core'
+
+const { width } = useWindowSize()
 
 defineProps({
   isWatermarkMode: {
@@ -71,6 +74,7 @@ defineEmits(['update:collapsed'])
       <slot></slot>
     </n-layout-sider>
     <n-layout-content
+      :class="{ hidden: width < 600 && !collapsed }"
       content-style="display: flex; flex-direction: column;width: 100%;height:100%;padding: 10px"
     >
       <n-page-header :subtitle="pageSubtitle">
