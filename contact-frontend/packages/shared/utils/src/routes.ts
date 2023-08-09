@@ -10,13 +10,14 @@ function renderIcon(icon?: Component) {
 
 export function routesToMenus(
   routes: RouteRecordRaw[],
-  isNotRoot?: boolean
+  isNotRoot?: boolean,
+  deep?: boolean
 ): MenuOption[] {
   const result: MenuOption[] = []
   const array = isNotRoot ? routes : routes[0].children
   if (array) {
     array.forEach((route: RouteRecordRaw) => {
-      if (route.children) {
+      if (route.children && deep) {
         result.push({
           label: h(
             RouterLink,

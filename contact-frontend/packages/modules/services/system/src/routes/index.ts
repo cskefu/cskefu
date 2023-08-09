@@ -20,7 +20,7 @@ const routes: RouteRecordRaw[] = [
     path: '/system',
     name: ROUTE_NAME.SYSTEM_INDEX,
     component: Layout,
-    redirect: '/system/index',
+    redirect: { name: ROUTE_NAME.SYSTEM_INFO_INDEX },
     children: [
       {
         path: 'index',
@@ -33,14 +33,47 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'social',
-        name: ROUTE_NAME.SYSTEM_SOCIAL_INDEX,
+        path: 'authenticator',
+        name: ROUTE_NAME.SYSTEM_AUTHENTICATOR_INDEX,
         component: () => import('../views/AuthenticatorView.vue'),
         meta: {
           title: '认证登录',
           requiresAuth: true,
           icon: IdCardOutline,
         },
+        redirect: { name: ROUTE_NAME.SYSTEM_AUTHENTICATOR_USERS_INDEX },
+        children: [
+          {
+            path: 'users',
+            name: ROUTE_NAME.SYSTEM_AUTHENTICATOR_USERS_INDEX,
+            component: () =>
+              import('../views/pages/authenticator/AuthenticatorUsersView.vue'),
+          },
+          {
+            path: 'methods',
+            name: ROUTE_NAME.SYSTEM_AUTHENTICATOR_METHODS_INDEX,
+            component: () =>
+              import(
+                '../views/pages/authenticator/AuthenticatorMethodsView.vue'
+              ),
+          },
+          {
+            path: 'template',
+            name: ROUTE_NAME.SYSTEM_AUTHENTICATOR_TEMPLATE_INDEX,
+            component: () =>
+              import(
+                '../views/pages/authenticator/AuthenticatorTemplateView.vue'
+              ),
+          },
+          {
+            path: 'setting',
+            name: ROUTE_NAME.SYSTEM_AUTHENTICATOR_SETTING_INDEX,
+            component: () =>
+              import(
+                '../views/pages/authenticator/AuthenticatorSettingView.vue'
+              ),
+          },
+        ],
       },
       {
         path: 'oss',

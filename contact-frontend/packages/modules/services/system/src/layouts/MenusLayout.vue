@@ -8,7 +8,7 @@ import { routesToMenus } from '@cskefu/shared-utils'
 
 import routes from '../routes'
 
-const menuOptions: MenuOption[] = routesToMenus(routes)
+const menuOptions: MenuOption[] = routesToMenus(routes, false, false)
 const collapsed = ref<boolean>(false)
 </script>
 <template>
