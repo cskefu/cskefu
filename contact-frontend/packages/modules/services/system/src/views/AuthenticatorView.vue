@@ -19,7 +19,7 @@ import { NTabs, NTab } from 'naive-ui'
       <n-tab :name="ROUTE_NAME.SYSTEM_AUTHENTICATOR_METHODS_INDEX">
         登录提供方
       </n-tab>
-      <n-tab :name="ROUTE_NAME.SYSTEM_AUTHENTICATOR_TEMPLATE_INDEX">
+      <n-tab :name="ROUTE_NAME.SYSTEM_AUTHENTICATOR_TEMPLATE_INDEX" disabled>
         模板
       </n-tab>
       <n-tab :name="ROUTE_NAME.SYSTEM_AUTHENTICATOR_SETTING_INDEX">

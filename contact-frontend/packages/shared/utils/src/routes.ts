@@ -11,7 +11,7 @@ function renderIcon(icon?: Component) {
 export function routesToMenus(
   routes: RouteRecordRaw[],
   isNotRoot?: boolean,
-  deep?: boolean
+  deep: boolean = true
 ): MenuOption[] {
   const result: MenuOption[] = []
   const array = isNotRoot ? routes : routes[0].children
