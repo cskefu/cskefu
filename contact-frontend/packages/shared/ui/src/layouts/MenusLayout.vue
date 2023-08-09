@@ -66,7 +66,7 @@ defineEmits(['update:collapsed'])
       :width="280"
       :collapsed="collapsed"
       bordered
-      show-trigger="bar"
+      :show-trigger="width < 600 ? 'arrow-circle' : 'bar'"
       collapse-mode="width"
       @collapse="$emit('update:collapsed', true)"
       @expand="$emit('update:collapsed', false)"
