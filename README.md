@@ -192,7 +192,7 @@
 
 <p align="center">
   <b>应用场景示例</b><br>
-  <img src="https://github.com/cskefu/cskefu/raw/osc/public/assets/screenshot-20210908-184522.png" width="800">
+  <img src="https://github.com/cskefu/cskefu/raw/develop/public/assets/screenshot-20210908-184522.png" width="800">
 </p>
 
 支持企业 OA 智能问答、HR 智能问答、智能客服和网络营销等场景。企业 IT 部门、业务部门借助 Chatopera 云服务快速让聊天机器人上线！
