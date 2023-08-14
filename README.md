@@ -276,13 +276,13 @@
 
 春松客服用户和开发者交流群。
 
-![春松客服微信群](https://cdndownload2.chatopera.com/cskefu/imgs/cskefu_opensource_community_wx_qr.jpg)
+![春松客服微信群](./public/assets/cskefu_opensource_community_wx_qr.jpg)
 
 ### 微信公众号
 
 及时获得产品更新、活动分享等信息，关注春松客服公众号。
 
-![春松客服公众号](https://cdndownload2.chatopera.com/cskefu/imgs/cskefu-wechat-gzh.png)
+![春松客服公众号](./public/assets/cskefu-wechat-gzh.jpg)
 
 ## 鸣谢
 
