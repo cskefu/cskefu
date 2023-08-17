@@ -236,7 +236,7 @@
 - 开发环境搭建
   - [安装依赖和启动数据库等](https://docs.cskefu.com/docs/osc/engineering)
   - [IDE 配置和使用之 IntelliJ IDEA](https://docs.cskefu.com/docs/osc/ide_intelij_idea)
-  - [IDE 配置和使用之 Eclipse IDE](https://docs.cskefu.com/docs/osc/ide_eclipse)
+  - [IDE 配置和使用之 VSCode](https://docs.cskefu.com/docs/osc/ide_vscode)
 - 定制开发技能
   - [系统集成之 RestAPIs](https://docs.cskefu.com/docs/osc/restapi)
   - [从零开始学习定制春松客服技能：春松客服大讲堂 PPT 课件及视频](https://github.com/cskefu/cskefu.djt)
