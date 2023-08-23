@@ -25,7 +25,7 @@ const navigations = [
   { label: '首页', value: ROUTE_NAME.DASHBOARD_INDEX },
   { label: '对话', value: ROUTE_NAME.CHAT_INDEX },
   { label: '工单', value: ROUTE_NAME.WORK_ORDER_INDEX },
-  { label: '坐席', value: ROUTE_NAME.SEATS_INDEX },
+  { label: '坐席', value: ROUTE_NAME.AGENTS_INDEX },
   { label: '组织', value: ROUTE_NAME.ORGANIZATION_INDEX },
   { label: '设置', value: ROUTE_NAME.SETTING_INDEX },
 ]
@@ -53,8 +53,8 @@ switch (path) {
   case 'work-order':
     currentPath.value = ROUTE_NAME.WORK_ORDER_INDEX
     break
-  case 'seats':
-    currentPath.value = ROUTE_NAME.SEATS_INDEX
+  case 'agents':
+    currentPath.value = ROUTE_NAME.AGENTS_INDEX
     break
   case 'organization':
     currentPath.value = ROUTE_NAME.ORGANIZATION_INDEX

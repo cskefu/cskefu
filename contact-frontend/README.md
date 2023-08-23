@@ -21,7 +21,7 @@
 │   │   │   ├── dashboard     # 工作台相关
 │   │   │   ├── chat          # 客服对话聊天相关
 │   │   │   ├── worker-order  # 工单模块
-│   │   │   ├── seats         # 坐席模块
+│   │   │   ├── agents         # 坐席模块
 │   │   │   ├── organization  # 组织设置模块
 │   │   │   ├── setting       # 设置相关
 │   │   │   ├── enterprise    # 企业设置模块

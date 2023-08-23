@@ -12,14 +12,14 @@ import {
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/seats',
-    name: ROUTE_NAME.SEATS_INDEX,
+    path: '/agents',
+    name: ROUTE_NAME.AGENTS_INDEX,
     component: Layout,
-    redirect: '/seats/index',
+    redirect: '/agents/index',
     children: [
       {
         path: 'index',
-        name: ROUTE_NAME.SEATS_DASHBOARD_INDEX,
+        name: ROUTE_NAME.AGENTS_DASHBOARD_INDEX,
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '坐席看板',
@@ -29,7 +29,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'chat-manage',
-        name: ROUTE_NAME.SEATS_CHATMANAGE_INDEX,
+        name: ROUTE_NAME.AGENTS_CHATMANAGE_INDEX,
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '会话管理',
@@ -39,7 +39,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'leave-message',
-        name: ROUTE_NAME.SEATS_LEAVEMANAGE_INDEX,
+        name: ROUTE_NAME.AGENTS_LEAVEMANAGE_INDEX,
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '留言管理',
@@ -48,8 +48,8 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'seats-manage',
-        name: ROUTE_NAME.SEATS_SEATSMANAGE_INDEX,
+        path: 'agents-manage',
+        name: ROUTE_NAME.AGENTS_AGENTSMANAGE_INDEX,
         component: () => import('../views/HomeView.vue'),
         meta: {
           title: '坐席管理',
@@ -59,15 +59,16 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'robot',
-        name: ROUTE_NAME.SEATS_ROBOT_INDEX,
+        name: ROUTE_NAME.AGENTS_ROBOT_INDEX,
         meta: {
           title: '机器人管理',
           icon: HardwareChip,
+          requiresAuth: false,
         },
         children: [
           {
             path: 'dashboard',
-            name: ROUTE_NAME.SEATS_ROBOT_DASHBOARD_INDEX,
+            name: ROUTE_NAME.AGENTS_ROBOT_DASHBOARD_INDEX,
             component: () => import('../views/HomeView.vue'),
             meta: {
               title: '数据统计',
@@ -76,7 +77,7 @@ const routes: RouteRecordRaw[] = [
           },
           {
             path: 'manage',
-            name: ROUTE_NAME.SEATS_ROBOT_MANAGE_INDEX,
+            name: ROUTE_NAME.AGENTS_ROBOT_MANAGE_INDEX,
             component: () => import('../views/HomeView.vue'),
             meta: {
               title: '机器人管理',
@@ -85,7 +86,7 @@ const routes: RouteRecordRaw[] = [
           },
           {
             path: 'setting',
-            name: ROUTE_NAME.SEATS_ROBOT_SETTING_INDEX,
+            name: ROUTE_NAME.AGENTS_ROBOT_SETTING_INDEX,
             component: () => import('../views/HomeView.vue'),
             meta: {
               title: '机器人设置',

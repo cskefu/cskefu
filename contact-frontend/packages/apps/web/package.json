@@ -16,7 +16,7 @@
     "@cskefu/services-auth": "*",
     "@cskefu/services-chat": "*",
     "@cskefu/services-dashboard": "*",
-    "@cskefu/services-seats": "*",
+    "@cskefu/services-agents": "*",
     "@cskefu/services-organization": "*",
     "@cskefu/services-setting": "*",
     "@cskefu/services-system": "*",

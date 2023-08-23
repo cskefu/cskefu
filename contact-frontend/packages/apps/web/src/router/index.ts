@@ -6,7 +6,7 @@ import { routes as authRoutes } from '@cskefu/services-auth'
 import { routes as dashboardRoutes } from '@cskefu/services-dashboard'
 import { routes as settingRoutes } from '@cskefu/services-setting'
 import { routes as systemRoutes } from '@cskefu/services-system'
-import { routes as seatsRoutes } from '@cskefu/services-seats'
+import { routes as agentsRoutes } from '@cskefu/services-agents'
 import { routes as organizationRoutes } from '@cskefu/services-organization'
 import { routes as chatRoutes } from '@cskefu/services-chat'
 import { routes as workOrderRoutes } from '@cskefu/services-work-order'
@@ -35,7 +35,7 @@ const routes: RouteRecordRaw[] = [
       ...dashboardRoutes,
       ...chatRoutes,
       ...workOrderRoutes,
-      ...seatsRoutes,
+      ...agentsRoutes,
       ...organizationRoutes,
       ...settingRoutes,
       ...systemRoutes,

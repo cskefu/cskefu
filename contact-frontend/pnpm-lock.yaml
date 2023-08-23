@@ -108,6 +108,9 @@ importers:
       '@cskefu/models':
         specifier: '*'
         version: link:../../modules/models
+      '@cskefu/services-agents':
+        specifier: '*'
+        version: link:../../modules/services/agents
       '@cskefu/services-auth':
         specifier: '*'
         version: link:../../modules/services/auth
@@ -123,9 +126,6 @@ importers:
       '@cskefu/services-organization':
         specifier: '*'
         version: link:../../modules/services/organization
-      '@cskefu/services-seats':
-        specifier: '*'
-        version: link:../../modules/services/seats
       '@cskefu/services-setting':
         specifier: '*'
         version: link:../../modules/services/setting
@@ -172,6 +172,43 @@ importers:
   packages/modules/mocks: {}
 
   packages/modules/models: {}
+
+  packages/modules/services/agents:
+    dependencies:
+      '@cskefu/assets':
+        specifier: '*'
+        version: link:../../../assets
+      '@cskefu/i18n':
+        specifier: '*'
+        version: link:../../i18n
+      '@cskefu/logic':
+        specifier: '*'
+        version: link:../../logic
+      '@cskefu/mocks':
+        specifier: '*'
+        version: link:../../mocks
+      '@cskefu/models':
+        specifier: '*'
+        version: link:../../models
+      '@cskefu/shared-ui':
+        specifier: '*'
+        version: link:../../../shared/ui
+      '@cskefu/shared-utils':
+        specifier: '*'
+        version: link:../../../shared/utils
+    devDependencies:
+      '@cskefu/setup-tailwind':
+        specifier: '*'
+        version: link:../../../../tools/setup-tailwind
+      autoprefixer:
+        specifier: ^10.4.14
+        version: 10.4.14(postcss@8.4.26)
+      postcss:
+        specifier: ^8.4.26
+        version: 8.4.26
+      tailwindcss:
+        specifier: ^3.3.3
+        version: 3.3.3
 
   packages/modules/services/auth:
     dependencies:
@@ -322,43 +359,6 @@ importers:
         version: 3.3.3
 
   packages/modules/services/organization:
-    dependencies:
-      '@cskefu/assets':
-        specifier: '*'
-        version: link:../../../assets
-      '@cskefu/i18n':
-        specifier: '*'
-        version: link:../../i18n
-      '@cskefu/logic':
-        specifier: '*'
-        version: link:../../logic
-      '@cskefu/mocks':
-        specifier: '*'
-        version: link:../../mocks
-      '@cskefu/models':
-        specifier: '*'
-        version: link:../../models
-      '@cskefu/shared-ui':
-        specifier: '*'
-        version: link:../../../shared/ui
-      '@cskefu/shared-utils':
-        specifier: '*'
-        version: link:../../../shared/utils
-    devDependencies:
-      '@cskefu/setup-tailwind':
-        specifier: '*'
-        version: link:../../../../tools/setup-tailwind
-      autoprefixer:
-        specifier: ^10.4.14
-        version: 10.4.14(postcss@8.4.26)
-      postcss:
-        specifier: ^8.4.26
-        version: 8.4.26
-      tailwindcss:
-        specifier: ^3.3.3
-        version: 3.3.3
-
-  packages/modules/services/seats:
     dependencies:
       '@cskefu/assets':
         specifier: '*'

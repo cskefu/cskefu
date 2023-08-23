@@ -1,4 +1,4 @@
-import { ComponentCustomProperties } from './shims-vue-global.d';
+import { ComponentCustomProperties } from './shims-vue-global';
 
 declare module "vue" {
   export interface ComponentCustomProperties {
