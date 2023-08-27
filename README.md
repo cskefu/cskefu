@@ -93,6 +93,7 @@
       <td align="center" valign="top" width="11.11%"><a href="https://samzong.me"><img src="https://avatars.githubusercontent.com/u/13782141?v=4?s=50" width="50px;" alt="Samzong Lu"/><br /><sub><b>Samzong Lu</b></sub></a><br /><a href="#eventOrganizing-SAMZONG" title="Event Organizing">📋</a> <a href="#projectManagement-SAMZONG" title="Project Management">📆</a> <a href="#design-SAMZONG" title="Design">🎨</a></td>
       <td align="center" valign="top" width="11.11%"><a href="https://github.com/halfray"><img src="https://avatars.githubusercontent.com/u/8181982?v=4?s=50" width="50px;" alt="halfray"/><br /><sub><b>halfray</b></sub></a><br /><a href="https://github.com/cskefu/cskefu/issues?q=author%3Ahalfray" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="11.11%"><a href="https://github.com/kely33"><img src="https://avatars.githubusercontent.com/u/134681303?v=4?s=50" width="50px;" alt="kely33"/><br /><sub><b>kely33</b></sub></a><br /><a href="https://github.com/cskefu/cskefu/issues?q=author%3Akely33" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="11.11%"><a href="https://github.com/lecjy"><img src="https://avatars.githubusercontent.com/u/9280760?v=4?s=50" width="50px;" alt="lecjy"/><br /><sub><b>lecjy</b></sub></a><br /><a href="https://github.com/cskefu/cskefu/issues?q=author%3Alecjy" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
