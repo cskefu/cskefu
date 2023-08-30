@@ -1,7 +1,7 @@
 # https://github.com/cskefu/cskefu/issues/758
 
 # defaults
-*       @cskefu/reviewers
+*       @lecjy
 
 # Order is important; the last matching pattern takes the most
 # precedence. When someone opens a pull request that only
@@ -12,7 +12,7 @@
 *.pug   @lecjy
 *.java  @lecjy
 *.sql   @lecjy
-pom.xml @lecjy
+pom.xml @hailiang-wang
 
-docs/*  @SAMZONG
-README* @SAMZONG
+docs/*  @cskefu/reviewers
+README* @cskefu/reviewers
