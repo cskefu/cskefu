@@ -1020,12 +1020,14 @@
                      map.addAttribute("summary", summaries.get(0));
                  }
              }
-             AgentService service = agentServiceRes.findById(agentserviceid).orElse(null);
-             if (service != null) {
+             Organ currentOrgan = super.getOrgan(request);
+             if(null!=currentOrgan){
                  map.addAttribute(
                          "tags", tagRes.findByTagtypeAndSkill(
-                                 MainContext.ModelType.SUMMARY.toString(), service.getSkill()));
+                                 MainContext.ModelType.CCSUMMARY.toString(), currentOrgan.getParent()));
              }
+			 
+			 
              map.addAttribute("userid", userid);
              map.addAttribute("agentserviceid", agentserviceid);
              map.addAttribute("agentuserid", agentuserid);
