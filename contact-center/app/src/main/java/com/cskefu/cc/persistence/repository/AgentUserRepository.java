@@ -69,26 +69,26 @@ public interface AgentUserRepository extends JpaRepository<AgentUser, String> {
 
     AgentUser findOneByAgentnoAndStatus(String id, String status);
 
-    @Query(nativeQuery = true, value = "SELECT * FROM uk_agentuser AS u " +
+    @Query(nativeQuery = true, value = "SELECT u.* FROM uk_agentuser AS u " +
             "LEFT JOIN uk_agentuser_contacts AS c " +
             "ON u.userid = c.userid WHERE c.id = ?1 AND NOT u.status = ?2 LIMIT 1")
     AgentUser findOneByContactIdAndStatusNot(final String contactid, final String status);
 
-    @Query(nativeQuery = true, value = "SELECT * FROM uk_agentuser AS u " +
+    @Query(nativeQuery = true, value = "SELECT u.* FROM uk_agentuser AS u " +
             "LEFT JOIN uk_agentuser_contacts AS c " +
             "ON u.userid = c.userid WHERE c.contactsid = ?1 " +
             "AND c.channeltype = ?3 AND NOT u.status = ?2 " +
             "ORDER BY u.createtime DESC LIMIT 1")
     Optional<AgentUser> findOneByContactIdAndStatusNotAndChanneltype(final String contactid, final String status, final String channeltype);
 
-    @Query(nativeQuery = true, value = "SELECT * FROM uk_agentuser AS u " +
+    @Query(nativeQuery = true, value = "SELECT u.* FROM uk_agentuser AS u " +
             "LEFT JOIN uk_agentuser_contacts AS c " +
             "ON u.userid = c.userid WHERE c.contactsid = ?1 " +
             "AND c.channeltype = ?2 " +
             "ORDER BY u.createtime DESC LIMIT 1")
     Optional<AgentUser> findOneByContactIdAndChanneltype(final String contactid, final String channeltype);
 
-    @Query(nativeQuery = true, value = "SELECT * FROM uk_agentuser AS u " +
+    @Query(nativeQuery = true, value = "SELECT u.* FROM uk_agentuser AS u " +
             "WHERE u.userid = ?1 " +
             "AND u.channeltype = ?3 AND NOT u.status = ?2 " +
             "ORDER BY u.createtime DESC LIMIT 1")
