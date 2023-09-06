@@ -364,7 +364,6 @@ function onClickProvider(str: string): void {
                 <li @click="onClickProvider('wechat')">
                   <div class="provider-tile">
                     <div class="provider-name-group">
-                      <!-- <n-icon class="provider-icon" size="20" :component="LogoWechat" /> -->
                       <div class="provider-icon-svg">
                         <img :src="wechat" alt="wechat" />
                       </div>
@@ -390,7 +389,6 @@ function onClickProvider(str: string): void {
                 <li @click="onClickProvider('google')">
                   <div class="provider-tile">
                     <div class="provider-name-group">
-                      <!-- <n-icon class="provider-icon" size="20" :component="LogoGoogle" /> -->
                       <div class="provider-icon-svg provider-google">
                         <img :src="google" alt="google" />
                       </div>
@@ -409,7 +407,6 @@ function onClickProvider(str: string): void {
                 <li @click="onClickProvider('microsoft')">
                   <div class="provider-tile">
                     <div class="provider-name-group">
-                      <!-- <n-icon class="provider-icon" size="20" :component="LogoMicrosoft" /> -->
                       <div class="provider-icon-svg provider-microsoft">
                         <img :src="microsoft" alt="Microsoft" />
                       </div>
@@ -436,7 +433,6 @@ function onClickProvider(str: string): void {
         <div class="btn">
           <n-button type="info" @click="isShowList = false">添加新提供方</n-button>
         </div>
-
         <n-data-table :columns="columns" :data="data" />
       </div>
     </n-card>
