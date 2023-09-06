@@ -86,9 +86,16 @@ function onClickProvider(str: string): void {
 <template>
   <n-layout content-style="padding: 24px;">
     <n-card v-show="!isShowList">
-      <div class="provider-form" v-show="isShowForm">
-        <n-form v-if="isShowFormProvider == 'email'" class="provider-form-mail" ref="formProvider" :model="modelProvider"
-          label-placement="left" label-align="left" label-width="160">
+      <div v-show="isShowForm" class="provider-form">
+        <n-form
+          v-if="isShowFormProvider == 'email'"
+          ref="formProvider"
+          class="provider-form-mail"
+          :model="modelProvider"
+          label-placement="left"
+          label-align="left"
+          label-width="160"
+        >
           <n-form-item label="电子邮件/密码" path="switchValue">
             <div class="provider-form-item">
               <n-switch v-model:value="modelProvider.switchValue"></n-switch>
@@ -104,14 +111,26 @@ function onClickProvider(str: string): void {
             <n-button secondary round @click="handleCloseButtonClick()">
               取消
             </n-button>
-            <n-button secondary round type="primary" @click="handleValidateButtonClick()">
+            <n-button
+              secondary
+              round
+              type="primary"
+              @click="handleValidateButtonClick()"
+            >
               保存
             </n-button>
           </div>
         </n-form>
 
-        <n-form v-if="isShowFormProvider == 'password'" ref="formProvider" class="provider-form-password"
-          :model="modelProvider" label-placement="left" label-align="left" label-width="80">
+        <n-form
+          v-if="isShowFormProvider == 'password'"
+          ref="formProvider"
+          class="provider-form-password"
+          :model="modelProvider"
+          label-placement="left"
+          label-align="left"
+          label-width="80"
+        >
           <n-form-item label="账号/密码" path="switchValue">
             <div class="provider-form-item">
               <n-switch v-model:value="modelProvider.switchValue"></n-switch>
@@ -127,13 +146,25 @@ function onClickProvider(str: string): void {
             <n-button secondary round @click="handleCloseButtonClick()">
               取消
             </n-button>
-            <n-button secondary round type="primary" @click="handleValidateButtonClick()">
+            <n-button
+              secondary
+              round
+              type="primary"
+              @click="handleValidateButtonClick()"
+            >
               保存
             </n-button>
           </div>
         </n-form>
-        <n-form v-if="isShowFormProvider == 'person'" class="provider-form-person" ref="formProvider"
-          :model="modelProvider" label-placement="left" label-align="left" label-width="80">
+        <n-form
+          v-if="isShowFormProvider == 'person'"
+          ref="formProvider"
+          class="provider-form-person"
+          :model="modelProvider"
+          label-placement="left"
+          label-align="left"
+          label-width="80"
+        >
           <n-form-item label="游客访问" path="switchValue">
             <div class="provider-form-item">
               <n-switch v-model:value="modelProvider.switchValue"></n-switch>
@@ -148,13 +179,25 @@ function onClickProvider(str: string): void {
             <n-button secondary round @click="handleCloseButtonClick()">
               取消
             </n-button>
-            <n-button secondary round type="primary" @click="handleValidateButtonClick()">
+            <n-button
+              secondary
+              round
+              type="primary"
+              @click="handleValidateButtonClick()"
+            >
               保存
             </n-button>
           </div>
         </n-form>
-        <n-form v-if="isShowFormProvider == 'wechat'" class="provider-form-wechat" ref="formProvider"
-          :model="modelProvider" label-placement="left" label-align="left" label-width="160">
+        <n-form
+          v-if="isShowFormProvider == 'wechat'"
+          ref="formProvider"
+          class="provider-form-wechat"
+          :model="modelProvider"
+          label-placement="left"
+          label-align="left"
+          label-width="160"
+        >
           <n-form-item label="微信扫码登录" path="switchValue">
             <div class="provider-form-item">
               <n-switch v-model:value="modelProvider.switchValue"></n-switch>
@@ -167,13 +210,25 @@ function onClickProvider(str: string): void {
             <n-button secondary round @click="handleCloseButtonClick()">
               取消
             </n-button>
-            <n-button secondary round type="primary" @click="handleValidateButtonClick()">
+            <n-button
+              secondary
+              round
+              type="primary"
+              @click="handleValidateButtonClick()"
+            >
               保存
             </n-button>
           </div>
         </n-form>
-        <n-form v-if="isShowFormProvider == 'alipay'" class="provider-form-alipay" ref="formProvider"
-          :model="modelProvider" label-placement="left" label-align="left" label-width="160">
+        <n-form
+          v-if="isShowFormProvider == 'alipay'"
+          ref="formProvider"
+          class="provider-form-alipay"
+          :model="modelProvider"
+          label-placement="left"
+          label-align="left"
+          label-width="160"
+        >
           <n-form-item label="支付宝扫码" path="switchValue">
             <div class="provider-form-item">
               <n-switch v-model:value="modelProvider.switchValue"></n-switch>
@@ -186,30 +241,54 @@ function onClickProvider(str: string): void {
             <n-button secondary round @click="handleCloseButtonClick()">
               取消
             </n-button>
-            <n-button secondary round type="primary" @click="handleValidateButtonClick()">
+            <n-button
+              secondary
+              round
+              type="primary"
+              @click="handleValidateButtonClick()"
+            >
               保存
             </n-button>
           </div>
         </n-form>
-        <n-form v-if="isShowFormProvider == 'google'" class="provider-form-google" :rules="rules" ref="formProvider"
-          :model="modelProviderApp" label-placement="left" label-align="left" label-width="160">
+        <n-form
+          v-if="isShowFormProvider == 'google'"
+          ref="formProvider"
+          class="provider-form-google"
+          :rules="rules"
+          :model="modelProviderApp"
+          label-placement="left"
+          label-align="left"
+          label-width="160"
+        >
           <n-form-item label="Google" path="switchValue">
             <div class="provider-form-item">
               <n-switch v-model:value="modelProvider.switchValue"></n-switch>
             </div>
           </n-form-item>
           <n-form-item path="id" label="Web客户端ID">
-            <n-input v-model:value="modelProviderApp.id" @keydown.enter.prevent />
+            <n-input
+              v-model:value="modelProviderApp.id"
+              @keydown.enter.prevent
+            />
           </n-form-item>
           <n-form-item path="password" label="Web客户端密钥">
-            <n-input v-model:value="modelProviderApp.password" @keydown.enter.prevent />
+            <n-input
+              v-model:value="modelProviderApp.password"
+              @keydown.enter.prevent
+            />
           </n-form-item>
           <n-form-item>
             <p>
               重要提示：若要为您的 Android 应用启用 Google
               登录功能，您必须为每个应用提供
-              <n-button text tag="a" href="https://developers.google.com/android/guides/client-auth?hl=zh-cn"
-                target="_blank" type="primary">
+              <n-button
+                text
+                tag="a"
+                href="https://developers.google.com/android/guides/client-auth?hl=zh-cn"
+                target="_blank"
+                type="primary"
+              >
                 SHA-1 版本指纹
               </n-button>
             </p>
@@ -218,31 +297,54 @@ function onClickProvider(str: string): void {
             <n-button secondary round @click="handleCloseButtonClick()">
               取消
             </n-button>
-            <n-button secondary round type="primary" @click="handleValidateButtonClick()">
+            <n-button
+              secondary
+              round
+              type="primary"
+              @click="handleValidateButtonClick()"
+            >
               保存
             </n-button>
           </div>
         </n-form>
-        <n-form v-if="isShowFormProvider == 'facebook'" class="provider-form-facebook" ref="formProvider"
-          :model="modelProviderApp" :rules="rules" label-placement="left" label-align="left" label-width="80">
+        <n-form
+          v-if="isShowFormProvider == 'facebook'"
+          ref="formProvider"
+          class="provider-form-facebook"
+          :model="modelProviderApp"
+          :rules="rules"
+          label-placement="left"
+          label-align="left"
+          label-width="80"
+        >
           <n-form-item label="Facebook" path="switchValue">
             <div class="provider-form-item">
               <n-switch v-model:value="modelProviderApp.switchValue"></n-switch>
             </div>
           </n-form-item>
           <n-form-item path="id" label="应用ID">
-            <n-input v-model:value="modelProviderApp.id" @keydown.enter.prevent />
+            <n-input
+              v-model:value="modelProviderApp.id"
+              @keydown.enter.prevent
+            />
           </n-form-item>
           <n-form-item path="password" label="应用密钥">
-            <n-input v-model:value="modelProviderApp.password" @keydown.enter.prevent />
+            <n-input
+              v-model:value="modelProviderApp.password"
+              @keydown.enter.prevent
+            />
           </n-form-item>
           <n-form-item>
             <p>
               若要完成设置，请在您的 Facebook 应用配置中添加此 OAuth 重定向
               URI。
-              <n-button text tag="a"
+              <n-button
+                text
+                tag="a"
                 href="https://firebase.google.com/docs/auth/?hl=zh&authuser=0&_gl=1*yqljpk*_ga*MjEyMzg3MjAyNi4xNjkyNTM0MjU4*_ga_CW55HF8NVT*MTY5MzU1NzM3Ni4xMC4xLjE2OTM1NTc0MDYuMC4wLjA."
-                target="_blank" type="primary">
+                target="_blank"
+                type="primary"
+              >
                 了解详情
               </n-button>
             </p>
@@ -251,31 +353,54 @@ function onClickProvider(str: string): void {
             <n-button secondary round @click="handleCloseButtonClick()">
               取消
             </n-button>
-            <n-button secondary round type="primary" @click="handleValidateButtonClick()">
+            <n-button
+              secondary
+              round
+              type="primary"
+              @click="handleValidateButtonClick()"
+            >
               保存
             </n-button>
           </div>
         </n-form>
-        <n-form v-if="isShowFormProvider == 'microsoft'" class="provider-form-microsoft" ref="formProvider"
-          :model="modelProviderApp" :rules="rules" label-placement="left" label-align="left" label-width="80">
+        <n-form
+          v-if="isShowFormProvider == 'microsoft'"
+          ref="formProvider"
+          class="provider-form-microsoft"
+          :model="modelProviderApp"
+          :rules="rules"
+          label-placement="left"
+          label-align="left"
+          label-width="80"
+        >
           <n-form-item label="Microsoft" path="switchValue">
             <div class="provider-form-item">
               <n-switch v-model:value="modelProviderApp.switchValue"></n-switch>
             </div>
           </n-form-item>
           <n-form-item path="id" label="应用ID">
-            <n-input v-model:value="modelProviderApp.id" @keydown.enter.prevent />
+            <n-input
+              v-model:value="modelProviderApp.id"
+              @keydown.enter.prevent
+            />
           </n-form-item>
           <n-form-item path="password" label="应用密钥">
-            <n-input v-model:value="modelProviderApp.password" @keydown.enter.prevent />
+            <n-input
+              v-model:value="modelProviderApp.password"
+              @keydown.enter.prevent
+            />
           </n-form-item>
           <n-form-item>
             <p>
               若要完成设置，请在您的 Facebook 应用配置中添加此 OAuth 重定向
               URI。
-              <n-button text tag="a"
+              <n-button
+                text
+                tag="a"
                 href="https://firebase.google.com/docs/auth/?hl=zh&authuser=0&_gl=1*r9xise*_ga*MjEyMzg3MjAyNi4xNjkyNTM0MjU4*_ga_CW55HF8NVT*MTY5MzU2MzM0My4xMS4wLjE2OTM1NjMzNTAuMC4wLjA."
-                target="_blank" type="primary">
+                target="_blank"
+                type="primary"
+              >
                 了解详情
               </n-button>
             </p>
@@ -284,31 +409,54 @@ function onClickProvider(str: string): void {
             <n-button secondary round @click="handleCloseButtonClick()">
               取消
             </n-button>
-            <n-button secondary round type="primary" @click="handleValidateButtonClick()">
+            <n-button
+              secondary
+              round
+              type="primary"
+              @click="handleValidateButtonClick()"
+            >
               保存
             </n-button>
           </div>
         </n-form>
-        <n-form v-if="isShowFormProvider == 'github'" class="provider-form-github" ref="formProvider"
-          :model="modelProviderApp" :rules="rules" label-placement="left" label-align="left" label-width="80">
+        <n-form
+          v-if="isShowFormProvider == 'github'"
+          ref="formProvider"
+          class="provider-form-github"
+          :model="modelProviderApp"
+          :rules="rules"
+          label-placement="left"
+          label-align="left"
+          label-width="80"
+        >
           <n-form-item label="GitHub" path="switchValue">
             <div class="provider-form-item">
               <n-switch v-model:value="modelProviderApp.switchValue"></n-switch>
             </div>
           </n-form-item>
           <n-form-item path="id" label="应用ID">
-            <n-input v-model:value="modelProviderApp.id" @keydown.enter.prevent />
+            <n-input
+              v-model:value="modelProviderApp.id"
+              @keydown.enter.prevent
+            />
           </n-form-item>
           <n-form-item path="password" label="应用密钥">
-            <n-input v-model:value="modelProviderApp.password" @keydown.enter.prevent />
+            <n-input
+              v-model:value="modelProviderApp.password"
+              @keydown.enter.prevent
+            />
           </n-form-item>
           <n-form-item>
             <p>
               若要完成设置，请在您的 Facebook 应用配置中添加此 OAuth 重定向
               URI。
-              <n-button text tag="a"
+              <n-button
+                text
+                tag="a"
                 href="https://firebase.google.com/docs/auth/?hl=zh&authuser=0&_gl=1*r9xise*_ga*MjEyMzg3MjAyNi4xNjkyNTM0MjU4*_ga_CW55HF8NVT*MTY5MzU2MzM0My4xMS4wLjE2OTM1NjMzNTAuMC4wLjA."
-                target="_blank" type="primary">
+                target="_blank"
+                type="primary"
+              >
                 了解详情
               </n-button>
             </p>
@@ -317,13 +465,18 @@ function onClickProvider(str: string): void {
             <n-button secondary round @click="handleCloseButtonClick()">
               取消
             </n-button>
-            <n-button secondary round type="primary" @click="handleValidateButtonClick()">
+            <n-button
+              secondary
+              round
+              type="primary"
+              @click="handleValidateButtonClick()"
+            >
               保存
             </n-button>
           </div>
         </n-form>
       </div>
-      <div class="provider-headline" v-show="!isShowForm">添加登录提供方</div>
+      <div v-show="!isShowForm" class="provider-headline">添加登录提供方</div>
       <div v-show="!isShowForm">
         <n-grid cols="1 650:4">
           <n-grid-item>
@@ -333,7 +486,11 @@ function onClickProvider(str: string): void {
                 <li @click="onClickProvider('email')">
                   <div class="provider-tile">
                     <div class="provider-name-group">
-                      <n-icon class="provider-icon" size="20" :component="MailOutline" />
+                      <n-icon
+                        class="provider-icon"
+                        size="20"
+                        :component="MailOutline"
+                      />
                       <div class="provider-name-text">电子邮件/密码</div>
                     </div>
                   </div>
@@ -341,7 +498,11 @@ function onClickProvider(str: string): void {
                 <li @click="onClickProvider('password')">
                   <div class="provider-tile">
                     <div class="provider-name-group">
-                      <n-icon class="provider-icon" size="20" :component="KeyOutline" />
+                      <n-icon
+                        class="provider-icon"
+                        size="20"
+                        :component="KeyOutline"
+                      />
                       <div class="provider-name-text">账号/密码</div>
                     </div>
                   </div>
@@ -349,7 +510,11 @@ function onClickProvider(str: string): void {
                 <li @click="onClickProvider('person')">
                   <div class="provider-tile">
                     <div class="provider-name-group">
-                      <n-icon class="provider-icon" size="20" :component="PersonCircleOutline" />
+                      <n-icon
+                        class="provider-icon"
+                        size="20"
+                        :component="PersonCircleOutline"
+                      />
                       <div class="provider-name-text">游客访问</div>
                     </div>
                   </div>
@@ -374,7 +539,12 @@ function onClickProvider(str: string): void {
                 <li @click="onClickProvider('alipay')">
                   <div class="provider-tile">
                     <div class="provider-name-group">
-                      <n-icon class="provider-icon" size="20" :component="LogoAlipay" color="#1677ff" />
+                      <n-icon
+                        class="provider-icon"
+                        size="20"
+                        :component="LogoAlipay"
+                        color="#1677ff"
+                      />
                       <div class="provider-name-text">支付宝</div>
                     </div>
                   </div>
@@ -399,7 +569,12 @@ function onClickProvider(str: string): void {
                 <li @click="onClickProvider('facebook')">
                   <div class="provider-tile">
                     <div class="provider-name-group">
-                      <n-icon class="provider-icon" size="20" :component="LogoFacebook" color="#1977f3" />
+                      <n-icon
+                        class="provider-icon"
+                        size="20"
+                        :component="LogoFacebook"
+                        color="#1977f3"
+                      />
                       <div class="provider-name-text">Facebook</div>
                     </div>
                   </div>
@@ -417,7 +592,11 @@ function onClickProvider(str: string): void {
                 <li @click="onClickProvider('github')">
                   <div class="provider-tile">
                     <div class="provider-name-group">
-                      <n-icon class="provider-icon" size="20" :component="LogoGithub" />
+                      <n-icon
+                        class="provider-icon"
+                        size="20"
+                        :component="LogoGithub"
+                      />
                       <div class="provider-name-text">GitHub</div>
                     </div>
                   </div>
@@ -431,7 +610,9 @@ function onClickProvider(str: string): void {
     <n-card v-show="isShowList">
       <div class="provider-list">
         <div class="btn">
-          <n-button type="info" @click="isShowList = false">添加新提供方</n-button>
+          <n-button type="info" @click="isShowList = false"
+            >添加新提供方</n-button
+          >
         </div>
         <n-data-table :columns="columns" :data="data" />
       </div>
