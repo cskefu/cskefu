@@ -134,27 +134,35 @@
 
 <p align="center">
   <b>欢迎页</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-screen-1.jpg" width="900">
+  <img src="./public/assets/cskefu/cskefu-screen-1.jpg" width="900">
 </p>
 
-### 坐席工作台
+<details>
+<summary>展开查看更多产品截图</summary>
+<p>
 
-登录演示环境，查看更多产品能力：[https://demo.cskefu.com/](https://demo.cskefu.com/)
+<p align="center">
+  <b>坐席工作台</b><br>
+  <img src="./public/assets/44915582-eb8d2c80-ad65-11e8-8876-86c8b5bb5cc7.png" width="900">
+</p>
 
-| **登录账号** | **密码**  | **角色**       |
-| ------------ | --------- | -------------- |
-| admin        | admin1234 | 系统超级管理员 |
-| zhangsan     | agent1234 | 客服坐席人员   |
+<p align="center">
+  <b>坐席监控</b><br>
+  <img src="./public/assets/44915711-432b9800-ad66-11e8-899b-1ea02244925d.png" width="900">
+</p>
 
-### 网页端访客示例
+<p align="center">
+  <b>集成客服机器人</b><br>
+  <img src="./public/assets/51080565-4b82df00-1719-11e9-8cc4-dbbec0459224.png" width="900">
+</p>
 
-[https://demo.cskefu.com/testclient.html](http://demo.cskefu.com/testclient.html)
+<p align="center">
+  <b>客服机器人应答</b><br>
+  <img src="./public/assets/51080567-50479300-1719-11e9-85d8-d209370c9d10.png" width="900">
+</p>
 
-- 登录张三后可接待访客，否则显示没有客服人员在线
-
-### 机器人客服示例
-
-[https://oh-my.cskefu.com/im/text/0nhckh.html](https://oh-my.cskefu.com/im/text/0nhckh.html)
+</p>
+</details>
 
 ## 快速开始
 
