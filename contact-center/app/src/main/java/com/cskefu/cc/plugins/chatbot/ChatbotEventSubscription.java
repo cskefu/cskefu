@@ -128,7 +128,8 @@ public class ChatbotEventSubscription {
                 JSONObject data = (JSONObject) result.getData();
                 if (data.has("logic_is_fallback")) {
                     ChatMessage resp = creatChatMessage(request, c);
-                    resp.setMessage(data.getString("string"));
+                    String htmlMessage = data.getString("string").replaceAll("(\r\n|\n)", "<br />");
+                    resp.setMessage(htmlMessage);
                     ChatMessage respHelp = new ChatMessage();
                     JSONArray respParams = new JSONArray();
                     if (!StringUtils.equals(MainContext.ChannelType.WEBIM.toString(), c.getChannel())) {

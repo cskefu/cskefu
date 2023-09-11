@@ -7,7 +7,7 @@
 # 春松客服
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/cskefu/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/cskefu/cskefu/network/members) [![License](https://cdndownload2.chatopera.com/cskefu/licenses/chunsong1.0.svg)](https://www.cskefu.com/licenses/v1.html "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![docker](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-33-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-34-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [https://www.cskefu.com](https://www.cskefu.com/)
@@ -92,9 +92,12 @@
       <td align="center" valign="top" width="11.11%"><a href="https://github.com/zhangchanglong"><img src="https://avatars.githubusercontent.com/u/3481828?v=4?s=50" width="50px;" alt="zhangchanglong"/><br /><sub><b>zhangchanglong</b></sub></a><br /><a href="#eventOrganizing-zhangchanglong" title="Event Organizing">📋</a></td>
       <td align="center" valign="top" width="11.11%"><a href="https://samzong.me"><img src="https://avatars.githubusercontent.com/u/13782141?v=4?s=50" width="50px;" alt="Samzong Lu"/><br /><sub><b>Samzong Lu</b></sub></a><br /><a href="#eventOrganizing-SAMZONG" title="Event Organizing">📋</a> <a href="#projectManagement-SAMZONG" title="Project Management">📆</a> <a href="#design-SAMZONG" title="Design">🎨</a></td>
       <td align="center" valign="top" width="11.11%"><a href="https://github.com/halfray"><img src="https://avatars.githubusercontent.com/u/8181982?v=4?s=50" width="50px;" alt="halfray"/><br /><sub><b>halfray</b></sub></a><br /><a href="https://github.com/cskefu/cskefu/issues?q=author%3Ahalfray" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="11.11%"><a href="https://github.com/kely33"><img src="https://avatars.githubusercontent.com/u/134681303?v=4?s=50" width="50px;" alt="kely33"/><br /><sub><b>kely33</b></sub></a><br /><a href="https://github.com/cskefu/cskefu/issues?q=author%3Akely33" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="11.11%"><a href="https://github.com/lecjy"><img src="https://avatars.githubusercontent.com/u/9280760?v=4?s=50" width="50px;" alt="lecjy"/><br /><sub><b>lecjy</b></sub></a><br /></td>
     </tr>
   </tbody>
 </table>
+
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
@@ -131,7 +134,7 @@
 
 <p align="center">
   <b>欢迎页</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-screen-1.jpg" width="900">
+  <img src="./public/assets/cskefu/cskefu-screen-1.jpg" width="900">
 </p>
 
 <details>
@@ -140,45 +143,26 @@
 
 <p align="center">
   <b>坐席工作台</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/44915582-eb8d2c80-ad65-11e8-8876-86c8b5bb5cc7.png" width="900">
+  <img src="./public/assets/44915582-eb8d2c80-ad65-11e8-8876-86c8b5bb5cc7.png" width="900">
 </p>
 
 <p align="center">
   <b>坐席监控</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/44915711-432b9800-ad66-11e8-899b-1ea02244925d.png" width="900">
+  <img src="./public/assets/44915711-432b9800-ad66-11e8-899b-1ea02244925d.png" width="900">
 </p>
 
 <p align="center">
   <b>集成客服机器人</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/51080565-4b82df00-1719-11e9-8cc4-dbbec0459224.png" width="900">
+  <img src="./public/assets/51080565-4b82df00-1719-11e9-8cc4-dbbec0459224.png" width="900">
 </p>
 
 <p align="center">
   <b>客服机器人应答</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/51080567-50479300-1719-11e9-85d8-d209370c9d10.png" width="900">
+  <img src="./public/assets/51080567-50479300-1719-11e9-85d8-d209370c9d10.png" width="900">
 </p>
 
 </p>
 </details>
-
-### 坐席工作台
-
-[https://demo.cskefu.com/](https://demo.cskefu.com/)
-
-| **登录账号** | **密码**  | **角色**       |
-| ------------ | --------- | -------------- |
-| admin        | admin1234 | 系统超级管理员 |
-| zhangsan     | agent1234 | 客服坐席人员   |
-
-### 网页端访客示例
-
-[https://demo.cskefu.com/testclient.html](http://demo.cskefu.com/testclient.html)
-
-- 登录张三后可接待访客，否则显示没有客服人员在线
-
-### 机器人客服示例
-
-[https://oh-my.cskefu.com/im/text/0nhckh.html](https://oh-my.cskefu.com/im/text/0nhckh.html)
 
 ## 快速开始
 
@@ -218,7 +202,7 @@
 
 <p align="center">
   <b>应用场景示例</b><br>
-  <img src="https://github.com/cskefu/cskefu/raw/osc/public/assets/screenshot-20210908-184522.png" width="800">
+  <img src="https://github.com/cskefu/cskefu/raw/develop/public/assets/screenshot-20210908-184522.png" width="800">
 </p>
 
 支持企业 OA 智能问答、HR 智能问答、智能客服和网络营销等场景。企业 IT 部门、业务部门借助 Chatopera 云服务快速让聊天机器人上线！
@@ -262,7 +246,7 @@
 - 开发环境搭建
   - [安装依赖和启动数据库等](https://docs.cskefu.com/docs/osc/engineering)
   - [IDE 配置和使用之 IntelliJ IDEA](https://docs.cskefu.com/docs/osc/ide_intelij_idea)
-  - [IDE 配置和使用之 Eclipse IDE](https://docs.cskefu.com/docs/osc/ide_eclipse)
+  - [IDE 配置和使用之 VSCode](https://docs.cskefu.com/docs/osc/ide_vscode)
 - 定制开发技能
   - [系统集成之 RestAPIs](https://docs.cskefu.com/docs/osc/restapi)
   - [从零开始学习定制春松客服技能：春松客服大讲堂 PPT 课件及视频](https://github.com/cskefu/cskefu.djt)
@@ -270,6 +254,8 @@
 - [提交代码](https://docs.cskefu.com/docs/osc/contribution)
 
 ## 微信
+
+* 如以下图片无法浏览，可能是网络原因，请打开 [Gitee](https://gitee.com/cskefu/cskefu#%E5%BE%AE%E4%BF%A1) 查看二维码。
 
 ### 微信群
 
@@ -281,7 +267,7 @@
 
 及时获得产品更新、活动分享等信息，关注春松客服公众号。
 
-![春松客服公众号](./public/assets/cskefu-wechat-gzh.png)
+![春松客服公众号](./public/assets/cskefu-wechat-gzh.jpg)
 
 ## 鸣谢
 
