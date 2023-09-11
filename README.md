@@ -134,7 +134,7 @@
 
 <p align="center">
   <b>欢迎页</b><br>
-  <img src="./public/assets/cskefu/cskefu-screen-1.jpg" width="900">
+  <img src="./public/assets/cskefu-screen-1.jpg" width="900">
 </p>
 
 <details>
