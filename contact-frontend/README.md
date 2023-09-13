@@ -27,7 +27,7 @@
 │   │   │   ├── enterprise    # 企业设置模块
 │   │   │   ├── system        # 系统设置模块
 │   │   │   ├── auth          # 权限/登录相关
-│   ├── plugins               # 插件 (开发使用的三方库，例如：ProseMirror)
+│   ├── plugins               # 插件相关 (开发使用的三方库，例如：ProseMirror)
 │   │   ├── prose-mirror      # prose-mirror 插件
 │   │   ├── directives        # 自定义指令
 │   ├── widgets               # 小组件
