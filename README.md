@@ -223,8 +223,6 @@
 - 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
 - 如何成为春松客服开发者，参考[文档](https://docs.cskefu.com/docs/osc/devonboard/)
 - 如何提交代码，参考[文档](https://docs.cskefu.com/docs/osc/contribution)
-- 如何最新的春松客服开发进展：订阅[春松客服邮件列表](https://lists.cskefu.com/cgi-bin/mailman/listinfo/dev)
-- 如何获得春松客服商业插件和服务，参考[文档](https://www.chatopera.com/price.html)
 
 春松客服之所以开源，是基于这样一种信念：爱人也是爱己，利他也是利己。
 因春松客服受益，而不回报开源社区的用户，我们不欢迎使用春松客服：我们开源并不是为了你们，你们是不被祝福的。
