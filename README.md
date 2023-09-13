@@ -218,10 +218,10 @@
 在春松客服开源社区，我们建立关系、发现认同、合作共赢！
 
 - 了解春松客服采用的开源许可协议，参考[文档](https://www.cskefu.com/2023/06/25/chunsong-public-license-1-0/)
-- 了解春松客服的开发计划，参考[文档](https://chatopera.github.io/cskefu.roadmap/)
-- 加入开源社区运营，成为社区合伙人，参考[文档](https://mp.weixin.qq.com/s/TLE87YX4k097iOXnV4WVSw)
-- 加入春松客服开源社区，参考[文档](https://www.cskefu.com/join-us/)
+- 了解春松客服的开发计划，参考[文档](https://github.com/cskefu/cskefu/issues)
+- 如何发布春松客服人物志，向社区介绍自己，参考[文档](https://www.cskefu.com/join-us/)
 - 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
+- 如何成为春松客服开发者，参考[文档](https://docs.cskefu.com/docs/osc/devonboard/)
 - 如何提交代码，参考[文档](https://docs.cskefu.com/docs/osc/contribution)
 - 如何最新的春松客服开发进展：订阅[春松客服邮件列表](https://lists.cskefu.com/cgi-bin/mailman/listinfo/dev)
 - 如何获得春松客服商业插件和服务，参考[文档](https://www.chatopera.com/price.html)
