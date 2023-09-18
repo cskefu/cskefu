@@ -1,14 +1,14 @@
-/* 
- * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
- * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+/*
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public
  * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>, 
- * Licensed under the Apache License, Version 2.0, 
+ * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>,
+ * Licensed under the Apache License, Version 2.0,
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.basic;
@@ -216,5 +216,14 @@ public class Constants {
      */
     public static final String AUTH_TOKEN_TYPE_BEARER = "Bearer";
     public static final String AUTH_TOKEN_TYPE_BASIC = "Basic";
+
+    /**
+     * License
+     */
+    public static final String LICENSE_SERVER_INST_ID = "SERVERINSTID";
+    public static final String LICENSE_SERVICE_NAME = "SERVICENAME";
+    public static final String LICENSE_SERVICE_NAME_PREFIX = "春松客服";
+    public static final String LICENSES = "LICENSES";
+    public static final String METAKV_DATATYPE_STRING = "string";
 
 }
