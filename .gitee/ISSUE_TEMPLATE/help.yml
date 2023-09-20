@@ -16,6 +16,7 @@ body:
   2. xxx
   3. xxx
   ...
+
    render: bash
   validations:
    required: true
