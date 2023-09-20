@@ -16,7 +16,6 @@ body:
     2. xxx
     3. xxx
     ...
-   render: bash
   validations:
    required: true
 - type: textarea
@@ -27,3 +26,5 @@ body:
     1. Git commit hash (`git rev-parse HEAD`)，进入代码库并执行
     或
     2. v7, v8, v9 ...
+  validations:
+   required: true
