@@ -13,10 +13,10 @@ body:
   attributes:
    label: "详细描述需求"
    value: |
-    "## 用户主体"
-    "## 用户故事"
-    "## 交互流程"
-    "## 交互细节"
+    ## 用户主体\n
+    ## 用户故事\n
+    ## 交互流程\n
+    ## 交互细节\n
     ...
   validations:
    required: true
