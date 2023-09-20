@@ -15,6 +15,10 @@ body:
   1. 针对某功能，需要提供详细描述文档
   2. xxx
   3. xxx
+  ...
+   render: bash
+  validations:
+   required: true
 - type: textarea
   id: content2
   attributes:
