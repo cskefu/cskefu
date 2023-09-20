@@ -31,18 +31,6 @@
 
 新版本介绍：[观看春松客服 v8 新版本发布会 @ 2023-07-01](https://www.cskefu.com/2023/07/03/community-conf/)
 
-## 媒体报道
-
-<img src="./public/assets/cskefu-gpv-2.png" height = "220" div align=right />
-
-- [春松客服：通过开源加云原生模式，大规模交付智能客服系统](https://www.cskefu.com/2022/04/11/cskefu-opensource-plus-cloud-model/)
-
-- [春松客服荣获 GVP 企业级开源项目认证](http://www.ctiforum.com/news/guonei/578988.html)
-
-- [Chatopera 王海良：做好开源客服系统 | OpenTEKr 专访](https://www.bilibili.com/video/BV1qF411p7hW)
-
----
-
 ## 开发者列表 ✨
 
 :evergreen_tree: 春松客服是开源的智能客服系统，于 2018 年 9 月由 [Chatopera](https://www.chatopera.com) 发布，在开源社区协作中优化和完善，春松客服属于[春松客服开源社区](https://github.com/cskefu/cskefu#%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%BC%80%E6%BA%90%E7%A4%BE%E5%8C%BA)。
