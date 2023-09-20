@@ -12,11 +12,10 @@ body:
   attributes:
    label: "详细描述问题后优先处理解决！ 截图、错误日志等"
    value: |
-  1. 针对某功能，需要提供详细描述文档
-  2. xxx
-  3. xxx
-  ...
-
+    1. 针对某功能，需要提供详细描述文档
+    2. xxx
+    3. xxx
+    ...
    render: bash
   validations:
    required: true
