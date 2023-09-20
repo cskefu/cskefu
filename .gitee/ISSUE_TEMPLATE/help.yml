@@ -24,7 +24,3 @@ body:
   value: "## 代码版本"
 - type: markdown
   value: "<!-- Git commit hash (`git rev-parse HEAD`)，进入代码库并执行 -->"
-- type: markdown
-  attributes:
-   value: |
-  Thanks for taking the time to fill out this bug report.
