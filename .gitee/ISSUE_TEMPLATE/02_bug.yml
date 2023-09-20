@@ -1,8 +1,8 @@
-name: Help
-description: 开发环境搭建、功能咨询和使用问题等
-labels: ["help-wanted"]
+name: 软件缺陷
+description: 报告软件缺陷
+labels: ["bug"]
 assignees:
-  - hailiang-wang
+  - kaifuny
 body:
 - type: markdown
   attributes:
@@ -12,7 +12,7 @@ body:
   attributes:
    label: "详细描述问题后优先处理解决！ 截图、错误日志等"
    value: |
-    1. 针对某功能，需要提供详细描述文档
+    1. 如何重现
     2. xxx
     3. xxx
     ...

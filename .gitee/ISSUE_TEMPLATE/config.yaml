@@ -4,5 +4,8 @@ contact_links:
       url: https://docs.cskefu.com/
       about: 提供春松客服使用指南、教程、基本功能使用、介绍和常见问题解答
     - name: 春松客服大讲堂
-      url: https://gitee.com/cskefu/cskefu-djt
+      url: https://gitee.com/cskefu/cskefu-djt/blob/main/README.md
       about: 提供春松客服定制化开发技能课程
+    - name: 商务洽谈
+      url: https://www.chatopera.com/price.html
+      about: 提供春松客服定制化开发、机器人客服平台等
