@@ -1,0 +1,30 @@
+name: Help
+description: 开发环境搭建、功能咨询和使用问题等
+labels: ["help-wanted"]
+assignees:
+  - hailiang-wang
+body:
+- type: markdown
+  value: "## 描述"
+- type: markdown
+  value: "#<!-- 详细描述问题后优先处理解决！ 截图、错误日志等 -->"
+- type: markdown
+  value: "## 功能"
+- type: markdown
+  value: "<!-- 针对某功能，需要提供详细描述文档 -->"
+- type: markdown
+  value: "## 操作系统"
+- type: markdown
+  value: "- [ ] macOS or Mac OSX"
+- type: markdown
+  value: "- [ ] Windows"
+- type: markdown
+  value: "- [ ] Linux(Debian, CentOS, Ubuntu, etc.)"
+- type: markdown
+  value: "## 代码版本"
+- type: markdown
+  value: "<!-- Git commit hash (`git rev-parse HEAD`)，进入代码库并执行 -->"
+- type: markdown
+  attributes:
+   value: |
+  Thanks for taking the time to fill out this bug report.
