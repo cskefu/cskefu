@@ -24,6 +24,6 @@ body:
   attributes:
    label: "代码版本"
    value: |
-  1. Git commit hash (`git rev-parse HEAD`)，进入代码库并执行
-  或
-  2. v7, v8, v9 ...
+    1. Git commit hash (`git rev-parse HEAD`)，进入代码库并执行
+    或
+    2. v7, v8, v9 ...
