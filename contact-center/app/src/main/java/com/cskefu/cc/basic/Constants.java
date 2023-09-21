@@ -223,7 +223,7 @@ public class Constants {
     public static final String LICENSE_SERVER_INST_ID = "SERVERINSTID";
     public static final String LICENSE_SERVICE_NAME = "SERVICENAME";
     public static final String LICENSE_SERVICE_NAME_PREFIX = "春松客服";
-    public static final String LICENSES = "LICENSES";
+    public static final String LICENSEIDS = "LICENSEIDS";
     public static final String METAKV_DATATYPE_STRING = "string";
 
 }

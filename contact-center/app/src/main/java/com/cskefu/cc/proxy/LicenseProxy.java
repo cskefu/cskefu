@@ -10,7 +10,11 @@
  */
 package com.cskefu.cc.proxy;
 
+import com.chatopera.store.sdk.QuotaWdClient;
+import com.chatopera.store.sdk.Response;
+import com.chatopera.store.sdk.exceptions.InvalidResponseException;
 import com.cskefu.cc.basic.Constants;
+import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.model.Metakv;
 import com.cskefu.cc.persistence.repository.MetakvRepository;
@@ -19,6 +23,7 @@ import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -31,11 +36,35 @@ public class LicenseProxy {
     @Autowired
     private MetakvRepository metkvRes;
 
+    @Autowired
+    private QuotaWdClient quotaWdClient;
+
     /**
      * 初始化 serverinstId
      * serverinstId 作为服务唯一的实例ID
      */
     public void checkOnStartup() {
+        /**
+         * Check service connection
+         */
+        System.out.println("[license] license service URL " + quotaWdClient.getBaseUrl());
+        try {
+            Response resp = quotaWdClient.ping();
+            System.out.println("[license] license service ping successfully.");
+
+            if (resp.getRc() != 0) {
+                throw new InvalidResponseException("Unexpected response from license service " + resp.toString());
+            }
+        } catch (InvalidResponseException e) {
+            logger.error("[license] make sure this host machine could connect to " + quotaWdClient.getBaseUrl() + " during running.");
+            logger.error("[license] checkOnStartup could not connect to license service, CSKeFu instance is terminated.", e);
+            // Very serious event happens, just shutdown the instance
+            SpringApplication.exit(MainContext.getContext(), () -> 1);
+        }
+
+        /**
+         * Init local data for License
+         */
         Optional<Metakv> metaServerinstIdOpt = metkvRes.findFirstByMetakey(Constants.LICENSE_SERVER_INST_ID);
         if (metaServerinstIdOpt.isEmpty()) {
             // 没有 serverinstId 信息，初始化
@@ -50,10 +79,10 @@ public class LicenseProxy {
             createMetakv(Constants.LICENSE_SERVICE_NAME, serviceName, Constants.METAKV_DATATYPE_STRING);
         }
 
-        Optional<Metakv> metaLicensesOpt = metkvRes.findFirstByMetakey(Constants.LICENSES);
+        Optional<Metakv> metaLicensesOpt = metkvRes.findFirstByMetakey(Constants.LICENSEIDS);
         if (metaLicensesOpt.isEmpty()) {
             // 没有 license 信息，初始化
-            createMetakv(Constants.LICENSES, (new JSONArray()).toString(), Constants.METAKV_DATATYPE_STRING);
+            createMetakv(Constants.LICENSEIDS, (new JSONArray()).toString(), Constants.METAKV_DATATYPE_STRING);
         }
     }
 
