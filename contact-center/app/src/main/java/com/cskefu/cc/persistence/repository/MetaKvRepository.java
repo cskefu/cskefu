@@ -10,13 +10,13 @@
  */
 package com.cskefu.cc.persistence.repository;
 
-import com.cskefu.cc.model.Metakv;
+import com.cskefu.cc.model.MetaKv;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface MetakvRepository extends JpaRepository<Metakv, String> {
+public interface MetaKvRepository extends JpaRepository<MetaKv, String> {
 
-    Optional<Metakv> findFirstByMetakey(final String p1);
+    Optional<MetaKv> findFirstByMetakey(final String p1);
 
 }

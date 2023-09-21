@@ -2229,7 +2229,6 @@ CREATE TABLE `uk_organ` (
 -- Records of uk_organ
 -- ----------------------------
 INSERT INTO `uk_organ` VALUES ('2c9e80867d65eb5c017d65f17ceb0019', '售前坐席A组', null, null, null, null, null, null, '4028a0866f9403f1016f9405a05d000e', '1', '');
-INSERT INTO `uk_organ` VALUES ('40288296874ae16101874ae4f2670016', '机器人平台', null, null, null, null, null, null, '4028a0866f9403f1016f9405a05d000e', '0', '');
 INSERT INTO `uk_organ` VALUES ('4028a0866f9403f1016f9405a05d000e', '我的企业', null, null, null, null, 'cskefu', null, '0', '0', '');
 
 -- ----------------------------

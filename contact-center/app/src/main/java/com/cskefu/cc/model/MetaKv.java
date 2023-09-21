@@ -10,7 +10,7 @@ import java.util.Date;
 @Entity
 @Table(name = "cs_metakv")
 @org.hibernate.annotations.Proxy(lazy = false)
-public class Metakv implements java.io.Serializable {
+public class MetaKv implements java.io.Serializable {
 
     @Id
     private String metakey;

@@ -12,6 +12,7 @@ package com.cskefu.cc.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -43,7 +44,38 @@ public class PugHelper {
     }
 
     /**
+     * 在字符串中替换一些字符为 *, 起到混淆、加密、遮盖的敏感信息的目的
+     *
+     * @param prev
+     * @return
+     */
+    public String messupStringWithStars(final String prev) {
+        StringBuffer sb = new StringBuffer();
+
+        if (prev.length() >= 6) {
+            sb.append("***");
+            int initial = prev.length() - 4;
+            for (int i = initial; i < prev.length(); i++) {
+                sb.append(prev.charAt(i));
+            }
+        } else { // < 6
+            if (prev.length() <= 2 && prev.length() > 0) {
+                return "***";
+            } else { // 2 < length < 6
+                sb.append("***");
+                int initial = prev.length() - 2;
+                for (int i = initial; i < prev.length(); i++) {
+                    sb.append(prev.charAt(i));
+                }
+            }
+        }
+
+        return sb.toString();
+    }
+
+    /**
      * 将 String 转化为 JSONArray
+     *
      * @param str
      * @return
      */

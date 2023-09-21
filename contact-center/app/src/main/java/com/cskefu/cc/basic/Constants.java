@@ -226,4 +226,9 @@ public class Constants {
     public static final String LICENSEIDS = "LICENSEIDS";
     public static final String METAKV_DATATYPE_STRING = "string";
 
+    public static final String SHORTID = "shortId";
+    public static final String LICENSES = "licenses";
+    public static final String ADDDATE = "addDate";
+    public static final String LICENSE = "license";
+    public static final String UPDATETIME = "updateTime";
 }
