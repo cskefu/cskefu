@@ -14,15 +14,19 @@
 package com.cskefu.cc.config;
 
 import com.chatopera.store.sdk.QuotaWdClient;
+import com.chatopera.store.sdk.exceptions.InvalidProviderException;
+import com.cskefu.cc.basic.MainContext;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class QuotaWdClientConfig {
 
-    @Value("${cskefu.license.store}")
-    private String cskefuLicenseStore;
+    @Value("${license.store.provider}")
+    private String licenseStoreProvider;
 
     /**
      * 证书商店服务客户端
@@ -30,9 +34,13 @@ public class QuotaWdClientConfig {
      * @return
      */
     @Bean
-    public QuotaWdClient quotaWdClient() {
+    public QuotaWdClient quotaWdClient() throws InvalidProviderException {
+        if (StringUtils.isBlank(licenseStoreProvider)) {
+            System.out.println("[license] invalid license provider info, service is terminated.");
+            System.exit(1);
+        }
+
         QuotaWdClient quotaWdClient = new QuotaWdClient();
-        quotaWdClient.setBaseUrl(cskefuLicenseStore);
         return quotaWdClient;
     }
 }

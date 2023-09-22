@@ -10,12 +10,15 @@
  */
 package com.cskefu.cc.proxy;
 
+import com.chatopera.store.enums.LICSTATUS;
 import com.chatopera.store.sdk.QuotaWdClient;
 import com.chatopera.store.sdk.Response;
+import com.chatopera.store.sdk.exceptions.InvalidRequestException;
 import com.chatopera.store.sdk.exceptions.InvalidResponseException;
 import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.basic.MainUtils;
+import com.cskefu.cc.exception.LicenseNotFoundException;
 import com.cskefu.cc.exception.MetaKvInvalidKeyException;
 import com.cskefu.cc.exception.MetaKvNotExistException;
 import com.cskefu.cc.model.MetaKv;
@@ -188,7 +191,12 @@ public class LicenseProxy {
                 addDates.put(obj.getString(Constants.SHORTID), obj.getString(Constants.ADDDATE));
             }
 
-            Response resp = quotaWdClient.getLicensesInfo(licenseIds);
+            Response resp = null;
+            try {
+                resp = quotaWdClient.getLicenseBasics(licenseIds);
+            } catch (InvalidRequestException e) {
+                return result;
+            }
             JSONArray data = (JSONArray) resp.getData();
 
             for (int i = 0; i < data.length(); i++) {
@@ -232,8 +240,8 @@ public class LicenseProxy {
      * @return
      * @throws InvalidResponseException
      */
-    public JSONObject getLicenseFromStore(final String licenseShortId) throws InvalidResponseException {
-        Response resp = quotaWdClient.getLicenseInfo(licenseShortId);
+    public JSONObject getLicenseBasicsFromStore(final String licenseShortId) throws InvalidResponseException, InvalidRequestException {
+        Response resp = quotaWdClient.getLicenseBasics(licenseShortId);
         if (resp.getRc() == 0) {
             JSONArray data = (JSONArray) resp.getData();
             if (data.length() != 1)
@@ -246,4 +254,64 @@ public class LicenseProxy {
 
     }
 
+    /**
+     * 获得已经添加的证书在 Store 中的基本信息
+     *
+     * @return
+     * @throws InvalidResponseException
+     */
+    public JSONArray getAddedLicenseBasicsFromStore() throws InvalidResponseException {
+        JSONArray arr = getLicensesInMetakv();
+        List<String> ids = new ArrayList<>();
+
+        for (int i = 0; i < arr.length(); i++) {
+            ids.add(((JSONObject) arr.get(i)).getString(Constants.SHORTID));
+        }
+
+        if (ids.size() > 0) {
+            Response resp = null;
+            try {
+                resp = quotaWdClient.getLicenseBasics(StringUtils.join(ids, ","));
+            } catch (InvalidRequestException e) {
+                logger.error("[getAddedLicenseBasicsFromStore] InvalidRequestException", e);
+            }
+            if (resp.getRc() != 0) {
+                throw new InvalidResponseException("Invalid response, rc " + Integer.toString(resp.getRc()));
+            }
+
+            return (JSONArray) resp.getData();
+        } else {
+            logger.error("[license] getAddedLicenseBasicsFromStore - No license ids in metaKv");
+            return new JSONArray();
+        }
+    }
+
+
+    /**
+     * 验证证书存在
+     *
+     * @param licenseShortId
+     * @return
+     */
+    public LICSTATUS existLicenseInStore(final String licenseShortId) throws InvalidResponseException, LicenseNotFoundException, InvalidRequestException {
+        Map<String, LICSTATUS> statuses = quotaWdClient.getLicenseStatus(licenseShortId);
+
+        if (statuses.size() == 1) {
+            for (final Map.Entry<String, LICSTATUS> entry : statuses.entrySet()) {
+                final LICSTATUS status = entry.getValue();
+
+                if (status == LICSTATUS.NOTFOUND)
+                    throw new LicenseNotFoundException("LicenseId not found [" + licenseShortId + "]");
+
+                return status;
+            }
+            throw new InvalidResponseException("Unexpected response, internal error.");
+        } else {
+            throw new InvalidResponseException("Unexpected response, should contain one record.");
+        }
+    }
+
+    public String getLicenseStoreProvider() {
+        return quotaWdClient.getBaseUrl();
+    }
 }

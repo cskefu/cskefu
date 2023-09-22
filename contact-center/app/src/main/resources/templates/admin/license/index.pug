@@ -13,8 +13,14 @@ block content
             | 使用授权证书列表 (#{licenses.size()})
             | ，更新时间 #{pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', updateTime)}
             span(style='float:right;')
-                button.layui-btn.layui-btn-small.green(href='/admin/license/add.html', data-toggle='ajax', data-width='550', data-height='450', data-title='添加使用授权证书')
-                    | 添加使用授权证书
+                .layui-btn-group.ukefu-btn-group
+                    button.layui-btn.layui-btn-small(href='/admin/license/add.html', data-toggle='ajax', data-width='550', data-height='450', data-title='添加使用授权证书')
+                        i.layui-icon &#xe654;
+                        | 导入
+                    button.layui-btn.layui-btn-small(onclick='location.reload()')
+                        span  刷新
+                    button.layui-btn.layui-btn-small(onclick='openLicenseStorePage()')
+                        span  打开证书商店
 
         .row(style='padding:5px;')
             .col-lg-12
@@ -24,13 +30,13 @@ block content
                         col(width='10%')
                         col(width='15%')
                         col(width='10%')
-                        col(width='15%')
                         col(width='10%')
                         col(width='10%')
-                        col(width='1%')
+                        col(width='10%')
+                        col(width='10%')
                     thead
                         tr
-                            th 证书标识
+                            th 证书 ID
                             th 产品标识
                             th 产品名称
                             th 有效期截止
@@ -41,7 +47,8 @@ block content
                     tbody
                         for item in licenses
                             tr
-                                td= pugHelper.messupStringWithStars(item.license.shortId)
+                                - var messupLicenseShortId = pugHelper.messupStringWithStars(item.license.shortId)
+                                td= messupLicenseShortId
                                 td= item.product.shortId
                                 td= item.product.name
                                 td= item.license.effectivedateend
@@ -49,30 +56,38 @@ block content
                                 td= item.user.nickname
                                 td= pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', item.addDate)
                                 td(style="white-space:nowrap;" nowrap="nowrap")
-                                    a(href="/admin/license/edit.html?id=" + item.license.shortId, data-toggle="ajax",  data-width="550", data-height="450", data-title="编辑使用授权证书")
+                                    a(href="#", onclick="copyLicenseId2ClipboardOnOS('" + item.license.shortId + "');return false;")
                                         i.layui-icon &#xe642;
-                                        span 编辑
-                                    a(href="/admin/license/delete.html?id=" + item.license.shortId style="margin-left:10px;" data-toggle="tip"  title="请确认是否删除使用授权证书？")
+                                        span 复制 ID
+                                    a(href="/admin/license/delete/" + item.license.shortId + ".html" style="margin-left:10px;" data-toggle="tip"  title="请确认是否删除使用授权证书 " + messupLicenseShortId + "？")
                                         i.layui-icon(style="color:red;") &#x1006;
                                         span 删除
         .row(style='padding:5px;')
             .col-lg-12#page(style='text-align:center;')
 
     script.
+        var msg = '#{msg}';
+        if (msg == 'already_added')
+            top.layer.alert('已经添加，不需要再次执行。', {icon: 1});
+        else if (msg == 'product_added_already')
+            top.layer.alert('同产品证书已经添加，不支持继续添加。', {icon: 2});
+        else if (msg == 'invalid_id')
+            top.layer.alert('不合法的证书标识', {icon: 2});
+        else if (msg == 'notfound_id')
+            top.layer.alert('不存在该证书信息', {icon: 2});
+
         layui.use(['laypage', 'layer'], function () {
             var laypage = layui.laypage
                 , layer = layui.layer;
-
-            // laypage({
-            //     cont: 'page'
-            //     , pages: #{emailList.totalPages} //总页数
-            //     , curr: #{emailList.number + 1}
-            //     , groups: 5 //连续显示分页数
-            //     , jump: function (data, first) {
-            //         if (!first) {
-            //             location.href = "/admin/email/index.html?p=" + data.curr;
-            //         }
-            //     }
-            // });
         });
 
+        function copyLicenseId2ClipboardOnOS(val){
+            copyValue2ClipboardOnOS(val, (err) => {
+                top.layer.msg('复制完成', {icon: 1, time: 2000, offset: 't'});
+            })
+        }
+
+        function openLicenseStorePage() {
+            var licenseStoreProvider = "#{licenseStoreProvider}";
+            window.open(licenseStoreProvider, "_blank");
+        }
