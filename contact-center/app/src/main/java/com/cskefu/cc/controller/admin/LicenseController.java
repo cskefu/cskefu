@@ -38,8 +38,8 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin/license")
-public class LicenseCtrl extends Handler {
-    private final static Logger logger = LoggerFactory.getLogger(LicenseCtrl.class);
+public class LicenseController extends Handler {
+    private final static Logger logger = LoggerFactory.getLogger(LicenseController.class);
 
     @Autowired
     private LicenseProxy licenseProxy;
@@ -50,7 +50,7 @@ public class LicenseCtrl extends Handler {
         User user = super.getUser(request);
         if (user.isSuperadmin()) {
             try {
-                List<JSONObject> licenses = licenseProxy.getLicensesFromStore();
+                List<JSONObject> licenses = licenseProxy.getLicensesInStore();
                 map.addAttribute(Constants.UPDATETIME, new Date());
                 map.addAttribute(Constants.LICENSES, licenses);
                 map.addAttribute(Constants.LICENSESTOREPROVIDER, licenseProxy.getLicenseStoreProvider());
@@ -119,11 +119,11 @@ public class LicenseCtrl extends Handler {
                 licenseProxy.existLicenseInStore(licenseShortId);
 
                 // 验证该证书的所属产品没有现在没有其它证书：同一个产品最多只有一个证书
-                JSONObject licBasic = licenseProxy.getLicenseBasicsFromStore(licenseShortId);
+                JSONObject licBasic = licenseProxy.getLicenseBasicsInStore(licenseShortId);
                 final String productId = licBasic.getJSONObject(Constants.PRODUCT).getString(Constants.SHORTID);
 
                 boolean isProductAdded = false;
-                JSONArray addedLicenseBasicsFromStore = licenseProxy.getAddedLicenseBasicsFromStore();
+                JSONArray addedLicenseBasicsFromStore = licenseProxy.getAddedLicenseBasicsInStore();
 
                 for (int i = 0; i < addedLicenseBasicsFromStore.length(); i++) {
                     JSONObject item = (JSONObject) addedLicenseBasicsFromStore.get(i);
@@ -145,11 +145,12 @@ public class LicenseCtrl extends Handler {
                 JSONObject licenseKvData = new JSONObject();
                 licenseKvData.put(Constants.SHORTID, licenseShortId);
                 licenseKvData.put(Constants.ADDDATE, new Date());
+                licenseKvData.put(Constants.PRODUCT_ID, productId);
                 currents.put(0, licenseKvData);
                 licenseProxy.createOrUpdateMetaKv(Constants.LICENSEIDS, currents.toString(), Constants.METAKV_DATATYPE_STRING);
 
                 // 跳转回到证书列表
-                List<JSONObject> licenses = licenseProxy.getLicensesFromStore();
+                List<JSONObject> licenses = licenseProxy.getLicensesInStore();
                 map.addAttribute(Constants.LICENSES, licenses);
                 map.addAttribute("updateTime", new Date());
                 map.addAttribute(Constants.LICENSESTOREPROVIDER, licenseProxy.getLicenseStoreProvider());
@@ -197,7 +198,7 @@ public class LicenseCtrl extends Handler {
                 licenseProxy.createOrUpdateMetaKv(Constants.LICENSEIDS, post.toString(), Constants.METAKV_DATATYPE_STRING);
 
                 // 跳转回到证书列表
-                List<JSONObject> licenses = licenseProxy.getLicensesFromStore();
+                List<JSONObject> licenses = licenseProxy.getLicensesInStore();
                 map.addAttribute(Constants.LICENSES, licenses);
                 map.addAttribute("updateTime", new Date());
                 map.addAttribute(Constants.LICENSESTOREPROVIDER, licenseProxy.getLicenseStoreProvider());

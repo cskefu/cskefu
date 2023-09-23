@@ -56,5 +56,35 @@ function processUserAddOrUpdateResult(responsecode, cb){
             layer.msg('用户编辑成功',{icon: 1, time: 1000});
             cb();
             break;
+        case 'billingquotaexception.no_license_found':
+            layer.msg('【使用授权证书】证书不存在，联系系统超级管理员导入。',{icon: 2, time: 5000});
+            break;
+        case 'billingquotaexception.response_unexpected':
+            layer.msg('【使用授权证书】证书商店返回异常，稍后再试。',{icon: 2, time: 5000});
+            break;
+        case 'billingquotaexception.invalid_request_body':
+            layer.msg('【使用授权证书】请求证书商店参数不合法，请获取最新软件代码。',{icon: 2, time: 5000});
+            break;
+        case 'billingquotaexception.license_invalid':
+            layer.msg('【使用授权证书】证书商店中不存在该证书，请联系系统超级管理员导入。',{icon: 2, time: 5000});
+            break;
+        case 'billingquotaexception.product_invalid':
+            layer.msg('【使用授权证书】产品或产品款式不存在，请联系系统超级管理员导入新证书。',{icon: 2, time: 5000});
+            break;
+        case 'billingquotaexception.license_expired_or_exhausted':
+            layer.msg('【使用授权证书】证书过期或耗尽，请升级证书或绑定新证书。',{icon: 2, time: 5000});
+            break;
+        case 'billingquotaexception.license_disabled_serverinst':
+            layer.msg('【使用授权证书】证书商店禁用了本服务实例。',{icon: 2, time: 5000});
+            break;
+        case 'billingquotaexception.license_unsupport_refund':
+            layer.msg('【使用授权证书】目前使用的证书不支持回退配额。',{icon: 2, time: 5000});
+            break;
+        case 'billingquotaexception.license_quota_inadequate':
+            layer.msg('【使用授权证书】本次操作需要使用的配额资源超过证书中剩余配额，请联系系统超级管理员升级证书。',{icon: 2, time: 5000});
+            break;
+        case 'billingquotaexception.internal_error':
+            layer.msg('【使用授权证书】系统错误，稍后再试。',{icon: 2, time: 5000});
+            break;
     }
 }

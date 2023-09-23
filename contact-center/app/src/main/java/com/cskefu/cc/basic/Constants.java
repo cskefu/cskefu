@@ -220,12 +220,13 @@ public class Constants {
     /**
      * License
      */
-    public static final String PRODUCT_BASIC_ID = "cskefu001";
+    public static final String PRODUCT_ID_CSKEFU001 = "cskefu001";
     public static final String LICENSE_SERVER_INST_ID = "SERVERINSTID";
     public static final String LICENSE_SERVICE_NAME = "SERVICENAME";
     public static final String LICENSE_SERVICE_NAME_PREFIX = "春松客服";
     public static final String LICENSEIDS = "LICENSEIDS";
     public static final String METAKV_DATATYPE_STRING = "string";
+    public static final String METAKV_DATATYPE_INT = "int";
     public static final String SHORTID = "shortId";
     public static final String LICENSES = "licenses";
     public static final String ADDDATE = "addDate";
@@ -234,4 +235,8 @@ public class Constants {
     public static final String STATUS = "status";
     public static final String PRODUCT = "product";
     public static final String LICENSESTOREPROVIDER = "licenseStoreProvider";
+    public static final String USER = "user";
+    public static final String RESOURCES_USAGE_KEY_PREFIX = "RESOURCES_USAGE";
+    public static final String NEW_USER_SUCCESS = "new_user_success";
+    public static final String PRODUCT_ID = "productId";
 }
