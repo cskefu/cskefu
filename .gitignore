@@ -23,3 +23,5 @@ nohup.out
 docker-compose.dev.yml
 docker-compose.custom.yml
 private/
+smart-doc/
+target/

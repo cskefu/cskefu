@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <artifactId>cskefu-auth</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <name>cskefu-auth</name>
+    <url>https://www.cskefu.com/</url>
+    <parent>
+        <groupId>com.cskefu</groupId>
+        <artifactId>cskefu-backend</artifactId>
+        <version>1.0.0</version>
+    </parent>
+    <modules>
+        <module>cskefu-auth-domain</module>
+        <module>cskefu-auth-service</module>
+    </modules>
+</project>

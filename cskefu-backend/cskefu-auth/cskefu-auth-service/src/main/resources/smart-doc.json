@@ -1,0 +1,17 @@
+{
+  "serverUrl": "http://localhost:8083",
+  "pathPrefix": "",
+  "allInOne": true,
+  "outPath": "src/main/resources/smart-doc",
+  "style": "xt256",
+  "createDebugPage": false,
+  "revisionLogs": [
+    {
+      "version": "1.0",
+      "revisionTime": "2023-09-13",
+      "status": "创建",
+      "author": "lecjy",
+      "remarks": "春松客服接口文档"
+    }
+  ]
+}
