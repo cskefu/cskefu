@@ -15,8 +15,11 @@
 package com.cskefu.cc.util;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 public class Base62 {
@@ -63,8 +66,20 @@ public class Base62 {
         System.out.println(messagr);
     }
 
+
+    /**
+     * 生成 16 位随机字符串作为 ID
+     * https://stackoverflow.com/questions/4267475/generating-8-character-only-uuids
+     */
+    public static String generateShortId() {
+        SimpleDateFormat df = new SimpleDateFormat("yyMMdd");
+        String randomStr = RandomStringUtils.randomAlphanumeric(10);
+        return df.format(new Date()) + randomStr;
+    }
+
     /**
      * 生成随机字符串
+     *
      * @param targetStringLength
      * @return
      */

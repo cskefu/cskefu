@@ -95,11 +95,11 @@ public class LicenseProxy {
      *
      * @return
      */
-    private String resolveServerinstId() {
+    public String resolveServerinstId() {
         Optional<MetaKv> metaServerinstIdOpt = metaKvRes.findFirstByMetakey(Constants.LICENSE_SERVER_INST_ID);
         if (metaServerinstIdOpt.isEmpty()) {
             // 没有 serverinstId 信息，初始化
-            final String serverinstId = MainUtils.getUUID();
+            final String serverinstId = Base62.generateShortId();
             createMetaKv(Constants.LICENSE_SERVER_INST_ID, serverinstId, Constants.METAKV_DATATYPE_STRING);
             return serverinstId;
         }
@@ -122,7 +122,7 @@ public class LicenseProxy {
      *
      * @return
      */
-    private String resolveServicename() {
+    public String resolveServicename() {
         Optional<MetaKv> metaServicenameOpt = metaKvRes.findFirstByMetakey(Constants.LICENSE_SERVICE_NAME);
         if (metaServicenameOpt.isEmpty()) {
             // 没有 Service Name 信息，初始化

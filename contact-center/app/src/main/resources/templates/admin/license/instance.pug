@@ -1,0 +1,59 @@
+//- Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+//- <https://www.chatopera.com>, Licensed under the Chunsong Public 
+//- License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+//- Unless required by applicable law or agreed to in writing, software
+//- distributed under the License is distributed on an "AS IS" BASIS,
+//- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//- See the License for the specific language governing permissions and
+//- limitations under the License.
+extends /admin/include/layout.pug
+block content
+    .row: .col-lg-12
+        h1.site-h1(style='background-color:#FFFFFF;')
+            | 实例信息
+            span(style='float:right;')
+                .layui-btn-group.ukefu-btn-group
+                    button.layui-btn.layui-btn-small(onclick='openLicenseStorePage()')
+                        span  打开证书商店
+
+        .row(style='padding:5px;')
+            blockquote.layui-elem-quote.layui-quote-nm
+                i.layui-icon(style="color:gray") &#xe60b;
+                font(color="#999").layui-word-aux balala ...
+
+            .col-lg-12
+                fieldset.layui-elem-field
+                    legend(style='font-size:13px!important;') 实例 ID
+                    span.layui-field-box #{SERVERINSTID}
+                        span &nbsp;&nbsp;
+                        button(style='font-size:10px!important;' onclick='copyServerinstId2ClipboardOnOS("' +SERVERINSTID + '")')
+                            span 复制
+
+                fieldset.layui-elem-field
+                    legend(style='font-size:13px!important;') 实例名称
+                    span.layui-field-box #{SERVICENAME}
+                        span &nbsp;&nbsp;
+                        button(style='font-size:10px!important;' onclick='copyServicename2ClipboardOnOS("' +SERVICENAME + '")')
+                            span 复制
+    script.
+        layui.use(['laypage', 'layer'], function () {
+            var laypage = layui.laypage
+                , layer = layui.layer;
+        });
+
+        function copyServerinstId2ClipboardOnOS(val){
+            copyValue2ClipboardOnOS(val, (err) => {
+                top.layer.msg('复制完成', {icon: 1, time: 2000, offset: 't'});
+            })
+        }
+
+        function copyServicename2ClipboardOnOS(val){
+            copyValue2ClipboardOnOS(val, (err) => {
+                top.layer.msg('复制完成', {icon: 1, time: 2000, offset: 't'});
+            })
+        }
+
+        function openLicenseStorePage() {
+            var licenseStoreProvider = "#{licenseStoreProvider}";
+            window.open(licenseStoreProvider, "_blank");
+        }

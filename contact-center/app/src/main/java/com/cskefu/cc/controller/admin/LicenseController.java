@@ -45,7 +45,7 @@ public class LicenseController extends Handler {
     private LicenseProxy licenseProxy;
 
     @RequestMapping("/index")
-    @Menu(type = "admin", subtype = "license")
+    @Menu(type = "admin", subtype = "licenseList")
     public ModelAndView index(ModelMap map, HttpServletRequest request) {
         User user = super.getUser(request);
         if (user.isSuperadmin()) {
@@ -65,7 +65,7 @@ public class LicenseController extends Handler {
     }
 
     @RequestMapping("/add")
-    @Menu(type = "admin", subtype = "license")
+    @Menu(type = "admin", subtype = "licenseList")
     public ModelAndView add(ModelMap map, HttpServletRequest request) {
         User user = super.getUser(request);
         if (user.isSuperadmin()) {
@@ -84,7 +84,7 @@ public class LicenseController extends Handler {
      * @return
      */
     @RequestMapping("/save")
-    @Menu(type = "admin", subtype = "license")
+    @Menu(type = "admin", subtype = "licenseList")
     public ModelAndView save(ModelMap map,
                              HttpServletRequest request,
                              @Valid String licenseShortId) throws MetaKvInvalidKeyException, InvalidRequestException {
@@ -152,7 +152,7 @@ public class LicenseController extends Handler {
                 // 跳转回到证书列表
                 List<JSONObject> licenses = licenseProxy.getLicensesInStore();
                 map.addAttribute(Constants.LICENSES, licenses);
-                map.addAttribute("updateTime", new Date());
+                map.addAttribute(Constants.UPDATETIME, new Date());
                 map.addAttribute(Constants.LICENSESTOREPROVIDER, licenseProxy.getLicenseStoreProvider());
 
                 return request(super.createView("/admin/license/index"));
@@ -173,7 +173,7 @@ public class LicenseController extends Handler {
     }
 
     @RequestMapping("/delete/{licenseShortId}")
-    @Menu(type = "admin", subtype = "license")
+    @Menu(type = "admin", subtype = "licenseList")
     public ModelAndView delete(ModelMap map,
                                HttpServletRequest request,
                                @PathVariable String licenseShortId) throws MetaKvInvalidKeyException {
@@ -210,6 +210,20 @@ public class LicenseController extends Handler {
                 return request(super.createView(
                         "redirect:/admin/license/index.html?msg=" + msg));
             }
+        } else {
+            return request(super.createView("/public/error"));
+        }
+    }
+
+    @RequestMapping("/instance")
+    @Menu(type = "admin", subtype = "licenseInst")
+    public ModelAndView getInstanceInfo(ModelMap map, HttpServletRequest request) {
+        User user = super.getUser(request);
+        if (user.isSuperadmin()) {
+            map.addAttribute(Constants.LICENSE_SERVICE_NAME, licenseProxy.resolveServicename());
+            map.addAttribute(Constants.LICENSE_SERVER_INST_ID, licenseProxy.resolveServerinstId());
+            map.addAttribute(Constants.LICENSESTOREPROVIDER, licenseProxy.getLicenseStoreProvider());
+            return request(super.createView("/admin/license/instance"));
         } else {
             return request(super.createView("/public/error"));
         }

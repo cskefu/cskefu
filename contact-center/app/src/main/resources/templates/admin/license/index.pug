@@ -23,12 +23,17 @@ block content
                         span  打开证书商店
 
         .row(style='padding:5px;')
+            blockquote.layui-elem-quote.layui-quote-nm
+                i.layui-icon(style="color:gray") &#xe60b;
+                font(color="#999").layui-word-aux balala ...
+
             .col-lg-12
                 table.layui-table(lay-skin='line')
                     colgroup
                         col(width='10%')
                         col(width='10%')
-                        col(width='15%')
+                        col(width='10%')
+                        col(width='20%')
                         col(width='10%')
                         col(width='10%')
                         col(width='10%')
@@ -37,6 +42,7 @@ block content
                     thead
                         tr
                             th 证书 ID
+                            th 状态
                             th 产品标识
                             th 产品名称
                             th 有效期截止
@@ -49,12 +55,13 @@ block content
                             tr
                                 - var messupLicenseShortId = pugHelper.messupStringWithStars(item.license.shortId)
                                 td= messupLicenseShortId
+                                td= pugHelper.getLicstatusInChinese(item.license.status)
                                 td= item.product.shortId
                                 td= item.product.name
-                                td= item.license.effectivedateend
+                                td= pugHelper.splitStringAndJoinWith(item.license.effectivedateend, " ", 1, "")
                                 td= item.license.quotaeffectiveremaining
                                 td= item.user.nickname
-                                td= pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', item.addDate)
+                                td= pugHelper.formatDate('yyyy-MM-dd', item.addDate)
                                 td(style="white-space:nowrap;" nowrap="nowrap")
                                     a(href="#", onclick="copyLicenseId2ClipboardOnOS('" + item.license.shortId + "');return false;")
                                         i.layui-icon &#xe642;
