@@ -216,6 +216,7 @@ public class LicenseProxy {
         }
     }
 
+
     /**
      * 生成随机字符串，作为服务名称
      *
@@ -408,6 +409,26 @@ public class LicenseProxy {
     }
 
     /**
+     * 获取在 MetaKv 中资源的已经使用的计数
+     *
+     * @param billingResource
+     * @return
+     */
+    private int getResourceUsageInMetaKv(final MainContext.BillingResource billingResource) {
+        final String key = getResourceUsageKey(billingResource.toString());
+        try {
+            MetaKv kv = retrieveMetaKv(key);
+            int pre = Integer.parseInt(kv.getMetavalue());
+            return pre;
+        } catch (MetaKvNotExistException e) {
+            createMetaKv(key, Integer.toString(0), Constants.METAKV_DATATYPE_INT);
+            return 0;
+        } catch (MetaKvInvalidKeyException e) {
+            return 0;
+        }
+    }
+
+    /**
      * 获得春松客服 cskefu001 产品的证书标识 ID
      * 春松客服证书基本类型
      *
@@ -429,11 +450,20 @@ public class LicenseProxy {
      * 执行配额变更操作
      *
      * @param billingResource
-     * @param consume
+     * @param unitNum
      * @return
      */
-    public ExecuteResult writeDownResourceUsageInStore(final MainContext.BillingResource billingResource, int consume) throws BillingQuotaException, BillingResourceException {
-        ExecuteResult er = new ExecuteResult();
+    public void writeDownResourceUsageInStore(final MainContext.BillingResource billingResource,
+                                              int unitNum) throws BillingQuotaException, BillingResourceException {
+
+        // 检查是否还在体验阶段
+        if (billingResource == MainContext.BillingResource.CONTACT) {
+            int alreadyUsed = getResourceUsageInMetaKv(billingResource);
+            if (alreadyUsed <= 1) {
+                // 可以免费创建 1 个联系人
+                return;
+            }
+        }
 
         // 请求操作配额
         String licenseId = getLicenseIdAsCskefu001InMetaKv();
@@ -442,13 +472,13 @@ public class LicenseProxy {
 
         try {
             Response resp = quotaWdClient.write(licenseId,
-                    serverinstId, servicename, consume * BILLING_RES_QUOTA_MAPPINGS.get(billingResource));
+                    serverinstId, servicename, unitNum * BILLING_RES_QUOTA_MAPPINGS.get(billingResource));
             // 识别操作是否完成，并处理
             if (resp.getRc() == 0) {
                 final JSONObject data = (JSONObject) resp.getData();
 
                 // 配额操作成功，执行计数
-                increResourceUsageInMetaKv(billingResource, consume);
+                increResourceUsageInMetaKv(billingResource, unitNum);
             } else if (resp.getRc() == 1 || resp.getRc() == 2) {
                 throw new BillingQuotaException(BillingQuotaException.INVALID_REQUEST_BODY);
             } else if (resp.getRc() == 3) {
@@ -479,12 +509,7 @@ public class LicenseProxy {
             logger.error("[writeDownResourceUsageInStore] error ", e);
             throw new BillingQuotaException(BillingQuotaException.RESPONSE_UNEXPECTED);
         }
-
-//        er.setRc(ExecuteResult.RC_ERR1);
-//        if (er.getRc() != ExecuteResult.RC_SUCC) {
-//            throw new BillingQuotaException(BillingQuotaException.NO_LICENSE_FOUND);
-//        }
-
-        return er;
     }
+
+
 }
