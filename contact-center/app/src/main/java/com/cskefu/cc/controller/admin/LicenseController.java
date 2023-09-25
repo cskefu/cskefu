@@ -228,5 +228,4 @@ public class LicenseController extends Handler {
             return request(super.createView("/public/error"));
         }
     }
-
 }
