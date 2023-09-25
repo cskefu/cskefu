@@ -117,7 +117,7 @@ public class IMController extends Handler {
     private LeaveMsgRepository leaveMsgRes;
 
     @Autowired
-    private AgentUserRepository agentUserRepository;
+    private AgentUserRepository agentUserRes;
 
     @Autowired
     private AttachmentRepository attachementRes;
@@ -822,7 +822,7 @@ public class IMController extends Handler {
                         Contacts contacts1 = contactsRes.findOneByWluidAndWlsidAndWlcidAndDatastatus(
                                 uid, sid, cid, false);
                         if (contacts1 != null) {
-                            agentUserRepository.findOneByUserid(userid).ifPresent(p -> {
+                            agentUserRes.findOneByUserid(userid).ifPresent(p -> {
                                 // 关联AgentService的联系人
                                 if (StringUtils.isNotBlank(p.getAgentserviceid())) {
                                     AgentService agentService = agentServiceRepository.findById(p.getAgentserviceid()).orElse(null);

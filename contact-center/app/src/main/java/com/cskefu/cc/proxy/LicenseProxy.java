@@ -19,6 +19,7 @@ import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.exception.*;
+import com.cskefu.cc.model.AgentUser;
 import com.cskefu.cc.model.ExecuteResult;
 import com.cskefu.cc.model.MetaKv;
 import com.cskefu.cc.persistence.repository.MetaKvRepository;
@@ -511,5 +512,33 @@ public class LicenseProxy {
         }
     }
 
+    /**
+     * 访客会话执行计费
+     *
+     * @param agentUser
+     * @return
+     */
+    public ExecuteResult writeDownAgentUserUsageInStore(final AgentUser agentUser) {
+        // 检查是否还在体验阶段
+        ExecuteResult er = new ExecuteResult();
+        int alreadyUsed = getResourceUsageInMetaKv(MainContext.BillingResource.AGENGUSER);
+        if (alreadyUsed <= 100) {
+            // 可以免费创建 100 个访客会话
+            er.setRc(ExecuteResult.RC_SUCC);
+            return er;
+        }
 
+        try {
+            writeDownResourceUsageInStore(MainContext.BillingResource.AGENGUSER, 1);
+            er.setRc(ExecuteResult.RC_SUCC);
+        } catch (BillingQuotaException e) {
+            er.setRc(ExecuteResult.RC_ERR1);
+            er.setMsg(e.getMessage());
+        } catch (BillingResourceException e) {
+            er.setRc(ExecuteResult.RC_ERR2);
+            er.setMsg(e.getMessage());
+        }
+
+        return er;
+    }
 }

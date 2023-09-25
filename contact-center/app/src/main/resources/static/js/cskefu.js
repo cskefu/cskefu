@@ -343,22 +343,23 @@ function newMessageScorllBottom(type, msgType) {
 
 var Proxy = {
     newAgentUserService: function (data, type) {
+        console.log("newAgentUserService data type", data, type)
         if ($('#tip_message_' + data.userid).length > 0) {
             var channel = data.channeltype
             if (channel) {
                 if (channel === 'phone') {
                     $('#tip_icon_phone_' + data.userid).attr("src", "/images/phone-ico.png");
                 } else {
-                    $('#tip_icon_' +channel+ '_' + data.userid).removeClass('ukefu-channel-icon-end').addClass("ukefu-channel-icon");
+                    $('#tip_icon_' + channel + '_' + data.userid).removeClass('ukefu-channel-icon-end').addClass("ukefu-channel-icon");
                 }
             }
             $('#tip_message_' + data.userid).removeClass('bg-gray').addClass("bg-green").text('在线');
         } else {
             if ($('.chat-list-item.active').length > 0) {
                 var id = $('.chat-list-item.active').data('id');
-                type == "agent" ? loadURL('/agent/agentusers.html?newuser=true&userid=' + id, '#agentusers') : loadURL('/apps/cca/agentusers.html?newuser=true&userid=' + id, '#agentuserscca');
+                type == "agent" ? loadURL('/agent/agentusers.html?newuser=true&userid=' + id + '&licenseVerifiedPass=' + data.licenseVerifiedPass + '&licenseBillingMsg=' + data.licenseBillingMsg, '#agentusers') : loadURL('/apps/cca/agentusers.html?newuser=true&userid=' + id + "&licenseVerifiedPass=" + data.licenseVerifiedPass + "&licenseBillingMsg=" + data.licenseBillingMsg, '#agentuserscca');
             } else {
-                type == "agent" ? location.href = "/agent/index.html?newuser=true" : location.href = "/apps/cca/index.html?newuser=true";
+                type == "agent" ? location.href = "/agent/index.html?newuser=true&licenseVerifiedPass=" + data.licenseVerifiedPass + "&licenseBillingMsg=" + data.licenseBillingMsg : location.href = "/apps/cca/index.html?newuser=true&licenseVerifiedPass=" + data.licenseVerifiedPass + "&licenseBillingMsg=" + data.licenseBillingMsg;
             }
         }
         if (data.userid == cursession) {
@@ -485,7 +486,7 @@ var Proxy = {
                 if (channel === 'phone') {
                     $('#tip_icon_phone_' + data.userid).attr("src", "/images/cde-ico-gray.png");
                 } else {
-                    $('#tip_icon_'+ channel +'_' + data.userid).removeClass("ukefu-channel-icon").addClass('ukefu-channel-icon-end');
+                    $('#tip_icon_' + channel + '_' + data.userid).removeClass("ukefu-channel-icon").addClass('ukefu-channel-icon-end');
                 }
             }
             $('#tip_message_' + data.userid).removeClass("bg-green").addClass('bg-gray').text('离开');
@@ -504,7 +505,11 @@ var Proxy = {
         }
     },
     tipMsgForm: function (href) {
-        top.layer.prompt({formType: 2, title: '请输入拉黑原因', area: ['300px', '50px']}, function (value, index, elem) {
+        top.layer.prompt({
+            formType: 2,
+            title: '请输入拉黑原因',
+            area: ['300px', '50px']
+        }, function (value, index, elem) {
             location.href = href + "&description=" + encodeURIComponent(value);
             top.layer.close(index);
         });
