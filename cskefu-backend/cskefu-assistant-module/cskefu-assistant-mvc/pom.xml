@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <artifactId>cskefu-assistant-mvc</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
     <name>cskefu-assistant-mvc</name>
@@ -11,18 +11,12 @@
     <parent>
         <groupId>com.cskefu</groupId>
         <artifactId>cskefu-backend</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     <dependencies>
         <dependency>
             <groupId>com.cskefu</groupId>
             <artifactId>cskefu-assistant-base</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>jakarta.servlet</groupId>
@@ -59,7 +53,7 @@
             <dependency>
                 <groupId>com.cskefu</groupId>
                 <artifactId>cskefu-backend</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

@@ -2,6 +2,9 @@ package com.cskefu.mvc;
 
 import com.cskefu.base.JacksonUtils;
 import com.cskefu.base.Result;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
@@ -42,7 +45,11 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 @Slf4j
 public class GlobalResponseBodyHandler implements ResponseBodyAdvice {
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
+    static {
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
     @Override
     public boolean supports(MethodParameter returnType, Class converterType) {
         return true;
@@ -52,6 +59,13 @@ public class GlobalResponseBodyHandler implements ResponseBodyAdvice {
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (body instanceof Result) {
             return body;
+        }
+        if (body instanceof String) {
+            try {
+                return this.objectMapper.writeValueAsString(Result.success(body));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         }
         return Result.success(body);
     }
@@ -63,7 +77,6 @@ public class GlobalResponseBodyHandler implements ResponseBodyAdvice {
 
     @ExceptionHandler(BindException.class)
     public Result<?> handlerBindException(BindException e) {
-
         List<String> collect = new ArrayList<>();
         if (e.getBindingResult().getFieldError() != null) {
             List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();

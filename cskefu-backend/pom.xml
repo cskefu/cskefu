@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <groupId>com.cskefu</groupId>
     <artifactId>cskefu-backend</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modelVersion>4.0.0</modelVersion>
     <name>cskefu-backend</name>
@@ -34,11 +34,11 @@
         <argLine>-Dfile.encoding=UTF-8</argLine>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <java.version>21</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <java.version>17</java.version>
 
-        <cskefu.assistant.version>1.0.0</cskefu.assistant.version>
+        <cskefu.assistant.version>1.0.0-SNAPSHOT</cskefu.assistant.version>
 
         <jjwt.version>0.11.5</jjwt.version>
         <mybatis.flex.version>1.6.6</mybatis.flex.version>
@@ -47,6 +47,7 @@
         <lombok.version>1.18.30</lombok.version>
         <spring.boot.version>3.1.3</spring.boot.version>
         <spring.cloud.version>2022.0.4</spring.cloud.version>
+        <spring.cloud.alibaba.version>2022.0.0.0</spring.cloud.alibaba.version>
         <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
         <jakarta.validation.version>3.0.2</jakarta.validation.version>
         <netty.socketio.version>2.0.3</netty.socketio.version>
@@ -56,6 +57,12 @@
         <bean.searcher.version>3.8.2</bean.searcher.version>
         <redisson.starter.version>3.23.5</redisson.starter.version>
         <smart.doc.version>2.6.4</smart.doc.version>
+        <git.commit.plugin.version>6.0.0</git.commit.plugin.version>
+        <jib.maven.plugin.version>3.4.0</jib.maven.plugin.version>
+        <springboot.maven.plugin.version>3.1.4</springboot.maven.plugin.version>
+
+        <docker.image.prefix>cskefu</docker.image.prefix>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
     </properties>
     <repositories>
         <repository>
@@ -83,6 +90,13 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring.cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring.cloud.alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -177,11 +191,35 @@
         </dependencies>
     </dependencyManagement>
     <build>
+        <plugins>
+            <plugin>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <version>${git.commit.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <dotGitDirectory>../.git</dotGitDirectory>
+                    <verbose>false</verbose>
+                    <dateFormat>yyyy-MM-dd HH:mm:ss</dateFormat>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                </configuration>
+            </plugin>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${springboot.maven.plugin.version}</version>
                     <executions>
                         <execution>
                             <goals>
@@ -207,9 +245,54 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <version>${jib.maven.plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>build-image</id>
+                            <phase>deploy</phase>
+                            <goals>
+                                <goal>build</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <from>
+                            <image>${docker.image.prefix}/openjdk-21:debian-stretch-slim</image>
+                        </from>
+                        <to>
+                            <image>${docker.image.prefix}/${project.artifactId}:latest</image>
+                            <tags>
+                                <tag>v9-${git.commit.id.abbrev}</tag>
+                                <tag>${maven.build.timestamp}-${git.commit.id.abbrev}</tag>
+                            </tags>
+                        </to>
+                        <allowInsecureRegistries>true</allowInsecureRegistries>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <tasks>
+                                    <copy file="../../logback-spring.xml" tofile="${project.build.outputDirectory}/logback-spring.xml"/>
+                                </tasks>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
+    <!--
     <distributionManagement>
         <repository>
             <id>chatopera-releases</id>
@@ -222,4 +305,5 @@
             <url>https://nexus.chatopera.com/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+    -->
 </project>

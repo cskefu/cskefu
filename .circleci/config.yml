@@ -12,7 +12,7 @@ jobs:
     # Be sure to update the Docker image tag below to openjdk version of your application.
     # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/openjdk
     docker:
-      - image: cimg/openjdk:17.0.7
+      - image: cimg/openjdk:21
     # Add steps to the job
     # See: https://circleci.com/docs/configuration-reference/#steps
     steps:
@@ -25,10 +25,7 @@ jobs:
             echo "$DOCKERHUB_USERPASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
       - run:
           name: Build Contact Center Docker Image
-          command: cd $CIRCLE_WORKING_DIRECTORY/contact-center && ./admin/build.sh
-      - run:
-          name: Push Contact Center Docker Image to DockerHub
-          command: cd $CIRCLE_WORKING_DIRECTORY/contact-center && ./admin/push.sh
+          command: cd $CIRCLE_WORKING_DIRECTORY/cskefu-backend && ../scripts/deploy.sh
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows

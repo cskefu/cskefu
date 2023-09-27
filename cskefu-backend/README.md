@@ -2,15 +2,15 @@
 
 - Java21
 - Spring Boot 3
-- Spring Cloud两种方案
-    - Spring Cloud Alibaba，docker-compose方案
+- Spring Cloud两种方案，采纳的是方案一
+    - 方案一：Spring Cloud，docker-compose方案
         - 注册中心 Nacos
-        - 声明式服务调用 OpenFeign/Square 待定
+        - 声明式服务调用 OpenFeign
         - 负载均衡 Ribbon/LoadBanlancer 待定
         - 配置中心 Nacos
         - 服务容错 Sentinel
         - 链路追踪 Skywalking
-    - Spring Cloud Kubernetes，kubernetes方案
+    - 方案二：Spring Cloud Kubernetes，kubernetes方案
         - 注册中心 Kubernetes注册中心
         - 声明式服务调用 OpenFeign/Square 待定
         - 负载均衡 Kubernetes负载均衡/Ribbon/LoadBanlancer 待定
@@ -19,10 +19,10 @@
         - 链路追踪 Skywalking
 - Spring Security + Oauth2.0
 - MyBatis-Flex
-- Netty SocketIO
+- Webflux、 Tomcat
 - Jackson，不使用Fastjson
-- Redisson
-- Mysql 8.0
+- redisson
+- mysql 8.0
 - HikariCP，不使用Druid
 - Smart-doc，不使用Swagger
 - RabbitMQ
@@ -34,10 +34,11 @@
 ```
 cskefu-web-gateway: 8080
 cskefu-manager-service: 8081
-cskefu-websocket-service: 8082
-cskefu-auth-service: 8083
-cskefu-plugin-service: 8090
-cskefu-channel-wechat-service: 10000
+cskefu-auth-service: 8082
+cskefu-plugin-service: 8083
+cskefu-channel-wechat-service: 8084
+cskefu-websocket-service: 10000
+
 ```
 
 # 模块及服务划分约定
@@ -94,8 +95,6 @@ contact-backend
     └─cskefu-websocket-service 客户端的WebSocket直接和这个服务连接
 ```
 
-TODO 纯WebSocket服务怎么注册到注册中心？
-
 # 依赖、包、和类的约定
 
 **统一的、简单的、一致的风格更有利于代码的维护，在依赖、包、和类的划分及命名上遵守以下约定。如不能请及时在开发者群反馈。**
@@ -112,24 +111,22 @@ TODO 纯WebSocket服务怎么注册到注册中心？
 因此，所有pom中请加入以下内容
 
 ```xml
-
 <parent>
     <groupId>com.cskefu</groupId>
     <artifactId>cskefu-backend</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
 </parent>
 ```
 
 如果包中有java代码，其对应的pom请加入以下内容
 
 ```xml
-
 <dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>com.cskefu</groupId>
             <artifactId>cskefu-backend</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.0-SNAPSHOT</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -150,7 +147,7 @@ src
       │          ├─CskefuXXXApplication.java 启动类
       │          └─sys
       │             ├─SysUserController.java
-      │             ├─SysUser.java        不需要和其他业务或其他业务公用的实体类，如果需要公用，请放到对应的-domain下
+      │             ├─SysUser.java        不需要和其他业务公用的实体类，如果需要公用，请放到对应的-domain下
       │             ├─SysUserService.java
       │             ├─SysUserServiceImpl.java
       │             ├─UserMapper.java
@@ -176,12 +173,12 @@ src
 
 - 按照包和类的组织中描述的方式命名，实体类不区分VO、BO、DO、POJO、DTO等，也不要使用这些后缀；
 - 枚举类统一以Enum结尾；
-- 除非必要，不需要定义异常类；
 - 工具类以Utils结尾，提供private无参构造函数，并在构造函数中抛出异常，参考JacksonUtils，阻止类被实例化；
+- 除非必要，不需要定义异常类；
 
 # 数据库变更
 
-涉及到表结构的变更，或必要的初始化数据，请及时同步到contact-backend/v9.mysql.sql中。
+涉及到表结构的变更，或必要的初始化数据，请及时同步到contact-backend/v9.mysql.init.sql中。
 
 # 其他
 

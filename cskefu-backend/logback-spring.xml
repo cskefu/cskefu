@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="max_history" value="30"/>
+    <property name="max_file_size" value="50MB"/>
+    <property name="charset" value="UTF-8"/>
+    <property name="queueSize" value="256"/>
+    <property name="log_path" value="/cskefu/logs"/>
+
+    <define name="hostname" class="ch.qos.logback.core.property.CanonicalHostNamePropertyDefiner"/>
+
+    <springProperty scope="context" name="app_name" source="spring.application.name" defaultValue="log-%d{yyyy-MM-dd_HH:mm:ss.SSS}"/>
+    <conversionRule conversionWord="color" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="whitespace" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="extended_whitespace" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+    <property name="console_log_pattern" value="%boldMagenta(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %boldYellow(${LOG-LEVEL-PATTERN:-%5p}) %boldCyan(${PID:- }){magenta} %boldGreen(---){faint} %boldGreen([%15.15t]){faint} %boldCyan(%-40.40logger{50}){cyan} %boldYellow(:){faint} %m%n${LOG-EXCEPTION-CONVERSION-WORD:-%extended_whitespace}"/>
+    <property name="file_log_pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"/>
+
+    <appender name="console_appender" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>
+        </filter>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${console_log_pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="debug_file_appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log_path}/${app_name}-${hostname}-debug.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <charset>${charset}</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log_path}/%d{yyyy-MM-dd}/${app_name}-${hostname}-debug.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${max_file_size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${max_history}</maxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>debug</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="info_file_appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log_path}/${app_name}-${hostname}-info.log</file>
+        <encoder>
+            <pattern>${file_log_pattern}</pattern>
+            <charset>${charset}</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log_path}/%d{yyyy-MM-dd}/${app_name}-${hostname}-info.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${max_file_size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${max_history}</maxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>info</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="warn_file_appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log_path}/${app_name}-${hostname}-warn.log</file>
+        <encoder>
+            <pattern>${file_log_pattern}</pattern>
+            <charset>${charset}</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log_path}/%d{yyyy-MM-dd}/${app_name}-${hostname}-warn.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${max_file_size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${max_history}</maxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>warn</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="error_file_appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log_path}/${app_name}-${hostname}-error.log</file>
+        <encoder>
+            <pattern>${file_log_pattern}</pattern>
+            <charset>${charset}</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log_path}/%d{yyyy-MM-dd}/${app_name}-${hostname}-error.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${max_file_size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${max_history}</maxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="async_log_debug" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>${queueSize}</queueSize>
+        <appender-ref ref="debug_file_appender"/>
+    </appender>
+    <appender name="async_log_info" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>${queueSize}</queueSize>
+        <appender-ref ref="info_file_appender"/>
+    </appender>
+    <appender name="async_log_warn" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>${queueSize}</queueSize>
+        <appender-ref ref="warn_file_appender"/>
+    </appender>
+    <appender name="async_log_error" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>${queueSize}</queueSize>
+        <appender-ref ref="error_file_appender"/>
+    </appender>
+
+    <logger name="com.cskefu" level="DEBUG">
+        <appender-ref ref="debug_file_appender"/>
+        <appender-ref ref="console_appender"/>
+    </logger>
+<!-- 
+    <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="console_appender"/>
+            <appender-ref ref="async_log_debug"/>
+            <appender-ref ref="async_log_info"/>
+            <appender-ref ref="async_log_warn"/>
+            <appender-ref ref="async_log_error"/>
+        </root>
+    </springProfile>
+    <springProfile name="test">
+        <root level="INFO">
+            <appender-ref ref="console_appender"/>
+            <appender-ref ref="async_log_debug"/>
+            <appender-ref ref="async_log_info"/>
+            <appender-ref ref="async_log_warn"/>
+            <appender-ref ref="async_log_error"/>
+        </root>
+    </springProfile>
+    <springProfile name="pre">
+        <root level="INFO">
+            <appender-ref ref="async_log_debug"/>
+            <appender-ref ref="async_log_info"/>
+            <appender-ref ref="async_log_warn"/>
+            <appender-ref ref="async_log_error"/>
+        </root>
+    </springProfile>
+    <springProfile name="pro">
+        <root level="INFO">
+            <appender-ref ref="async_log_debug"/>
+            <appender-ref ref="async_log_info"/>
+            <appender-ref ref="async_log_warn"/>
+            <appender-ref ref="async_log_error"/>
+        </root>
+    </springProfile> -->
+    <root level="DEBUG">
+        <appender-ref ref="async_log_debug"/>
+        <appender-ref ref="async_log_info"/>
+        <appender-ref ref="async_log_warn"/>
+        <appender-ref ref="async_log_error"/>
+    </root>
+</configuration>
