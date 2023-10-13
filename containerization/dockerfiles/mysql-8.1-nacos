@@ -1,7 +1,0 @@
-FROM mysql:8.1
-
-ADD nacos_mysql.sql /nacos/nacos_mysql.sql
-
-CMD ["mysqld"]
-
-CMD ["mysql -uroot -p$MYSQL_ROOT_PASSWORD nacos_config < /nacos/nacos_mysql.sql"]

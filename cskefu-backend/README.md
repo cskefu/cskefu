@@ -2,7 +2,7 @@
 
 - Java21
 - Spring Boot 3
-- Spring Cloud两种方案，采纳的是方案一
+- Spring Cloud两种方案，采纳方案一
     - 方案一：Spring Cloud，docker-compose方案
         - 注册中心 Nacos
         - 声明式服务调用 OpenFeign

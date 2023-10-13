@@ -210,7 +210,7 @@ services:
       - rabbitmq
 
   mysql:
-    image: cskefu/mysql-8.1:nacos
+    image: mysql:8.1
     container_name: mysql
     restart: always
     environment:
@@ -222,6 +222,7 @@ services:
       - 3306
     volumes:
       - ./mysql/data:/var/lib/mysql
+      - ./mysql/nacos.sql:/docker-entrypoint-initdb.d/nacos.sql
     command: --max_allowed_packet=32505856
 
   # https://hub.docker.com/r/nacos/nacos-server
