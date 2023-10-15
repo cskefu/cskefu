@@ -1,0 +1,4 @@
+FROM cskefu/openjdk-21:debian-stretch-slim
+COPY sentinel-dashboard-1.8.6.jar sentinel-dashboard-1.8.6.jar
+
+ENTRYPOINT java -Dserver.port=9850 -jar sentinel-dashboard-1.8.6.jar
