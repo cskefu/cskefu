@@ -47,13 +47,13 @@ services:
       - mysql
 
   sentinel-dashboard:
-    image: cskefu/sentinel-dashboard
+    image: cskefu/sentinel-dashboard:1.8.6
     container_name: sentinel-dashboard
     restart: always
     hostname: sentinel-dashboard
     ports:
       - "${SENTINEL_DASHBOARD_PORT:-9850}:9850"
-      - "${SENTINEL_TRANSPORT_PORT:-9850}:9851"
+      - "${SENTINEL_TRANSPORT_PORT:-9851}:9851"
     expose:
       - 9850
       - 9851
@@ -121,11 +121,13 @@ services:
       - 8080
     volumes:
       - ./cskefu/logs:/cskefu/logs
+      - ./bootstrap.properties:/app/resources/bootstrap.properties
     deploy:
       replicas: 3
     environment:
       - "JAVA_OPTS=-Xmx${CSKEFU_JAVA_XMX:-512m} -Xms${CSKEFU_JAVA_XMS:-512m} -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true --illegal-access=warn"
       - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
+      - SPRING_APPLICATION_NAME=cskefu-web-gateway
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/cskefu?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWD:-123456}
@@ -149,9 +151,11 @@ services:
       - 8081
     volumes:
       - ./cskefu/logs:/cskefu/logs
+      - ./bootstrap.properties:/app/resources/bootstrap.properties
     environment:
       - "JAVA_OPTS=-Xmx${CSKEFU_JAVA_XMX:-512m} -Xms${CSKEFU_JAVA_XMS:-512m} -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true --illegal-access=warn"
       - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
+      - SPRING_APPLICATION_NAME=cskefu-manager-service
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/cskefu?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWD:-123456}
@@ -177,9 +181,11 @@ services:
       - 8082
     volumes:
       - ./cskefu/logs:/cskefu/logs
+      - ./bootstrap.properties:/app/resources/bootstrap.properties
     environment:
       - "JAVA_OPTS=-Xmx${CSKEFU_JAVA_XMX:-512m} -Xms${CSKEFU_JAVA_XMS:-512m} -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true --illegal-access=warn"
       - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
+      - SPRING_APPLICATION_NAME=cskefu-auth-service
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/cskefu?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWD:-123456}
@@ -205,9 +211,11 @@ services:
       - 8083
     volumes:
       - ./cskefu/logs:/cskefu/logs
+      - ./bootstrap.properties:/app/resources/bootstrap.properties
     environment:
       - "JAVA_OPTS=-Xmx${CSKEFU_JAVA_XMX:-512m} -Xms${CSKEFU_JAVA_XMS:-512m} -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true --illegal-access=warn"
       - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
+      - SPRING_APPLICATION_NAME=cskefu-plugin-service
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/cskefu?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWD:-123456}
@@ -233,9 +241,11 @@ services:
       - 8084
     volumes:
       - ./cskefu/logs:/cskefu/logs
+      - ./bootstrap.properties:/app/resources/bootstrap.properties
     environment:
       - "JAVA_OPTS=-Xmx${CSKEFU_JAVA_XMX:-512m} -Xms${CSKEFU_JAVA_XMS:-512m} -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true --illegal-access=warn"
       - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
+      - SPRING_APPLICATION_NAME=cskefu-channel-wechat-service
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/cskefu?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWD:-123456}
@@ -258,11 +268,13 @@ services:
       - ${CSKEFU_WEBSOCKET_SERVICE_PORT:-10000}
     volumes:
       - ./cskefu/logs:/cskefu/logs
+      - ./bootstrap.properties:/app/resources/bootstrap.properties
     deploy:
       replicas: 2
     environment:
       - "JAVA_OPTS=-Xmx${CSKEFU_JAVA_XMX:-512m} -Xms${CSKEFU_JAVA_XMS:-512m} -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true --illegal-access=warn"
       - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
+      - SPRING_APPLICATION_NAME=cskefu-websocket-service
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/cskefu?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWD:-123456}

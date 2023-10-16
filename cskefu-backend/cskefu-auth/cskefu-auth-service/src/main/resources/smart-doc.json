@@ -1,5 +1,5 @@
 {
-  "serverUrl": "http://localhost:8083",
+  "serverUrl": "http://localhost:${server.port}",
   "pathPrefix": "",
   "allInOne": true,
   "outPath": "src/main/resources/smart-doc",

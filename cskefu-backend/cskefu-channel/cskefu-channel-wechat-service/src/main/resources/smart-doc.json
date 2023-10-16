@@ -1,5 +1,5 @@
 {
-  "serverUrl": "http://localhost:8090",
+  "serverUrl": "http://localhost:8084",
   "pathPrefix": "",
   "allInOne": true,
   "outPath": "src/main/resources/smart-doc",

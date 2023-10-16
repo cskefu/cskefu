@@ -1,5 +1,6 @@
 package com.cskefu;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -13,7 +14,10 @@ import java.net.UnknownHostException;
 @SpringBootApplication
 @EnableDiscoveryClient
 @RestController
+@RefreshScope
 public class CskefuWebGatewayApplication {
+    @Value("${xxx}")
+    private String xxx;
     public static void main(String[] args) {
         try {
             SpringApplication.run(CskefuWebGatewayApplication.class, args);
@@ -25,6 +29,6 @@ public class CskefuWebGatewayApplication {
     @GetMapping({"", "/"})
     public String index() throws UnknownHostException {
         InetAddress localHost = InetAddress.getLocalHost();
-        return localHost.getHostAddress();
+        return localHost.getHostAddress() + " " + xxx;
     }
 }
