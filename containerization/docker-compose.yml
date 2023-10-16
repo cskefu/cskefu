@@ -122,6 +122,7 @@ services:
     volumes:
       - ./cskefu/logs:/cskefu/logs
       - ./bootstrap.properties:/app/resources/bootstrap.properties
+      - ./logback-spring.xml:/app/resources/logback-spring.xml
     deploy:
       replicas: 3
     environment:
@@ -152,6 +153,7 @@ services:
     volumes:
       - ./cskefu/logs:/cskefu/logs
       - ./bootstrap.properties:/app/resources/bootstrap.properties
+      - ./logback-spring.xml:/app/resources/logback-spring.xml
     environment:
       - "JAVA_OPTS=-Xmx${CSKEFU_JAVA_XMX:-512m} -Xms${CSKEFU_JAVA_XMS:-512m} -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true --illegal-access=warn"
       - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
@@ -182,6 +184,7 @@ services:
     volumes:
       - ./cskefu/logs:/cskefu/logs
       - ./bootstrap.properties:/app/resources/bootstrap.properties
+      - ./logback-spring.xml:/app/resources/logback-spring.xml
     environment:
       - "JAVA_OPTS=-Xmx${CSKEFU_JAVA_XMX:-512m} -Xms${CSKEFU_JAVA_XMS:-512m} -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true --illegal-access=warn"
       - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
@@ -212,6 +215,7 @@ services:
     volumes:
       - ./cskefu/logs:/cskefu/logs
       - ./bootstrap.properties:/app/resources/bootstrap.properties
+      - ./logback-spring.xml:/app/resources/logback-spring.xml
     environment:
       - "JAVA_OPTS=-Xmx${CSKEFU_JAVA_XMX:-512m} -Xms${CSKEFU_JAVA_XMS:-512m} -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true --illegal-access=warn"
       - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
@@ -242,6 +246,7 @@ services:
     volumes:
       - ./cskefu/logs:/cskefu/logs
       - ./bootstrap.properties:/app/resources/bootstrap.properties
+      - ./logback-spring.xml:/app/resources/logback-spring.xml
     environment:
       - "JAVA_OPTS=-Xmx${CSKEFU_JAVA_XMX:-512m} -Xms${CSKEFU_JAVA_XMS:-512m} -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true --illegal-access=warn"
       - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
@@ -269,6 +274,7 @@ services:
     volumes:
       - ./cskefu/logs:/cskefu/logs
       - ./bootstrap.properties:/app/resources/bootstrap.properties
+      - ./logback-spring.xml:/app/resources/logback-spring.xml
     deploy:
       replicas: 2
     environment:
