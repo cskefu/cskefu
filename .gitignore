@@ -23,5 +23,5 @@ nohup.out
 docker-compose.dev.yml
 docker-compose.custom.yml
 private/
-!contact-frontend/.vscode
+!cskefu-frontend/.vscode
 .tool-versions
