@@ -1,1 +1,1 @@
-cd ./contact-frontend && pnpm run lint
+cd ./cskefu-frontend && pnpm run lint
