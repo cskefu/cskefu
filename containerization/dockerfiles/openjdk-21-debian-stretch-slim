@@ -1,0 +1,15 @@
+FROM openjdk:21 as openjdk-21
+RUN jlink \
+    --add-modules ALL-MODULE-PATH \
+    --strip-debug \
+    --no-man-pages \
+    --no-header-files \
+    --compress=2 \
+    --output /java-21-openjdk
+
+FROM debian:stretch-slim
+
+COPY --from=openjdk-21 /java-21-openjdk /usr/local/java-21-openjdk
+
+ENV JAVA_HOME=/usr/local/java-21-openjdk
+ENV PATH=$PATH:/usr/local/java-21-openjdk/bin

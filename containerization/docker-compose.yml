@@ -1,0 +1,297 @@
+version: "3"
+services:
+  mysql:
+    image: mysql:8.1
+    container_name: mysql
+    restart: always
+    environment:
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-123456}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD:-123456}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    expose:
+      - 3306
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/nacos.sql:/docker-entrypoint-initdb.d/nacos.sql
+    command: --max_allowed_packet=32505856
+
+  # https://hub.docker.com/r/nacos/nacos-server
+  nacos:
+    image: nacos/nacos-server:v2.2.3-slim
+    container_name: nacos
+    environment:
+      MODE: standalone
+      SPRING_DATASOURCE_PLATFORM: mysql
+      MYSQL_SERVICE_HOST: mysql
+      MYSQL_SERVICE_PORT: 3306
+      MYSQL_SERVICE_DB_NAME: nacos_config
+      MYSQL_SERVICE_USER: ${MYSQL_USER:-root}
+      MYSQL_SERVICE_PASSWORD: ${MYSQL_PASSWORD:-123456}
+      MYSQL_SERVICE_DB_PARAM: "characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=UTC"
+      JVM_XMS: 256m
+      JVM_XMX: 512m
+      JVM_XMN: 256m
+    volumes:
+      - ./nacos/logs:/home/nacos/logs
+    ports:
+      - "${NACOS_PORT:-8848}:8848"
+      - "${NACOS_CLIENT_GRPC_PORT:-9848}:9848"
+      - "${NACOS_SERVER_GRPC_PORT:-9849}:9849"
+    expose:
+      - 8848
+      - 9848
+      - 9849
+    restart: always
+    depends_on:
+      - mysql
+
+  sentinel-dashboard:
+    image: cskefu/sentinel-dashboard:1.8.6
+    container_name: sentinel-dashboard
+    restart: always
+    hostname: sentinel-dashboard
+    ports:
+      - "${SENTINEL_DASHBOARD_PORT:-9850}:9850"
+      - "${SENTINEL_TRANSPORT_PORT:-9851}:9851"
+    expose:
+      - 9850
+      - 9851
+    environment:
+      - SPRING_CLOUD_SENTINEL_TRANSPORT_DASHBOARD=nacos:${SENTINEL_DASHBOARD_PORT:-9850}
+      - SPRING_CLOUD_SENTINEL_TRANSPORT_PORT=${SENTINEL_TRANSPORT_PORT:-9851}
+    depends_on:
+      - mysql
+      - nacos
+
+  redis:
+    image: redis:7.2.1-alpine3.18
+    container_name: redis
+    restart: always
+    volumes:
+      - ./redis/data:/cskefu/redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    expose:
+      - 6379
+
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: rabbitmq
+    restart: always
+    hostname: rabbitmq
+    ports:
+      - "${RABBITMQ_CLIENT_PORT:-5672}:5672"
+      - "${RABBITMQ_HTTP_PORT:-15672}:15672"
+    expose:
+      - 5672
+      - 15672
+    volumes:
+      - ./rabbitmq/data:/var/lib/rabbitmq
+      - ./rabbitmq/hosts:/etc/hosts
+    environment:
+      - RABBITMQ_NODENAME=rabbitmq
+      - RABBITMQ_DEFAULT_VHOST='/'
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+  openresty:
+    image: openresty/openresty:1.21.4.2-0-alpine-apk
+    container_name: openresty
+    restart: always
+    ports:
+      - "${NGINX_HTTP_PORT:-80}:80"
+      - "${NGINX_SSL_PORT:-443}:443"
+    volumes:
+      - ./openresty/logs:/usr/local/openresty/nginx/logs
+      - ./openresty/conf.d:/etc/nginx/conf.d
+      - ./openresty/certs:/certs
+      - ./openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+    depends_on:
+      - cskefu-web-gateway
+      - cskefu-websocket-service
+
+  cskefu-web-gateway:
+    image: cskefu/cskefu-web-gateway
+    # container_name: cskefu-web-gateway
+    restart: always
+    #    ports:
+    #      - "${CSKEFU_WEB_GATEWAY_PORT:-8080}:8080"
+    expose:
+      - 8080
+    volumes:
+      - ./cskefu/logs:/cskefu/logs
+      - ./bootstrap.properties:/app/resources/bootstrap.properties
+      - ./logback-spring.xml:/app/resources/logback-spring.xml
+    deploy:
+      replicas: 3
+    environment:
+      - "JAVA_OPTS=-Xmx${CSKEFU_JAVA_XMX:-512m} -Xms${CSKEFU_JAVA_XMS:-512m} -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true --illegal-access=warn"
+      - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
+      - SPRING_APPLICATION_NAME=cskefu-web-gateway
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/cskefu?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWD:-123456}
+      # - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=100
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq
+      - SPRING_RABBITMQ_PORT=${RABBITMQ_CLIENT_PORT:-5672}
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+    depends_on:
+      - cskefu-auth-service
+      - cskefu-manager-service
+
+  cskefu-manager-service:
+    image: cskefu/cskefu-manager-service
+    # container_name: cskefu-manager-service
+    restart: always
+    #    ports:
+    #      - "${CSKEFU_MANAGER_SERVICE_PORT:-8081}:8081"
+    expose:
+      - 8081
+    volumes:
+      - ./cskefu/logs:/cskefu/logs
+      - ./bootstrap.properties:/app/resources/bootstrap.properties
+      - ./logback-spring.xml:/app/resources/logback-spring.xml
+    environment:
+      - "JAVA_OPTS=-Xmx${CSKEFU_JAVA_XMX:-512m} -Xms${CSKEFU_JAVA_XMS:-512m} -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true --illegal-access=warn"
+      - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
+      - SPRING_APPLICATION_NAME=cskefu-manager-service
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/cskefu?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWD:-123456}
+      # - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=100
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq
+      - SPRING_RABBITMQ_PORT=${RABBITMQ_CLIENT_PORT:-5672}
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+    depends_on:
+      - mysql
+      - redis
+      - nacos
+      - rabbitmq
+
+  cskefu-auth-service:
+    image: cskefu/cskefu-auth-service
+    # container_name: cskefu-auth-service
+    restart: always
+    #    ports:
+    #      - "${CSKEFU_AUTH_SERVICE_PORT:-8082}:8082"
+    expose:
+      - 8082
+    volumes:
+      - ./cskefu/logs:/cskefu/logs
+      - ./bootstrap.properties:/app/resources/bootstrap.properties
+      - ./logback-spring.xml:/app/resources/logback-spring.xml
+    environment:
+      - "JAVA_OPTS=-Xmx${CSKEFU_JAVA_XMX:-512m} -Xms${CSKEFU_JAVA_XMS:-512m} -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true --illegal-access=warn"
+      - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
+      - SPRING_APPLICATION_NAME=cskefu-auth-service
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/cskefu?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWD:-123456}
+      # - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=100
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq
+      - SPRING_RABBITMQ_PORT=${RABBITMQ_CLIENT_PORT:-5672}
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+    depends_on:
+      - mysql
+      - redis
+      - nacos
+      - rabbitmq
+
+  cskefu-plugin-service:
+    image: cskefu/cskefu-plugin-service
+    # container_name: cskefu-plugin-service
+    restart: always
+    #    ports:
+    #      - "${CSKEFU_PLUGIN_SERVICE_PORT:-8083}:8083"
+    expose:
+      - 8083
+    volumes:
+      - ./cskefu/logs:/cskefu/logs
+      - ./bootstrap.properties:/app/resources/bootstrap.properties
+      - ./logback-spring.xml:/app/resources/logback-spring.xml
+    environment:
+      - "JAVA_OPTS=-Xmx${CSKEFU_JAVA_XMX:-512m} -Xms${CSKEFU_JAVA_XMS:-512m} -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true --illegal-access=warn"
+      - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
+      - SPRING_APPLICATION_NAME=cskefu-plugin-service
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/cskefu?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWD:-123456}
+      # - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=100
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq
+      - SPRING_RABBITMQ_PORT=${RABBITMQ_CLIENT_PORT:-5672}
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+    depends_on:
+      - mysql
+      - redis
+      - nacos
+      - rabbitmq
+
+  cskefu-channel-wechat-service:
+    image: cskefu/cskefu-channel-wechat-service
+    # container_name: cskefu-channel-wechat-service
+    restart: always
+    #    ports:
+    #      - "${CSKEFU_CHANNEL_WECHAT_SERVICE_PORT:-8084}:8084"
+    expose:
+      - 8084
+    volumes:
+      - ./cskefu/logs:/cskefu/logs
+      - ./bootstrap.properties:/app/resources/bootstrap.properties
+      - ./logback-spring.xml:/app/resources/logback-spring.xml
+    environment:
+      - "JAVA_OPTS=-Xmx${CSKEFU_JAVA_XMX:-512m} -Xms${CSKEFU_JAVA_XMS:-512m} -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true --illegal-access=warn"
+      - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
+      - SPRING_APPLICATION_NAME=cskefu-channel-wechat-service
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/cskefu?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWD:-123456}
+      # - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=100
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq
+      - SPRING_RABBITMQ_PORT=${RABBITMQ_CLIENT_PORT:-5672}
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+    depends_on:
+      - cskefu-auth-service
+
+  cskefu-websocket-service:
+    image: cskefu/cskefu-websocket-service
+    # container_name: cskefu-websocket-service
+    restart: always
+    #    ports:
+    #      - "${CSKEFU_WEBSOCKET_SERVICE_PORT:-10000}:10000"
+    expose:
+      - ${CSKEFU_WEBSOCKET_SERVICE_PORT:-10000}
+    volumes:
+      - ./cskefu/logs:/cskefu/logs
+      - ./bootstrap.properties:/app/resources/bootstrap.properties
+      - ./logback-spring.xml:/app/resources/logback-spring.xml
+    deploy:
+      replicas: 2
+    environment:
+      - "JAVA_OPTS=-Xmx${CSKEFU_JAVA_XMX:-512m} -Xms${CSKEFU_JAVA_XMS:-512m} -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true --illegal-access=warn"
+      - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
+      - SPRING_APPLICATION_NAME=cskefu-websocket-service
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/cskefu?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWD:-123456}
+      # - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=100
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq
+      - SPRING_RABBITMQ_PORT=${RABBITMQ_CLIENT_PORT:-5672}
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+    depends_on:
+      - mysql
+      - redis
+      - nacos
+      - rabbitmq

@@ -25,3 +25,5 @@ docker-compose.custom.yml
 private/
 !cskefu-frontend/.vscode
 .tool-versions
+smart-doc/
+target/

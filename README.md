@@ -31,18 +31,6 @@
 
 新版本介绍：[观看春松客服 v8 新版本发布会 @ 2023-07-01](https://www.cskefu.com/2023/07/03/community-conf/)
 
-## 媒体报道
-
-<img src="./public/assets/cskefu-gpv-2.png" height = "220" div align=right />
-
-- [春松客服：通过开源加云原生模式，大规模交付智能客服系统](https://www.cskefu.com/2022/04/11/cskefu-opensource-plus-cloud-model/)
-
-- [春松客服荣获 GVP 企业级开源项目认证](http://www.ctiforum.com/news/guonei/578988.html)
-
-- [Chatopera 王海良：做好开源客服系统 | OpenTEKr 专访](https://www.bilibili.com/video/BV1qF411p7hW)
-
----
-
 ## 开发者列表 ✨
 
 :evergreen_tree: 春松客服是开源的智能客服系统，于 2018 年 9 月由 [Chatopera](https://www.chatopera.com) 发布，在开源社区协作中优化和完善，春松客服属于[春松客服开源社区](https://github.com/cskefu/cskefu#%E6%98%A5%E6%9D%BE%E5%AE%A2%E6%9C%8D%E5%BC%80%E6%BA%90%E7%A4%BE%E5%8C%BA)。
@@ -93,9 +81,11 @@
       <td align="center" valign="top" width="11.11%"><a href="https://samzong.me"><img src="https://avatars.githubusercontent.com/u/13782141?v=4?s=50" width="50px;" alt="Samzong Lu"/><br /><sub><b>Samzong Lu</b></sub></a><br /><a href="#eventOrganizing-SAMZONG" title="Event Organizing">📋</a> <a href="#projectManagement-SAMZONG" title="Project Management">📆</a> <a href="#design-SAMZONG" title="Design">🎨</a></td>
       <td align="center" valign="top" width="11.11%"><a href="https://github.com/halfray"><img src="https://avatars.githubusercontent.com/u/8181982?v=4?s=50" width="50px;" alt="halfray"/><br /><sub><b>halfray</b></sub></a><br /><a href="https://github.com/cskefu/cskefu/issues?q=author%3Ahalfray" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="11.11%"><a href="https://github.com/kely33"><img src="https://avatars.githubusercontent.com/u/134681303?v=4?s=50" width="50px;" alt="kely33"/><br /><sub><b>kely33</b></sub></a><br /><a href="https://github.com/cskefu/cskefu/issues?q=author%3Akely33" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="11.11%"><a href="https://github.com/lecjy"><img src="https://avatars.githubusercontent.com/u/9280760?v=4?s=50" width="50px;" alt="lecjy"/><br /><sub><b>lecjy</b></sub></a><br /></td>
     </tr>
   </tbody>
 </table>
+
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
@@ -132,27 +122,35 @@
 
 <p align="center">
   <b>欢迎页</b><br>
-  <img src="https://static-public.chatopera.com/assets/images/cskefu/cskefu-screen-1.jpg" width="900">
+  <img src="./public/assets/cskefu-screen-1.jpg" width="900">
 </p>
 
-### 坐席工作台
+<details>
+<summary>展开查看更多产品截图</summary>
+<p>
 
-登录演示环境，查看更多产品能力：[https://demo.cskefu.com/](https://demo.cskefu.com/)
+<p align="center">
+  <b>坐席工作台</b><br>
+  <img src="./public/assets/44915582-eb8d2c80-ad65-11e8-8876-86c8b5bb5cc7.png" width="900">
+</p>
 
-| **登录账号** | **密码**  | **角色**       |
-| ------------ | --------- | -------------- |
-| admin        | admin1234 | 系统超级管理员 |
-| zhangsan     | agent1234 | 客服坐席人员   |
+<p align="center">
+  <b>坐席监控</b><br>
+  <img src="./public/assets/44915711-432b9800-ad66-11e8-899b-1ea02244925d.png" width="900">
+</p>
 
-### 网页端访客示例
+<p align="center">
+  <b>集成客服机器人</b><br>
+  <img src="./public/assets/51080565-4b82df00-1719-11e9-8cc4-dbbec0459224.png" width="900">
+</p>
 
-[https://demo.cskefu.com/testclient.html](http://demo.cskefu.com/testclient.html)
+<p align="center">
+  <b>客服机器人应答</b><br>
+  <img src="./public/assets/51080567-50479300-1719-11e9-85d8-d209370c9d10.png" width="900">
+</p>
 
-- 登录张三后可接待访客，否则显示没有客服人员在线
-
-### 机器人客服示例
-
-[https://oh-my.cskefu.com/im/text/0nhckh.html](https://oh-my.cskefu.com/im/text/0nhckh.html)
+</p>
+</details>
 
 ## 快速开始
 
@@ -208,13 +206,11 @@
 在春松客服开源社区，我们建立关系、发现认同、合作共赢！
 
 - 了解春松客服采用的开源许可协议，参考[文档](https://www.cskefu.com/2023/06/25/chunsong-public-license-1-0/)
-- 了解春松客服的开发计划，参考[文档](https://chatopera.github.io/cskefu.roadmap/)
-- 加入开源社区运营，成为社区合伙人，参考[文档](https://mp.weixin.qq.com/s/TLE87YX4k097iOXnV4WVSw)
-- 加入春松客服开源社区，参考[文档](https://www.cskefu.com/join-us/)
+- 了解春松客服的开发计划，参考[文档](https://github.com/cskefu/cskefu/issues)
+- 如何发布春松客服人物志，向社区介绍自己，参考[文档](https://www.cskefu.com/join-us/)
 - 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
+- 如何成为春松客服开发者，参考[文档](https://docs.cskefu.com/docs/osc/devonboard/)
 - 如何提交代码，参考[文档](https://docs.cskefu.com/docs/osc/contribution)
-- 如何最新的春松客服开发进展：订阅[春松客服邮件列表](https://lists.cskefu.com/cgi-bin/mailman/listinfo/dev)
-- 如何获得春松客服商业插件和服务，参考[文档](https://www.chatopera.com/price.html)
 
 春松客服之所以开源，是基于这样一种信念：爱人也是爱己，利他也是利己。
 因春松客服受益，而不回报开源社区的用户，我们不欢迎使用春松客服：我们开源并不是为了你们，你们是不被祝福的。
