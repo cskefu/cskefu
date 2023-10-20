@@ -20,13 +20,26 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class PugHelper {
-    public String formatDate(String pattern, Date value) {
-        if (value == null) {
-            return "";
-        }
+    public final static String NA = "N/A";
 
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        return format.format(value);
+
+    public String formatDate(String pattern, Date value) {
+        try {
+            if (value == null) {
+                return NA;
+            }
+
+            SimpleDateFormat format = new SimpleDateFormat(pattern);
+            String result = format.format(value);
+
+            if (StringUtils.isBlank(result)) {
+                return NA;
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return NA;
     }
 
     public String padRight(Object src, String ch) {
@@ -140,6 +153,7 @@ public class PugHelper {
 
     /**
      * 截取字符串，首先根据分隔符分隔，然后选取前 N 个，使用连接符连接返回
+     *
      * @param orignal
      * @param splitBy
      * @param firstN

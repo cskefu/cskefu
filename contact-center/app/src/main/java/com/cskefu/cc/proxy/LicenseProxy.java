@@ -260,6 +260,27 @@ public class LicenseProxy {
 
             for (int i = 0; i < data.length(); i++) {
                 JSONObject lic = (JSONObject) data.get(i);
+                if(StringUtils.equals(lic.getJSONObject(Constants.LICENSE).getString(Constants.STATUS), "notfound")){
+                    // fill in placeholders for notfound license
+                    final JSONObject licenseJsonTmp = lic.getJSONObject(Constants.LICENSE);
+                    licenseJsonTmp.put("effectivedateend", "N/A");
+                    licenseJsonTmp.put("quotaeffectiveremaining", "N/A");
+
+                    JSONObject productJsonTmp = new JSONObject();
+                    productJsonTmp.put("shortId", "N/A");
+                    productJsonTmp.put("name", "N/A");
+                    lic.put("product", productJsonTmp);
+
+                    JSONObject userJsonTmp = new JSONObject();
+                    userJsonTmp.put("nickname", "N/A");
+                    lic.put("user", userJsonTmp);
+
+//                    lic.put(Constants.ADDDATE, null);
+
+                    result.add(lic);
+                    continue;
+                }
+
                 try {
                     Date addDate = DateConverter.parseCSTAsChinaTimezone(addDates.get(lic.getJSONObject(Constants.LICENSE).getString(Constants.SHORTID)));
                     lic.put(Constants.ADDDATE, addDate);

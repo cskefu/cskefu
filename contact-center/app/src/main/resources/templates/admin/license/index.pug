@@ -25,7 +25,7 @@ block content
         .row(style='padding:5px;')
             blockquote.layui-elem-quote.layui-quote-nm
                 i.layui-icon(style="color:gray") &#xe60b;
-                font(color="#999").layui-word-aux balala ...
+                font(color="#999").layui-word-aux 春松客服使用授权证书是通过 Chatopera 证书商店（https://store.chatopera.com）分发的对【春松客服计费资源】进行管理的凭证，在使用春松客服的过程中，春松客服与 Chatopera 证书商店集成，完成证书购买、证书绑定、配额扣除、配额同步和开具发票等。
 
             .col-lg-12
                 table.layui-table(lay-skin='line')
@@ -83,11 +83,6 @@ block content
         else if (msg == 'notfound_id')
             top.layer.alert('不存在该证书信息', {icon: 2});
 
-        layui.use(['laypage', 'layer'], function () {
-            var laypage = layui.laypage
-                , layer = layui.layer;
-        });
-
         function copyLicenseId2ClipboardOnOS(val){
             copyValue2ClipboardOnOS(val, (err) => {
                 top.layer.msg('复制完成', {icon: 1, time: 2000, offset: 't'});
@@ -95,6 +90,11 @@ block content
         }
 
         function openLicenseStorePage() {
-            var licenseStoreProvider = "#{licenseStoreProvider}";
+            var licenseStoreProvider = "#{licenseStoreProvider}/product/cskefu001";
             window.open(licenseStoreProvider, "_blank");
         }
+
+        layui.use(['laypage', 'layer'], function () {
+            var laypage = layui.laypage
+                , layer = layui.layer;
+        });
