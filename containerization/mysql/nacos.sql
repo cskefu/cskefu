@@ -215,21 +215,21 @@ INSERT INTO his_config_info (id, nid, data_id, group_id, app_name, content, md5,
     "cloud": {
       "nacos": {
         "discovery": {
-          "server-addr": "localhost:8848"
+          "server-addr": "nacos:8848"
         }
       }
     },
     "datasource": {
       "driver-class-name": "com.mysql.cj.jdbc.Driver",
       "password": 123456,
-      "url": "jdbc:mysql://localhost:3306/cskefu?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8",
+      "url": "jdbc:mysql://mysql:3306/cskefu?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8",
       "username": "root"
     },
     "mvc": {
       "static-path-pattern": "/smart-doc/**"
     },
     "rabbitmq": {
-      "addresses": "127.0.0.1",
+      "addresses": "rabbitmq",
       "listener": {
         "simple": {
           "acknowledge-mode": "manual",
@@ -263,7 +263,16 @@ INSERT INTO his_config_info (id, nid, data_id, group_id, app_name, content, md5,
     
 }', 'f309d0a46b7f7d41270b5684c31acd11', '2023-10-16 08:39:43', '2023-10-16 08:39:44', null, '172.20.0.1', 'I', 'cskefu', '');
 INSERT INTO his_config_info (id, nid, data_id, group_id, app_name, content, md5, gmt_create, gmt_modified, src_user, src_ip, op_type, tenant_id, encrypted_data_key) VALUES (0, 4, 'cskefu-web-gateway.json', 'cskefu-default', '', '{
-    
+    "spring": {
+        "cloud": {
+          "sentinel": {
+            "transport": {
+              "dashboard": "sentinel-dashboard:9850",
+              "port": 9851
+            }
+          }
+        }
+    }
 }', 'f309d0a46b7f7d41270b5684c31acd11', '2023-10-16 08:39:57', '2023-10-16 08:39:58', null, '172.20.0.1', 'I', 'cskefu', '');
 INSERT INTO his_config_info (id, nid, data_id, group_id, app_name, content, md5, gmt_create, gmt_modified, src_user, src_ip, op_type, tenant_id, encrypted_data_key) VALUES (0, 5, 'cskefu-manager-service.json', 'cskefu-default', '', '{
     
@@ -280,21 +289,21 @@ INSERT INTO config_info (id, data_id, group_id, content, md5, gmt_create, gmt_mo
     "cloud": {
       "nacos": {
         "discovery": {
-          "server-addr": "localhost:8848"
+          "server-addr": "nacos:8848"
         }
       }
     },
     "datasource": {
       "driver-class-name": "com.mysql.cj.jdbc.Driver",
       "password": 123456,
-      "url": "jdbc:mysql://localhost:3306/cskefu?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8",
+      "url": "jdbc:mysql://mysql:3306/cskefu?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8",
       "username": "root"
     },
     "mvc": {
       "static-path-pattern": "/smart-doc/**"
     },
     "rabbitmq": {
-      "addresses": "127.0.0.1",
+      "addresses": "rabbitmq",
       "listener": {
         "simple": {
           "acknowledge-mode": "manual",
@@ -328,7 +337,16 @@ INSERT INTO config_info (id, data_id, group_id, content, md5, gmt_create, gmt_mo
     
 }', 'f309d0a46b7f7d41270b5684c31acd11', '2023-10-16 08:39:44', '2023-10-16 08:39:44', null, '172.20.0.1', '', 'cskefu', null, null, null, 'json', null, '');
 INSERT INTO config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (8, 'cskefu-web-gateway.json', 'cskefu-default', '{
-    
+    "spring": {
+        "cloud": {
+          "sentinel": {
+            "transport": {
+              "dashboard": "sentinel-dashboard:9850",
+              "port": 9851
+            }
+          }
+        }
+    }
 }', 'f309d0a46b7f7d41270b5684c31acd11', '2023-10-16 08:39:58', '2023-10-16 08:39:58', null, '172.20.0.1', '', 'cskefu', null, null, null, 'json', null, '');
 INSERT INTO config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (9, 'cskefu-manager-service.json', 'cskefu-default', '{
     
