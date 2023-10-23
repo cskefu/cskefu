@@ -1,14 +1,14 @@
-/* 
- * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
- * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+/*
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public
  * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>, 
- * Licensed under the Apache License, Version 2.0, 
+ * Copyright (C) 2019-2022 Chatopera Inc, <https://www.chatopera.com>,
+ * Licensed under the Apache License, Version 2.0,
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.basic;
@@ -217,4 +217,26 @@ public class Constants {
     public static final String AUTH_TOKEN_TYPE_BEARER = "Bearer";
     public static final String AUTH_TOKEN_TYPE_BASIC = "Basic";
 
+    /**
+     * License
+     */
+    public static final String PRODUCT_ID_CSKEFU001 = "cskefu001";
+    public static final String LICENSE_SERVER_INST_ID = "SERVERINSTID";
+    public static final String LICENSE_SERVICE_NAME = "SERVICENAME";
+    public static final String LICENSE_SERVICE_NAME_PREFIX = "春松客服";
+    public static final String LICENSEIDS = "LICENSEIDS";
+    public static final String METAKV_DATATYPE_STRING = "string";
+    public static final String METAKV_DATATYPE_INT = "int";
+    public static final String SHORTID = "shortId";
+    public static final String LICENSES = "licenses";
+    public static final String ADDDATE = "addDate";
+    public static final String LICENSE = "license";
+    public static final String UPDATETIME = "updateTime";
+    public static final String STATUS = "status";
+    public static final String PRODUCT = "product";
+    public static final String LICENSESTOREPROVIDER = "licenseStoreProvider";
+    public static final String USER = "user";
+    public static final String RESOURCES_USAGE_KEY_PREFIX = "RESOURCES_USAGE";
+    public static final String NEW_USER_SUCCESS = "new_user_success";
+    public static final String PRODUCT_ID = "productId";
 }

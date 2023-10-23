@@ -312,6 +312,21 @@ var arrayListPrototype = {
 
 ArrayList.prototype = arrayListPrototype;
 
+/**
+ * 复制值到系统粘贴板
+ * https://www.freecodecamp.org/news/copy-text-to-clipboard-javascript/
+ * @param val
+ */
+function copyValue2ClipboardOnOS(val, cb) {
+    navigator.clipboard.writeText(val).then(() => {
+      /* Resolved - text copied to clipboard successfully */
+        if(cb && typeof cb === 'function') cb();
+    },(err) => {
+      /* Rejected - text failed to copy to the clipboard */
+        if(cb && typeof cb === 'function') cb(err || "Fail");
+    });
+}
+
 /*!
 Math.uuid.js (v1.4)
 

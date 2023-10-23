@@ -72,9 +72,6 @@ public class AgentAuditController extends Handler {
     private UserRepository userRes;
 
     @Autowired
-    private AgentUserRepository agentUserRepository;
-
-    @Autowired
     private ChatMessageRepository chatMessageRepository;
 
     @Autowired
@@ -245,7 +242,7 @@ public class AgentAuditController extends Handler {
         view.addObject(
                 "agentUserList", agentUserRes.findByStatusAndAgentnoIsNot(
                         MainContext.AgentUserStatusEnum.INSERVICE.toString(), logined.getId(), defaultSort));
-        List<AgentUser> agentUserList = agentUserRepository.findByUserid(userid);
+        List<AgentUser> agentUserList = agentUserRes.findByUserid(userid);
         view.addObject(
                 "curagentuser", agentUserList != null && agentUserList.size() > 0 ? agentUserList.get(0) : null);
 
@@ -266,7 +263,7 @@ public class AgentAuditController extends Handler {
         }
         ModelAndView view = request(super.createView(mainagentuser));
         final User logined = super.getUser(request);
-        AgentUser agentUser = agentUserRepository.findById(id).orElse(null);
+        AgentUser agentUser = agentUserRes.findById(id).orElse(null);
 
         if (agentUser != null) {
             view.addObject("curagentuser", agentUser);

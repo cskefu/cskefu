@@ -63,13 +63,13 @@ block content
 
         layui.use('layer', function () {
             var layer = layui.layer;
-            console.log(window.location.href)
             var status = '#{status}';
             if (status == 'new_webim_success')
                 layer.msg('网站添加成功', {icon: 1, time: 1000})
             else if (status == 'new_webim_fail')
                 layer.msg('网站添加失败', {icon: 2, time: 3000})
-
+            else
+                handleGeneralCodeInQueryPathOrApiResp(status);
         });
         layui.use(['laypage', 'layer'], function () {
             var laypage = layui.laypage

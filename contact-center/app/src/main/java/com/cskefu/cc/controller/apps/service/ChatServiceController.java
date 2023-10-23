@@ -78,9 +78,6 @@ public class ChatServiceController extends Handler {
     private AgentStatusRepository agentStatusRepository;
 
     @Autowired
-    private AgentUserRepository agentUserRepository;
-
-    @Autowired
     private LeaveMsgRepository leaveMsgRes;
 
     @Autowired
@@ -233,7 +230,7 @@ public class ChatServiceController extends Handler {
             if (agentUser != null) {
                 agentUser.setAgentno(agentno);
                 agentUser.setAgentname(targetAgent.getUname());
-                agentUserRepository.save(agentUser);
+                agentUserRes.save(agentUser);
                 if (MainContext.AgentUserStatusEnum.INSERVICE.toString().equals(
                         agentUser.getStatus())) {
                     // 转接 ， 发送消息给 目标坐席
@@ -288,11 +285,11 @@ public class ChatServiceController extends Handler {
                     }
                 }
             } else {
-                agentUser = agentUserRepository.findById(agentService.getAgentuserid()).orElse(null);
+                agentUser = agentUserRes.findById(agentService.getAgentuserid()).orElse(null);
                 if (agentUser != null) {
                     agentUser.setAgentno(agentno);
                     agentUser.setAgentname(targetAgent.getUname());
-                    agentUserRepository.save(agentUser);
+                    agentUserRes.save(agentUser);
                 }
             }
 
@@ -317,7 +314,7 @@ public class ChatServiceController extends Handler {
             AgentService agentService = agentServiceRes.findById(id).orElse(null);
             if (agentService != null) {
                 User user = super.getUser(request);
-                AgentUser agentUser = agentUserRepository.findById(agentService.getAgentuserid()).orElse(null);
+                AgentUser agentUser = agentUserRes.findById(agentService.getAgentuserid()).orElse(null);
                 if (agentUser != null) {
                     acdAgentService.finishAgentUser(agentUser);
                 }

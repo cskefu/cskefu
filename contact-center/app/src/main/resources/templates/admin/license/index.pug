@@ -1,0 +1,100 @@
+//- Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+//- <https://www.chatopera.com>, Licensed under the Chunsong Public 
+//- License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+//- Unless required by applicable law or agreed to in writing, software
+//- distributed under the License is distributed on an "AS IS" BASIS,
+//- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//- See the License for the specific language governing permissions and
+//- limitations under the License.
+extends /admin/include/layout.pug
+block content
+    .row: .col-lg-12
+        h1.site-h1(style='background-color:#FFFFFF;')
+            | 使用授权证书列表 (#{licenses.size()})
+            | ，更新时间 #{pugHelper.formatDate('yyyy-MM-dd HH:mm:ss', updateTime)}
+            span(style='float:right;')
+                .layui-btn-group.ukefu-btn-group
+                    button.layui-btn.layui-btn-small(href='/admin/license/add.html', data-toggle='ajax', data-width='550', data-height='450', data-title='添加使用授权证书')
+                        i.layui-icon &#xe654;
+                        | 导入
+                    button.layui-btn.layui-btn-small(onclick='location.reload()')
+                        span  刷新
+                    button.layui-btn.layui-btn-small(onclick='openLicenseStorePage()')
+                        span  打开证书商店
+
+        .row(style='padding:5px;')
+            blockquote.layui-elem-quote.layui-quote-nm
+                i.layui-icon(style="color:gray") &#xe60b;
+                font(color="#999").layui-word-aux 春松客服使用授权证书是通过 Chatopera 证书商店（https://store.chatopera.com）分发的对【春松客服计费资源】进行管理的凭证，在使用春松客服的过程中，春松客服与 Chatopera 证书商店集成，完成证书购买、证书绑定、配额扣除、配额同步和开具发票等。
+
+            .col-lg-12
+                table.layui-table(lay-skin='line')
+                    colgroup
+                        col(width='10%')
+                        col(width='10%')
+                        col(width='10%')
+                        col(width='20%')
+                        col(width='10%')
+                        col(width='10%')
+                        col(width='10%')
+                        col(width='10%')
+                        col(width='10%')
+                    thead
+                        tr
+                            th 证书 ID
+                            th 状态
+                            th 产品标识
+                            th 产品名称
+                            th 有效期截止
+                            th 配额剩余
+                            th 所属人昵称
+                            th 添加时间
+                            th(style='white-space:nowrap;', nowrap) 操作
+                    tbody
+                        for item in licenses
+                            tr
+                                - var messupLicenseShortId = pugHelper.messupStringWithStars(item.license.shortId)
+                                td= messupLicenseShortId
+                                td= pugHelper.getLicstatusInChinese(item.license.status)
+                                td= item.product.shortId
+                                td= item.product.name
+                                td= pugHelper.splitStringAndJoinWith(item.license.effectivedateend, " ", 1, "")
+                                td= item.license.quotaeffectiveremaining
+                                td= item.user.nickname
+                                td= pugHelper.formatDate('yyyy-MM-dd', item.addDate)
+                                td(style="white-space:nowrap;" nowrap="nowrap")
+                                    a(href="#", onclick="copyLicenseId2ClipboardOnOS('" + item.license.shortId + "');return false;")
+                                        i.layui-icon &#xe642;
+                                        span 复制 ID
+                                    a(href="/admin/license/delete/" + item.license.shortId + ".html" style="margin-left:10px;" data-toggle="tip"  title="请确认是否删除使用授权证书 " + messupLicenseShortId + "？")
+                                        i.layui-icon(style="color:red;") &#x1006;
+                                        span 删除
+        .row(style='padding:5px;')
+            .col-lg-12#page(style='text-align:center;')
+
+    script.
+        var msg = '#{msg}';
+        if (msg == 'already_added')
+            top.layer.alert('已经添加，不需要再次执行。', {icon: 1});
+        else if (msg == 'product_added_already')
+            top.layer.alert('同产品证书已经添加，不支持继续添加。', {icon: 2});
+        else if (msg == 'invalid_id')
+            top.layer.alert('不合法的证书标识', {icon: 2});
+        else if (msg == 'notfound_id')
+            top.layer.alert('不存在该证书信息', {icon: 2});
+
+        function copyLicenseId2ClipboardOnOS(val){
+            copyValue2ClipboardOnOS(val, (err) => {
+                top.layer.msg('复制完成', {icon: 1, time: 2000, offset: 't'});
+            })
+        }
+
+        function openLicenseStorePage() {
+            var licenseStoreProvider = "#{licenseStoreProvider}/product/cskefu001";
+            window.open(licenseStoreProvider, "_blank");
+        }
+
+        layui.use(['laypage', 'layer'], function () {
+            var laypage = layui.laypage
+                , layer = layui.layer;
+        });
