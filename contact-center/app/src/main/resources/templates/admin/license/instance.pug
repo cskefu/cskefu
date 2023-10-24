@@ -13,13 +13,13 @@ block content
             | 实例信息
             span(style='float:right;')
                 .layui-btn-group.ukefu-btn-group
-                    button.layui-btn.layui-btn-small(onclick='openLicenseStorePage()')
-                        span  打开证书商店
+                    button.layui-btn.layui-btn-warm.layui-btn-small(onclick='openLicenseStorePage()')
+                        span  购买使用授权证书
 
         .row(style='padding:5px;')
             blockquote.layui-elem-quote.layui-quote-nm
                 i.layui-icon(style="color:gray") &#xe60b;
-                font(color="#999").layui-word-aux balala ...
+                font(color="#999").layui-word-aux 春松客服实例信息，代表该春松客服软件运行的标识信息。在春松客服使用授权中，每个实例为一个可以绑定授权证书的单位。
 
             .col-lg-12
                 fieldset.layui-elem-field
@@ -54,6 +54,6 @@ block content
         }
 
         function openLicenseStorePage() {
-            var licenseStoreProvider = "#{licenseStoreProvider}";
+            var licenseStoreProvider = "#{licenseStoreProvider}/product/cskefu001";
             window.open(licenseStoreProvider, "_blank");
         }
