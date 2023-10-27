@@ -77,13 +77,9 @@ function handleGeneralCodeInQueryPathOrApiResp(code, cb) {
         case 'billingquotaexception.no_license_found':
             layer.confirm('证书不存在，联系系统超级管理员导入。', {
                 title: '使用授权证书', icon: 2, btn: [
-                    '我是超级管理员', '查看说明'
+                    '查看说明'
                 ],
                 btn1: function (index, layero, that) {
-                    // 我是超级管理员
-                    return false;
-                },
-                btn2: function (index, layero, that) {
                     // 查看说明
                     window.open("https://docs.cskefu.com/docs/licenses", "_blank");
                     return false;
