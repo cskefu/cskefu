@@ -75,7 +75,20 @@ function processUserAddOrUpdateResult(responsecode, cb) {
 function handleGeneralCodeInQueryPathOrApiResp(code, cb) {
     switch (code) {
         case 'billingquotaexception.no_license_found':
-            layer.msg('【使用授权证书】证书不存在，联系系统超级管理员导入。', {icon: 2, time: 5000});
+            layer.confirm('证书不存在，联系系统超级管理员导入。', {
+                title: '使用授权证书', icon: 2, btn: [
+                    '我是超级管理员', '查看说明'
+                ],
+                btn1: function (index, layero, that) {
+                    // 我是超级管理员
+                    return false;
+                },
+                btn2: function (index, layero, that) {
+                    // 查看说明
+                    window.open("https://docs.cskefu.com/docs/licenses", "_blank");
+                    return false;
+                }
+            });
             if (cb && (typeof (x) === 'function')) {
                 cb()
             }
