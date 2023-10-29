@@ -27,8 +27,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 坐席自动分配策略集
@@ -58,6 +60,8 @@ public class ACDPolicyService {
     @Autowired
     private OrganProxy organProxy;
 
+    @Autowired
+    private OrganRepository organRepository;
     /**
      * 载入坐席 ACD策略配置
      *
@@ -85,12 +89,26 @@ public class ACDPolicyService {
         if ((sessionConfig = cache.findOneSessionConfig(organid)) == null) {
             sessionConfig = sessionConfigRes.findBySkill(organid);
             if (sessionConfig == null) {
-                sessionConfig = new SessionConfig();
+                List<Organ> list = organRepository.findAll();
+                if (CollectionUtils.isEmpty(list)) {
+                    return new SessionConfig();
+                } else {
+                    Map<String, String> map = list.stream().collect(Collectors.toMap(item -> item.getId(), item -> item.getParent()));
+                    List<SessionConfig> configList = sessionConfigRes.findAll();
+                    if (CollectionUtils.isEmpty(configList)) {
+                        return new SessionConfig();
+                    } else {
+                        Map<String, SessionConfig> skillMap = configList.stream().collect(Collectors.toMap(item -> item.getSkill(), item -> item));
+                        if (map.get(organid) == null || skillMap.get(map.get(organid)) == null) {
+                            return new SessionConfig();
+                        }
+                        return skillMap.get(map.get(organid));
+                    }
+                }
             } else {
                 cache.putSessionConfig(sessionConfig, organid);
             }
         }
-
         return sessionConfig;
     }
 
