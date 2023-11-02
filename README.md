@@ -235,7 +235,7 @@
   - [IDE 配置和使用之 VSCode](https://docs.cskefu.com/docs/osc/ide_vscode)
 - 定制开发技能
   - [系统集成之 RestAPIs](https://docs.cskefu.com/docs/osc/restapi)
-  - [从零开始学习定制春松客服技能：春松客服大讲堂 PPT 课件及视频](https://github.com/cskefu/cskefu.djt)
+  - [从零开始学习定制春松客服技能：春松客服大讲堂 PPT 课件及视频](https://store.chatopera.com/product/cskfdjt19)
   - [掌握春松客服前端框架 Pugjs，介绍及使用注意事项](https://blog.csdn.net/samurais/article/details/114576611)
 - [提交代码](https://docs.cskefu.com/docs/osc/contribution)
 
