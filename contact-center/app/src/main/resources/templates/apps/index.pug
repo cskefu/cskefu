@@ -79,7 +79,7 @@ html(xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xm
                     else if (msg == 't1')
                         layer.msg('当前用户坐席就绪或对话未结束，不能切换为非坐席', {icon: 2, time: 3000})
 
-                    if ('#{models.contains("entim")}') {
+                    if (#{models.contains("entim")}) {
                         var imDialogHelper = {
                             open: function () {
                                 layinx = layer.open({
