@@ -23,7 +23,6 @@ html
                 h1.site-h1(style='background-color:#FFFFFF;') 编辑联系人
             form.layui-form(action='/agent/calloutcontact/update.html', method='post')
                 input(type='hidden', name='id', value='${contacts.id!\'\'}')
-                input(type='hidden', name='shares', value='all')
                 .layui-collapse
                     .layui-colla-item
                         h2.layui-colla-title 基本信息

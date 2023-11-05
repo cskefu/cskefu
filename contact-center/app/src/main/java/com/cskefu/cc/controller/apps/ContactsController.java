@@ -143,8 +143,8 @@ public class ContactsController extends Handler {
             map.put("ckind", ckind);
         }
 
-        Page<Contacts> contacts = contactsRes.findByCreaterAndSharesAndDatastatus(logined.getId(),
-                logined.getId(),
+        Page<Contacts> contacts = contactsRes.findByCreaterAndSharesInAndDatastatus(logined.getId(),
+                Arrays.asList(logined.getId(),"all"),
                 false,
                 PageRequest.of(
                         super.getP(request),
@@ -177,8 +177,8 @@ public class ContactsController extends Handler {
             map.put("ckind", ckind);
         }
 
-        Page<Contacts> contacts = contactsRes.findByCreaterAndSharesAndDatastatus(logined.getId(),
-                logined.getId(),
+        Page<Contacts> contacts = contactsRes.findByCreaterAndSharesInAndDatastatus(logined.getId(),
+                Arrays.asList(logined.getId(),"all"),
                 false,
                 PageRequest.of(
                         super.getP(request),
@@ -211,8 +211,8 @@ public class ContactsController extends Handler {
             map.put("ckind", ckind);
         }
 
-        Page<Contacts> contacts = contactsRes.findByCreaterAndSharesAndDatastatus(logined.getId(),
-                logined.getId(),
+        Page<Contacts> contacts = contactsRes.findByCreaterAndSharesInAndDatastatus(logined.getId(),
+                Arrays.asList(logined.getId(),"all"),
                 false,
                 PageRequest.of(
                         super.getP(request),
@@ -478,8 +478,8 @@ public class ContactsController extends Handler {
             map.put("ckind", ckind);
         }
 
-        Iterable<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndDatastatus(
-                logined.getId(), logined.getId(), false, PageRequest.of(super.getP(request), super.getPs(request)));
+        Iterable<Contacts> contactsList = contactsRes.findByCreaterAndSharesInAndDatastatus(
+                logined.getId(), Arrays.asList(logined.getId(),"all"),false, PageRequest.of(super.getP(request), super.getPs(request)));
 
         MetadataTable table = metadataRes.findByTablename("uk_contacts");
         List<Map<String, Object>> values = new ArrayList<>();
@@ -512,8 +512,8 @@ public class ContactsController extends Handler {
             map.put("ckind", ckind);
         }
 
-        Iterable<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndDatastatus(
-                logined.getId(), logined.getId(), false, PageRequest.of(super.getP(request), super.getPs(request)));
+        Iterable<Contacts> contactsList = contactsRes.findByCreaterAndSharesInAndDatastatus(
+                logined.getId(), Arrays.asList(logined.getId(),"all"), false, PageRequest.of(super.getP(request), super.getPs(request)));
         MetadataTable table = metadataRes.findByTablename("uk_contacts");
         List<Map<String, Object>> values = new ArrayList<>();
         for (Contacts contacts : contactsList) {
@@ -552,8 +552,8 @@ public class ContactsController extends Handler {
         if (StringUtils.isNotBlank(agentserviceid)) {
             AgentService service = agentServiceRes.findById(agentserviceid).orElse(null);
         }
-        Page<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndDatastatus(
-                logined.getId(), logined.getId(), false,
+        Page<Contacts> contactsList = contactsRes.findByCreaterAndSharesInAndDatastatus(
+                logined.getId(), Arrays.asList(logined.getId(),"all"), false,
                 PageRequest.of(super.getP(request), super.getPs(request)));
 
         map.addAttribute("contactsList", contactsList);
