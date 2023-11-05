@@ -14,7 +14,6 @@ include /mixins/dic.mixin.pug
     form.layui-form(action='/apps/contacts/embed/update.html', data-toggle="ajax-form" data-close="false" data-target="#mainajaxwin" method="post")
         input(type='hidden', name='id', value=contacts.id)
         input(type='hidden', name='agentserviceid', value=agentserviceid)
-        input(type='hidden', name='shares', value='all')
         .layui-collapse
             .layui-colla-item
                 h2.layui-colla-title 基本信息

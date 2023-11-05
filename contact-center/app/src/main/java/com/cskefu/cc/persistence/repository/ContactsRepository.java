@@ -40,7 +40,7 @@ public interface ContactsRepository extends JpaRepository<Contacts, String> {
     @Query(nativeQuery = true, value = "SELECT * FROM uk_contacts WHERE id = ?1")
     Optional<Contacts> findOneById(final String id);
 
-    Page<Contacts> findByCreaterAndSharesAndDatastatus(String id, String shares, boolean datastatus, Pageable pageRequest);
+    Page<Contacts> findByCreaterAndSharesInAndDatastatus(String id, Collection<String> shares, boolean datastatus, Pageable pageRequest);
 
     /**
      * 根据条件返回联系人，符合一下条件之一：

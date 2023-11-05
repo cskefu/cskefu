@@ -24,7 +24,6 @@ html
                 h1.site-h1(style='background-color:#FFFFFF;') 新建联系人
             form.layui-form(action='/agent/calloutcontact/save.html?agentuser=${curagentuser.id!\'\'}', method='post')
                 input(hidden, name='calloutcontact')
-                input(type='hidden', name='shares', value='all')
                 .layui-collapse
                     .layui-colla-item
                         h2.layui-colla-title 基本信息
