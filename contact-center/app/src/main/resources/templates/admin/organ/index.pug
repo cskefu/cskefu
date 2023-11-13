@@ -189,6 +189,8 @@ block content
                 layer.msg('修改无法完成，上级机构选择错误', {icon: 2, time: 2000})
             } else if (msg == 'not_allow_remove_user') {
                 layer.msg('用户只有一个组织，不允许移除', {icon: 2, time: 2000})
+            } else {
+                handleGeneralCodeInQueryPathOrApiResp(msg);
             }
         });
 

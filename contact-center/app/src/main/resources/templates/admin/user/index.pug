@@ -121,6 +121,8 @@ block content
                   layer.msg('新用户创建成功',{icon: 1, time: 1000})
               else if (msg == 'edit_user_success')
                   layer.msg('用户编辑成功', {icon: 1, time: 1000})
+              else if (msg == 'billingquotaexception.no_license_found')
+                  layer.msg('证书不存在，联系系统超级管理员导入授权使用证书',{icon: 2, time: 3000})
             });
             layui.use(['laypage', 'layer'], function(){
                   var laypage = layui.laypage

@@ -38,8 +38,6 @@ html(xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xm
         script(src="/js/moment-timezone.js")
         script(src="/js/moment-timezone-with-data.js")
         script(src="/layui.js")
-        //- #894 和原生Map行为不一致
-        //- <script src="/js/utils.js"></script>
         script(src="/js/cskefu.js")
         script(src="/im/js/socket.io.js")
         script(src="/js/CSKeFu_IM.v1.js")
@@ -81,7 +79,7 @@ html(xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xm
                     else if (msg == 't1')
                         layer.msg('当前用户坐席就绪或对话未结束，不能切换为非坐席', {icon: 2, time: 3000})
 
-                    if ('#{models.contains("entim")}') {
+                    if (#{models.contains("entim")}) {
                         var imDialogHelper = {
                             open: function () {
                                 layinx = layer.open({
@@ -196,7 +194,7 @@ html(xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xm
                                 dd
                                     a(href="javascript:void(0)" onclick="showSystemBuildInfo()") 关于产品
                                 dd
-                                    a(href="https://docs.cskefu.com/" target="_blank") 使用指南
+                                    a(href="https://docs.cskefu.com/docs/licenses" target="_blank") 使用授权
                                 dd
                                     a(href="https://github.com/cskefu/cskefu/issues" target="_blank") 反馈建议
                                 dd

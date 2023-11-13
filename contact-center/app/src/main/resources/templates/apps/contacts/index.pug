@@ -103,14 +103,6 @@ block content
                                         td #{contacts.ckind && uKeFuDic[contacts.ckind] ? uKeFuDic[contacts.ckind].name : ""}
                                         td #{contacts.user ? contacts.user.username : ""}
                                         td
-                                            if approachable.contains(contacts.id)
-                                                a(href="#", onclick="openDialogWinByContactid('" + contacts.id + "')")
-                                                    i.layui-icon &#xe606;
-                                                    |  聊天
-                                            else
-                                                a.disabled(href="#", onclick="unreachableDialogWinByContactid('" + contacts.id + "')")
-                                                    i.layui-icon &#xe60f;
-                                                    |  聊天
                                             a(href="/apps/contacts/detail.pug?id=" + (contacts.id ? contacts.id : ""), style="margin-left:10px;")
                                                 i.layui-icon &#xe60a;
                                                 |  详情
@@ -186,6 +178,8 @@ block content
                     layer.msg('联系人编辑成功', {icon: 1, time: 1500})
                 else if (msg && msg == 'edit_contacts_fail')
                     layer.msg('联系人编辑失败，因为存在相同Skype ID', {icon: 2, time: 1500})
+                else
+                    handleGeneralCodeInQueryPathOrApiResp(msg);
             });
         });
 

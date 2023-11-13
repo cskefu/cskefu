@@ -1,13 +1,13 @@
-/* 
- * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
- * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+/*
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public
  * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * Copyright (C) 2019-2022 Chatopera Inc, All rights reserved. 
+ * Copyright (C) 2019-2022 Chatopera Inc, All rights reserved.
  * <https://www.chatopera.com>
  */
 
@@ -16,6 +16,7 @@ package com.cskefu.cc.proxy;
 import com.cskefu.cc.basic.Constants;
 import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.basic.MainUtils;
+import com.cskefu.cc.exception.BillingQuotaException;
 import com.cskefu.cc.model.*;
 import com.cskefu.cc.persistence.repository.*;
 import com.cskefu.cc.util.restapi.RestUtils;
@@ -29,6 +30,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.criteria.Predicate;
+
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -79,22 +82,34 @@ public class UserProxy {
     public JsonObject createNewUser(final User user, Organ organ) {
         JsonObject result = new JsonObject();
         String msg = validUser(user);
-        if (StringUtils.equalsIgnoreCase(msg, "new_user_success")) {
+
+        if (StringUtils.equalsIgnoreCase(msg, Constants.NEW_USER_SUCCESS)) {
             // 此时 msg 是 new_user_success
             user.setSuperadmin(false); // 不支持创建第二个系统管理员
+            try {
+                if (StringUtils.isNotBlank(user.getPassword())) {
+                    user.setPassword(MainUtils.md5(user.getPassword()));
+                }
+                userRes.save(user);
 
-            if (StringUtils.isNotBlank(user.getPassword())) {
-                user.setPassword(MainUtils.md5(user.getPassword()));
-            }
-            userRes.save(user);
-
-            if (organ != null) {
-                OrganUser ou = new OrganUser();
-                ou.setUserid(user.getId());
-                ou.setOrgan(organ.getId());
-                organUserRes.save(ou);
+                if (organ != null) {
+                    OrganUser ou = new OrganUser();
+                    ou.setUserid(user.getId());
+                    ou.setOrgan(organ.getId());
+                    organUserRes.save(ou);
+                }
+            } catch (Exception e) {
+                if (e instanceof UndeclaredThrowableException) {
+                    logger.error("[createNewUser] BillingQuotaException", e);
+                    if (StringUtils.startsWith(e.getCause().getMessage(), BillingQuotaException.SUFFIX)) {
+                        msg = e.getCause().getMessage();
+                    }
+                } else {
+                    logger.error("[createNewUser] err", e);
+                }
             }
         }
+
         // 新账号未通过验证，返回创建失败信息msg
         result.addProperty(RestUtils.RESP_KEY_RC, RestUtils.RESP_RC_SUCC);
         result.addProperty(RestUtils.RESP_KEY_DATA, msg);

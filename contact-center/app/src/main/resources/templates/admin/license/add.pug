@@ -1,0 +1,31 @@
+//- Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+//- <https://www.chatopera.com>, Licensed under the Chunsong Public 
+//- License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
+//- Unless required by applicable law or agreed to in writing, software
+//- distributed under the License is distributed on an "AS IS" BASIS,
+//- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//- See the License for the specific language governing permissions and
+//- limitations under the License.
+.uk-layui-form
+    form.layui-form(action='/admin/license/save.html', method='post')
+        .layui-form-item(style='margin-top:10px;')
+            .layui-inline
+                label.layui-form-label(style='width:150px;') 证书标识：
+                .layui-input-inline
+                    input.layui-input(type='text', name='licenseShortId', required, lay-verify='required', autocomplete='off')
+                .layui-form-mid.layui-word-aux
+                    font(color='red') *
+        .layui-form-button
+            .layui-button-block
+                button.layui-btn(lay-submit, lay-filter='formNewLicense') 立即提交
+                button.layui-btn.layui-btn-original(type='reset') 重置
+
+script.
+    layui.use('form', function () {
+        var form = layui.form();
+        form.render(); //更新全部
+    });
+    layui.use('element', function () {
+        var element = layui.element();
+    });
+

@@ -12,18 +12,34 @@ package com.cskefu.cc.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.chatopera.store.enums.LICSTATUS;
+import com.chatopera.store.exceptions.EnumValueException;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class PugHelper {
-    public String formatDate(String pattern, Date value) {
-        if (value == null) {
-            return "";
-        }
+    public final static String NA = "N/A";
 
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        return format.format(value);
+
+    public String formatDate(String pattern, Date value) {
+        try {
+            if (value == null) {
+                return NA;
+            }
+
+            SimpleDateFormat format = new SimpleDateFormat(pattern);
+            String result = format.format(value);
+
+            if (StringUtils.isBlank(result)) {
+                return NA;
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return NA;
     }
 
     public String padRight(Object src, String ch) {
@@ -43,7 +59,38 @@ public class PugHelper {
     }
 
     /**
+     * 在字符串中替换一些字符为 *, 起到混淆、加密、遮盖的敏感信息的目的
+     *
+     * @param prev
+     * @return
+     */
+    public String messupStringWithStars(final String prev) {
+        StringBuffer sb = new StringBuffer();
+
+        if (prev.length() >= 6) {
+            sb.append("***");
+            int initial = prev.length() - 4;
+            for (int i = initial; i < prev.length(); i++) {
+                sb.append(prev.charAt(i));
+            }
+        } else { // < 6
+            if (prev.length() <= 2 && prev.length() > 0) {
+                return "***";
+            } else { // 2 < length < 6
+                sb.append("***");
+                int initial = prev.length() - 2;
+                for (int i = initial; i < prev.length(); i++) {
+                    sb.append(prev.charAt(i));
+                }
+            }
+        }
+
+        return sb.toString();
+    }
+
+    /**
      * 将 String 转化为 JSONArray
+     *
      * @param str
      * @return
      */
@@ -71,5 +118,60 @@ public class PugHelper {
         List<T> result = new ArrayList<>(input);
         Collections.reverse(result);
         return result;
+    }
+
+    /**
+     * 获得证书状态的中文
+     *
+     * @param status
+     * @return
+     */
+    public String getLicstatusInChinese(final String status) {
+        try {
+            LICSTATUS licstatus = LICSTATUS.toValue(status);
+            switch (licstatus) {
+                case NOTFOUND -> {
+                    return "未找到";
+                }
+                case EXHAUSTED -> {
+                    return "配额耗尽";
+                }
+                case INUSE -> {
+                    return "使用中";
+                }
+                case EXPIRED -> {
+                    return "已过期";
+                }
+                default -> {
+                    return status;
+                }
+            }
+        } catch (EnumValueException e) {
+            return "未知";
+        }
+    }
+
+    /**
+     * 截取字符串，首先根据分隔符分隔，然后选取前 N 个，使用连接符连接返回
+     *
+     * @param orignal
+     * @param splitBy
+     * @param firstN
+     * @param joinWith
+     * @return
+     */
+    public String splitStringAndJoinWith(final String orignal, final String splitBy, final int firstN, final String joinWith) {
+        String[] splits = StringUtils.split(orignal, splitBy);
+        int n = Math.min(splits.length, firstN);
+        List<String> joined = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            joined.add(splits[i]);
+        }
+
+        if (joined.size() > 0) {
+            return StringUtils.join(joined, joinWith);
+        } else {
+            return "";
+        }
     }
 }

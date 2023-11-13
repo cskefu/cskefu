@@ -46,6 +46,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -84,7 +86,7 @@ public class ApiContactsController extends Handler {
 
         if (!StringUtils.isBlank(creater)) {
             User user = super.getUser(request);
-            contactsList = contactsRepository.findByCreaterAndSharesAndDatastatus(user.getId(), "all", false,
+            contactsList = contactsRepository.findByCreaterAndSharesInAndDatastatus(user.getId(), Arrays.asList(user.getId(),"all"), false,
                     PageRequest.of(
                             super.getP(request),
                             super.getPs(request)));

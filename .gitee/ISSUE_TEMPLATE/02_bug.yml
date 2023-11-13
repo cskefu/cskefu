@@ -1,0 +1,30 @@
+name: 软件缺陷
+description: 报告软件缺陷
+labels: ["bug"]
+assignees:
+  - kaifuny
+body:
+- type: markdown
+  attributes:
+   value: "## 描述"
+- type: textarea
+  id: content1
+  attributes:
+   label: "详细描述问题后优先处理解决！ 截图、错误日志等"
+   value: |
+    1. 如何重现
+    2. xxx
+    3. xxx
+    ...
+  validations:
+   required: true
+- type: textarea
+  id: content2
+  attributes:
+   label: "代码版本"
+   value: |
+    1. Git commit hash (`git rev-parse HEAD`)，进入代码库并执行
+    或
+    2. v7, v8, v9 ...
+  validations:
+   required: true

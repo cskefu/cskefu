@@ -13,7 +13,6 @@ include /mixins/dic.mixin.pug
 .uk-layui-form
     form.layui-form(action='/apps/contacts/embed/save.html', data-toggle='ajax-form', data-close='false', data-target='#mainajaxwin', method='post')
         input(type='hidden', name='agentserviceid', value=agentserviceid)
-        input(type='hidden', name='shares', value='all')
         .layui-collapse
             .layui-colla-item
                 h2.layui-colla-title 基本信息

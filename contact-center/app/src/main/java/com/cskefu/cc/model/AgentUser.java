@@ -1,15 +1,15 @@
 /*
- * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
- * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public
  * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0,
  * http://www.apache.org/licenses/LICENSE-2.0
- * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0,
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.model;
@@ -19,6 +19,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Proxy;
 
 import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -105,6 +106,7 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
 
     @Transient
     private boolean tip = false;
+
     @Transient
     private boolean agentTip = false;
 
@@ -119,10 +121,24 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
 
     @Transient
     private boolean fromhis = false;
+
     @Transient
     private boolean online = false;
+
     @Transient
     private boolean disconnect = false;
+
+    /**
+     * 证书验证通过
+     */
+    @Transient
+    private boolean licenseVerifiedPass = true;
+
+    /**
+     * 证书验证提示信息
+     */
+    @Transient
+    private String licenseBillingMsg;
 
 
     public AgentUser() {
@@ -616,5 +632,23 @@ public class AgentUser implements Serializable, Comparable<AgentUser> {
 
     public void setAgentname(String agentname) {
         this.agentname = agentname;
+    }
+
+    @Transient
+    public boolean isLicenseVerifiedPass() {
+        return licenseVerifiedPass;
+    }
+
+    public void setLicenseVerifiedPass(boolean licenseVerifiedPass) {
+        this.licenseVerifiedPass = licenseVerifiedPass;
+    }
+
+    @Transient
+    public String getLicenseBillingMsg() {
+        return licenseBillingMsg;
+    }
+
+    public void setLicenseBillingMsg(String licenseBillingMsg) {
+        this.licenseBillingMsg = licenseBillingMsg;
     }
 }

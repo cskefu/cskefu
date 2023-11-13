@@ -53,6 +53,13 @@ ul.layui-nav.layui-nav-tree(lay-filter='demo')
                 | &ndash;&gt;
     if user.superadmin
         li.layui-nav-item.layui-nav-itemed
+            a.layui-nav-title(href='javascript:;') 人工智能
+            dl.layui-nav-child
+                if models.contains("chatbot") && (user.roleAuthMap["A09"] || user.admin)
+                    dd
+                        a(href='javascript:void(0)',data-title="智能机器人",onclick="openChatbot()",data-href="/admin/system/chatbot/index.html",class="iframe_btn",data-id="chatbotIntegrationWin", data-type="tabAdd") 智能机器人
+    if user.superadmin
+        li.layui-nav-item.layui-nav-itemed
             a.layui-nav-title(href='javascript:;') 系统设置
             dl.layui-nav-child
                 dd(class={'layui-this': subtype == 'config'})
@@ -61,16 +68,20 @@ ul.layui-nav.layui-nav-tree(lay-filter='demo')
                     a(href='/admin/sysdic/index.html') 字典管理
                 dd(class={'layui-this': subtype == 'metadata'})
                     a(href='/admin/metadata/index.html') 元数据
-                if models.contains("chatbot") && (user.roleAuthMap["A09"] || user.admin)
-                    dd
-                        a(href='javascript:void(0)',data-title="智能机器人",onclick="openChatbot()",data-href="/admin/system/chatbot/index.html",class="iframe_btn",data-id="chatbotIntegrationWin", data-type="tabAdd") 智能机器人
                 dd(class={'layui-this': subtype == 'template'})
                     a(href='/admin/template/index.html') 系统模板
-                dd(class={'layui-this': subtype == 'email'})
-                    a(href='/admin/email/index.html') 邮件通知设置
-                dd(class={'layui-this': subtype == 'sms'})
-                    a(href='/admin/sms/index.html') 短信通知设置
-
+                //dd(class={'layui-this': subtype == 'email'})
+                //    a(href='/admin/email/index.html') 邮件通知设置
+                //dd(class={'layui-this': subtype == 'sms'})
+                //    a(href='/admin/sms/index.html') 短信通知设置
+    if user.superadmin
+        li.layui-nav-item.layui-nav-itemed
+            a.layui-nav-title(href='javascript:;') 使用授权
+            dl.layui-nav-child
+                dd(class={'layui-this': subtype == 'licenseInst'})
+                    a(href='/admin/license/instance.html') 实例信息
+                dd(class={'layui-this': subtype == 'licenseList'})
+                    a(href='/admin/license/index.html') 授权证书列表
 script.
     function openChatbot() {
         window.parent.active.tabAdd($(".iframe_btn").data('href'), $(".iframe_btn").data('title'), $(".iframe_btn").data('id'));

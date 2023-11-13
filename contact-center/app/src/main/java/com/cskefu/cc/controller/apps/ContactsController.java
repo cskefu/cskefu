@@ -1,21 +1,22 @@
 /*
- * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
- * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public
  * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0,
  * http://www.apache.org/licenses/LICENSE-2.0
- * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0,
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.controller.apps;
 
 import com.cskefu.cc.basic.MainUtils;
 import com.cskefu.cc.controller.Handler;
+import com.cskefu.cc.exception.BillingQuotaException;
 import com.cskefu.cc.exception.CSKefuException;
 import com.cskefu.cc.model.*;
 import com.cskefu.cc.persistence.repository.*;
@@ -47,8 +48,10 @@ import org.springframework.web.servlet.ModelAndView;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -143,8 +146,8 @@ public class ContactsController extends Handler {
             map.put("ckind", ckind);
         }
 
-        Page<Contacts> contacts = contactsRes.findByCreaterAndSharesAndDatastatus(logined.getId(),
-                logined.getId(),
+        Page<Contacts> contacts = contactsRes.findByCreaterAndSharesInAndDatastatus(logined.getId(),
+                Arrays.asList(logined.getId(),"all"),
                 false,
                 PageRequest.of(
                         super.getP(request),
@@ -177,8 +180,8 @@ public class ContactsController extends Handler {
             map.put("ckind", ckind);
         }
 
-        Page<Contacts> contacts = contactsRes.findByCreaterAndSharesAndDatastatus(logined.getId(),
-                logined.getId(),
+        Page<Contacts> contacts = contactsRes.findByCreaterAndSharesInAndDatastatus(logined.getId(),
+                Arrays.asList(logined.getId(),"all"),
                 false,
                 PageRequest.of(
                         super.getP(request),
@@ -211,8 +214,8 @@ public class ContactsController extends Handler {
             map.put("ckind", ckind);
         }
 
-        Page<Contacts> contacts = contactsRes.findByCreaterAndSharesAndDatastatus(logined.getId(),
-                logined.getId(),
+        Page<Contacts> contacts = contactsRes.findByCreaterAndSharesInAndDatastatus(logined.getId(),
+                Arrays.asList(logined.getId(),"all"),
                 false,
                 PageRequest.of(
                         super.getP(request),
@@ -255,13 +258,11 @@ public class ContactsController extends Handler {
             @RequestParam(name = "idselflocation", required = false) String selflocation) {
         final User logined = super.getUser(request);
         Organ currentOrgan = super.getOrgan(request);
-        String skypeIDReplace = contactsProxy.sanitizeSkypeId(contacts.getSkypeid());
         String msg = "";
-        Contacts contact = contactsRes.findByskypeidAndDatastatus(skypeIDReplace, false);
 
         // 添加数据
-        if (contacts.getSkypeid() != null && contact == null) {
-            logger.info("[save] 数据库没有相同skypeid");
+        try {
+            contacts.setId(null);
             contacts.setCreater(logined.getId());
 
             if (currentOrgan != null && StringUtils.isBlank(contacts.getOrgan())) {
@@ -274,11 +275,16 @@ public class ContactsController extends Handler {
             }
             contactsRes.save(contacts);
             msg = "new_contacts_success";
-
-            return request(super.createView(
-                    "redirect:/apps/contacts/index.html?ckind=" + contacts.getCkind() + "&msg=" + msg));
+        } catch (Exception e) {
+            if (e instanceof UndeclaredThrowableException) {
+                logger.error("[save] BillingQuotaException", e);
+                if (StringUtils.startsWith(e.getCause().getMessage(), BillingQuotaException.SUFFIX)) {
+                    msg = e.getCause().getMessage();
+                }
+            } else {
+                logger.error("[save] err", e);
+            }
         }
-        msg = "new_contacts_fail";
         return request(super.createView(
                 "redirect:/apps/contacts/index.html?ckind=" + contacts.getCkind() + "&msg=" + msg));
     }
@@ -478,8 +484,8 @@ public class ContactsController extends Handler {
             map.put("ckind", ckind);
         }
 
-        Iterable<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndDatastatus(
-                logined.getId(), logined.getId(), false, PageRequest.of(super.getP(request), super.getPs(request)));
+        Iterable<Contacts> contactsList = contactsRes.findByCreaterAndSharesInAndDatastatus(
+                logined.getId(), Arrays.asList(logined.getId(),"all"),false, PageRequest.of(super.getP(request), super.getPs(request)));
 
         MetadataTable table = metadataRes.findByTablename("uk_contacts");
         List<Map<String, Object>> values = new ArrayList<>();
@@ -512,8 +518,8 @@ public class ContactsController extends Handler {
             map.put("ckind", ckind);
         }
 
-        Iterable<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndDatastatus(
-                logined.getId(), logined.getId(), false, PageRequest.of(super.getP(request), super.getPs(request)));
+        Iterable<Contacts> contactsList = contactsRes.findByCreaterAndSharesInAndDatastatus(
+                logined.getId(), Arrays.asList(logined.getId(),"all"), false, PageRequest.of(super.getP(request), super.getPs(request)));
         MetadataTable table = metadataRes.findByTablename("uk_contacts");
         List<Map<String, Object>> values = new ArrayList<>();
         for (Contacts contacts : contactsList) {
@@ -552,8 +558,8 @@ public class ContactsController extends Handler {
         if (StringUtils.isNotBlank(agentserviceid)) {
             AgentService service = agentServiceRes.findById(agentserviceid).orElse(null);
         }
-        Page<Contacts> contactsList = contactsRes.findByCreaterAndSharesAndDatastatus(
-                logined.getId(), logined.getId(), false,
+        Page<Contacts> contactsList = contactsRes.findByCreaterAndSharesInAndDatastatus(
+                logined.getId(), Arrays.asList(logined.getId(),"all"), false,
                 PageRequest.of(super.getP(request), super.getPs(request)));
 
         map.addAttribute("contactsList", contactsList);
