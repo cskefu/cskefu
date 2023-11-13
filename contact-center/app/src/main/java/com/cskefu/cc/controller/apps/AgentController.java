@@ -689,9 +689,11 @@
      @Menu(type = "apps", subtype = "agent")
      public ModelAndView readmsg(HttpServletRequest request, @Valid String userid) {
 
-         AgentUserTask agentUserTask = agentUserTaskRes.findById(userid).orElse(null);
-         agentUserTask.setTokenum(0);
-         agentUserTaskRes.save(agentUserTask);
+         agentUserTaskRes.findById(userid).ifPresent(task -> {
+             task.setTokenum(0);
+             agentUserTaskRes.save(task);
+         });
+
          return request(super.createView("/public/success"));
      }
 
