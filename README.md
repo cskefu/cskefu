@@ -7,7 +7,7 @@
 # 春松客服
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/cskefu/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/cskefu/cskefu/network/members) [![License](https://cdndownload2.chatopera.com/cskefu/licenses/chunsong1.0.svg)](https://www.cskefu.com/licenses/v1.html "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![docker](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-34-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-35-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [https://www.cskefu.com](https://www.cskefu.com/)
@@ -81,6 +81,7 @@
       <td align="center" valign="top" width="11.11%"><a href="https://samzong.me"><img src="https://avatars.githubusercontent.com/u/13782141?v=4?s=50" width="50px;" alt="Samzong Lu"/><br /><sub><b>Samzong Lu</b></sub></a><br /><a href="#eventOrganizing-SAMZONG" title="Event Organizing">📋</a> <a href="#projectManagement-SAMZONG" title="Project Management">📆</a> <a href="#design-SAMZONG" title="Design">🎨</a></td>
       <td align="center" valign="top" width="11.11%"><a href="https://github.com/halfray"><img src="https://avatars.githubusercontent.com/u/8181982?v=4?s=50" width="50px;" alt="halfray"/><br /><sub><b>halfray</b></sub></a><br /><a href="https://github.com/cskefu/cskefu/issues?q=author%3Ahalfray" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="11.11%"><a href="https://github.com/kely33"><img src="https://avatars.githubusercontent.com/u/134681303?v=4?s=50" width="50px;" alt="kely33"/><br /><sub><b>kely33</b></sub></a><br /><a href="https://github.com/cskefu/cskefu/issues?q=author%3Akely33" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="11.11%"><a href="https://github.com/zjpzjp"><img src="https://avatars.githubusercontent.com/u/11382248?v=4?s=50" width="50px;" alt="websir"/><br /><sub><b>websir</b></sub></a><br /><a href="https://github.com/cskefu/cskefu/commits?author=zjpzjp" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
