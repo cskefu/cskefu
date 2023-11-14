@@ -116,8 +116,9 @@ public class ContactsController extends Handler {
 
         map.addAttribute("currentOrgan", currentOrgan);
 
-        Page<Contacts> contacts = contactsRes.findByOrganInAndSharesAllAndDatastatusFalse(
+        Page<Contacts> contacts = contactsRes.findByOrganInAndCkindAndSharesAllAndDatastatusFalse(
                 super.getMyCurrentAffiliatesFlat(logined),
+                ckind,
                 PageRequest.of(super.getP(request), super.getPs(request)));
 
         map.addAttribute("contactsList", contacts);
