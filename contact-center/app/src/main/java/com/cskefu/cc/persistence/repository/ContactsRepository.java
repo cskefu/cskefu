@@ -50,7 +50,7 @@ public interface ContactsRepository extends JpaRepository<Contacts, String> {
      * @param pageRequest
      * @return
      */
-    @Query("select c from Contacts c where c.organ IN :organs and c.ckind = :ckind AND c.shares = 'all' AND c.datastatus = false")
+    @Query("select c from Contacts c where c.organ IN :organs and (:ckind IS NULL OR c.ckind = :ckind) AND c.shares = 'all' AND c.datastatus = false")
     Page<Contacts> findByOrganInAndCkindAndSharesAllAndDatastatusFalse(@Param("organs") Collection<String> organs, @Param("ckind") String ckind, Pageable pageRequest);
 
     Page<Contacts> findByDatastatus(boolean b, Pageable pageRequest);
