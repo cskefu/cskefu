@@ -3,7 +3,7 @@ USE `cosinee`;
 -- prepare variables
 -- -----------------
 
-CREATE TABLE IF NOT EXISTS `cs_metakey` (
+CREATE TABLE IF NOT EXISTS `cs_metakv` (
   `metakey` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '元数据字段名，唯一标识',
   `metavalue` text COLLATE utf8mb4_unicode_ci COMMENT '元数据值',
   `createtime` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
