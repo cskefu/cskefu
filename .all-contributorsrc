@@ -351,6 +351,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "zhangjian4",
+      "name": "zhangjian",
+      "avatar_url": "https://avatars.githubusercontent.com/u/23302214?v=4",
+      "profile": "https://github.com/zhangjian4",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "projectName": "cskefu",
