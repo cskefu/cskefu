@@ -7,7 +7,7 @@
 # 春松客服
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/cskefu/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/cskefu/cskefu/network/members) [![License](https://cdndownload2.chatopera.com/cskefu/licenses/chunsong1.0.svg)](https://www.cskefu.com/licenses/v1.html "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![docker](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-36-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-37-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [https://www.cskefu.com](https://www.cskefu.com/)
@@ -83,6 +83,9 @@
       <td align="center" valign="top" width="11.11%"><a href="https://github.com/kely33"><img src="https://avatars.githubusercontent.com/u/134681303?v=4?s=50" width="50px;" alt="kely33"/><br /><sub><b>kely33</b></sub></a><br /><a href="https://github.com/cskefu/cskefu/issues?q=author%3Akely33" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="11.11%"><a href="https://github.com/zjpzjp"><img src="https://avatars.githubusercontent.com/u/11382248?v=4?s=50" width="50px;" alt="websir"/><br /><sub><b>websir</b></sub></a><br /><a href="https://github.com/cskefu/cskefu/commits?author=zjpzjp" title="Code">💻</a></td>
       <td align="center" valign="top" width="11.11%"><a href="https://github.com/guodong"><img src="https://avatars.githubusercontent.com/u/32507511?v=4?s=50" width="50px;" alt="guodong"/><br /><sub><b>guodong</b></sub></a><br /><a href="https://github.com/cskefu/cskefu/commits?author=CollectBugs" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="11.11%"><a href="https://github.com/zhangjian4"><img src="https://avatars.githubusercontent.com/u/23302214?v=4?s=50" width="50px;" alt="zhangjian"/><br /><sub><b>zhangjian</b></sub></a><br /><a href="https://github.com/cskefu/cskefu/issues?q=author%3Azhangjian4" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
