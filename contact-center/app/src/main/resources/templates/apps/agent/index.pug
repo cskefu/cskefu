@@ -53,6 +53,11 @@ block content
                     sendMessage();
                     return false;
                 })
+                // 增加点击图片新标签打开放大
+                $("#chat_msg_list").on("click", ".chat-content img", function () {
+                    let originalUrl = $(this).attr("src") + '&original=true';
+                    window.open(originalUrl, '_blank');
+                })
             });
             function otherTopicSearch() {
                 console.log("otherTopicSearch")
