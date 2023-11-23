@@ -704,4 +704,11 @@ html
         window.onresize = function () {
             R3Helper.resize();
         };
+        // 增加点击图片新窗口打开
+        $(function(){
+            $("#above").on("click", ".chat-content img", function () {
+                let originalUrl = $(this).attr("src") + '&original=true';
+                window.open(originalUrl, '_blank');
+            })
+        })
             
