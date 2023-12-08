@@ -399,7 +399,7 @@ var Proxy = {
                 type == "agent" ? $("#chat_msg_list").append(nodeMeassage) : $("#chat_msg_list_cca").append(nodeMeassage);
                 newMessageScorllBottom(type, data.msgtype)
             }
-            loadURL("/agent/readmsg.html?userid=" + data.agentuser);	//更新数据状态，将当前对话的新消息数量清空
+            loadURL("/agent/readmsg.html?userid=" + data.userid);	//更新数据状态，将当前对话的新消息数量清空
         } else {
             if (data.type == 'message') {
                 $('#last_msg_' + data.userid).text(data.tokenum).show();
