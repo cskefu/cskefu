@@ -120,15 +120,12 @@ html
                                 sendMessage();
                             });
                         } else {
-                            // Ctrl+Enter 提交表单
-                            K.ctrl(document, 13, function () {
-                                self.sync();
-                                sendMessage();
-                            });
-                            // Ctrl+Enter 提交表单
-                            K.ctrl(self.edit.doc, 13, function () {
-                                self.sync();
-                                sendMessage();
+                            // Enter 提交表单
+                            K(self.edit.doc).bind("keydown",function (event) {
+                                if (event.keyCode == 13 && !event.ctrlKey) {
+                                    self.sync();
+                                    sendMessage();
+                                }
                             });
                         }
                     }
