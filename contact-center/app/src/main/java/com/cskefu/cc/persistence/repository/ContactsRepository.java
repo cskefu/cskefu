@@ -40,8 +40,7 @@ public interface ContactsRepository extends JpaRepository<Contacts, String> {
     @Query(nativeQuery = true, value = "SELECT * FROM uk_contacts WHERE id = ?1")
     Optional<Contacts> findOneById(final String id);
 
-    Page<Contacts> findByCreaterAndSharesInAndDatastatus(String id, Collection<String> shares, boolean datastatus, Pageable pageRequest);
-
+    Page<Contacts> findByCreaterAndSharesInOrSharesIsNullAndDatastatus(String id, Collection<String> shares, boolean datastatus, Pageable pageRequest);
     /**
      * 根据条件返回联系人，符合一下条件之一：
      * 1. 联系人的 organ 字段在传入的 organs 列表中，并且联系人的 shares 字段值是 all
@@ -50,8 +49,8 @@ public interface ContactsRepository extends JpaRepository<Contacts, String> {
      * @param pageRequest
      * @return
      */
-    @Query("select c from Contacts c where c.organ IN :organs and (:ckind IS NULL OR c.ckind = :ckind) AND c.shares = 'all' AND c.datastatus = false")
-    Page<Contacts> findByOrganInAndCkindAndSharesAllAndDatastatusFalse(@Param("organs") Collection<String> organs, @Param("ckind") String ckind, Pageable pageRequest);
+    @Query("select c from Contacts c where c.organ IN :organs and (:ckind IS NULL OR c.ckind = :ckind) AND (c.shares in :shares or c.shares IS NULL) AND c.datastatus = false")
+    Page<Contacts> findByOrganInAndCkindAndSharesAllAndDatastatusFalse(@Param("organs") Collection<String> organs, @Param("shares") Collection<String> shares, @Param("ckind") String ckind, Pageable pageRequest);
 
     Page<Contacts> findByDatastatus(boolean b, Pageable pageRequest);
 }
