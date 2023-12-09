@@ -112,22 +112,24 @@ public class OnlineUserController extends Handler {
                                 MainContext.AgentUserStatusEnum.END.toString()));
 
                 AgentService agentService = agentServiceList.get(0);
-                if (StringUtils.isNotBlank(agentservice)) {
+                if (StringUtils.isNotEmpty(agentservice)) {
                     for (AgentService as : agentServiceList) {
                         if (as.getId().equals(agentservice)) {
                             agentService = as;
                             break;
                         }
                     }
+                    AgentService service = agentServiceRes.findById(agentservice).orElse(null);
+                    if (service != null) {
+                        map.addAttribute("tags", tagRes.findByTagtypeAndSkill(MainContext.ModelType.USER.toString(), service.getSkill()));
+                    }
                 }
 
                 if (agentService != null) {
-                    List<AgentServiceSummary> summaries = serviceSummaryRes.findByAgentserviceid(
-                            agentService.getId());
+                    List<AgentServiceSummary> summaries = serviceSummaryRes.findByAgentserviceid(agentService.getId());
                     if (summaries.size() > 0) {
                         map.put("summary", summaries.get(0));
                     }
-
                 }
 
                 agentUserContactsRes.findOneByUserid(userid).ifPresent(p -> {
@@ -135,23 +137,12 @@ public class OnlineUserController extends Handler {
                         map.put("contacts", contactsRes.findById(p.getContactsid()).orElse(null));
                     }
                 });
-                AgentService service = agentServiceRes.findById(agentservice).orElse(null);
-                if (service != null) {
-                    map.addAttribute(
-                            "tags", tagRes.findByTagtypeAndSkill(MainContext.ModelType.USER.toString(), service.getSkill()));
-                }
-                map.put(
-                        "summaryTags",
-                        tagRes.findByTagtype(MainContext.ModelType.SUMMARY.toString()));
+
+                map.put("summaryTags", tagRes.findByTagtype(MainContext.ModelType.SUMMARY.toString()));
                 map.put("curAgentService", agentService);
 
-
-                map.put(
-                        "agentUserMessageList",
-                        chatMessageRepository.findByAgentserviceid(agentService.getId(),
-                                PageRequest.of(
-                                        0, 50, Direction.DESC,
-                                        "updatetime")));
+                map.put("agentUserMessageList", chatMessageRepository.findByAgentserviceid(agentService.getId(),
+                        PageRequest.of(0, 50, Direction.DESC, "updatetime")));
             }
 
             if (MainContext.ChannelType.WEIXIN.toString().equals(channel)) {
