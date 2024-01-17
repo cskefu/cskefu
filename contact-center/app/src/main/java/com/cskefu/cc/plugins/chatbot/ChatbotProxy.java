@@ -62,6 +62,17 @@ public class ChatbotProxy {
     }
 
     /**
+     * Publish message in delayed manner.
+     * @param data
+     * @param eventType
+     * @param delayedSeconds
+     */
+    public void publishMessageDelayed(final ChatMessage data, final String eventType, int delayedSeconds) {
+        logger.info("[publishMessageDelayed] eventType {}", eventType);
+        brokerPublisher.send(Constants.INSTANT_MESSAGING_MQ_QUEUE_CHATBOT, SerializeUtil.serialize(data), false, delayedSeconds);
+    }
+
+    /**
      * 使用chatbotID得到snsid
      *
      * @param chatbotID

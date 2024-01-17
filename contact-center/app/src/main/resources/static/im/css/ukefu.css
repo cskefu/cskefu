@@ -1153,3 +1153,54 @@ p.submitBtnWrap{
     color: rgba(35, 39, 50, 0.8);
     background: url(/images/circle.png) no-repeat left 8px;
 }
+
+.loading{
+	margin: -3px auto;
+}
+.loading span{
+	display: inline-block;
+	width: 7px;
+	height: 7px;
+	margin-right: 5px;
+	border-radius: 50%;
+	background-color: #19a55d !important;
+	-webkit-animation: load 1.04s ease infinite;
+}
+.loading span:last-child{
+	margin-right: 0px;
+}
+@-webkit-keyframes load{
+	0%{
+		opacity: 1;
+	}
+	100%{
+		opacity: 0;
+	}
+}
+.loading span:nth-child(1){
+	-webkit-animation-delay:0.13s;
+}
+.loading span:nth-child(2){
+	-webkit-animation-delay:0.26s;
+}
+.loading span:nth-child(3){
+	-webkit-animation-delay:0.39s;
+}
+.loading span:nth-child(4){
+	-webkit-animation-delay:0.52s;
+}
+.chat-writing-message{
+	font-size: 13px;
+	margin-top:8px;
+	margin-left:5px;
+    border-radius: 3px;
+    padding: 2px 4px 6px;
+    margin-bottom: 5px;
+    line-height: 25px;
+    padding-right: 5px;
+    padding-left: 5px;
+    background-color: #EFEFEF !important;
+    border: 1px solid #EFEFEF;
+    float: left;
+    min-width: 25px;
+}

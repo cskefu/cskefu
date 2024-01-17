@@ -30,6 +30,7 @@ html
         script(src='/js/jquery-1.10.2.min.js')
         script(type='text/javascript', src='/im/js/kindeditor/kindeditor.js')
         script(type='text/javascript', src='/im/js/kindeditor/lang/zh-CN.js')
+        script(type='text/javascript', src='/js/template.js')
         script(src='/im/js/socket.io.js')
         script(src='/im/js/dayjs.min.js')
         script(type='text/javascript').
@@ -265,6 +266,17 @@ html
                 return false;
             }
 
+            function outputElementAndScroll(element, scroll, msgType){
+                $('#above').append(element);
+                if (scroll == null || scroll == true) {
+                    if (msgType && msgType == "image") {
+                        chatScorllBottom("above")
+                    } else {
+                        document.getElementById("above").scrollTop = document.getElementById("above").scrollHeight
+                    }
+                }
+            }
+
             function output(message, clazz, scroll, msgType) {
                 if (clazz == "message connect-message") {
                     var messages = document.getElementsByClassName("connect-message");
@@ -275,14 +287,7 @@ html
                 }
                 var element = $("<div class='clearfix " + clazz + "'></div>");
                 element.append(message);
-                $('#above').append(element);
-                if (scroll == null || scroll == true) {
-                    if (msgType && msgType == "image") {
-                        chatScorllBottom("above")
-                    } else {
-                        document.getElementById("above").scrollTop = document.getElementById("above").scrollHeight
-                    }
-                }
+                outputElementAndScroll(element, scroll, msgType);
             }
 
             function update(id, message) {
@@ -438,6 +443,7 @@ html
             }
 
     body.ukefu-point-text(style='overflow:hidden; background:#E8E8E8')
+        include ../templates/chatbot_tpls
         .large.ukefu-im-theme(style='background: white;', class=(type == 'text' ? 'ukefu-theme-border-' + inviteData.consult_dialog_color : ''))
             #containter.clearfix
                 #header(class='theme' + inviteData.consult_dialog_color)
@@ -676,20 +682,43 @@ html
             }
         })
 
-        socket.on('message', function (data) {
+        socket.on("message", function (data) {
+            // append message
             var chat = document.getElementsByClassName('chatting-left').innerText;
             data.createtime = dayjs(data.createtime).format('YYYY-MM-DD HH:mm:ss');
             chat = data.message;
+
             if (data.msgtype == "image") {
                 chat = "<a href='" + data.message + "&original=true' target='_blank'><img src='" + data.message + "' class='ukefu-media-image'/></a>";
             } else if (data.msgtype == "file") {
                 chat = "<div class='ukefu-message-file'><div class='ukefu-file-icon'><img src='/im/img/file.png'></div><div class='ukefu-file-desc'><a href='" + data.message + "' target='_blank'><div>" + data.filename + "</div><div>" + (data.filesize / 1024).toFixed(3) + "Kb</div></a></div></div>";
             }
+
             if (data.calltype == "呼入") {
-                output('<div class="chat-right"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label class="time">' + data.createtime + '</label><label  class="user">' + data.username + '</label> </div><div class="chatting-right"><i class="arrow arrow#{inviteData.consult_dialog_colo}"></i><div class="chat-content theme#{inviteData.consult_dialog_color}">' + chat + '</div></div>', "chat-block", true,data.msgtype
-                )
-                ;
+                // Receive User's own sent message back from socket.io
+                output('<div class="chat-right"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label class="time">' + data.createtime + '</label><label  class="user">' + data.username + '</label> </div><div class="chatting-right"><i class="arrow arrow#{inviteData.consult_dialog_colo}"></i><div class="chat-content theme#{inviteData.consult_dialog_color}">' + chat + '</div></div>', "chat-block", true, data.msgtype);
+                setTimeout(() => {
+                    // botwriting: make sure bot writing on
+                    if($('#writing').length > 0){
+                        // console.log("bot writing is already on.");
+                    } else {
+                        // botwriting: now, set bot writing on
+                        // console.log("bot writing is off, now set it on.");
+                        var tplParams = {};
+                        tplParams.calltype = "呼出";
+                        tplParams.type = "writing";
+                        tplParams.createtime = data.createtime;
+                        tplParams.username = "#{inviteData.ainame ? inviteData.ainame : '小松'}";
+                        var msgWriting = template($('#chatbot_writing').html(), {data: tplParams});
+                        outputElementAndScroll($(msgWriting), true, data.msgtype);
+                    }
+                }, 500); // on the backend, would wait 2 seconds to ensure the time window
             } else if (data.calltype == "呼出") {
+                // botwriting: end bot writing message
+                if ($('#writing').length > 0) {
+                    $('#writing').remove();
+                }
+
                 if (data.expmsg) {
                     showExtmsg(data.username, data.createtime, data.message, data.expmsg);
                 } else {
@@ -710,11 +739,10 @@ html
             }
         });
 
-
-
         function sendDisconnect() {
             socket.disconnect();
         }
+
         function sendMessage() {
             editor.sync();
             var count = editor.count("text");
@@ -752,8 +780,8 @@ html
             // POI:function(){
 
             // }
-
         }
+
         // 回车事件
         document.onkeyup = function (e) {
             if (!e) e = window.event;
@@ -761,7 +789,7 @@ html
                 document.getElementById('sent').click();
             }
         }
+
         window.onresize = function () {
             R3Helper.resize();
         };
-

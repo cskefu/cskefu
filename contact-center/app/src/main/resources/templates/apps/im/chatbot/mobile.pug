@@ -30,6 +30,7 @@ html
         script(src='/js/jquery.form.js')
         script(type='text/javascript', src='/im/js/kindeditor/kindeditor.js')
         script(type='text/javascript', src='/im/js/kindeditor/lang/zh-CN.js')
+        script(type='text/javascript', src='/js/template.js')
         style.
             * {
                 -webkit-box-sizing: border-box;
@@ -158,6 +159,16 @@ html
                 }
             }
 
+            function outputElementAndScroll(element, msgType){
+                $('#above').append(element);
+                if (msgType && msgType == "image") {
+                    chatScorllBottom("above")
+                } else {
+                    document.getElementById("above").scrollTop = document.getElementById("above").scrollHeight
+                }
+                //$("#welcome-message").html(document.getElementById('above').scrollHeight);
+            }
+
             function output(message, clazz, msgType) {
                 if (clazz == "message connect-message") {
                     var messages = document.getElementsByClassName("connect-message");
@@ -168,13 +179,7 @@ html
                 }
                 var element = $("<div class='clearfix " + clazz + "'></div>");
                 element.append(message);
-                $('#above').append(element);
-                if (msgType && msgType == "image") {
-                    chatScorllBottom("above")
-                } else {
-                    document.getElementById("above").scrollTop = document.getElementById("above").scrollHeight
-                }
-                //$("#welcome-message").html(document.getElementById('above').scrollHeight);
+                outputElementAndScroll(element, msgType);
             }
 
             function update(id, message) {
@@ -352,6 +357,7 @@ html
 
         //  kindeditor
     body.ukefu-im-theme.ukefu-point-text(style='width:100%;overflow:hidden;height:100%;max-height:100%;position: fixed;/* 或者scroll */-webkit-overflow-scrolling: touch;/* 解决ios滑动不流畅问题 */')
+        include ../templates/chatbot_tpls
         #header(class="theme" + inviteData.consult_dialog_color)
             - var dialog_logo=inviteData.consult_dialog_logo?(inviteData.consult_dialog_logo.startsWith("http://") || inviteData.consult_dialog_logo.startsWith("https://")?inviteData.consult_dialog_logo:'/res/image.html?id='+inviteData.consult_dialog_logo):'/images/logo.png'
             img(src=dialog_logo, style='height:50px;padding:10px;')
@@ -482,10 +488,12 @@ html
                 }
             })
 
-            socket.on('message', function (data) {
+            socket.on("message", function (data) {
+                // append message
                 var chat = document.getElementsByClassName('chatting-left').innerText;
                 data.createtime = dayjs(data.createtime).format('YYYY-MM-DD HH:mm:ss');
                 chat = data.message;
+
                 if (data.msgtype == "image") {
                     chat = "<a href='" + data.message + "&original=true' target='_blank'><img src='" + data.message + "' class='ukefu-media-image'/></a>";
                 } else if (data.msgtype == "cooperation") {
@@ -494,9 +502,32 @@ html
                     //检查访客是否在协作页面上，如果在协作页面上，就开始执行重绘，否则不做处理
                     drawCanvasImage(data.attachmentid);
                 }
+
                 if (data.calltype == "呼入") {
+                    // Receive User's own sent message back from socket.io
                     output('<div class="chat-right"> <img class="user-img" src="/im/img/user.png" alt=""><div class="chat-message"><label class="time">' + data.createtime + '</label><label  class="user">' + data.username + '</label> </div><div class="chatting-right"><i class="arrow arrow#{inviteData.consult_dialog_color}"></i><div class="chat-content theme#{inviteData.consult_dialog_color}">' + chat + '</div></div>', "chat-block", data.msgtype);
+                    setTimeout(() => {
+                        // botwriting: make sure bot writing on
+                        if($('#writing').length > 0){
+                            // console.log("bot writing is already on.");
+                        } else {
+                            // botwriting: now, set bot writing on
+                            // console.log("bot writing is off, now set it on.");
+                            var tplParams = {};
+                            tplParams.calltype = "呼出";
+                            tplParams.type = "writing";
+                            tplParams.createtime = data.createtime;
+                            tplParams.username = "#{inviteData.ainame ? inviteData.ainame : '小松'}";
+                            var msgWriting = template($('#chatbot_writing').html(), {data: tplParams});
+                            outputElementAndScroll($(msgWriting), true, data.msgtype);
+                        }
+                    }, 500); // on the backend, would wait 2 seconds to ensure the time window
                 } else if (data.calltype == "呼出") {
+                    // botwriting: end bot writing message
+                    if ($('#writing').length > 0) {
+                        $('#writing').remove();
+                    }
+
                     if (data.expmsg) {
                         showExtmsg(data.username, data.createtime, data.message, data.expmsg);
                     } else {
@@ -508,9 +539,11 @@ html
             socket.on('disconnect', function () {
                 output('<span id="connect-message">连接坐席失败，在线咨询服务不可用</span>', 'message connect-message');
             });
+
             function sendDisconnect() {
                 socket.disconnect();
             }
+
             function acceptInvite(msgid, fileid) {
                 document.getElementById("cooperation").style.display = "block";
                 document.getElementById("ukefu_img_ctx").src = "/res/image.html?id=" + fileid + "&cooperation=true&original=true";
@@ -547,9 +580,11 @@ html
                     };
                 }
             }
+
             function offCoop() {
                 document.getElementById("cooperation").style.display = "none";
             }
+
             function sendMessage() {
                 var count = document.getElementById('message').value.length;
                 if (count > 0 && service_end == false) {
@@ -562,6 +597,7 @@ html
                 }
                 closeFaceDialog(0);
             }
+
             function sendMessageText(message) {
                 if (message != "") {
                     socket.emit('message', {
@@ -599,6 +635,4 @@ html
                 // POI:function(){
 
                 // }
-
             }
-

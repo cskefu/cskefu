@@ -1,14 +1,14 @@
-/* 
- * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
- * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+/*
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public
  * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * Copyright (C) 2019-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>, 
- * Licensed under the Apache License, Version 2.0, 
+ * Copyright (C) 2019-Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,
+ * Licensed under the Apache License, Version 2.0,
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.plugins.chatbot;
@@ -130,21 +130,31 @@ public class ChatbotEventHandler {
                         logger.info("faqhot {}", faqhotresp.toString());
                         if (faqhotresp.getInt("rc") == 0) {
                             JSONObject faqhotdata = faqhotresp.getJSONObject("data");
-                            if ((!faqhotdata.getBoolean("logic_is_fallback")) &&
-                                    faqhotdata.has("string") &&
-                                    faqhotdata.has("params")) {
+                            if ((!faqhotdata.getBoolean("logic_is_fallback"))) {
+                                // 返回有效值，不是兜底回复
                                 ChatMessage faqhotmsg = new ChatMessage();
                                 faqhotmsg.setCalltype(MainContext.CallType.OUT.toString());
                                 faqhotmsg.setAppid(appid);
                                 faqhotmsg.setAiid(aiid);
-                                faqhotmsg.setMessage(faqhotdata.getString("string"));
-                                faqhotmsg.setExpmsg(faqhotdata.getJSONArray("params").toString());
                                 faqhotmsg.setTouser(user);
                                 faqhotmsg.setMsgtype(MainContext.MessageType.MESSAGE.toString());
                                 faqhotmsg.setUserid(user);
                                 faqhotmsg.setUsername(invite.getAiname());
-                                faqhotmsg.setUpdatetime(System.currentTimeMillis());
-                                client.sendEvent(MainContext.MessageType.MESSAGE.toString(), faqhotmsg);
+
+                                if (faqhotdata.has("string") &&
+                                        faqhotdata.has("params") &&
+                                        faqhotdata.has("service") &&
+                                        StringUtils.equals(faqhotdata.getJSONObject("service").getString("provider"), "conversation")) {
+                                    // 多轮对话返回的热门问题
+                                    faqhotmsg.setMessage(faqhotdata.getString("string"));
+                                    faqhotmsg.setExpmsg(faqhotdata.getJSONArray("params").toString());
+                                    faqhotmsg.setUpdatetime(System.currentTimeMillis());
+                                    client.sendEvent(MainContext.MessageType.MESSAGE.toString(), faqhotmsg);
+                                } else if (faqhotdata.has("string") && StringUtils.isNotBlank(faqhotdata.getString("string"))) {
+                                    faqhotmsg.setMessage(faqhotdata.getString("string"));
+                                    faqhotmsg.setUpdatetime(System.currentTimeMillis());
+                                    client.sendEvent(MainContext.MessageType.MESSAGE.toString(), faqhotmsg);
+                                }
                             }
                         }
                     } else if (result.getRc() == 999 || result.getRc() == 998) {
@@ -322,7 +332,7 @@ public class ChatbotEventHandler {
             getAgentUserRes().save(p);
 
             // 发送消息给Bot
-            getChatbotProxy().publishMessage(data, Constants.CHATBOT_EVENT_TYPE_CHAT);
+            getChatbotProxy().publishMessageDelayed(data, Constants.CHATBOT_EVENT_TYPE_CHAT, 2);
         });
 
 
