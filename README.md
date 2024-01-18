@@ -244,21 +244,24 @@
 
 ## 社区交流平台
 
-* 如以下图片无法浏览，可能是网络原因，请打开 [Gitee](https://gitee.com/cskefu/cskefu#%E7%A4%BE%E5%8C%BA%E4%BA%A4%E6%B5%81%E5%B9%B3%E5%8F%B0) 查看二维码。
-
 ### 春松部落
 
-开发者社区；和春松客服核心开发者们交流技术问题，提问会得到快速、有效的解答；认识更多朋友，讨论开源、元宇宙、人工智能、DevOps 等话题；合作开源软件迭代，一起开发出好的开源软件。
+开发者社区，在这里，您可以得到：
 
-- [上线寄语](https://dwz.chatopera.com/059F43)
-- [实时动态](https://tribe.cskefu.com/public/local)
-- [账户注册](https://tribe.cskefu.com/invite/28LjhB9f)
+* 和春松客服核心开发者们交流技术问题，提问会得到快速、有效的解答；
+* 认识更多朋友，讨论开源、元宇宙、人工智能、DevOps 等话题；
+* 合作开源软件迭代，一起开发出好的开源软件。
+
+春松部落链接： [上线寄语](https://dwz.chatopera.com/059F43) | [账户注册](https://tribe.cskefu.com/invite/28LjhB9f) | [实时动态](https://tribe.cskefu.com/public/local)
 
 ### 微信公众号
 
 及时获得产品更新、活动分享等信息，关注春松客服公众号。
 
 ![春松客服公众号](./public/assets/cskefu-wechat-gzh.jpg)
+
+* 如以上图片无法浏览，可能是网络原因，请打开 [Gitee](https://gitee.com/cskefu/cskefu#%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7) 查看二维码。
+
 
 ## 鸣谢
 
