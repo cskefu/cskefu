@@ -204,21 +204,21 @@
 
 ## 春松客服开源社区
 
-### 合作开源客服系统，共赢未来
-
-在春松客服开源社区，我们建立关系、发现认同、合作共赢！
-
 - 了解春松客服采用的开源许可协议，参考[文档](https://www.cskefu.com/2023/06/25/chunsong-public-license-1-0/)
 - 了解春松客服的开发计划，参考[文档](https://github.com/cskefu/cskefu/issues)
-- 如何发布春松客服人物志，向社区介绍自己，参考[文档](https://www.cskefu.com/join-us/)
 - 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
 - 如何成为春松客服开发者，参考[文档](https://docs.cskefu.com/docs/osc/devonboard/)
 - 如何提交代码，参考[文档](https://docs.cskefu.com/docs/osc/contribution)
 
-春松客服之所以开源，是基于这样一种信念：爱人也是爱己，利他也是利己。
-因春松客服受益，而不回报开源社区的用户，我们不欢迎使用春松客服：我们开源并不是为了你们，你们是不被祝福的。
+### 春松部落
 
-严重违反社区理念，通报及拉黑声明：[拉黑 @vicviz](https://www.cskefu.com/violation-announcement-2022-04-24/)
+社区交流平台，在这里，您可以得到：
+
+* 和春松客服核心开发者们交流技术问题，提问会得到快速、有效的解答；
+* 认识更多朋友，讨论开源、元宇宙、人工智能、DevOps 等话题；
+* 合作开源软件迭代，一起开发出好的开源软件。
+
+春松部落链接： [上线寄语](https://dwz.chatopera.com/059F43) | [账户注册](https://tribe.cskefu.com/invite/28LjhB9f) | [实时动态](https://tribe.cskefu.com/public/local)
 
 ### 工单
 
@@ -241,18 +241,6 @@
   - [从零开始学习定制春松客服技能：春松客服大讲堂 PPT 课件及视频](https://store.chatopera.com/product/cskfdjt19)
   - [掌握春松客服前端框架 Pugjs，介绍及使用注意事项](https://blog.csdn.net/samurais/article/details/114576611)
 - [提交代码](https://docs.cskefu.com/docs/osc/contribution)
-
-## 社区交流平台
-
-### 春松部落
-
-开发者社区，在这里，您可以得到：
-
-* 和春松客服核心开发者们交流技术问题，提问会得到快速、有效的解答；
-* 认识更多朋友，讨论开源、元宇宙、人工智能、DevOps 等话题；
-* 合作开源软件迭代，一起开发出好的开源软件。
-
-春松部落链接： [上线寄语](https://dwz.chatopera.com/059F43) | [账户注册](https://tribe.cskefu.com/invite/28LjhB9f) | [实时动态](https://tribe.cskefu.com/public/local)
 
 ### 微信公众号
 
