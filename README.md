@@ -1,6 +1,6 @@
 <div align=right>
 
-[主页](https://www.cskefu.com/)　|　[开源许可协议](https://docs.cskefu.com/licenses/v1.html)　|　[工单列表](https://github.com/cskefu/cskefu/issues)　|　[路线图](https://github.com/orgs/cskefu/projects/1)
+[开发者社区](https://tribe.cskefu.com/about)　|　[开源许可协议](https://docs.cskefu.com/licenses/v1.html)　|　[工单列表](https://github.com/cskefu/cskefu/issues)　|　[官网](https://www.cskefu.com/)
 
 </div>
 
@@ -242,15 +242,17 @@
   - [掌握春松客服前端框架 Pugjs，介绍及使用注意事项](https://blog.csdn.net/samurais/article/details/114576611)
 - [提交代码](https://docs.cskefu.com/docs/osc/contribution)
 
-## 微信
+## 社区交流平台
 
-* 如以下图片无法浏览，可能是网络原因，请打开 [Gitee](https://gitee.com/cskefu/cskefu#%E5%BE%AE%E4%BF%A1) 查看二维码。
+* 如以下图片无法浏览，可能是网络原因，请打开 [Gitee](https://gitee.com/cskefu/cskefu#%E7%A4%BE%E5%8C%BA%E4%BA%A4%E6%B5%81%E5%B9%B3%E5%8F%B0) 查看二维码。
 
-### 微信群
+### 春松部落
 
-春松客服用户和开发者交流群。
+开发者社区；和春松客服核心开发者们交流技术问题，提问会得到快速、有效的解答；认识更多朋友，讨论开源、元宇宙、人工智能、DevOps 等话题；合作开源软件迭代，一起开发出好的开源软件。
 
-![春松客服微信群](./public/assets/cskefu_opensource_community_wx_qr.jpg)
+- [上线寄语](https://dwz.chatopera.com/059F43)
+- [实时动态](https://tribe.cskefu.com/public/local)
+- [账户注册](https://tribe.cskefu.com/invite/28LjhB9f)
 
 ### 微信公众号
 
