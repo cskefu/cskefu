@@ -56,21 +56,23 @@ contact-backend
 │  │
 │  └─cskefu-assistant-mvc  mvc相关辅助模块
 │
-├─cskefu-auth 认证和鉴权，不要随意添加更多微服务
+├─cskefu-auth 认证和鉴权，不要随意添加微服务
 │  │
 │  ├─cskefu-auth-domain
 │  │
 │  └─cskefu-auth-service
 │
-├─cskefu-channel 渠道接入，可根据需要添加更多微服务
+├─cskefu-channel 渠道接入，不同渠道用不同的，不要随意添加微服务
 │  │
-│  ├─cskefu-channel-wechat-domain
+│  ├─cskefu-channel-service xxx渠道微服务，目录以cskefu-channel-开头
 │  │
-│  ├─cskefu-channel-wechat-service 微信渠道接入
+│  ├─cskefu-channel-wechat-domain 微信渠道
 │  │
-│  ├─cskefu-channel-xxx-domain
+│  ├─cskefu-channel-wechat 微信渠道业务逻辑
 │  │
-│  └─cskefu-channel-xxx-service xxx渠道微服务，目录以cskefu-channel-开头
+│  ├─cskefu-channel-xxx-domain xxx微信渠道
+│  │
+│  └─cskefu-channel-xxx xxx渠道业务逻辑
 │
 ├─cskefu-manager 核心控制，如基础配置、时效管理、会话分配，不要随意添加更多服务
 │  │
@@ -83,10 +85,6 @@ contact-backend
 │  ├─cskefu-plugin-domain
 │  │
 │  └─cskefu-plugin-service
-│
-├─cskefu-gateway 聚合网关服务放在这个目录下
-│  │
-│  └─cskefu-web-gateway 暴漏给web端的聚合网关，web前端只和这一个服务交互（WebSocket连接除外），其他微服务提供基础功能，聚合网关组合调用其他微服务的接口
 │
 └─cskefu-websocket
     │
