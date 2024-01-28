@@ -23,7 +23,6 @@
         <module>cskefu-assistant-module</module>
         <module>cskefu-auth</module>
         <module>cskefu-channel</module>
-        <module>cskefu-gateway</module>
         <module>cskefu-manager</module>
         <module>cskefu-plugin</module>
         <module>cskefu-websocket</module>

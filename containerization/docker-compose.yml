@@ -15,6 +15,7 @@ services:
     volumes:
       - ./mysql/data:/var/lib/mysql
       - ./mysql/nacos.sql:/docker-entrypoint-initdb.d/nacos.sql
+      - ./mysql/v9.init.sql:/docker-entrypoint-initdb.d/v9.init.sql
     command: --max_allowed_packet=32505856
 
   # https://hub.docker.com/r/nacos/nacos-server
@@ -109,39 +110,7 @@ services:
       - ./openresty/certs:/certs
       - ./openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
     depends_on:
-      - cskefu-web-gateway
       - cskefu-websocket-service
-
-  cskefu-web-gateway:
-    image: cskefu/cskefu-web-gateway
-    # container_name: cskefu-web-gateway
-    restart: always
-    #    ports:
-    #      - "${CSKEFU_WEB_GATEWAY_PORT:-8080}:8080"
-    expose:
-      - 8080
-    volumes:
-      - ./cskefu/logs:/cskefu/logs
-      - ./bootstrap.properties:/app/resources/bootstrap.properties
-      - ./logback-spring.xml:/app/resources/logback-spring.xml
-    deploy:
-      replicas: 3
-    environment:
-      - "JAVA_OPTS=-Xmx${CSKEFU_JAVA_XMX:-512m} -Xms${CSKEFU_JAVA_XMS:-512m} -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true --illegal-access=warn"
-      - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
-      - SPRING_APPLICATION_NAME=cskefu-web-gateway
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/cskefu?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWD:-123456}
-      # - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=100
-      - SPRING_DATA_REDIS_HOST=redis
-      - SPRING_DATA_REDIS_PORT=6379
-      - SPRING_RABBITMQ_ADDRESSES=rabbitmq
-      - SPRING_RABBITMQ_PORT=${RABBITMQ_CLIENT_PORT:-5672}
-      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
-    depends_on:
-      - cskefu-auth-service
-      - cskefu-manager-service
 
   cskefu-manager-service:
     image: cskefu/cskefu-manager-service
