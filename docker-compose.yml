@@ -44,7 +44,7 @@ services:
       - CSKEFU_SETTINGS_WEBIM_VISITOR_SEPARATE=true
       - LICENSE_STORE_PROVIDER=${LICENSE_STORE_PROVIDER:-https://store.chatopera.com}
       - TONGJI_BAIDU_SITEKEY=${TONGJI_BAIDU_SITEKEY:-placeholder}
-      - EXTRAS_LOGIN_BANNER=${NOTICE_LOGIN_BANNER:-off}
+      - EXTRAS_LOGIN_BANNER=${NOTICE_LOGIN_BANNER:-Purchase subscriptions for billing resources on https://store.chatopera.com/product/cskefu001}
       - EXTRAS_LOGIN_CHATBOX=${EXTRAS_LOGIN_CHATBOX:-off}
       - EXTRAS_AUTH_SUPER_ADMIN_PASS=${EXTRAS_AUTH_SUPER_ADMIN_PASS:-}
       - EXTRAS_LOG_REQUEST=${EXTRAS_LOG_REQUEST:-off}
