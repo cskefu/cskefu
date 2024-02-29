@@ -261,7 +261,7 @@
 
 ## 开源许可协议
 
-Copyright 2023 <a href="https://www.chatopera.com/" target="_blank">Beijing Huaxia Chunsong Technology Co., Ltd.</a>
+Copyright (2018-2024) <a href="https://www.chatopera.com/" target="_blank">Beijing Huaxia Chunsong Technology Co., Ltd.</a>
 
 [Chunsong Public License, version 1.0](https://docs.cskefu.com/licenses/v1.html)
 
