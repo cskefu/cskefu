@@ -1,15 +1,15 @@
 /*
- * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
- * <https://www.chatopera.com>, Licensed under the Chunsong Public 
+ * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd.
+ * <https://www.chatopera.com>, Licensed under the Chunsong Public
  * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0, 
+ * Copyright (C) 2018- Jun. 2023 Chatopera Inc, <https://www.chatopera.com>,  Licensed under the Apache License, Version 2.0,
  * http://www.apache.org/licenses/LICENSE-2.0
- * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0, 
+ * Copyright (C) 2017 优客服-多渠道客服系统,  Licensed under the Apache License, Version 2.0,
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package com.cskefu.cc.interceptor;
@@ -27,6 +27,7 @@ import com.cskefu.cc.proxy.OrganProxy;
 import com.cskefu.cc.proxy.UserProxy;
 import com.cskefu.cc.util.Menu;
 import com.cskefu.cc.util.PugHelper;
+import com.cskefu.cc.util.SystemEnvHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,20 @@ public class UserInterceptorHandler implements HandlerInterceptor {
     private static UserProxy userProxy;
     private static OrganProxy organProxy;
     private static Integer webimport;
+
+    /**
+     * Check instance HTTP schema by ENV CS_IM_SERVER_SSL_PORT
+     *
+     * @return
+     */
+    private boolean isEnabledSslByCheckingWebSocketPort() {
+        String port = StringUtils.trim(SystemEnvHelper.getenv("CS_IM_SERVER_SSL_PORT", ""));
+
+        if (StringUtils.isNotBlank(port) && StringUtils.equalsIgnoreCase(port, "443")) {
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, Object handler)
@@ -105,12 +120,17 @@ public class UserInterceptorHandler implements HandlerInterceptor {
         final String infoace = (String) request.getSession().getAttribute(Constants.CSKEFU_SYSTEM_INFOACQ); // 进入信息采集模式
         final SystemConfig systemConfig = MainUtils.getSystemConfig();
         if (view != null) {
-            if (user != null) {
-                view.addObject("user", user);
+            if (isEnabledSslByCheckingWebSocketPort()) {
+                view.addObject("schema", "https");
+                view.addObject("port", 443);
+            } else {
                 view.addObject("schema", request.getScheme());
                 view.addObject("port", request.getServerPort());
-                view.addObject("hostname", request.getServerName());
+            }
+            view.addObject("hostname", request.getServerName());
 
+            if (user != null) {
+                view.addObject("user", user);
                 HandlerMethod handlerMethod = (HandlerMethod) arg2;
                 Menu menu = handlerMethod.getMethod().getAnnotation(Menu.class);
                 if (menu != null) {
