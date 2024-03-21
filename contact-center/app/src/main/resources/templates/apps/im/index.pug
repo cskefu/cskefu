@@ -545,7 +545,7 @@ html
         var hostname = location.hostname;
         var protocol = window.location.protocol.replace(/:/g, '');
         var username = encodeURIComponent("#{username}");
-        var socket = io(protocol + '://' + hostname + ':#{port}/im/user?userid=#{userid}&session=#{sessionid}&appid=#{appid}&osname=!{osname}&browser=!{browser}!{skill ? "&skill=" + skill : ""}!{username ? "&nickname='+username+'" : ""}!{agent ? "&agent=" + agent : ""}!{title ? "&title=" + title : ""}!{traceid ? "&url=" + url : ""}!{traceid ? "&traceid=" + traceid : ""}!{isInvite ? "&isInvite=" + isInvite : ""}', {transports: ['websocket', 'polling']});
+        var socket = io(protocol + '://' + hostname + ':location.port/im/user?userid=#{userid}&session=#{sessionid}&appid=#{appid}&osname=!{osname}&browser=!{browser}!{skill ? "&skill=" + skill : ""}!{username ? "&nickname='+username+'" : ""}!{agent ? "&agent=" + agent : ""}!{title ? "&title=" + title : ""}!{traceid ? "&url=" + url : ""}!{traceid ? "&traceid=" + traceid : ""}!{isInvite ? "&isInvite=" + isInvite : ""}', {transports: ['websocket', 'polling']});
 
         console.log('connect debug', protocol, hostname);
 
