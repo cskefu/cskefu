@@ -166,7 +166,7 @@ public class MediaController extends Handler {
     @RequestMapping("/template")
     @Menu(type = "resouce", subtype = "template")
     public void template(HttpServletResponse response, HttpServletRequest request, @Valid String filename) throws IOException {
-        if (StringUtils.isNotBlank(filename)) {
+        if (StringUtils.isNotBlank(filename) && !(filename.contains("../") || filename.contains("..\\"))) {
             InputStream is = MediaController.class.getClassLoader().getResourceAsStream(TEMPLATE_DATA_PATH + filename);
             if (is != null) {
                 response.setContentType("text/plain");
