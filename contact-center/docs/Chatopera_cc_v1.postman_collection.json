@@ -40,14 +40,14 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://{{IP}}:{{PORT}}/tokens?username=admin&password=admin1234",
+					"raw": "http://{{IP}}:{{PORT}}/auth/token/bearer?username=admin&password=admin1234",
 					"protocol": "http",
 					"host": [
 						"{{IP}}"
 					],
 					"port": "{{PORT}}",
 					"path": [
-						"tokens"
+						"/auth/token/bearer"
 					],
 					"query": [
 						{
