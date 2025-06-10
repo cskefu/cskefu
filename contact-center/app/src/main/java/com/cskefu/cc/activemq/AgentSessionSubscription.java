@@ -31,7 +31,7 @@ public class AgentSessionSubscription {
      *
      * @param msg
      */
-    @JmsListener(destination = Constants.MQ_TOPIC_WEB_SESSION_SSO, containerFactory = "jmsListenerContainerTopic")
+    @JmsListener(destination = "${cskefu.activemq.destination.prefix}" + Constants.MQ_TOPIC_WEB_SESSION_SSO + "${cskefu.activemq.destination.suffix}", containerFactory = "jmsListenerContainerTopic")
     public void onMessage(final String msg) {
         logger.info("[onMessage] payload {}", msg);
         try {

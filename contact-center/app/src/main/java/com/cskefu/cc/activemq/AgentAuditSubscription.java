@@ -54,7 +54,7 @@ public class AgentAuditSubscription {
      *
      * @param msg
      */
-    @JmsListener(destination = Constants.AUDIT_AGENT_MESSAGE, containerFactory = "jmsListenerContainerTopic")
+    @JmsListener(destination = "${cskefu.activemq.destination.prefix}" + Constants.AUDIT_AGENT_MESSAGE + "${cskefu.activemq.destination.suffix}", containerFactory = "jmsListenerContainerTopic")
     public void onMessage(final String msg) {
         logger.info("[onMessage] payload {}", msg);
         try {

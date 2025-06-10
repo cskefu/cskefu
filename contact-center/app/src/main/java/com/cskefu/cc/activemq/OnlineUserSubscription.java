@@ -17,14 +17,13 @@ import com.cskefu.cc.socketio.client.NettyClients;
 import com.cskefu.cc.util.SerializeUtil;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
-
-import jakarta.annotation.PostConstruct;
 
 /**
  * IM OnlineUser
@@ -57,7 +56,7 @@ public class OnlineUserSubscription {
 
     }
 
-    @JmsListener(destination = Constants.INSTANT_MESSAGING_MQ_TOPIC_ONLINEUSER, containerFactory = "jmsListenerContainerTopic")
+    @JmsListener(destination = "${cskefu.activemq.destination.prefix}" + Constants.INSTANT_MESSAGING_MQ_TOPIC_ONLINEUSER + "${cskefu.activemq.destination.suffix}", containerFactory = "jmsListenerContainerTopic")
     public void onMessage(final String payload){
         logger.info("[onMessage] payload {}", payload);
         JsonParser parser = new JsonParser();

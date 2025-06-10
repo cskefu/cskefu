@@ -63,7 +63,7 @@ html
 
                     items: items,
                     htmlTags: {
-                        img: ['src', 'width', 'height', 'border', 'alt', 'title', 'align', '.width', '.height', '.border'],
+                    img: ['src', 'width', 'height', 'border', 'alt', 'title', 'align', '.width', '.height', '.border'],
                         br: []
                     },
                     afterChange: function () {
@@ -100,9 +100,9 @@ html
                             socket.emit('message', {
                                 appid: "#{appid}",
                                 userid: "#{userid}",
-                                type: "writing",
+                            type: "writing",
                                 session: "#{sessionid}",
-                                message: strValue
+                            message: strValue
                             });
                         }
                         words = this.count("text");
@@ -327,7 +327,7 @@ html
                     $.ajax({
                         type: 'POST',
                         url: "/im/image/upload.html?userid=#{userid}",
-                        data: form,
+                    data: form,
                         processData: false,
                         contentType: false
                     }).done(function (data) {
@@ -375,8 +375,9 @@ html
                                         div(style="padding:0px 5px 10px 5px;border-bottom:1px solid #dedede;")
                                             a#point_ad_text(href=welcomeAd.url, title=welcomeAd.tiptext, target="_blank")= welcomeAd.content
 
-                        .clearfix.message.welcome
-                            span#welcome-message= inviteData.dialog_message ? inviteData.dialog_message : '欢迎您来咨询！欢迎使用 Chatopera 云服务！如需帮助请联系 info@chatopera.com'
+                        if inviteData.dialog_message != null && !inviteData.dialog_message.trim().isEmpty()
+                            .clearfix.message.welcome
+                                span#welcome-message= inviteData.dialog_message ? inviteData.dialog_message : '欢迎您来咨询！欢迎使用 Chatopera 云服务！如需帮助请联系 info@chatopera.com'
 
                         if sessionConfig && sessionConfig.sessionmsg
                             div(style='text-align:center;')
@@ -498,6 +499,7 @@ html
                     //- 按钮
                     p.submitBtnWrap(style='margin-top: 0px')
                         input.btn.submitBtn#submitBtn(type='submit', value='提 交')
+                        input.btn.cancelBtn#cancelBtn(value='取 消', onclick='popup(\"none\")')
 
     script.
         function chatScorllBottom(box) {
@@ -639,9 +641,9 @@ html
                     socket.emit('message', {
                         appid: "#{appid}",
                         userid: "#{userid}",
-                        type: "message",
+                    type: "message",
                         session: "#{sessionid}",
-                        message: message
+                    message: message
                     });
                 }
             } else if (service_end == true) {

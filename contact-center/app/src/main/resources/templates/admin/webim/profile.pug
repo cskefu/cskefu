@@ -77,7 +77,7 @@ block content
                                                     .box-item
                                                         .row
                                                             .col-lg-12
-                                                                textarea.layui-input(name="dialog_message", autocomplete="off", oninput="$('#dialog_message').text($(this).val())", style="height:60px;line-height:22px;")= inviteData.dialog_message ? inviteData.dialog_message : '欢迎使用春松客服！如需帮助请联系 info@chatopera.com'
+                                                                textarea.layui-input(name="dialog_message", autocomplete="off", oninput="$('#dialog_message').text($(this).val())", style="height:60px;line-height:22px;", placeholder="欢迎使用春松客服！如需帮助请联系 info@chatopera.com")= inviteData.dialog_message
                                                 .ukefu-webim-prop
                                                     .ukefu-webim-tl 7、自定义形象图片 （建议尺寸：276*236）
                                                     .box-item(style="position: relative;")
@@ -329,7 +329,8 @@ block content
                                                         span(style="float:right;")
                                                             i.layui-icon(style="font:size:12px;color:#ffffff;") ဆ
                                                     .ukefu-im-preview-wrap(style="border:1px solid #EAEAEA")
-                                                        #dialog_message.ukefu-im-preview-tip(style="width:90%;height:5px;font-size:12px;height:32px;overflow:hidden;border-radius: 10px;padding: 2px 10px 2px 10px;")= inviteData.dialog_message ? inviteData.dialog_message : '欢迎您来咨询！欢迎使用春松客服！如需帮助请联系 info@chatopera.com'
+                                                        if inviteData.dialog_message != null && !inviteData.dialog_message.trim().isEmpty()
+                                                            #dialog_message.ukefu-im-preview-tip(style="width:90%;height:5px;font-size:12px;height:32px;overflow:hidden;border-radius: 10px;padding: 2px 10px 2px 10px;")= inviteData.dialog_message ? inviteData.dialog_message : '欢迎您来咨询！欢迎使用春松客服！如需帮助请联系 info@chatopera.com'
                                                         .ukefu-im-preview-customer
                                                             i.layui-icon(style="color:#377FED;float:left;") 
                                                             .ukefu-im-preview-customer-message.ukefu-im-preview-customer-arrow

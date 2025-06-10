@@ -80,7 +80,7 @@ public class ChatbotEventSubscription {
      *
      * @param payload
      */
-    @JmsListener(destination = Constants.INSTANT_MESSAGING_MQ_QUEUE_CHATBOT, containerFactory = "jmsListenerContainerQueue")
+    @JmsListener(destination = "${cskefu.activemq.destination.prefix}" + Constants.INSTANT_MESSAGING_MQ_QUEUE_CHATBOT + "${cskefu.activemq.destination.suffix}", containerFactory = "jmsListenerContainerQueue")
     public void onMessage(final String payload) {
         ChatMessage message = SerializeUtil.deserialize(payload);
         try {
@@ -238,7 +238,7 @@ public class ChatbotEventSubscription {
                             for (int i = 0; i < faqReplies.length(); i++) {
                                 JSONObject sugg = new JSONObject();
                                 JSONObject faqReply = faqReplies.getJSONObject(i);
-                                sugg.put("label", Integer.toString(i + 1) + ". " + faqReply.getString("post"));
+                                sugg.put("label", i + 1 + ". " + faqReply.getString("post"));
                                 sugg.put("text", faqReply.getString("post"));
                                 sugg.put("type", "qlist");
                                 suggs.put(sugg);

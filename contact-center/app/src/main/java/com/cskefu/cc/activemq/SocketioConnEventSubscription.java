@@ -22,6 +22,7 @@ import com.cskefu.cc.model.AgentStatus;
 import com.cskefu.cc.persistence.repository.AgentStatusRepository;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.PostConstruct;
 import java.util.Date;
 
 /**
@@ -60,7 +60,7 @@ public class SocketioConnEventSubscription {
         logger.info("ActiveMQ Subscription is setup successfully.");
     }
 
-    @JmsListener(destination = Constants.WEBIM_SOCKETIO_AGENT_DISCONNECT, containerFactory = "jmsListenerContainerQueue")
+    @JmsListener(destination = "${cskefu.activemq.destination.prefix}" + Constants.WEBIM_SOCKETIO_AGENT_DISCONNECT + "${cskefu.activemq.destination.suffix}", containerFactory = "jmsListenerContainerQueue")
     public void onMessage(final String payload) {
         logger.info("[onMessage] payload {}", payload);
 

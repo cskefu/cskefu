@@ -217,8 +217,11 @@ html
                         else
                             div(style="padding:0px 5px 10px 5px;border-bottom:1px solid #dedede;")
                                 a#point_ad_text(href=welcomeAd.url, title=welcomeAd.tiptext, target="_blank")= welcomeAd.content
-            .clearfix.message.welcome
-                span#welcome-message= inviteData.dialog_message ? inviteData.dialog_message : '欢迎您来咨询！欢迎使用 Chatopera 云服务！如需帮助请联系 info@chatopera.com'
+
+            if inviteData.dialog_message != null && !inviteData.dialog_message.trim().isEmpty()
+                .clearfix.message.welcome
+                    span#welcome-message= inviteData.dialog_message ? inviteData.dialog_message : '欢迎您来咨询！欢迎使用 Chatopera 云服务！如需帮助请联系 info@chatopera.com'
+
             for chatMessage in pugHelper.reverse(chatMessageList.content)
                 if chatMessage.userid && userid && chatMessage.calltype && chatMessage.calltype == "呼入"
                     .clearfix.chat-block
@@ -302,6 +305,7 @@ html
                             // 按钮
                             p.submitBtnWrap(style='background:#fff;position: fixed;bottom: 0px;left:0px;width: 100%;height:100px;padding-right: 0px;margin-bottom: 0px;z-index: 10')
                                 input.btn.submitBtn#submitBtn(type='submit', style='width: 85% !important;display: block;margin: 0 auto;', value='提 交')
+                                input.btn.cancelBtn#cancelBtn(style='width: 85% !important;display: block;margin: 0 auto;', value='取 消', onclick='popup(\'none\')',)
         script.
             var service_end = false;
             // 调查问卷
@@ -587,7 +591,7 @@ html
                         channel: "webim",
                         type: "message",
                         contextid: "#{sessionid}",
-                        message: message
+                        message:message
                     });
                 }
             }

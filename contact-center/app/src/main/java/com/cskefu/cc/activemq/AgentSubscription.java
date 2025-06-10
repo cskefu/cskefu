@@ -48,7 +48,7 @@ public class AgentSubscription {
         brokerPublisher.send(Constants.INSTANT_MESSAGING_MQ_TOPIC_AGENT, j.toString(), true);
     }
 
-    @JmsListener(destination = Constants.INSTANT_MESSAGING_MQ_TOPIC_AGENT, containerFactory = "jmsListenerContainerTopic")
+    @JmsListener(destination = "${cskefu.activemq.destination.prefix}" + Constants.INSTANT_MESSAGING_MQ_TOPIC_AGENT + "${cskefu.activemq.destination.suffix}", containerFactory = "jmsListenerContainerTopic")
     public void onMessage(final String payload) {
         logger.info("[onMessage] payload {}", payload);
         JsonParser parser = new JsonParser();

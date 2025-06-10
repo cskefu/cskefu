@@ -43,7 +43,7 @@ public class MessengerEventSubscription {
     @Autowired
     private MessengerMessageProxy messengerMessageProxy;
 
-    @JmsListener(destination = Constants.INSTANT_MESSAGING_MQ_QUEUE_FACEBOOK_OTN, containerFactory = "jmsListenerContainerQueue")
+    @JmsListener(destination = "${cskefu.activemq.destination.prefix}" + Constants.INSTANT_MESSAGING_MQ_QUEUE_FACEBOOK_OTN + "${cskefu.activemq.destination.suffix}", containerFactory = "jmsListenerContainerQueue")
     public void onPublish(final String jsonStr) {
         JSONObject payload = JSONObject.parseObject(jsonStr);
         String otnId = payload.getString("otnId");
