@@ -1,10 +1,28 @@
 <div align=right>
 
-[开发者社区](https://tribe.cskefu.com/about)　|　[开源许可协议](https://docs.cskefu.com/licenses/v1.html)　|　[工单列表](https://github.com/cskefu/cskefu/issues)　|　[官网](https://www.cskefu.com/)
+[产品形式及授权](https://docs.cskefu.com/docs/licenses)　|　[开源版许可证](https://docs.cskefu.com/licenses/v1.html)　|　[开源社区工单](https://github.com/cskefu/cskefu/issues)　|　[官网](https://www.cskefu.com/)
 
 </div>
 
+
 # 春松客服
+
+春松客服是一个企业客服系统解决方案，通过模块化完成企业客户服务工作的运营，包括座席工作台、联系人管理、访客渠道和会话管理等。
+
+目前，春松客服包括两个产品和服务模式：
+
+| 模式 | EE / 企业版 | OSS / 开源版 |
+| --- | --- | --- |
+| 是否开源 | 否 | 是 |
+| 收费模式 | 根据服务项目进行[商业洽谈](https://www.chatopera.com/mail.html) | 启动服务后导入[授权证书](https://store.chatopera.com/product/cskefu001) |  
+| 软件迭代 | 官方团队迭代开发 | 通过[开源社区](https://www.cskefu.com/)形式 |
+| 源码许可证 | 闭源，购买后提供下载地址，可任意修改、销售 | [源码地址](https://github.com/cskefu/cskefu)，[春松许可证, v1.0](https://docs.cskefu.com/docs/osc/license) |
+| 技术支持 | 官方技术团队商业支持 | 通过开源社区[提交工单](https://github.com/cskefu/cskefu/issues) | 
+| 部署及运维 | 官方技术团队商业支持 | 根据开源社区文档，[文档中心](https://docs.cskefu.com/docs/) |
+| 使用培训 | 客服系统及二次开发的培训由官方团队支持 | 购买[春松客服大讲堂](https://docs.cskefu.com/docs/osc/training) |
+
+
+# 春松客服 OSS 开源版
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/cskefu/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/cskefu/cskefu/network/members) [![License](https://cdndownload2.chatopera.com/cskefu/licenses/chunsong1.0.svg)](https://www.cskefu.com/licenses/v1.html "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![docker](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-37-orange.svg?style=flat-square)](#contributors-)
@@ -209,19 +227,6 @@
 - 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
 - 如何成为春松客服开发者，参考[文档](https://docs.cskefu.com/docs/osc/devonboard/)
 - 如何提交代码，参考[文档](https://docs.cskefu.com/docs/osc/contribution)
-
-### 微信群
-
-社区交流平台，在这里，您可以得到：
-
-* 和春松客服核心开发者们交流技术问题，提问会得到快速、有效的解答；
-* 认识更多朋友，讨论开源、元宇宙、人工智能、DevOps 等话题；
-* 合作开源软件迭代，一起开发出好的开源软件。
-
-微信扫一扫加入：
-
-![](public/assets/341928031-50b3a954-36d7-4b53-a684-b8d156bb803b.png)
-
 
 ### 工单
 
