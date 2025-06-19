@@ -250,14 +250,12 @@
   - [掌握春松客服前端框架 Pugjs，介绍及使用注意事项](https://blog.csdn.net/samurais/article/details/114576611)
 - [提交代码](https://docs.cskefu.com/docs/osc/contribution)
 
-### 微信公众号
+### 商业洽淡
 
-及时获得产品更新、活动分享等信息，关注春松客服公众号。
+春松客服提供商业技术支持，春松客服有企业版。
+相关功能咨询、报价、DEMO 联系我们。
 
-![春松客服公众号](./public/assets/cskefu-wechat-gzh.jpg)
-
-* 如以上图片无法浏览，可能是网络原因，请打开 [Gitee](https://gitee.com/cskefu/cskefu#%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7) 查看二维码。
-
+[https://www.chatopera.com/mail.html](https://www.chatopera.com/mail.html)
 
 ## 鸣谢
 
