@@ -49,7 +49,7 @@
 
 春松客服宣言视频： [Bilibili](https://www.bilibili.com/video/BV1hu411o76r/) | [YouTube](https://youtu.be/ILf3BWpq4Ns)
 
-新版本介绍：[观看春松客服 v8 新版本发布会 @ 2023-07-01](https://www.cskefu.com/2023/07/03/community-conf/)
+新版本介绍：[观看春松客服企业版 v9 使用介绍](https://www.bilibili.com/video/BV1YVatzFEKb)
 
 ## 开发者列表 ✨
 
