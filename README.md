@@ -34,7 +34,7 @@
 
 | 版本 | 文档中心 | Git 分支 | 状态 |
 | --- | --- | --- | --- |
-| v8.x | [v8](https://docs.cskefu.com/docs/) |  [GitHub](https://github.com/cskefu/cskefu/tree/develop) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/develop/) | Sunset, 维护终止, 产品推介: [春松客服企业版 v9](https://www.bilibili.com/video/BV1YVatzFEKb) |
+| v8.x | [v8](https://docs.cskefu.com/docs/) |  [GitHub](https://github.com/cskefu/cskefu/tree/develop) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/develop/) | Sunset / 维护终止。产品推介: [春松客服企业版 v9](https://www.bilibili.com/video/BV1YVatzFEKb) |
 
 :hearts: 春松客服的愿景：
 
