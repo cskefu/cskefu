@@ -142,37 +142,15 @@
 
 ## 产品演示
 
-<p align="center">
-  <b>欢迎页</b><br>
-  <img src="./public/assets/cskefu-screen-1.jpg" width="900">
-</p>
+春松客服 v9 的演示：
 
-<details>
-<summary>展开查看更多产品截图</summary>
-<p>
-
-<p align="center">
-  <b>坐席工作台</b><br>
-  <img src="./public/assets/44915582-eb8d2c80-ad65-11e8-8876-86c8b5bb5cc7.png" width="900">
-</p>
-
-<p align="center">
-  <b>坐席监控</b><br>
-  <img src="./public/assets/44915711-432b9800-ad66-11e8-899b-1ea02244925d.png" width="900">
-</p>
-
-<p align="center">
-  <b>集成客服机器人</b><br>
-  <img src="./public/assets/51080565-4b82df00-1719-11e9-8cc4-dbbec0459224.png" width="900">
-</p>
-
-<p align="center">
-  <b>客服机器人应答</b><br>
-  <img src="./public/assets/51080567-50479300-1719-11e9-85d8-d209370c9d10.png" width="900">
-</p>
-
-</p>
-</details>
+- [一个简单的客服流程](https://www.bilibili.com/video/BV1YVatzFEKb?p=1)
+- [春松客服的特色](https://www.bilibili.com/video/BV1YVatzFEKb?p=2)
+- [搭建配置客服团队，实现角色，组织机构](https://www.bilibili.com/video/BV1YVatzFEKb?p=3)
+- [渠道管理，春松客服的 H5 网页渠道配置及使用](https://www.bilibili.com/video/BV1YVatzFEKb?p=4)
+- [座席工作台的使用，多种工具，提升座席人员的工作效率](https://www.bilibili.com/video/BV1YVatzFEKb?p=5)
+- [配置使用机器人客服，应用大语言模型 LLM，RAG，提升服务质量、效率](https://www.bilibili.com/video/BV1YVatzFEKb?p=6)
+- [高级座席实现系统监控、质检、报表](https://www.bilibili.com/video/BV1YVatzFEKb?p=7)
 
 ## 快速开始
 
