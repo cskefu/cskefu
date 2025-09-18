@@ -28,11 +28,11 @@
 
 ## 产品版本
 
-| 代号 | 版本 | 状态 |
-| --- | --- | --- | 
-| v10 | EE / 企业版 | Active / 活跃中 （[*推荐](https://mp.weixin.qq.com/s/A7yOwR42XB8QQxHgU8jRkg)） |
-| v9 | EE / 企业版 | Maintenance / 维护中，面向企业客户 |
-| v8.x | OSS / 开源版 | Sunset / 维护终止 ([GitHub](https://github.com/cskefu/cskefu/tree/develop) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/develop/)) |
+| 代号 | 版本 | 状态 | 介绍 | 
+| --- | --- | --- | --- | 
+| v10 | EE / 企业版 | Active / 活跃中 （*推荐） | [链接](https://mp.weixin.qq.com/s/A7yOwR42XB8QQxHgU8jRkg) |
+| v9 | EE / 企业版 | Maintenance / 维护中，面向企业客户 | [链接](https://www.bilibili.com/video/BV1YVatzFEKb/) |
+| v8.x | OSS / 开源版 | Sunset / 维护终止 ([GitHub](https://github.com/cskefu/cskefu/tree/develop) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/develop/)) | [链接](https://docs.cskefu.com/docs/) |
 
 # 春松客服 OSS 开源版
 
