@@ -9,6 +9,8 @@
 
 春松客服是一个企业客服系统解决方案，通过模块化完成企业客户服务工作的运营，包括座席工作台、联系人管理、访客渠道和会话管理等。
 
+## 服务模式
+
 目前，春松客服包括两个产品和服务模式：
 
 **企业版具备更友好的代码授权、功能以及服务，更可靠稳定，企业版更适合企业使用！**
@@ -24,31 +26,20 @@
 | 使用培训 | 客服系统及二次开发的培训由官方团队支持 | 购买[春松客服大讲堂](https://docs.cskefu.com/docs/osc/training) |
 
 
+## 产品版本
+
+| 代号 | 版本 | 状态 |
+| --- | --- | --- | 
+| v10 | EE / 企业版 | Active / 活跃中 （[*推荐](https://mp.weixin.qq.com/s/A7yOwR42XB8QQxHgU8jRkg)） |
+| v9 | EE / 企业版 | Maintenance / 维护中，面向企业客户 |
+| v8.x | OSS / 开源版 | Sunset / 维护终止 ([GitHub](https://github.com/cskefu/cskefu/tree/develop) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/develop/)) |
+
 # 春松客服 OSS 开源版
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/cskefu/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/cskefu/cskefu/network/members) [![License](https://cdndownload2.chatopera.com/cskefu/licenses/chunsong1.0.svg)](https://www.cskefu.com/licenses/v1.html "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![docker](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-37-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-[https://www.cskefu.com](https://www.cskefu.com/)
-
-| 版本 | 文档中心 | Git 分支 | 状态 |
-| --- | --- | --- | --- |
-| v8.x | [v8](https://docs.cskefu.com/docs/) |  [GitHub](https://github.com/cskefu/cskefu/tree/develop) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/develop/) | Sunset / 维护终止。产品推介: [春松客服企业版 v9](https://www.bilibili.com/video/BV1YVatzFEKb) |
-
-:hearts: 春松客服的愿景：
-
-- 公元 2032 年内，1000 万企业上线开源客服系统
-
-:innocent: 春松客服的承诺:
-
-- 坚持基础功能开源，不发布垃圾
-- 坚持持续优化
-- 坚持商业友好授权
-
-春松客服宣言视频： [Bilibili](https://www.bilibili.com/video/BV1hu411o76r/) | [YouTube](https://youtu.be/ILf3BWpq4Ns)
-
-新版本介绍：[观看春松客服企业版 v9 使用介绍](https://www.bilibili.com/video/BV1YVatzFEKb)
 
 ## 开发者列表 ✨
 
