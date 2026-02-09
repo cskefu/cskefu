@@ -31,7 +31,7 @@
 
 ## 产品演示
 
-春松客服 v9 的演示：
+春松客服 v9 的演示视频：
 
 - [一个简单的客服流程](https://www.bilibili.com/video/BV1YVatzFEKb?p=1)
 - [春松客服的特色](https://www.bilibili.com/video/BV1YVatzFEKb?p=2)
@@ -40,6 +40,19 @@
 - [座席工作台的使用，多种工具，提升座席人员的工作效率](https://www.bilibili.com/video/BV1YVatzFEKb?p=5)
 - [配置使用机器人客服，应用大语言模型 LLM，RAG，提升服务质量、效率](https://www.bilibili.com/video/BV1YVatzFEKb?p=6)
 - [高级座席实现系统监控、质检、报表](https://www.bilibili.com/video/BV1YVatzFEKb?p=7)
+
+产品演示 DEMO:
+
+| 项 | 值 | 描述 |
+| --- | --- | --- |
+| URL 地址 | https://v9.cskefu.com/ | 单点登录，后登录用户自动登出前面的用户 |
+| Admin 用户名 | admin | 超级管理员 |
+| Admin 密码 | admin1234 | 超级管理员密码 |
+| 座席 用户名 | zhangsan | 可以接待访客的座席 |
+| 座席 密码 | agent1234 | 座席密码 |
+| 访客 H5 聊天 | URL | [https://v9.cskefu.com/testclient.html](https://v9.cskefu.com/testclient.html) |
+
+*提示：演示环境定时清理重置，有可能造成不稳定；演示环境可能有同时登入的账号，被登出不是 BUG；请不要上传敏感信息，LOGO 等到演示环境。
 
 ---
 
