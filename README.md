@@ -1,10 +1,3 @@
-<div align=right>
-
-[产品形式及授权](https://docs.cskefu.com/docs/licenses)　|　[开源版许可证](https://docs.cskefu.com/licenses/v1.html)　|　[开源社区工单](https://github.com/cskefu/cskefu/issues)　|　[官网](https://www.cskefu.com/)
-
-</div>
-
-
 # 春松客服
 
 春松客服是一个企业客服系统解决方案，通过模块化完成企业客户服务工作的运营，包括座席工作台、联系人管理、访客渠道和会话管理等。
@@ -32,7 +25,7 @@
 | --- | --- | --- | --- | 
 | v10 | EE / 企业版 | Active / 活跃中 （*推荐） | [链接](https://docs.cskefu.com/docs/) |
 | v9 | EE / 企业版 | Sunset / 维护终止 | [购买地址（一次性付费、永久授权、包含源码）](https://store.chatopera.com/product/cskfv9) |
-| v8.x | OSS / 开源版 | Sunset / 维护终止 ([GitHub](https://github.com/cskefu/cskefu/tree/develop) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/develop/)) | **对于侵权行为，我们将积极通过法律途径进行维权，在 2023 ~ 2025 年间，已经送达了 ~20 件诉讼涵，在广东、上海、北京多地进行了诉讼。** |
+| v8.x | OSS / 开源版 | Sunset / 维护终止 ([GitHub](https://github.com/cskefu/cskefu/tree/develop) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/develop/)) | **对于侵权行为，我们将积极通过法律途径进行维权，在 2023 ~ 2025 年间，已经送达了 ~20 件诉讼案例，在广东、上海、北京多地进行了诉讼。** |
 
 # 春松客服 V9
 
