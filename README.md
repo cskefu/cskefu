@@ -10,8 +10,6 @@
 
 | 模式 | EE / 企业版 | OSS / 开源版 |
 | --- | --- | --- |
-| 开源 | 仅对购买用户提供源码 | 是 |
-| 源码许可证 | 可任意修改、销售 | [源码地址](https://github.com/cskefu/cskefu)，[春松许可证, v1.0](https://docs.cskefu.com/docs/osc/license) |
 | 收费模式 | 根据服务项目进行[商业洽谈](https://www.chatopera.com/mail.html) | 启动服务后导入[授权证书](https://store.chatopera.com/product/cskefu001) |  
 | 软件迭代 | 官方团队迭代开发 | 通过[开源社区](https://www.cskefu.com/)形式 |
 | 技术支持 | 官方技术团队商业支持 | 通过开源社区[提交工单](https://github.com/cskefu/cskefu/issues) | 
