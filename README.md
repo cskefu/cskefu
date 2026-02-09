@@ -28,13 +28,31 @@
 
 ## 产品版本
 
-| 代号 | 版本 | 状态 | 介绍 | 
+| 代号 | 版本 | 状态 | 说明 | 
 | --- | --- | --- | --- | 
-| v10 | EE / 企业版 | Active / 活跃中 （*推荐） | [链接](https://dwz.chatopera.com/0bv6R1) |
-| v9 | EE / 企业版 | Maintenance / 维护中，面向企业客户 | [链接](https://www.bilibili.com/video/BV1YVatzFEKb/) |
-| v8.x | OSS / 开源版 | Sunset / 维护终止 ([GitHub](https://github.com/cskefu/cskefu/tree/develop) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/develop/)) | [链接](https://docs.cskefu.com/docs/) |
+| v10 | EE / 企业版 | Active / 活跃中 （*推荐） | [链接](https://docs.cskefu.com/docs/) |
+| v9 | EE / 企业版 | Sunset / 维护终止 | [购买地址（一次性付费、永久授权、包含源码）](https://store.chatopera.com/product/cskfv9) |
+| v8.x | OSS / 开源版 | Sunset / 维护终止 ([GitHub](https://github.com/cskefu/cskefu/tree/develop) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/develop/)) | **对于侵权行为，我们将积极通过法律途径进行维权，在 2023 ~ 2025 年间，已经送达了 ~20 件诉讼涵，在广东、上海、北京多地进行了诉讼。** |
 
-# 春松客服 OSS 开源版
+# 春松客服 V9
+
+**春松客服 v9 是一个闭源客服系统，目前官方已经终止维护，但是因为春松客服 v9 以 v8 为基础升级而来，依然沿用了 Java, SpringBoot 技术栈，为众多开发者所喜欢和使用，因为我们继续提供 v9 的商业产品，但是主要是开发者（或客户）自行维护。**
+
+## 产品演示
+
+春松客服 v9 的演示：
+
+- [一个简单的客服流程](https://www.bilibili.com/video/BV1YVatzFEKb?p=1)
+- [春松客服的特色](https://www.bilibili.com/video/BV1YVatzFEKb?p=2)
+- [搭建配置客服团队，实现角色，组织机构](https://www.bilibili.com/video/BV1YVatzFEKb?p=3)
+- [渠道管理，春松客服的 H5 网页渠道配置及使用](https://www.bilibili.com/video/BV1YVatzFEKb?p=4)
+- [座席工作台的使用，多种工具，提升座席人员的工作效率](https://www.bilibili.com/video/BV1YVatzFEKb?p=5)
+- [配置使用机器人客服，应用大语言模型 LLM，RAG，提升服务质量、效率](https://www.bilibili.com/video/BV1YVatzFEKb?p=6)
+- [高级座席实现系统监控、质检、报表](https://www.bilibili.com/video/BV1YVatzFEKb?p=7)
+
+---
+
+# 春松客服 V8 - OSS 开源版
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/cskefu/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/cskefu/cskefu/network/members) [![License](https://cdndownload2.chatopera.com/cskefu/licenses/chunsong1.0.svg)](https://www.cskefu.com/licenses/v1.html "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![docker](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-37-orange.svg?style=flat-square)](#contributors-)
@@ -130,18 +148,6 @@
 - 质检：历史会话、服务小结、服务反馈及相关报表
 
 了解功能详细介绍，参考[文档中心](https://docs.cskefu.com/)。
-
-## 产品演示
-
-春松客服 v9 的演示：
-
-- [一个简单的客服流程](https://www.bilibili.com/video/BV1YVatzFEKb?p=1)
-- [春松客服的特色](https://www.bilibili.com/video/BV1YVatzFEKb?p=2)
-- [搭建配置客服团队，实现角色，组织机构](https://www.bilibili.com/video/BV1YVatzFEKb?p=3)
-- [渠道管理，春松客服的 H5 网页渠道配置及使用](https://www.bilibili.com/video/BV1YVatzFEKb?p=4)
-- [座席工作台的使用，多种工具，提升座席人员的工作效率](https://www.bilibili.com/video/BV1YVatzFEKb?p=5)
-- [配置使用机器人客服，应用大语言模型 LLM，RAG，提升服务质量、效率](https://www.bilibili.com/video/BV1YVatzFEKb?p=6)
-- [高级座席实现系统监控、质检、报表](https://www.bilibili.com/video/BV1YVatzFEKb?p=7)
 
 ## 快速开始
 
