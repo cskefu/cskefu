@@ -21,7 +21,6 @@ import com.cskefu.cc.cache.RedisKey;
 import com.cskefu.cc.exception.BillingResourceException;
 import com.cskefu.cc.model.AgentUser;
 import com.cskefu.cc.proxy.AgentAuditProxy;
-import com.cskefu.cc.proxy.LicenseProxy;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -54,9 +53,6 @@ public class AgentUserAspect {
     @Autowired
     private AgentAuditProxy agentAuditProxy;
 
-    @Autowired
-    private LicenseProxy licenseProxy;
-
     @Before("execution(* com.cskefu.cc.persistence.repository.AgentUserRepository.save(..))")
     public void beforeSave(final JoinPoint joinPoint) {
         final AgentUser agentUser = (AgentUser) joinPoint.getArgs()[0];
@@ -68,13 +64,6 @@ public class AgentUserAspect {
                 // 机器人座席支持的对话，跳过计数
                 agentUser.setLicenseVerifiedPass(true);
                 return;
-            }
-
-            // 计数加一
-            try {
-                licenseProxy.increResourceUsageInMetaKv(MainContext.BillingResource.AGENGUSER, 1);
-            } catch (BillingResourceException e) {
-                logger.error("[beforeSave] error", e.toString());
             }
         }
     }

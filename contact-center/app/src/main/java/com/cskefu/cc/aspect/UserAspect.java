@@ -14,7 +14,6 @@ import com.cskefu.cc.basic.MainContext;
 import com.cskefu.cc.exception.BillingQuotaException;
 import com.cskefu.cc.exception.BillingResourceException;
 import com.cskefu.cc.model.User;
-import com.cskefu.cc.proxy.LicenseProxy;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -30,18 +29,9 @@ public class UserAspect {
 
     private final static Logger logger = LoggerFactory.getLogger(UserAspect.class);
 
-    @Autowired
-    private LicenseProxy licenseProxy;
-
     @Before("execution(* com.cskefu.cc.persistence.repository.UserRepository.save(..))")
     public void beforeSave(final JoinPoint joinPoint) throws BillingResourceException, BillingQuotaException {
         final User user = (User) joinPoint.getArgs()[0];
         logger.info("[save] before user id {}", user.getId());
-        if (StringUtils.isBlank(user.getId())) {
-            // 执行配额扣除
-            licenseProxy.writeDownResourceUsageInStore(MainContext.BillingResource.USER, 1);
-        } else {
-            // update existed user
-        }
     }
 }

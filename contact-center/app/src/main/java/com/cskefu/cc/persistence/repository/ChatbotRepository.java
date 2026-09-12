@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * Copyright (C) (2023-2026) Beijing Huaxia Chunsong Technology Co., Ltd. 
  * <https://www.chatopera.com>, Licensed under the Chunsong Public 
  * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software

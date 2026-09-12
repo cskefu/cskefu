@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Beijing Huaxia Chunsong Technology Co., Ltd. 
+ * Copyright (C) (2023-2026) Beijing Huaxia Chunsong Technology Co., Ltd. 
  * <https://www.chatopera.com>, Licensed under the Chunsong Public 
  * License, Version 1.0  (the "License"), https://docs.cskefu.com/licenses/v1.html
  * Unless required by applicable law or agreed to in writing, software
@@ -24,7 +24,6 @@ import com.cskefu.cc.model.BlackEntity;
 import com.cskefu.cc.model.SysDic;
 import com.cskefu.cc.model.SystemConfig;
 import com.cskefu.cc.persistence.repository.*;
-import com.cskefu.cc.proxy.LicenseProxy;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,10 +136,6 @@ public class AppCtxRefreshEventListener implements ApplicationListener<ContextRe
             for (final IPluginConfigurer p : pluginRegistry.getPlugins()) {
                 logger.info("[Plugins] registered plugin id {}, class {}", p.getPluginId(), p.getClass().getName());
             }
-
-            // 初始化 ServerInstId
-            LicenseProxy licenseProxy = event.getApplicationContext().getBean(LicenseProxy.class);
-            licenseProxy.checkOnStartup();
         } else {
             logger.info("[onApplicationEvent] bypass, initialization has been done already.");
         }

@@ -15,7 +15,6 @@ import com.cskefu.cc.exception.BillingQuotaException;
 import com.cskefu.cc.exception.BillingResourceException;
 import com.cskefu.cc.model.Channel;
 import com.cskefu.cc.model.User;
-import com.cskefu.cc.proxy.LicenseProxy;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -31,21 +30,9 @@ public class ChannelAspect {
 
     private final static Logger logger = LoggerFactory.getLogger(ChannelAspect.class);
 
-    @Autowired
-    private LicenseProxy licenseProxy;
-
     @Before("execution(* com.cskefu.cc.persistence.repository.ChannelRepository.save(..))")
     public void beforeSave(final JoinPoint joinPoint) throws BillingResourceException, BillingQuotaException {
         final Channel channel = (Channel) joinPoint.getArgs()[0];
         logger.info("[beforeSave] before channel id {}, type {}", channel.getId(), channel.getType());
-        if (StringUtils.isBlank(channel.getId())) {
-            // create new Channel
-            if (StringUtils.equals(channel.getType(), MainContext.ChannelType.WEBIM.toString())) {
-                // create new WEBIM channel
-                licenseProxy.writeDownResourceUsageInStore(MainContext.BillingResource.CHANNELWEBIM, 1);
-            }
-        } else {
-            // update existed Channel
-        }
     }
 }

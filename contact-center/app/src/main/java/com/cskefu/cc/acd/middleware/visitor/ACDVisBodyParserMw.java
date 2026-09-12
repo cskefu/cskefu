@@ -29,7 +29,6 @@ import com.cskefu.cc.proxy.AgentStatusProxy;
 import com.cskefu.cc.proxy.AgentUserProxy;
 import com.chatopera.compose4j.Functional;
 import com.chatopera.compose4j.Middleware;
-import com.cskefu.cc.proxy.LicenseProxy;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,9 +63,6 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
     @Autowired
     private ACDMessageHelper acdMessageHelper;
 
-    @Autowired
-    private LicenseProxy licenseProxy;
-
     /**
      * 设置AgentUser基本信息
      *
@@ -92,15 +88,6 @@ public class ACDVisBodyParserMw implements Middleware<ACDComposeContext> {
                             ctx.getOnlineUserId(),
                             ctx.getOnlineUserNickname(),
                             ctx.getAppid());
-
-                    // 执行计费逻辑
-                    ExecuteResult writeDownResult = licenseProxy.writeDownAgentUserUsageInStore(p);
-
-                    if (writeDownResult.getRc() != ExecuteResult.RC_SUCC) {
-                        // 配额操作失败，提示座席
-                        p.setLicenseVerifiedPass(false);
-                        p.setLicenseBillingMsg(writeDownResult.getMsg());
-                    }
 
                     logger.info("[apply] create new agent user id {}", p.getId());
                     return p;

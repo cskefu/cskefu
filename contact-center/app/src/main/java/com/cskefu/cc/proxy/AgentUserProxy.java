@@ -97,9 +97,6 @@ public class AgentUserProxy {
     @Lazy
     private PeerSyncIM peerSyncIM;
 
-    @Autowired
-    private LicenseProxy licenseProxy;
-
     /**
      * 与联系人主动聊天前查找获取AgentUser
      *

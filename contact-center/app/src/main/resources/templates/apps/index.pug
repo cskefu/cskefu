@@ -194,7 +194,7 @@ html(xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xm
                                 dd
                                     a(href="javascript:void(0)" onclick="showSystemBuildInfo()") 关于本产品
                                 dd
-                                    a(href="https://docs.cskefu.com/docs/licenses/" target="_blank") 了解企业版
+                                    a(href="https://docs.cskefu.com/docs/" target="_blank") 了解企业版
                                 dd
                                     a(href="https://github.com/cskefu/cskefu/issues" target="_blank") 反馈建议
                                 dd
@@ -304,7 +304,7 @@ html(xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xm
 
             // 展示系统构建信息
             function showSystemBuildInfo() {
-                layer.confirm('<div style="text-align:center;"> <img src="/images/favicon.ico" width="50px" height="50px"><p>春松客服开源版<span>&#174;</span> Release #{appVersionNumber}</p></div>Build: #{appBuildDate}.<a href="https://github.com/cskefu/cskefu/commit/#{appVersionAbbrev}" target="_blank">#{appVersionAbbrev}</a> <br> Copyright (2018-' + (new Date()).getFullYear() + ') <a href="https://www.chatopera.com" target="_blank">Beijing Huaxia Chunsong Technology Co., Ltd.</a>, 开源许可协议: <a href="https://docs.cskefu.com/licenses/v1.html" target="_blank">Chunsong Public License, version 1.0</a> <br> <a href="https://docs.cskefu.com/docs/osc/training" target="_blank">定制开发教程</a> | <a href="https://www.chatopera.com/mail.html" target="_blank">购买企业版</a>',
+                layer.confirm('<div style="text-align:center;"> <img src="/images/favicon.ico" width="50px" height="50px"><p>春松客服开源版<span>&#174;</span> Release #{appVersionNumber}</p></div>Build: #{appBuildDate}.<a href="https://github.com/cskefu/cskefu/commit/#{appVersionAbbrev}" target="_blank">#{appVersionAbbrev}</a> <br> Copyright (2018-' + (new Date()).getFullYear() + ') <a href="https://www.chatopera.com" target="_blank">Beijing Huaxia Chunsong Technology Co., Ltd.</a>, 开源许可协议: <a href="https://docs.cskefu.com/licenses/v1.html" target="_blank">Chunsong Public License, version 1.0</a> <br> <a href="https://docs.cskefu.com/docs/v9/osc/training" target="_blank">开源版（v8）定制开发教程</a> | <a href="https://www.chatopera.com/mail.html" target="_blank">企业版（v10）购买企业版</a>',
                     {icon: -1, title: '关于产品', btn: ["关闭"]}, function (index, layero) {
                         layer.close(index);
                     });

@@ -15,7 +15,6 @@ import com.cskefu.cc.exception.BillingQuotaException;
 import com.cskefu.cc.exception.BillingResourceException;
 import com.cskefu.cc.model.Channel;
 import com.cskefu.cc.model.Organ;
-import com.cskefu.cc.proxy.LicenseProxy;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -30,18 +29,9 @@ import org.springframework.stereotype.Component;
 public class OrganAspect {
     private final static Logger logger = LoggerFactory.getLogger(OrganAspect.class);
 
-    @Autowired
-    private LicenseProxy licenseProxy;
-
     @Before("execution(* com.cskefu.cc.persistence.repository.OrganRepository.save(..))")
     public void beforeSave(final JoinPoint joinPoint) throws BillingResourceException, BillingQuotaException {
         final Organ organ = (Organ) joinPoint.getArgs()[0];
         logger.info("[beforeSave] before organ id {}", organ.getId());
-        if (StringUtils.isBlank(organ.getId())) {
-            // create new organ
-            licenseProxy.writeDownResourceUsageInStore(MainContext.BillingResource.ORGAN, 1);
-        } else {
-            // update existed Channel
-        }
     }
 }
