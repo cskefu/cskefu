@@ -27,8 +27,8 @@
 
 | 代号 | 版本 | 状态 | 说明 | 
 | --- | --- | --- | --- | 
-| v10 | EE / 企业版 | Active / 活跃中 （*推荐） | [链接](https://docs.cskefu.com/docs/) |
-| v9 | EE / 企业版 | Sunset / 维护终止 | N/A(购买链接已经下线) |
+| v10 | EE / 企业版 | Active / 活跃中 （*推荐） | [产品文档链接](https://docs.cskefu.com/docs/) |
+| v9 | EE / 企业版 | Sunset / 维护终止 | N/A (购买链接已经下线) |
 | v8.x | OSS / 开源版 | Sunset / 维护终止 ([GitHub](https://github.com/cskefu/cskefu/tree/develop) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/develop/)) | **对于侵权行为，我们将积极通过法律途径进行维权，在 2023 ~ 2025 年间，已经送达了 ~20 件诉讼案例，在广东、上海、北京多地进行了诉讼。** |
 
 **华夏春松内部已经终止 v9 版本开发以及出售，所以建议用户：使用商业版本 v10 或开源版本 v8**，但是介绍产品的文档，v8 和 v9 是通用的，所以，还保留了链接和 v9 字样。
