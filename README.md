@@ -1,3 +1,9 @@
+<div align=right>
+
+[开发者社区](https://www.cskefu.com/)　|　[开源许可协议](https://www.cskefu.com/2023/06/25/chunsong-public-license-1-0/)　|　[工单列表](https://github.com/cskefu/cskefu/issues)　|　[定制开发教程](https://docs.cskefu.com/docs/v9/osc/training/)
+
+</div>
+
 # 春松客服
 
 春松客服是一个企业客服系统解决方案，通过模块化完成企业客户服务工作的运营，包括座席工作台、联系人管理、访客渠道和会话管理等。
@@ -22,16 +28,20 @@
 | 代号 | 版本 | 状态 | 说明 | 
 | --- | --- | --- | --- | 
 | v10 | EE / 企业版 | Active / 活跃中 （*推荐） | [链接](https://docs.cskefu.com/docs/) |
-| v9 | EE / 企业版 | Sunset / 维护终止 | [购买地址（一次性付费、永久授权、包含源码）](https://store.chatopera.com/product/cskfv9) |
+| v9 | EE / 企业版 | Sunset / 维护终止 | N/A(购买链接已经下线) |
 | v8.x | OSS / 开源版 | Sunset / 维护终止 ([GitHub](https://github.com/cskefu/cskefu/tree/develop) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/develop/)) | **对于侵权行为，我们将积极通过法律途径进行维权，在 2023 ~ 2025 年间，已经送达了 ~20 件诉讼案例，在广东、上海、北京多地进行了诉讼。** |
 
-# 春松客服 V9
-
-**春松客服 v9 是一个闭源客服系统，目前官方已经终止维护，但是因为春松客服 v9 以 v8 为基础升级而来，依然沿用了 Java, SpringBoot 技术栈，为众多开发者所喜欢和使用，因为我们继续提供 v9 的商业产品，但是主要是开发者（或客户）自行维护。**
+**华夏春松内部已经终止 v9 版本开发以及出售，所以建议用户：使用商业版本 v10 或开源版本 v8**，但是介绍产品的文档，v8 和 v9 是通用的，所以，还保留了链接和 v9 字样。
 
 ## 产品演示
 
-春松客服 v9 的演示视频：
+### 春松客服 v10
+
+请联系商务咨询顾问，获得功能和演示地址，[联系我](https://www.cskefu.com/2025/09/19/cskefu-v10-announcement/)
+
+### 春松客服 v9/v8
+
+视频：
 
 - [一个简单的客服流程](https://www.bilibili.com/video/BV1YVatzFEKb?p=1)
 - [春松客服的特色](https://www.bilibili.com/video/BV1YVatzFEKb?p=2)
@@ -41,22 +51,11 @@
 - [配置使用机器人客服，应用大语言模型 LLM，RAG，提升服务质量、效率](https://www.bilibili.com/video/BV1YVatzFEKb?p=6)
 - [高级座席实现系统监控、质检、报表](https://www.bilibili.com/video/BV1YVatzFEKb?p=7)
 
-产品演示 DEMO:
+对于开发者：
 
-| 项 | 值 | 描述 |
-| --- | --- | --- |
-| URL 地址 | https://v9.cskefu.com/ | 单点登录，后登录用户自动登出前面的用户 |
-| Admin 用户名 | admin | 超级管理员 |
-| Admin 密码 | admin1234 | 超级管理员密码 |
-| 座席 用户名 | zhangsan | 可以接待访客的座席 |
-| 座席 密码 | agent1234 | 座席密码 |
-| 访客 H5 聊天 | URL | [https://v9.cskefu.com/testclient.html](https://v9.cskefu.com/testclient.html) |
+* 根觉部署文档，部署搭建后体验，[部署文档](https://docs.cskefu.com/docs/v9/deploy)
 
-*提示：演示环境定时清理重置，有可能造成不稳定；演示环境可能有同时登入的账号，被登出不是 BUG；请不要上传敏感信息，LOGO 等到演示环境。
-
----
-
-# 春松客服 V8 - OSS 开源版
+# 春松客服 v8 - OSS 开源版
 
 [![GitHub Stargazers](https://img.shields.io/github/stars/chatopera/cskefu.svg?style=social&label=Star&maxAge=2592000)](https://github.com/cskefu/cskefu/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/chatopera/cskefu.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/cskefu/cskefu/network/members) [![License](https://cdndownload2.chatopera.com/cskefu/licenses/chunsong1.0.svg)](https://www.cskefu.com/licenses/v1.html "开源许可协议") [![GitHub Issues](https://img.shields.io/github/issues/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues) [![GitHub Issues Closed](https://img.shields.io/github/issues-closed/chatopera/cskefu.svg)](https://github.com/cskefu/cskefu/issues?q=is%3Aissue+is%3Aclosed) [![docker](https://img.shields.io/docker/pulls/chatopera/contact-center.svg "Docker Pulls")](https://hub.docker.com/r/chatopera/contact-center/) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-37-orange.svg?style=flat-square)](#contributors-)
