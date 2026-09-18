@@ -37,7 +37,7 @@
 
 ### 春松客服 v10
 
-请联系商务咨询顾问，获得功能和演示地址，[联系我](https://www.cskefu.com/2025/09/19/cskefu-v10-announcement/)
+请联系商务咨询顾问，获得功能和演示地址，[商务咨询顾问](https://www.cskefu.com/2025/06/19/ee-announcement/)。
 
 ### 春松客服 v9/v8
 
@@ -53,7 +53,7 @@
 
 对于开发者：
 
-* 根觉部署文档，部署搭建后体验，[部署文档](https://docs.cskefu.com/docs/v9/deploy)
+* 根据部署文档，部署搭建后体验，[部署文档](https://docs.cskefu.com/docs/v9/deploy)
 
 # 春松客服 v8 - OSS 开源版
 
@@ -150,7 +150,7 @@
 
 - 质检：历史会话、服务小结、服务反馈及相关报表
 
-了解功能详细介绍，参考[文档中心](https://docs.cskefu.com/)。
+了解功能详细介绍，参考[文档中心](https://docs.cskefu.com/docs/v9/)。
 
 ## 快速开始
 
@@ -163,26 +163,26 @@
 
 ### 安装部署
 
-支持云原生环境，容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](http://docs.cskefu.com/docs/deploy)。
+支持云原生环境，容器化一键部署，现在就使用春松客服！参考[《私有部署文档》](http://docs.cskefu.com/docs/v9/deploy)。
 
 ### 系统初始化
 
-部署后，进行系统初始化，为组织设定部门、权限、账号等，参考[《系统初始化文档》](https://docs.cskefu.com/docs/initialization)。
+部署后，进行系统初始化，为组织设定部门、权限、账号等，参考[《系统初始化文档》](https://docs.cskefu.com/docs/v9/initialization)。
 
 ### 运维
 
-备份、升级、回滚等运维工作，参考[《系统维护文档》](https://docs.cskefu.com/docs/osc/maintainence)。
+备份、升级、回滚等运维工作，参考[《系统维护文档》](https://docs.cskefu.com/docs/v9/osc/maintainence)。
 
 ### 运营使用指南
 
-关于产品的具体使用说明，请参考[《春松客服文档》](https://docs.cskefu.com)。
+关于产品的具体使用说明，请参考[《春松客服文档》](https://docs.cskefu.com/docs/v9/)。
 
 ### 立即上线机器人客服
 
 超过 85% 的春松客服企业客户通过 Chatopera 云服务上线机器人客服！7x24 小时在线，接待访客，辅助人工坐席，提升 10 倍工作效率。Chatopera 机器人平台包括知识库、多轮对话、意图识别和语音识别等组件，标准化聊天机器人开发。
 
-- [集成 Chatopera 云服务](https://docs.cskefu.com/docs/work-chatbot/bot-agent)
-- [设定知识库、对话技能：欢迎语、按钮、图文消息等](https://docs.cskefu.com/docs/work-chatbot/message-types)
+- [集成 Chatopera 云服务](https://docs.cskefu.com/docs/v9/work-chatbot/bot-agent)
+- [设定知识库、对话技能：欢迎语、按钮、图文消息等](https://docs.cskefu.com/docs/v9/work-chatbot/message-types)
 
 <details>
 <summary>展开查看更多机器人客服介绍</summary>
@@ -204,8 +204,8 @@
 - 了解春松客服采用的开源许可协议，参考[文档](https://www.cskefu.com/2023/06/25/chunsong-public-license-1-0/)
 - 了解春松客服的开发计划，参考[文档](https://github.com/cskefu/cskefu/issues)
 - 如何提交反馈、文档，参考[文档](./CONTRIBUTING.md)
-- 如何成为春松客服开发者，参考[文档](https://docs.cskefu.com/docs/osc/devonboard/)
-- 如何提交代码，参考[文档](https://docs.cskefu.com/docs/osc/contribution)
+- 如何成为春松客服开发者，参考[文档](https://docs.cskefu.com/docs/v9/osc/devonboard/)
+- 如何提交代码，参考[文档](https://docs.cskefu.com/docs/v9/osc/contribution)
 
 ### 工单
 
@@ -220,14 +220,14 @@
 ### 开发者文档
 
 - 开发环境搭建
-  - [安装依赖和启动数据库等](https://docs.cskefu.com/docs/osc/engineering)
-  - [IDE 配置和使用之 IntelliJ IDEA](https://docs.cskefu.com/docs/osc/ide_intelij_idea)
-  - [IDE 配置和使用之 VSCode](https://docs.cskefu.com/docs/osc/ide_vscode)
+  - [安装依赖和启动数据库等](https://docs.cskefu.com/docs/v9/osc/engineering)
+  - [IDE 配置和使用之 IntelliJ IDEA](https://docs.cskefu.com/docs/v9/osc/ide_intelij_idea)
+  - [IDE 配置和使用之 VSCode](https://docs.cskefu.com/docs/v9/osc/ide_vscode)
 - 定制开发技能
-  - [系统集成之 RestAPIs](https://docs.cskefu.com/docs/osc/restapi)
-  - [从零开始学习定制春松客服技能：春松客服大讲堂 PPT 课件及视频](https://store.chatopera.com/product/cskfdjt19)
+  - [系统集成之 RestAPIs](https://docs.cskefu.com/docs/v9/osc/restapi)
+  - [从零开始学习定制春松客服技能：春松客服大讲堂 PPT 课件及视频](https://docs.cskefu.com/docs/v9/osc/training)
   - [掌握春松客服前端框架 Pugjs，介绍及使用注意事项](https://blog.csdn.net/samurais/article/details/114576611)
-- [提交代码](https://docs.cskefu.com/docs/osc/contribution)
+- [提交代码](https://docs.cskefu.com/docs/v9/osc/contribution)
 
 ### 商业洽淡
 
