@@ -10,17 +10,17 @@
 
 ## 服务模式
 
-目前，春松客服包括两个产品和服务模式：
+选择稳定、可靠、持续更新的智能客服，我们只推荐**春松客服 EE/企业版**；开源版的存在是历史原因，目前官方已经不维护，不建议使用。
 
-**企业版具备更友好的代码授权、功能以及服务，更可靠稳定，企业版更适合企业使用！**
+目前，春松客服包括两个产品和服务模式：
 
 | 模式 | EE / 企业版 | OSS / 开源版 |
 | --- | --- | --- |
-| 收费模式 | 根据服务项目进行[商业洽谈](https://www.chatopera.com/mail.html) | 启动服务后导入[授权证书](https://store.chatopera.com/product/cskefu001) |  
+| 收费模式 | 通过[商业洽谈](https://www.chatopera.com/mail.html)确定 | 免费 |  
 | 软件迭代 | 官方团队迭代开发 | 通过[开源社区](https://www.cskefu.com/)形式 |
 | 技术支持 | 官方技术团队商业支持 | 通过开源社区[提交工单](https://github.com/cskefu/cskefu/issues) | 
-| 部署及运维 | 官方技术团队商业支持 | 根据开源社区文档，[文档中心](https://docs.cskefu.com/docs/) |
-| 使用培训 | 客服系统及二次开发的培训由官方团队支持 | 购买[春松客服大讲堂](https://docs.cskefu.com/docs/v9/osc/training/) |
+| 部署及运维 | 官方技术团队商业支持 | 根据开源社区文档，[文档中心](https://docs.cskefu.com/docs/v9) |
+| 使用培训 | 客服系统及二次开发的培训由官方团队支持 | 购买[春松客服大讲堂](https://docs.cskefu.com/docs/v9/osc/training/)自行开发维护 |
 
 
 ## 产品版本
@@ -28,7 +28,7 @@
 | 代号 | 版本 | 状态 | 说明 | 
 | --- | --- | --- | --- | 
 | v10 | EE / 企业版 | Active / 活跃中 （*推荐） | [产品文档链接](https://docs.cskefu.com/docs/) |
-| v9 | EE / 企业版 | Sunset / 维护终止 | N/A (购买链接已经下线) |
+| v9 | EE / 企业版 | Sunset / 维护终止 | 已经退役 |
 | v8.x | OSS / 开源版 | Sunset / 维护终止 ([GitHub](https://github.com/cskefu/cskefu/tree/develop) \| [Gitee](https://gitee.com/cskefu/cskefu/tree/develop/)) | **对于侵权行为，我们将积极通过法律途径进行维权，在 2023 ~ 2025 年间，已经送达了 ~20 件诉讼案例，在广东、上海、北京多地进行了诉讼。** |
 
 **华夏春松内部已经终止 v9 版本开发以及出售，所以建议用户：使用商业版本 v10 或开源版本 v8**，但是介绍产品的文档，v8 和 v9 是通用的，所以，还保留了链接和 v9 字样。
