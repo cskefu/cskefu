@@ -1,0 +1,8 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Sun Nov 15 16:43:01 CST 2026
+eedfe6c59678ecdfca95b036332220dc68ca28fb@default-chatopera-releases-https\://nexus.chatopera.com/repository/maven-releases/.lastUpdated=1794732181795
+https\://nexus.chatopera.com/repository/maven-public/.error=Could not transfer artifact de.neuland-bfi\:spring-pug4j\:jar\:sources\:3.0.1c-20230719.111820-2 from/to chatopera (https\://nexus.chatopera.com/repository/maven-public/)\: status code\: 502, reason phrase\: Bad Gateway (502)
+https\://nexus.chatopera.com/repository/maven-releases/.error=Could not transfer artifact de.neuland-bfi\:spring-pug4j\:jar\:sources\:3.0.1c-20230719.111820-2 from/to chatopera-releases (https\://nexus.chatopera.com/repository/maven-releases/)\: status code\: 502, reason phrase\: Bad Gateway (502)
+https\://nexus.chatopera.com/repository/maven-snapshots/.error=Could not transfer artifact de.neuland-bfi\:spring-pug4j\:jar\:sources\:3.0.1c-20230719.111820-2 from/to chatopera-snapshots (https\://nexus.chatopera.com/repository/maven-snapshots/)\: status code\: 502, reason phrase\: Bad Gateway (502)
+eedfe6c59678ecdfca95b036332220dc68ca28fb@default-chatopera-snapshots-https\://nexus.chatopera.com/repository/maven-snapshots/.lastUpdated=1794732181816
+eedfe6c59678ecdfca95b036332220dc68ca28fb@default-chatopera-https\://nexus.chatopera.com/repository/maven-public/.lastUpdated=1794732181764

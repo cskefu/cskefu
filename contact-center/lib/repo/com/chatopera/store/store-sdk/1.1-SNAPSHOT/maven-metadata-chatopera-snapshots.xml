@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.chatopera.store</groupId>
+  <artifactId>store-sdk</artifactId>
+  <versioning>
+    <lastUpdated>20230922070308</lastUpdated>
+    <snapshot>
+      <timestamp>20230922.070308</timestamp>
+      <buildNumber>10</buildNumber>
+    </snapshot>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>1.1-20230922.070308-10</value>
+        <updated>20230922070308</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.1-20230922.070308-10</value>
+        <updated>20230922070308</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <classifier>jar-with-dependencies</classifier>
+        <extension>jar</extension>
+        <value>1.1-20230922.070308-10</value>
+        <updated>20230922070308</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+  <version>1.1-SNAPSHOT</version>
+</metadata>

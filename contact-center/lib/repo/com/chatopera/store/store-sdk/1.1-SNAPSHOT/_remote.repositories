@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Fri Sep 22 15:03:56 CST 2023
+store-sdk-1.1-SNAPSHOT-jar-with-dependencies.jar>=
+store-sdk-1.1-SNAPSHOT.pom>=
+store-sdk-1.1-SNAPSHOT.jar>=

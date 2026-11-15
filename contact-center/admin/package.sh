@@ -5,6 +5,10 @@
 
 # constants
 baseDir=$(cd `dirname "$0"`;pwd)
+export JAVA_HOME=/opt/java/amazon-corretto-17
+export PATH=$JAVA_HOME/bin:$PATH
+
+
 # functions
 
 # main

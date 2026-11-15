@@ -1,0 +1,8 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Sun Nov 15 16:42:58 CST 2026
+eedfe6c59678ecdfca95b036332220dc68ca28fb@default-chatopera-releases-https\://nexus.chatopera.com/repository/maven-releases/.lastUpdated=1794732178187
+https\://nexus.chatopera.com/repository/maven-public/.error=Could not transfer artifact com.chatopera.store\:store-sdk\:jar\:sources\:1.1-SNAPSHOT from/to chatopera (https\://nexus.chatopera.com/repository/maven-public/)\: status code\: 502, reason phrase\: Bad Gateway (502)
+https\://nexus.chatopera.com/repository/maven-releases/.error=Could not transfer artifact com.chatopera.store\:store-sdk\:jar\:sources\:1.1-SNAPSHOT from/to chatopera-releases (https\://nexus.chatopera.com/repository/maven-releases/)\: status code\: 502, reason phrase\: Bad Gateway (502)
+https\://nexus.chatopera.com/repository/maven-snapshots/.error=Could not transfer artifact com.chatopera.store\:store-sdk\:jar\:sources\:1.1-SNAPSHOT from/to chatopera-snapshots (https\://nexus.chatopera.com/repository/maven-snapshots/)\: status code\: 502, reason phrase\: Bad Gateway (502)
+eedfe6c59678ecdfca95b036332220dc68ca28fb@default-chatopera-snapshots-https\://nexus.chatopera.com/repository/maven-snapshots/.lastUpdated=1794732178380
+eedfe6c59678ecdfca95b036332220dc68ca28fb@default-chatopera-https\://nexus.chatopera.com/repository/maven-public/.lastUpdated=1794732178072

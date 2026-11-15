@@ -1,0 +1,7 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon Jul 11 14:25:37 CST 2022
+sdk-3.5.1.jar>=
+sdk-3.5.1-jar-with-dependencies.jar>=
+sdk-3.5.1.pom>chatopera=
+sdk-3.5.1.pom>=
+sdk-3.5.1.jar>chatopera=

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>de.neuland-bfi</groupId>
+  <artifactId>spring-pug4j</artifactId>
+  <versioning>
+    <latest>3.0.1c-SNAPSHOT</latest>
+    <versions>
+      <version>2.0.0-alpha-4-SNAPSHOT</version>
+      <version>3.0.1c-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20230719111820</lastUpdated>
+  </versioning>
+</metadata>

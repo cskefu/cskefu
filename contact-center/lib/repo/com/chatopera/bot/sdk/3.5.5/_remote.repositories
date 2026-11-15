@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Thu Jun 01 07:09:38 CST 2023
+sdk-3.5.5-jar-with-dependencies.jar>=
+sdk-3.5.5.jar>=
+sdk-3.5.5.pom>=
