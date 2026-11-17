@@ -1,3 +1,35 @@
+# 郑重声明
+
+## 不建议商业使用春松客服开源版
+
+春松客服作为开源客服系统，已经没有维护人员。已经出现了安全漏洞，比如 [#1055](https://github.com/cskefu/cskefu/issues/1055)，[#1047](https://github.com/cskefu/cskefu/issues/1047)，[#1018](https://github.com/cskefu/cskefu/issues/1018)，以及潜在的其它风险。
+
+**因此我们不建议您将春松客服的开源版用于任何正式场合！！！**
+
+基于我们发布春松客服所采用的开源许可证（Apache2[2018~June, 2023], 春松许可证[June 2023 - 至今]），我们对任何实体应用春松客服的开源版本引发的损失不承担任何义务。
+
+<div align=right>
+-- 北京华夏春松科技有限公司
+<br>
+2026-11-17
+</div>
+
+## 热爱开源
+
+春松客服 v3 ~ v8 是我们的一次开源商业化探索，目的是在开放和商业之间寻求长期稳定的服务企业客户。这次探索失败了，但是我一点不怀疑开源的价值：开源必须存在。一点不怀疑开源可以导向成功的企业，国外已经存在使用开源作为商业模式的上市公司！我相信中国也会出现。
+
+我发布了很多的开源项目，春松客服是我花费心血最多的一个项目。归档这个项目，我是心痛的，在未来的某个时候，我希望可以再次开启它。
+
+<div align=right>
+-- 王海良，春松客服总工程师
+<br>
+2026-11-17
+</div>
+
+以下为归档前内容，请斟酌使用。
+
+---
+
 <div align=right>
 
 [开发者社区](https://www.cskefu.com/)　|　[开源许可协议](https://www.cskefu.com/2023/06/25/chunsong-public-license-1-0/)　|　[工单列表](https://github.com/cskefu/cskefu/issues)　|　[定制开发教程](https://docs.cskefu.com/docs/v9/osc/training/)
